@@ -1,6 +1,7 @@
 # Thorium
 Chromium fork for linux named after radioactive element No. 90
-<img src="https://github.com/Alex313031/Technetium/blob/main/logos/product_logo_64.png">
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/product_logo_128.png">
 
 # Chromium fork for Linux, named after radioactive element No. 90
 -Always built with latest x64 'Trunk' build of chromium \
