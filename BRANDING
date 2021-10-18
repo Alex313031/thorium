@@ -1,0 +1,10 @@
+COMPANY_FULLNAME=The Chromium and Thorium Authors
+COMPANY_SHORTNAME=The Chromium and Thorium Authors
+PRODUCT_FULLNAME=Thorium
+PRODUCT_SHORTNAME=Thorium
+PRODUCT_INSTALLER_FULLNAME=Thorium Installer
+PRODUCT_INSTALLER_SHORTNAME=Thorium Installer
+COPYRIGHT=Copyright @LASTCHANGE_YEAR@ The Chromium and Thorium Authors. All rights reserved.
+MAC_BUNDLE_ID=org.chromium.Chromium
+MAC_CREATOR_CODE=Cr24
+MAC_TEAM_ID=
