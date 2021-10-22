@@ -6,6 +6,7 @@ Chromium fork for linux named after radioactive element No. 90
 # Chromium fork for Linux, named after radioactive element No. 90
 -Always built with latest x64 'Trunk' build of chromium \
 -Intended to behave the most like Google Chrome. \
+-NOTE: The M69 is a legacy build for Debian Jessie and Ubuntu 12.04/14.04.
 
 Includes widevine, ffmpeg, chrome plugins, as well as thinlto and pgo optimizations, and experimental MPEG-DASH and PDF annotation support.
 
