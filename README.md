@@ -12,7 +12,7 @@ Chromium fork for linux named after radioactive element No. 90
 ## EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
  - Experimental MPEG-DASH.
  - Experimental PDF annotation support (called "Ink" on ChromiumOS).
- - Patches from Debian including font rendering patch, VAAPI Patch, Native Notifications patch, Title Bar patch, and... the VDPAU Patch!! (Rejoice NvIdIa users)
+ - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice NVidia users)
  - DoH (DNS over HTTPS) patch from Bromite.
  - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Thorium Authors" being appended to The Chromium Authors in credits.
 
