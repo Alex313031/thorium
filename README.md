@@ -27,6 +27,7 @@ _**The scripts assume the chromium source is at $HOME/chromiums/src/. You may ha
 - To build, run `autoninja -j8 -C out/thorium chrome chrome_sandbox content_shell -d stats` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine), and the -d stats at the end just shows better verbose stats during compiling. You could also append chromedriver after content_shell to build chromedriver, the selenium compatible browser fuzzing library.*
 - To install, copy/paste the contents of your *out/thorium* dir to a good location I.E. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. *Then you can just run the browser with `~/bin/thorium/chrome` or the content_shell with `~/bin/thorium/content_shell`.*
 - **Proper Install:** To install with a deb, dont copy out/thorium, instead run `autoninja -C out/thorium/ "chrome/installer/linux:unstable_deb"` A nice .deb file will now be in out/thorium and you can install it with `sudo dpkg --install *.deb` It will be called chromium-browser-unstable, but the .debs in the releases section are just renamed to thorium-browser.
+- To get back to "Trunk" I.E. revert all changes in order to build vanilla chromium, just run `trunk.sh` again.
 
 Thanks to https://github.com/robrich999/ for some info that went into this project.\
 Also thanks to https://github.com/bromite/bromite and https://github.com/saiarcot895/chromium-ubuntu-build for patch code.
