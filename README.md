@@ -1,15 +1,14 @@
 # Thorium
-Chromium fork for linux named after radioactive element No. 90
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/product_logo_128.png">
 
-# Chromium fork for Linux, named after radioactive element No. 90
+## Chromium fork for linux named after radioactive element No. 90
 - Always built with latest x64 'Trunk' build of chromium \
 - Intended to behave the most like Google Chrome, with differences listed below. \
 
  -Includes Widevine, ffmpeg, chrome plugins, as well as thinLTO and PGO compiler optimizations.
 
-## EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
+### EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
  - Experimental MPEG-DASH.
  - Experimental PDF annotation support (called "Ink" on ChromiumOS).
  - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice NVidia users)
@@ -29,5 +28,5 @@ _**The scripts assume the chromium source is at $HOME/chromiums/src/**_
 - To install, copy/paste the contents of your out/thorium dir to a good location I.E. $HOME/bin/thorium. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. *Then you can just run the browser with `~/bin/thorium/chrome` or the content_shell with `~/bin/thorium/content_shell`.*
 - **Proper Install:** To install with a deb, dont copy out/thorium, instead run `autoninja -C out/thorium/ "chrome/installer/linux:unstable_deb"` A nice .deb file will now be in out/thorium and you can install it with `sudo dpkg --install *.deb` It will be called chromium-browser-unstable, but the .debs in the releases section are just renamed to thorium-browser.
 
-Thanks to https://github.com/robrich999/ for some info that went into this project.
+Thanks to https://github.com/robrich999/ for some info that went into this project.\
 Also thanks to https://github.com/bromite/bromite and https://github.com/saiarcot895/chromium-ubuntu-build for patch code.
