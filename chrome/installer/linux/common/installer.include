@@ -158,6 +158,11 @@ stage_install_common() {
   if [ -r "${OUTPUTDIR}/chrome_100_percent.pak" ]; then
     install -m 644 "${OUTPUTDIR}/chrome_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/chrome_200_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/content_shell.pak" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/shell_resources.pak" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 755 "${OUTPUTDIR}/content_shell" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
   else
     install -m 644 "${OUTPUTDIR}/theme_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
@@ -375,8 +380,7 @@ stage_install_common() {
   UNSTRIPPED=$(find "${STAGEDIR}/${INSTALLDIR}/" -type f | xargs file |
       grep ELF | grep -c "not stripped" || true)
   if [ "${UNSTRIPPED}" != "0" ]; then
-    echo "ERROR: Found ${UNSTRIPPED} unstripped ELF files." 1>&2
-    exit 1
+    echo "NOTICE: Found ${UNSTRIPPED} unstripped ELF files." 1>&2
   fi
 
   # Check to make sure no ELF binaries set RPATH.
@@ -389,8 +393,7 @@ stage_install_common() {
       fi
     done
     if [ -n "${RPATH_BINS}" ]; then
-      echo "ERROR: Found binaries with RPATH set:${RPATH_BINS}" 1>&2
-      exit 1
+      echo "NOTICE: Found binaries with RPATH set:${RPATH_BINS}" 1>&2
     fi
   fi
 
