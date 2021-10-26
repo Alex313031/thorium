@@ -3028,27 +3028,12 @@ bool VaapiWrapper::CreateSurfaces(
 
   va_surfaces->resize(num_surfaces);
   
-  VASurfaceAttrib attribute{};
+  VASurfaceAttrib attribute;
   memset(&attribute, 0, sizeof(attribute));
-    if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
-    // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
-    attribute.type = VASurfaceAttribUsageHint;
-    attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
-    attribute.value.type = VAGenericValueTypeInteger;
-    switch (usage_hint) {
-      case SurfaceUsageHint::kVideoDecoder:
-        attribute.value.value.i = VA_SURFACE_ATTRIB_USAGE_HINT_DECODER;
-        break;
-      case SurfaceUsageHint::kVideoEncoder:
-        attribute.value.value.i = VA_SURFACE_ATTRIB_USAGE_HINT_ENCODER;
-        break;
-      case SurfaceUsageHint::kVideoProcessWrite:
-        attribute.value.value.i = VA_SURFACE_ATTRIB_USAGE_HINT_VPP_WRITE;
-        break;
-      case SurfaceUsageHint::kGeneric:
-        attribute.value.value.i = VA_SURFACE_ATTRIB_USAGE_HINT_GENERIC;
-        break;
-    }
+  attribute.type = VASurfaceAttribUsageHint;
+  attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
+  attribute.value.type = VAGenericValueTypeInteger;
+  attribute.value.value.i = 0;
   for (SurfaceUsageHint usage_hint : usage_hints)
     attribute.value.value.i |= static_cast<int32_t>(usage_hint);
   static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
