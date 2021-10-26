@@ -9,13 +9,13 @@
  -Includes Widevine, ffmpeg, chrome plugins, as well as thinLTO and PGO compiler optimizations.
 
 ### EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
- - Experimental MPEG-DASH.
- - Experimental PDF annotation support (called "Ink" on ChromiumOS).
- - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice NVidia users)
- - DoH (DNS over HTTPS) patch from Bromite.
- - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Thorium Authors" being appended to The Chromium Authors in credits.
+> - Experimental MPEG-DASH.
+> - Experimental PDF annotation support (called "Ink" on ChromiumOS).
+> - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice NVidia users)
+> - DoH (DNS over HTTPS) patch from Bromite.
+> - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Thorium Authors" being appended to The Chromium Authors in credits.
 
-args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version. (See below.)
+-args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version. (See below.)
 
 In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys
 
