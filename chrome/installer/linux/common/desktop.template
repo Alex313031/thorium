@@ -105,7 +105,7 @@ Comment[vi]=Truy cập Internet
 Comment[zh_CN]=访问互联网
 Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
-Exec=/opt/chromium.org/chromium-unstable/chrome --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder %U
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder %U
 StartupNotify=true
 Terminal=false
 Icon=@@PACKAGE@@
@@ -166,61 +166,11 @@ Name[uk]=Нове вікно
 Name[vi]=Cửa sổ Mới
 Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
-Exec=/opt/chromium.org/chromium-unstable/chrome --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
 
-[Desktop Action content-shell]
+[Desktop Action contentshell]
 Name=Open Content Shell
-Name[am]=አዲስ መስኮት
-Name[ar]=نافذة جديدة
-Name[bg]=Нов прозорец
-Name[bn]=নতুন উইন্ডো
-Name[ca]=Finestra nova
-Name[cs]=Nové okno
-Name[da]=Nyt vindue
-Name[de]=Neues Fenster
-Name[el]=Νέο Παράθυρο
-Name[en_GB]=New Window
-Name[es]=Nueva ventana
-Name[et]=Uus aken
-Name[fa]=پنجره جدید
-Name[fi]=Uusi ikkuna
-Name[fil]=New Window
-Name[fr]=Nouvelle fenêtre
-Name[gu]=નવી વિંડો
-Name[hi]=नई विंडो
-Name[hr]=Novi prozor
-Name[hu]=Új ablak
-Name[id]=Jendela Baru
-Name[it]=Nuova finestra
-Name[iw]=חלון חדש
-Name[ja]=新規ウインドウ
-Name[kn]=ಹೊಸ ವಿಂಡೊ
-Name[ko]=새 창
-Name[lt]=Naujas langas
-Name[lv]=Jauns logs
-Name[ml]=പുതിയ വിന്‍ഡോ
-Name[mr]=नवीन विंडो
-Name[nl]=Nieuw venster
-Name[no]=Nytt vindu
-Name[pl]=Nowe okno
-Name[pt]=Nova janela
-Name[pt_BR]=Nova janela
-Name[ro]=Fereastră nouă
-Name[ru]=Новое окно
-Name[sk]=Nové okno
-Name[sl]=Novo okno
-Name[sr]=Нови прозор
-Name[sv]=Nytt fönster
-Name[sw]=Dirisha Jipya
-Name[ta]=புதிய சாளரம்
-Name[te]=క్రొత్త విండో
-Name[th]=หน้าต่างใหม่
-Name[tr]=Yeni Pencere
-Name[uk]=Нове вікно
-Name[vi]=Cửa sổ Mới
-Name[zh_CN]=新建窗口
-Name[zh_TW]=開新視窗
-Exec=/opt/chromium.org/chromium-unstable/content_shell
+Exec=/opt/chromium.org/chromium-unstable/content_shell --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
@@ -272,4 +222,4 @@ Name[uk]=Нове вікно в режимі анонімного перегля
 Name[vi]=Cửa sổ ẩn danh mới
 Name[zh_CN]=新建隐身窗口
 Name[zh_TW]=新增無痕式視窗
-Exec=/opt/chromium.org/chromium-unstable/chrome --incognito --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
