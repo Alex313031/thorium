@@ -217,10 +217,10 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       </if>
       <if expr="chromeos">
         <message name="IDS_PRODUCT_OS_NAME" desc="The Chrome OS application name">
-          Chromium OS
+          Thorium OS
         </message>
         <message name="IDS_SHORT_PRODUCT_OS_NAME" desc="The Chrome OS application short name">
-          Chromium OS
+          Thorium OS
         </message>
       </if>
       <!-- Chrome enterprise logo won't be used in Chromium -->
@@ -252,7 +252,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <if expr="chromeos">
         <!-- Browser Window Title Format -->
         <message name="IDS_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for titles displayed in tabbed browser windows">
-          Chromium - <ph name="PAGE_TITLE">$1<ex>Google</ex></ph>
+          Thorium - <ph name="PAGE_TITLE">$1<ex>Google</ex></ph>
         </message>
       </if>
       <if expr="not chromeos and not is_macosx">
@@ -264,7 +264,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <if expr="chromeos">
         <!-- Captive Portal Browser Window Title Format -->
         <message name="IDS_CAPTIVE_PORTAL_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for titles displayed in captive portal popup windows">
-          Chromium - Network Sign-in - <ph name="PAGE_TITLE">$1<ex>Google</ex></ph>
+          Thorium - Network Sign-in - <ph name="PAGE_TITLE">$1<ex>Google</ex></ph>
         </message>
       </if>
       <if expr="is_macosx">
@@ -279,13 +279,13 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium
       </message>
       <message name="IDS_ACCESSIBLE_BETA_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the beta channel version of the browser">
-        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Chromium Beta
+        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Beta
       </message>
       <message name="IDS_ACCESSIBLE_DEV_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the developer (dev) channel version of the browser">
-        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Chromium Dev
+        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Dev
       </message>
       <message name="IDS_ACCESSIBLE_CANARY_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the canary (nightly build) channel version of the browser">
-        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Chromium Canary
+        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Canary
       </message>
       <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
         The Chromium and Thorium Authors
@@ -295,21 +295,21 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       </message>
       <if expr="chromeos">
         <message name="IDS_ABOUT_CROS_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS.">
-          Chromium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>.
+          Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>.
         </message>
         <message name="IDS_ABOUT_CROS_WITH_LINUX_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS when Crostini is installed.">
-          Chromium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>, as is <ph name="BEGIN_LINK_LINUX_OSS">&lt;a target="_blank" href="$2"&gt;</ph>Linux development environment<ph name="END_LINK_LINUX_OSS">&lt;/a&gt;</ph>.
+          Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>, as is <ph name="BEGIN_LINK_LINUX_OSS">&lt;a target="_blank" href="$2"&gt;</ph>Linux development environment<ph name="END_LINK_LINUX_OSS">&lt;/a&gt;</ph>.
         </message>
         <message name="IDS_ABOUT_SAFETY_INFORMATION" desc="The safety label in the About box." translateable="false">
-          Not used in Chromium. Placeholder to keep resource maps in sync.
+          Not used in Thorium. Placeholder to keep resource maps in sync.
         </message>
       </if>
       <message name="IDS_ABOUT_TERMS_OF_SERVICE" desc="The terms of service label in the About box." translateable="false">
-        Not used in Chromium. Placeholder to keep resource maps in sync.
+        Not used in Thorium. Placeholder to keep resource maps in sync.
       </message>
       <if expr="is_macosx">
         <message name="IDS_MAC_10_10_OBSOLETE_SOON" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
-          To get future Chromium updates, you'll need OS X 10.11 or later. This computer is using OS X 10.10.
+          To get future Thorium updates, you'll need OS X 10.11 or later. This computer is using OS X 10.10.
         </message>
       </if>
       <if expr="is_win">
@@ -353,7 +353,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       </message>
       <if expr="chromeos">
         <message name="IDS_EXTERNAL_PROTOCOL_NO_HANDLER_TITLE" desc="External Protocol Dialog Title">
-          Chromium OS can't open this page.
+          Thorium OS can't open this page.
         </message>
       </if>
       <if expr="use_titlecase">
@@ -373,7 +373,7 @@ Thorium cannot read and write to its data directory:
       </message>
       <if expr="chromeos">
         <message name="IDS_EULA_CHECKBOX_ENABLE_LOGGING" desc="The label of the checkbox to enable/disable crash and user metrics logging">
-          Optional: Help improve Chromium OS features and performance by automatically sending diagnostic and usage data to Google.
+          Optional: Help improve Thorium OS features and performance by automatically sending diagnostic and usage data to Google.
         </message>
       </if>
       <message name="IDS_PROFILE_TOO_NEW_ERROR" desc="Error displayed on startup when the profile is from a newer version of the product and can not be read">
@@ -553,14 +553,14 @@ Thorium is unable to recover your settings.
       </if>
       <if expr="is_macosx">
         <message name="IDS_ABANDON_DOWNLOAD_DIALOG_BROWSER_MESSAGE" desc="Mac OSX Only: Message on a dialog shown when the user closes the browser while one or more downloads are in progress. This string is shown on Mac OSX only, which uses 'Quit' to refer to closing a browser.">
-          Quit Chromium anyway?
+          Quit Thorium anyway?
         </message>
       </if>
 
       <!-- Quit all apps confirmation dialog -->
       <if expr="is_macosx">
         <message name="IDS_QUIT_WITH_APPS_TITLE" desc="Title for a notification explaining that Chrome is running in the background.">
-          Chromium is in background mode.
+          Thorium is in background mode.
         </message>
       </if>
 
@@ -644,22 +644,22 @@ Thorium is unable to recover your settings.
       </if>
       <if expr="chromeos">
         <message name="IDS_ABOUT" desc="The text label of the About Chrome menu item">
-          About &amp;Chromium
+          About &amp;Thorium
         </message>
         <message name="IDS_RELAUNCH_TO_UPDATE" desc="The text label of the relaunch to update Chrome OS menu item">
-          Relaunch to update &amp;Chromium OS
+          Relaunch to update &amp;Thorium OS
         </message>
       </if>
 
       <if expr="is_macosx">
         <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Chrome, not Google Chrome.">
-          Chromium
+          Thorium
         </message>
         <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Chrome application name (IDS_PRODUCT_NAME). Example: Google Chrome Helper.">
-          Chromium Helper
+          Thorium Helper
         </message>
         <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Chrome Helper, not Google Chrome Helper.">
-          Chromium Helper
+          Thorium Helper
         </message>
       </if>
 
@@ -787,16 +787,16 @@ Thorium is unable to recover your settings.
       </if>
       <if expr="chromeos">
         <message name="IDS_SIGNIN_ERROR_SECONDARY_ACCOUNT_DISPLAY_SOURCE" desc="Context title shown in the notification header of sign-in error notification for Chromium OS Secondary Accounts.">
-          Chromium OS System
+          Thorium OS System
         </message>
         <message name="IDS_SYNC_SIGN_IN_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error notification when the user's sign-in credentials are out of date.">
-          Chromium OS could not sync your data because your account sign-in details are out of date.
+          Thorium OS could not sync your data because your account sign-in details are out of date.
         </message>
         <message name="IDS_SYNC_UNAVAILABLE_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error notification when sync is not available for their domain.">
-          Chromium OS could not sync your data because Sync is not available for your domain.
+          Thorium OS could not sync your data because Sync is not available for your domain.
         </message>
         <message name="IDS_SYNC_OTHER_SIGN_IN_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error notification when there's an error signing in.">
-          Chromium OS could not sync your data due to an error signing in.
+          Thorium OS could not sync your data due to an error signing in.
         </message>
       </if>
 
@@ -849,7 +849,7 @@ Thorium is unable to recover your settings.
       <!-- Mac First-run dialog messages -->
       <if expr="is_macosx">
         <message name="IDS_FIRSTRUN_DLG_MAC_SET_DEFAULT_BROWSER_LABEL" desc="Label for checkbox that sets the default browser">
-          Set Chromium as your default browser
+          Set Thorium as your default browser
         </message>
       </if>
 
@@ -976,10 +976,10 @@ Thorium is unable to recover your settings.
       </if>
       <if expr="chromeos">
         <message name="IDS_UPDATE_RECOMMENDED_DIALOG_TITLE" desc="The window title for the Update Recommended dialog.">
-          Restart Chromium OS
+          Restart Thorium OS
         </message>
         <message name="IDS_UPDATE_RECOMMENDED" desc="The main text of the Update Recommended dialog.">
-          Chromium OS needs to be restarted to apply the update.
+          Thorium OS needs to be restarted to apply the update.
         </message>
         <message name="IDS_RELAUNCH_AND_UPDATE" desc="The button in the Update Recommended dialog which updates and restarts Chrome OS.">
           Restart
@@ -1061,54 +1061,54 @@ Thorium is unable to recover your settings.
       <!-- Runtime permission strings -->
       <if expr="is_android">
         <message name="IDS_INFOBAR_MISSING_AR_CAMERA_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to augmented reality capabilities, but Chrome is missing the Android camera permission.">
-          Chromium needs permission to access your camera to create a 3D map of your surroundings
+          Thorium needs permission to access your camera to create a 3D map of your surroundings
         </message>
         <message name="IDS_INFOBAR_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the camera capabilities, but Chrome is missing the Android camera permission.">
-          Chromium needs permission to access your camera for this site
+          Thorium needs permission to access your camera for this site
         </message>
         <message name="IDS_INFOBAR_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the microphone capabilities, but Chrome is missing the Android microphone permission.">
-          Chromium needs permission to access your microphone for this site
+          Thorium needs permission to access your microphone for this site
         </message>
         <message name="IDS_INFOBAR_MISSING_MICROPHONE_CAMERA_PERMISSIONS_TEXT" desc="Text shown in an infobar when a website has requested access to the microphone and camera capabilities, but Chrome is missing the Android microphone and camera permissions.">
-          Chromium needs permission to access your camera and microphone for this site
+          Thorium needs permission to access your camera and microphone for this site
         </message>
         <message name="IDS_INFOBAR_MISSING_LOCATION_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the location capabilities, but Chrome is missing the Android location permission.">
-          Chromium needs access to your location to share your location with this site
+          Thorium needs access to your location to share your location with this site
         </message>
         <message name="IDS_MISSING_STORAGE_PERMISSION_DOWNLOAD_EDUCATION_TEXT" desc="Text shown educating the user that Chrome is missing the Android storage permission, which is required to download files.">
-          Chromium needs storage access to download files
+          Thorium needs storage access to download files
         </message>
 
         <message name="IDS_MESSAGE_MISSING_AR_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to augmented reality capabilities, but Chrome is missing the Android camera permission.">
-          Chromium needs camera permission to create a 3D map of your surroundings
+          Thorium needs camera permission to create a 3D map of your surroundings
         </message>
         <message name="IDS_MESSAGE_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the camera capabilities, but Chrome is missing the Android camera permission.">
-          Chromium needs camera permission for this site
+          Thorium needs camera permission for this site
         </message>
         <message name="IDS_MESSAGE_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the microphone capabilities, but Chrome is missing the Android microphone permission.">
-          Chromium needs microphone permission for this site
+          Thorium needs microphone permission for this site
         </message>
         <message name="IDS_MESSAGE_MISSING_MICROPHONE_CAMERA_PERMISSIONS_TEXT" desc="Text shown in a prompt ui when a website has requested access to the microphone and camera capabilities, but Chrome is missing the Android microphone and camera permissions.">
-          Chromium needs camera and microphone permissions for this site
+          Thorium needs camera and microphone permissions for this site
         </message>
         <message name="IDS_MESSAGE_MISSING_LOCATION_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the location capabilities, but Chrome is missing the Android location permission.">
-          Chromium needs location permission for this site
+          Thorium needs location permission for this site
         </message>
         <message name="IDS_MESSAGE_STORAGE_ACCESS_PERMISSION_TEXT" desc="Text shown educating the user that Chrome is missing the Android storage permission, which is required to download files.">
-          Chromium needs storage access permission to download files
+          Thorium needs storage access permission to download files
         </message>
       </if>
 
       <if  expr="is_macosx">
         <message name="IDS_RUNTIME_PERMISSION_OS_REASON_TEXT" desc="Text provided to the macOS permission dialog, explaining why Chrome needs to access a protected resource (e.g., camera, microphone).">
-          Once Chromium has access, websites will be able to ask you for access.
+          Once Thorium has access, websites will be able to ask you for access.
         </message>
       </if>
 
       <!-- OOBE -->
       <if expr="chromeos">
         <message name="IDS_INSTALLING_UPDATE" desc="Label shown on the updates installation screen during OOBE">
-          Please wait while Chromium installs the latest system updates.
+          Please wait while Thorium installs the latest system updates.
         </message>
         <message name="IDS_EULA_SCREEN_ACCESSIBLE_TITLE" desc="Title to be spoken on opening the OOBE EULA screen">
           Chromium OS terms
@@ -1196,10 +1196,10 @@ Thorium is unable to recover your settings.
       <!-- Chrome parent extension/app install blocking dialog. -->
       <if expr="chromeos">
         <message name="IDS_EXTENSION_INSTALL_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
-         Your parent has turned off "Permissions for sites, apps and extensions" for Chromium. Adding this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
+         Your parent has turned off "Permissions for sites, apps and extensions" for Thorium. Adding this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
         </message>
         <message name="IDS_EXTENSION_ENABLE_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
-         Your parent has turned off "Permissions for sites, apps and extensions" for Chromium. Enabling this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
+         Your parent has turned off "Permissions for sites, apps and extensions" for Thorium. Enabling this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
         </message>
 
       </if>
@@ -1257,7 +1257,7 @@ Thorium is unable to recover your settings.
       <!-- Strings for full restore notifications -->
       <if expr="chromeos">
         <message name="IDS_RESTORE_NOTIFICATION_DISPLAY_SOURCE" desc="This is the string shown as the display source of the notification for the user to select restore or not on startup.">
-          Chromium OS system
+          Thorium OS system
         </message>
       </if>
 
