@@ -112,7 +112,7 @@ Icon=@@PACKAGE@@
 Type=Application
 Categories=Network;WebBrowser;
 MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
-Actions=new-window;new-private-window;
+Actions=new-window;new-private-window;content-shell;
 
 [Desktop Action new-window]
 Name=New Window
@@ -168,7 +168,7 @@ Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
 Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
 
-[Desktop Action contentshell]
+[Desktop Action content-shell]
 Name=Open Content Shell
 Exec=/opt/chromium.org/chromium-unstable/content_shell --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
 
