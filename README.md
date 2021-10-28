@@ -33,3 +33,5 @@ _**The scripts assume the chromium source is at $HOME/chromiums/src/. You may ha
 
 &minus;Thanks to https://github.com/robrich999/ for some info that went into this project.\
 &minus;Also thanks to https://github.com/bromite/bromite and https://github.com/saiarcot895/chromium-ubuntu-build for patch code.
+
+&nbsp;&nbsp; Note: libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
