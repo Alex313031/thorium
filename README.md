@@ -12,7 +12,7 @@
 > - Experimental MPEG-DASH.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS).
 > - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice NVidia users)
-> - DoH (DNS over HTTPS) patch from Bromite.
+> - DoH (DNS over HTTPS) patches from Bromite.
 > - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Thorium Authors" being appended to The Chromium Authors in credits.
 
 &nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version. (See below.)
