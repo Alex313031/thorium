@@ -288,10 +288,10 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Canary
       </message>
       <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
-        The Chromium and Thorium Authors
+        The Chromium Authors and Alex313031
       </message>
       <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
-        Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Chromium and Thorium Authors. All rights reserved.
+        Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Chromium Authors and Alex313031. All rights reserved.
       </message>
       <if expr="chromeos">
         <message name="IDS_ABOUT_CROS_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS.">
