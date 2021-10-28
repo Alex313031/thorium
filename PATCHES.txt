@@ -21,3 +21,5 @@ DoH Bare Minimum HTTP Headers Patch > https://github.com/bromite/bromite/blob/ma
 
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me.
+  
+- Any other code was written from scratch by me.
