@@ -128,11 +128,11 @@ Comment[vi]=Truy cập Internet
 Comment[zh_CN]=访问互联网
 Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
-Exec=/opt/chromium.org/chromium/content_shell --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder --enable-clear-hevc-for-testing %U
+Exec=/opt/chromium.org/chromium-unstable/content_shell --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder --enable-clear-hevc-for-testing %U
 Terminal=false
 X-MultipleArgs=false
 Type=Application
-Icon=/opt/chromium.org/chromium/chrome-devtools.svg
+Icon=/opt/chromium.org/chromium-unstable/chrome-devtools.svg
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
 StartupWMClass=chromium
