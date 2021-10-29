@@ -165,7 +165,8 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 755 "${OUTPUTDIR}/chromedriver" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/chrome-devtools.svg" "${STAGEDIR}/${INSTALLDIR}/"
-    install -m 644 "${OUTPUTDIR}/content-shell.desktop" "/usr/share/applications/"
+    install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
+    install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
   else
     install -m 644 "${OUTPUTDIR}/theme_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
