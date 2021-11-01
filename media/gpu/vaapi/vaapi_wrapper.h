@@ -105,6 +105,15 @@ enum class VAImplementation {
 // It is also responsible for managing and freeing VABuffers (not VASurfaces),
 // which are used to queue parameters and slice data to the HW codec,
 // as well as underlying memory for VASurfaces themselves.
+//
+// Historical note: the sequence affinity characteristic was introduced as a
+// pre-requisite to remove the global *|va_lock_|. However, the legacy
+// VaapiVideoDecodeAccelerator is known to use its VaapiWrapper from multiple
+// threads. Therefore, to avoid doing a large refactoring of a legacy class, we
+// allow it to call VaapiWrapper::Create() or
+// VaapiWrapper::CreateForVideoCodec() with |enforce_sequence_affinity| == false
+// so that sequence affinity is not enforced. This also indicates that the
+// global lock will still be in effect for the VaapiVideoDecodeAccelerator.
 class MEDIA_GPU_EXPORT VaapiWrapper
     : public base::RefCountedThreadSafe<VaapiWrapper> {
  public:
@@ -153,7 +162,8 @@ class MEDIA_GPU_EXPORT VaapiWrapper
       CodecMode mode,
       VAProfile va_profile,
       EncryptionScheme encryption_scheme,
-      const ReportErrorToUMACB& report_error_to_uma_cb);
+      const ReportErrorToUMACB& report_error_to_uma_cb,
+      bool enforce_sequence_affinity = true);
 
   // Create VaapiWrapper for VideoCodecProfile. It maps VideoCodecProfile
   // |profile| to VAProfile.
@@ -163,7 +173,8 @@ class MEDIA_GPU_EXPORT VaapiWrapper
       CodecMode mode,
       VideoCodecProfile profile,
       EncryptionScheme encryption_scheme,
-      const ReportErrorToUMACB& report_error_to_uma_cb);
+      const ReportErrorToUMACB& report_error_to_uma_cb,
+      bool enforce_sequence_affinity = true);
 
   VaapiWrapper(const VaapiWrapper&) = delete;
   VaapiWrapper& operator=(const VaapiWrapper&) = delete;
@@ -216,8 +227,6 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   static bool GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
                                                uint32_t preferred_fourcc,
                                                uint32_t* suitable_fourcc);
-  // Checks to see if VAProfileNone is supported on this decoder
-  static bool IsVppProfileSupported();
 
   // Checks the surface size is allowed for VPP. Returns true if the size is
   // supported, false otherwise.
@@ -400,7 +409,8 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   template <typename T>
   bool WARN_UNUSED_RESULT SubmitBuffer(VABufferType va_buffer_type,
                                        const T* data) {
-    CHECK(sequence_checker_.CalledOnValidSequence());
+    CHECK(!enforce_sequence_affinity_ ||
+          sequence_checker_.CalledOnValidSequence());
     return SubmitBuffer(va_buffer_type, sizeof(T), data);
   }
   // Batch-version of SubmitBuffer(), where the lock for accessing libva is
@@ -526,7 +536,7 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   virtual void DestroySurface(VASurfaceID va_surface_id);
 
  protected:
-  VaapiWrapper(CodecMode mode);
+  explicit VaapiWrapper(CodecMode mode, bool enforce_sequence_affinity = true);
   virtual ~VaapiWrapper();
 
  private:
@@ -585,6 +595,7 @@ class MEDIA_GPU_EXPORT VaapiWrapper
       EXCLUSIVE_LOCKS_REQUIRED(va_lock_) WARN_UNUSED_RESULT;
 
   const CodecMode mode_;
+  const bool enforce_sequence_affinity_;
   base::SequenceCheckerImpl sequence_checker_;
 
   // Pointer to VADisplayState's member |va_lock_|. Guaranteed to be valid for
