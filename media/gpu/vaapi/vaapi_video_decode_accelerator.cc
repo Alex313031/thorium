@@ -205,7 +205,8 @@ bool VaapiVideoDecodeAccelerator::Initialize(const Config& config,
   vaapi_wrapper_ = VaapiWrapper::CreateForVideoCodec(
       VaapiWrapper::kDecode, profile, EncryptionScheme::kUnencrypted,
       base::BindRepeating(&ReportVaapiErrorToUMA,
-                          "Media.VaapiVideoDecodeAccelerator.VAAPIError"));
+                          "Media.VaapiVideoDecodeAccelerator.VAAPIError"),
+      /*enforce_sequence_affinity=*/false);
 
   UMA_HISTOGRAM_BOOLEAN("Media.VAVDA.VaapiWrapperCreationSuccess",
                         vaapi_wrapper_.get());
@@ -620,7 +621,8 @@ void VaapiVideoDecodeAccelerator::TryFinishSurfaceSetChange() {
     auto new_vaapi_wrapper = VaapiWrapper::CreateForVideoCodec(
         VaapiWrapper::kDecode, profile_, EncryptionScheme::kUnencrypted,
         base::BindRepeating(&ReportVaapiErrorToUMA,
-                            "Media.VaapiVideoDecodeAccelerator.VAAPIError"));
+                            "Media.VaapiVideoDecodeAccelerator.VAAPIError"),
+        /*enforce_sequence_affinity=*/false);
     RETURN_AND_NOTIFY_ON_FAILURE(new_vaapi_wrapper.get(),
                                  "Failed creating VaapiWrapper",
                                  INVALID_ARGUMENT, );
@@ -710,15 +712,15 @@ void VaapiVideoDecodeAccelerator::AssignPictureBuffers(
   // processing pipeline for downloading the decoded frame from the internal
   // surface, we need to create a |vpp_vaapi_wrapper_|.
   if (requires_vpp && buffer_allocation_mode_ != BufferAllocationMode::kNone &&
-		buffer_allocation_mode_ != BufferAllocationMode::kWrapVdpau &&
-		IsVppProfileSupported()) {
+      buffer_allocation_mode_ != BufferAllocationMode::kWrapVdpau) {
     if (!vpp_vaapi_wrapper_) {
       vpp_vaapi_wrapper_ = VaapiWrapper::Create(
           VaapiWrapper::kVideoProcess, VAProfileNone,
           EncryptionScheme::kUnencrypted,
           base::BindRepeating(
               &ReportVaapiErrorToUMA,
-              "Media.VaapiVideoDecodeAccelerator.Vpp.VAAPIError"));
+              "Media.VaapiVideoDecodeAccelerator.Vpp.VAAPIError"),
+          /*enforce_sequence_affinity=*/false);
       RETURN_AND_NOTIFY_ON_FAILURE(vpp_vaapi_wrapper_,
                                    "Failed to initialize VppVaapiWrapper",
                                    PLATFORM_FAILURE, );
@@ -1209,11 +1211,6 @@ VaapiVideoDecodeAccelerator::GetSupportedProfiles() {
   return profiles;
 }
 
-// static
-bool VaapiVideoDecodeAccelerator::IsVppProfileSupported() {
-  return VaapiWrapper::IsVppProfileSupported();
-}
-
 VaapiVideoDecodeAccelerator::BufferAllocationMode
 VaapiVideoDecodeAccelerator::DecideBufferAllocationMode() {
 #if BUILDFLAG(USE_VAAPI_X11)
@@ -1229,12 +1226,12 @@ VaapiVideoDecodeAccelerator::DecideBufferAllocationMode() {
     return BufferAllocationMode::kReduced;
   return BufferAllocationMode::kSuperReduced;
 #else
-  // NVIDIA blobs use VDPAU
++  // NVIDIA blobs use VDPAU
   if (VaapiWrapper::GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
-	  LOG(INFO) << "VA-API driver on VDPAU backend";
-	  return BufferAllocationMode::kWrapVdpau;
+    LOG(INFO) << "VA-API driver on VDPAU backend";
+    return BufferAllocationMode::kWrapVdpau;
   }
-  
+
   // TODO(crbug.com/912295): Enable a better BufferAllocationMode for IMPORT
   // |output_mode_| as well.
   if (output_mode_ == VideoDecodeAccelerator::Config::OutputMode::IMPORT)
