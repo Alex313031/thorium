@@ -93,8 +93,6 @@ class MEDIA_GPU_EXPORT VaapiVideoDecodeAccelerator
       override;
 
   static VideoDecodeAccelerator::SupportedProfiles GetSupportedProfiles();
-  
-  static bool IsVppProfileSupported();
 
   // DecodeSurfaceHandler implementation.
   scoped_refptr<VASurface> CreateSurface() override;
