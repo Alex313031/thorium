@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #!/bin/sh -e
 
 /opt/chromium.org/chromium-unstable/content_shell $@
