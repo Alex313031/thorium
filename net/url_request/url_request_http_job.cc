@@ -328,7 +328,7 @@ void URLRequestHttpJob::Start() {
                                           referer_value);
   }
   }
-
+  
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   request_info_.extra_headers.SetHeaderIfMissing(
       HttpRequestHeaders::kUserAgent,
@@ -556,7 +556,6 @@ void URLRequestHttpJob::AddExtraHeaders() {
       if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
         advertised_encoding_names.push_back("deflate");
       }
-      if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
       // Advertise "br" encoding only if transferred data is opaque to proxy.
       if (request()->context()->enable_brotli() &&
           request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
@@ -565,7 +564,6 @@ void URLRequestHttpJob::AddExtraHeaders() {
           advertised_encoding_names.push_back("br");
         }
       }
-      } // minimal headers
       if (!advertised_encoding_names.empty()) {
         // Tell the server what compression formats are supported.
         request_info_.extra_headers.SetHeader(
@@ -575,7 +573,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
     }
   }
 
-  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
+  if (http_user_agent_settings_) {
     // Only add default Accept-Language if the request didn't have it
     // specified.
     std::string accept_language =
@@ -603,8 +601,10 @@ void URLRequestHttpJob::AddCookieHeaderAndStart() {
                                                request_->site_for_cookies())) {
       force_ignore_site_for_cookies = true;
     }
-    bool is_main_frame_navigation = IsolationInfo::RequestType::kMainFrame ==
-                                    request_->isolation_info().request_type();
+    bool is_main_frame_navigation =
+        IsolationInfo::RequestType::kMainFrame ==
+            request_->isolation_info().request_type() ||
+        request_->force_main_frame_for_same_site_cookies();
     CookieOptions::SameSiteCookieContext same_site_context =
         net::cookie_util::ComputeSameSiteContextForRequest(
             request_->method(), request_->url_chain(),
