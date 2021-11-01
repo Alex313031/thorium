@@ -13,7 +13,9 @@
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS).
 > - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
 > - DoH (DNS over HTTPS) patches from Bromite.
-> - Includes DuckDuckGo and Ask.com in all locales, along with normal search engines.
+> - Enable Do Not Track by default patch from Vanadium.
+> - Disable Google API Key warning (you can still use API Keys to enable sync), from Ungoogled Chromium.
+> - Includes DuckDuckGo and Ask.com in all locales, along with normal search engines, from Ubuntu.
 > - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 
 &nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version. (See below.)
@@ -34,6 +36,6 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may ha
 &nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *mavx* (there's only two <br/> &nbsp;&nbsp; lines), and replace *mavx* with *msse3*.
 
 &minus;Thanks to https://github.com/robrich999/ for some info that went into this project.\
-&minus;Also thanks to https://github.com/bromite/bromite and https://github.com/saiarcot895/chromium-ubuntu-build for patch code.
+&minus;Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code.
 
 &nbsp;&nbsp; NOTE: libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
