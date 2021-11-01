@@ -247,8 +247,8 @@ media::VAImplementation VendorStringToImplementationType(
                               base::CompareCase::SENSITIVE)) {
     return media::VAImplementation::kIntelIHD;
   } else if (base::StartsWith(va_vendor_string, "Splitted-Desktop Systems VDPAU",
-							  base::CompareCase::SENSITIVE)) {
-	return media::VAImplementation::kNVIDIAVDPAU;
+                              base::CompareCase::SENSITIVE)) {
+    return media::VAImplementation::kNVIDIAVDPAU;
   }
   return media::VAImplementation::kOther;
 }
@@ -550,10 +550,11 @@ void VADisplayState::PreSandboxInitialization() {
       base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
   if (drm_file.IsValid())
     VADisplayState::Get()->SetDrmFd(drm_file.GetPlatformFile());
+
   const char kNvidiaPath[] = "/dev/dri/nvidiactl";
   base::File nvidia_file = base::File(
-	base::FilePath::FromUTF8Unsafe(kNvidiaPath),
-	base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
+      base::FilePath::FromUTF8Unsafe(kNvidiaPath),
+      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
 }
 
 VADisplayState::VADisplayState()
@@ -689,6 +690,7 @@ bool VADisplayState::InitializeVaDriver_Locked() {
 }
 
 bool VADisplayState::InitializeOnce() {
+
   // Set VA logging level, unless already set.
   constexpr char libva_log_level_env[] = "LIBVA_MESSAGING_LEVEL";
   std::unique_ptr<base::Environment> env(base::Environment::Create());
@@ -1421,7 +1423,8 @@ scoped_refptr<VaapiWrapper> VaapiWrapper::Create(
     CodecMode mode,
     VAProfile va_profile,
     EncryptionScheme encryption_scheme,
-    const ReportErrorToUMACB& report_error_to_uma_cb) {
+    const ReportErrorToUMACB& report_error_to_uma_cb,
+    bool enforce_sequence_affinity) {
   if (!VASupportedProfiles::Get().IsProfileSupported(mode, va_profile)) {
     DVLOG(1) << "Unsupported va_profile: " << vaProfileStr(va_profile);
     return nullptr;
@@ -1438,7 +1441,8 @@ scoped_refptr<VaapiWrapper> VaapiWrapper::Create(
   }
 #endif
 
-  scoped_refptr<VaapiWrapper> vaapi_wrapper(new VaapiWrapper(mode));
+  scoped_refptr<VaapiWrapper> vaapi_wrapper(
+      new VaapiWrapper(mode, enforce_sequence_affinity));
   if (vaapi_wrapper->VaInitialize(report_error_to_uma_cb)) {
     if (vaapi_wrapper->Initialize(va_profile, encryption_scheme))
       return vaapi_wrapper;
@@ -1453,9 +1457,11 @@ scoped_refptr<VaapiWrapper> VaapiWrapper::CreateForVideoCodec(
     CodecMode mode,
     VideoCodecProfile profile,
     EncryptionScheme encryption_scheme,
-    const ReportErrorToUMACB& report_error_to_uma_cb) {
+    const ReportErrorToUMACB& report_error_to_uma_cb,
+    bool enforce_sequence_affinity) {
   const VAProfile va_profile = ProfileToVAProfile(profile, mode);
-  return Create(mode, va_profile, encryption_scheme, report_error_to_uma_cb);
+  return Create(mode, va_profile, encryption_scheme, report_error_to_uma_cb,
+                enforce_sequence_affinity);
 }
 
 // static
@@ -1655,12 +1661,9 @@ bool VaapiWrapper::GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
       preferred_fourcc = VA_FOURCC_I420;
     }
   } else if (GetImplementationType() == VAImplementation::kIntelIHD) {
-    // TODO(b/155939640): iHD v19.4 fails to allocate AYUV surfaces for the VPP
-    // on gen 9.5.
     // (b/159896972): iHD v20.1.1 cannot create Y216 and Y416 images from a
     // decoded JPEG on gen 12. It is also failing to support Y800 format.
-    if (preferred_fourcc == VA_FOURCC_AYUV ||
-        preferred_fourcc == VA_FOURCC_Y216 ||
+    if (preferred_fourcc == VA_FOURCC_Y216 ||
         preferred_fourcc == VA_FOURCC_Y416 ||
         preferred_fourcc == VA_FOURCC_Y800) {
       preferred_fourcc = VA_FOURCC_I420;
@@ -1675,12 +1678,6 @@ bool VaapiWrapper::GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
   // After workarounds, assume the conversion is supported.
   *suitable_fourcc = preferred_fourcc;
   return true;
-}
-
-// static
-bool VaapiWrapper::IsVppProfileSupported() {
-  return VASupportedProfiles::Get().IsProfileSupported(kVideoProcess,
-                                                    VAProfileNone);
 }
 
 // static
@@ -1826,7 +1823,8 @@ bool VaapiWrapper::CreateContextAndSurfaces(
     const std::vector<SurfaceUsageHint>& surface_usage_hints,
     size_t num_surfaces,
     std::vector<VASurfaceID>* va_surfaces) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DVLOG(2) << "Creating " << num_surfaces << " surfaces";
   DCHECK(va_surfaces->empty());
 
@@ -1854,7 +1852,8 @@ VaapiWrapper::CreateContextAndScopedVASurfaces(
     const std::vector<SurfaceUsageHint>& usage_hints,
     size_t num_surfaces,
     const absl::optional<gfx::Size>& visible_size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   if (va_context_id_ != VA_INVALID_ID) {
     LOG(ERROR) << "The current context should be destroyed before creating a "
                   "new one";
@@ -1878,7 +1877,8 @@ bool VaapiWrapper::CreateProtectedSession(
     EncryptionScheme encryption,
     const std::vector<uint8_t>& hw_config,
     std::vector<uint8_t>* hw_identifier_out) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   DCHECK_EQ(va_protected_config_id_, VA_INVALID_ID);
   DCHECK_EQ(va_protected_session_id_, VA_INVALID_ID);
@@ -1980,7 +1980,8 @@ bool VaapiWrapper::CreateProtectedSession(
 }
 
 bool VaapiWrapper::IsProtectedSessionDead() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return IsProtectedSessionDead(va_protected_session_id_);
 #else
@@ -1991,7 +1992,8 @@ bool VaapiWrapper::IsProtectedSessionDead() {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 bool VaapiWrapper::IsProtectedSessionDead(
     VAProtectedSessionID va_protected_session_id) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   if (va_protected_session_id == VA_INVALID_ID)
     return false;
 
@@ -2024,13 +2026,15 @@ bool VaapiWrapper::IsProtectedSessionDead(
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 VAProtectedSessionID VaapiWrapper::GetProtectedSessionID() const {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   return va_protected_session_id_;
 }
 #endif
 
 void VaapiWrapper::DestroyProtectedSession() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   if (va_protected_session_id_ == VA_INVALID_ID)
     return;
@@ -2047,13 +2051,15 @@ void VaapiWrapper::DestroyProtectedSession() {
 
 void VaapiWrapper::DestroyContextAndSurfaces(
     std::vector<VASurfaceID> va_surfaces) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DestroyContext();
   DestroySurfaces(va_surfaces);
 }
 
 bool VaapiWrapper::CreateContext(const gfx::Size& size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DVLOG(2) << "Creating context";
   base::AutoLock auto_lock(*va_lock_);
 
@@ -2106,7 +2112,8 @@ bool VaapiWrapper::CreateContext(const gfx::Size& size) {
 scoped_refptr<VASurface> VaapiWrapper::CreateVASurfaceForPixmap(
     scoped_refptr<gfx::NativePixmap> pixmap,
     bool protected_content) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   const gfx::BufferFormat buffer_format = pixmap->GetBufferFormat();
 
   // Create a VASurface for a NativePixmap by importing the underlying dmabufs.
@@ -2194,7 +2201,8 @@ scoped_refptr<VASurface> VaapiWrapper::CreateVASurfaceForUserPtr(
     const gfx::Size& size,
     uintptr_t* buffers,
     size_t buffer_size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   VASurfaceAttribExternalBuffers va_attrib_extbuf{};
   va_attrib_extbuf.num_planes = 3;
   va_attrib_extbuf.buffers = buffers;
@@ -2240,15 +2248,16 @@ scoped_refptr<VASurface> VaapiWrapper::CreateVASurfaceForUserPtr(
 std::unique_ptr<NativePixmapAndSizeInfo>
 VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBuf(
     const ScopedVASurface& scoped_va_surface) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   if (!scoped_va_surface.IsValid()) {
     LOG(ERROR) << "Cannot export an invalid surface";
     return nullptr;
   }
-  
+
   if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
-	  LOG(ERROR) << "Disabled due to potential breakage.";
-	  return nullptr;
+    LOG(ERROR) << "Disabled due to potential breakage.";
+    return nullptr;
   }
 
   VADRMPRIMESurfaceDescriptor descriptor;
@@ -2347,7 +2356,8 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBuf(
 }
 
 bool VaapiWrapper::SyncSurface(VASurfaceID va_surface_id) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_ID);
 
   base::AutoLock auto_lock(*va_lock_);
@@ -2360,7 +2370,8 @@ bool VaapiWrapper::SyncSurface(VASurfaceID va_surface_id) {
 bool VaapiWrapper::SubmitBuffer(VABufferType va_buffer_type,
                                 size_t size,
                                 const void* data) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::SubmitBuffer");
   base::AutoLock auto_lock(*va_lock_);
   return SubmitBuffer_Locked({va_buffer_type, size, data});
@@ -2368,7 +2379,8 @@ bool VaapiWrapper::SubmitBuffer(VABufferType va_buffer_type,
 
 bool VaapiWrapper::SubmitBuffers(
     const std::vector<VABufferDescriptor>& va_buffers) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::SubmitBuffers");
   base::AutoLock auto_lock(*va_lock_);
   for (const VABufferDescriptor& va_buffer : va_buffers) {
@@ -2379,14 +2391,16 @@ bool VaapiWrapper::SubmitBuffers(
 }
 
 void VaapiWrapper::DestroyPendingBuffers() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::DestroyPendingBuffers");
   base::AutoLock auto_lock(*va_lock_);
   DestroyPendingBuffers_Locked();
 }
 
 void VaapiWrapper::DestroyPendingBuffers_Locked() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::DestroyPendingBuffers_Locked");
   va_lock_->AssertAcquired();
   for (const auto& pending_va_buf : pending_va_buffers_) {
@@ -2397,7 +2411,8 @@ void VaapiWrapper::DestroyPendingBuffers_Locked() {
 }
 
 bool VaapiWrapper::ExecuteAndDestroyPendingBuffers(VASurfaceID va_surface_id) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   base::AutoLock auto_lock(*va_lock_);
   bool result = Execute_Locked(va_surface_id, pending_va_buffers_);
   DestroyPendingBuffers_Locked();
@@ -2407,7 +2422,8 @@ bool VaapiWrapper::ExecuteAndDestroyPendingBuffers(VASurfaceID va_surface_id) {
 bool VaapiWrapper::MapAndCopyAndExecute(
     VASurfaceID va_surface_id,
     const std::vector<std::pair<VABufferID, VABufferDescriptor>>& va_buffers) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_SURFACE);
 
   TRACE_EVENT0("media,gpu", "VaapiWrapper::MapAndCopyAndExecute");
@@ -2432,7 +2448,8 @@ bool VaapiWrapper::MapAndCopyAndExecute(
 bool VaapiWrapper::PutSurfaceIntoPixmap(VASurfaceID va_surface_id,
                                         x11::Pixmap x_pixmap,
                                         gfx::Size dest_size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   base::AutoLock auto_lock(*va_lock_);
 
   VAStatus va_res = vaSyncSurface(va_display_, va_surface_id);
@@ -2452,7 +2469,8 @@ std::unique_ptr<ScopedVAImage> VaapiWrapper::CreateVaImage(
     VASurfaceID va_surface_id,
     VAImageFormat* format,
     const gfx::Size& size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   std::unique_ptr<ScopedVAImage> scoped_image;
   {
     base::AutoLock auto_lock(*va_lock_);
@@ -2469,7 +2487,8 @@ std::unique_ptr<ScopedVAImage> VaapiWrapper::CreateVaImage(
 bool VaapiWrapper::UploadVideoFrameToSurface(const VideoFrame& frame,
                                              VASurfaceID va_surface_id,
                                              const gfx::Size& va_surface_size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::UploadVideoFrameToSurface");
   base::AutoLock auto_lock(*va_lock_);
   TRACE_EVENT0("media,gpu", "VaapiWrapper::UploadVideoFrameToSurfaceLocked");
@@ -2581,7 +2600,8 @@ bool VaapiWrapper::UploadVideoFrameToSurface(const VideoFrame& frame,
 
 std::unique_ptr<ScopedVABuffer> VaapiWrapper::CreateVABuffer(VABufferType type,
                                                              size_t size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::CreateVABuffer");
   base::AutoLock auto_lock(*va_lock_);
   TRACE_EVENT0("media,gpu", "VaapiWrapper::CreateVABufferLocked");
@@ -2600,7 +2620,8 @@ std::unique_ptr<ScopedVABuffer> VaapiWrapper::CreateVABuffer(VABufferType type,
 
 uint64_t VaapiWrapper::GetEncodedChunkSize(VABufferID buffer_id,
                                            VASurfaceID sync_surface_id) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::GetEncodedChunkSize");
   base::AutoLock auto_lock(*va_lock_);
   TRACE_EVENT0("media,gpu", "VaapiWrapper::GetEncodedChunkSizeLocked");
@@ -2626,7 +2647,8 @@ bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
                                         uint8_t* target_ptr,
                                         size_t target_size,
                                         size_t* coded_data_size) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DCHECK(target_ptr);
   TRACE_EVENT0("media,gpu", "VaapiWrapper::DownloadFromVABuffer");
   base::AutoLock auto_lock(*va_lock_);
@@ -2677,7 +2699,8 @@ bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
 
 bool VaapiWrapper::GetVAEncMaxNumOfRefFrames(VideoCodecProfile profile,
                                              size_t* max_ref_frames) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   const VAProfile va_profile =
       ProfileToVAProfile(profile, CodecMode::kEncodeConstantBitrate);
   VAConfigAttrib attrib;
@@ -2696,7 +2719,8 @@ bool VaapiWrapper::GetSupportedPackedHeaders(VideoCodecProfile profile,
                                              bool& packed_sps,
                                              bool& packed_pps,
                                              bool& packed_slice) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   const VAProfile va_profile =
       ProfileToVAProfile(profile, CodecMode::kEncodeConstantBitrate);
   VAConfigAttrib attrib{};
@@ -2713,7 +2737,8 @@ bool VaapiWrapper::GetSupportedPackedHeaders(VideoCodecProfile profile,
 }
 
 bool VaapiWrapper::IsRotationSupported() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   base::AutoLock auto_lock(*va_lock_);
   VAProcPipelineCaps pipeline_caps;
   memset(&pipeline_caps, 0, sizeof(pipeline_caps));
@@ -2739,7 +2764,8 @@ bool VaapiWrapper::BlitSurface(const VASurface& va_surface_src,
                                VAProtectedSessionID va_protected_session_id
 #endif
 ) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DCHECK_EQ(mode_, kVideoProcess);
   base::AutoLock auto_lock(*va_lock_);
 
@@ -2865,13 +2891,7 @@ void VaapiWrapper::PreSandboxInitialization() {
   static bool result = InitializeStubs(paths);
   if (!result) {
     static const char kErrorMsg[] = "Failed to initialize VAAPI libs";
-#if defined(OS_CHROMEOS)
-    // When Chrome runs on Linux with target_os="chromeos", do not log error
-    // message without VAAPI libraries.
-    LOG_IF(ERROR, base::SysInfo::IsRunningOnChromeOS()) << kErrorMsg;
-#else
-    DVLOG(1) << kErrorMsg;
-#endif
+    LOG(ERROR) << kErrorMsg;
   }
 
   // VASupportedProfiles::Get creates VADisplayState and in so doing
@@ -2882,15 +2902,17 @@ void VaapiWrapper::PreSandboxInitialization() {
   VASupportedProfiles::Get();
 }
 
-VaapiWrapper::VaapiWrapper(CodecMode mode)
+VaapiWrapper::VaapiWrapper(CodecMode mode, bool enforce_sequence_affinity)
     : mode_(mode),
+      enforce_sequence_affinity_(enforce_sequence_affinity),
       va_lock_(VADisplayState::Get()->va_lock()),
       va_display_(NULL),
       va_profile_(VAProfileNone),
       va_entrypoint_(kVAEntrypointInvalid) {}
 
 VaapiWrapper::~VaapiWrapper() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   // Destroy ScopedVABuffer before VaapiWrappers are destroyed to ensure
   // VADisplay is valid on ScopedVABuffer's destruction.
   va_buffer_for_vpp_.reset();
@@ -2901,7 +2923,8 @@ VaapiWrapper::~VaapiWrapper() {
 
 bool VaapiWrapper::Initialize(VAProfile va_profile,
                               EncryptionScheme encryption_scheme) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
 #if DCHECK_IS_ON()
   if (mode_ == kEncodeConstantQuantizationParameter) {
     DCHECK_NE(va_profile, VAProfileJPEGBaseline)
@@ -2951,7 +2974,8 @@ bool VaapiWrapper::Initialize(VAProfile va_profile,
 }
 
 void VaapiWrapper::Deinitialize() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   {
     base::AutoLock auto_lock(*va_lock_);
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -2981,7 +3005,8 @@ void VaapiWrapper::Deinitialize() {
 
 bool VaapiWrapper::VaInitialize(
     const ReportErrorToUMACB& report_error_to_uma_cb) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   report_error_to_uma_cb_ = report_error_to_uma_cb;
   if (!VADisplayState::Get()->Initialize())
     return false;
@@ -2995,7 +3020,8 @@ bool VaapiWrapper::VaInitialize(
 }
 
 void VaapiWrapper::DestroyContext() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   base::AutoLock auto_lock(*va_lock_);
   DVLOG(2) << "Destroying context";
 
@@ -3020,27 +3046,31 @@ bool VaapiWrapper::CreateSurfaces(
     const std::vector<SurfaceUsageHint>& usage_hints,
     size_t num_surfaces,
     std::vector<VASurfaceID>* va_surfaces) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DVLOG(2) << "Creating " << num_surfaces << " " << size.ToString()
            << " surfaces";
   DCHECK_NE(va_format, kInvalidVaRtFormat);
   DCHECK(va_surfaces->empty());
 
   va_surfaces->resize(num_surfaces);
-  
   VASurfaceAttrib attribute;
-  memset(&attribute, 0, sizeof(attribute));
-  attribute.type = VASurfaceAttribUsageHint;
-  attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
-  attribute.value.type = VAGenericValueTypeInteger;
-  attribute.value.value.i = 0;
-  for (SurfaceUsageHint usage_hint : usage_hints)
-    attribute.value.value.i |= static_cast<int32_t>(usage_hint);
-  static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
-                "attribute.value.value.i is not int32_t");
-  static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
-                             int32_t>::value,
-                "The underlying type of SurfaceUsageHint is not int32_t");
+
+  if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
+    // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
+    memset(&attribute, 0, sizeof(attribute));
+    attribute.type = VASurfaceAttribUsageHint;
+    attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
+    attribute.value.type = VAGenericValueTypeInteger;
+    attribute.value.value.i = 0;
+    for (SurfaceUsageHint usage_hint : usage_hints)
+      attribute.value.value.i |= static_cast<int32_t>(usage_hint);
+    static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
+                  "attribute.value.value.i is not int32_t");
+    static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
+                               int32_t>::value,
+                  "The underlying type of SurfaceUsageHint is not int32_t");
+  }
 
   VAStatus va_res;
   {
@@ -3069,7 +3099,8 @@ VaapiWrapper::CreateScopedVASurfaces(
     size_t num_surfaces,
     const absl::optional<gfx::Size>& visible_size,
     const absl::optional<uint32_t>& va_fourcc) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   if (kInvalidVaRtFormat == va_rt_format) {
     LOG(ERROR) << "Invalid VA RT format to CreateScopedVASurface";
     return {};
@@ -3124,7 +3155,8 @@ VaapiWrapper::CreateScopedVASurfaces(
 }
 
 void VaapiWrapper::DestroySurfaces(std::vector<VASurfaceID> va_surfaces) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DVLOG(2) << "Destroying " << va_surfaces.size() << " surfaces";
 
   // vaDestroySurfaces() makes no guarantees about VA_INVALID_SURFACE.
@@ -3139,7 +3171,8 @@ void VaapiWrapper::DestroySurfaces(std::vector<VASurfaceID> va_surfaces) {
 }
 
 void VaapiWrapper::DestroySurface(VASurfaceID va_surface_id) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   if (va_surface_id == VA_INVALID_SURFACE)
     return;
   DVLOG(2) << __func__ << " " << va_surface_id;
@@ -3150,7 +3183,8 @@ void VaapiWrapper::DestroySurface(VASurfaceID va_surface_id) {
 
 bool VaapiWrapper::Execute_Locked(VASurfaceID va_surface_id,
                                   const std::vector<VABufferID>& va_buffers) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::Execute_Locked");
   va_lock_->AssertAcquired();
 
@@ -3184,7 +3218,8 @@ bool VaapiWrapper::Execute_Locked(VASurfaceID va_surface_id,
 }
 
 bool VaapiWrapper::SubmitBuffer_Locked(const VABufferDescriptor& va_buffer) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   TRACE_EVENT0("media,gpu", "VaapiWrapper::SubmitBuffer_Locked");
   va_lock_->AssertAcquired();
 
@@ -3219,7 +3254,8 @@ bool VaapiWrapper::SubmitBuffer_Locked(const VABufferDescriptor& va_buffer) {
 
 bool VaapiWrapper::MapAndCopy_Locked(VABufferID va_buffer_id,
                                      const VABufferDescriptor& va_buffer) {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   va_lock_->AssertAcquired();
 
   DCHECK_NE(va_buffer_id, VA_INVALID_ID);
@@ -3236,7 +3272,8 @@ bool VaapiWrapper::MapAndCopy_Locked(VABufferID va_buffer_id,
 }
 
 void VaapiWrapper::MaybeSetLowQualityEncoding_Locked() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   DCHECK(IsModeEncoding(mode_));
   va_lock_->AssertAcquired();
 
@@ -3273,7 +3310,8 @@ void VaapiWrapper::MaybeSetLowQualityEncoding_Locked() {
 }
 
 bool VaapiWrapper::MaybeAttachProtectedSession_Locked() {
-  CHECK(sequence_checker_.CalledOnValidSequence());
+  CHECK(!enforce_sequence_affinity_ ||
+        sequence_checker_.CalledOnValidSequence());
   va_lock_->AssertAcquired();
   if (va_context_id_ == VA_INVALID_ID)
     return true;
