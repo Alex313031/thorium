@@ -1,6 +1,6 @@
 # Thorium
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/product_logo_256.png">
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
 ## Chromium fork for linux named after radioactive element No. 90
 - Always built with latest x64 tip-o-tree "Trunk" build of chromium \
