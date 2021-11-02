@@ -27,7 +27,10 @@ Disable Google API Key Warning Patch > https://github.com/Eloston/ungoogled-chro
 
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me.
-  
-- Any other code was written from scratch by me.
+
+Installer patches to include unstripped and RPATH binaries, with chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+  - Modified by me.
+
+- Any other code/patches was written from scratch by me.
 
 
