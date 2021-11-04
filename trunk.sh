@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /media/alex/cr/chromium/src/v8/ &&
+cd $HOME/chromium/src/v8/ &&
 
 git checkout -f origin/main &&
 
