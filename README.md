@@ -17,7 +17,7 @@
 > - Disable Google API Key warning (you can still use API Keys to enable sync), from Ungoogled Chromium.
 > - Includes DuckDuckGo and Ask.com in all locales, along with normal search engines, from Ubuntu.
 > - Logo and Branding/Naming changed to Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
-> - Includes installer patches and files to include ChromeDriver and content_shell, with a .desktop file being provided for content_shell (named thorium-content-shell.)
+> - Includes installer patches and files to include ChromeDriver and content_shell, with a .desktop file being provided for content_shell (named thorium-content-shell.desktop and shows in desktop environments as Thorium Content Shell). You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /opt/chromium.org/chromium/chromium-unstable/chromedriver
 
 &nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version. (See below.)
 
