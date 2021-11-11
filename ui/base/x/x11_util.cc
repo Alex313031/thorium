@@ -617,17 +617,7 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 
 bool GetCustomFramePrefDefault() {
   return false;
-  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
-  if (!WmSupportsHint(x11::GetAtom("_NET_WM_MOVERESIZE")))
-    return false;
 
-  ui::WindowManagerName wm = GuessWindowManager();
-  // If we don't know which WM is active, conservatively disable custom frames.
-  if (wm == WM_OTHER || wm == WM_UNNAMED)
-    return false;
-
-  // Stacking WMs should use custom frames.
-  return !IsWmTiling(wm);
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
