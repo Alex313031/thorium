@@ -96,6 +96,92 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
     <output filename="chromium_strings_zh-CN.pak" type="data_package" lang="zh-CN" />
     <output filename="chromium_strings_zh-TW.pak" type="data_package" lang="zh-TW" />
 
+    <!-- On Android, output some strings into Android's xml string format.
+         These strings are tagged with formatter_data="android_java" -->
+    <if expr="is_android">
+      <output filename="java/res/values-af/chromium_strings.xml" lang="af" type="android" context="android_java" />
+      <output filename="java/res/values-am/chromium_strings.xml" lang="am" type="android" context="android_java" />
+      <output filename="java/res/values-ar/chromium_strings.xml" lang="ar" type="android" context="android_java" />
+      <output filename="java/res/values-as/chromium_strings.xml" lang="as" type="android" context="android_java" />
+      <output filename="java/res/values-az/chromium_strings.xml" lang="az" type="android" context="android_java" />
+      <output filename="java/res/values-be/chromium_strings.xml" lang="be" type="android" context="android_java" />
+      <output filename="java/res/values-bg/chromium_strings.xml" lang="bg" type="android" context="android_java" />
+      <output filename="java/res/values-bn/chromium_strings.xml" lang="bn" type="android" context="android_java" />
+      <output filename="java/res/values-bs/chromium_strings.xml" lang="bs" type="android" context="android_java" />
+      <output filename="java/res/values-ca/chromium_strings.xml" lang="ca" type="android" context="android_java" />
+      <output filename="java/res/values-cs/chromium_strings.xml" lang="cs" type="android" context="android_java" />
+      <output filename="java/res/values-da/chromium_strings.xml" lang="da" type="android" context="android_java" />
+      <output filename="java/res/values-de/chromium_strings.xml" lang="de" type="android" context="android_java" />
+      <output filename="java/res/values-el/chromium_strings.xml" lang="el" type="android" context="android_java" />
+      <output filename="java/res/values/chromium_strings.xml" lang="en" type="android" context="android_java" />
+      <output filename="java/res/values-en-rGB/chromium_strings.xml" lang="en-GB" type="android" context="android_java" />
+      <output filename="java/res/values-es/chromium_strings.xml" lang="es" type="android" context="android_java" />
+      <output filename="java/res/values-es-rUS/chromium_strings.xml" lang="es-419" type="android" context="android_java" />
+      <output filename="java/res/values-et/chromium_strings.xml" lang="et" type="android" context="android_java" />
+      <output filename="java/res/values-eu/chromium_strings.xml" lang="eu" type="android" context="android_java" />
+      <output filename="java/res/values-fa/chromium_strings.xml" lang="fa" type="android" context="android_java" />
+      <output filename="java/res/values-fi/chromium_strings.xml" lang="fi" type="android" context="android_java" />
+      <output filename="java/res/values-tl/chromium_strings.xml" lang="fil" type="android" context="android_java" />
+      <output filename="java/res/values-fr/chromium_strings.xml" lang="fr" type="android" context="android_java" />
+      <output filename="java/res/values-fr-rCA/chromium_strings.xml" lang="fr-CA" type="android" context="android_java" />
+      <output filename="java/res/values-gl/chromium_strings.xml" lang="gl" type="android" context="android_java" />
+      <output filename="java/res/values-gu/chromium_strings.xml" lang="gu" type="android" context="android_java" />
+      <output filename="java/res/values-iw/chromium_strings.xml" lang="he" type="android" context="android_java" />
+      <output filename="java/res/values-hi/chromium_strings.xml" lang="hi" type="android" context="android_java" />
+      <output filename="java/res/values-hr/chromium_strings.xml" lang="hr" type="android" context="android_java" />
+      <output filename="java/res/values-hu/chromium_strings.xml" lang="hu" type="android" context="android_java" />
+      <output filename="java/res/values-hy/chromium_strings.xml" lang="hy" type="android" context="android_java" />
+      <output filename="java/res/values-in/chromium_strings.xml" lang="id" type="android" context="android_java" />
+      <output filename="java/res/values-is/chromium_strings.xml" lang="is" type="android" context="android_java" />
+      <output filename="java/res/values-it/chromium_strings.xml" lang="it" type="android" context="android_java" />
+      <output filename="java/res/values-ja/chromium_strings.xml" lang="ja" type="android" context="android_java" />
+      <output filename="java/res/values-ka/chromium_strings.xml" lang="ka" type="android" context="android_java" />
+      <output filename="java/res/values-kk/chromium_strings.xml" lang="kk" type="android" context="android_java" />
+      <output filename="java/res/values-km/chromium_strings.xml" lang="km" type="android" context="android_java" />
+      <output filename="java/res/values-kn/chromium_strings.xml" lang="kn" type="android" context="android_java" />
+      <output filename="java/res/values-ko/chromium_strings.xml" lang="ko" type="android" context="android_java" />
+      <output filename="java/res/values-ky/chromium_strings.xml" lang="ky" type="android" context="android_java" />
+      <output filename="java/res/values-lo/chromium_strings.xml" lang="lo" type="android" context="android_java" />
+      <output filename="java/res/values-lt/chromium_strings.xml" lang="lt" type="android" context="android_java" />
+      <output filename="java/res/values-lv/chromium_strings.xml" lang="lv" type="android" context="android_java" />
+      <output filename="java/res/values-mk/chromium_strings.xml" lang="mk" type="android" context="android_java" />
+      <output filename="java/res/values-ml/chromium_strings.xml" lang="ml" type="android" context="android_java" />
+      <output filename="java/res/values-mn/chromium_strings.xml" lang="mn" type="android" context="android_java" />
+      <output filename="java/res/values-mr/chromium_strings.xml" lang="mr" type="android" context="android_java" />
+      <output filename="java/res/values-ms/chromium_strings.xml" lang="ms" type="android" context="android_java" />
+      <output filename="java/res/values-my/chromium_strings.xml" lang="my" type="android" context="android_java" />
+      <output filename="java/res/values-ne/chromium_strings.xml" lang="ne" type="android" context="android_java" />
+      <output filename="java/res/values-nl/chromium_strings.xml" lang="nl" type="android" context="android_java" />
+      <output filename="java/res/values-nb/chromium_strings.xml" lang="no" type="android" context="android_java" />
+      <output filename="java/res/values-or/chromium_strings.xml" lang="or" type="android" context="android_java" />
+      <output filename="java/res/values-pa/chromium_strings.xml" lang="pa" type="android" context="android_java" />
+      <output filename="java/res/values-pl/chromium_strings.xml" lang="pl" type="android" context="android_java" />
+      <output filename="java/res/values-pt-rBR/chromium_strings.xml" lang="pt-BR" type="android" context="android_java" />
+      <output filename="java/res/values-pt-rPT/chromium_strings.xml" lang="pt-PT" type="android" context="android_java" />
+      <output filename="java/res/values-ro/chromium_strings.xml" lang="ro" type="android" context="android_java" />
+      <output filename="java/res/values-ru/chromium_strings.xml" lang="ru" type="android" context="android_java" />
+      <output filename="java/res/values-si/chromium_strings.xml" lang="si" type="android" context="android_java" />
+      <output filename="java/res/values-sk/chromium_strings.xml" lang="sk" type="android" context="android_java" />
+      <output filename="java/res/values-sl/chromium_strings.xml" lang="sl" type="android" context="android_java" />
+      <output filename="java/res/values-sq/chromium_strings.xml" lang="sq" type="android" context="android_java" />
+      <output filename="java/res/values-sr/chromium_strings.xml" lang="sr" type="android" context="android_java" />
+      <output filename="java/res/values-b+sr+Latn/chromium_strings.xml" lang="sr-Latn" type="android" context="android_java" />
+      <output filename="java/res/values-sv/chromium_strings.xml" lang="sv" type="android" context="android_java" />
+      <output filename="java/res/values-sw/chromium_strings.xml" lang="sw" type="android" context="android_java" />
+      <output filename="java/res/values-ta/chromium_strings.xml" lang="ta" type="android" context="android_java" />
+      <output filename="java/res/values-te/chromium_strings.xml" lang="te" type="android" context="android_java" />
+      <output filename="java/res/values-th/chromium_strings.xml" lang="th" type="android" context="android_java" />
+      <output filename="java/res/values-tr/chromium_strings.xml" lang="tr" type="android" context="android_java" />
+      <output filename="java/res/values-uk/chromium_strings.xml" lang="uk" type="android" context="android_java" />
+      <output filename="java/res/values-ur/chromium_strings.xml" lang="ur" type="android" context="android_java" />
+      <output filename="java/res/values-uz/chromium_strings.xml" lang="uz" type="android" context="android_java" />
+      <output filename="java/res/values-vi/chromium_strings.xml" lang="vi" type="android" context="android_java" />
+      <output filename="java/res/values-zh-rCN/chromium_strings.xml" lang="zh-CN" type="android" context="android_java" />
+      <output filename="java/res/values-zh-rHK/chromium_strings.xml" lang="zh-HK" type="android" context="android_java" />
+      <output filename="java/res/values-zh-rTW/chromium_strings.xml" lang="zh-TW" type="android" context="android_java" />
+      <output filename="java/res/values-zu/chromium_strings.xml" lang="zu" type="android" context="android_java" />
+    </if>
+
     <!-- Pseudolocales -->
     <output filename="chromium_strings_ar-XB.pak" type="data_package" lang="ar-XB" />
     <output filename="chromium_strings_en-XA.pak" type="data_package" lang="en-XA" />
@@ -222,6 +308,9 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <message name="IDS_SHORT_PRODUCT_OS_NAME" desc="The Chrome OS application short name">
           Thorium OS
         </message>
+        <message name="IDS_INSTALLED_PRODUCT_OS_NAME" desc="Installed OS name">
+          Thorium OS
+        </message>
       </if>
       <!-- Chrome enterprise logo won't be used in Chromium -->
       <message name="IDS_PRODUCT_LOGO_ENTERPRISE_ALT_TEXT" desc="Alt text for the Chromium Enterprise logo image."/>
@@ -288,16 +377,16 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Canary
       </message>
       <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
-        The Chromium Authors and Alex313031
+        The Chromium Authors & Alex313031
       </message>
       <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
-        Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Chromium Authors and Alex313031. All rights reserved.
+        Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Chromium Authors & Alex313031. All rights reserved.
       </message>
       <if expr="chromeos">
         <message name="IDS_ABOUT_CROS_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS.">
           Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>.
         </message>
-        <message name="IDS_ABOUT_CROS_WITH_LINUX_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS when Crostini is installed.">
+        <message name="IDS_ABOUT_CROS_WITH_LINUX_VERSION_LICENSE" desc="Additional text displayed beneath the Thorium open source URLs for Chrome OS when Crostini is installed.">
           Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>, as is <ph name="BEGIN_LINK_LINUX_OSS">&lt;a target="_blank" href="$2"&gt;</ph>Linux development environment<ph name="END_LINK_LINUX_OSS">&lt;/a&gt;</ph>.
         </message>
         <message name="IDS_ABOUT_SAFETY_INFORMATION" desc="The safety label in the About box." translateable="false">
@@ -824,7 +913,7 @@ Thorium is unable to recover your settings.
       <!-- Chrome OS OOBE Terms of Service screen-->
       <if expr="chromeos">
         <message name="IDS_TERMS_OF_SERVICE_SCREEN_SUBHEADING" desc="Subheading at the top of the Terms of Service screen. MANAGER can be a domain or an email address.">
-          <ph name="MANAGER">$1<ex>example.com</ex></ph> requires that you read and accept the following Terms of Service before using this device. These terms do not expand, modify or limit the Chromium OS Terms.
+          <ph name="MANAGER">$1<ex>example.com</ex></ph> requires that you read and accept the following Terms of Service before using this device. These terms do not expand, modify or limit the Thorium OS Terms.
         </message>
       </if>
 
@@ -1111,7 +1200,7 @@ Thorium is unable to recover your settings.
           Please wait while Thorium installs the latest system updates.
         </message>
         <message name="IDS_EULA_SCREEN_ACCESSIBLE_TITLE" desc="Title to be spoken on opening the OOBE EULA screen">
-          Chromium OS terms
+          Thorium OS terms
         </message>
       </if>
 
@@ -1201,28 +1290,37 @@ Thorium is unable to recover your settings.
         <message name="IDS_EXTENSION_ENABLE_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
          Your parent has turned off "Permissions for sites, apps and extensions" for Thorium. Enabling this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
         </message>
-
       </if>
 
       <if expr="not chromeos and not is_android">
         <!-- Profile Picker -->
-        <message name="IDS_PROFILE_PICKER_MAIN_VIEW_TITLE" desc="Profile picker main view title">
-          Welcome to Thorium profiles
-        </message>
-        <message name="IDS_PROFILE_PICKER_MAIN_VIEW_TITLE_V2" desc="Title of a screen that lets the user choose which profile to use when browsing the web. *If the EN source doesn't translate well in your language, an alternative string 'Which Chromium profile would you like to use?' may be used instead">
-          Who's using Thorium?
-        </message>
-        <message name="IDS_PROFILE_PICKER_MAIN_VIEW_SUBTITLE" desc="Profile picker main view subtitle">
-          With Thorium profiles you can separate all your Thorium stuff. Create profiles for friends and family, or split between work and fun.
-        </message>
+        <if expr="lacros">
+          <message name="IDS_PROFILE_PICKER_MAIN_VIEW_SUBTITLE_LACROS" desc="Profile picker main view subtitle">
+            With Thorium profiles you can separate all of your Thorium stuff. This makes it easier to split between work and fun.
+          </message>
+          <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_SUBTITLE_LACROS" desc="Profile picker profile type choice subtitle">
+            To access your Thorium browser stuff across all your devices, sign in, then turn on sync
+          </message>
+          <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE" desc="Profile picker, account selection screen subtitle">
+            The following accounts are available for this Thorium profile
+          </message>
+        </if>
+        <if expr="not lacros">
+          <message name="IDS_PROFILE_PICKER_MAIN_VIEW_TITLE" desc="Profile picker main view title">
+            Welcome to Thorium profiles
+          </message>
+          <message name="IDS_PROFILE_PICKER_MAIN_VIEW_TITLE_V2" desc="Title of a screen that lets the user choose which profile to use when browsing the web. *If the EN source doesn't translate well in your language, an alternative string 'Which Chromium profile would you like to use?' may be used instead">
+            Who's using Thorium?
+          </message>
+          <message name="IDS_PROFILE_PICKER_MAIN_VIEW_SUBTITLE" desc="Profile picker main view subtitle">
+            With Thorium profiles you can separate all your Thorium stuff. Create profiles for friends and family, or split between work and fun.
+          </message>
+          <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_SUBTITLE" desc="Profile picker profile type choice subtitle">
+            To access your Thorium stuff across all your devices, sign in, then turn on sync.
+          </message>
+        </if>
         <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_TITLE" desc="Profile picker profile type choice title">
           Set up your new Thorium profile
-        </message>
-        <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_SUBTITLE" desc="Profile picker profile type choice subtitle">
-          To access your Thorium stuff across all your devices, sign in, then turn on sync.
-        </message>
-        <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_SUBTITLE_V2" desc="Profile picker profile type choice subtitle">
-          To access your Thorium stuff across all your devices, sign in so that you can turn on sync.
         </message>
         <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_LOCAL_PROFILE_CREATION_TITLE" desc="Title for the local profile customiztion screen on the picker.">
           Customize your Thorium profile
@@ -1239,11 +1337,6 @@ Thorium is unable to recover your settings.
         <message name="IDS_PROFILE_PICKER_PROFILE_SWITCH_SUBTITLE" desc="Profile picker profile switch subtitle">
           A Thorium profile with this account already exists on this device
         </message>
-    <if expr="lacros">
-      <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE" desc="Profile picker, account selection screen subtitle">
-        The following accounts are not signed into any Chromium profiles. If you want to use an account in another profile, remove that profile first.
-      </message>
-    </if>
 
         <!-- Profile switch IPH -->
         <message name="IDS_PROFILE_SWITCH_PROMO" desc="Text of the In-Product-Help bubble for profile switching.">
