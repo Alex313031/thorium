@@ -312,7 +312,7 @@ void URLRequestHttpJob::Start() {
 
   // Privacy mode could still be disabled in SetCookieHeaderAndStart if we are
   // going to send previously saved cookies.
-  request_info_.privacy_mode = privacy_mode();
+  request_info_.privacy_mode = request_->privacy_mode();
 
   // Strip Referer from request_info_.extra_headers to prevent, e.g., plugins
   // from overriding headers that are controlled using other means. Otherwise a
@@ -556,6 +556,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
       if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
         advertised_encoding_names.push_back("deflate");
       }
+      if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
       // Advertise "br" encoding only if transferred data is opaque to proxy.
       if (request()->context()->enable_brotli() &&
           request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
@@ -564,6 +565,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
           advertised_encoding_names.push_back("br");
         }
       }
+      } // minimal headers
       if (!advertised_encoding_names.empty()) {
         // Tell the server what compression formats are supported.
         request_info_.extra_headers.SetHeader(
@@ -573,7 +575,7 @@ void URLRequestHttpJob::AddExtraHeaders() {
     }
   }
 
-  if (http_user_agent_settings_) {
+  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
     // Only add default Accept-Language if the request didn't have it
     // specified.
     std::string accept_language =
