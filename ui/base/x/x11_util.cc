@@ -28,6 +28,7 @@
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
+#include "base/task/single_thread_task_runner.h"
 #include "base/trace_event/trace_event.h"
 #include "base/values.h"
 #include "build/build_config.h"
@@ -615,9 +616,18 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
-
+  return false;
+  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
+  if (!WmSupportsHint(x11::GetAtom("_NET_WM_MOVERESIZE")))
     return false;
 
+  ui::WindowManagerName wm = GuessWindowManager();
+  // If we don't know which WM is active, conservatively disable custom frames.
+  if (wm == WM_OTHER || wm == WM_UNNAMED)
+    return false;
+
+  // Stacking WMs should use custom frames.
+  return !IsWmTiling(wm);
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
