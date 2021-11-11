@@ -46,7 +46,6 @@
 #include "media/gpu/vp8_decoder.h"
 #include "media/gpu/vp9_decoder.h"
 #include "media/video/picture.h"
-#include "ui/base/ui_base_features.h"
 #include "ui/gl/gl_image.h"
 
 namespace media {
@@ -1226,7 +1225,7 @@ VaapiVideoDecodeAccelerator::DecideBufferAllocationMode() {
     return BufferAllocationMode::kReduced;
   return BufferAllocationMode::kSuperReduced;
 #else
-+  // NVIDIA blobs use VDPAU
+  // NVIDIA blobs use VDPAU
   if (VaapiWrapper::GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
     LOG(INFO) << "VA-API driver on VDPAU backend";
     return BufferAllocationMode::kWrapVdpau;
