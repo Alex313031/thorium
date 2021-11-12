@@ -9,6 +9,7 @@
 &nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO and PGO compiler optimizations. It is built with SSE3 and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome. (See below.)
 
 ### EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
+> - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
 > - Experimental MPEG-DASH.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS).
 > - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
