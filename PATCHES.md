@@ -30,7 +30,8 @@ Disable Google API Key Warning Patch > https://github.com/Eloston/ungoogled-chro
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me.
 
-Installer patches to include unstripped and RPATH binaries, with chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading.
   - Modified by me.
 
 - Any other code/patches was written from scratch by me.
