@@ -8,6 +8,7 @@ cp -r -v components/. $HOME/chromium/src/components &&
 cp -r -v content/. $HOME/chromium/src/content/ &&
 cp -r -v media/. $HOME/chromium/src/media/ &&
 cp -r -v net/. $HOME/chromium/src/net/ &&
+cp -r -v sandbox/. $HOME/chromium/src/sandbox/ &&
 cp -r -v ui/. $HOME/chromium/src/ui/ &&
 cp -r -v v8/. $HOME/chromium/src/v8/ &&
 cp -v chrome-devtools/chrome-devtools.svg $HOME/chromium/src/out/thorium/ &&
