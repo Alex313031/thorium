@@ -1,5 +1,9 @@
 ## List of patches included in Thorium
 
+Compiler modifications include AVX, cflags, lto flags, and import_instr_limit flags set to mavx, 3, and /02, respectively.
+
+.desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both >  '--enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading' and with '--enable-clear-hevc-for-testing' also being appended to the thorium-shell.desktop file.
+
 Ink > https://chromium.googlesource.com/chromium/src/third_party/+/c4f7a938fcdc796ad9fead3ab01e0508c129b831/ink
   - Implemented with the flag "enable_ink = true"
 
