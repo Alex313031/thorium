@@ -12,6 +12,7 @@
 > - Experimental MPEG-DASH.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS).
 > - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
+> - Audio Sandbox patch.
 > - DoH (DNS over HTTPS) patches from Bromite.
 > - Enable Do Not Track by default patch from Vanadium.
 > - Disable Google API Key warning (you can still use API Keys to enable sync), from Ungoogled Chromium.
