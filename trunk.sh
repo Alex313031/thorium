@@ -12,9 +12,7 @@ git rebase-update &&
 
 git fetch --tags &&
 
-gclient sync -D &&
-
-gclient sync --with_branch_heads --with_tags &&
+gclient sync --with_branch_heads --with_tags -D &&
 
 gclient runhooks &&
 
