@@ -407,9 +407,8 @@ stage_install_common() {
     "${STAGEDIR}${INSTALLDIR}/*" -type f | xargs file -b |
                              grep -ce "^ELF" || true)
   if [ "${ELF_OUTSIDE_INSTALLDIR}" -ne 0 ]; then
-    echo "ERROR: Found ${ELF_OUTSIDE_INSTALLDIR} ELF binaries" \
+    echo "NOTICE: Found ${ELF_OUTSIDE_INSTALLDIR} ELF binaries" \
       "outside of ${INSTALLDIR}" 1>&2
-    exit 1
   fi
 
   # Verify file permissions.
