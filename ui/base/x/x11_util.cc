@@ -616,8 +616,8 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
-  return false;
-
+  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
+    return false;
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
@@ -1126,20 +1126,6 @@ x11::ColorMap XVisualManager::XVisualData::GetColormap() {
     connection->Flush();
   }
   return colormap_;
-}
-
-ScopedUnsetDisplay::ScopedUnsetDisplay() {
-  const char* display = getenv("DISPLAY");
-  if (display) {
-    display_.emplace(display);
-    unsetenv("DISPLAY");
-  }
-}
-
-ScopedUnsetDisplay::~ScopedUnsetDisplay() {
-  if (display_) {
-    setenv("DISPLAY", display_->c_str(), 1);
-  }
 }
 
 }  // namespace ui
