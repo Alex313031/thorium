@@ -616,8 +616,8 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
-  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
-    return false;
+  // Never default to using the custom title bar. Chromium should integrate, not be a special little snowflake.
+  return false;
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
