@@ -29,7 +29,6 @@
 #include "base/environment.h"
 #include "base/files/scoped_file.h"
 #include "base/logging.h"
-#include "base/macros.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/no_destructor.h"
 #include "base/numerics/checked_math.h"
@@ -245,9 +244,6 @@ media::VAImplementation VendorStringToImplementationType(
   } else if (base::StartsWith(va_vendor_string, "Intel iHD driver",
                               base::CompareCase::SENSITIVE)) {
     return media::VAImplementation::kIntelIHD;
-  } else if (base::StartsWith(va_vendor_string, "Splitted-Desktop Systems VDPAU",
-                              base::CompareCase::SENSITIVE)) {
-    return media::VAImplementation::kNVIDIAVDPAU;
   }
   return media::VAImplementation::kOther;
 }
@@ -2269,11 +2265,6 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
         sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_SURFACE);
   DCHECK(!va_surface_size.IsEmpty());
-  if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
-    LOG(ERROR) << "Disabled due to potential breakage.";
-    return nullptr;
-  }
-
   VADRMPRIMESurfaceDescriptor descriptor;
   {
     base::AutoLock auto_lock(*va_lock_);
@@ -2929,7 +2920,7 @@ void VaapiWrapper::PreSandboxInitialization() {
   static bool result = InitializeStubs(paths);
   if (!result) {
     static const char kErrorMsg[] = "Failed to initialize VAAPI libs";
-    LOG(ERROR) << kErrorMsg;
+LOG(ERROR) << kErrorMsg;
   }
 
   // VASupportedProfiles::Get creates VADisplayState and in so doing
@@ -3093,37 +3084,26 @@ bool VaapiWrapper::CreateSurfaces(
 
   va_surfaces->resize(num_surfaces);
   VASurfaceAttrib attribute;
-
-  if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
-    // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
-    memset(&attribute, 0, sizeof(attribute));
-    attribute.type = VASurfaceAttribUsageHint;
-    attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
-    attribute.value.type = VAGenericValueTypeInteger;
-    attribute.value.value.i = 0;
-    for (SurfaceUsageHint usage_hint : usage_hints)
-      attribute.value.value.i |= static_cast<int32_t>(usage_hint);
-    static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
-                  "attribute.value.value.i is not int32_t");
-    static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
-                               int32_t>::value,
-                  "The underlying type of SurfaceUsageHint is not int32_t");
-  }
+  memset(&attribute, 0, sizeof(attribute));
+  attribute.type = VASurfaceAttribUsageHint;
+  attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
+  attribute.value.type = VAGenericValueTypeInteger;
+  attribute.value.value.i = 0;
+  for (SurfaceUsageHint usage_hint : usage_hints)
+    attribute.value.value.i |= static_cast<int32_t>(usage_hint);
+  static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
+                "attribute.value.value.i is not int32_t");
+  static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
+                             int32_t>::value,
+                "The underlying type of SurfaceUsageHint is not int32_t");
 
   VAStatus va_res;
   {
     base::AutoLock auto_lock(*va_lock_);
-    if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
-      va_res = vaCreateSurfaces(
-          va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
-          base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
-          num_surfaces, NULL, 0);
-    } else {
-      va_res = vaCreateSurfaces(
-          va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
-          base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
-          num_surfaces, &attribute, 1u);
-    }
+    va_res = vaCreateSurfaces(
+        va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
+        base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
+        num_surfaces, &attribute, 1u);
   }
   VA_LOG_ON_ERROR(va_res, VaapiFunctions::kVACreateSurfaces_Allocating);
   return va_res == VA_STATUS_SUCCESS;
