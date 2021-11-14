@@ -1954,14 +1954,14 @@ config("optimize") {
       # optimization level will be decided based on the profiling data.
       cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
     }
-  } else if (optimize_for_size && !is_nacl) {
+  } else if (optimize_for_size) {
     # Favor size over speed.
     # TODO(crbug.com/718650): Fix -Os in PNaCl compiler and remove the is_nacl
     # guard above.
     if (is_clang) {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     }
   } else if (is_chromeos_ash) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
@@ -1970,9 +1970,9 @@ config("optimize") {
     # - Make `optimize_for_size` apply to all platforms where we're optimizing
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
-    cflags = [ "-O2" ] + common_optimize_on_cflags
+    cflags = [ "-O3" ] + common_optimize_on_cflags
   } else {
-    cflags = [ "-O2" ] + common_optimize_on_cflags
+    cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
     rustflags = [ "-Copt-level=s" ]
@@ -2000,9 +2000,9 @@ config("no_optimize") {
     # On Android we kind of optimize some things that don't affect debugging
     # much even when optimization is disabled to get the binary size down.
     if (is_clang) {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     }
 
     if (!is_component_build) {
