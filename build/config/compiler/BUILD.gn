@@ -858,6 +858,7 @@ config("compiler_cpu_abi") {
         "-m64",
         "-march=$x64_arch",
         "-mavx",
+        "-ffp-contract=fast",
       ]
       ldflags += [ "-m64" ]
     } else if (current_cpu == "x86") {
@@ -867,6 +868,7 @@ config("compiler_cpu_abi") {
         cflags += [
           "-mfpmath=sse",
           "-mavx",
+          "-ffp-contract=fast",
         ]
       }
     } else if (current_cpu == "arm") {
