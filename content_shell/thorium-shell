@@ -1,5 +1,5 @@
 #!/bin/sh -e
 
-/opt/chromium.org/chromium-unstable/content_shell $@
+/opt/chromium.org/thorium-unstable/content_shell $@
 
 exit 0
