@@ -1,4 +1,4 @@
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version%3A) &nbsp;![GitHub](https://img.shields.io/github/license/alex313031/thorium?label=License%3A)
 # Thorium
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
@@ -7,7 +7,7 @@
 - Always built with latest x64 tip-o-tree "Trunk" build of chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
-&nbsp;&ndash; Special and Experimental builds (read the readme) are located at > https://github.com/Alex313031/Thorium-Special
+&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), are located at > https://github.com/Alex313031/Thorium-Special
 
 &nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, and PGO compiler optimizations. It is built with SSE4 and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome. (See below.)
 
