@@ -15,7 +15,7 @@ SNAPNAME="thorium"
 PROGNAME=chrome
 
 # Base directory for package installation.
-INSTALLDIR=/opt/chromium.org/chromium
+INSTALLDIR=/opt/chromium.org/thorium
 
 # Display string for desktop menu/icon.
 MENUNAME="Thorium Web Browser"
