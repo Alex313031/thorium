@@ -1,4 +1,4 @@
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version%3A) &nbsp;![GitHub](https://img.shields.io/github/license/alex313031/thorium?color=green&label=License%3A) &nbsp;![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alex313031/thorium?color=blueviolet&label=Commit%20Activity%3A)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version%3A) &nbsp;![GitHub](https://img.shields.io/github/license/alex313031/thorium?color=green&label=License%3A) &nbsp;![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alex313031/thorium?color=blueviolet&label=Commit%20Activity%3A) &nbsp;![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/ChromiumBrowser?style=social)
 # Thorium
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
@@ -42,6 +42,8 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may ha
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `autoninja -C out/thorium/ "chrome/installer/linux:unstable_deb"` A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/chromium/*. \
 &nbsp;&nbsp; NOTE: To get back to "Trunk", i.e. to revert all changes in order to build vanilla chromium, just run `./trunk.sh` again. \
 &nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *mavx* (there's only two <br/> &nbsp;&nbsp; lines), and replace *mavx* with *msse3*, then remove the lines right under both of those that contain *"-ffp-contract=fast",*
+
+https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made.
 
 &minus; Thanks to https://github.com/robrich999/ for some info that went into this project.\
 &minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code.
