@@ -4,7 +4,7 @@
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
 ## Chromium fork for linux named after radioactive element No. 90
-- Always built with latest x64 tip-o-tree "Trunk" build of chromium.
+- Always built with latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
 &nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), are located at > https://github.com/Alex313031/Thorium-Special
