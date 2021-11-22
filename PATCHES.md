@@ -1,6 +1,6 @@
 ## List of patches included in Thorium
 
-Compiler modifications include AVX, cflags, lto flags, and import_instr_limit flags set to mavx, 3, and /02, respectively.
+Compiler modifications include AVX, FMA, and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 30, respectively.
 
 .desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both >  '--enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading' and with '--enable-clear-hevc-for-testing' also being appended to the thorium-shell.desktop file.
 
@@ -37,7 +37,7 @@ Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob
   - Modified by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
-The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading.
+The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
   - Modified by me.
 
 - Any other code/patches was written from scratch by me.
