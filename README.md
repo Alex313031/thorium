@@ -4,7 +4,7 @@
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
 ## Chromium fork for linux named after radioactive element No. 90
-- Always built with latest x64 tip-o-tree "Trunk" build of Chromium.
+- Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
 &nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), are located at > https://github.com/Alex313031/Thorium-Special
@@ -35,17 +35,17 @@
 # Building
 _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for chromium. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
-- Then (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
+- Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
 - Run `export EDITOR=nano` & `export VISUAL=nano` *# You can substitute a cmdline editor like vim here, but many GUI editors cause it to try and parse the args.gn file before it is even saved.*
 - Run `gn args out/thorium` and the contents of 'args.gn' in this repo should be copy/pasted into the editor. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'*
 - 'args.list' contains an alphabetical list with descriptions of all possible build arguments.
 - To build, run `autoninja -j8 -C out/thorium chrome chrome_sandbox content_shell -d stats` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine), and the -d stats at the end just shows better verbose stats during compiling. You could also append chromedriver (the releases have chromedriver) after content_shell to build chromedriver, the selenium compatible browser fuzzing library.*
-- To install, copy/paste the contents of your *out/thorium* dir to a good location i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/content_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
+- To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/content_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `autoninja -C out/thorium/ "chrome/installer/linux:unstable_deb"` A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/thorium-unstable/*. \
 &nbsp;&nbsp; NOTE: To get back to "Trunk", i.e. to revert all changes in order to build vanilla chromium, just run `./trunk.sh` again. \
 &nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *mavx* (there's only two <br/> &nbsp;&nbsp; lines), and replace *mavx* with *msse3*, then remove the lines right under both of those that contain *"-ffp-contract=fast",*
 
-https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made.
+https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Chromium/ChromiumOS. I also build ChromiumOS with codecs, linux-firmware/modules, and added packages at > https://github.com/Alex313031/ChromiumOS/
 
 &minus; Thanks to https://github.com/robrich999/ for some info that went into this project.\
 &minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code.
