@@ -19,6 +19,7 @@
 > - Audio Sandbox patch.
 > - DoH (DNS over HTTPS) patches from Bromite.
 > - Enable Do Not Track by default patch from Vanadium.
+> - Disable FLOC patch.
 > - Disable Google API Key warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Adds DuckDuckGo, Ecosia, and Ask.com in US and other locales, along with the normal search engines.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
