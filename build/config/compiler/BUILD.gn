@@ -2402,7 +2402,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG" ]
+    ldflags = [ "/DEBUG:NONE" ]
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]
