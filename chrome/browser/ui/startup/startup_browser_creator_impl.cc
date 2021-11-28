@@ -50,6 +50,7 @@
 #include "chrome/browser/ui/startup/launch_mode_recorder.h"
 #include "chrome/browser/ui/startup/obsolete_system_infobar_delegate.h"
 #include "chrome/browser/ui/startup/startup_browser_creator.h"
+#include "chrome/browser/ui/startup/startup_tab.h"
 #include "chrome/browser/ui/startup/startup_tab_provider.h"
 #include "chrome/browser/ui/startup/startup_types.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
@@ -122,15 +123,7 @@ bool ShouldRestoreApps(bool is_post_restart, Profile* profile) {
 
 void UrlsToTabs(const std::vector<GURL>& urls, StartupTabs* tabs) {
   for (const GURL& url : urls)
-    tabs->push_back(StartupTab(url, false));
-}
-
-std::vector<GURL> TabsToUrls(const StartupTabs& tabs) {
-  std::vector<GURL> urls;
-  urls.reserve(tabs.size());
-  std::transform(tabs.begin(), tabs.end(), std::back_inserter(urls),
-                 [](const StartupTab& tab) { return tab.url; });
-  return urls;
+    tabs->emplace_back(url);
 }
 
 // Appends the contents of |from| to the end of |to|.
@@ -185,9 +178,8 @@ StartupBrowserCreatorImpl::StartupBrowserCreatorImpl(
 // static
 void StartupBrowserCreatorImpl::MaybeToggleFullscreen(Browser* browser) {
   // In kiosk mode, we want to always be fullscreen.
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kKioskMode) ||
-      base::CommandLine::ForCurrentProcess()->HasSwitch(
-          switches::kStartFullscreen)) {
+  if (IsKioskModeEnabled() || base::CommandLine::ForCurrentProcess()->HasSwitch(
+                                  switches::kStartFullscreen)) {
     chrome::ToggleFullscreenMode(browser);
   }
 }
@@ -305,7 +297,7 @@ Browser* StartupBrowserCreatorImpl::OpenTabsInBrowser(
     int add_types = first_tab ? TabStripModel::ADD_ACTIVE :
                                 TabStripModel::ADD_NONE;
     add_types |= TabStripModel::ADD_FORCE_INDEX;
-    if (tabs[i].is_pinned)
+    if (tabs[i].type == StartupTab::Type::kPinned)
       add_types |= TabStripModel::ADD_PINNED;
 
     NavigateParams params(browser, tabs[i].url,
@@ -491,7 +483,7 @@ StartupBrowserCreatorImpl::DetermineStartupTabs(
         return {std::move(tabs), launch_result};
     }
 
-    return {StartupTabs({StartupTab(GURL(chrome::kChromeUINewTabURL), false)}),
+    return {StartupTabs({StartupTab(GURL(chrome::kChromeUINewTabURL))}),
             launch_result};
   }
 
@@ -590,7 +582,7 @@ bool StartupBrowserCreatorImpl::MaybeAsyncRestore(
   SessionService* service =
       SessionServiceFactory::GetForProfileForSessionRestore(profile_);
 
-  return service && service->RestoreIfNecessary(TabsToUrls(tabs), restore_apps);
+  return service && service->RestoreIfNecessary(tabs, restore_apps);
 }
 
 Browser* StartupBrowserCreatorImpl::RestoreOrCreateBrowser(
@@ -609,7 +601,7 @@ Browser* StartupBrowserCreatorImpl::RestoreOrCreateBrowser(
       restore_options |= SessionRestore::RESTORE_APPS;
 
     browser = SessionRestore::RestoreSession(profile_, nullptr, restore_options,
-                                             TabsToUrls(tabs));
+                                             tabs);
     if (browser)
       return browser;
   } else if (behavior == BrowserOpenBehavior::USE_EXISTING) {
@@ -626,7 +618,7 @@ Browser* StartupBrowserCreatorImpl::RestoreOrCreateBrowser(
   browser = OpenTabsInBrowser(
       browser, process_startup,
       (tabs.empty()
-           ? StartupTabs({StartupTab(GURL(chrome::kChromeUINewTabURL), false)})
+           ? StartupTabs({StartupTab(GURL(chrome::kChromeUINewTabURL))})
            : tabs));
 
   // Now that a restore is no longer possible, it is safe to clear DOM storage,
@@ -648,14 +640,13 @@ void StartupBrowserCreatorImpl::AddInfoBarsIfNecessary(
 
   // Show the Automation info bar unless it has been disabled by policy.
   bool show_bad_flags_security_warnings = ShouldShowBadFlagsSecurityWarnings();
-  if (command_line_.HasSwitch(switches::kEnableAutomation) &&
-      show_bad_flags_security_warnings) {
+  if (IsAutomationEnabled() && show_bad_flags_security_warnings) {
     AutomationInfoBarDelegate::Create();
   }
 
   // Do not show any other info bars in Kiosk mode, because it's unlikely that
   // the viewer can act upon or dismiss them.
-  if (command_line_.HasSwitch(switches::kKioskMode))
+  if (IsKioskModeEnabled())
     return;
 
   if (HasPendingUncleanExit(browser->profile()))
@@ -670,8 +661,7 @@ void StartupBrowserCreatorImpl::AddInfoBarsIfNecessary(
   // automated tests, so that they don't interfere with tests that assume no
   // info bars.
   if (process_startup == chrome::startup::IsProcessStartup::kYes &&
-      !command_line_.HasSwitch(switches::kTestType) &&
-      !command_line_.HasSwitch(switches::kEnableAutomation)) {
+      !command_line_.HasSwitch(switches::kTestType) && !IsAutomationEnabled()) {
     content::WebContents* web_contents =
         browser->tab_strip_model()->GetActiveWebContents();
     DCHECK(web_contents);
@@ -768,4 +758,16 @@ bool StartupBrowserCreatorImpl::ShouldLaunch(
 #endif
 
   return true;
+}
+
+// static
+bool StartupBrowserCreatorImpl::IsAutomationEnabled() {
+  return base::CommandLine::ForCurrentProcess()->HasSwitch(
+      switches::kEnableAutomation);
+}
+
+// static
+bool StartupBrowserCreatorImpl::IsKioskModeEnabled() {
+  return base::CommandLine::ForCurrentProcess()->HasSwitch(
+      switches::kKioskMode);
 }
