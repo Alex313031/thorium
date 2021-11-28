@@ -1848,6 +1848,16 @@ if (is_win) {
     "/Ob2",  # Both explicit and auto inlining.
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
     "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
+    "-mllvm", "-extra-vectorizer-passes",
+	"-mllvm", "-enable-cond-stores-vec",
+	"-mllvm", "-slp-vectorize-hor-store",
+	"-mllvm", "-enable-loopinterchange",
+	"-mllvm", "-enable-loop-distribute",
+	"-mllvm", "-enable-unroll-and-jam",
+	"-mllvm", "-enable-loop-flatten",
+	"-mllvm", "-interleave-small-loop-scalar-reduction",
+	"-mllvm", "-unroll-runtime-multi-exit",
+	"-mllvm", "-aggressive-ext-opt",
   ]
   if (!is_asan) {
     common_optimize_on_cflags += [
@@ -1857,23 +1867,85 @@ if (is_win) {
       # This optimization can't be used when ASan is enabled because
       # it is not compatible with the ASan ODR checker.
       "/Gw",
+      "-mllvm", "-extra-vectorizer-passes",
+	  "-mllvm", "-enable-cond-stores-vec",
+	  "-mllvm", "-slp-vectorize-hor-store",
+	  "-mllvm", "-enable-loopinterchange",
+	  "-mllvm", "-enable-loop-distribute",
+	  "-mllvm", "-enable-unroll-and-jam",
+	  "-mllvm", "-enable-loop-flatten",
+	  "-mllvm", "-interleave-small-loop-scalar-reduction",
+	  "-mllvm", "-unroll-runtime-multi-exit",
+	  "-mllvm", "-aggressive-ext-opt",
     ]
   }
-  common_optimize_on_ldflags = []
+  common_optimize_on_ldflags = [ 
+	"-mllvm:-extra-vectorizer-passes",
+	"-mllvm:-enable-cond-stores-vec",
+	"-mllvm:-slp-vectorize-hor-store",
+	"-mllvm:-enable-loopinterchange",
+	"-mllvm:-enable-loop-distribute",
+	"-mllvm:-enable-unroll-and-jam",
+	"-mllvm:-enable-loop-flatten",
+	"-mllvm:-interleave-small-loop-scalar-reduction",
+	"-mllvm:-unroll-runtime-multi-exit",
+	"-mllvm:-aggressive-ext-opt", ]
 
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
-    common_optimize_on_ldflags += [ "/OPT:ICF" ]  # Redundant COMDAT folding.
+    common_optimize_on_ldflags += [ 
+    "/OPT:ICF",
+    "-mllvm:-extra-vectorizer-passes",
+	"-mllvm:-enable-cond-stores-vec",
+	"-mllvm:-slp-vectorize-hor-store",
+	"-mllvm:-enable-loopinterchange",
+	"-mllvm:-enable-loop-distribute",
+	"-mllvm:-enable-unroll-and-jam",
+	"-mllvm:-enable-loop-flatten",
+	"-mllvm:-interleave-small-loop-scalar-reduction",
+	"-mllvm:-unroll-runtime-multi-exit",
+	"-mllvm:-aggressive-ext-opt", ]  # Redundant COMDAT folding.
   }
 
   if (is_official_build) {
-    common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
+    common_optimize_on_ldflags += [ 
+    "/OPT:REF",
+    "-mllvm:-extra-vectorizer-passes",
+	"-mllvm:-enable-cond-stores-vec",
+	"-mllvm:-slp-vectorize-hor-store",
+	"-mllvm:-enable-loopinterchange",
+	"-mllvm:-enable-loop-distribute",
+	"-mllvm:-enable-unroll-and-jam",
+	"-mllvm:-enable-loop-flatten",
+	"-mllvm:-interleave-small-loop-scalar-reduction",
+	"-mllvm:-unroll-runtime-multi-exit",
+	"-mllvm:-aggressive-ext-opt", ]  # Remove unreferenced data.
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
   }
 } else {
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
+  common_optimize_on_cflags = [ 
+  "-mllvm", "-extra-vectorizer-passes",
+  "-mllvm", "-enable-cond-stores-vec",
+  "-mllvm", "-slp-vectorize-hor-store",
+  "-mllvm", "-enable-loopinterchange",
+  "-mllvm", "-enable-loop-distribute",
+  "-mllvm", "-enable-unroll-and-jam",
+  "-mllvm", "-enable-loop-flatten",
+  "-mllvm", "-interleave-small-loop-scalar-reduction",
+  "-mllvm", "-unroll-runtime-multi-exit",
+  "-mllvm", "-aggressive-ext-opt", ]
+  common_optimize_on_ldflags = [ 
+  "-mllvm:-extra-vectorizer-passes",
+  "-mllvm:-enable-cond-stores-vec",
+  "-mllvm:-slp-vectorize-hor-store",
+  "-mllvm:-enable-loopinterchange",
+  "-mllvm:-enable-loop-distribute",
+  "-mllvm:-enable-unroll-and-jam",
+  "-mllvm:-enable-loop-flatten",
+  "-mllvm:-interleave-small-loop-scalar-reduction",
+  "-mllvm:-unroll-runtime-multi-exit",
+  "-mllvm:-aggressive-ext-opt", ]
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -1882,17 +1954,48 @@ if (is_win) {
       common_optimize_on_ldflags += [
         # Warn in case of text relocations.
         "-Wl,--warn-shared-textrel",
+		"-mllvm:-extra-vectorizer-passes",
+		"-mllvm:-enable-cond-stores-vec",
+		"-mllvm:-slp-vectorize-hor-store",
+		"-mllvm:-enable-loopinterchange",
+		"-mllvm:-enable-loop-distribute",
+		"-mllvm:-enable-unroll-and-jam",
+		"-mllvm:-enable-loop-flatten",
+		"-mllvm:-interleave-small-loop-scalar-reduction",
+		"-mllvm:-unroll-runtime-multi-exit",
+		"-mllvm:-aggressive-ext-opt",
       ]
     }
   }
 
   if (is_apple) {
-    common_optimize_on_ldflags += [ "-Wl,-dead_strip" ]
+    common_optimize_on_ldflags += [ 
+    "-Wl,-dead_strip",
+    "-mllvm:-extra-vectorizer-passes",
+	"-mllvm:-enable-cond-stores-vec",
+	"-mllvm:-slp-vectorize-hor-store",
+	"-mllvm:-enable-loopinterchange",
+	"-mllvm:-enable-loop-distribute",
+	"-mllvm:-enable-unroll-and-jam",
+	"-mllvm:-enable-loop-flatten",
+	"-mllvm:-interleave-small-loop-scalar-reduction",
+	"-mllvm:-unroll-runtime-multi-exit",
+	"-mllvm:-aggressive-ext-opt", ]
 
     if (is_official_build) {
       common_optimize_on_ldflags += [
         "-Wl,-no_data_in_code_info",
         "-Wl,-no_function_starts",
+		"-mllvm:-extra-vectorizer-passes",
+		"-mllvm:-enable-cond-stores-vec",
+		"-mllvm:-slp-vectorize-hor-store",
+		"-mllvm:-enable-loopinterchange",
+		"-mllvm:-enable-loop-distribute",
+		"-mllvm:-enable-unroll-and-jam",
+		"-mllvm:-enable-loop-flatten",
+		"-mllvm:-interleave-small-loop-scalar-reduction",
+		"-mllvm:-unroll-runtime-multi-exit",
+		"-mllvm:-aggressive-ext-opt",
       ]
     }
   } else if (current_os != "aix" && current_os != "zos") {
@@ -1904,19 +2007,49 @@ if (is_win) {
       # can be removed at link time with --gc-sections.
       "-fdata-sections",
       "-ffunction-sections",
+      "-mllvm", "-extra-vectorizer-passes",
+	  "-mllvm", "-enable-cond-stores-vec",
+	  "-mllvm", "-slp-vectorize-hor-store",
+	  "-mllvm", "-enable-loopinterchange",
+	  "-mllvm", "-enable-loop-distribute",
+	  "-mllvm", "-enable-unroll-and-jam",
+	  "-mllvm", "-enable-loop-flatten",
+	  "-mllvm", "-interleave-small-loop-scalar-reduction",
+	  "-mllvm", "-unroll-runtime-multi-exit",
+	  "-mllvm", "-aggressive-ext-opt",
     ]
     if (!is_nacl && is_clang) {
       # We don't care about unique section names, this makes object files a bit
       # smaller.
-      common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+      common_optimize_on_cflags += [ "-fno-unique-section-names",
+      "-mllvm", "-extra-vectorizer-passes",
+	  "-mllvm", "-enable-cond-stores-vec",
+	  "-mllvm", "-slp-vectorize-hor-store",
+	  "-mllvm", "-enable-loopinterchange",
+	  "-mllvm", "-enable-loop-distribute",
+	  "-mllvm", "-enable-unroll-and-jam",
+	  "-mllvm", "-enable-loop-flatten",
+	  "-mllvm", "-interleave-small-loop-scalar-reduction",
+	  "-mllvm", "-unroll-runtime-multi-exit",
+	  "-mllvm", "-aggressive-ext-opt", ]
     }
 
     common_optimize_on_ldflags += [
       # Specifically tell the linker to perform optimizations.
       # See http://lwn.net/Articles/192624/ .
       # -O2 enables string tail merge optimization in gold and lld.
-      "-Wl,-O2",
+      "-Wl,-O3",
       "-Wl,--gc-sections",
+	  "-mllvm:-extra-vectorizer-passes",
+	  "-mllvm:-enable-cond-stores-vec",
+	  "-mllvm:-slp-vectorize-hor-store",
+	  "-mllvm:-enable-loopinterchange",
+	  "-mllvm:-enable-loop-distribute",
+	  "-mllvm:-enable-unroll-and-jam",
+	  "-mllvm:-enable-loop-flatten",
+	  "-mllvm:-interleave-small-loop-scalar-reduction",
+	  "-mllvm:-unroll-runtime-multi-exit",
+	  "-mllvm:-aggressive-ext-opt",
     ]
   }
 }
