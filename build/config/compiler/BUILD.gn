@@ -635,7 +635,7 @@ config("compiler") {
 
     # TODO(gbiv): We ideally shouldn't need to specify this; ThinLTO
     # should be able to better manage binary size increases on its own.
-    import_instr_limit = 30
+    import_instr_limit = 100
 
     if (is_win) {
       ldflags += [
