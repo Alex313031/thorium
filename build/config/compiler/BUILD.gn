@@ -579,20 +579,7 @@ config("compiler") {
     }
 
     cflags_c += [ "-std=${standard_prefix}11" ]
-
-    # TODO(https://crbug.com/1273966): Use C++17 with is_cfi once
-    # https://chromium-review.googlesource.com/c/v8/v8/+/3304143/ is rolled in.
-    if ((is_nacl && !is_nacl_saigo) || is_cfi) {
-      # This is for the pnacl_newlib toolchain. It's only used to build
-      # a few independent ppapi test files that don't pull in any other
-      # dependencies.
-      cflags_cc += [
-        "-std=${standard_prefix}++14",
-        "-fno-trigraphs",
-      ]
-    } else {
-      cflags_cc += [ "-std=${standard_prefix}++17" ]
-    }
+    cflags_cc += [ "-std=${standard_prefix}++14" ]
   } else if (is_win) {
     cflags_cc += [ "/std:c++17" ]
   } else if (!is_nacl) {
@@ -601,21 +588,23 @@ config("compiler") {
     # are still a few buildbots using it, so until those are turned off
     # we need the !is_nacl clause and the (is_nacl && is_clang) clause, above.
     cflags_c += [ "-std=c11" ]
-
-    if (is_apple) {
-      # TODO(thakis): Use C++17 on macOS and iOS once it works.
-      cflags_cc += [
-        "-std=c++14",
-        "-fno-trigraphs",
-      ]
-    } else {
-      cflags_cc += [ "-std=c++17" ]
-    }
+    cflags_cc += [ "-std=c++14" ]
   }
 
+  # C++17 removes trigraph support, so preemptively disable trigraphs. This is
+  # especially useful given the collision with ecmascript's logical assignment
+  # operators: https://github.com/tc39/proposal-logical-assignment
   if (is_clang && current_os != "zos") {
-    # C++17 removes trigraph support, but clang still warns that it ignores
-    # them when seeing them.  Don't.
+    # clang-cl disables trigraphs by default
+    if (!is_win) {
+      # The gnu variants of C++11 and C++14 already disable trigraph support,
+      # but when building with clang, we use -std=c++11 / -std=c++14, which
+      # enables trigraph support: override that here.
+      cflags_cc += [ "-fno-trigraphs" ]
+    }
+
+    # Don't warn that trigraphs are ignored, since trigraphs are disabled
+    # anyway.
     cflags_cc += [ "-Wno-trigraphs" ]
   }
 
@@ -688,9 +677,9 @@ config("compiler") {
         # bloat of ThinLTO to <10%, but that's potentially no longer true.
         # FIXME(inglorion): maybe tune these?
         if (target_cpu == "arm" || target_cpu == "arm64") {
-          import_instr_limit = 100
+          import_instr_limit = 20
         } else {
-          import_instr_limit = 100
+          import_instr_limit = 30
         }
       }
 
@@ -1885,8 +1874,14 @@ if (is_win) {
   }
 
   if (is_official_build) {
-    common_optimize_on_ldflags += [ 
-    "/OPT:REF",
+    common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
+    # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
+  }
+} else {
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
+  
+  common_optimize_on_ldflags += [
     "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
@@ -1896,9 +1891,10 @@ if (is_win) {
     "-mllvm:-enable-loop-flatten",
     "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt", ]  # Remove unreferenced data.
-    # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
-    common_optimize_on_cflags += [ 
+    "-mllvm:-aggressive-ext-opt",
+  ]
+
+  common_optimize_on_cflags += [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
@@ -1908,11 +1904,8 @@ if (is_win) {
     "-mllvm", "-enable-loop-flatten",
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt", ]
-  }
-} else {
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
+    "-mllvm", "-aggressive-ext-opt",
+  ]
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -2012,9 +2005,9 @@ config("optimize") {
     # - Make `optimize_for_size` apply to all platforms where we're optimizing
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
-    cflags = [ "-O3" ] + common_optimize_on_cflags
+    cflags = [ "-Os" ] + common_optimize_on_cflags
   } else {
-    cflags = [ "-O3" ] + common_optimize_on_cflags
+    cflags = [ "-O2" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
     rustflags = [ "-Copt-level=s" ]
