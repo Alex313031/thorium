@@ -2,5 +2,5 @@
   section="Applications/Network/Web Browsing" \
   hints="Web browsers" \
   title="Thorium Browser" \
-  icon="@@INSTALLDIR@@/product_logo_48.png" \
+  icon="@@INSTALLDIR@@/product_logo_32.png" \
   command="@@INSTALLDIR@@/@@PACKAGE@@"
