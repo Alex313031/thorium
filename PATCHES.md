@@ -6,12 +6,13 @@ NEW > Added some LLVM Loop optimizations as ldflags and cflags. See here > https
 .desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both >  '--enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading' and with '--enable-clear-hevc-for-testing' also being appended to the thorium-shell.desktop file.
 
 Ink > https://chromium.googlesource.com/chromium/src/third_party/+/c4f7a938fcdc796ad9fead3ab01e0508c129b831/ink
-  - Implemented with the args.gn flag "enable_ink = true"
+  - Implemented with the args.gn flag "enable_ink = true" Adds PDF annotation features present in CrOS.
 
 MPEG-DASH > https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP
   - Implemented with the args.gn flags "enable_hls_sample_aes = true" and "enable_mse_mpeg2ts_stream_parser = true"
 
 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch
+  - Fixes font rendering in certain instances.
 
 VAAPI Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/enable-vaapi-on-linux.diff
 
@@ -35,7 +36,7 @@ Disable FLOC Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/p
 Disable Google API Key Warning Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/disable/google-api-warning.patch
 
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
-  - Modified by me.
+  - Modified by me. Adds DuckDuckGo, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
