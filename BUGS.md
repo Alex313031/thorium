@@ -5,3 +5,5 @@ Nov. 21, Loading PDFs crashes the browser, will be disabling Ink for now to see 
 Nov. 21, Pulseaudio does not work behind a proxy in a chroot, I.E. in crouton on ChromiumOS. Removing Pulseaudio patch did not resolve the issue. - Pierro78 on Reddit
 
 Nov. 30, Possible bug; settings 'enable_cros_media_app = true' does not enable chrome://media-app like CrOS. - Me
+
+Nov.30, Bug that shows starting with M98.0.4738.0; bookmark folders in bookmarks bar have text colored incorrectly. - Me
