@@ -1892,10 +1892,6 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-polly",
-    "-mllvm", "-polly-detect-profitability-min-per-loop-insts=40",
-    "-mllvm", "-polly-position=early",
-    "-Rpass-analysis=polly",
   ]
 
   common_optimize_on_ldflags += [
