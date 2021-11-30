@@ -1,4 +1,4 @@
-# Copyright (c) 2013 The Chromium Authors. All rights reserved.
+# Copyright (c) 2021 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -1880,32 +1880,6 @@ if (is_win) {
 } else {
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
-  
-  common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-enable-loopinterchange",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt",
-  ]
-
-  common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
-  ]
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -2432,7 +2406,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG" ]
+    ldflags = [ "/DEBUG:NONE" ]
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]
