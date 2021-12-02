@@ -2049,9 +2049,9 @@ config("optimize") {
     # - Make `optimize_for_size` apply to all platforms where we're optimizing
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
-    cflags = [ "-Os" ] + common_optimize_on_cflags
+    cflags = [ "-O3" ] + common_optimize_on_cflags
   } else {
-    cflags = [ "-O2" ] + common_optimize_on_cflags
+    cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
     rustflags = [ "-Copt-level=s" ]
