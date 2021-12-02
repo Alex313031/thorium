@@ -6,4 +6,6 @@ Nov. 21, Pulseaudio does not work behind a proxy in a chroot, I.E. in crouton on
 
 Nov. 30, Possible bug; settings 'enable_cros_media_app = true' does not enable chrome://media-app like CrOS. - Me
 
-Nov.30, Bug that shows starting with M98.0.4738.0; bookmark folders in bookmarks bar have text colored incorrectly. - Me
+Nov. 30, Bug that shows starting with M98.0.4738.0; bookmark folders in bookmarks bar have text colored incorrectly. - Me
+
+Dec. 2, The Google API Keys InfoBar patch doesn't work following an upstream update to startup_browser_creator_impl.cc, will evaluate a fix. - Me
