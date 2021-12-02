@@ -1,4 +1,3 @@
-
 action_pool_depth
     Current value (from the default) = -1
       From //build/toolchain/BUILD.gn:11
@@ -7,7 +6,7 @@ action_pool_depth
 
 added_rust_stdlib_libs
     Current value (from the default) = []
-      From //build/config/rust.gni:33
+      From //build/config/rust.gni:32
 
     Any extra std rlibs in your Rust toolchain, relative to the standard
     Rust toolchain. Typically used with 'use_unverified_rust_toolchain' = true
@@ -69,15 +68,15 @@ android_full_debug
 
 angle_64bit_current_cpu
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:74
+      From //third_party/angle/gni/angle.gni:75
 
 angle_assert_always_on
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:69
+      From //third_party/angle/gni/angle.gni:70
 
 angle_build_all
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:34
+      From //third_party/angle/BUILD.gn:37
 
     Don't build extra (test, samples etc) for Windows UWP. We don't have
     infrastructure (e.g. windowing helper functions) in place to run them.
@@ -87,6 +86,10 @@ angle_build_capture_replay_tests
       From //third_party/angle/src/tests/capture_replay_tests/BUILD.gn:9
 
     Determines if we build the capture_replay_tests. Off by default.
+
+angle_build_vulkan_system_info
+    Current value (from the default) = true
+      From //third_party/angle/gni/angle.gni:222
 
 angle_capture_replay_composite_file_id
     Current value (from the default) = 1
@@ -100,13 +103,13 @@ angle_capture_replay_test_trace_dir
 
 angle_debug_layers_enabled
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:89
+      From //third_party/angle/gni/angle.gni:90
 
     By default we enable debug layers when asserts are turned on.
 
 angle_delegate_workers
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:124
+      From //third_party/angle/gni/angle.gni:125
 
     By default, ANGLE is using a thread pool for parallel compilation.
     Activating the delegate worker results in posting the tasks using the
@@ -115,30 +118,30 @@ angle_delegate_workers
 
 angle_egl_extension
     Current value (from the default) = ""
-      From //third_party/angle/BUILD.gn:53
+      From //third_party/angle/BUILD.gn:56
 
     Allow shared library custom name extensions for setting soname such as libEGL.so.1
 
 angle_enable_abseil
     Current value (from the default) = true
-      From //third_party/angle/BUILD.gn:41
+      From //third_party/angle/BUILD.gn:44
 
     Abseil has trouble supporting MSVC, particularly regarding component builds.
     http://crbug.com/1126524
 
 angle_enable_annotator_run_time_checks
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:44
+      From //third_party/angle/BUILD.gn:47
 
     Adds run-time checks to filter out EVENT() messages when the debug annotator is disabled.
 
 angle_enable_apple_translator_workarounds
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:226
+      From //third_party/angle/gni/angle.gni:230
 
 angle_enable_cgl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:223
+      From //third_party/angle/gni/angle.gni:227
 
     TODO(jdarpinian): Support enabling CGL and EAGL at the same time using the soft linking code. Also support disabling both for Metal-only builds.
 
@@ -150,13 +153,13 @@ angle_enable_cl
 
 angle_enable_cl_passthrough
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:154
+      From //third_party/angle/gni/angle.gni:155
 
     Enables the OpenCL pass-through back end
 
 angle_enable_commit_id
     Current value (from the default) = true
-      From //third_party/angle/BUILD.gn:37
+      From //third_party/angle/BUILD.gn:40
 
     Enable generating current commit information using git
 
@@ -168,31 +171,31 @@ angle_enable_custom_vulkan_cmd_buffers
 
 angle_enable_d3d11
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:130
+      From //third_party/angle/gni/angle.gni:131
 
 angle_enable_d3d11_compositor_native_window
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:198
+      From //third_party/angle/gni/angle.gni:199
 
 angle_enable_d3d9
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:129
+      From //third_party/angle/gni/angle.gni:130
 
 angle_enable_desktop_glsl
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:173
+      From //third_party/angle/gni/angle.gni:174
 
     Translator frontend support:
 
 angle_enable_eagl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:207
+      From //third_party/angle/gni/angle.gni:208
 
     We should use EAGL (ES) on iOS except on Mac Catalyst on Intel CPUs, which uses CGL (desktop GL).
 
 angle_enable_essl
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:177
+      From //third_party/angle/gni/angle.gni:178
 
 angle_enable_gl
     Current value (from the default) = true
@@ -200,7 +203,7 @@ angle_enable_gl
 
 angle_enable_gl_desktop
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:148
+      From //third_party/angle/gni/angle.gni:149
 
 angle_enable_gl_null
     Current value (from the default) = true
@@ -208,57 +211,57 @@ angle_enable_gl_null
 
 angle_enable_glsl
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:178
+      From //third_party/angle/gni/angle.gni:179
 
 angle_enable_hlsl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:176
+      From //third_party/angle/gni/angle.gni:177
 
     Translator backend support:
 
 angle_enable_metal
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:151
+      From //third_party/angle/gni/angle.gni:152
 
     http://anglebug.com/2634
 
 angle_enable_null
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:147
+      From //third_party/angle/gni/angle.gni:148
 
     Disable null backend to save space for official build.
 
 angle_enable_overlay
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:201
+      From //third_party/angle/gni/angle.gni:202
 
     Disable overlay by default
 
 angle_enable_perf_counter_output
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:204
+      From //third_party/angle/gni/angle.gni:205
 
     Disable performance counter output by default
 
 angle_enable_spirv_gen_through_glslang
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:193
+      From //third_party/angle/gni/angle.gni:194
 
 angle_enable_swiftshader
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:170
+      From //third_party/angle/gni/angle.gni:171
 
 angle_enable_trace
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:179
+      From //third_party/angle/gni/angle.gni:180
 
 angle_enable_trace_android_logcat
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:180
+      From //third_party/angle/gni/angle.gni:181
 
 angle_enable_vulkan
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:136
+      From //third_party/angle/gni/angle.gni:137
 
 angle_enable_vulkan_gpu_trace_events
     Current value (from the default) = false
@@ -268,17 +271,17 @@ angle_enable_vulkan_gpu_trace_events
 
 angle_enable_vulkan_system_info
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:27
+      From //third_party/angle/BUILD.gn:30
 
     Enable using Vulkan to collect system info as a fallback.
 
 angle_enable_vulkan_validation_layers
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:186
+      From //third_party/angle/gni/angle.gni:187
 
 angle_expose_non_conformant_extensions_and_versions
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:47
+      From //third_party/angle/BUILD.gn:50
 
     Enables non-conformant extensions and features
 
@@ -290,55 +293,55 @@ angle_extract_native_libs
 
 angle_force_context_check_every_call
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:50
+      From //third_party/angle/BUILD.gn:53
 
     Optional feature that forces dirty state whenever we use a new context regardless of thread.
 
 angle_glesv2_extension
     Current value (from the default) = ""
-      From //third_party/angle/BUILD.gn:54
+      From //third_party/angle/BUILD.gn:57
 
 angle_has_frame_capture
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:116
+      From //third_party/angle/gni/angle.gni:117
 
     Frame capture code is enabled by default if rapidjson is available.
 
 angle_has_histograms
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:229
+      From //third_party/angle/gni/angle.gni:233
 
 angle_has_rapidjson
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:84
+      From //third_party/angle/gni/angle.gni:85
 
     Indicate if the rapidJSON library is available to build with in third_party/.
 
 angle_is_winuwp
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:103
+      From //third_party/angle/gni/angle.gni:104
 
     There's no "is_winuwp" helper in BUILDCONFIG.gn, so we define one ourselves
 
 angle_libs_suffix
     Current value (from the default) = ""
-      From //third_party/angle/gni/angle.gni:109
+      From //third_party/angle/gni/angle.gni:110
 
 angle_link_glx
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:30
+      From //third_party/angle/BUILD.gn:33
 
     Link in system libGL, to work with apitrace.  See doc/DebuggingTips.md.
 
 angle_shared_libvulkan
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:100
+      From //third_party/angle/gni/angle.gni:101
 
     Vulkan loader is statically linked on Mac. http://anglebug.com/4477
 
 angle_standalone
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:127
+      From //third_party/angle/gni/angle.gni:128
 
     True if we are building inside an ANGLE checkout.
 
@@ -348,7 +351,7 @@ angle_use_custom_libvulkan
 
 angle_use_vulkan_null_display
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:144
+      From //third_party/angle/gni/angle.gni:145
 
     When set to true, ANGLE will not use VK_KHR_surface and VK_KHR_swapchain
     extensions. Content can be rendered only off-screen.
@@ -363,25 +366,25 @@ angle_vulkan_headers_dir
     Current value = "//third_party/vulkan-deps/vulkan-headers/src"
       From //.gn:54
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-headers/src"
-      From //third_party/angle/gni/angle.gni:212
+      From //third_party/angle/gni/angle.gni:213
 
 angle_vulkan_loader_dir
     Current value = "//third_party/vulkan-deps/vulkan-loader/src"
       From //.gn:55
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-loader/src"
-      From //third_party/angle/gni/angle.gni:214
+      From //third_party/angle/gni/angle.gni:215
 
 angle_vulkan_tools_dir
     Current value = "//third_party/vulkan-deps/vulkan-tools/src"
       From //.gn:56
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-tools/src"
-      From //third_party/angle/gni/angle.gni:216
+      From //third_party/angle/gni/angle.gni:217
 
 angle_vulkan_validation_layers_dir
     Current value = "//third_party/vulkan-deps/vulkan-validation-layers/src"
       From //.gn:58
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-validation-layers/src"
-      From //third_party/angle/gni/angle.gni:218
+      From //third_party/angle/gni/angle.gni:219
 
 angle_with_capture_by_default
     Current value (from the default) = false
@@ -683,11 +686,11 @@ clang_use_default_sample_profile
 
 clang_version
     Current value (from the default) = "14.0.0"
-      From //build/toolchain/toolchain.gni:43
+      From //build/toolchain/toolchain.gni:36
 
 com_init_check_hook_disabled
     Current value (from the default) = false
-      From //base/BUILD.gn:61
+      From //base/BUILD.gn:62
 
     Set to true to disable COM init check hooks.
 
@@ -764,29 +767,29 @@ coverage_instrumentation_input_file
 
 cppgc_allow_allocations_in_prefinalizers
     Current value (from the default) = false
-      From //v8/BUILD.gn:297
+      From //v8/BUILD.gn:299
 
     Enable allocations during prefinalizer invocations.
 
 cppgc_enable_caged_heap
     Current value (from the default) = true
-      From //v8/BUILD.gn:290
+      From //v8/BUILD.gn:292
 
 cppgc_enable_object_names
     Current value (from the default) = false
-      From //v8/BUILD.gn:286
+      From //v8/BUILD.gn:288
 
     Enable object names in cppgc for debug purposes.
 
 cppgc_enable_verify_heap
     Current value (from the default) = ""
-      From //v8/BUILD.gn:294
+      From //v8/BUILD.gn:296
 
     Enables additional heap verification phases and checks.
 
 cppgc_enable_young_generation
     Current value (from the default) = false
-      From //v8/BUILD.gn:300
+      From //v8/BUILD.gn:302
 
     Enable young generation in cppgc.
 
@@ -915,11 +918,8 @@ dawn_enable_vulkan
     Disables vulkan when compiling for UWP, since UWP only supports d3d
 
 dawn_enable_vulkan_loader
-    Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:100
-
-    Uses our built version of the Vulkan loader on platforms where we can't
-    assume to have one present at the system level.
+    Current value (from the default) = true
+      From //third_party/dawn/scripts/dawn_features.gni:101
 
 dawn_enable_vulkan_validation_layers
     Current value (from the default) = true
@@ -1022,7 +1022,7 @@ devtools_use_rbe
 
 devtools_visibility
     Current value = ["*"]
-      From //.gn:64
+      From //.gn:65
     Overridden from the default = []
       From //third_party/devtools-frontend/src/front_end/visibility.gni:6
 
@@ -1135,7 +1135,7 @@ enable_background_mode
 
 enable_backup_ref_ptr_slow_checks
     Current value (from the default) = false
-      From //base/allocator/allocator.gni:78
+      From //base/allocator/allocator.gni:104
 
 enable_base_tracing
     Current value (from the default) = true
@@ -1162,7 +1162,7 @@ enable_basic_printing
 
 enable_blink_bindings_tracing
     Current value (from the default) = false
-      From //third_party/blink/renderer/platform/BUILD.gn:194
+      From //third_party/blink/renderer/platform/BUILD.gn:193
 
     Enable TRACE_EVENT instrumentation for Blink bindings.
     Disabled by default as it increases binary size.
@@ -1584,7 +1584,7 @@ enable_linux_installer
 
 enable_location_source
     Current value (from the default) = true
-      From //base/BUILD.gn:50
+      From //base/BUILD.gn:51
 
     Indicates if the Location object contains the source code information
     (file, function, line). False means only the program counter (and currently
@@ -1703,7 +1703,7 @@ enable_mse_mpeg2ts_stream_parser
 
 enable_mutex_priority_inheritance
     Current value (from the default) = false
-      From //base/BUILD.gn:66
+      From //base/BUILD.gn:67
 
     Set to true to enable mutex priority inheritance. See the comments in
     LockImpl::PriorityInheritanceAvailable() in lock_impl_posix.cc for the
@@ -1711,13 +1711,7 @@ enable_mutex_priority_inheritance
 
 enable_nacl
     Current value (from the default) = true
-      From //components/nacl/features.gni:18
-
-enable_nacl_nonsfi
-    Current value (from the default) = true
-      From //components/nacl/features.gni:24
-
-    Non-SFI is not yet supported on mipsel
+      From //components/nacl/features.gni:14
 
 enable_nocompile_tests
     Current value (from the default) = true
@@ -2254,7 +2248,7 @@ force_cast_bluetooth
 
 from_here_uses_location_builtins
     Current value (from the default) = true
-      From //base/BUILD.gn:53
+      From //base/BUILD.gn:54
 
     Whether or not the FROM_HERE macro uses base::Location::Current().
 
@@ -2513,7 +2507,7 @@ ios_deployment_target
 
 ios_stack_profiler_enabled
     Current value (from the default) = true
-      From //base/BUILD.gn:71
+      From //base/BUILD.gn:72
 
     Control whether the ios stack sampling profiler is enabled. This flag is
     only supported on iOS 64-bit architecture, but some project build //base
@@ -2652,7 +2646,7 @@ is_ggp
 
 is_gpu_fyi_bot
     Current value (from the default) = false
-      From //build/config/compiler/compiler.gni:206
+      From //build/config/compiler/compiler.gni:209
 
     If this running on a GPU FYI bot.
     TODO(https://crbug.com/1233871): Remove this again.
@@ -2781,7 +2775,7 @@ is_ubsan_vptr
 
 is_unsafe_developer_build
     Current value (from the default) = true
-      From //base/BUILD.gn:58
+      From //base/BUILD.gn:59
 
     Unsafe developer build. Has developer-friendly features that may weaken or
     disable security measures like sandboxing or ASLR.
@@ -2789,7 +2783,7 @@ is_unsafe_developer_build
 
 is_win_arm64
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:113
+      From //third_party/angle/gni/angle.gni:114
 
     Currently Windows on Arm doesn't support OpenGL or Vulkan.
 
@@ -3024,7 +3018,7 @@ nacl_sdk_untrusted
 
 ndk_api_level_at_least_26
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:92
+      From //third_party/angle/gni/angle.gni:93
 
 needs_gomacc_path_arg
     Current value (from the default) = false
@@ -3036,7 +3030,7 @@ needs_gomacc_path_arg
 
 never_remove_from_brp_pool_blocklist
     Current value (from the default) = false
-      From //base/allocator/allocator.gni:77
+      From //base/allocator/allocator.gni:103
 
 optimize_for_fuzzing
     Current value (from the default) = false
@@ -3295,7 +3289,7 @@ proprietary_codecs
 
 put_ref_count_in_previous_slot
     Current value (from the default) = false
-      From //base/allocator/allocator.gni:76
+      From //base/allocator/allocator.gni:102
 
     If BRP is enabled, additional options are available:
     - put_ref_count_in_previous_slot: place the ref-count at the end of the
@@ -3319,7 +3313,7 @@ rbe_cfg_dir
     The directory where the re-client configuration files are.
 
 rbe_cros_cc_wrapper
-    Current value (from the default) = ""
+    Current value (from the default) = "../../buildtools/reclient/rewrapper"
       From //build/toolchain/rbe.gni:26
 
     Set to the path of the RBE recleint wrapper for ChromeOS.
@@ -3342,7 +3336,7 @@ remoting_webrtc_verbose_logging
 
 removed_rust_stdlib_libs
     Current value (from the default) = []
-      From //build/config/rust.gni:37
+      From //build/config/rust.gni:36
 
     Any removed std rlibs in your Rust toolchain, relative to the standard
     Rust toolchain. Typically used with 'use_unverified_rust_toolchain' = true
@@ -3366,7 +3360,7 @@ rtc_audio_device_plays_sinus_tone
 
 rtc_build_dcsctp
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:304
+      From //third_party/webrtc/webrtc.gni:307
 
     Enable the dcsctp backend for DataChannels and related unittests
 
@@ -3378,29 +3372,29 @@ rtc_build_examples
 
 rtc_build_json
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:244
+      From //third_party/webrtc/webrtc.gni:247
 
     Disable these to not build components which can be externally provided.
 
 rtc_build_libevent
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:258
+      From //third_party/webrtc/webrtc.gni:261
 
 rtc_build_libsrtp
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:245
+      From //third_party/webrtc/webrtc.gni:248
 
 rtc_build_libvpx
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:246
+      From //third_party/webrtc/webrtc.gni:249
 
 rtc_build_opus
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:248
+      From //third_party/webrtc/webrtc.gni:251
 
 rtc_build_ssl
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:249
+      From //third_party/webrtc/webrtc.gni:252
 
 rtc_build_tools
     Current value (from the default) = true
@@ -3410,7 +3404,7 @@ rtc_build_tools
 
 rtc_build_usrsctp
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:307
+      From //third_party/webrtc/webrtc.gni:310
 
     Enable the usrsctp backend for DataChannels and related unittests
 
@@ -3428,26 +3422,26 @@ rtc_builtin_ssl_root_certificates
 
 rtc_disable_check_msg
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:292
+      From //third_party/webrtc/webrtc.gni:295
 
     Set this to true to disable detailed error message and logging for
     RTC_CHECKs.
 
 rtc_disable_logging
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:285
+      From //third_party/webrtc/webrtc.gni:288
 
     Set this to true to fully remove logging from WebRTC.
 
 rtc_disable_metrics
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:295
+      From //third_party/webrtc/webrtc.gni:298
 
     Set this to true to disable webrtc metrics.
 
 rtc_disable_trace_events
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:288
+      From //third_party/webrtc/webrtc.gni:291
 
     Set this to true to disable trace events.
 
@@ -3468,7 +3462,7 @@ rtc_enable_android_aaudio
 
 rtc_enable_avx2
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:271
+      From //third_party/webrtc/webrtc.gni:274
 
 rtc_enable_bwe_test_logging
     Current value (from the default) = false
@@ -3485,7 +3479,7 @@ rtc_enable_external_auth
 
 rtc_enable_libevent
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:257
+      From //third_party/webrtc/webrtc.gni:260
 
 rtc_enable_objc_symbol_export
     Current value (from the default) = false
@@ -3499,13 +3493,13 @@ rtc_enable_objc_symbol_export
 
 rtc_enable_protobuf
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:238
+      From //third_party/webrtc/webrtc.gni:241
 
     Enables the use of protocol buffers for debug recordings.
 
 rtc_enable_sctp
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:241
+      From //third_party/webrtc/webrtc.gni:244
 
     Set this to disable building with support for SCTP data channels.
 
@@ -3558,7 +3552,7 @@ rtc_exclude_system_time
 
 rtc_exclude_transient_suppressor
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:299
+      From //third_party/webrtc/webrtc.gni:302
 
     Set this to true to exclude the transient suppressor in the audio processing
     module from the build.
@@ -3581,6 +3575,12 @@ rtc_include_builtin_video_codecs
     (they will still be included in libjingle_peerconnection_so.so and
     WebRTC.framework)
 
+rtc_include_dav1d_in_internal_decoder_factory
+    Current value (from the default) = true
+      From //third_party/webrtc/webrtc.gni:229
+
+    Includes the dav1d decoder in the internal decoder factory when set to true.
+
 rtc_include_ilbc
     Current value = false
       From //.gn:47
@@ -3591,7 +3591,7 @@ rtc_include_ilbc
 
 rtc_include_internal_audio_device
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:266
+      From //third_party/webrtc/webrtc.gni:269
 
     Chromium uses its own IO handling, so the internal ADM is only built for
     standalone WebRTC.
@@ -3604,13 +3604,13 @@ rtc_include_opus
 
 rtc_include_pulse_audio
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:262
+      From //third_party/webrtc/webrtc.gni:265
 
     Excluded in Chromium since its prerequisites don't require Pulse Audio.
 
 rtc_include_tests
     Current value (from the default) = false
-      From //third_party/webrtc/webrtc.gni:278
+      From //third_party/webrtc/webrtc.gni:281
 
     Set this to true to build the unit tests.
     Disabled when building with Chromium or Mozilla.
@@ -3628,7 +3628,7 @@ rtc_jsoncpp_root
 
 rtc_libvpx_build_vp9
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:247
+      From //third_party/webrtc/webrtc.gni:250
 
 rtc_link_pipewire
     Current value (from the default) = false
@@ -3706,7 +3706,7 @@ rtc_use_x11
 
 rtc_use_x11_extensions
     Current value (from the default) = true
-      From //third_party/webrtc/webrtc.gni:282
+      From //third_party/webrtc/webrtc.gni:285
 
     Set this to false to skip building code that also requires X11 extensions
     such as Xdamage, Xfixes.
@@ -3724,18 +3724,22 @@ rtc_win_undef_unicode
 
 runtime_call_stats_count_everything
     Current value (from the default) = false
-      From //third_party/blink/renderer/platform/BUILD.gn:190
+      From //third_party/blink/renderer/platform/BUILD.gn:189
 
-rust_bin_dir
+rust_sysroot_absolute
     Current value (from the default) = ""
-      From //build/config/rust.gni:29
+      From //build/config/rust.gni:28
 
-    If using an unverified Rust toolchain, use this prefix for where to find
-    the binaries.
+    Chromium currently has a Rust toolchain for Android and Linux, but
+    if you wish to experiment on more platforms you can use this
+    argument to specify an alternative toolchain.
+    This should be an absolute path to a directory
+    containing a 'bin' directory and others. Commonly
+    <home dir>/.rustup/toolchains/nightly-<something>-<something>
 
 rustc_can_link
     Current value (from the default) = true
-      From //build/config/rust.gni:62
+      From //build/config/rust.gni:61
 
     Rust code may end up being linked into a final executable by:
     * rustc (which calls lld)
@@ -3750,8 +3754,8 @@ rustc_can_link
     NB this may be overridden by individual toolchains
 
 rustc_version
-    Current value (from the default) = "rustc 1.55.0-dev"
-      From //build/config/rust.gni:25
+    Current value (from the default) = "rustc 1.56.1-dev"
+      From //build/config/rust.gni:20
 
     The version string returned by rustc -V.
 
@@ -3782,7 +3786,7 @@ sanitizer_coverage_flags
         trace-pc-guard,indirect-calls
 
 seed_corpus_dir
-    Current value (from the default) = "//out/Default/gen/components/viz/service/compositor_frame_fuzzer/binary_seed_corpus"
+    Current value (from the default) = "//out/test/gen/components/viz/service/compositor_frame_fuzzer/binary_seed_corpus"
       From //components/viz/service/compositor_frame_fuzzer/BUILD.gn:9
 
 show_includes
@@ -3840,6 +3844,13 @@ swiftshader_optimized_debug_build
 
     By default, build SwiftShader with optimizations enabled in debug
     for performance reasons. Set to false to build as unoptimized.
+
+swiftshader_startup_dialog
+    Current value (from the default) = false
+      From //third_party/swiftshader/src/swiftshader.gni:27
+
+    If enabled, debug builds on Windows will pop up a dialog when the
+    SwiftShader DLL gets loaded, to facilitate attaching a debugger.
 
 symbol_level
     Current value (from the default) = -1
@@ -3978,13 +3989,13 @@ use_afl
 
 use_allocator
     Current value (from the default) = "none"
-      From //base/allocator/allocator.gni:41
+      From //base/allocator/allocator.gni:42
 
     Memory allocator to use. Set to "none" to use default allocator.
 
 use_allocator_shim
     Current value (from the default) = true
-      From //base/allocator/allocator.gni:44
+      From //base/allocator/allocator.gni:45
 
     Causes all the allocations to be routed via allocator_shim.cc.
 
@@ -4013,16 +4024,10 @@ use_aura
 
 use_backup_ref_ptr
     Current value (from the default) = false
-      From //base/allocator/allocator.gni:65
+      From //base/allocator/allocator.gni:92
 
     Set use_backup_ref_ptr true to use BackupRefPtr (BRP) as the implementation
-    of raw_ptr<T>, and enable PartitionAlloc support for it. The _fake option
-    doesn't enable BRP, but pretends it's enabled for the syntethic field trial
-   (for testing purposes only).
-
-use_backup_ref_ptr_fake
-    Current value (from the default) = false
-      From //base/allocator/allocator.gni:66
+    of raw_ptr<T>, and enable PartitionAlloc support for it.
 
 use_base_test_suite
     Current value (from the default) = true
@@ -4087,7 +4092,7 @@ use_chromecast_cdms
 
 use_chromeos_protected_av1
     Current value (from the default) = false
-      From //media/gpu/args.gni:44
+      From //media/gpu/args.gni:45
 
     Indicates if ChromeOS protected media supports the AV1 codec. By default
     H.264, VP9 and HEVC are enabled if protected media is enabled; AV1 is
@@ -4095,7 +4100,7 @@ use_chromeos_protected_av1
 
 use_chromeos_protected_media
     Current value (from the default) = false
-      From //media/gpu/args.gni:39
+      From //media/gpu/args.gni:40
 
     Indicates if ChromeOS protected media support exists. This is used
     to enable the CDM daemon in Chrome OS as well as support for
@@ -4225,6 +4230,14 @@ use_exynos_minigbm
     Current value (from the default) = false
       From //third_party/minigbm/BUILD.gn:18
 
+use_fake_binary_experiment
+    Current value (from the default) = false
+      From //base/allocator/allocator.gni:109
+
+    Registers the binary for a fake binary A/B experiment. The binaries built
+    with this flag have no behavior difference, except for setting a synthetic
+    Finch.
+
 use_full_pdb_paths
     Current value (from the default) = false
       From //build/config/compiler/BUILD.gn:177
@@ -4267,7 +4280,7 @@ use_gnome_keyring
 
 use_gold
     Current value (from the default) = false
-      From //build/config/compiler/compiler.gni:221
+      From //build/config/compiler/compiler.gni:224
 
     Whether to use the gold linker from binutils instead of lld or bfd.
 
@@ -4279,7 +4292,7 @@ use_goma
 
 use_goma_rust
     Current value (from the default) = false
-      From //build/config/rust.gni:49
+      From //build/config/rust.gni:48
 
     Use goma for Rust builds. Experimental. The only known problem is
     b/193072381, but then again, we don't expect a build speedup before much
@@ -4373,11 +4386,11 @@ use_libjpeg_turbo
 
 use_libpci
     Current value (from the default) = true
-      From //third_party/angle/BUILD.gn:23
+      From //third_party/angle/BUILD.gn:26
 
 use_lld
     Current value (from the default) = true
-      From //build/config/compiler/compiler.gni:215
+      From //build/config/compiler/compiler.gni:218
 
     Set to true to use lld, the LLVM linker.
     In late bring-up on macOS (see docs/mac_lld.md).
@@ -4400,7 +4413,7 @@ use_low_quality_image_interpolation
 
 use_lto_in_rustc_linking
     Current value (from the default) = false
-      From //build/config/rust.gni:44
+      From //build/config/rust.gni:43
 
     Use LTO when using rustc to link binaries. Experimental. Currently incompatible
     with the options we use in our C++ toolchain to split LTO units.
@@ -4489,7 +4502,7 @@ use_pangocairo
 
 use_partition_alloc
     Current value (from the default) = true
-      From //base/allocator/allocator.gni:59
+      From //base/allocator/allocator.gni:60
 
     Whether PartitionAlloc should be available for use or not.
     true makes PartitionAlloc linked to the executable or shared library and
@@ -4544,7 +4557,7 @@ use_rbe
 
 use_real_dbus_clients
     Current value (from the default) = false
-      From //chromeos/dbus/use_real_dbus_clients.gni:9
+      From //chromeos/dbus/config/use_real_dbus_clients.gni:9
 
     Instantiate real D-Bus clients instead of fakes.
 
@@ -4749,14 +4762,6 @@ use_unofficial_version_number
     Current value (from the default) = true
       From //components/version_info/BUILD.gn:10
 
-use_unverified_rust_toolchain
-    Current value (from the default) = false
-      From //build/config/rust.gni:22
-
-    Use unverified, untrusted, Rust toolchains from the internet
-    (which support more platforms and options than those we trust for real
-    builds).
-
 use_v4l2_codec
     Current value (from the default) = false
       From //media/gpu/args.gni:22
@@ -4792,7 +4797,7 @@ use_vaapi
 
 use_vaapi_image_codecs
     Current value (from the default) = false
-      From //media/gpu/args.gni:58
+      From //media/gpu/args.gni:59
 
     VA-API also allows decoding of images, but we don't want to use this
     outside of chromeos, even if video decoding is enabled.
@@ -4842,10 +4847,6 @@ use_wuffs_gif_parser
     Current value (from the default) = true
       From //third_party/wuffs/config.gni:6
 
-use_x11
-    Current value (from the default) = true
-      From //build/config/ozone.gni:122
-
 use_xkbcommon
     Current value (from the default) = true
       From //ui/base/ui_features.gni:9
@@ -4871,13 +4872,13 @@ v8_advanced_bigint_algorithms
 
 v8_allocation_site_tracking
     Current value (from the default) = true
-      From //v8/BUILD.gn:344
+      From //v8/BUILD.gn:346
 
     Enable global allocation site tracking.
 
 v8_allow_javascript_in_promise_hooks
     Current value (from the default) = false
-      From //v8/BUILD.gn:337
+      From //v8/BUILD.gn:339
 
     Allow for JS promise hooks (instead of just C++).
 
@@ -4947,7 +4948,7 @@ v8_context_snapshot_filename
 
 v8_control_flow_integrity
     Current value (from the default) = false
-      From //v8/BUILD.gn:283
+      From //v8/BUILD.gn:285
 
     Enable control-flow integrity features, such as pointer authentication for
     ARM64.
@@ -4979,7 +4980,7 @@ v8_deprecation_warnings
 
 v8_dict_property_const_tracking
     Current value (from the default) = false
-      From //v8/BUILD.gn:331
+      From //v8/BUILD.gn:333
 
     Experimental feature for tracking constness of properties in non-global
     dictionaries. Enabling this also always keeps prototypes in dict mode,
@@ -5011,7 +5012,7 @@ v8_enable_31bit_smis_on_64bit_arch
 
 v8_enable_allocation_folding
     Current value (from the default) = true
-      From //v8/BUILD.gn:341
+      From //v8/BUILD.gn:343
 
     Enable allocation folding globally (sets -dV8_ALLOCATION_FOLDING).
     When it's disabled, the --turbo-allocation-folding runtime flag will be ignored.
@@ -5130,7 +5131,7 @@ v8_enable_handle_zapping
 
 v8_enable_heap_sandbox
     Current value (from the default) = ""
-      From //v8/BUILD.gn:308
+      From //v8/BUILD.gn:310
 
     Enable V8 heap sandbox experimental feature.
     Sets -DV8_HEAP_SANDBOX.
@@ -5176,7 +5177,7 @@ v8_enable_lite_mode
 
 v8_enable_map_packing
     Current value (from the default) = false
-      From //v8/BUILD.gn:334
+      From //v8/BUILD.gn:336
 
     Enable map packing & unpacking (sets -dV8_MAP_PACKING).
 
@@ -5204,7 +5205,7 @@ v8_enable_pointer_compression_shared_cage
 
 v8_enable_precise_zone_stats
     Current value (from the default) = false
-      From //v8/BUILD.gn:317
+      From //v8/BUILD.gn:319
 
     Experimental feature for collecting per-class zone memory stats.
     Requires use_rtti = true
@@ -5264,10 +5265,8 @@ v8_enable_snapshot_code_comments
     This also enables v8_code_comments.
 
 v8_enable_snapshot_compression
-    Current value (from the default) = true
-      From //v8/BUILD.gn:279
-
-    Disable all snapshot compression.
+    Current value (from the default) = false
+      From //v8/BUILD.gn:280
 
 v8_enable_snapshot_native_code_counters
     Current value (from the default) = ""
@@ -5280,7 +5279,7 @@ v8_enable_snapshot_native_code_counters
 
 v8_enable_swiss_name_dictionary
     Current value (from the default) = false
-      From //v8/BUILD.gn:321
+      From //v8/BUILD.gn:323
 
     Experimental feature that uses SwissNameDictionary instead of NameDictionary
     as the backing store for all dictionary mode objects.
@@ -5362,7 +5361,7 @@ v8_enable_verify_predictable
 
 v8_enable_virtual_memory_cage
     Current value (from the default) = ""
-      From //v8/BUILD.gn:313
+      From //v8/BUILD.gn:315
 
     Enable the Virtual Memory Cage, which contains the pointer compression cage
     as well as ArrayBuffer BackingStores and WASM memory cages.
@@ -5397,7 +5396,7 @@ v8_enable_webassembly
 
 v8_enable_zone_compression
     Current value (from the default) = ""
-      From //v8/BUILD.gn:304
+      From //v8/BUILD.gn:306
 
     Enable V8 zone compression experimental feature.
     Sets -DV8_COMPRESS_ZONES.
@@ -5428,7 +5427,7 @@ v8_gcmole
 
 v8_generate_external_defines_header
     Current value (from the default) = false
-      From //v8/BUILD.gn:325
+      From //v8/BUILD.gn:327
 
     If enabled then macro definitions that are used in externally visible
     header files are placed in a separate header file v8-gn.h.
@@ -5450,7 +5449,7 @@ v8_imminent_deprecation_warnings
 
 v8_include_receiver_in_argc
     Current value (from the default) = true
-      From //v8/BUILD.gn:357
+      From //v8/BUILD.gn:359
 
 v8_monolithic
     Current value (from the default) = false
@@ -5498,7 +5497,7 @@ v8_promise_internal_field_count
 
 v8_scriptormodule_legacy_lifetime
     Current value (from the default) = false
-      From //v8/BUILD.gn:350
+      From //v8/BUILD.gn:352
 
     TODO(cbruni, v8:12302): Remove once API is migrated
     Enable legacy mode for ScriptOrModule's lifetime. By default it's a
@@ -5661,3 +5660,4 @@ x64_arch
     https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
     CPU options for "x86-64" in llvm can be found at
     https://github.com/llvm/llvm-project/blob/master/llvm/include/llvm/Support/X86TargetParser.def
+
