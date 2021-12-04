@@ -244,6 +244,9 @@ media::VAImplementation VendorStringToImplementationType(
   } else if (base::StartsWith(va_vendor_string, "Intel iHD driver",
                               base::CompareCase::SENSITIVE)) {
     return media::VAImplementation::kIntelIHD;
+  } else if (base::StartsWith(va_vendor_string, "Splitted-Desktop Systems VDPAU",
+                              base::CompareCase::SENSITIVE)) {
+    return media::VAImplementation::kNVIDIAVDPAU;
   }
   return media::VAImplementation::kOther;
 }
@@ -2244,6 +2247,12 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
         sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_SURFACE);
   DCHECK(!va_surface_size.IsEmpty());
+  
+  if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
+    LOG(ERROR) << "Disabled due to potential breakage.";
+    return nullptr;
+  }
+
   VADRMPRIMESurfaceDescriptor descriptor;
   {
     base::AutoLock auto_lock(*va_lock_);
@@ -2650,11 +2659,12 @@ uint64_t VaapiWrapper::GetEncodedChunkSize(VABufferID buffer_id,
   return coded_data_size;
 }
 
-bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
-                                        VASurfaceID sync_surface_id,
-                                        uint8_t* target_ptr,
-                                        size_t target_size,
-                                        size_t* coded_data_size) {
+bool VaapiWrapper::DownloadFromVABuffer(
+    VABufferID buffer_id,
+    absl::optional<VASurfaceID> sync_surface_id,
+    uint8_t* target_ptr,
+    size_t target_size,
+    size_t* coded_data_size) {
   CHECK(!enforce_sequence_affinity_ ||
         sequence_checker_.CalledOnValidSequence());
   DCHECK(target_ptr);
@@ -2664,10 +2674,13 @@ bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
 
   // vaSyncSurface() is not necessary on Intel platforms as long as there is a
   // vaMapBuffer() like in ScopedVABufferMapping below, see b/184312032.
-  if (GetImplementationType() != VAImplementation::kIntelI965 &&
+  // |sync_surface_id| will be nullopt because it has been synced already.
+  // vaSyncSurface() is not executed in the case.
+  if (!sync_surface_id &&
+      GetImplementationType() != VAImplementation::kIntelI965 &&
       GetImplementationType() != VAImplementation::kIntelIHD) {
     TRACE_EVENT0("media,gpu", "VaapiWrapper::DownloadFromVABuffer_SyncSurface");
-    const VAStatus va_res = vaSyncSurface(va_display_, sync_surface_id);
+    const VAStatus va_res = vaSyncSurface(va_display_, *sync_surface_id);
     VA_SUCCESS_OR_RETURN(va_res, VaapiFunctions::kVASyncSurface, false);
   }
 
@@ -2899,7 +2912,7 @@ void VaapiWrapper::PreSandboxInitialization() {
   static bool result = InitializeStubs(paths);
   if (!result) {
     static const char kErrorMsg[] = "Failed to initialize VAAPI libs";
-LOG(ERROR) << kErrorMsg;
+    LOG(ERROR) << kErrorMsg;
   }
 
   // VASupportedProfiles::Get creates VADisplayState and in so doing
@@ -3063,26 +3076,37 @@ bool VaapiWrapper::CreateSurfaces(
 
   va_surfaces->resize(num_surfaces);
   VASurfaceAttrib attribute;
-  memset(&attribute, 0, sizeof(attribute));
-  attribute.type = VASurfaceAttribUsageHint;
-  attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
-  attribute.value.type = VAGenericValueTypeInteger;
-  attribute.value.value.i = 0;
-  for (SurfaceUsageHint usage_hint : usage_hints)
-    attribute.value.value.i |= static_cast<int32_t>(usage_hint);
-  static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
-                "attribute.value.value.i is not int32_t");
-  static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
-                             int32_t>::value,
-                "The underlying type of SurfaceUsageHint is not int32_t");
+
+  if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
+    // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
+    memset(&attribute, 0, sizeof(attribute));
+    attribute.type = VASurfaceAttribUsageHint;
+    attribute.flags = VA_SURFACE_ATTRIB_SETTABLE;
+    attribute.value.type = VAGenericValueTypeInteger;
+    attribute.value.value.i = 0;
+    for (SurfaceUsageHint usage_hint : usage_hints)
+      attribute.value.value.i |= static_cast<int32_t>(usage_hint);
+    static_assert(std::is_same<decltype(attribute.value.value.i), int32_t>::value,
+                  "attribute.value.value.i is not int32_t");
+    static_assert(std::is_same<std::underlying_type<SurfaceUsageHint>::type,
+                               int32_t>::value,
+                  "The underlying type of SurfaceUsageHint is not int32_t");
+  }
 
   VAStatus va_res;
   {
     base::AutoLock auto_lock(*va_lock_);
-    va_res = vaCreateSurfaces(
-        va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
-        base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
-        num_surfaces, &attribute, 1u);
+    if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
+      va_res = vaCreateSurfaces(
+          va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
+          base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
+          num_surfaces, NULL, 0);
+    } else {
+      va_res = vaCreateSurfaces(
+          va_display_, va_format, base::checked_cast<unsigned int>(size.width()),
+          base::checked_cast<unsigned int>(size.height()), va_surfaces->data(),
+          num_surfaces, &attribute, 1u);
+    }
   }
   VA_LOG_ON_ERROR(va_res, VaapiFunctions::kVACreateSurfaces_Allocating);
   return va_res == VA_STATUS_SUCCESS;
