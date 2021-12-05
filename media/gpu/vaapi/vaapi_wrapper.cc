@@ -1657,6 +1657,12 @@ bool VaapiWrapper::GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
 }
 
 // static
+bool VaapiWrapper::IsVppProfileSupported() {
+  return VASupportedProfiles::Get().IsProfileSupported(kVideoProcess,
+                                                    VAProfileNone);
+}
+
+// static
 bool VaapiWrapper::IsVppResolutionAllowed(const gfx::Size& size) {
   const VASupportedProfiles::ProfileInfo* profile_info =
       VASupportedProfiles::Get().IsProfileSupported(kVideoProcess,
