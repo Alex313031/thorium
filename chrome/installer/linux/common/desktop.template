@@ -170,7 +170,7 @@ Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --enable-experimental-web-platform-featur
 
 [Desktop Action content-shell]
 Name=Open Content Shell
-Exec=/opt/chromium.org/chromium-unstable/content_shell --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading
+Exec=/usr/bin/thorium-shell --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
