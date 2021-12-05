@@ -710,7 +710,8 @@ void VaapiVideoDecodeAccelerator::AssignPictureBuffers(
   // processing pipeline for downloading the decoded frame from the internal
   // surface, we need to create a |vpp_vaapi_wrapper_|.
   if (requires_vpp && buffer_allocation_mode_ != BufferAllocationMode::kNone &&
-      buffer_allocation_mode_ != BufferAllocationMode::kWrapVdpau) {
+      buffer_allocation_mode_ != BufferAllocationMode::kWrapVdpau &&
+      IsVppProfileSupported()) {
     if (!vpp_vaapi_wrapper_) {
       vpp_vaapi_wrapper_ = VaapiWrapper::Create(
           VaapiWrapper::kVideoProcess, VAProfileNone,
@@ -1207,6 +1208,11 @@ VaapiVideoDecodeAccelerator::GetSupportedProfiles() {
            codec == VideoCodec::kAV1 || codec == VideoCodec::kHEVC;
   });
   return profiles;
+}
+
+// static
+bool VaapiVideoDecodeAccelerator::IsVppProfileSupported() {
+  return VaapiWrapper::IsVppProfileSupported();
 }
 
 VaapiVideoDecodeAccelerator::BufferAllocationMode
