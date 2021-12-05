@@ -8,4 +8,4 @@ Nov. 30, Possible bug; settings 'enable_cros_media_app = true' does not enable c
 
 FIXED | Nov. 30, Bug that shows starting with M98.0.4738.0; bookmark folders in bookmarks bar have text colored incorrectly. - Me | Fixed upstream on Dec. 2.
 
-Dec. 2, The Google API Keys InfoBar patch doesn't work following an upstream update to startup_browser_creator_impl.cc, will evaluate a fix. - Me
+FIXED | Dec. 2, The Google API Keys InfoBar patch doesn't work following an upstream update to startup_browser_creator_impl.cc, will evaluate a fix. - Me | Fixed by me on Dec. 5.
