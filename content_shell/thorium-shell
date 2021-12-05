@@ -1,5 +1,3 @@
-#!/bin/sh -e
+#!/bin/bash
 
 /opt/chromium.org/thorium-unstable/content_shell $@
-
-exit 0
