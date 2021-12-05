@@ -227,6 +227,9 @@ class MEDIA_GPU_EXPORT VaapiWrapper
                                                uint32_t preferred_fourcc,
                                                uint32_t* suitable_fourcc);
 
+  // Checks to see if VAProfileNone is supported on this decoder
+  static bool IsVppProfileSupported();
+
   // Checks the surface size is allowed for VPP. Returns true if the size is
   // supported, false otherwise.
   static bool IsVppResolutionAllowed(const gfx::Size& size);
