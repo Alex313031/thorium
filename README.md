@@ -15,7 +15,7 @@
 > - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
 > - Experimental MPEG-DASH.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
-> - Patches from Debian including font rendering patch, VAAPI Patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
+> - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
 > - Audio Sandbox patch.
 > - DoH (DNS over HTTPS) patches from Bromite.
 > - Enable Do Not Track by default patch from Vanadium.
