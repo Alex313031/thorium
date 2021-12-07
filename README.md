@@ -53,3 +53,5 @@ https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and 
 &minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code.
 
 &nbsp;&nbsp; NOTE: libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/GitHub-Mark-32px.png">
