@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021 Alex313031 -->
 <!-- This file contains definitions of strings that are distribution specific.
 If you update this file, be sure also to update google_chrome_strings.grd. -->
 
@@ -386,7 +387,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <message name="IDS_ABOUT_CROS_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS.">
           Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>.
         </message>
-        <message name="IDS_ABOUT_CROS_WITH_LINUX_VERSION_LICENSE" desc="Additional text displayed beneath the Thorium open source URLs for Chrome OS when Crostini is installed.">
+        <message name="IDS_ABOUT_CROS_WITH_LINUX_VERSION_LICENSE" desc="Additional text displayed beneath the Chromium open source URLs for Chrome OS when Crostini is installed.">
           Thorium OS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>, as is <ph name="BEGIN_LINK_LINUX_OSS">&lt;a target="_blank" href="$2"&gt;</ph>Linux development environment<ph name="END_LINK_LINUX_OSS">&lt;/a&gt;</ph>.
         </message>
         <message name="IDS_ABOUT_SAFETY_INFORMATION" desc="The safety label in the About box." translateable="false">
@@ -581,6 +582,9 @@ Thorium is unable to recover your settings.
       </if>
       <message name="IDS_DEFAULT_BROWSER_INFOBAR_TEXT" desc="Text to show in an infobar when Chromium is not the current default browser.">
         Thorium isn't your default browser
+      </message>
+      <message name="IDS_TAILORED_SECURITY_CONSENTED_ENABLE_NOTIFICATION_TITLE" desc="The title of the notification asking if the user wants to enable Enhanced Safe Browsing">
+        Also turn on in Thorium?
       </message>
       <if expr="is_win">
         <!-- Try Chrome Toast Dialog -->
@@ -826,7 +830,7 @@ Thorium is unable to recover your settings.
         </message>
       </if>
 
-      <if expr="not chromeos and not is_android">
+      <if expr="not chromeos and not is_android and not lacros">
         <!-- Dice Web Signin Interception Bubble-->
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE" desc="Title of the web signin interception bubble">
           Continue in a new Thorium profile?
@@ -846,7 +850,9 @@ Thorium is unable to recover your settings.
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_ENTERPRISE_BUBBLE_DESC_MANAGED_DEVICE" desc="Body of the web signin interception bubble when the new account is personal and the existing account is managed on a managed device">
           This will create a new Thorium profile for <ph name="USER_EMAIL_ADDRESS">$1<ex>foo@gmail.com</ex></ph>
         </message>
+      </if>
 
+      <if expr="not chromeos and not is_android">
         <!-- Profile Customization Bubble-->
         <message name="IDS_PROFILE_CUSTOMIZATION_TEXT" desc="Text of the profile customization bubble">
           Customize your new Thorium profile
