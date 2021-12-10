@@ -1,6 +1,6 @@
-google_api_key = "AIzaSyBWLN2CLJrRsBWJw79pA8Yws-6Kwinl9uY"
-google_default_client_id = "383142470574-a78id7h1sjojfq8utu4u3v4j5b6tgv8l.apps.googleusercontent.com"
-google_default_client_secret = "333QBj8ObNLu3tFMW1p5is2l"
+google_api_key = ""
+google_default_client_id = ""
+google_default_client_secret = ""
 enable_stripping = true
 is_official_build = true
 is_debug = false
