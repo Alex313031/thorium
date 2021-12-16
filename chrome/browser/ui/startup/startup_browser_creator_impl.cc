@@ -513,10 +513,6 @@ StartupBrowserCreatorImpl::DetermineStartupTabs(
         StartupTabs new_features_tabs;
         new_features_tabs = provider.GetNewFeaturesTabs(whats_new_enabled);
         AppendTabs(new_features_tabs, &tabs);
-      } else {
-        // Record the current version so that What's New will not be shown until
-        // after the next major version update.
-        whats_new::SetLastVersion(g_browser_process->local_state());
       }
     }
 
@@ -661,14 +657,10 @@ bool StartupBrowserCreatorImpl::ShouldLaunch(
     return false;
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
-  // Don't open any browser windows if Ash requested that Lacros not do so. The
-  // implicit assumption is that some other code is responsible for keeping
-  // Lacros running in the background
-  if (chromeos::LacrosService::Get() &&
-      chromeos::LacrosService::Get()->init_params()->initial_browser_action ==
-          crosapi::mojom::InitialBrowserAction::kDoNotOpenWindow) {
-    return false;
-  }
+    // Don't open any browser windows if Ash requested that Lacros not do so.
+    // The implicit assumption is that some other code is responsible for
+    // keeping Lacros running in the background.
+    // Temporarily remove this logic to deal with https://crbug.com/1278549.
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
