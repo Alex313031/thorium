@@ -1,4 +1,4 @@
-// Copyright 2013 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -45,6 +45,10 @@ class NativePixmap;
 class NativePixmapDmaBuf;
 class Rect;
 }
+
+#define MAYBE_ASSERT_ACQUIRED(lock) \
+  if (lock)                         \
+    lock->AssertAcquired()
 
 namespace media {
 constexpr unsigned int kInvalidVaRtFormat = 0u;
@@ -93,12 +97,15 @@ enum class VAImplementation {
 };
 
 // This class handles VA-API calls and ensures proper locking of VA-API calls
-// to libva, the userspace shim to the HW codec driver. libva is not
-// thread-safe, so we have to perform locking ourselves. This class is fully
+// to libva, the userspace shim to the HW codec driver. The thread safety of
+// libva depends on the backend. If the backend is not thread-safe, we need to
+// maintain a global lock that guards all libva calls. This class is fully
 // synchronous and its constructor, all of its methods, and its destructor must
 // be called on the same sequence. These methods may wait on the |va_lock_|
 // which guards libva calls across all VaapiWrapper instances and other libva
-// call sites.
+// call sites. If the backend is known to be thread safe and
+// |enforce_sequence_affinity_| is true when the |kGlobalVaapiLock| flag is
+// disabled, |va_lock_| will be null and won't guard any libva calls.
 //
 // This class is responsible for managing VAAPI connection, contexts and state.
 // It is also responsible for managing and freeing VABuffers (not VASurfaces),
@@ -479,12 +486,10 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   // downloaded will be returned in |coded_data_size|. |sync_surface_id| will
   // be used as a sync point, i.e. it will have to become idle before starting
   // the download. |sync_surface_id| should be the source surface passed
-  // to the encode job. |sync_surface_id| will be nullopt when it has already
-  // been synced in GetEncodedChunkSize(). In the case vaSyncSurface()
-  // is not executed. Returns false if it fails for any reason. For example, the
-  // linear size of the resulted encoded frame is larger than |target_size|.
+  // to the encode job. Returns false if it fails for any reason. For example,
+  // the linear size of the resulted encoded frame is larger than |target_size|.
   virtual bool DownloadFromVABuffer(VABufferID buffer_id,
-                                    absl::optional<VASurfaceID> sync_surface_id,
+                                    VASurfaceID sync_surface_id,
                                     uint8_t* target_ptr,
                                     size_t target_size,
                                     size_t* coded_data_size) WARN_UNUSED_RESULT;
@@ -621,8 +626,8 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   const bool enforce_sequence_affinity_;
   base::SequenceCheckerImpl sequence_checker_;
 
-  // Pointer to VADisplayState's member |va_lock_|. Guaranteed to be valid for
-  // the lifetime of VaapiWrapper.
+  // If using global VA lock, this is a pointer to VADisplayState's member
+  // |va_lock_|. Guaranteed to be valid for the lifetime of VaapiWrapper.
   base::Lock* va_lock_;
 
   // VA handles.
