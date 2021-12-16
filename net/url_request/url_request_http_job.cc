@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -644,6 +644,8 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
       request_info_.extra_headers.SetHeader(HttpRequestHeaders::kCookie,
                                             cookie_line);
 
+      size_t n_partitioned_cookies = 0;
+
       // TODO(crbug.com/1031664): Reduce the number of times the cookie list
       // is iterated over. Get metrics for every cookie which is included.
       for (const auto& c : maybe_included_cookies) {
@@ -673,6 +675,13 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
 
         UMA_HISTOGRAM_ENUMERATION("Cookie.CookieSchemeRequestScheme",
                                   cookie_request_schemes);
+        if (c.cookie.IsPartitioned())
+          ++n_partitioned_cookies;
+      }
+
+      if (IsPartitionedCookiesEnabled()) {
+        base::UmaHistogramCounts100("Cookie.PartitionedCookiesInRequest",
+                                    n_partitioned_cookies);
       }
     }
   }
@@ -1626,6 +1635,10 @@ void URLRequestHttpJob::ComputeCookiePartitionKey() {
   cookie_partition_key_ = CookieAccessDelegate::CreateCookiePartitionKey(
       cookie_store->cookie_access_delegate(),
       request_->isolation_info().network_isolation_key());
+}
+
+bool URLRequestHttpJob::IsPartitionedCookiesEnabled() const {
+  return cookie_partition_key_.has_value();
 }
 
 }  // namespace net
