@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -434,8 +434,9 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
     }
 
     request_->SetExtraRequestHeaders(extra_request_headers);
-    // Disable secure DNS for any DoH server hostname lookups to avoid deadlock.
-    request_->SetSecureDnsPolicy(SecureDnsPolicy::kDisable);
+    // Apply special policy to DNS lookups for for a DoH server hostname to
+    // avoid deadlock and enable the use of preconfigured IP addresses.
+    request_->SetSecureDnsPolicy(SecureDnsPolicy::kBootstrap);
     request_->SetLoadFlags(request_->load_flags() | LOAD_DISABLE_CACHE |
                            LOAD_MINIMAL_HEADERS | LOAD_BYPASS_PROXY);
     request_->set_allow_credentials(false);
