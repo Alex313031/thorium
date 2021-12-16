@@ -692,10 +692,6 @@ config("compiler") {
         ldflags +=
             [ "-Wl,-cache_path_lto," +
               rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
-      } else {
-        ldflags +=
-            # [ "-Wl,--thinlto-cache-dir=" +
-            #  rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
       }
 
       # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
