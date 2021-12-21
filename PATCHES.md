@@ -33,6 +33,8 @@ DoH Bare Minimum HTTP Headers Patch > https://github.com/bromite/bromite/blob/ma
 
 Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/12/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
+Show full URLs by Default Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/disable-formatting-in-omnibox.patch
+
 Disable FLOC Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-floc.patch
 
 Disable Google API Key Warning Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/disable/google-api-warning.patch & https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0013-disable-missing-key-warning.patch
