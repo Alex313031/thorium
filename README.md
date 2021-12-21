@@ -21,6 +21,7 @@
 > - Audio Sandbox patch.
 > - DoH (DNS over HTTPS) patches from Bromite.
 > - Enable Do Not Track by default patch from Vanadium.
+> - Show full URLs including trailing slashed in adress bar by default.
 > - Disable FLOC patch.
 > - Disable Google API Key warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Adds DuckDuckGo, Ecosia, Ask.com, and Yandex.com in US and other locales, along with the normal search engines.
