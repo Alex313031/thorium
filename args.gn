@@ -1,6 +1,8 @@
 google_api_key = ""
 google_default_client_id = ""
 google_default_client_secret = ""
+target_os = "linux"
+target_cpu = "x64"
 enable_linux_installer = true
 enable_distro_version_check = false
 enable_stripping = true
@@ -31,8 +33,6 @@ enable_ffmpeg_video_decoders = true
 is_component_ffmpeg = true
 use_webaudio_ffmpeg = false
 use_webaudio_pffft = true
-enable_av1_decoder = true
-enable_dav1d_decoder = true
 use_vaapi = true
 use_vr_assets_component = true
 enable_widevine = true
