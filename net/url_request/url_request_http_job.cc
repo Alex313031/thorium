@@ -591,16 +591,14 @@ void URLRequestHttpJob::AddCookieHeaderAndStart() {
         cookie_store->cookie_access_delegate();
 
     bool is_in_nontrivial_first_party_set =
-        delegate && delegate->IsInNontrivialFirstPartySet(request_site);
+        delegate && delegate->FindFirstPartySetOwner(request_site).has_value();
     CookieOptions options = CreateCookieOptions(
         same_site_context, request_->same_party_context(),
         request_->isolation_info(), is_in_nontrivial_first_party_set);
 
     UMA_HISTOGRAM_ENUMERATION(
         "Cookie.FirstPartySetsContextType.HTTP.Read",
-        net::cookie_util::ComputeFirstPartySetsContextType(
-            request_site, request_->isolation_info(), delegate,
-            request_->force_ignore_top_frame_party_for_cookies()));
+        request_->same_party_context().first_party_sets_context_type());
 
     cookie_store->GetCookieListWithOptionsAsync(
         request_->url(), options,
@@ -759,16 +757,14 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
   net::SchemefulSite request_site(request_->url());
 
   bool is_in_nontrivial_first_party_set =
-      delegate && delegate->IsInNontrivialFirstPartySet(request_site);
+      delegate && delegate->FindFirstPartySetOwner(request_site).has_value();
   CookieOptions options = CreateCookieOptions(
       same_site_context, request_->same_party_context(),
       request_->isolation_info(), is_in_nontrivial_first_party_set);
 
   UMA_HISTOGRAM_ENUMERATION(
       "Cookie.FirstPartySetsContextType.HTTP.Write",
-      net::cookie_util::ComputeFirstPartySetsContextType(
-          request_site, request_->isolation_info(), delegate,
-          request_->force_ignore_top_frame_party_for_cookies()));
+      request_->same_party_context().first_party_sets_context_type());
 
   // Set all cookies, without waiting for them to be set. Any subsequent
   // read will see the combined result of all cookie operation.
