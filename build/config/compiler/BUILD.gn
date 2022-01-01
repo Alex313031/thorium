@@ -2104,9 +2104,9 @@ config("no_optimize") {
   } else if (is_fuchsia) {
     # On Fuchsia, we optimize for size here to reduce the size of debug build
     # packages so they can be run in a KVM. See crbug.com/910243 for details.
-    cflags = [ "-Og" ]
+    cflags = [ "-O3" ]
   } else {
-    cflags = [ "-O0" ]
+    cflags = [ "-O3" ]
     ldflags = []
   }
 }
