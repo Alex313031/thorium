@@ -3,7 +3,7 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
-## Chromium fork for linux named after radioactive element No. 90. NEW: New builds for different architectures in Thorium-Special! FMA Removed.
+## Chromium fork for linux named after radioactive element No. 90. NEW: New builds for different architectures in Thorium-Special! Also Google Sync is now enabled with baked in API Keys!
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
@@ -33,7 +33,7 @@
 - For more info, read the PATCHES.md file.
 - Known bugs are in the BUGS.md file.
 
-&nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version (only needed when building). (See below.)
+&nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version (only needed when building). (See below.) UPDATE: Thorium now has API Keys baked in but the instructions are the same for building as I will not include the keys here.
 
 &nbsp;&nbsp;In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys
 
