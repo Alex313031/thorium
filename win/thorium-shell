@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# Copyright (c) 2022 Alex313031
-
-./content_shell --user-data-dir=./profile --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
