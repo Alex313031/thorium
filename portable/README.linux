@@ -1,0 +1,11 @@
+## Thorium Portable for Linux README
+## Copyright (c) 2021 Alex313031
+
+This is a portable build of Thorium which can also be used to install/use Thorium on linux distros that do not use .deb packages. The thorium-browser script and thorium-shell script will need to be made executable with sudo chmod +x, and when run will disable logging, default browser check, and set the user data dir to the profile folder in this .zip rather than the usual ~/.config/thorium folder.
+
+The .desktop files are the equivalents, however one needs to make a symlink to them in either ~/.local/share/applications or /usr/share/applications.
+One can also directly copy them to one of these locations, and manually edit all the Exec= lines within them to point to wherever you unpacked this Thorium archive; I.E. instead of Exec=./chrome and Exec./content_shell I have it set on my machine to Exec=/home/alex/bin/thorium/chrome and Exec=/home/alex/bin/thorium/content_shell. Full paths are needed (no ~/ or $HOME)
+
+Thanks for using Thorium and feel free to use the issues or discussions for problems, questions, features, or suggestions.
+
+	- Alex313031
