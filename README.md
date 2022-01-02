@@ -3,7 +3,7 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
-## Chromium fork for linux named after radioactive element No. 90. NEW: New builds for different architectures in Thorium-Special!
+## Chromium fork for linux named after radioactive element No. 90. NEW: New builds for different architectures in Thorium-Special! FMA Removed.
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
@@ -11,7 +11,7 @@
 &nbsp;&ndash; NEW: Thorium Special now also has experimental Android ARM32 & ARM64 builds. \
 &nbsp;&ndash; NEW: Thorium Special now also has New ARM32 & ARM64 builds for things like the Raspberry Pi.
 
-&nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, AVX, and FMA, so it won't launch on CPU's below 4th gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome. (See below.)
+&nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special of which some are SSE4 or SSE4.2. (See below.)
 
 ### EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
 > - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
