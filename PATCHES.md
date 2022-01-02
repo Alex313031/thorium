@@ -3,7 +3,7 @@
 Compiler modifications include SSE4.2, AVX, and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 30, respectively. \
 NEW > Added some LLVM Loop optimizations as ldflags and cflags. See here > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-976883814
 
-Fixed AVX Builds as per > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-1003605112
+Fixed AVX Windows Builds as per > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-1003605112
 
 .desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both >  '--enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading' and with '--enable-clear-hevc-for-testing' also being appended to the thorium-shell.desktop file.
 
