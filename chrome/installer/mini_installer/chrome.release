@@ -1,4 +1,4 @@
-# Copyright (c) 2012 The Chromium Authors. All rights reserved.
+# Copyright (c) 2021 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -20,7 +20,7 @@ chrome_proxy.exe: %(ChromeDir)s\
 #
 chrome.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
-chrome_200_percent.pak: %(VersionDir)s\
+chrome-devtools.svg: %(VersionDir)s\
 chromedriver.exe: %(VersionDir)s\
 chromedriver.lib: %(VersionDir)s\
 chrome_child.dll: %(VersionDir)s\
@@ -33,6 +33,7 @@ eventlog_provider.dll: %(VersionDir)s\
 icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
+Logo.png: %(VersionDir)s\
 mojo_core.dll: %(VersionDir)s\
 nacl64.exe: %(VersionDir)s\
 nacl_irt_x86_32.nexe: %(VersionDir)s\
