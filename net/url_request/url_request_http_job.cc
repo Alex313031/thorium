@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -241,7 +241,7 @@ URLRequestHttpJob::URLRequestHttpJob(
     throttling_entry_ = manager->RegisterRequestUrl(request->url());
 
   ResetTimer();
-  ComputeCookiePartitionKey();
+  cookie_partition_key_ = ComputeCookiePartitionKey();
 }
 
 URLRequestHttpJob::~URLRequestHttpJob() {
@@ -300,7 +300,7 @@ void URLRequestHttpJob::Start() {
     request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                           referer_value);
   }
-  }
+}
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   request_info_.extra_headers.SetHeaderIfMissing(
@@ -1622,13 +1622,12 @@ void URLRequestHttpJob::NotifyURLRequestDestroyed() {
     network_quality_estimator->NotifyURLRequestDestroyed(*request());
 }
 
-void URLRequestHttpJob::ComputeCookiePartitionKey() {
+absl::optional<CookiePartitionKey>
+URLRequestHttpJob::ComputeCookiePartitionKey() {
   const CookieStore* cookie_store = request_->context()->cookie_store();
-  if (!cookie_store) {
-    cookie_partition_key_ = absl::nullopt;
-    return;
-  }
-  cookie_partition_key_ = CookieAccessDelegate::CreateCookiePartitionKey(
+  if (!cookie_store)
+    return absl::nullopt;
+  return CookieAccessDelegate::CreateCookiePartitionKey(
       cookie_store->cookie_access_delegate(),
       request_->isolation_info().network_isolation_key());
 }
