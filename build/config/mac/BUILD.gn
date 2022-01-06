@@ -41,7 +41,6 @@ config("compiler") {
 
   asmflags = common_mac_flags
   cflags = [ "-O3" ] + common_mac_flags
-  lto_opt_level = 3
 
   # Without this, the constructors and destructors of a C++ object inside
   # an Objective C struct won't be called, which is very bad.
