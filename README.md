@@ -33,7 +33,7 @@
 - For more info, read the PATCHES.md file.
 - Known bugs are in the BUGS.md file.
 
-&nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version (only needed when building). (See below.) UPDATE: Thorium now has API Keys baked in but the instructions are the same for building as I will not include the keys here.
+&nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version (only needed when building). (See below.) UPDATE: Thorium now has API Keys baked in but the instructions are the same if you are building it yourself as I will not include the keys here.
 
 &nbsp;&nbsp;In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys
 
