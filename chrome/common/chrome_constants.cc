@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -91,8 +91,8 @@ const char kMacHelperSuffixAlerts[] = " (Alerts)";
 #endif  // OS_MAC
 
 #if defined(OS_WIN)
-const base::FilePath::CharType kBrowserResourcesDll[] = FPL("chromium.dll");
-const base::FilePath::CharType kElfDll[] = FPL("chromium_elf.dll");
+const base::FilePath::CharType kBrowserResourcesDll[] = FPL("thorium.dll");
+const base::FilePath::CharType kElfDll[] = FPL("thorium_elf.dll");
 const base::FilePath::CharType kStatusTrayWindowClass[] =
     FPL("Chrome_StatusTrayWindow");
 #endif  // defined(OS_WIN)
@@ -139,6 +139,8 @@ const base::FilePath::CharType kPreviewsOptOutDBFilename[] =
     FPL("previews_opt_out.db");
 const base::FilePath::CharType kQueryTileStorageDirname[] = FPL("Query Tiles");
 const base::FilePath::CharType kReadmeFilename[] = FPL("README");
+const base::FilePath::CharType kSCTAuditingPendingReportsFileName[] =
+    FPL("SCT Auditing Pending Reports");
 const base::FilePath::CharType kSecurePreferencesFilename[] =
     FPL("Secure Preferences");
 const base::FilePath::CharType kServiceStateFileName[] = FPL("Service State");
