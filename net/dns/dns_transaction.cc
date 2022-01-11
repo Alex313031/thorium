@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1037,7 +1037,8 @@ class DnsOverHttpsProbeRunner : public DnsProbeRunner {
 
         if (extraction_error ==
                 DnsResponseResultExtractor::ExtractionError::kOk &&
-            results.addresses() && !results.addresses().value().empty()) {
+            results.legacy_addresses() &&
+            !results.legacy_addresses().value().empty()) {
           // The DoH probe queries don't go through the standard DnsAttempt
           // path, so the ServerStats have not been updated yet.
           context_->RecordServerSuccess(
