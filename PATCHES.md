@@ -1,7 +1,7 @@
 ## List of patches included in Thorium
 
-Compiler modifications include SSE4.2, AVX, and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 30, respectively. \
-NEW > Added some LLVM Loop optimizations as ldflags and cflags. See here > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-976883814
+Compiler modifications include SSE4.2, AVX, and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 100, respectively. \
+NEW > Added some LLVM LOOP optimizations as -mllvm flags. See here > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-976883814
 
 Fixed AVX Windows Builds as per > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-1003605112
 
