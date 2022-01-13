@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -25,6 +25,9 @@ const char kPrivacySandboxFlocDataAccessibleSince[] =
 
 extern const char kPrivacySandboxFlocEnabled[] = "privacy_sandbox.floc_enabled";
 
+extern const char kPrivacySandboxFledgeJoinBlocked[] =
+    "privacy_sandbox.fledge_join_blocked";
+
 }  // namespace prefs
 
 namespace privacy_sandbox {
@@ -44,6 +47,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxFlocEnabled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterDictionaryPref(prefs::kPrivacySandboxFledgeJoinBlocked);
 }
 
 }  // namespace privacy_sandbox
