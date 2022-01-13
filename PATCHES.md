@@ -47,7 +47,7 @@ Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
-The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
+The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring a user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
   - Modified by me.
 
 - Any other code/patches was written from scratch by me.
