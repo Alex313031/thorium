@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1171,7 +1171,7 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulationSetFromCountryID(
     UNHANDLED_COUNTRY(G, N)  // Guinea
     UNHANDLED_COUNTRY(G, P)  // Guadeloupe
     UNHANDLED_COUNTRY(H, T)  // Haiti
-#if defined(OS_WIN)
+#if BUILDFLAG(IS_WIN)
     UNHANDLED_COUNTRY(I, P)  // Clipperton Island ('IP' is an WinXP-ism; ISO
                              //                    includes it with France)
 #endif
@@ -1409,7 +1409,7 @@ std::unique_ptr<TemplateURLData> GetPrepopulatedEngine(PrefService* prefs,
   return nullptr;
 }
 
-#if defined(OS_ANDROID)
+#if BUILDFLAG(IS_ANDROID)
 
 std::vector<std::unique_ptr<TemplateURLData>> GetLocalPrepopulatedEngines(
     const std::string& locale) {
