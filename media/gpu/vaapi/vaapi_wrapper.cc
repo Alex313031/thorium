@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -568,7 +568,7 @@ VADisplayState::VADisplayState()
 bool VADisplayState::Initialize() {
   base::AutoLock auto_lock(va_lock_);
 
-#if defined(USE_OZONE) && defined(OS_LINUX)
+#if defined(USE_OZONE) && BUILDFLAG(IS_LINUX)
   // TODO(crbug.com/1116701): add vaapi support for other Ozone platforms on
   // Linux. See comment in OzonePlatform::PlatformProperties::supports_vaapi
   // for more details. This will also require revisiting everything that's
@@ -2271,6 +2271,7 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
         sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_SURFACE);
   DCHECK(!va_surface_size.IsEmpty());
+
   if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
     LOG(ERROR) << "Disabled due to potential breakage.";
     return nullptr;
@@ -2684,11 +2685,12 @@ uint64_t VaapiWrapper::GetEncodedChunkSize(VABufferID buffer_id,
   return coded_data_size;
 }
 
-bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
-                                        VASurfaceID sync_surface_id,
-                                        uint8_t* target_ptr,
-                                        size_t target_size,
-                                        size_t* coded_data_size) {
+bool VaapiWrapper::DownloadFromVABuffer(
+    VABufferID buffer_id,
+    absl::optional<VASurfaceID> sync_surface_id,
+    uint8_t* target_ptr,
+    size_t target_size,
+    size_t* coded_data_size) {
   CHECK(!enforce_sequence_affinity_ ||
         sequence_checker_.CalledOnValidSequence());
   DCHECK(target_ptr);
@@ -2698,10 +2700,13 @@ bool VaapiWrapper::DownloadFromVABuffer(VABufferID buffer_id,
 
   // vaSyncSurface() is not necessary on Intel platforms as long as there is a
   // vaMapBuffer() like in ScopedVABufferMapping below, see b/184312032.
-  if (GetImplementationType() != VAImplementation::kIntelI965 &&
+  // |sync_surface_id| will be nullopt because it has been synced already.
+  // vaSyncSurface() is not executed in the case.
+  if (sync_surface_id &&
+      GetImplementationType() != VAImplementation::kIntelI965 &&
       GetImplementationType() != VAImplementation::kIntelIHD) {
     TRACE_EVENT0("media,gpu", "VaapiWrapper::DownloadFromVABuffer_SyncSurface");
-    const VAStatus va_res = vaSyncSurface(va_display_, sync_surface_id);
+    const VAStatus va_res = vaSyncSurface(va_display_, *sync_surface_id);
     VA_SUCCESS_OR_RETURN(va_res, VaapiFunctions::kVASyncSurface, false);
   }
 
