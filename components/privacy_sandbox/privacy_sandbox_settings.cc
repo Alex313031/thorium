@@ -98,6 +98,7 @@ bool PrivacySandboxSettings::IsFlocAllowedForContext(
     const GURL& url,
     const absl::optional<url::Origin>& top_frame_origin) const {
   // If FLoC is disabled completely, it is not available in any context.
+  if (!IsFlocAllowed())
     return false;
 
   ContentSettingsForOneType cookie_settings;
