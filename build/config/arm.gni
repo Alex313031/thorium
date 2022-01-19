@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -28,10 +28,10 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     arm_tune = "armv8.5-a"
 
     # Whether to use the neon FPU instruction set or not.
-    arm_use_neon = ""
+    arm_use_neon = "true"
 
     # Whether to enable optional NEON code paths.
-    arm_optionally_use_neon = false
+    arm_optionally_use_neon = true
 
     # Thumb is a reduced instruction set available on some ARM processors that
     # has increased code density.
@@ -128,7 +128,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
     # - "standard": Enables both PAC and Branch Target Identification (Armv8.5).
     # - "none": No branch protection.
-    arm_control_flow_integrity = "standard"
+    arm_control_flow_integrity = "none"
   }
   assert(arm_control_flow_integrity == "none" ||
              arm_control_flow_integrity == "standard" ||
