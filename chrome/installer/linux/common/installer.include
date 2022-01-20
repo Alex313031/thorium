@@ -1,3 +1,4 @@
+# Copyright (c) 2022 Alex313031
 # Shows the output of a given command only on failure, or when VERBOSE is set.
 log_cmd() {
   if [ "${VERBOSE:-}" ]; then
@@ -252,6 +253,13 @@ stage_install_common() {
     install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
     # Install the ICD json file to point ANGLE to libvk_swiftshader.so
     install -m 644 "${OUTPUTDIR}/vk_swiftshader_icd.json" "${STAGEDIR}/${INSTALLDIR}/"
+  fi
+
+  # Optimization Guide Internal
+  if [ -f "${OUTPUTDIR}/liboptimization_guide_internal.so" ]; then
+    file="liboptimization_guide_internal.so"
+    strippedfile="${OUTPUTDIR}/${file}.stripped"
+    install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
   fi
 
   # libc++
