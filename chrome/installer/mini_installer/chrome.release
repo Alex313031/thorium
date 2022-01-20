@@ -1,4 +1,4 @@
-# Copyright (c) 2021 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -38,6 +38,7 @@ nacl64.exe: %(VersionDir)s\
 nacl_irt_x86_32.nexe: %(VersionDir)s\
 nacl_irt_x86_64.nexe: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
+optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
 shell_resources.pak: %(VersionDir)s\
 ui_resources_100_percent.pak: %(VersionDir)s\
