@@ -91,7 +91,8 @@ PrivacySandboxSettings::PrivacySandboxSettings(
 PrivacySandboxSettings::~PrivacySandboxSettings() = default;
 
 bool PrivacySandboxSettings::IsFlocAllowed() const {
-  return false;
+  return pref_service_->GetBoolean(prefs::kPrivacySandboxFlocEnabled) &&
+         pref_service_->GetBoolean(prefs::kPrivacySandboxApisEnabled);
 }
 
 bool PrivacySandboxSettings::IsFlocAllowedForContext(
