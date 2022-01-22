@@ -132,7 +132,7 @@ Exec=./content_shell --no-default-browser-check --use-gl=desktop --enable-experi
 Terminal=false
 X-MultipleArgs=false
 Type=Application
-Icon=/opt/chromium.org/thorium-unstable/chrome-devtools.svg
+Icon=./chrome-devtools.png
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
 StartupWMClass=chromium
