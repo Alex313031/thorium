@@ -1359,13 +1359,13 @@
 
   <!-- Privacy Review -->
   <message name="IDS_SETTINGS_PRIVACY_REVIEW_LABEL" desc="Label of the row in the Chrome privacy and security settings page that leads to the privacy review.">
-    Privacy guide
+    Privacy Guide
   </message>
   <message name="IDS_SETTINGS_PRIVACY_REVIEW_SUBLABEL" desc="Sublabel of the row in the Chrome privacy and security of Chrome settings that leads to the privacy review.">
     Review key privacy and security controls
   </message>
   <message name="IDS_SETTINGS_PRIVACY_REVIEW_PROMO_HEADER" desc="Text of a button on a card in the settings page that starts the privacy review feature.">
-    Take the privacy guide
+    Take the Privacy Guide
   </message>
   <message name="IDS_SETTINGS_PRIVACY_REVIEW_PROMO_START_BUTTON" desc="Text of a button on a card in the settings page that starts the privacy review feature.">
     Get started
@@ -1933,6 +1933,12 @@
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_EDIT_SEARCH_ENGINE" desc="Title for a dialog that allows editing an existing search engine.">
     Edit search engine
+  </message>
+  <message name="IDS_SETTINGS_SEARCH_ENGINES_DELETE_CONFIRMATION_TITLE" desc="Title for a dialog that confirms that a user wants to delete an existing search engine.">
+    Delete search engine
+  </message>
+  <message name="IDS_SETTINGS_SEARCH_ENGINES_DELETE_CONFIRMATION_DESCRIPTION" desc="Description text for a dialog that confirms that a user wants to delete an existing search engine.">
+    Are you sure you want to delete this search engine?
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_DEFAULT_ENGINES" desc="Label for 'default' Search Engines section">
     Default search engines
