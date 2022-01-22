@@ -1,4 +1,4 @@
-// Copyright (c) 2021 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -53,7 +53,7 @@
 #include "ui/gfx/x/xproto.h"
 #include "ui/gfx/x/xproto_util.h"
 
-#if defined(OS_FREEBSD)
+#if BUILDFLAG(IS_FREEBSD)
 #include <sys/sysctl.h>
 #include <sys/types.h>
 #endif
