@@ -1,1 +1,1 @@
-START /D "..\BIN\" thorium.exe --user-data-dir=..\USER_DATA --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --enable-tab-audio-muting --show-component-extension-options
+START /D "..\BIN\" chrome.exe --user-data-dir=..\USER_DATA --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --enable-tab-audio-muting --show-component-extension-options
