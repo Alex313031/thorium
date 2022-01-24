@@ -2340,7 +2340,7 @@ config("symbols") {
       cflags += [ "-gcodeview-ghash" ]
       ldflags = [ "/DEBUG:GHASH" ]
     } else {
-      ldflags = [ "/DEBUG" ]
+      ldflags = [ "/DEBUG:NONE" ]
     }
 
     # All configs using /DEBUG should include this:
