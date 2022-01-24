@@ -1,5 +1,5 @@
 ## Thorium Portable for Windows README.txt
-## Copyright (c) 2021 Alex313031
+## Copyright (c) 2022 Alex313031
 
 # How to use the files in this .zip
 # Unpack .zip to wherever
@@ -8,6 +8,7 @@ BIN - Contains Thorium
 
 RUNNER - Contains THORIUM.BAT for running portable/standalone.
 	- Also contains CONTENT_SHELL.BAT for running the chromium content shell (blink).
+	- Contains chrome-devtools.ico for setting an icon for content_shell if you make a shortcut.
 
 USER_DATA - Contains user profile data.
 
