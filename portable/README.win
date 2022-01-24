@@ -4,15 +4,18 @@
 # How to use the files in this .zip
 # Unpack .zip to wherever
 
-BIN - Contains Thorium
-
-RUNNER - Contains THORIUM.BAT for running portable/standalone.
+Contains THORIUM.BAT for running portable/standalone.
 	- Also contains CONTENT_SHELL.BAT for running the chromium content shell (blink).
+	
+
+BIN - Contains Thorium
 	- Contains chrome-devtools.ico for setting an icon for content_shell if you make a shortcut.
 
 USER_DATA - Contains user profile data.
 
-NOTE: You can also skip using THORIUM.BAT and just copy the contents of BIN somewhere, and run thorium.exe from within, note this will make a profile dir in C:\Users\$USERNAME\AppData\Local\Chromium\User Data\ and write a few registry values. Don't do this if you are already running a vanilla chromium release.
+NOTE: You can also skip using THORIUM.BAT and just copy the contents of BIN somewhere, and run thorium.exe from within, note this will make a profile dir in C:\Users\
+
+$USERNAME\AppData\Local\Chromium\User Data\ and write a few registry values. Don't do this if you are already running a vanilla chromium release.
 
 Thanks for using Thorium and feel free to use the issues or discussions for problems, questions, features, or suggestions.
 
