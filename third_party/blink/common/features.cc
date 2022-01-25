@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -28,10 +28,6 @@ const base::Feature kBackForwardCacheDedicatedWorker{
 const base::Feature kBlockingDownloadsInAdFrameWithoutUserActivation{
     "BlockingDownloadsInAdFrameWithoutUserActivation",
     base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Support COEP on SharedWorker.
-const base::Feature kCOEPForSharedWorker{"COEPForSharedWorker",
-                                         base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kCOLRV1Fonts{"COLRV1Fonts",
                                  base::FEATURE_ENABLED_BY_DEFAULT};
@@ -170,7 +166,7 @@ const base::Feature kNavigationPredictor {
 // Enable browser-initiated dedicated worker script loading
 // (PlzDedicatedWorker). https://crbug.com/906991
 const base::Feature kPlzDedicatedWorker{"PlzDedicatedWorker",
-                                        base::FEATURE_ENABLED_BY_DEFAULT};
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enable Portals. https://crbug.com/865123.
 // Note that default enabling this does not expose the portal
@@ -243,7 +239,7 @@ bool IsFencedFramesMPArchBased() {
 }
 
 const base::Feature kInitialNavigationEntry{"InitialNavigationEntry",
-                                            base::FEATURE_ENABLED_BY_DEFAULT};
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
 
 bool IsInitialNavigationEntryEnabled() {
   return base::FeatureList::IsEnabled(blink::features::kInitialNavigationEntry);
