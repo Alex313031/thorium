@@ -10,11 +10,22 @@ cp -r -v media/. $HOME/chromium/src/media/ &&
 cp -r -v net/. $HOME/chromium/src/net/ &&
 cp -r -v sandbox/. $HOME/chromium/src/sandbox/ &&
 cp -r -v third_party/. $HOME/chromium/src/third_party/ &&
+cp -r -v tools/. $HOME/chromium/src/tools/ &&
 cp -r -v ui/. $HOME/chromium/src/ui/ &&
 cp -r -v v8/. $HOME/chromium/src/v8/ &&
 cp -v chrome-devtools/chrome-devtools.svg $HOME/chromium/src/out/thorium/ &&
 cp -r -v content_shell/. $HOME/chromium/src/out/thorium/ &&
 
 cd $HOME/chromium/src &&
+
+export NINJA_SUMMARIZE_BUILD=1 &&
+
+alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
+
+alias pgo='python tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
+alias pgow='python tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
+alias pgom='python tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
 exit 0
