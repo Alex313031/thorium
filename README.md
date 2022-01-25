@@ -3,13 +3,14 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/chrome_app_icon_192.png">
 
-## Chromium fork for linux named after radioactive element No. 90. NEW: New builds for different architectures in Thorium-Special! Also Google Sync is now enabled with baked in API Keys!
+## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/Android/Other builds see below. NEW: New builds for different architectures in Thorium-Special! Also Google Sync is now enabled with baked in API Keys!
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
-&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4, SSE4.2, and pure AVX builds. NEW: Tigerlake (11th Gen) builds by @midzer \
+&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi/Android are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4, SSE4.2, and pure AVX builds. NEW: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; NEW: Thorium Special now also has experimental Android ARM32 & ARM64 builds. \
-&nbsp;&ndash; NEW: Thorium Special now also has New ARM32 & ARM64 builds for things like the Raspberry Pi.
+&nbsp;&ndash; NEW: Thorium Special now also has new ARM32 & ARM64 builds for things like the Raspberry Pi. \
+&nbsp;&ndash; NEW: Thorium Special now also has ARM64 and x64 builds for MacOS.
 
 &nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special of which some are SSE4 or SSE4.2. (See below.)
 
