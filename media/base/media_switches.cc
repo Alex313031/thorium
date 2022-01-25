@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -52,8 +52,8 @@ const char kReportVp9AsAnUnsupportedMimeType[] =
 const char kAlsaInputDevice[] = "alsa-input-device";
 // The Alsa device to use when opening an audio stream.
 const char kAlsaOutputDevice[] = "alsa-output-device";
-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_FREEBSD) ||
-        // BUILDFLAG(IS_SOLARIS)
+#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) ||
+        // BUILDFLAG(IS_FREEBSD) || BUILDFLAG(IS_SOLARIS)
 
 #if BUILDFLAG(IS_WIN)
 // Use exclusive mode audio streaming for Windows Vista and higher.
@@ -513,15 +513,20 @@ const base::Feature kVaapiVP9Encoder{"VaapiVP9Encoder",
 const base::Feature kGlobalVaapiLock{"GlobalVaapiLock",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
-#if defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS_ASH)
+#if defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS)
+// TODO(b/214589754): revisit the need for the BUILDFLAG(IS_CHROMEOS) guard (as
+// opposed to BUILDFLAG(IS_CHROMEOS_ASH)) when the final design for HW
+// encoding is implemented for lacros-chrome.
 // Enable H264 temporal layer encoding with HW encoder on ChromeOS.
 const base::Feature kVaapiH264TemporalLayerHWEncoding{
     "VaapiH264TemporalLayerEncoding", base::FEATURE_ENABLED_BY_DEFAULT};
+// Enable VP8 temporal layer encoding with HW encoder on ChromeOS.
+const base::Feature kVaapiVp8TemporalLayerHWEncoding{
+    "VaapiVp8TemporalLayerEncoding", base::FEATURE_ENABLED_BY_DEFAULT};
 // Enable VP9 k-SVC encoding with HW encoder for webrtc use case on ChromeOS.
 const base::Feature kVaapiVp9kSVCHWEncoding{"VaapiVp9kSVCHWEncoding",
                                             base::FEATURE_ENABLED_BY_DEFAULT};
-
-#endif  // defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS_ASH)
+#endif  // defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS)
 
 // Inform video blitter of video color space.
 const base::Feature kVideoBlitColorAccuracy{"video-blit-color-accuracy",
@@ -711,7 +716,7 @@ const base::Feature kUseRealColorSpaceForAndroidVideo{
 // experiment with direct VideoDecoder path on Linux Desktop.
 // TODO(b/159825227): remove when the direct video decoder is fully launched.
 const base::Feature kUseChromeOSDirectVideoDecoder{
-    "UseChromeOSDirectVideoDecoder", base::FEATURE_DISABLED_BY_DEFAULT};
+    "UseChromeOSDirectVideoDecoder", base::FEATURE_ENABLED_BY_DEFAULT};
 
 #if BUILDFLAG(IS_CHROMEOS)
 // ChromeOS has one of two VideoDecoder implementations active based on
