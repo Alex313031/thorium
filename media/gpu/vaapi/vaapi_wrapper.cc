@@ -1470,7 +1470,7 @@ std::vector<SVCScalabilityMode> VaapiWrapper::GetSupportedScalabilityModes(
     VideoCodecProfile media_profile,
     VAProfile va_profile) {
   std::vector<SVCScalabilityMode> scalability_modes;
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
   if (media_profile == VP9PROFILE_PROFILE0) {
     scalability_modes.push_back(SVCScalabilityMode::kL1T2);
     scalability_modes.push_back(SVCScalabilityMode::kL1T3);
@@ -1482,6 +1482,25 @@ std::vector<SVCScalabilityMode> VaapiWrapper::GetSupportedScalabilityModes(
       scalability_modes.push_back(SVCScalabilityMode::kL2T3Key);
       scalability_modes.push_back(SVCScalabilityMode::kL3T2Key);
       scalability_modes.push_back(SVCScalabilityMode::kL3T3Key);
+    }
+  }
+
+  if (media_profile >= VP8PROFILE_MIN && media_profile <= VP8PROFILE_MAX) {
+    if (base::FeatureList::IsEnabled(kVaapiVp8TemporalLayerHWEncoding)) {
+      scalability_modes.push_back(SVCScalabilityMode::kL1T2);
+      scalability_modes.push_back(SVCScalabilityMode::kL1T3);
+    }
+  }
+
+  if (media_profile >= H264PROFILE_MIN && media_profile <= H264PROFILE_MAX) {
+    // TODO(b/199487660): Enable H.264 temporal layer encoding on AMD once their
+    // drivers support them.
+    VAImplementation implementation = VaapiWrapper::GetImplementationType();
+    if (base::FeatureList::IsEnabled(kVaapiH264TemporalLayerHWEncoding) &&
+        (implementation == VAImplementation::kIntelI965 ||
+         implementation == VAImplementation::kIntelIHD)) {
+      scalability_modes.push_back(SVCScalabilityMode::kL1T2);
+      scalability_modes.push_back(SVCScalabilityMode::kL1T3);
     }
   }
 
@@ -2278,12 +2297,12 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
         sequence_checker_.CalledOnValidSequence());
   DCHECK_NE(va_surface_id, VA_INVALID_SURFACE);
   DCHECK(!va_surface_size.IsEmpty());
-
+  
   if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
     LOG(ERROR) << "Disabled due to potential breakage.";
     return nullptr;
   }
-
+  
   VADRMPRIMESurfaceDescriptor descriptor;
   {
     base::AutoLockMaybe auto_lock(va_lock_);
