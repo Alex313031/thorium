@@ -888,7 +888,7 @@ config("compiler_cpu_abi") {
         "-mavx",
         "-maes",
       ]
-      ldflags += [ "-m64" ]
+      ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
@@ -2164,7 +2164,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
@@ -2197,7 +2197,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
