@@ -12,4 +12,6 @@ FIXED | Dec. 2, The Google API Keys InfoBar patch doesn't work following an upst
 
 Dec. 6, The Default Browser InfoBar persists even after setting Thorium as the default browser. Until this is fixed upstream, it will be mitigated with the --no-default-browser-check cmdline flag in the .desktop file. - Midzer on GitHub
 
-FIXED | Jan. 2, Issue with using AVX builds in windows appeared for many weeks, disappeared, then reappeared, with a final fix being provided by RobRich999. - RobRich999 on GitHub
+FIXED | Jan. 2, Issue with using AVX builds in windows with the abseil library appeared for many weeks, disappeared, then reappeared, with a final fix being provided by RobRich999. - RobRich999 on GitHub
+
+FIXED | Jan. ?, Fix for memcpy in mini_installer that was plaquing me for some time. - RobRich999 on GitHub
