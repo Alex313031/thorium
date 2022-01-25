@@ -27,11 +27,11 @@
 > - Disable Google API Key warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Adds DuckDuckGo, Ecosia, Ask.com, and Yandex.com in US and other locales, along with the normal search engines.
 > - Always use the local NTP (New Tab Page) regardless of search engine.
-> - Fix icons when distilling page content in reader mode.
-> - Enable new menu UI when right clicking the reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
+> - Fix icons when distilling page content in Reader Mode.
+> - Enable new Menu UI when right clicking the Reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
 > - Prefetch settings updated to respect privacy.
-> - Patches for GN and chrome_sandbox.
-> - Remove the addition of the Chrome apt sources.list during installation.
+> - Patches for GN and chrome_sandbox when building.
+> - Remove the addition of the Chrome APT sources.list during installation.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
 > - Includes installer patches and files to include ChromeDriver and content_shell, with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver. Also, patches for abseil library and mini_installer when building for AVX on Windows.
@@ -58,7 +58,7 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may ha
 
 https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Chromium/ChromiumOS. I also build ChromiumOS with codecs, linux-firmware/modules, and added packages at > https://github.com/Alex313031/ChromiumOS/
 
-&minus; Thanks to https://github.com/robrich999/ for some info that went into this project.\
+&minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
 &minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
 &minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code.
 
