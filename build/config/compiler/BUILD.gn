@@ -703,9 +703,9 @@ config("compiler") {
         # bloat of ThinLTO to <10%, but that's potentially no longer true.
         # FIXME(inglorion): maybe tune these?
         if (target_cpu == "arm" || target_cpu == "arm64") {
-          import_instr_limit = 30
+          import_instr_limit = 100
         } else {
-          import_instr_limit = 30
+          import_instr_limit = 100
         }
       }
 
@@ -1915,11 +1915,12 @@ config("no_incompatible_pointer_warnings") {
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
 if (is_win) {
-  common_optimize_on_cflags = [
+  common_optimize_on_cflags += [
     "/Ob2",  # Both explicit and auto inlining.
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
     "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
   ]
+  common_optimize_on_ldflags += []
   if (!is_asan) {
     common_optimize_on_cflags += [
       # Put data in separate COMDATs. This allows the linker
@@ -1930,9 +1931,8 @@ if (is_win) {
       "/Gw",
     ]
   }
-  common_optimize_on_ldflags = []
   
-  common_optimize_on_cflags += [
+  common_optimize_on_cflags = [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
@@ -1945,7 +1945,7 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
   ]
 
-  common_optimize_on_ldflags += [
+  common_optimize_on_ldflags = [
     "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
@@ -1967,12 +1967,11 @@ if (is_win) {
   if (is_official_build) {
     common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
+    common_optimize_on_cflags += []
   }
 } else {
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
   
-  common_optimize_on_cflags += [
+  common_optimize_on_cflags = [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
@@ -1985,7 +1984,7 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
   ]
 
-  common_optimize_on_ldflags += [
+  common_optimize_on_ldflags = [
     "-Wl,-mllvm,-extra-vectorizer-passes",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
@@ -2038,7 +2037,7 @@ if (is_win) {
       # Specifically tell the linker to perform optimizations.
       # See http://lwn.net/Articles/192624/ .
       # -O2 enables string tail merge optimization in gold and lld.
-      "-Wl,-O2",
+      "-Wl,-O3",
       "-Wl,--gc-sections",
     ]
   }
@@ -2169,7 +2168,7 @@ config("optimize_max") {
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     }
     rustflags = [ "-Copt-level=3" ]
   }
@@ -2340,7 +2339,7 @@ config("symbols") {
       cflags += [ "-gcodeview-ghash" ]
       ldflags = [ "/DEBUG:GHASH" ]
     } else {
-      ldflags = [ "/DEBUG:NONE" ]
+      ldflags = [ "/DEBUG" ]
     }
 
     # All configs using /DEBUG should include this:
