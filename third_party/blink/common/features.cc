@@ -97,6 +97,12 @@ const base::Feature kFreezePurgeMemoryAllPagesFrozen{
 const base::Feature kReduceUserAgent{"ReduceUserAgent",
                                      base::FEATURE_DISABLED_BY_DEFAULT};
 
+// Enables the `sec-ch-ua-full` client hint to be sent along with the full user
+// agent string in the HTTP request headers, as well as surfacing the full user
+// agent string in the JS APIs (navigator.userAgent, etc).
+const base::Feature kFullUserAgent{"FullUserAgent",
+                                   base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Enables the frequency capping for detecting overlay popups. Overlay-popups
 // are the interstitials that pop up and block the main content of the page.
 const base::Feature kFrequencyCappingForOverlayPopupDetection{
@@ -1155,6 +1161,10 @@ const base::Feature kLateFormNewlineNormalization{
 const base::Feature kAutoExpandDetailsElement{"AutoExpandDetailsElement",
                                               base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Enables loading the response body earlier in navigation.
+const base::Feature kEarlyBodyLoad{"EarlyBodyLoad",
+                                   base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Enables fetching the code cache earlier in navigation.
 const base::Feature kEarlyCodeCache{"EarlyCodeCache",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1197,5 +1207,10 @@ const base::Feature kBackForwardCacheAppBanner{
 const base::Feature kDefaultStyleSheetsEarlyInit{
     "DefaultStyleSheetsEarlyInit", base::FEATURE_DISABLED_BY_DEFAULT};
 
+const base::Feature kSystemColorChooser{"SystemColorChooser",
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kNoForcedFrameUpdates{"NoForcedFrameUpdates",
+                                          base::FEATURE_DISABLED_BY_DEFAULT};
 }  // namespace features
 }  // namespace blink
