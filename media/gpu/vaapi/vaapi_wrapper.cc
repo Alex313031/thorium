@@ -13,6 +13,7 @@
 #include <va/va_drmcommon.h>
 #include <va/va_str.h>
 #include <va/va_version.h>
+#include <xf86drm.h>
 
 #include <algorithm>
 #include <string>
@@ -37,6 +38,7 @@
 #include "base/posix/eintr_wrapper.h"
 #include "base/strings/pattern.h"
 #include "base/strings/string_util.h"
+#include "base/strings/stringprintf.h"
 #include "base/system/sys_info.h"
 #include "base/trace_event/trace_event.h"
 #include "build/build_config.h"
@@ -514,7 +516,7 @@ class VADisplayState {
   VADisplay va_display() const { return va_display_; }
   VAImplementation implementation_type() const { return implementation_type_; }
 
-  void SetDrmFd(base::PlatformFile fd) { drm_fd_.reset(HANDLE_EINTR(dup(fd))); }
+  void SetDrmFd(base::ScopedFD fd) { drm_fd_ = std::move(fd); }
 
  private:
   friend class base::NoDestructor<VADisplayState>;
@@ -556,17 +558,37 @@ VADisplayState* VADisplayState::Get() {
 
 // static
 void VADisplayState::PreSandboxInitialization() {
-  const char kDriRenderNode0Path[] = "/dev/dri/renderD128";
-  base::File drm_file = base::File(
-      base::FilePath::FromUTF8Unsafe(kDriRenderNode0Path),
-      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
-  if (drm_file.IsValid())
-    VADisplayState::Get()->SetDrmFd(drm_file.GetPlatformFile());
-
+  constexpr char kRenderNodeFilePattern[] = "/dev/dri/renderD%d";
+  // This loop ends on either the first card that does not exist or the first
+  // render node that is not vgem.
+  for (int i = 128;; i++) {
+    base::FilePath dev_path(FILE_PATH_LITERAL(
+        base::StringPrintf(kRenderNodeFilePattern, i).c_str()));
+    base::File drm_file =
+        base::File(dev_path, base::File::FLAG_OPEN | base::File::FLAG_READ |
+                                 base::File::FLAG_WRITE);
+                                 
   const char kNvidiaPath[] = "/dev/dri/nvidiactl";
   base::File nvidia_file = base::File(
       base::FilePath::FromUTF8Unsafe(kNvidiaPath),
       base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
+      
+    if (!drm_file.IsValid())
+      return;
+    // Skip the virtual graphics memory manager device.
+    drmVersionPtr version = drmGetVersion(drm_file.GetPlatformFile());
+    if (!version)
+      continue;
+    std::string version_name(
+        version->name,
+        base::checked_cast<std::string::size_type>(version->name_len));
+    drmFreeVersion(version);
+    if (base::LowerCaseEqualsASCII(version_name, "vgem"))
+      continue;
+    VADisplayState::Get()->SetDrmFd(
+        base::ScopedFD(drm_file.TakePlatformFile()));
+    return;
+  }
 }
 
 VADisplayState::VADisplayState()
@@ -1503,18 +1525,6 @@ std::vector<SVCScalabilityMode> VaapiWrapper::GetSupportedScalabilityModes(
       scalability_modes.push_back(SVCScalabilityMode::kL1T3);
     }
   }
-
-  if (media_profile >= H264PROFILE_MIN && media_profile <= H264PROFILE_MAX) {
-    // TODO(b/199487660): Enable H.264 temporal layer encoding on AMD once their
-    // drivers support them.
-    VAImplementation implementation = VaapiWrapper::GetImplementationType();
-    if (base::FeatureList::IsEnabled(kVaapiH264TemporalLayerHWEncoding) &&
-        (implementation == VAImplementation::kIntelI965 ||
-         implementation == VAImplementation::kIntelIHD)) {
-      scalability_modes.push_back(SVCScalabilityMode::kL1T2);
-      scalability_modes.push_back(SVCScalabilityMode::kL1T3);
-    }
-  }
 #endif
   return scalability_modes;
 }
@@ -2221,7 +2231,7 @@ scoped_refptr<VASurface> VaapiWrapper::CreateVASurfaceForPixmap(
     VA_SUCCESS_OR_RETURN(va_res, VaapiFunctions::kVACreateSurfaces_Importing,
                          nullptr);
   }
-  DVLOG(2) << __func__ << " " << va_surface_id;
+  DVLOG(3) << __func__ << " " << va_surface_id;
   // VASurface shares an ownership of the buffer referred by the passed file
   // descriptor. We can release |pixmap| here.
   return new VASurface(va_surface_id, size, va_format,
@@ -2357,17 +2367,15 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
     // specified, each layer should contain one plane.
     DCHECK_EQ(1u, descriptor.layers[layer].num_planes);
 
-    // Strictly speaking, we only have to dup() the fd for the planes after the
-    // first one since we already own the first one, but we dup() regardless for
-    // simplicity: |bo_fd| will be closed at the end of this method anyway.
-    base::ScopedFD plane_fd(HANDLE_EINTR(dup(bo_fd.get())));
+    auto plane_fd = base::ScopedFD(
+        layer == 0 ? bo_fd.release()
+                   : HANDLE_EINTR(dup(handle.planes[0].fd.get())));
     PCHECK(plane_fd.is_valid());
     constexpr uint64_t kZeroSizeToPreventMapping = 0u;
     handle.planes.emplace_back(
         base::checked_cast<int>(descriptor.layers[layer].pitch[0]),
         base::checked_cast<int>(descriptor.layers[layer].offset[0]),
-        kZeroSizeToPreventMapping,
-        base::ScopedFD(HANDLE_EINTR(dup(bo_fd.get()))));
+        kZeroSizeToPreventMapping, std::move(plane_fd));
   }
 
   if (descriptor.fourcc == VA_FOURCC_IMC3) {
@@ -3254,7 +3262,7 @@ void VaapiWrapper::DestroySurface(VASurfaceID va_surface_id) {
         sequence_checker_.CalledOnValidSequence());
   if (va_surface_id == VA_INVALID_SURFACE)
     return;
-  DVLOG(2) << __func__ << " " << va_surface_id;
+  DVLOG(3) << __func__ << " " << va_surface_id;
   base::AutoLockMaybe auto_lock(va_lock_);
   const VAStatus va_res = vaDestroySurfaces(va_display_, &va_surface_id, 1);
   VA_LOG_ON_ERROR(va_res, VaapiFunctions::kVADestroySurfaces);
