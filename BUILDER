@@ -1,0 +1,80 @@
+## Contains notes for me about what to change when rebasing the main BUILD.gn ## Lines with # are for personal use.
+# "-ffp-contract=fast",
+# ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", ]
+
+ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
+lto_opt_level
+import_instr_limit
+cflags = [ "-O
+[ "-Xclang", "-O3" ]
+config("no_symbols") {
+-Copt-level=
+
+linux above this > # TODO(jdduke) Re-enable on mips after resolving linking
+windows above this > # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
+
+  common_optimize_on_cflags = [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+  ]
+
+  common_optimize_on_ldflags = [
+    "-Wl,-mllvm,-extra-vectorizer-passes",
+    "-Wl,-mllvm,-enable-cond-stores-vec",
+    "-Wl,-mllvm,-slp-vectorize-hor-store",
+    "-Wl,-mllvm,-enable-loopinterchange",
+    "-Wl,-mllvm,-enable-loop-distribute",
+    "-Wl,-mllvm,-enable-unroll-and-jam",
+    "-Wl,-mllvm,-enable-loop-flatten",
+    "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
+    "-Wl,-mllvm,-unroll-runtime-multi-exit",
+    "-Wl,-mllvm,-aggressive-ext-opt",
+  ]
+  
+  common_optimize_on_cflags = [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+  ]
+
+  common_optimize_on_ldflags = [
+    "-mllvm:-extra-vectorizer-passes",
+    "-mllvm:-enable-cond-stores-vec",
+    "-mllvm:-slp-vectorize-hor-store",
+    "-mllvm:-enable-loopinterchange",
+    "-mllvm:-enable-loop-distribute",
+    "-mllvm:-enable-unroll-and-jam",
+    "-mllvm:-enable-loop-flatten",
+    "-mllvm:-interleave-small-loop-scalar-reduction",
+    "-mllvm:-unroll-runtime-multi-exit",
+    "-mllvm:-aggressive-ext-opt",
+  ]
+
+    # cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
+[...]
+       #  "/lldltocache:" +
+       #      rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
+       #  "/lldltocachepolicy:$cache_policy",
+       
+    # cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
+[...]
+        #     [ "-Wl,--thinlto-cache-dir=" +
+        #       rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
+
+[...]
+      # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
