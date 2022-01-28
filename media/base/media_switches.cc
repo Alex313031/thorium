@@ -261,8 +261,8 @@ const base::Feature kEnableMediaInternals{"enable-media-internals",
                                           base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables user control over muting tab audio from the tab strip.
-const base::Feature kEnableTabMuting{"enable-tab-muting",
-                                     base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kEnableTabMuting{"EnableTabMuting",
+                                     base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enable Picture-in-Picture.
 const base::Feature kPictureInPicture {
