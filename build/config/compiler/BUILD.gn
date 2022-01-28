@@ -552,10 +552,16 @@ config("compiler") {
     }
 
     # TODO(crbug.com/1235145): Investigate why/if this should be needed.
-    if (is_win) {
-      cflags += [ "/clang:-ffp-contract=off" ]
-    } else {
+    if (is_android) {
       cflags += [ "-ffp-contract=off" ]
+    }
+
+    # TODO(crbug.com/1290191): Some ios tests fail without this.
+    if (is_ios) {
+      cflags += [
+        "-Xclang",
+        "-disable-noundef-analysis",
+      ]
     }
   }
 
@@ -693,6 +699,9 @@ config("compiler") {
         ldflags +=
             [ "-Wl,-cache_path_lto," +
               rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
+      } else {
+        ldflags +=
+            []
       }
 
       # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
@@ -895,8 +904,7 @@ config("compiler_cpu_abi") {
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
-          "-mavx",
-          "-maes",
+          "-msse3",
         ]
       }
     } else if (current_cpu == "arm") {
@@ -1931,7 +1939,7 @@ if (is_win) {
       "/Gw",
     ]
   }
-  
+
   common_optimize_on_cflags = [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
@@ -1970,7 +1978,7 @@ if (is_win) {
     common_optimize_on_cflags += []
   }
 } else {
-  
+
   common_optimize_on_cflags = [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
@@ -2088,7 +2096,7 @@ config("optimize") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-  } else if (is_chromeos_ash) {
+  } else if (is_chromeos) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
     # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
     # any cost" (AKA -Oz). It'd be nice to:
@@ -2164,11 +2172,11 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     }
     rustflags = [ "-Copt-level=3" ]
   }
@@ -2197,7 +2205,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
@@ -2209,7 +2217,7 @@ config("optimize_speed") {
 
 config("optimize_fuzzing") {
   cflags = [ "-O1" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3" ]
+  rustflags = [ "-Copt-level=1" ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2357,6 +2365,10 @@ config("symbols") {
       # clang defaults to DWARF2 on macOS unless mac_deployment_target is
       # at least 10.11.
       # TODO(thakis): Remove this once mac_deployment_target is 10.11.
+      cflags += [ "-gdwarf-4" ]
+    } else if (!use_dwarf5 && !is_nacl) {
+      # Recent clang versions default to DWARF5 on Linux, and Android is about
+      # to switch. TODO: Adopt that in controlled way.
       cflags += [ "-gdwarf-4" ]
     }
 
