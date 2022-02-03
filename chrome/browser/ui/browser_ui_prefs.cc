@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -140,7 +140,6 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterBooleanPref(prefs::kEnterpriseHardwarePlatformAPIEnabled,
                                 false);
   registry->RegisterBooleanPref(prefs::kUserFeedbackAllowed, true);
-  registry->RegisterBooleanPref(prefs::kAllowSyncXHRInPageDismissal, false);
   registry->RegisterBooleanPref(
       prefs::kExternalProtocolDialogShowAlwaysOpenCheckbox, true);
   registry->RegisterBooleanPref(prefs::kScreenCaptureAllowed, true);
