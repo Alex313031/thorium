@@ -1134,6 +1134,9 @@
   <message name="IDS_SETTINGS_ON_STARTUP_OPEN_SPECIFIC" desc="Radio button option to open a specific set of pages.">
     Open a specific page or set of pages
   </message>
+  <message name="IDS_SETTINGS_ON_STARTUP_CONTINUE_AND_OPEN_SPECIFIC" desc="Radio button option to continue where you left off and open a specific set of pages.">
+    Continue where you left off and open a specific set of pages
+  </message>
   <message name="IDS_SETTINGS_ON_STARTUP_USE_CURRENT" desc="Button to use current pages.">
     Use current pages
   </message>
@@ -1355,6 +1358,31 @@
   </message>
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_COOKIES_DIALOG_MORE" desc="Label on the button in the dialog shown to users when they interacted with cookies to make them aware of the Privacy Sandbox.">
     More
+  </message>
+  <!-- TODO(crbug.com/1286276) These strings are not final yet and therefore marked as translateable="false" -->
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_TRIALS_TITLE" translateable="false" desc="Title of the Trails section of the privacy sandbox settings.">
+    Trials
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_TRIALS_SUMMARY" translateable="false" desc="Summary of the Trails section of the privacy sandbox settings.">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_TITLE" translateable="false" desc="Title of the Ad Personalization section of the privacy sandbox settings.">
+    Browser-based ad personalization
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_SUMMARY" translateable="false" desc="Summary of the Ad Personalization section of the privacy sandbox settings.">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_MEASUREMENT_TITLE" translateable="false" desc="Title of the Ad Measurement section of the privacy sandbox settings.">
+    Ad measurement
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_MEASUREMENT_SUMMARY" translateable="false" desc="Summary of the Ad Measurement section of the privacy sandbox settings.">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_TITLE" translateable="false" desc="Title of the Spam and Fraud section of the privacy sandbox settings.">
+    Spam &#38; fraud reduction
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_SUMMARY" translateable="false" desc="Summary of the Spam and Fraud section of the privacy sandbox settings.">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
   </message>
 
   <!-- Privacy Review -->
@@ -3876,13 +3904,13 @@
     Your devices
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_SYNCED_DESC" desc="The description of a section on a settings page that lists phoens that are signed into (and syncing with) the user's Google account.">
-    These devices can be used as security keys because you're signed into Chrome on them.
+    You're signed in to Chrome on these devices, so you can use them as security keys.
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_LINKED_DEVICES" desc="The title of a section on a settings page that lists phoens that can be used for signing into websites. The word 'linked' was picked to be distinct from 'paired', as in 'Bluetooth pairing'. The technology does use Bluetooth, but is distinct from Bluetooth pairing.">
     Linked devices
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_LINKED_DESC" desc="The description of a section on a settings page that lists phoens that can be used for signing into websites. The word 'linked' was picked to be distinct from 'paired', as in 'Bluetooth pairing'. The technology does use Bluetooth, but is distinct from Bluetooth pairing.">
-    These devices were linked by scanning a QR code.
+    You linked these devices by scanning a QR code.
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_MANAGE" desc="The title of an option in Chrome's privacy settings for managing phones that can be used to sign into websites.">
     Manage phones
