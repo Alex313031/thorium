@@ -552,8 +552,8 @@ config("compiler") {
     }
 
     # TODO(crbug.com/1235145): Investigate why/if this should be needed.
-    if (is_android) {
-      cflags += [ "-ffp-contract=off" ]
+    if (is_win) {
+      cflags += [ "/clang:-ffp-contract=off" ]
     }
 
     # TODO(crbug.com/1290191): Some ios tests fail without this.
@@ -564,6 +564,12 @@ config("compiler") {
       ]
     }
   }
+  
+  # Rust compiler setup (for either clang or rustc).
+  if (enable_rust) {
+    defines += [ "RUST_ENABLED" ]
+  }
+
 
   # C11/C++11 compiler flags setup.
   # ---------------------------
@@ -790,9 +796,7 @@ config("compiler") {
   # This flag enforces that member pointer base types are complete. It helps
   # prevent us from running into problems in the Microsoft C++ ABI (see
   # https://crbug.com/847724).
-  # TODO(crbug/1052397): Remove is_chromeos_lacros once lacros-chrome switches
-  # to target_os="chromeos".
-  if (is_clang && !is_nacl && target_os != "chromeos" && !is_chromeos_lacros &&
+  if (is_clang && !is_nacl && target_os != "chromeos" &&
       (is_win || use_custom_libcxx)) {
     cflags += [ "-fcomplete-member-pointers" ]
   }
@@ -1922,25 +1926,11 @@ config("no_incompatible_pointer_warnings") {
 
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
-if (is_win) {
-  common_optimize_on_cflags += [
-    "/Ob2",  # Both explicit and auto inlining.
-    "/Oy-",  # Disable omitting frame pointers, must be after /O2.
-    "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
-  ]
-  common_optimize_on_ldflags += [ "-mavx", "-maes", ]
-  if (!is_asan) {
-    common_optimize_on_cflags += [
-      # Put data in separate COMDATs. This allows the linker
-      # to put bit-identical constants at the same address even if
-      # they're unrelated constants, which saves binary size.
-      # This optimization can't be used when ASan is enabled because
-      # it is not compatible with the ASan ODR checker.
-      "/Gw",
-    ]
-  }
 
-  common_optimize_on_cflags = [
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
+
+  common_optimize_on_cflags += [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
@@ -1953,7 +1943,7 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
   ]
 
-  common_optimize_on_ldflags = [
+  common_optimize_on_ldflags += [
     "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
@@ -1966,20 +1956,27 @@ if (is_win) {
     "-mllvm:-aggressive-ext-opt",
   ]
 
-  # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
-  # misleading symbols in stack traces.
-  if (!is_debug && !is_component_build) {
-    common_optimize_on_ldflags += [ "/OPT:ICF" ]  # Redundant COMDAT folding.
+if (is_win) {
+  common_optimize_on_cflags += [
+    "/Ob2",  # Both explicit and auto inlining.
+    "/Oy-",  # Disable omitting frame pointers, must be after /O2.
+    "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
+  ]
+  common_optimize_on_ldflags += []
+  if (!is_asan) {
+    common_optimize_on_cflags += [
+      # Put data in separate COMDATs. This allows the linker
+      # to put bit-identical constants at the same address even if
+      # they're unrelated constants, which saves binary size.
+      # This optimization can't be used when ASan is enabled because
+      # it is not compatible with the ASan ODR checker.
+      "/Gw",
+    ]
   }
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
 
-  if (is_official_build) {
-    common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
-    # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
-    common_optimize_on_cflags += []
-  }
-} else {
-
-  common_optimize_on_cflags = [
+  common_optimize_on_cflags += [
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
@@ -1992,7 +1989,50 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
   ]
 
-  common_optimize_on_ldflags = [
+  common_optimize_on_ldflags += [
+    "-mllvm:-extra-vectorizer-passes",
+    "-mllvm:-enable-cond-stores-vec",
+    "-mllvm:-slp-vectorize-hor-store",
+    "-mllvm:-enable-loopinterchange",
+    "-mllvm:-enable-loop-distribute",
+    "-mllvm:-enable-unroll-and-jam",
+    "-mllvm:-enable-loop-flatten",
+    "-mllvm:-interleave-small-loop-scalar-reduction",
+    "-mllvm:-unroll-runtime-multi-exit",
+    "-mllvm:-aggressive-ext-opt",
+  ]
+  
+  # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
+  # misleading symbols in stack traces.
+  
+  if (!is_debug && !is_component_build) {
+    common_optimize_on_ldflags += [ "/OPT:ICF" ]  # Redundant COMDAT folding.
+  }
+
+  if (is_official_build) {
+    common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
+    # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
+    common_optimize_on_cflags += []
+  }
+} else {
+
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
+
+  common_optimize_on_cflags += [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+  ]
+
+  common_optimize_on_ldflags += [
     "-Wl,-mllvm,-extra-vectorizer-passes",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
@@ -2172,7 +2212,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
@@ -2205,7 +2245,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O1" ] + common_optimize_on_cflags
     } else {
