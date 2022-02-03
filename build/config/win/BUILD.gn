@@ -143,7 +143,9 @@ config("compiler") {
     cflags += [ "/Brepro" ]
   }
 
-  ldflags = [ "-mavx", "-maes", "/opt:lldlto=3", ]
+  ldflags = []
+
+  ldflags += [ "-mavx", "-maes", "/opt:lldlto=3", ]
 
   if (use_lld) {
     # lld defaults to writing the current time in the pe/coff header.
