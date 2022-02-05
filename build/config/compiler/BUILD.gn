@@ -652,8 +652,6 @@ config("compiler") {
   if (is_mac) {
     # The system libc++ on Mac doesn't have aligned allocation in C++17.
     defines += [ "_LIBCPP_HAS_NO_ALIGNED_ALLOCATION" ]
-    cflags_cc += [ "-stdlib=libc++" ]
-    ldflags += [ "-stdlib=libc++" ]
   }
 
   # Add flags for link-time optimization. These flags enable
@@ -1582,6 +1580,13 @@ config("prevent_unsafe_narrowing") {
       "-Wsign-compare",
       "-Wsign-conversion",
     ]
+    if (!is_nacl) {
+      cflags += [
+        # Avoid bugs of the form `if (size_t i = size; i >= 0; --i)` while
+        # fixing types to be sign-correct.
+        "-Wtautological-unsigned-zero-compare",
+      ]
+    }
   }
 }
 
@@ -2530,6 +2535,10 @@ config("minimal_symbols") {
       # clang defaults to DWARF2 on macOS unless mac_deployment_target is
       # at least 10.11.
       # TODO(thakis): Remove this once mac_deployment_target is 10.11.
+      cflags += [ "-gdwarf-4" ]
+    } else if (!use_dwarf5 && !is_nacl) {
+      # Recent clang versions default to DWARF5 on Linux, and Android is about
+      # to switch. TODO: Adopt that in controlled way.
       cflags += [ "-gdwarf-4" ]
     }
 
