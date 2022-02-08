@@ -130,6 +130,10 @@ const base::Feature kEditingNG{"EditingNG", base::FEATURE_ENABLED_BY_DEFAULT};
 // Enable LayoutNG.
 const base::Feature kLayoutNG{"LayoutNG", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Enable by default. This feature is for a kill switch.
+const base::Feature kLayoutNGBlockInInline{"LayoutNGBlockInInline",
+                                           base::FEATURE_ENABLED_BY_DEFAULT};
+
 const base::Feature kMixedContentAutoupgrade{"AutoupgradeMixedContent",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -1093,12 +1097,6 @@ const base::FeatureParam<base::TimeDelta> kHttpRttThreshold{
 const base::FeatureParam<double> kCostReductionOfMultiplexedRequests{
     &kDelayLowPriorityRequestsAccordingToNetworkState,
     "CostReductionOfMultiplexedRequests", 0.5};
-
-const base::Feature kForceMajorVersion100InUserAgent{
-    "ForceMajorVersion100InUserAgent", base::FEATURE_DISABLED_BY_DEFAULT};
-
-const base::Feature kForceMinorVersion100InUserAgent{
-    "ForceMinorVersion100InUserAgent", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kForceMajorVersionInMinorPositionInUserAgent{
     "ForceMajorVersionInMinorPositionInUserAgent",
