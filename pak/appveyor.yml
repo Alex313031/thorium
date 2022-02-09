@@ -1,0 +1,25 @@
+version: 2.0-{build}
+skip_tags: true
+build_script:
+- cmd: >-
+    appveyor.bat
+on_failure:
+- 7z a -mx9 -r fail.7z *.exe *.sln *.txt *.log
+- appveyor.exe PushArtifact fail.7z
+shallow_clone: true
+test: off
+artifacts:
+- path: pak_mingw64.exe
+- path: pak_mingw32.exe
+- path: pak_msvc64.exe
+- path: pak_msvc32.exe
+- path: chrome-pak.7z
+- path: chrome-pak_msvc.7z
+cache:
+  - tests
+skip_commits:
+  files:
+    - 'LICENSE'
+    - '*.md'
+    - '.gitingore'
+    - '.gitattributes'
