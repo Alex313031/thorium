@@ -90,8 +90,8 @@ enum class VAImplementation {
   kMesaGallium,
   kIntelI965,
   kIntelIHD,
-  kNVIDIAVDPAU,
   kOther,
+  kNVIDIAVDPAU,
   kInvalid,
 };
 
