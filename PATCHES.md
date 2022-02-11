@@ -17,6 +17,7 @@ Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob
   - Fixes font rendering in certain instances.
 
 VAAPI Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/enable-vaapi-on-linux.diff
+  - Modified by me.
 
 Intel HD Support Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/ihd-support.patch
 
