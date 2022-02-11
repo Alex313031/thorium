@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -272,7 +272,7 @@ bool IsFencedFramesMPArchBased() {
 }
 
 const base::Feature kInitialNavigationEntry{"InitialNavigationEntry",
-                                            base::FEATURE_ENABLED_BY_DEFAULT};
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
 
 bool IsInitialNavigationEntryEnabled() {
   return base::FeatureList::IsEnabled(blink::features::kInitialNavigationEntry);
@@ -1192,7 +1192,7 @@ const base::Feature kOriginAgentClusterDefaultEnabled{
     "OriginAgentClusterDefaultEnable", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kOriginAgentClusterDefaultWarning{
-    "OriginAgentClusterDefaultWarning", base::FEATURE_DISABLED_BY_DEFAULT};
+    "OriginAgentClusterDefaultWarning", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Allow third-party delegation of client hint information.
 const base::Feature kClientHintThirdPartyDelegation{
@@ -1231,6 +1231,14 @@ const base::Feature kElementSuperRareData{"ElementSuperRareData",
 
 const base::Feature kClientHintsPartitionedCookies{
     "ClientHintsPartitionedCookies", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// If enabled, the memory limit used for tiles is scaled by
+// `kScaleTileMemoryLimitFactor`.
+const base::Feature kScaleTileMemoryLimit{"ScaleTileMemoryLimit",
+                                          base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::FeatureParam<double> kScaleTileMemoryLimitFactor{
+    &kScaleTileMemoryLimit, "Factor", 1.0};
 
 }  // namespace features
 }  // namespace blink
