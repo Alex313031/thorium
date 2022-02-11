@@ -66,7 +66,7 @@ Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
-Patches for mini_installer and abseil when using AVX on Windows. Credit goes to RobRich999.
+Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring a user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, and Parallel Downloading. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
   - Modified by me.
