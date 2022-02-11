@@ -272,7 +272,7 @@ config("compiler") {
     configs += [ "//build/config/android:compiler" ]
   } else if (is_linux || is_chromeos) {
     configs += [ "//build/config/linux:compiler" ]
-    if (is_chromeos_ash) {
+    if (is_chromeos) {
       configs += [ "//build/config/chromeos:compiler" ]
     }
   } else if (is_nacl) {
@@ -1390,6 +1390,9 @@ config("runtime_library") {
     configs += [ "//build/config/win:runtime_library" ]
   } else if (is_linux || is_chromeos) {
     configs += [ "//build/config/linux:runtime_library" ]
+    if (is_chromeos) {
+      configs += [ "//build/config/chromeos:runtime_library" ]
+    }
   } else if (is_ios) {
     configs += [ "//build/config/ios:runtime_library" ]
   } else if (is_mac) {
@@ -2322,8 +2325,7 @@ config("afdo_optimize_size") {
 }
 
 # GCC and clang support a form of profile-guided optimization called AFDO.
-# There are some targeted places that AFDO regresses (and an icky interaction
-# between //base/allocator:tcmalloc and AFDO on GCC), so we provide a separate
+# There are some targeted places that AFDO regresses, so we provide a separate
 # config to allow AFDO to be disabled per-target.
 config("afdo") {
   if (is_clang) {
