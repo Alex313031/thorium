@@ -49,14 +49,18 @@ Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob
 Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/12/patches/0054-always-use-local-new-tab-page.patch
 
 Chromium Sandbox Patch (enables PIE) > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0016-chromium-sandbox-pie.patch
+  - Increases security for the chrome-sandbox executable.
 
 Fix Distilled Page Icons Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/fix-distilled-icons.patch#L6
+  - Fixes some issues with material design icons.
 
 Enable Menu UI on Reload Button > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/enable-menu-on-reload-button.patch
+  - Adds new right click menu to the reload button.
 
 Prefetch Privacy enabled by Default Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/enable-default-prefetch-privacy-changes.patch
 
 GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/gn/parallel.patch
+  - Useful when building.
 
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
