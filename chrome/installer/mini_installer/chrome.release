@@ -48,6 +48,13 @@ vk_swiftshader_icd.json: %(VersionDir)s\
 vulkan-1.dll: %(VersionDir)s\
 v8_context_snapshot.bin: %(VersionDir)s\
 #
+# Add pak to Thorium.
+#
+pack.bat: %(VersionDir)s\
+unpack.bat: %(VersionDir)s\
+pak_mingw32.exe: %(VersionDir)s\
+pak_mingw64.exe: %(VersionDir)s\
+#
 # Sub directories living in the version dir
 #
 Extensions\*.*: %(VersionDir)s\Extensions\
