@@ -59,7 +59,7 @@ GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromiu
 
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
-Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to RobRich999.
 
