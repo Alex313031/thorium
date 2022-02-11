@@ -721,7 +721,7 @@ const base::Feature kUseRealColorSpaceForAndroidVideo{
 // experiment with direct VideoDecoder path on Linux Desktop.
 // TODO(b/159825227): remove when the direct video decoder is fully launched.
 const base::Feature kUseChromeOSDirectVideoDecoder{
-    "UseChromeOSDirectVideoDecoder", base::FEATURE_ENABLED_BY_DEFAULT};
+    "UseChromeOSDirectVideoDecoder", base::FEATURE_DISABLED_BY_DEFAULT};
 
 #if BUILDFLAG(IS_CHROMEOS)
 // ChromeOS has one of two VideoDecoder implementations active based on
