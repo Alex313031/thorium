@@ -201,7 +201,7 @@ std::unique_ptr<URLRequestJob> URLRequestHttpJob::Create(URLRequest* request) {
     // Check for HSTS upgrade.
     TransportSecurityState* hsts =
         request->context()->transport_security_state();
-    if (hsts && hsts->ShouldUpgradeToSSL(url.host())) {
+    if (hsts && hsts->ShouldUpgradeToSSL(url.host(), request->net_log())) {
       return std::make_unique<URLRequestRedirectJob>(
           request, UpgradeSchemeToCryptographic(url),
           // Use status code 307 to preserve the method, so POST requests work.
@@ -323,7 +323,7 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
     std::string referer_value = referrer.spec();
     request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                           referer_value);
-  }
+    }
   }
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
@@ -333,6 +333,7 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
           http_user_agent_settings_->GetUserAgent() : std::string());
   }
 
+  // AddExtraHeaders declaration for devs.
   AddExtraHeaders();
 
   if (ShouldAddCookieHeader()) {
