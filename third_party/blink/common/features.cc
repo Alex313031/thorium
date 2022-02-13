@@ -1235,10 +1235,13 @@ const base::Feature kClientHintsPartitionedCookies{
 // If enabled, the memory limit used for tiles is scaled by
 // `kScaleTileMemoryLimitFactor`.
 const base::Feature kScaleTileMemoryLimit{"ScaleTileMemoryLimit",
-                                          base::FEATURE_ENABLED_BY_DEFAULT};
+                                          base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::FeatureParam<double> kScaleTileMemoryLimitFactor{
     &kScaleTileMemoryLimit, "Factor", 1.0};
+
+const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
