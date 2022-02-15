@@ -16,12 +16,12 @@ namespace features {
 // Apply lazy-loading to ad frames which have embeds likely impacting Core Web
 // Vitals.
 const base::Feature kAutomaticLazyFrameLoadingToAds{
-    "AutomaticLazyFrameLoadingToAds", base::FEATURE_DISABLED_BY_DEFAULT};
+    "AutomaticLazyFrameLoadingToAds", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Apply lazy-loading to frames which have embeds likely impacting Core Web
 // Vitals.
 const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
-    "AutomaticLazyFrameLoadingToEmbeds", base::FEATURE_DISABLED_BY_DEFAULT};
+    "AutomaticLazyFrameLoadingToEmbeds", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
@@ -851,10 +851,6 @@ const base::Feature kWebAppEnableDarkMode{"WebAppEnableDarkMode",
 const base::Feature kWebAppEnableHandleLinks{"WebAppEnableHandleLinks",
                                              base::FEATURE_DISABLED_BY_DEFAULT};
 
-// Enables web apps to request isolated storage.
-const base::Feature kWebAppEnableIsolatedStorage{
-    "WebAppEnableIsolatedStorage", base::FEATURE_DISABLED_BY_DEFAULT};
-
 // Enables the "launch_handler" manifest field for web apps.
 // Explainer: https://github.com/WICG/sw-launch/blob/main/launch_handler.md
 const base::Feature kWebAppEnableLaunchHandler{
@@ -1242,6 +1238,11 @@ const base::FeatureParam<double> kScaleTileMemoryLimitFactor{
 
 const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
                                              base::FEATURE_DISABLED_BY_DEFAULT};
+
+// If enabled, allows web pages to use the experimental EditContext API to
+// better control text input. See crbug.com/999184.
+const base::Feature kEditContext{"EditContext",
+                                 base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
