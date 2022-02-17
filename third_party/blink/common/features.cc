@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 20122 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -44,6 +44,17 @@ const base::Feature kCSSContainerQueries{"CSSContainerQueries",
 // Controls whether the Conversion Measurement API infrastructure is enabled.
 const base::Feature kConversionMeasurement{"ConversionMeasurement",
                                            base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Controls whether LCP calculations should exclude low-entropy images. If
+// enabled, then the associated parameter sets the cutoff, expressed as the
+// minimum number of bits of encoded image data used to encode each rendered
+// pixel. Note that this is not just pixels of decoded image data; the rendered
+// size includes any scaling applied by the rendering engine to display the
+// content.
+const base::Feature kExcludeLowEntropyImagesFromLCP{
+    "ExcludeLowEntropyImagesFromLCP", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<double> kMinimumEntropyForLCP{
+    &kExcludeLowEntropyImagesFromLCP, "min_bpp", 2};
 
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1243,6 +1254,10 @@ const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
 // better control text input. See crbug.com/999184.
 const base::Feature kEditContext{"EditContext",
                                  base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Enables the WindowPlacement RuntimeEnabledFeature.
+const base::Feature kWindowPlacement{"WindowPlacement",
+                                     base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
