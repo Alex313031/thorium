@@ -115,7 +115,7 @@ config("compiler") {
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86" || current_cpu == "x64") {
-      cflags += [ "-mavx", "-maes", ]
+      cflags += [ "/arch:AVX", "-mavx", "-maes", ]
     }
 
     if (exec_script("//build/win/use_ansi_codes.py", [], "trim string") ==
@@ -145,8 +145,6 @@ config("compiler") {
 
   ldflags = []
 
-  ldflags += [ "-mavx", "-maes", "/opt:lldlto=3", ]
-
   if (use_lld) {
     # lld defaults to writing the current time in the pe/coff header.
     # For build reproducibility, pass an explicit timestamp. See
@@ -157,6 +155,7 @@ config("compiler") {
 
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
+    ldflags += [ "-mllvm:-march=sandybridge", "/opt:lldlto=3", ]
   }
 
   if (use_large_pdbs) {
