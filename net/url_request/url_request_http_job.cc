@@ -319,7 +319,6 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
   // URLRequest::SetReferrer ensures that we do not send username and password
   // fields in the referrer.
   GURL referrer(request_->referrer());
-
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   // Our consumer should have made sure that this is a safe referrer (e.g. via
   // URLRequestJob::ComputeReferrerForPolicy).
@@ -329,7 +328,7 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
                                           referer_value);
     }
   }
-
+  
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   request_info_.extra_headers.SetHeaderIfMissing(
       HttpRequestHeaders::kUserAgent,
@@ -337,7 +336,6 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
           http_user_agent_settings_->GetUserAgent() : std::string());
   }
 
-  // AddExtraHeaders declaration for devs.
   AddExtraHeaders();
 
   if (ShouldAddCookieHeader()) {
@@ -742,6 +740,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
                                             cookie_line);
 
       size_t n_partitioned_cookies = 0;
+      size_t n_partitioned_cookies_no_nonce = 0;
 
       // TODO(crbug.com/1031664): Reduce the number of times the cookie list
       // is iterated over. Get metrics for every cookie which is included.
@@ -772,13 +771,36 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
 
         UMA_HISTOGRAM_ENUMERATION("Cookie.CookieSchemeRequestScheme",
                                   cookie_request_schemes);
-        if (c.cookie.IsPartitioned())
+        if (c.cookie.IsPartitioned()) {
           ++n_partitioned_cookies;
+          if (!c.cookie.PartitionKey()->nonce())
+            ++n_partitioned_cookies_no_nonce;
+        }
       }
 
       if (IsPartitionedCookiesEnabled()) {
         base::UmaHistogramCounts100("Cookie.PartitionedCookiesInRequest",
                                     n_partitioned_cookies);
+        // TODO(crbug.com/1296161): Remove this code when the partitioned
+        // cookies Origin Trial is over.
+        if (n_partitioned_cookies_no_nonce > 0 &&
+            !request_info_.extra_headers.HasHeader(
+                "Sec-CH-Partitioned-Cookies")) {
+          // If the cookie store has partitioned cookies and there is no
+          // Sec-CH-Partitioned-Cookies header set by the process that initiated
+          // the request, then the site was in the Origin Trial at one point,
+          // but we have not yet received a valid token or Accept-CH header.
+          //
+          // In this case, we still send the partitioned cookies and set the
+          // Sec-CH-Partitioned-Cookies structured header to false.
+          //
+          // If the site does not respond with the Accept-CH header and OT token
+          // in the response, the partitioned cookies will be converted to
+          // unpartitioned cookies. This conversion is done by
+          // CookieManager::ConvertPartitionedCookiesToUnpartitioned.
+          request_info_.extra_headers.SetHeader("Sec-CH-Partitioned-Cookies",
+                                                "?0");
+        }
       }
     }
   }
