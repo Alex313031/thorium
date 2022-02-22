@@ -29,6 +29,7 @@
 > - Always use the local NTP (New Tab Page) regardless of search engine.
 > - Fix icons when distilling page content in Reader Mode.
 > - Enable new Menu UI when right clicking the Reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
+> - Home button shown by Default.
 > - Prefetch settings updated to respect privacy.
 > - Patches for GN and chrome_sandbox when building.
 > - Remove the addition of the Chrome APT sources.list during installation.
