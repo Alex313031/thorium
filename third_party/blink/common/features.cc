@@ -1,4 +1,4 @@
-// Copyright 20122 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1125,10 +1125,6 @@ const base::Feature kClientHintsResourceWidth{"ClientHintsResourceWidth",
 const base::Feature kClientHintsViewportWidth{"ClientHintsViewportWidth",
                                               base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Allows third party use of WebSQL (`DOMWindowWebDatabase::openDatabase`).
-const base::Feature kWebSQLInThirdPartyContextEnabled{
-    "WebSQLInThirdPartyContextEnabled", base::FEATURE_DISABLED_BY_DEFAULT};
-
 // Enable legacy `device-memory` client hint.
 const base::Feature kClientHintsDeviceMemory_DEPRECATED{
     "ClientHintsDeviceMemory_DEPRECATED", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1157,6 +1153,21 @@ bool IsSetTimeoutWithoutClampEnabled() {
   return base::FeatureList::IsEnabled(blink::features::kSetTimeoutWithoutClamp);
 }
 
+// If enabled, the setTimeout(..., 0) will clamp to 4ms after a custom `nesting`
+// level.
+// Tracking bug: https://crbug.com/1108877.
+const base::Feature kMaxUnthrottledTimeoutNestingLevel{
+    "MaxUnthrottledTimeoutNestingLevel", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<int> kMaxUnthrottledTimeoutNestingLevelParam{
+    &kMaxUnthrottledTimeoutNestingLevel, "nesting", 10};
+bool IsMaxUnthrottledTimeoutNestingLevelEnabled() {
+  return base::FeatureList::IsEnabled(
+      blink::features::kMaxUnthrottledTimeoutNestingLevel);
+}
+int GetMaxUnthrottledTimeoutNestingLevel() {
+  return kMaxUnthrottledTimeoutNestingLevelParam.Get();
+}
+
 const base::Feature kTabSwitchMetrics2{"TabSwitchMetrics2",
                                        base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1164,11 +1175,6 @@ const base::Feature kTabSwitchMetrics2{"TabSwitchMetrics2",
 // of an animated image was painted.
 const base::Feature kLCPAnimatedImagesReporting{
     "LCPAnimatedImagesReporting", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Throws when `kWebSQLInThirdPartyContextEnabled` is disabled.
-const base::Feature kWebSQLInThirdPartyContextThrowsWhenDisabled{
-    "WebSQLInThirdPartyContextThrowsWhenDisabled",
-    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // https://blog.whatwg.org/newline-normalizations-in-form-submission
 const base::Feature kLateFormNewlineNormalization{
@@ -1193,7 +1199,7 @@ const base::Feature kClientHintsMetaHTTPEquivAcceptCH{
 
 // Allow use of a named meta tag to set client hints.
 const base::Feature kClientHintsMetaNameAcceptCH{
-    "ClientHintsMetaNameAcceptCH", base::FEATURE_DISABLED_BY_DEFAULT};
+    "ClientHintsMetaNameAcceptCH", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kOriginAgentClusterDefaultEnabled{
     "OriginAgentClusterDefaultEnable", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1203,7 +1209,7 @@ const base::Feature kOriginAgentClusterDefaultWarning{
 
 // Allow third-party delegation of client hint information.
 const base::Feature kClientHintThirdPartyDelegation{
-    "ClientHintThirdPartyDelegation", base::FEATURE_DISABLED_BY_DEFAULT};
+    "ClientHintThirdPartyDelegation", base::FEATURE_ENABLED_BY_DEFAULT};
 
 #if BUILDFLAG(IS_ANDROID)
 // Enables prefetching Android fonts on renderer startup.
@@ -1254,6 +1260,10 @@ const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
 // better control text input. See crbug.com/999184.
 const base::Feature kEditContext{"EditContext",
                                  base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kFreeNonRequiredTileResourcesForInactiveWindows{
+    "FreeNonRequiredTileResourcesForInactiveWindows",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables the WindowPlacement RuntimeEnabledFeature.
 const base::Feature kWindowPlacement{"WindowPlacement",
