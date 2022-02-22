@@ -57,6 +57,9 @@ Fix Distilled Page Icons Patch > https://github.com/Eloston/ungoogled-chromium/b
 Enable Menu UI on Reload Button > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/enable-menu-on-reload-button.patch
   - Adds new right click menu to the reload button.
 
+Show Home Button by Default Patch
+  - Made by me.
+
 Prefetch Privacy enabled by Default Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/enable-default-prefetch-privacy-changes.patch
 
 GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/gn/parallel.patch
