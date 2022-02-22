@@ -36,7 +36,7 @@
   </if>
   <if expr="is_macosx">
     <message name="IDS_ABOUT_CHROME_AUTOUPDATE_ALL" desc="The 'Automatically update Chrome for all users.' button in the About window.  Mac-only.">
-      Automatically update Thorium for all users
+      Automatically update Chrome for all users
     </message>
     <message name="IDS_ABOUT_CHROME_AUTOUPDATE_ALL_IS_ON" desc="The text in About Page to indicate automatic update is turned on.  Mac-only.">
       Automatic updates are turned on
@@ -48,7 +48,7 @@
     Accessibility
   </message>
   <message name="IDS_SETTINGS_ACCESSIBILITY_WEB_STORE" desc="Text for an external link explaining that additional accessibility features are found on the Chrome Web Store.">
-    Open Thorium Web Store
+    Open Chrome Web Store
   </message>
   <message name="IDS_SETTINGS_MORE_FEATURES_LINK" desc="Link which opens page where users can install extensions which provide additional accessibility features.">
     Add accessibility features
@@ -60,17 +60,17 @@
     Get image descriptions from Google
   </message>
   <message name="IDS_SETTINGS_ACCESSIBLE_IMAGE_LABELS_SUBTITLE" desc="Subtitle for screen reader image labels feature.">
-    If an image doesn’t have a useful description, Thorium will try to provide one for you. To create descriptions, images are sent to Google.
+    If an image doesn’t have a useful description, Chrome will try to provide one for you. To create descriptions, images are sent to Google.
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_TITLE" desc="Name of the setting to enable Live Caption feature.">
     Live Caption
   </message>
   <if expr="chromeos">
     <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Chrome browser initially. Currently only works for English media.">
-      Automatically creates captions for media in Thorium browser (currently available in English). Audio and captions are processed locally and never leave the device.
+      Automatically creates captions for media in Chrome browser (currently available in English). Audio and captions are processed locally and never leave the device.
     </message>
     <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Chrome browser initially.">
-      Automatically creates captions for media in Thorium browser. Audio and captions are processed locally and never leave the device.
+      Automatically creates captions for media in Chrome browser. Audio and captions are processed locally and never leave the device.
     </message>
   </if>
   <if expr="not chromeos">
@@ -152,7 +152,7 @@
     </message>
   </if>
   <message name="IDS_SETTINGS_CHROME_COLORS" desc="Text of the label describing 'Chrome Colors' theme.">
-    Thorium Colors
+    Chrome Colors
   </message>
   <message name="IDS_SETTINGS_SHOW_HOME_BUTTON" desc="Label for the checkbox which enables or disables showing the home button in the toolbar.">
     Show home button
@@ -167,7 +167,7 @@
     Change
   </message>
   <message name="IDS_SETTINGS_WEB_STORE" desc="Sub-label about choosing something from the Chrome Web Store.">
-    Open Thorium Web Store
+    Open Chrome Web Store
   </message>
   <if expr="is_macosx">
     <message name="IDS_SETTINGS_TABS_TO_LINKS_PREF" desc="The documentation string of the 'Tabs to Links' preference">
@@ -604,6 +604,9 @@
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_PASSWORD" desc="Label for the saved password when editing a password.">
     Password
+  </message>
+  <message name="IDS_SETTINGS_PASSWORDS_NOTE" desc="Label for the password note when viewing or editing a password.">
+    Note
   </message>
   <message name="IDS_SETTINGS_ADDRESS_NONE" desc="Placeholder that is shown when there are no addresses in the list of saved addresses.">
     Saved addresses will appear here
@@ -1313,7 +1316,7 @@
     </if>
     <if expr="not reven">
       <message name="IDS_SETTINGS_LANGUAGES_OPEN_CHROME_OS_SETTINGS_LABEL" desc="Label for the section that allow users to open languages settings in Chrome OS.">
-        Manage languages in Thorium OS settings
+        Manage languages in Chrome OS settings
       </message>
     </if>
     <message name="IDS_SETTINGS_LANGUAGES_KEYBOARD_APPS" desc="Title for the list of keyboard apps installed via Play Store by the user.">
@@ -1339,7 +1342,7 @@
     </if>
     <if expr="not reven">
       <message name="IDS_SETTINGS_SECURE_DNS_OPEN_CHROME_OS_SETTINGS_LABEL" desc="Label for the section that allow users to open Secure DNS settings in Chrome OS.">
-        Manage secure DNS in Thorium OS settings
+        Manage secure DNS in Chrome OS settings
       </message>
     </if>
   </if>
@@ -1434,10 +1437,10 @@
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_TITLE" translateable="false" desc="Title of the dialog to learn more about ad personalization.">
     About Browser-based ad personalization
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_BROWSER_INTERESTS" translateable="false" desc="Title of the browser-based interests section of the dialog to learn more about ad personalization.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_TOPICS_TITLE" translateable="false" desc="Title of the browser-based interests section of the dialog to learn more about ad personalization.">
     Your interests as estimated by your browser
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_WEBSITE_INTERESTS" translateable="false" desc="Title of the website-based interests section of the dialog to learn more about ad personalization.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_FLEDGE_TITLE" translateable="false" desc="Title of the website-based interests section of the dialog to learn more about ad personalization.">
     Your interests as defined by sites you visit
   </message>
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_LEARN_MORE_DIALOG_DATA_TYPES" translateable="false" desc="Title of the data types subsection of the dialog to learn more about ad personalization.">
@@ -1452,20 +1455,32 @@
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_TITLE" translateable="false" desc="Title of the 'ad personalization' dialog.">
     Browser-based ad personalization
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_DESCRIPTION" translateable="false" desc="Description of the 'ad personalization' dialog.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_DESCRIPTION" translateable="false" desc="Description of the main page of the 'ad personalization' dialog.">
     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_BROWSER_INTERESTS" translateable="false" desc="Title of the browser-based interests section of the 'ad personalization' dialog.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_REMOVED_DESCRIPTION" translateable="false" desc="Description of the removed interests page of the 'ad personalization' dialog.">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_TOPICS_TITLE" translateable="false" desc="Title of the browser-based interests section of the 'ad personalization' dialog.">
     Your interests as estimated by your browser
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_BROWSER_INTERESTS_EMPTY" translateable="false" desc="Description of the empty state of the browser-based interests section of the 'ad personalization' dialog.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_TOPICS_EMPTY" translateable="false" desc="Description of the empty state of the browser-based interests section of the 'ad personalization' dialog.">
     A list of interests will appear here as you browse the web
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_WEBSITE_INTERESTS" translateable="false" desc="Title of the website-based interests section of the 'ad personalization' dialog.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_REMOVED_TOPICS_EMPTY" translateable="false" desc="Description of the empty state of the removed browser-based interests section of the 'ad personalization' dialog.">
+    You haven’t removed any interests
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_REMOVED_INTERESTS_LABEL" translateable="false" desc="Label of the row to go to the removed browser-based interests section of the 'ad personalization' dialog.">
+    Interests you removed
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_FLEDGE_TITLE" translateable="false" desc="Title of the website-based interests section of the 'ad personalization' dialog.">
     Sites you visit that define your interests
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_WEBSITE_INTERESTS_EMPTY" translateable="false" desc="Description of the empty state of the website-based interests section of the 'ad personalization' dialog.">
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_FLEDGE_EMPTY" translateable="false" desc="Description of the empty state of the website-based interests section of the 'ad personalization' dialog.">
     A list of sites you've visited will appear here as you browse the web
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_PERSONALIZATION_DIALOG_REMOVED_FLEDGE_EMPTY" translateable="false" desc="Description of the empty state of the removed website-based interests section of the 'ad personalization' dialog.">
+    You haven’t removed any sites
   </message>
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_AD_MEASUREMENT_DIALOG_TITLE" translateable="false" desc="Title of the 'ad measurement' dialog.">
     Ad measurement
@@ -1752,37 +1767,37 @@
       Review device software
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITHOUT_TIMESTAMP" desc="This text describes that Chrome can check if any known harmful software is installed on the user's computer.">
-      Thorium can check your computer for harmful software
+      Chrome can check your computer for harmful software
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_SECONDS" desc="This text describes that Chrome did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      Thorium didn't find harmful software on your computer • Checked just now
+      Chrome didn't find harmful software on your computer • Checked just now
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_MINUTES" desc="This text describes that Chrome did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
       {NUM_MINS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 minute ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_MINS} minutes ago}}
+       =1 {Chrome didn't find harmful software on your computer • Checked 1 minute ago}
+       other {Chrome didn't find harmful software on your computer • Checked {NUM_MINS} minutes ago}}
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_HOURS" desc="This text describes that Chrome did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
       {NUM_HOURS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 hour ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_HOURS} hours ago}}
+       =1 {Chrome didn't find harmful software on your computer • Checked 1 hour ago}
+       other {Chrome didn't find harmful software on your computer • Checked {NUM_HOURS} hours ago}}
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_YESTERDAY" desc="This text describes that Chrome did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      Thorium didn't find harmful software on your computer • Checked yesterday
+      Chrome didn't find harmful software on your computer • Checked yesterday
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_DAYS" desc="This text describes that Chrome did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
       {NUM_DAYS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 day ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_DAYS} days ago}}
+       =1 {Chrome didn't find harmful software on your computer • Checked 1 day ago}
+       other {Chrome didn't find harmful software on your computer • Checked {NUM_DAYS} days ago}}
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_INFECTED" desc="This text describes that Chrome found harmful software on the computer.">
-      Thorium found harmful software on your computer
+      Chrome found harmful software on your computer
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_SCANNING" desc="This text describes that Chrome is currently checking the user's device for unwanted software. This takes a couple of minutes.">
-      Thorium is checking your computer for harmful software...
+      Chrome is checking your computer for harmful software...
     </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_REMOVING" desc="This text describes that Chrome is currently removing unwanted software frrom the user's device. This takes a couple of minutes.">
-      Thorium is removing harmful software from your computer...
+    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_REMOVING" desc="This text describes that Chrome is currently removing unwanted software frrom the user.s device. This takes a couple of minutes.">
+      Chrome is removing harmful software from your computer...
     </message>
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_DISABLED_BY_ADMIN" desc="This text describes that Chrome can't check for unwanted software because an administrator disabled the feature.">
       <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>Your administrator<ph name="END_LINK">&lt;/a&gt;</ph> has turned off checking for harmful software
@@ -1799,7 +1814,7 @@
     Uses cookies to remember your preferences, even if you don’t visit those pages
   </message>
   <message name="IDS_SETTINGS_NETWORK_PREDICTION_ENABLED_DESC_COOKIES_PAGE" desc="On the cookies page, the secondary text next to the checkbox that enables prediction of network actions.">
-    Preloads pages that Thorium thinks you might visit. To do this, Thorium may use cookies, if you allow cookies, and may encrypt and send pages through Google to hide your identity from sites.
+    Preloads pages that Chrome thinks you might visit. To do this, Chrome may use cookies, if you allow cookies, and may encrypt and send pages through Google to hide your identity from sites.
   </message>
   <message name="IDS_SETTINGS_SAFEBROWSING_ENABLEPROTECTION" desc="The section title of 'Protects you and your device from dangerous sites'">
     Safe Browsing (protects you and your device from dangerous sites)
@@ -2020,7 +2035,7 @@
     Some settings were reset
   </message>
   <message name="IDS_SETTINGS_RESET_BANNER_TEXT" desc="The text to show in a banner at the top of the chrome://settings page. The banner is displayed when Chrome detects that some settings have been tampered with and were reset to factory defaults.">
-    Thorium detected that some of your settings were corrupted by another program and reset them to their original defaults.
+    Chrome detected that some of your settings were corrupted by another program and reset them to their original defaults.
   </message>
   <message name="IDS_SETTINGS_RESET_BANNER_RESET_BUTTON_TEXT" desc="The text on the reset button in the Automatic Settings Reset Banner suggesting to reset ALL settings after an automatic reset of SOME settings.">
     Reset all settings
@@ -2088,10 +2103,10 @@
     Site search
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_SITE_SEARCH_EXPLANATION" desc="Explanation for 'Site Search' section. Used interchangeably with IDS_SETTINGS_SEARCH_ENGINES_SITE_SEARCH_EXPLANATION_STARTER_PACK">
-    To search a specific site or part of Thorium, type its shortcut in the address bar, followed by your preferred keyboard shortcut.
+    To search a specific site or part of Chrome, type its shortcut in the address bar, followed by your preferred keyboard shortcut.
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_SITE_SEARCH_EXPLANATION_STARTER_PACK" desc="Explanation for 'Site Search' section">
-    To search a specific site or part of Thorium, type its shortcut in the address bar, followed by your preferred keyboard shortcut. For example, to search only Bookmarks, type "@bookmarks", then press Tab or Space.
+    To search a specific site or part of Chrome, type its shortcut in the address bar, followed by your preferred keyboard shortcut. For example, to search only Bookmarks, type "@bookmarks", then press Tab or Space.
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_NO_SITES_ADDED" desc="Text shown when the 'Site Search' section is empty">
     No sites added
@@ -2112,7 +2127,7 @@
     Extensions
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_EXTENSION_ENGINES_EXPLANATION" desc="Explanation for a section that displays search engines added by extensions">
-    Some extensions can add search engines to Thorium
+    Some extensions can add search engines to Chrome
   </message>
   <message name="IDS_SETTINGS_SEARCH_ENGINES_SEARCH_ENGINE" desc="Label for a table column that holds the name of a search engine">
     Search engine
@@ -2782,7 +2797,7 @@
     Do not allow any site to install payment handlers
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_PDF_DOWNLOAD_PDFS" desc="Label for downloading PDF documents instead of automatically opening them in Chrome.">
-    Download PDF files instead of automatically opening them in Thorium
+    Download PDF files instead of automatically opening them in Chrome
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_VR_ASK" desc="The ask label for the VR feature in site settings.">
     Ask when a site wants to use your virtual reality devices and data
@@ -3287,7 +3302,7 @@
     No sites added
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_BLOCK_AUTOPLAY" desc="A label for a toggle in site settings to block autoplay. If the toggle is on then Chrome will block autoplay by default and use an algorithm to determine which sites should still be able to autoplay. If the toggle is off then autoplay will be enabled for all sites.">
-    Let Thorium choose when sites can play sound (recommended)
+    Let Chrome choose when sites can play sound (recommended)
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_EMPTY_ALL_SITES_PAGE" desc="Explanation shown when there are no sites that have appeared yet on the All Sites page.">
     Sites you visit will appear here
@@ -3480,9 +3495,6 @@
   <message name="IDS_SETTINGS_USER_EVENTS_CHECKBOX_TEXT" desc="Description text for the checkbox which enables or disables recording user events.">
     Uses content on sites you visit, plus browser activity and interactions, for personalization
   </message>
-  <message name="IDS_SETTINGS_MANAGE_SYNCED_DATA_TITLE" desc="Title for the link to manage Chrome Sync data via Google Dashboard.">
-    Manage synced data on Google Dashboard
-  </message>
   <message name="IDS_SETTINGS_ENCRYPT_WITH_SYNC_PASSPHRASE_LABEL" desc="Label for the radio button which, when selected, causes synced settings to be encrypted with a user-provided password.">
     Encrypt synced data with your own <ph name="BEGIN_LINK">&lt;a href="$1" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$1" target=&quot;_blank&quot;&gt;</ex></ph>sync passphrase<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>. This doesn't include payment methods and addresses from Google Pay.
   </message>
@@ -3601,10 +3613,12 @@
   </message>
 
   <!-- System Page -->
-  <if expr="not chromeos and not lacros">
+  <if expr="not chromeos">
     <message name="IDS_SETTINGS_SYSTEM" desc="Title of the system settings.">
       System
     </message>
+  </if>
+  <if expr="not chromeos and not lacros">
     <message name="IDS_SETTINGS_SYSTEM_HARDWARE_ACCELERATION_LABEL" desc="Label for the checkbox that forces Chrome to render via hardware acceleration (GPU) when available.">
       Use hardware acceleration when available
     </message>
@@ -3616,6 +3630,14 @@
     </message>
     <message name="IDS_SETTINGS_SYSTEM_PROXY_SETTINGS_POLICY_LABEL" desc="Non-interactive label that describes when Chrome's proxy settings are overwritten by policy. This is used in place of IDS_SETTINGS_SYSTEM_PROXY_SETTINGS_LABEL above.">
       <ph name="IDS_SHORT_PRODUCT_NAME">$1<ex>Chrome</ex></ph> is using proxy settings from your administrator
+    </message>
+  </if>
+  <if expr="lacros">
+    <message name="IDS_SETTINGS_SYSTEM_USE_ASH_PROXY_LABEL" desc="Label for the checkbox that enables using the ash proxy for the Lacros browser.">
+      Use Chrome OS proxy settings for this profile.
+    </message>
+    <message name="IDS_SETTINGS_SYSTEM_USES_ASH_PROXY_LABEL" desc="Non-interactive label that describes that the primary profile uses the computer's proxy settings.">
+      This profile uses Chrome OS proxy settings.
     </message>
   </if>
 
@@ -3644,10 +3666,10 @@
         other {{NUM_DOWNLOADS} more}}
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_EXPLANATION_CLEANUP_ERROR" desc="Body of a generic error message that could appear during the cleanup of harmful software. Multiple causes for the error are possible.">
-      An error occurred while Thorium was removing harmful software
+      An error occurred while Chrome was removing harmful software
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_EXPLANATION_FIND_AND_REMOVE" desc="Subtitle of the 'Find an remove harmful software' item. Imperative.">
-      Thorium can find harmful software on your computer and remove it
+      Chrome can find harmful software on your computer and remove it
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_EXPLANATION_NO_INTERNET_CONNECTION" desc="Body of error message that could appear during the cleanup of harmful software. Imperative instruction to user. This message will only appear on Windows desktop/laptop computers. Imperative.">
       Connect to a network and try again
@@ -3656,10 +3678,10 @@
       Click Try Again, and accept the prompt on your computer
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_EXPLANATION_CURRENTLY_REMOVING" desc="Description in the Chrome Cleanup web page that Chrome browser shows when unwanted software, like ad injectors or software that changes the user's settings without their knowledge, is being removed by Chrome from the user's computer. Appears under the title 'Removing harmful software...' Actor is Chrome; we are indicating that harmful software is currently being removed. 'it' is harmful software. Preferrably, the translation for this string should parallel IDS_CHROME_CLEANUP_PROMPT_EXPLANATION.">
-      There's harmful software on your computer. Thorium is removing it, restoring your settings, and disabling extensions. This will make your browser work normally again.
+      There's harmful software on your computer. Chrome is removing it, restoring your settings, and disabling extensions. This will make your browser work normally again.
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_EXPLANATION_SCAN_ERROR" desc="Body of error message that could appear during the cleanup of harmful software.">
-      An error occurred while Thorium was searching for harmful software
+      An error occurred while Chrome was searching for harmful software
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_FIND_BUTTON_LABEL" desc="Button for the 'Find harmful software' item in Chrome Settings. Imperative. On click, Chrome looks for harmful software on the user's computer. Imperative.">
       Find
@@ -3683,7 +3705,7 @@
       Cleanup failed
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_TITLE_ERROR_PERMISSIONS_NEEDED" desc="Title of error message that could appear during the cleanup of harmful software. 'permission' refers to the user granting permission, e.g. from an operating system prompt, before the cleanup operation can continue.">
-      Thorium needs permission to continue
+      Chrome needs permission to continue
     </message>
     <message name="IDS_SETTINGS_RESET_CLEANUP_TITLE_FIND_HARMFUL_SOFTWARE" desc="Title of an item in Chrome Settings. Imperative.">
       Find harmful software
@@ -3733,8 +3755,8 @@
     </message>
     <message name="IDS_SETTINGS_INCOMPATIBLE_APPLICATIONS_SUBPAGE_SUBTITLE" desc="The subtitle shown in the subpage for incompatible applications.">
       {NUM_APPLICATIONS, plural,
-        =1 {This application could prevent Thorium from working properly.}
-        other {These applications could prevent Thorium from working properly.}}
+        =1 {This application could prevent Chrome from working properly.}
+        other {These applications could prevent Chrome from working properly.}}
     </message>
     <message name="IDS_SETTINGS_INCOMPATIBLE_APPLICATIONS_SUBPAGE_SUBTITLE_NO_ADMIN_RIGHTS" desc="The subtitle shown in the subpage for incompatible applications, when the user does not have administrator rights. This means that these users are incapable of updating or removing incompatible applications by themselves.">
       {NUM_APPLICATIONS, plural,
@@ -4008,7 +4030,7 @@
     Your devices
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_SYNCED_DESC" desc="The description of a section on a settings page that lists phoens that are signed into (and syncing with) the user's Google account.">
-    You're signed in to Thorium on these devices, so you can use them as security keys.
+    You're signed in to Chrome on these devices, so you can use them as security keys.
   </message>
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_LINKED_DEVICES" desc="The title of a section on a settings page that lists phoens that can be used for signing into websites. The word 'linked' was picked to be distinct from 'paired', as in 'Bluetooth pairing'. The technology does use Bluetooth, but is distinct from Bluetooth pairing.">
     Linked devices
