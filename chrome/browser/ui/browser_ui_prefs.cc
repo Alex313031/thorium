@@ -63,7 +63,7 @@ void RegisterBrowserPrefs(PrefRegistrySimple* registry) {
 void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterBooleanPref(prefs::kHomePageIsNewTabPage, true,
                                 GetHomeButtonAndHomePageIsNewTabPageFlags());
-  registry->RegisterBooleanPref(prefs::kShowHomeButton, false,
+  registry->RegisterBooleanPref(prefs::kShowHomeButton, true,
                                 GetHomeButtonAndHomePageIsNewTabPageFlags());
 
   registry->RegisterInt64Pref(prefs::kDefaultBrowserLastDeclined, 0);
