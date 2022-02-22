@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -97,6 +97,13 @@ target(link_target_type, "gpu_sources") {
     sources += [
       "gpu_sandbox_hook_linux.cc",
       "gpu_sandbox_hook_linux.h",
+    ]
+  }
+
+  if (is_chromeos_ash) {
+    deps += [
+      "//components/services/font/public/cpp",
+      "//components/services/font/public/mojom",
     ]
   }
 
