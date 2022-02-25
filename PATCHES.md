@@ -46,7 +46,7 @@ Disable Google API Key Warning Patch > https://github.com/Eloston/ungoogled-chro
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me. Adds DuckDuckGo, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
 
-Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/12/patches/0054-always-use-local-new-tab-page.patch
+Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/12/patches/0053-always-use-local-new-tab-page.patch
 
 Chromium Sandbox Patch (enables PIE) > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0016-chromium-sandbox-pie.patch
   - Increases security for the chrome-sandbox executable.
