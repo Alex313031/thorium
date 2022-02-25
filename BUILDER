@@ -1,6 +1,5 @@
 ## Contains notes for me about what to change when rebasing the main BUILD.gn ## Lines with # are for personal use.
-# "-ffp-contract=fast",
-# ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", ]
+# ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-ffp-contract=fast", ]
 
 ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
 lto_opt_level
@@ -78,3 +77,21 @@ windows above this > # /OPT:ICF is not desirable in Debug builds, since code-fol
 
 [...]
       # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
+
+
+        "-mno-avx512f",
+        "-mno-avx512pf",
+        "-mno-avx512er",
+        "-mno-avx512cd",
+        "-mno-avx512vl",
+        "-mno-avx512bw",
+        "-mno-avx512dq",
+        "-mno-avx512ifma",
+        "-mno-avx512vbmi",
+        "-mno-avx512vbmi2",
+        "-mno-avx512bf16",
+        "-mno-avx512fp16",
+        "-mno-avx512bitalg",
+        "-mno-avx512vpopcntdq",
+        "-mno-avx512vp2intersect",
+        "-mno-avx512vnni",
