@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -435,11 +435,18 @@ bool BackgroundModeManager::UnregisterProfile(Profile* profile) {
 void BackgroundModeManager::LaunchBackgroundApplication(
     Profile* profile,
     const Extension* extension) {
+#if !BUILDFLAG(IS_CHROMEOS)
   apps::AppServiceProxyFactory::GetForProfile(profile)
       ->BrowserAppLauncher()
       ->LaunchAppWithParams(CreateAppLaunchParamsUserContainer(
           profile, extension, WindowOpenDisposition::NEW_FOREGROUND_TAB,
           apps::mojom::LaunchSource::kFromBackgroundMode));
+#else
+  // background mode is not used in Chrome OS platform.
+  // TODO(crbug.com/1291803): Remove the background mode manager from Chrome OS
+  // build.
+  NOTIMPLEMENTED();
+#endif
 }
 
 // static
@@ -627,8 +634,8 @@ void BackgroundModeManager::ExecuteCommand(int command_id, int event_flags) {
       if (bmd) {
         chrome::ShowAboutChrome(bmd->GetBrowserWindow());
       } else {
-        ProfilePicker::Show(ProfilePicker::EntryPoint::kBackgroundModeManager,
-                            GURL(chrome::kChromeUIHelpURL));
+        ProfilePicker::Show(ProfilePicker::Params::ForBackgroundManager(
+            GURL(chrome::kChromeUIHelpURL)));
       }
       break;
     case IDC_TASK_MANAGER:
@@ -636,8 +643,8 @@ void BackgroundModeManager::ExecuteCommand(int command_id, int event_flags) {
       if (bmd) {
         chrome::OpenTaskManager(bmd->GetBrowserWindow());
       } else {
-        ProfilePicker::Show(ProfilePicker::EntryPoint::kBackgroundModeManager,
-                            GURL(ProfilePicker::kTaskManagerUrl));
+        ProfilePicker::Show(ProfilePicker::Params::ForBackgroundManager(
+            GURL(ProfilePicker::kTaskManagerUrl)));
       }
       break;
     case IDC_EXIT:
@@ -664,7 +671,8 @@ void BackgroundModeManager::ExecuteCommand(int command_id, int event_flags) {
       if (bmd) {
         bmd->ExecuteCommand(command_id, event_flags);
       } else {
-        ProfilePicker::Show(ProfilePicker::EntryPoint::kBackgroundModeManager);
+        ProfilePicker::Show(ProfilePicker::Params::FromEntryPoint(
+            ProfilePicker::EntryPoint::kBackgroundModeManager));
       }
       break;
   }
