@@ -828,6 +828,11 @@ config("compiler") {
     # To make Rust .d files compatible with ninja
     "-Z",
     "dep-info-omit-d-target",
+
+    # If a macro panics during compilation, show which macro and where it is
+    # defined.
+    "-Z",
+    "macro-backtrace",
   ]
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
@@ -1547,6 +1552,13 @@ config("default_warnings") {
 
       if (enable_wmax_tokens) {
         cflags += [ "-Wmax-tokens" ]
+      }
+      
+      if (llvm_force_head_revision) {
+        cflags += [
+          # TODO(https://crbug.com/1300731) Clean up and enable.
+          "-Wno-unqualified-std-cast-call",
+        ]
       }
     }
   }
