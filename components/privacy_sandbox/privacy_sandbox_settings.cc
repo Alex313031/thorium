@@ -20,7 +20,12 @@
 #include "url/gurl.h"
 #include "url/origin.h"
 
+namespace privacy_sandbox {
+
 namespace {
+
+constexpr char kBlockedTopicsTopicKey[] = "topic";
+constexpr char kBlockedTopicsBlockTimeKey[] = "blockedOn";
 
 bool IsCookiesClearOnExitEnabled(HostContentSettingsMap* map) {
   return map->GetDefaultContentSetting(ContentSettingsType::COOKIES,
@@ -73,14 +78,26 @@ std::vector<ContentSettingsPattern> FledgeBlockToContentSettingsPatterns(
           ContentSettingsPattern::FromString(entry)};
 }
 
+// Returns a base::Value for storage in prefs that represents |topic| blocked
+// at the current time.
+base::Value CreateBlockedTopicEntry(const CanonicalTopic& topic) {
+  base::Value entry(base::Value::Type::DICTIONARY);
+  entry.SetKey(kBlockedTopicsTopicKey, topic.ToValue());
+  entry.SetKey(kBlockedTopicsBlockTimeKey,
+               base::TimeToValue(base::Time::Now()));
+  return entry;
+}
+
 }  // namespace
 
 PrivacySandboxSettings::PrivacySandboxSettings(
+    std::unique_ptr<Delegate> delegate,
     HostContentSettingsMap* host_content_settings_map,
     scoped_refptr<content_settings::CookieSettings> cookie_settings,
     PrefService* pref_service,
     bool incognito_profile)
-    : host_content_settings_map_(host_content_settings_map),
+    : delegate_(std::move(delegate)),
+      host_content_settings_map_(host_content_settings_map),
       cookie_settings_(cookie_settings),
       pref_service_(pref_service),
       incognito_profile_(incognito_profile) {
@@ -103,16 +120,16 @@ PrivacySandboxSettings::PrivacySandboxSettings(
 
 PrivacySandboxSettings::~PrivacySandboxSettings() = default;
 
-bool PrivacySandboxSettings::IsFlocAllowed() const {
-  return pref_service_->GetBoolean(prefs::kPrivacySandboxFlocEnabled) &&
-         IsPrivacySandboxEnabled();
+bool PrivacySandboxSettings::IsTopicsAllowed() const {
+  return IsPrivacySandboxEnabled();
 }
 
-bool PrivacySandboxSettings::IsFlocAllowedForContext(
+bool PrivacySandboxSettings::IsTopicsAllowedForContext(
     const GURL& url,
     const absl::optional<url::Origin>& top_frame_origin) const {
-  // If FLoC is disabled completely, it is not available in any context.
-  if (!IsFlocAllowed())
+  // If the Topics API is disabled completely, it is not available in any
+  // context.
+  if (!IsTopicsAllowed())
     return false;
 
   ContentSettingsForOneType cookie_settings;
@@ -122,17 +139,70 @@ bool PrivacySandboxSettings::IsFlocAllowedForContext(
                                            cookie_settings);
 }
 
-base::Time PrivacySandboxSettings::FlocDataAccessibleSince() const {
-  return pref_service_->GetTime(prefs::kPrivacySandboxFlocDataAccessibleSince);
+bool PrivacySandboxSettings::IsTopicAllowed(const CanonicalTopic& topic) {
+  auto* blocked_topics =
+      pref_service_->GetList(prefs::kPrivacySandboxBlockedTopics);
+
+  for (const auto& item : blocked_topics->GetList()) {
+    auto blocked_topic =
+        CanonicalTopic::FromValue(*item.GetDict().Find(kBlockedTopicsTopicKey));
+    if (!blocked_topic)
+      continue;
+
+    if (topic == *blocked_topic)
+      return false;
+  }
+  return true;
 }
 
-void PrivacySandboxSettings::SetFlocDataAccessibleFromNow(
-    bool reset_calculate_timer) const {
-  pref_service_->SetTime(prefs::kPrivacySandboxFlocDataAccessibleSince,
-                         base::Time::Now());
+void PrivacySandboxSettings::SetTopicAllowed(const CanonicalTopic& topic,
+                                             bool allowed) {
+  ListPrefUpdate scoped_pref_update(pref_service_,
+                                    prefs::kPrivacySandboxBlockedTopics);
 
-  for (auto& observer : observers_)
-    observer.OnFlocDataAccessibleSinceUpdated(reset_calculate_timer);
+  // Presence in the preference list indicates that a topic is blocked, as
+  // there is no concept of explicitly allowed topics. Thus, allowing a topic
+  // is the same as removing it, if it exists, from the blocklist. Blocking
+  // a topic is the same as adding it to the blocklist, but as duplicate entries
+  // are undesireable, removing any existing reference first is desireable.
+  // Thus, regardless of |allowed|, removing any existing reference is the
+  // first step.
+  scoped_pref_update->GetList().EraseIf([&](const base::Value& value) {
+    auto* blocked_topic_value = value.GetDict().Find(kBlockedTopicsTopicKey);
+    auto converted_topic = CanonicalTopic::FromValue(*blocked_topic_value);
+    return converted_topic && *converted_topic == topic;
+  });
+
+  // If the topic is being blocked, it can be (re)added to the blocklist. If the
+  // topic was removed from the blocklist above, this is equivalent to updating
+  // the modified time associated with the entry to the current time. As data
+  // deletions are typically from the current time backwards, this makes it
+  // more likely to be removed - a privacy improvement.
+  if (!allowed)
+    scoped_pref_update->Append(CreateBlockedTopicEntry(topic));
+}
+
+void PrivacySandboxSettings::ClearTopicSettings(base::Time start_time,
+                                                base::Time end_time) {
+  ListPrefUpdate scoped_pref_update(pref_service_,
+                                    prefs::kPrivacySandboxBlockedTopics);
+
+  // Shortcut for maximum time range deletion.
+  if (start_time == base::Time() && end_time == base::Time::Max()) {
+    scoped_pref_update->GetList().clear();
+    return;
+  }
+
+  scoped_pref_update->GetList().EraseIf([&](const base::Value& value) {
+    auto blocked_time =
+        base::ValueToTime(value.GetDict().Find(kBlockedTopicsBlockTimeKey));
+    return start_time <= blocked_time && blocked_time <= end_time;
+  });
+}
+
+base::Time PrivacySandboxSettings::TopicsDataAccessibleSince() const {
+  return pref_service_->GetTime(
+      prefs::kPrivacySandboxTopicsDataAccessibleSince);
 }
 
 bool PrivacySandboxSettings::IsConversionMeasurementAllowed(
@@ -290,6 +360,10 @@ std::vector<GURL> PrivacySandboxSettings::FilterFledgeAllowedParties(
 }
 
 bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
+  // If the delegate is restricting access, the Privacy Sandbox is disabled.
+  if (delegate_->IsPrivacySandboxRestricted())
+    return false;
+
   // Which preference is consulted is dependent on whether release 3 of the
   // settings is available.
   if (base::FeatureList::IsEnabled(privacy_sandbox::kPrivacySandboxSettings3)) {
@@ -297,6 +371,7 @@ bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
     if (incognito_profile_)
       return false;
 
+    // For Privacy Sadnbox Settings 3, APIs may be restricted via the delegate.
     // The V2 pref was introduced with the 3rd Privacy Sandbox release.
     return pref_service_->GetBoolean(prefs::kPrivacySandboxApisEnabledV2);
   }
@@ -326,8 +401,12 @@ bool PrivacySandboxSettings::IsTrustTokensAllowed() {
   return IsPrivacySandboxEnabled();
 }
 
+bool PrivacySandboxSettings::IsPrivacySandboxRestricted() {
+  return delegate_->IsPrivacySandboxRestricted();
+}
+
 void PrivacySandboxSettings::OnCookiesCleared() {
-  SetFlocDataAccessibleFromNow(/*reset_calculate_timer=*/false);
+  SetTopicsDataAccessibleFromNow();
 }
 
 void PrivacySandboxSettings::OnPrivacySandboxPrefChanged() {
@@ -362,3 +441,13 @@ bool PrivacySandboxSettings::IsPrivacySandboxEnabledForContext(
       cookie_settings, url,
       top_frame_origin ? top_frame_origin->GetURL() : GURL());
 }
+
+void PrivacySandboxSettings::SetTopicsDataAccessibleFromNow() const {
+  pref_service_->SetTime(prefs::kPrivacySandboxTopicsDataAccessibleSince,
+                         base::Time::Now());
+
+  for (auto& observer : observers_)
+    observer.OnTopicsDataAccessibleSinceUpdated();
+}
+
+}  // namespace privacy_sandbox
