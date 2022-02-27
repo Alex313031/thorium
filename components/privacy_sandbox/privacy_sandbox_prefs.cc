@@ -55,7 +55,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxApisEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, true);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, false);
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxManuallyControlled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
