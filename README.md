@@ -7,6 +7,7 @@
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
+&nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 \
 &nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi/Android are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4, SSE4.2, and pure AVX builds. NEW: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; NEW: Thorium Special now also has experimental Android ARM32 & ARM64 builds. \
 &nbsp;&ndash; NEW: Thorium Special now also has new ARM32 builds for things like the Raspberry Pi. \
