@@ -7,7 +7,7 @@
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
-&nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 \
+&nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 (source files for AVX2 are in that repo.) \
 &nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi/Android are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4, SSE4.2, and pure AVX builds. NEW: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; NEW: Thorium Special now also has experimental Android ARM32 & ARM64 builds. \
 &nbsp;&ndash; NEW: Thorium Special now also has new ARM32 builds for things like the Raspberry Pi. \
@@ -45,10 +45,11 @@
 
 &nbsp;&nbsp;&ndash; args.gn exclude API Keys (you can get them yourself) and the pgo profile path is different for each chromium version (only needed when building). (See below.) UPDATE: Thorium now has API Keys baked in but the instructions are the same if you are building it yourself as I will not include the keys here.
 
-&nbsp;&nbsp;In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys
-
 # Building
 _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
+- For AVX2 follow the instructions at https://github.com/Alex313031/Thorium-AVX2/ as well as these instructions.
+- In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys \
+&nbsp;&nbsp;&ndash; For Windows builds, follow https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/win_cross.md This is for cross-compiling for Windows on Linux (what I do). For building natively on Windows, you will have to manually do the commands in `trunk.sh` and manually copy the files outlined in `setup.sh`, as well as using the windows_args.gn for your args.gn file (for both native and cross compiling), generally following instructions at https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for chromium. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
 - Run `export EDITOR=nano` & `export VISUAL=nano` *# You can substitute a cmdline editor like vim here, but many GUI editors cause it to try and parse the args.gn file before it is even saved.*
