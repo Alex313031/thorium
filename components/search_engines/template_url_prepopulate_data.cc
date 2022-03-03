@@ -1016,8 +1016,8 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulationSetFromCountryID(
   switch (country_id) {
 #define UNHANDLED_COUNTRY(code1, code2) \
   case country_codes::CountryCharsToCountryID((#code1)[0], (#code2)[0]):
-#define END_UNHANDLED_COUNTRIES(code1, code2)       \
-  engines = engines_##code1##code2;                 \
+#define END_UNHANDLED_COUNTRIES(code1, code2)      \
+  engines = engines_##code1##code2;                \
   num_engines = std::size(engines_##code1##code2); \
   break;
 #define DECLARE_COUNTRY(code1, code2)\
