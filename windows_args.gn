@@ -9,6 +9,7 @@ is_debug = false
 dcheck_always_on = false
 exclude_unwind_tables = true
 enable_iterator_debugging = false
+disable_fieldtrial_testing_config = true
 enable_resource_allowlist_generation = false
 enable_profiling = false
 is_component_build = false
