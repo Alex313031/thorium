@@ -144,6 +144,11 @@ const base::Feature kEditingNG{"EditingNG", base::FEATURE_ENABLED_BY_DEFAULT};
 // Enable LayoutNG.
 const base::Feature kLayoutNG{"LayoutNG", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Enables the use of the PaintCache for Path2D objects that are rasterized
+// out of process.  Has no effect when kCanvasOopRasterization is disabled.
+const base::Feature kPath2DPaintCache{"Path2DPaintCache",
+                                      base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Enable by default. This feature is for a kill switch.
 const base::Feature kLayoutNGBlockInInline{"LayoutNGBlockInInline",
                                            base::FEATURE_ENABLED_BY_DEFAULT};
@@ -622,7 +627,7 @@ const base::Feature kBlinkHeapIncrementalMarkingStress{
 // compositor & IO threads.
 const base::Feature kBlinkCompositorUseDisplayThreadPriority {
   "BlinkCompositorUseDisplayThreadPriority",
-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_WIN)
+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
       base::FEATURE_ENABLED_BY_DEFAULT
 #else
       base::FEATURE_DISABLED_BY_DEFAULT
@@ -1035,6 +1040,16 @@ BLINK_COMMON_EXPORT bool IsAllowURNsInIframeEnabled() {
 // Kill switch for the Topics API.
 const base::Feature kBrowsingTopics{"BrowsingTopics",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
+// The number of top topics to derive and to keep for each epoch (week).
+const base::FeatureParam<int> kBrowsingTopicsNumberOfTopTopicsPerEpoch{
+    &kBrowsingTopics, "number_of_top_topics_per_epoch", 5};
+// The probability (in percent number) to return the random topic to a site. The
+// "random topic" is per-site, and is selected from the full taxonomy uniformly
+// at random, and each site has a
+// `kBrowsingTopicsUseRandomTopicProbabilityPercent`% chance to see their random
+// topic instead of one of the top topics.
+const base::FeatureParam<int> kBrowsingTopicsUseRandomTopicProbabilityPercent{
+    &kBrowsingTopics, "use_random_topic_probability_percent", 5};
 // The max number of entries allowed to be retrieved from the
 // `BrowsingTopicsSiteDataStorage` database for each query for the API usage
 // contexts. The query will occur once per epoch (week) at topics calculation
@@ -1291,6 +1306,21 @@ const base::Feature kEventPath{"EventPath", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kReduceUserAgentMinorVersion{
     "ReduceUserAgentMinorVersion", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Enables correctly computing whether dedicated workers are secure contexts.
+// TODO(https://crbug.com/780031): Remove this once fully shipped.
+const base::Feature kSecureContextFixForWorkers{
+    "SecureContextFixForWorkers", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kZeroCopyTabCapture{"ZeroCopyTabCapture",
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kUserAgentOverrideExperiment{
+    "UserAgentOverrideExperiment", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Allow access to WebSQL APIs.
+const base::Feature kWebSQLAccess{"kWebSQLAccess",
+                                  base::FEATURE_ENABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
