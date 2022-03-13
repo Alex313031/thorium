@@ -44,6 +44,15 @@ extern const char kPrivacySandboxConsentDecisionMade[] =
 extern const char kPrivacySandboxNoConfirmationSandboxDisabled[] =
     "privacy_sandbox.no_confirmation_sandbox_disabled";
 
+extern const char kPrivacySandboxNoConfirmationSandboxRestricted[] =
+    "privacy_sandbox.no_confirmation_sandbox_restricted";
+
+extern const char kPrivacySandboxNoConfirmationSandboxManaged[] =
+    "privacy_sandbox.no_confirmation_sandbox_managed";
+
+extern const char kPrivacySandboxNoConfirmationThirdPartyCookiesBlocked[] =
+    "privacy_sandbox.no_confirmation_3PC_blocked";
+
 extern const char kPrivacySandboxDisabledInsufficientConfirmation[] =
     "privacy_sandbox.disabled_insufficient_confirmation";
 
@@ -55,7 +64,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxApisEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, true);
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxManuallyControlled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
@@ -76,6 +85,12 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
                                 false);
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxNoConfirmationSandboxDisabled, false);
+  registry->RegisterBooleanPref(
+      prefs::kPrivacySandboxNoConfirmationSandboxRestricted, false);
+  registry->RegisterBooleanPref(
+      prefs::kPrivacySandboxNoConfirmationSandboxManaged, false);
+  registry->RegisterBooleanPref(
+      prefs::kPrivacySandboxNoConfirmationThirdPartyCookiesBlocked, false);
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxDisabledInsufficientConfirmation, false);
 }
