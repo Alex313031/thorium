@@ -849,7 +849,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1" ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
   }
 }
 
@@ -2174,9 +2174,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
   } else {
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2240,11 +2240,11 @@ config("optimize_max") {
       # /O2 implies /Ot, /Oi, and /GF.
       cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
-      cflags = [ "-O1" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O2" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
   }
 }
 
@@ -2273,17 +2273,17 @@ config("optimize_speed") {
       # /O2 implies /Ot, /Oi, and /GF.
       cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
-      cflags = [ "-O1" ] + common_optimize_on_cflags
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
   }
 }
 
 config("optimize_fuzzing") {
-  cflags = [ "-O1" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=1" ]
+  cflags = [ "-O3" ] + common_optimize_on_cflags
+  rustflags = [ "-Copt-level=3" ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2522,7 +2522,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g" ]
+  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
 }
 
 # Minimal symbols.
@@ -2595,7 +2595,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1" ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
