@@ -578,7 +578,7 @@ const base::Feature kSpeakerChangeDetection{"SpeakerChangeDetection",
 
 // Live Caption can be used in multiple languages, as opposed to just English.
 const base::Feature kLiveCaptionMultiLanguage{
-    "LiveCaptionMultiLanguage", base::FEATURE_DISABLED_BY_DEFAULT};
+    "LiveCaptionMultiLanguage", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Live Caption runs system-wide on ChromeOS, as opposed to just in the browser.
 const base::Feature kLiveCaptionSystemWideOnChromeOS{
@@ -937,27 +937,12 @@ bool IsHardwareSecureDecryptionEnabled() {
 }
 
 bool IsLiveCaptionFeatureEnabled() {
-  if (!base::FeatureList::IsEnabled(media::kLiveCaption))
-    return false;
+    return true;
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   // Some Chrome OS devices do not support on-device speech.
   if (!base::FeatureList::IsEnabled(ash::features::kOnDeviceSpeechRecognition))
     return false;
-#endif
-
-#if BUILDFLAG(IS_LINUX)
-  // Check if the CPU has the required instruction set to run the Speech
-  // On-Device API (SODA) library.
-    return true;
-#endif
-
-#if BUILDFLAG(IS_WIN) && defined(ARCH_CPU_ARM64)
-  // The Speech On-Device API (SODA) component does not support Windows on
-  // arm64.
-  return false;
-#else
-  return true;
 #endif
 }
 
