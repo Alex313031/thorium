@@ -16,6 +16,9 @@ MPEG-DASH > https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP
 Enable JPEG XL Image File Format by Default Patch
   - Made by me.
 
+Enable Live Caption (SODA) on all builds Patch
+  - Made by me.
+
 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch
   - Fixes font rendering in certain instances.
 
