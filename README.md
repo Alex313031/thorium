@@ -19,6 +19,7 @@
 > - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
 > - Experimental MPEG-DASH.
 > - JPEG XL Image File Format support.
+> - Enable Live Caption (SODA) on all builds.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
 > - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD support patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
 > - Audio Sandbox patch.
