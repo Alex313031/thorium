@@ -34,9 +34,6 @@ const base::Feature kBlockingDownloadsInAdFrameWithoutUserActivation{
     "BlockingDownloadsInAdFrameWithoutUserActivation",
     base::FEATURE_ENABLED_BY_DEFAULT};
 
-const base::Feature kCOLRV1Fonts{"COLRV1Fonts",
-                                 base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Enable CSS Container Queries. Also implies LayoutNGGrid and CSSContainSize1D.
 const base::Feature kCSSContainerQueries{"CSSContainerQueries",
                                          base::FEATURE_DISABLED_BY_DEFAULT};
@@ -149,10 +146,6 @@ const base::Feature kLayoutNG{"LayoutNG", base::FEATURE_ENABLED_BY_DEFAULT};
 const base::Feature kPath2DPaintCache{"Path2DPaintCache",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
 
-// Enable by default. This feature is for a kill switch.
-const base::Feature kLayoutNGBlockInInline{"LayoutNGBlockInInline",
-                                           base::FEATURE_ENABLED_BY_DEFAULT};
-
 const base::Feature kMixedContentAutoupgrade{"AutoupgradeMixedContent",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -188,6 +181,10 @@ const base::Feature kNavigationPredictor {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 };
+
+// Anchor Element Interaction
+const base::Feature kAnchorElementInteraction{
+    "AnchorElementInteraction", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enable browser-initiated dedicated worker script loading
 // (PlzDedicatedWorker). https://crbug.com/906991
@@ -1040,6 +1037,10 @@ BLINK_COMMON_EXPORT bool IsAllowURNsInIframeEnabled() {
 // Kill switch for the Topics API.
 const base::Feature kBrowsingTopics{"BrowsingTopics",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
+// The number of epochs from where to calculate the topics to give to a
+// requesting contexts.
+const base::FeatureParam<int> kBrowsingTopicsNumberOfEpochsToExpose{
+    &kBrowsingTopics, "number_of_epochs_to_expose", 3};
 // The number of top topics to derive and to keep for each epoch (week).
 const base::FeatureParam<int> kBrowsingTopicsNumberOfTopTopicsPerEpoch{
     &kBrowsingTopics, "number_of_top_topics_per_epoch", 5};
@@ -1058,6 +1059,11 @@ const base::FeatureParam<int>
     kBrowsingTopicsMaxNumberOfApiUsageContextEntriesToLoadPerEpoch{
         &kBrowsingTopics,
         "max_number_of_api_usage_context_entries_to_load_per_epoch", 100000};
+// Encodes the rest of the configuration parameters. Each version number should
+// only be mapped to one configuration set. In practice, this can be guaranteed
+// by always bumping up the version number whenever parameters are updated.
+const base::FeatureParam<int> kBrowsingTopicsConfigVersion{&kBrowsingTopics,
+                                                           "config_version", 1};
 
 // Enable the ability to minimize processing in the WebRTC APM when all audio
 // tracks are disabled. If disabled, the APM in WebRTC will ignore attempts to
