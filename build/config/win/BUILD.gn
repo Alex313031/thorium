@@ -123,7 +123,12 @@ config("compiler") {
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86" || current_cpu == "x64") {
-      cflags += [ "-mavx", "-maes", ]
+      cflags += [
+        "/arch:AVX",
+        "/clang:-mavx",
+        "/clang:-maes",
+        "-Wno-unused-command-line-argument",
+      ]
     }
 
     if (exec_script("//build/win/use_ansi_codes.py", [], "trim string") ==
@@ -163,7 +168,7 @@ config("compiler") {
 
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
-    ldflags += [ "/opt:lldlto=3", ]
+    ldflags += [ "/opt:lldlto=3", "-mllvm:-march=sandybridge", ]
   }
 
   if (use_large_pdbs) {
