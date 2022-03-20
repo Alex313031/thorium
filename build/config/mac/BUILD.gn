@@ -1,4 +1,4 @@
-# Copyright (c) 2013 The Chromium Authors. All rights reserved.
+# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -40,13 +40,13 @@ config("compiler") {
   defines = [ "CR_XCODE_VERSION=$xcode_version" ]
 
   asmflags = common_mac_flags
-  cflags = [ "-O3" ] + common_mac_flags
+  cflags = [ "-O3", "-mavx", "-maes", ] + common_mac_flags
 
   # Without this, the constructors and destructors of a C++ object inside
   # an Objective C struct won't be called, which is very bad.
   cflags_objcc = [ "-fobjc-call-cxx-cdtors" ]
 
-  ldflags = common_mac_flags
+  ldflags = [ "-Wl,-O3", ] + common_mac_flags
 
   if (save_unstripped_output) {
     ldflags += [ "-Wcrl,unstripped," + rebase_path(root_out_dir) ]
