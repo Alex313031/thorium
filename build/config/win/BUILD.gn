@@ -124,9 +124,11 @@ config("compiler") {
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "/arch:AVX",
+        "/arch:AVX2",
+        "/clang:-mavx2",
         "/clang:-mavx",
         "/clang:-maes",
+        "/clang:-ffp-contract=fast",
         "-Wno-unused-command-line-argument",
       ]
     }
@@ -168,7 +170,7 @@ config("compiler") {
 
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
-    ldflags += [ "/opt:lldlto=3", "-mllvm:-march=sandybridge", ]
+    ldflags += [ "/opt:lldlto=3", ]
   }
 
   if (use_large_pdbs) {
@@ -186,6 +188,9 @@ config("compiler") {
       "/OPT:ICF",
       "/INCREMENTAL:NO",
       "/FIXED:NO",
+      "/opt:lldlto=3",
+      "-mllvm:-march=haswell",
+      "-mllvm:-fp-contract=fast",
     ]
 
     if (use_lld) {
