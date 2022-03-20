@@ -124,11 +124,9 @@ config("compiler") {
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "/arch:AVX2",
-        "/clang:-mavx2",
+        "/arch:AVX",
         "/clang:-mavx",
         "/clang:-maes",
-        "/clang:-ffp-contract=fast",
         "-Wno-unused-command-line-argument",
       ]
     }
@@ -189,8 +187,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/opt:lldlto=3",
-      "-mllvm:-march=haswell",
-      "-mllvm:-fp-contract=fast",
+      "-mllvm:-march=sandybridge",
     ]
 
     if (use_lld) {
