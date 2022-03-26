@@ -71,6 +71,9 @@ Prefetch Privacy enabled by Default Patch > https://github.com/Eloston/ungoogled
 GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/gn/parallel.patch
   - Useful when building.
 
+V8 SEGV Patch > https://github.com/FydeOS/chromium_os-raspberry_pi/blob/master/project-cros-pi/chromeos-base/chromeos-chrome/files/patches/001-workaround-for-v8-SEGV-issue.patch
+  - Modified by me.
+
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
@@ -81,5 +84,3 @@ The Thorium .desktop file and content-shell .desktop file have flags added for e
   - Modified by me.
 
 - Any other code/patches was written from scratch by me.
-
-
