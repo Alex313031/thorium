@@ -339,9 +339,18 @@ std::vector<GURL> PrivacySandboxSettings::FilterFledgeAllowedParties(
 }
 
 bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
-  // If the delegate is restricting access, the Privacy Sandbox is disabled.
-  if (delegate_->IsPrivacySandboxRestricted())
+  // If the delegate is restricting access, or indicates confirmation has not
+  // occurred, the Privacy Sandbox is disabled.
+  if (delegate_->IsPrivacySandboxRestricted() ||
+      !delegate_->IsPrivacySandboxConfirmed()) {
     return false;
+  }
+
+  // For Measurement and Relevance APIs, we explicitly do not require the
+  // underlying pref to be enabled if there is a local flag enabling the APIs to
+  // allow for local testing.
+  bool should_override_setting_for_local_testing = base::FeatureList::IsEnabled(
+      privacy_sandbox::kOverridePrivacySandboxSettingsLocalTesting);
 
   // Which preference is consulted is dependent on whether release 3 of the
   // settings is available.
@@ -350,20 +359,23 @@ bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
     if (incognito_profile_)
       return false;
 
-    // For Privacy Sadnbox Settings 3, APIs may be restricted via the delegate.
+    if (should_override_setting_for_local_testing) {
+      return true;
+    }
+
+    // For Privacy Sandbox Settings 3, APIs may be restricted via the delegate.
     // The V2 pref was introduced with the 3rd Privacy Sandbox release.
     return pref_service_->GetBoolean(prefs::kPrivacySandboxApisEnabledV2);
   }
+
+  if (should_override_setting_for_local_testing)
+    return true;
 
   return pref_service_->GetBoolean(prefs::kPrivacySandboxApisEnabled);
 }
 
 void PrivacySandboxSettings::SetPrivacySandboxEnabled(bool enabled) {
-  pref_service_->SetBoolean(prefs::kPrivacySandboxManuallyControlled, true);
-
-  // Only apply the decision to the appropriate preference. Confirmation logic
-  // DCHECKS that the user has not been able to enable the V2 preference
-  // without seeing a dialog.
+  // Only apply the decision to the appropriate preference.
   if (base::FeatureList::IsEnabled(privacy_sandbox::kPrivacySandboxSettings3)) {
     pref_service_->SetBoolean(prefs::kPrivacySandboxApisEnabledV2, enabled);
   } else {
@@ -404,6 +416,11 @@ void PrivacySandboxSettings::AddObserver(Observer* observer) {
 
 void PrivacySandboxSettings::RemoveObserver(Observer* observer) {
   observers_.RemoveObserver(observer);
+}
+
+void PrivacySandboxSettings::SetDelegateForTesting(
+    std::unique_ptr<Delegate> delegate) {
+  delegate_ = std::move(delegate);
 }
 
 PrivacySandboxSettings::PrivacySandboxSettings() = default;
