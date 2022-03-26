@@ -4,11 +4,13 @@
 
 #include "third_party/blink/public/common/features.h"
 
+#include "base/command_line.h"
 #include "base/feature_list.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "services/network/public/cpp/features.h"
 #include "third_party/blink/public/common/forcedark/forcedark_switches.h"
+#include "third_party/blink/public/common/switches.h"
 
 namespace blink {
 namespace features {
@@ -149,6 +151,9 @@ const base::Feature kPath2DPaintCache{"Path2DPaintCache",
 // Enable by default. This feature is for a kill switch.
 const base::Feature kLayoutNGBlockInInline{"LayoutNGBlockInInline",
                                            base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kPrivacySandboxAdsAPIs{"PrivacySandboxAdsAPIs",
+                                           base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kMixedContentAutoupgrade{"AutoupgradeMixedContent",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
@@ -456,7 +461,7 @@ const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
 
 // Enables CSS selector fragment anchors. https://crbug.com/1252460
 const base::Feature kCssSelectorFragmentAnchor{
-    "CssSelectorFragmentAnchor", base::FEATURE_DISABLED_BY_DEFAULT};
+    "CssSelectorFragmentAnchor", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // File handling integration. https://crbug.com/829689
 const base::Feature kFileHandlingAPI{"FileHandlingAPI",
@@ -903,15 +908,6 @@ const base::Feature kWebAppEnableUrlHandlers{"WebAppEnableUrlHandlers",
 const base::Feature kLoadingTasksUnfreezable{"LoadingTasksUnfreezable",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
-// BackForwardCache:
-// Only use per-process buffer limit and not per-request limt. When this flag is
-// on network requests can continue buffering data as long as it is under per
-// process limit.
-// TODO(crbug.com/1243600): Remove this flag eventually.
-const base::Feature kNetworkRequestUsesOnlyPerProcessBufferLimit{
-    "NetworkRequestUsesOnlyPerProcessBufferLimit",
-    base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Kill switch for the new behavior whereby anchors with target=_blank get
 // noopener behavior by default. TODO(crbug.com/898942): Remove in Chrome 95.
 const base::Feature kTargetBlankImpliesNoOpener{
@@ -1073,6 +1069,12 @@ const base::FeatureParam<int>
     kBrowsingTopicsMaxNumberOfApiUsageContextEntriesToLoadPerEpoch{
         &kBrowsingTopics,
         "max_number_of_api_usage_context_entries_to_load_per_epoch", 100000};
+// The max number of API usage context domains allowed to be stored per page
+// load.
+const base::FeatureParam<int>
+    kBrowsingTopicsMaxNumberOfApiUsageContextDomainsToStorePerPageLoad{
+        &kBrowsingTopics,
+        "max_number_of_api_usage_context_domains_to_store_per_page_load", 30};
 // Encodes the configuration parameters above. Each version number should only
 // be mapped to one configuration set. In practice, this can be guaranteed by
 // always bumping up the version number whenever parameters are updated.
@@ -1082,6 +1084,13 @@ const base::FeatureParam<int> kBrowsingTopicsConfigVersion{&kBrowsingTopics,
 // during this browser session, and doesn't affect the pre-existing epochs.
 const base::FeatureParam<int> kBrowsingTopicsTaxonomyVersion{
     &kBrowsingTopics, "taxonomy_version", 1};
+
+// If enabled, the check for whether the IP address is publicly routable will be
+// bypassed when determining the eligibility for a page to be included in topics
+// calculation. This is useful for developers to test in local environment.
+const base::Feature kBrowsingTopicsBypassIPIsPubliclyRoutableCheck{
+    "BrowsingTopicsBypassIPIsPubliclyRoutableCheck",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // When <dialog>s are closed, this focuses the "previously focused" element
 // which had focus when the <dialog> was first opened.
@@ -1198,8 +1207,59 @@ const base::Feature kCSSCascadeLayers{"CSSCascadeLayers",
 // Tracking bug: https://crbug.com/402694.
 const base::Feature kSetTimeoutWithoutClamp{"SetTimeoutWithoutClamp",
                                             base::FEATURE_DISABLED_BY_DEFAULT};
+
+namespace {
+
+enum class SetTimeoutWithout1MsClampPolicyOverride {
+  kNoOverride,
+  kForceDisable,
+  kForceEnable
+};
+
+bool g_set_timeout_without_1m_clamp_policy_override_cached = false;
+
+// Returns the SetTimeoutWithout1MsClamp policy settings. This is calculated
+// once on first access and cached.
+SetTimeoutWithout1MsClampPolicyOverride
+GetSetTimeoutWithout1MsClampPolicyOverride() {
+  static SetTimeoutWithout1MsClampPolicyOverride policy =
+      SetTimeoutWithout1MsClampPolicyOverride::kNoOverride;
+  if (g_set_timeout_without_1m_clamp_policy_override_cached)
+    return policy;
+
+  // Otherwise, check the command-line for the renderer. Only values of "0"
+  // and "1" are valid, anything else is ignored (and allows the base::Feature
+  // to control the feature). This slow path will only be hit once per renderer
+  // process.
+  std::string value =
+      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII(
+          switches::kSetTimeoutWithout1MsClampPolicy);
+  if (value == switches::kSetTimeoutWithout1MsClampPolicy_ForceEnable) {
+    policy = SetTimeoutWithout1MsClampPolicyOverride::kForceEnable;
+  } else if (value == switches::kSetTimeoutWithout1MsClampPolicy_ForceDisable) {
+    policy = SetTimeoutWithout1MsClampPolicyOverride::kForceDisable;
+  } else {
+    policy = SetTimeoutWithout1MsClampPolicyOverride::kNoOverride;
+  }
+  g_set_timeout_without_1m_clamp_policy_override_cached = true;
+  return policy;
+}
+
+}  // namespace
+
+void ClearSetTimeoutWithout1MsClampPolicyOverrideCacheForTesting() {
+  // Tests may want to force recalculation of the cached policy value when
+  // exercising different configs.
+  g_set_timeout_without_1m_clamp_policy_override_cached = false;
+}
+
 bool IsSetTimeoutWithoutClampEnabled() {
-  return base::FeatureList::IsEnabled(blink::features::kSetTimeoutWithoutClamp);
+  // If policy is present then respect it.
+  auto policy = GetSetTimeoutWithout1MsClampPolicyOverride();
+  if (policy != SetTimeoutWithout1MsClampPolicyOverride::kNoOverride)
+    return policy == SetTimeoutWithout1MsClampPolicyOverride::kForceEnable;
+  // Otherwise respect the base::Feature.
+  return base::FeatureList::IsEnabled(features::kSetTimeoutWithoutClamp);
 }
 
 // If enabled, the setTimeout(..., 0) will clamp to 4ms after a custom `nesting`
@@ -1314,9 +1374,19 @@ const base::Feature kFreeNonRequiredTileResourcesForInactiveWindows{
     "FreeNonRequiredTileResourcesForInactiveWindows",
     base::FEATURE_DISABLED_BY_DEFAULT};
 
-// Enables the WindowPlacement RuntimeEnabledFeature.
+// Enables basic Multi-Screen Window Placement functionality.
 const base::Feature kWindowPlacement{"WindowPlacement",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Allows sites to request fullscreen and open a popup from a single gesture.
+const base::Feature kWindowPlacementFullscreenCompanionWindow{
+    "WindowPlacementFullscreenCompanionWindow",
+    base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Allows sites to request fullscreen when the set of screens change.
+const base::Feature kWindowPlacementFullscreenOnScreensChange{
+    "WindowPlacementFullscreenOnScreensChange",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // TODO(crbug.com/1277431): This flag should be eventually disabled.
 const base::Feature kEventPath{"EventPath", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1338,6 +1408,11 @@ const base::Feature kUserAgentOverrideExperiment{
 // Allow access to WebSQL APIs.
 const base::Feature kWebSQLAccess{"kWebSQLAccess",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Changes behavior of User-Agent Client Hints to send blank headers when the
+// User-Agent string is overridden, instead of disabling the headers altogether.
+const base::Feature kUACHOverrideBlank{"UACHOverrideBlank",
+                                       base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
