@@ -311,7 +311,6 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
           Thorium OS
         </message>
       </if>
-      <!-- Chrome enterprise logo won't be used in Chromium -->
       <message name="IDS_PRODUCT_LOGO_ENTERPRISE_ALT_TEXT" desc="Alt text for the Chromium Enterprise logo image." formatter_data="android_java">
         Thorium Enterprise logo
       </message>
@@ -1322,7 +1321,7 @@ Permissions you've already given to websites and apps may apply to this account.
             To access your Thorium browser stuff across all your devices, sign in, then turn on sync
           </message>
           <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE" desc="Profile picker, account selection screen subtitle">
-            The following accounts are available for this Thorium profile
+            The following accounts are not signed into any Chromium profiles. If you want to use an account in another profile, remove that profile first.
           </message>
         </if>
         <if expr="not lacros">
