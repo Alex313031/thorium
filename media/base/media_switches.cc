@@ -612,6 +612,13 @@ const base::Feature kHardwareSecureDecryption{
 // sub key systems. Which sub key system is experimental is key system specific.
 const base::Feature kHardwareSecureDecryptionExperiment{
     "HardwareSecureDecryptionExperiment", base::FEATURE_DISABLED_BY_DEFAULT};
+    
+// Allows automatically disabling hardware secure Content Decryption Module
+// (CDM) after failures or crashes to fallback to software secure CDMs. If this
+// feature is disabled, the fallback will never happen and users could be stuck
+// in playback failures.
+const base::Feature kHardwareSecureDecryptionFallback{
+    "HardwareSecureDecryptionFallback", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kWakeLockOptimisationHiddenMuted{
     "kWakeLockOptimisationHiddenMuted", base::FEATURE_ENABLED_BY_DEFAULT};
