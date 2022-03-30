@@ -58,12 +58,6 @@ const base::FeatureParam<double> kMinimumEntropyForLCP{
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Whether the HandwritingRecognition API can be enabled by origin trial.
-// Disabling this feature disables both the origin trial and the mojo interface.
-const base::Feature kHandwritingRecognitionWebPlatformApiFinch{
-    "HandwritingRecognitionWebPlatformApiFinch",
-    base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Enable defer commits to avoid flash of unstyled content, for same origin
 // navigation only.
 const base::Feature kPaintHolding{"PaintHolding",
@@ -908,11 +902,6 @@ const base::Feature kWebAppEnableUrlHandlers{"WebAppEnableUrlHandlers",
 const base::Feature kLoadingTasksUnfreezable{"LoadingTasksUnfreezable",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Kill switch for the new behavior whereby anchors with target=_blank get
-// noopener behavior by default. TODO(crbug.com/898942): Remove in Chrome 95.
-const base::Feature kTargetBlankImpliesNoOpener{
-    "TargetBlankImpliesNoOpener", base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Controls how max frame rates are enforced in MediaStreamTracks.
 // TODO(crbug.com/1152307): Remove in M91.
 const base::Feature kMediaStreamTrackUseConfigMaxFrameRate{
@@ -978,7 +967,7 @@ const base::Feature kManagedConfiguration{"ManagedConfiguration",
 // have their rendering throttled on display:none or zero-area.
 const base::Feature kThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes{
     "ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes",
-    base::FEATURE_DISABLED_BY_DEFAULT};
+    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Kill switch for the Interest Group API, i.e. if disabled, the
 // API exposure will be disabled regardless of the OT config.
@@ -1296,11 +1285,11 @@ const base::Feature kAutoExpandDetailsElement{"AutoExpandDetailsElement",
 
 // Enables loading the response body earlier in navigation.
 const base::Feature kEarlyBodyLoad{"EarlyBodyLoad",
-                                   base::FEATURE_DISABLED_BY_DEFAULT};
+                                   base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables fetching the code cache earlier in navigation.
 const base::Feature kEarlyCodeCache{"EarlyCodeCache",
-                                    base::FEATURE_DISABLED_BY_DEFAULT};
+                                    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Allow use of an http-equiv meta tag to set client hints.
 const base::Feature kClientHintsMetaHTTPEquivAcceptCH{
@@ -1323,12 +1312,8 @@ const base::Feature kClientHintThirdPartyDelegation{
 #if BUILDFLAG(IS_ANDROID)
 // Enables prefetching Android fonts on renderer startup.
 const base::Feature kPrefetchAndroidFonts{"PrefetchAndroidFonts",
-                                          base::FEATURE_DISABLED_BY_DEFAULT};
+                                          base::FEATURE_ENABLED_BY_DEFAULT};
 #endif
-
-// Lazy initialize TimeZoneController.
-const base::Feature kLazyInitializeTimeZoneController{
-    "LazyInitializeTimeZoneController", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kCompositedCaret{"CompositedCaret",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1338,7 +1323,7 @@ const base::Feature kBackForwardCacheAppBanner{
 
 // Initialize CSSDefaultStyleSheets early in renderer startup.
 const base::Feature kDefaultStyleSheetsEarlyInit{
-    "DefaultStyleSheetsEarlyInit", base::FEATURE_DISABLED_BY_DEFAULT};
+    "DefaultStyleSheetsEarlyInit", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kSystemColorChooser{"SystemColorChooser",
                                         base::FEATURE_DISABLED_BY_DEFAULT};
