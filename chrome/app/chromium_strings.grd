@@ -371,10 +371,10 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Beta
       </message>
       <message name="IDS_ACCESSIBLE_DEV_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the developer (dev) channel version of the browser">
-        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Dev
+        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Chromium Dev
       </message>
       <message name="IDS_ACCESSIBLE_CANARY_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the canary (nightly build) channel version of the browser">
-        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Canary
+        <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Chromium Canary
       </message>
       <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
         The Chromium Authors and Alex313031
@@ -616,6 +616,22 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_DOWNLOAD_BUBBLE_MALICIOUS_URL_BLOCKED"
                desc="Message shown to the user to validate the download when the download url is classified to lead to malware by the safebrowsing database.">
         Thorium blocked this file because it is dangerous
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_UNKNOWN_SOURCE"
+               desc="Summary of dangerous warning for a file (like an extension) from an unknown source.">
+        Extensions, apps, and themes from unknown sources can harm your device. Thorium recommends only installing them from the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph>
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_ENCRYPTED"
+               desc="Summary of dangerous warning for an encrypted file.">
+        Thorium blocked this file because it's encrypted. Ask its owner to decrypt it
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_MALWARE"
+               desc="Subpage summary for malware warning for the user.">
+        Thorium blocked this file because it has malware
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_TOO_BIG"
+               desc="Subpage summary of warning for a file blocked for being too large.">
+        Thorium blocked this file because it's too big for a security check. Try again with files up to 50 MB
       </message>
 
       <!-- Download Shelf Items -->
@@ -1321,7 +1337,7 @@ Permissions you've already given to websites and apps may apply to this account.
             To access your Thorium browser stuff across all your devices, sign in, then turn on sync
           </message>
           <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE" desc="Profile picker, account selection screen subtitle">
-            The following accounts are not signed into any Chromium profiles. If you want to use an account in another profile, remove that profile first.
+            The following accounts are not signed into any Thorium profiles. If you want to use an account in another profile, remove that profile first.
           </message>
         </if>
         <if expr="not lacros">
@@ -1396,7 +1412,7 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_TAILORED_SECURITY_UNCONSENTED_PROMOTION_MESSAGE_ACCEPT" desc="Accept button shown in the message shown when a user changes their account-level tailored security setting encouraging them to enable Enhanced Safe Browsing">
         Continue
       </message>
-      
+
       <!-- Privacy Sandbox Dialog strings -->
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_SUBTITLE" desc="A subtitle on the consent page. Consider this a tagline for the Privacy Sandbox project.* “exploring” conveys that this is a work in progress. * “new features” include settings that the user can turn on/off and also backend features that change the way Chrome works for everyone * “allow sites to deliver”: Privacy Sandbox is proposed by Google as a collaborative effort with the browser industry. We’re building and testing functionality that will live in the Chrome browser. In order to land the full promise of Privacy Sandbox, websites and advertisers need to adopt the new APIs / functionality that we’re developing. So “allow sites…” makes it clear to the user that we’re building something for the ecosystem. Typically a Google product builds something for the user, and that’s true in this case, but it’s bigger than that. * “same browsing experience using less of your info”: Another definition of the promise of Privacy Sandbox. Third-party cookies are going away. In this new world, the user will have essentially the same browsing experience but it’s more private because it doesn’t expose so much of the user’s info.">
         Thorium is exploring new features that allow sites to deliver the same browsing experience using less of your info
@@ -1420,7 +1436,7 @@ Permissions you've already given to websites and apps may apply to this account.
         <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How you can manage your data:<ph name="END_BOLD">&lt;/b&gt;</ph> To protect your privacy, we auto-delete your interests that are older than 4 weeks. As you keep browsing, an interest might appear on the list again. Or you can remove interests you don’t want Thorium to consider.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_LEARN_MORE_SECTION_2_BULLET_POINT_1" desc="FLEDGE APIBullet 1 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “What data is used:” is bold and serves as a label to help people skimming the page. * “Your browsing history”: The user’s browsing history is available beneath the “History” menu at Chromium’s top level. This content taken in isolation is somewhat misleading. With FLEDGE, a site can store information in Chromium about the user’s visit to their site. For example, the site might store “running_shoes_red_size_35” to indicate that the user showed interest in a particular shoe. We’re OK with the simplification in this bullet because 1) we explain it in the next bullet and 2) we want the user to understand that at the top level, both Topics &amp; Fledge are based on the same thing and that is the user’s browsing history.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>What data is used:<ph name="END_BOLD">&lt;/b&gt;</ph> Your browsing history, a record of sites you’ve visited using Thorium on this device.
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>What data is used:<ph name="END_BOLD">&lt;/b&gt;</ph> Your browsing history, a record of sites you’ve visited using Chromium on this device.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_LEARN_MORE_SECTION_2_BULLET_POINT_2" desc="FLEDGE API Bullet 2 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How we use this data:” is bold and serves as a label to help people skimming the page.">
         <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How we use this data:<ph name="END_BOLD">&lt;/b&gt;</ph> Sites can store information with Thorium about your interests. For example, if you visit a site to buy shoes for a marathon, the site might define your interest as running marathons. Later, if you visit a different site to register for a race, that site can show you an ad for running shoes based on your interests.
