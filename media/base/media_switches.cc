@@ -786,6 +786,8 @@ const base::Feature MEDIA_EXPORT kMediaFoundationAV1Encoding{
     "MediaFoundationAV1Encoding", base::FEATURE_DISABLED_BY_DEFAULT};
     
 // Enables H.264 CBP encode acceleration for Windows.
+// For feature check of kMediaFoundationH264CbpEncoding at runtime,
+// please use IsMediaFoundationH264CbpEncodingEnabled() instead.
 const base::Feature MEDIA_EXPORT kMediaFoundationH264CbpEncoding{
     "MediaFoundationH264CbpEncoding", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -794,6 +796,8 @@ const base::Feature kMediaFoundationVideoCapture{
     "MediaFoundationVideoCapture", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables MediaFoundation based video capture with D3D11
+// For feature check of kMediaFoundationD3D11VideoCapture at runtime,
+// please use IsMediaFoundationD3D11VideoCaptureEnabled() instead.
 const base::Feature kMediaFoundationD3D11VideoCapture{
     "MediaFoundationD3D11VideoCapture", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -829,6 +833,13 @@ const base::Feature kD3D11Vp9kSVCHWDecoding{"D3D11Vp9kSVCHWDecoding",
 const base::Feature MEDIA_EXPORT kDeprecateLowUsageCodecs{
     "DeprecateLowUsageCodecs", base::FEATURE_ENABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_CHROMEOS)
+
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+// Spawn utility processes to perform hardware decode acceleration instead of
+// using the GPU process.
+const base::Feature MEDIA_EXPORT kUseOutOfProcessVideoDecoding{
+    "UseOutOfProcessVideoDecoding", base::FEATURE_DISABLED_BY_DEFAULT};
+#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 
 std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   // Return the autoplay policy set in the command line, if any.
@@ -990,5 +1001,15 @@ bool IsVideoCaptureAcceleratedJpegDecodingEnabled() {
   return false;
 #endif
 }
+
+#if BUILDFLAG(IS_WIN)
+bool IsMediaFoundationH264CbpEncodingEnabled() {
+  return base::FeatureList::IsEnabled(kMediaFoundationH264CbpEncoding);
+}
+
+bool IsMediaFoundationD3D11VideoCaptureEnabled() {
+  return base::FeatureList::IsEnabled(kMediaFoundationD3D11VideoCapture);
+}
+#endif
 
 }  // namespace media
