@@ -124,9 +124,10 @@ config("compiler") {
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "/arch:AVX",
-        "/clang:-mavx",
-        "/clang:-maes",
+        "-mavx",
+        "-maes",
+        "/clang:-O3",
+        "-Xclang", "-O3",
         "-Wno-unused-command-line-argument",
       ]
     }
@@ -294,7 +295,7 @@ config("runtime_library") {
 # manually override this config for their compiles.
 config("winver") {
   defines = [
-    "NTDDI_VERSION=NTDDI_WIN10_VB",
+    "NTDDI_VERSION=NTDDI_WIN10_FE",
 
     # We can't say `=_WIN32_WINNT_WIN10` here because some files do
     # `#if WINVER < 0x0600` without including windows.h before,
