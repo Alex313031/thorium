@@ -129,8 +129,8 @@ declare_args() {
   # the space overhead is too great. We should use some mixture of profiles and
   # optimization settings to better tune the size increase.
   thin_lto_enable_optimizations =
-      (is_chromeos || is_android || is_win || is_linux || is_mac || is_ios) &&
-      is_official_build
+      (is_chromeos || is_android || is_win || is_linux || is_mac ||
+       (is_ios && use_lld)) && is_official_build
 
   # Initialize all local variables with a pattern. This flag will fill
   # uninitialized floating-point types (and 32-bit pointers) with 0xFF and the
@@ -156,9 +156,8 @@ declare_args() {
   enable_wmax_tokens =
       !is_official_build && !(is_component_build && !is_debug) &&
       ((is_mac && target_cpu == "x64" && !use_system_xcode) ||
-       (is_linux && !is_chromeos && target_cpu == "x64") ||
-       (is_win && target_cpu == "x86") || (is_win && target_cpu == "x64") ||
-       (is_android && target_cpu == "arm") ||
+       (is_linux && target_cpu == "x64") || (is_win && target_cpu == "x86") ||
+       (is_win && target_cpu == "x64") || (is_android && target_cpu == "arm") ||
        (is_android && target_cpu == "arm64"))
 
   # Turn off the --call-graph-profile-sort flag for lld by default. Enable
@@ -843,7 +842,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
   }
 }
 
@@ -2161,9 +2160,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
   } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2231,7 +2230,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
   }
 }
 
@@ -2264,7 +2263,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
   }
 }
 
@@ -2509,7 +2508,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
 }
 
 # Minimal symbols.
@@ -2582,7 +2581,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+avx", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
