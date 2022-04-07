@@ -1361,6 +1361,12 @@ const base::Feature kWindowPlacementFullscreenOnScreensChange{
 // TODO(crbug.com/1277431): This flag should be eventually disabled.
 const base::Feature kEventPath{"EventPath", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Removes a paint invalidation of viewport constrained objects (sticky or
+// fixed) after scrolling.
+const base::Feature kOptimizeViewportConstrainedPaintInvalidation{
+    "OptimizeViewportConstrainedPaintInvalidation",
+    base::FEATURE_ENABLED_BY_DEFAULT};
+
 const base::Feature kReduceUserAgentMinorVersion{
     "ReduceUserAgentMinorVersion", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1386,6 +1392,23 @@ const base::Feature kWebSQLAccess{"kWebSQLAccess",
 // User-Agent string is overridden, instead of disabling the headers altogether.
 const base::Feature kUACHOverrideBlank{"UACHOverrideBlank",
                                        base::FEATURE_DISABLED_BY_DEFAULT};
+
+#if BUILDFLAG(IS_WIN)
+const base::Feature kPrewarmDefaultFontFamilies{
+    "PrewarmDefaultFontFamilies", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<bool> kPrewarmStandard = {&kPrewarmDefaultFontFamilies,
+                                                   "prewarm_standard", true};
+const base::FeatureParam<bool> kPrewarmFixed = {&kPrewarmDefaultFontFamilies,
+                                                "prewarm_fixed", true};
+const base::FeatureParam<bool> kPrewarmSerif = {&kPrewarmDefaultFontFamilies,
+                                                "prewarm_serif", true};
+const base::FeatureParam<bool> kPrewarmSansSerif = {
+    &kPrewarmDefaultFontFamilies, "prewarm_sans_serif", true};
+const base::FeatureParam<bool> kPrewarmCursive = {&kPrewarmDefaultFontFamilies,
+                                                  "prewarm_cursive", true};
+const base::FeatureParam<bool> kPrewarmFantasy = {&kPrewarmDefaultFontFamilies,
+                                                  "prewarm_fantasy", true};
+#endif
 
 }  // namespace features
 }  // namespace blink
