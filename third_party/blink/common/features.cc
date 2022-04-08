@@ -868,11 +868,12 @@ const base::Feature kWebAppEnableHandleLinks{"WebAppEnableHandleLinks",
 const base::Feature kWebAppEnableLaunchHandler{
     "WebAppEnableLaunchHandler", base::FEATURE_DISABLED_BY_DEFAULT};
 
-// Enables declarative link capturing in web apps.
-// Explainer:
-// https://github.com/WICG/sw-launch/blob/master/declarative_link_capturing.md
-const base::Feature kWebAppEnableLinkCapturing{
-    "WebAppEnableLinkCapturing", base::FEATURE_DISABLED_BY_DEFAULT};
+// Enables the deprecated syntax for the above "launch_handler": {
+//   "route_to": "existing-client",
+//   "navigate_existing_client: "always" | "never"
+// }
+const base::Feature kWebAppEnableLaunchHandlerV1API{
+    "WebAppEnableLaunchHandlerV1API", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables Unique ID feature in web apps. Controls parsing of "id" field in web
 // app manifests. See explainer for more information:
@@ -1263,10 +1264,6 @@ const base::Feature kTabSwitchMetrics2{"TabSwitchMetrics2",
 const base::Feature kLCPAnimatedImagesReporting{
     "LCPAnimatedImagesReporting", base::FEATURE_DISABLED_BY_DEFAULT};
 
-// https://blog.whatwg.org/newline-normalizations-in-form-submission
-const base::Feature kLateFormNewlineNormalization{
-    "LateFormNewlineNormalization", base::FEATURE_ENABLED_BY_DEFAULT};
-
 // TODO(crbug.com/1185950): Remove this flag when the feature is fully launched
 // and released to stable with no issues.
 const base::Feature kAutoExpandDetailsElement{"AutoExpandDetailsElement",
@@ -1409,6 +1406,10 @@ const base::FeatureParam<bool> kPrewarmCursive = {&kPrewarmDefaultFontFamilies,
 const base::FeatureParam<bool> kPrewarmFantasy = {&kPrewarmDefaultFontFamilies,
                                                   "prewarm_fantasy", true};
 #endif
+
+// Enable `save-data` client hint.
+const base::Feature kClientHintsSaveData{"ClientHintsSaveData",
+                                         base::FEATURE_ENABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
