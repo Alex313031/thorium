@@ -1,8 +1,15 @@
 #!/bin/bash
 
-xattr -csr out/thorium/Thorium.app
+YEL='\033[1;33m' # Yellow
 
-codesign --force --deep --sign - out/thorium/Thorium.app
+printf "\n" &&
+printf "${YEL}Building .dmg of Thorium...\n" &&
+printf "\n" &&
+tput sgr0 &&
+
+xattr -csr out/thorium/Thorium.app &&
+
+codesign --force --deep --sign - out/thorium/Thorium.app &&
 
 chrome/installer/mac/pkg-dmg \
   --sourcefile --source out/thorium/Thorium.app \
