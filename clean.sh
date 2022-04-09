@@ -1,7 +1,14 @@
 #!/bin/bash
 
-# run from within out/Default or wherever you put your build, or cd there first
+# Copy and run from within out/thorium or wherever you put your build, or cd there first!
 # i.e. cd /home/alex/bin/chromium-dev/
+
+YEL='\033[1;33m' # Yellow
+
+printf "\n" &&
+printf "${YEL}Cleaning up build artifacts...\n" &&
+printf "\n" &&
+tput sgr0 &&
 
 find . -name "*deps*" -delete
 find . -name "*TOC*" -delete
@@ -17,5 +24,8 @@ rm -r etc
 rm -r clang_newlib_x64
 rm -r thinlto-cache
 rm -r fontconfig_caches
+
+printf "${YEL}Done!\n" &&
+tput sgr0
 
 exit 0
