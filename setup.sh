@@ -1,6 +1,16 @@
 #!/bin/bash
 
+YEL='\033[1;33m' # Yellow
+
+printf "\n" &&
+printf "${YEL}Creating build output directory...\n" &&
+tput sgr0 &&
+
 mkdir -v -p $HOME/chromium/src/out/thorium/ &&
+printf "\n" &&
+
+printf "${YEL}Copying source files over Chromium tree...\n" &&
+tput sgr0 &&
 
 cp -r -v build/. $HOME/chromium/src/build/ &&
 cp -r -v chrome/. $HOME/chromium/src/chrome/ &&
@@ -17,6 +27,22 @@ cp -v chrome-devtools/chrome-devtools.svg $HOME/chromium/src/out/thorium/ &&
 cp -r -v content_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
+
+printf "${YEL}Done!\n" &&
+printf "\n" &&
+
+printf "${YEL}Setting NINJA_SUMMARIZE_BUILD=1 and aliases to download the PGO Profiles for supported targets, and the gsync alias.\n" &&
+printf "\n" &&
+
+printf "${YEL}Dropping you to ~/chromium/src.\n" &&
+printf "\n" &&
+
+printf "${YEL}Look in this file to see the aliases and what they're for.\n" &&
+printf "\n" &&
+
+printf "${YEL}Enjoy Thorium!\n" &&
+printf "\n" &&
+tput sgr0 &&
 
 cd $HOME/chromium/src &&
 
