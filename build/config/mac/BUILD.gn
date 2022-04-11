@@ -40,7 +40,11 @@ config("compiler") {
   defines = [ "CR_XCODE_VERSION=$xcode_version" ]
 
   asmflags = common_mac_flags
-  cflags = [ "-O3", "-mavx", "-maes", ] + common_mac_flags
+  cflags = [ "-O3", ] + common_mac_flags
+  
+  if (current_cpu == "x64") {
+    cflags += [ "-mavx", "-maes", ]
+  }
 
   # Without this, the constructors and destructors of a C++ object inside
   # an Objective C struct won't be called, which is very bad.
