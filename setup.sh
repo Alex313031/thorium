@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright (c) 2022 Alex313031
+
 YEL='\033[1;33m' # Yellow
 
 printf "\n" &&
@@ -50,10 +52,10 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
 
-alias pgo='python tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
-alias pgow='python tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
-alias pgom='python tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
 exit 0
