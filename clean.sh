@@ -10,6 +10,8 @@ printf "${YEL}Cleaning up build artifacts...\n" &&
 printf "\n" &&
 tput sgr0 &&
 
+cd ~/chromium/src/out/thorium
+
 find . -name "*deps*" -delete
 find . -name "*TOC*" -delete
 rm -r pyproto
