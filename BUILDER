@@ -1,5 +1,10 @@
+30 55
 ## Contains notes for me about what to change when rebasing the main BUILD.gn ## Lines with # are for personal use.
-# ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-ffp-contract=fast", ]
+"-march=haswell",
+        "-mtune=x86-64",
+ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", ]
+
+
 
 ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
 lto_opt_level
@@ -7,7 +12,18 @@ import_instr_limit
 cflags = [ "-O
 [ "-Xclang", "-O3" ]
 config("no_symbols") {
--Copt-level=
+-Copt-level= -Ctarget-feature=+sse4,+avx
+
+kShowHomeButton
+
+const base::Feature kAutomaticLazyFrameLoadingToAds{
+const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
+JPEG XL Image File Format
+CssSelectorFragmentAnchor
+Prefetchpri
+// Check if the CPU has the required instruction set to run the Speech
+
+kEnableTabMuting & kVaapiVideoDecode & kVaapiVideoEncode & LiveCaptionMultiLanguage & kD3D11HEVCDecoding & kD3D11Vp9kSVCHWDecoding & kUseChromeOSDirectVideoDecoder
 
 linux above this > # TODO(jdduke) Re-enable on mips after resolving linking
 windows above this > # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
