@@ -14,10 +14,6 @@
 #include "base/cpu.h"
 #endif
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-#include "ash/constants/ash_features.h"
-#endif
-
 namespace switches {
 
 // Allow users to specify a custom buffer size for debugging purpose.
@@ -257,6 +253,11 @@ const base::Feature kFFmpegDecodeOpaqueVP8{"FFmpegDecodeOpaqueVP8",
 const base::Feature kOverlayFullscreenVideo{"overlay-fullscreen-video",
                                             base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Use a LocalMediaStreamAudioSource for getDisplayMedia captures with audio.
+// TODO(crbug.com/1313841): Remove this after M107 branch point.
+const base::Feature kDisplayAudioUseLocalAudioSource{
+    "DisplayAudioUseLocalAudioSource", base::FEATURE_ENABLED_BY_DEFAULT};
+
 // Enables user control over muting tab audio from the tab strip.
 const base::Feature kEnableTabMuting{"EnableTabMuting",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
@@ -344,12 +345,26 @@ const base::Feature kCdmHostVerification{"CdmHostVerification",
 // using the same CDM type would share one CDM process.
 const base::Feature kCdmProcessSiteIsolation{"CdmProcessSiteIsolation",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
-                                             
+
+#if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
 // If echo cancellation for a mic signal is requested, mix and cancel all audio
 // playback going to a specific output device in the audio service.
-#if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
 const base::Feature kChromeWideEchoCancellation{
     "ChromeWideEchoCancellation", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// If non-zero, audio processing is done on a dedicated processing thread which
+// receives audio from the audio capture thread via a fifo of a specified size.
+// Zero fifo size means the usage of such processing thread is disabled and
+// processing is done on the audio capture thread itself.
+const base::FeatureParam<int> kChromeWideEchoCancellationProcessingFifoSize{
+    &kChromeWideEchoCancellation, "processing_fifo_size", 0};
+
+// When audio processing is done in the audio process, at the renderer side IPC
+// is set up to receive audio at the processing sample rate. This is a
+// kill-switch to fallback to receiving audio at the default sample rate of the
+// audio capture device.
+const base::FeatureParam<bool> kChromeWideEchoCancellationMinimizeResampling{
+    &kChromeWideEchoCancellation, "minimize_resampling", true};
 #endif
 
 // Make MSE garbage collection algorithm more aggressive when we are under
@@ -531,7 +546,7 @@ const base::Feature kVaapiH264TemporalLayerHWEncoding{
     "VaapiH264TemporalLayerEncoding", base::FEATURE_ENABLED_BY_DEFAULT};
 // Enable VP8 temporal layer encoding with HW encoder on ChromeOS.
 const base::Feature kVaapiVp8TemporalLayerHWEncoding{
-    "VaapiVp8TemporalLayerEncoding", base::FEATURE_ENABLED_BY_DEFAULT};
+    "VaapiVp8TemporalLayerEncoding", base::FEATURE_DISABLED_BY_DEFAULT};
 // Enable VP9 k-SVC encoding with HW encoder for webrtc use case on ChromeOS.
 const base::Feature kVaapiVp9kSVCHWEncoding {
   "VaapiVp9kSVCHWEncoding",
@@ -581,6 +596,17 @@ const base::Feature kShareThisTabInsteadButtonGetDisplayMedia{
     "ShareThisTabInsteadButtonGetDisplayMedia",
     base::FEATURE_ENABLED_BY_DEFAULT};
 
+// If kShareThisTabInsteadButtonGetDisplayMedia is ENABLED, this flag controls
+// whether a "Share this tab instead" button should be enabled for
+// getDisplayMedia captures with audio.
+// If kShareThisTabInsteadButtonGetDisplayMedia is DISABLED, this flag has no
+// effect.
+// Note: This flag does not control if the "Share this tab instead" button is
+// shown for chrome.desktopCapture captures.
+const base::Feature kShareThisTabInsteadButtonGetDisplayMediaAudio{
+    "ShareThisTabInsteadButtonGetDisplayMediaAudio",
+    base::FEATURE_ENABLED_BY_DEFAULT};
+
 // Enable the Speaker Change Detection feature, which inserts a line break when
 // the Speech On-Device API (SODA) detects a speaker change.
 const base::Feature kSpeakerChangeDetection{"SpeakerChangeDetection",
@@ -612,7 +638,7 @@ const base::Feature kHardwareSecureDecryption{
 // sub key systems. Which sub key system is experimental is key system specific.
 const base::Feature kHardwareSecureDecryptionExperiment{
     "HardwareSecureDecryptionExperiment", base::FEATURE_DISABLED_BY_DEFAULT};
-    
+
 // Allows automatically disabling hardware secure Content Decryption Module
 // (CDM) after failures or crashes to fallback to software secure CDMs. If this
 // feature is disabled, the fallback will never happen and users could be stuck
@@ -748,7 +774,6 @@ const base::Feature kUseChromeOSDirectVideoDecoder{
 const base::Feature kPreferLibYuvImageProcessor{
     "prefer-libyuv-image-processor", base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // defined(ARCH_CPU_ARM_FAMILY)
-
 #if BUILDFLAG(IS_CHROMEOS)
 // ChromeOS has one of two VideoDecoder implementations active based on
 // SoC/board specific configurations that are sent via command line flags. This
@@ -793,7 +818,7 @@ const base::Feature kIncludeIRCamerasInDeviceEnumeration{
 // Enables AV1 encode acceleration for Windows.
 const base::Feature MEDIA_EXPORT kMediaFoundationAV1Encoding{
     "MediaFoundationAV1Encoding", base::FEATURE_DISABLED_BY_DEFAULT};
-    
+
 // Enables H.264 CBP encode acceleration for Windows.
 // For feature check of kMediaFoundationH264CbpEncoding at runtime,
 // please use IsMediaFoundationH264CbpEncodingEnabled() instead.
@@ -971,7 +996,7 @@ const base::Feature kBresenhamCadence{"BresenhamCadence",
 // Display the playback speed button on the media controls.
 const base::Feature kPlaybackSpeedButton{"PlaybackSpeedButton",
                                          base::FEATURE_ENABLED_BY_DEFAULT};
-                                         
+
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
   return base::FeatureList::IsEnabled(kChromeWideEchoCancellation);
@@ -983,16 +1008,6 @@ bool IsChromeWideEchoCancellationEnabled() {
 bool IsHardwareSecureDecryptionEnabled() {
   return base::FeatureList::IsEnabled(kHardwareSecureDecryption) ||
          base::FeatureList::IsEnabled(kHardwareSecureDecryptionExperiment);
-}
-
-bool IsLiveCaptionFeatureEnabled() {
-    return true;
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-  // Some Chrome OS devices do not support on-device speech.
-  if (!base::FeatureList::IsEnabled(ash::features::kOnDeviceSpeechRecognition))
-    return false;
-#endif
 }
 
 bool IsVideoCaptureAcceleratedJpegDecodingEnabled() {
