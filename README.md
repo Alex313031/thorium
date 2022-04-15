@@ -72,4 +72,8 @@ https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and 
 
 &nbsp;&nbsp; NOTE: libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
 
+*Thanks for using Thorium!*
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_502.jpg" width="200">
+
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/OLD/GitHub-Mark-32px.png">
