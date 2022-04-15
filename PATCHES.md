@@ -1,3 +1,5 @@
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_502.jpg" width="200">
+
 ## List of patches included in Thorium
 
 Compiler modifications include SSE4.2, AVX, and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 100, respectively. \
