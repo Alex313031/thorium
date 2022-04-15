@@ -25,6 +25,13 @@ const base::Feature kAutomaticLazyFrameLoadingToAds{
 const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
     "AutomaticLazyFrameLoadingToEmbeds", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Define the allowed websites to use LazyEmbeds. The allowed websites need to
+// be defined separately from kAutomaticLazyFrameLoadingToEmbeds because we want
+// to gather Blink.AutomaticLazyLoadFrame.LazyEmbedFrameCount UKM data even when
+// kAutomaticLazyFrameLoadingToEmbeds is disabled.
+const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
+    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
 const base::Feature kBackForwardCacheDedicatedWorker{
@@ -124,9 +131,6 @@ const base::Feature kDisplayLocking{"DisplayLocking",
 
 const base::Feature kJSONModules{"JSONModules",
                                  base::FEATURE_ENABLED_BY_DEFAULT};
-
-const base::Feature kForceSynchronousHTMLParsing{
-    "ForceSynchronousHTMLParsing", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kDeferredFontShaping{"DeferredShaping",
                                          base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1139,6 +1143,9 @@ const base::Feature kIncludeBackgroundSVGInLCP{
 const base::FeatureParam<int> kMaxNumOfThrottleableRequestsInTightMode{
     &kDelayLowPriorityRequestsAccordingToNetworkState,
     "MaxNumOfThrottleableRequestsInTightMode", 5};
+
+const base::Feature kHTMLParamElementUrlSupport{
+    "HTMLParamElementUrlSupport", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::FeatureParam<base::TimeDelta> kHttpRttThreshold{
     &kDelayLowPriorityRequestsAccordingToNetworkState, "HttpRttThreshold",
