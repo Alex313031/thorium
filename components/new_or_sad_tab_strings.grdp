@@ -63,7 +63,7 @@
         </message>
       </if>
       <if expr="is_macosx or chromeos_ash or chromeos_lacros">
-        <message name="IDS_SAD_TAB_RELOAD_CLOSE_TABS" desc="One of the bullet points displayed on the web page if a reload failed to fix the issue, advising the user to close other Chrome tabs or apps running on their computer (Mac, Chrome OS).">
+        <message name="IDS_SAD_TAB_RELOAD_CLOSE_TABS" desc="One of the bullet points displayed on the web page if a reload failed to fix the issue, advising the user to close other Chrome tabs or apps running on their computer (Mac, ChromeOS).">
           Close other tabs or apps
         </message>
       </if>
@@ -167,7 +167,7 @@
       </if>
       <if expr="not _google_chrome">
         <message name="IDS_NEW_TAB_OTR_NOT_SAVED" desc="Bullet points listing data that are not saved in the Incognito mode. 'Browsing history' means a history of visited websites. 'Cookies and site data' refers to data saved by websites on the user's device (e.g. sign-in state, preferences, etc.). 'Information entered in forms' refers to names, addresses, passwords etc. that users enter into forms on the web." formatter_data="android_java">
-          Chromium <ph name="BEGIN_EMPHASIS">&lt;em&gt;</ph>won’t save<ph name="END_EMPHASIS">&lt;/em&gt;</ph> the following information:
+          Thorium <ph name="BEGIN_EMPHASIS">&lt;em&gt;</ph>won’t save<ph name="END_EMPHASIS">&lt;/em&gt;</ph> the following information:
           <ph name="BEGIN_LIST">&lt;ul&gt;</ph>
             <ph name="LIST_ITEM">&lt;li&gt;</ph>Your browsing history
             <ph name="LIST_ITEM">&lt;li&gt;</ph>Cookies and site data
