@@ -3,3 +3,5 @@ This contains the iconset and logos for Thorium, as well as the Chromium logo, C
 IMPORTANT: The NEW directory is where the new logos that are used since M100 are from. Use this directory for almost all things.
 
 The 'STAGING' dir is for test icons, scratch space, uploading temporary things, etc.
+
+The Chromium Logo is licensed under Chromium's BSD-Style License, and some logos like the "bulb" and "build" logos are under Apache's License, which can be found here.
