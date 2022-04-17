@@ -16,7 +16,7 @@
 
 &nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special of which some are SSE4 or SSE4.2. (See below.)
 
-### EXPERIMENTAL FEATURES/DIFFERENCES BETWEEN CHROMIUM AND THORIUM
+### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_32.png">
 > - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
 > - Experimental MPEG-DASH.
 > - JPEG XL Image File Format support.
@@ -47,7 +47,7 @@
 
 &nbsp;&nbsp;&ndash; UPDATE: Thorium now has API Keys baked in but the instructions below are the same if you are building it yourself as I will not include the keys here. | args.gn exclude API Keys (you can get them yourself) and the PGO profile path is different for each Chromium version (only needed when building). (See below.)
 
-# Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_white_32.png">
+# Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_32.png">
 _**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
 - For AVX2 follow the instructions at https://github.com/Alex313031/Thorium-AVX2/ as well as these instructions.
 - In general follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys \
