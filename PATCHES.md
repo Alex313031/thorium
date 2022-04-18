@@ -38,7 +38,7 @@ VDPAU Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/d
 
 Audio Sandbox Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-sandbox-for-audio.patch
 
-DoH Secure Mode Patch > https://github.com/bromite/bromite/blob/master/build/patches/DoH-secure-mode-by-default.patch
+DoH Secure Mode Patch > https://github.com/bromite/bromite/blob/master/build/patches/DoH-improvements.patch
 
 DoH Bare Minimum HTTP Headers Patch > https://github.com/bromite/bromite/blob/master/build/patches/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
