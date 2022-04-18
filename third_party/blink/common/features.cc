@@ -30,7 +30,7 @@ const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
 // to gather Blink.AutomaticLazyLoadFrame.LazyEmbedFrameCount UKM data even when
 // kAutomaticLazyFrameLoadingToEmbeds is disabled.
 const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
-    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_ENABLED_BY_DEFAULT};
+    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
@@ -1422,6 +1422,12 @@ const base::Feature kClientHintsSaveData{"ClientHintsSaveData",
 
 const base::Feature kEstablishGpuChannelAsync{
     "EstablishGpuChannelAsync", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kDeferBeginMainFrameDuringLoading{
+    "DeferBeginMainFrameDuringLoading", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<base::TimeDelta> kRecentBeginMainFrameCutoff = {
+    &kDeferBeginMainFrameDuringLoading, "recent_begin_main_frame_cutoff",
+    base::Milliseconds(150)};
 
 }  // namespace features
 }  // namespace blink
