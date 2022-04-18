@@ -1,10 +1,11 @@
+# Copyright (c) 2022 Alex313031 and JPratama7
 # Maintainer: JPratama7 <josepratama080@gmail.com>
 
-pkgbase=thorium-browser-unstable
+pkgbase=thorium-browser
 pkgname=${pkgbase}-bin
-pkgver=101.0.4949.0
+pkgver=103.0.5006.0
 pkgrel=1
-pkgdesc="The web browser from Chromiumorg and The Thorium Authors. Thorium is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier."
+pkgdesc="The web browser from Chromium.org and The Thorium Authors. Thorium is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier."
 arch=('x86_64')
 url=""
 license=('GPL3')
