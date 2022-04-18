@@ -8,4 +8,4 @@ solutions = [
   },
 ]
 
-target_os=['linux', 'chromeos']
+target_os=['linux', 'chromeos', 'win' ]
