@@ -42,8 +42,8 @@ config("compiler") {
   asmflags = common_mac_flags
   cflags = [ "-O3", ] + common_mac_flags
   
-  if (current_cpu == "x64") {
-    cflags += [ "-mavx", "-maes", ]
+  if (target_cpu == "x64") {
+    cflags += [ "-maes", "-mavx", "-mavx2", ]
   }
 
   # Without this, the constructors and destructors of a C++ object inside
