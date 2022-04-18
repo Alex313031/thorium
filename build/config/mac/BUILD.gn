@@ -43,7 +43,8 @@ config("compiler") {
   cflags = [ "-O3", ] + common_mac_flags
   
   if (target_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", ]
+    cflags += [ "-maes", "-mavx", "-mavx2", "-fp-contract=fast", ]
+    ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", ]
   }
 
   # Without this, the constructors and destructors of a C++ object inside
