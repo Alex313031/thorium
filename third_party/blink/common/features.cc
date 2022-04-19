@@ -30,7 +30,7 @@ const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
 // to gather Blink.AutomaticLazyLoadFrame.LazyEmbedFrameCount UKM data even when
 // kAutomaticLazyFrameLoadingToEmbeds is disabled.
 const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
-    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_DISABLED_BY_DEFAULT};
+    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
@@ -1343,7 +1343,7 @@ const base::FeatureParam<double> kScaleTileMemoryLimitFactor{
     &kScaleTileMemoryLimit, "Factor", 1.0};
 
 const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
-                                             base::FEATURE_DISABLED_BY_DEFAULT};
+                                             base::FEATURE_ENABLED_BY_DEFAULT};
 
 // If enabled, allows web pages to use the experimental EditContext API to
 // better control text input. See crbug.com/999184.
