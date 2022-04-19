@@ -539,11 +539,6 @@ config("compiler") {
       }
     }
 
-    # TODO(crbug.com/1235145): Investigate why/if this should be needed.
-    if (is_win) {
-      cflags += [ "/clang:-ffp-contract=off" ]
-    }
-
     # TODO(crbug.com/1290191): Some ios tests fail without this.
     if (is_ios) {
       cflags += [
