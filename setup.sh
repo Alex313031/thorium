@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031
+# Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 
@@ -33,6 +33,17 @@ printf "${YEL}Done!\n" &&
 printf "\n" &&
 
 printf "${YEL}Setting NINJA_SUMMARIZE_BUILD=1 and aliases to download the PGO Profiles for supported targets, and the gsync alias.\n" &&
+
+export NINJA_SUMMARIZE_BUILD=1 &&
+
+alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
+
+alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
+alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
+alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
 printf "\n" &&
 
 printf "${YEL}Dropping you to ~/chromium/src.\n" &&
@@ -46,15 +57,5 @@ printf "\n" &&
 tput sgr0 &&
 
 cd $HOME/chromium/src &&
-
-export NINJA_SUMMARIZE_BUILD=1 &&
-
-alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
-
-alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
-
-alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
-
-alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
 exit 0
