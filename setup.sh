@@ -36,6 +36,10 @@ printf "${YEL}Setting NINJA_SUMMARIZE_BUILD=1 and aliases to download the PGO Pr
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
+export EDITOR=nano &&
+
+export VISUAL=nano &&
+
 alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
 
 alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
