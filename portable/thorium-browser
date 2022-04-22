@@ -4,4 +4,4 @@
 
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_GOOGLE_CHROME
 
-./chrome --user-data-dir=./profile --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
+./chrome --user-data-dir=./.config/thorium --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder
