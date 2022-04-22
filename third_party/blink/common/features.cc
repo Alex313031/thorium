@@ -244,6 +244,10 @@ const base::FeatureParam<int> kMaxSharedStorageInitTries = {
     &kSharedStorageAPI, "MaxSharedStorageInitTries", 2};
 const base::FeatureParam<int> kMaxSharedStorageIteratorBatchSize = {
     &kSharedStorageAPI, "MaxSharedStorageIteratorBatchSize", 100};
+const base::FeatureParam<int> kSharedStorageBitBudget = {
+    &kSharedStorageAPI, "SharedStorageBitBudget", 12};
+const base::FeatureParam<base::TimeDelta> kSharedStorageBudgetInterval = {
+    &kSharedStorageAPI, "SharedStorageBudgetInterval", base::Hours(24)};
 const base::FeatureParam<base::TimeDelta>
     kSharedStorageStaleOriginPurgeInitialInterval = {
         &kSharedStorageAPI, "SharedStorageStaleOriginPurgeInitialInterval",
@@ -1375,6 +1379,8 @@ const base::Feature kOptimizeViewportConstrainedPaintInvalidation{
 
 const base::Feature kReduceUserAgentMinorVersion{
     "ReduceUserAgentMinorVersion", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<std::string> kUserAgentFrozenBuildVersion{
+    &kReduceUserAgentMinorVersion, "build_version", "0"};
 
 const base::Feature kReportFCPOnlyOnSuccessfulCommit{
     "ReportFCPOnlyOnSuccessfulCommit", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1428,6 +1434,9 @@ const base::Feature kDeferBeginMainFrameDuringLoading{
 const base::FeatureParam<base::TimeDelta> kRecentBeginMainFrameCutoff = {
     &kDeferBeginMainFrameDuringLoading, "recent_begin_main_frame_cutoff",
     base::Milliseconds(150)};
+
+const base::Feature kDecodeScriptSourceOffThread{
+    "DecodeScriptSourceOffThread", base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
