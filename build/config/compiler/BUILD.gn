@@ -377,7 +377,7 @@ config("compiler") {
   if ((is_posix && !is_apple) || is_fuchsia) {
     if (enable_profiling) {
       if (!is_debug) {
-        cflags += [ "-g" ]
+        cflags += [ "-g0" ]
 
         if (enable_full_stack_frames_for_profiling) {
           cflags += [
@@ -834,7 +834,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
   }
 }
 
@@ -2155,9 +2155,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
   } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2225,7 +2225,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
   }
 }
 
@@ -2258,7 +2258,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
   }
 }
 
@@ -2393,7 +2393,7 @@ config("symbols") {
       cflags += [ "-gcodeview-ghash" ]
       ldflags = [ "/DEBUG:GHASH" ]
     } else {
-      ldflags = [ "/DEBUG" ]
+      ldflags = [ "/DEBUG:NONE" ]
     }
 
     # All configs using /DEBUG should include this:
@@ -2429,7 +2429,7 @@ config("symbols") {
     # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
     # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
     if ((!is_nacl || is_clang) && current_os != "zos") {
-      cflags += [ "-g2" ]
+      cflags += [ "-g0" ]
     }
 
     if (!is_nacl && is_clang && !is_tsan && !is_asan &&
@@ -2447,7 +2447,7 @@ config("symbols") {
     }
 
     if (is_apple) {
-      swiftflags = [ "-g" ]
+      swiftflags = [ "-g0" ]
     }
 
     if (use_debug_fission) {
@@ -2503,7 +2503,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
 }
 
 # Minimal symbols.
@@ -2518,7 +2518,7 @@ config("minimal_symbols") {
       cflags += [ "-gcodeview-ghash" ]
       ldflags = [ "/DEBUG:GHASH" ]
     } else {
-      ldflags = [ "/DEBUG" ]
+      ldflags = [ "/DEBUG:NONE" ]
     }
 
     # All configs using /DEBUG should include this:
@@ -2528,7 +2528,7 @@ config("minimal_symbols") {
     if (is_clang) {
       # -gline-tables-only is the same as -g1, but clang-cl only exposes the
       # former.
-      cflags += [ "-gline-tables-only" ]
+      cflags += [ "-g0" ]
     }
   } else {
     cflags = []
@@ -2554,7 +2554,7 @@ config("minimal_symbols") {
     # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
     # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
     if (!is_nacl || is_clang) {
-      cflags += [ "-g1" ]
+      cflags += [ "-g0" ]
     }
 
     if (!is_nacl && is_clang && !is_tsan && !is_asan &&
@@ -2576,7 +2576,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+sse4,+aes,+avx", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
