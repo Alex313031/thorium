@@ -41,22 +41,22 @@ config("compiler") {
 
   asmflags = common_mac_flags
   cflags = [ "-O3", ] + common_mac_flags
-  
-  if (target_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
-    ldflags += [ "-march=haswell", "-fp-contract=fast", ]
-  }
-
-  if (current_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
-    ldflags += [ "-march=haswell", "-fp-contract=fast", ]
-  }
 
   # Without this, the constructors and destructors of a C++ object inside
   # an Objective C struct won't be called, which is very bad.
   cflags_objcc = [ "-fobjc-call-cxx-cdtors" ]
 
   ldflags = [ "-Wl,-O3", ] + common_mac_flags
+  
+  if (target_cpu == "x64") {
+    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
+    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
+  }
+
+  if (current_cpu == "x64") {
+    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
+    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
+  }
 
   if (save_unstripped_output) {
     ldflags += [ "-Wcrl,unstripped," + rebase_path(root_out_dir) ]
@@ -91,7 +91,7 @@ config("runtime_library") {
 
 # On Mac, this is used for everything except static libraries.
 config("mac_dynamic_flags") {
-  ldflags = [ "-Wl,-ObjC" ]  # Always load Objective-C categories and classes.
+  ldflags += [ "-Wl,-ObjC" ]  # Always load Objective-C categories and classes.
 
   if (is_component_build) {
     ldflags += [
@@ -124,7 +124,7 @@ config("mac_dynamic_flags") {
 # preserve specific symbols.
 config("strip_all") {
   if (enable_stripping) {
-    ldflags = [ "-Wcrl,strip,-x,-S" ]
+    ldflags += [ "-Wcrl,strip,-x,-S" ]
   }
 }
 
