@@ -44,7 +44,12 @@ config("compiler") {
   
   if (target_cpu == "x64") {
     cflags += [ "-maes", "-mavx", "-mavx2", "-fp-contract=fast", ]
-    ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", ]
+    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
+  }
+
+  if (current_cpu == "x64") {
+    cflags += [ "-maes", "-mavx", "-mavx2", "-fp-contract=fast", ]
+    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
   # Without this, the constructors and destructors of a C++ object inside
