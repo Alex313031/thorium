@@ -43,7 +43,7 @@ config("compiler") {
   cflags = [ "-O3", ] + common_mac_flags
   
   if (target_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", "-fp-contract=fast", ]
+    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", ]
     ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
