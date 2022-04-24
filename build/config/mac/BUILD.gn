@@ -91,7 +91,7 @@ config("runtime_library") {
 
 # On Mac, this is used for everything except static libraries.
 config("mac_dynamic_flags") {
-  ldflags += [ "-Wl,-ObjC" ]  # Always load Objective-C categories and classes.
+  ldflags = [ "-Wl,-ObjC", "-Wl,-O3", ]  # Always load Objective-C categories and classes.
 
   if (is_component_build) {
     ldflags += [
@@ -124,7 +124,7 @@ config("mac_dynamic_flags") {
 # preserve specific symbols.
 config("strip_all") {
   if (enable_stripping) {
-    ldflags += [ "-Wcrl,strip,-x,-S" ]
+    ldflags = [ "-Wcrl,strip,-x,-S", "-Wl,-O3", ]
   }
 }
 
