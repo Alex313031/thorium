@@ -30,7 +30,7 @@ const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
 // to gather Blink.AutomaticLazyLoadFrame.LazyEmbedFrameCount UKM data even when
 // kAutomaticLazyFrameLoadingToEmbeds is disabled.
 const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
-    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_ENABLED_BY_DEFAULT};
+    "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
@@ -707,6 +707,13 @@ const base::FeatureParam<int> kCacheCodeOnIdleDelayParam{&kCacheCodeOnIdle,
 // landed and no compat issues are reported.
 const base::Feature kOffsetParentNewSpecBehavior{
     "OffsetParentNewSpecBehavior", base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Makes form elements cancel previous form submissions made by the same form
+// when the default event handler schedules a form submission.
+// TODO(crbug.com/1234409): Remove this flag when this feature has been in
+// stable for a release with no issues
+const base::Feature kCancelFormSubmissionInDefaultHandler{
+    "CancelFormSubmissionInDefaultHandler", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kKeepScriptResourceAlive{"KeepScriptResourceAlive",
                                              base::FEATURE_DISABLED_BY_DEFAULT};
