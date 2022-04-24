@@ -49,12 +49,12 @@ config("compiler") {
   ldflags = [ "-Wl,-O3", ] + common_mac_flags
   
   if (target_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
+    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", "-mfma", ]
     ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
   if (current_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", ]
+    cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", "-mfma", ]
     ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
