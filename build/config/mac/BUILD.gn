@@ -39,7 +39,7 @@ config("compiler") {
   # when their commandline changes). Nothing should ever read this define.
   defines = [ "CR_XCODE_VERSION=$xcode_version" ]
 
-  asmflags = common_mac_flags
+  asmflags = [ "-O3", ] + common_mac_flags
   cflags = [ "-O3", ] + common_mac_flags
 
   # Without this, the constructors and destructors of a C++ object inside
@@ -50,12 +50,10 @@ config("compiler") {
   
   if (target_cpu == "x64") {
     cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", "-mfma", ]
-    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
   if (current_cpu == "x64") {
     cflags += [ "-maes", "-mavx", "-mavx2", "-ffp-contract=fast", "-mf16c", "-mfma", ]
-    ldflags += [ "-Wl,-march=haswell", "-Wl,-fp-contract=fast", ]
   }
 
   if (save_unstripped_output) {
