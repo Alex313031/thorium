@@ -908,6 +908,14 @@ const base::Feature kWebAppEnableTranslations{
 const base::Feature kWebAppEnableUrlHandlers{"WebAppEnableUrlHandlers",
                                              base::FEATURE_DISABLED_BY_DEFAULT};
 
+// Controls parsing of the "lock_screen" dictionary field and its "start_url"
+// entry in web app manifests.  See explainer for more information:
+// https://github.com/WICG/lock-screen/
+// Note: the lock screen API and OS integration is separately controlled by
+// the content feature `kWebLockScreenApi`.
+const base::Feature kWebAppManifestLockScreen{
+    "WebAppManifestLockScreen", base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Makes network loading tasks unfreezable so that they can be processed while
 // the page is frozen.
 const base::Feature kLoadingTasksUnfreezable{"LoadingTasksUnfreezable",
@@ -1444,6 +1452,10 @@ const base::FeatureParam<base::TimeDelta> kRecentBeginMainFrameCutoff = {
 
 const base::Feature kDecodeScriptSourceOffThread{
     "DecodeScriptSourceOffThread", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kAllowSourceSwitchOnPausedVideoMediaStream{
+    "AllowSourceSwitchOnPausedVideoMediaStream",
+    base::FEATURE_ENABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
