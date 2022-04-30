@@ -207,7 +207,7 @@
     Settings
   </message>
   <message name="IDS_SETTINGS_ALT_PAGE_TITLE" desc="The settings page title for the about page.">
-    Settings - <ph name="SECTION_TITLE">$1<ex>About Thorium</ex></ph>
+    Settings - <ph name="SECTION_TITLE">$1<ex>About Chromium</ex></ph>
   </message>
   <message name="IDS_SETTINGS_SUBPAGE_BUTTON" desc="Accessibility description for a button navigating the user from a settings page to one of the settings subpages.">
     Subpage button
@@ -1059,6 +1059,9 @@
   <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC_WITH_EXCEPTION" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the user out of most websites but your Google sign in will stay.">
     Signs you out of most sites. You'll stay signed in to your Google Account so your synced data can be cleared.
   </message>
+  <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC_MAIN_PROFILE" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the user out of most websites but your Google sign in will stay.">
+    Signs you out of most sites. You won't be signed out of your Google Account.
+  </message>
   <message name="IDS_SETTINGS_CLEAR_BROWSING_HISTORY_SUMMARY" desc="A subtext for the basic tab explaining browsing history.">
     Clears history, including in the search box
   </message>
@@ -1733,7 +1736,7 @@
     Passwords
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_PASSWORDS_FEATURE_UNAVAILABLE" desc="Explains that the password check feature is not available in this version of the browser.">
-    Password check is not available in Thorium
+    Password check is not available in Chromium
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_PASSWORDS_BUTTON_ARIA_LABEL" desc="Accessibility text for the button that allows users to review their passwords.">
     Review passwords
@@ -2611,7 +2614,7 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_PROTECTED_CONTENT_BLOCKED_SUB_LABEL" desc="Sub label for the disabled option of the protected content content setting.">
     Media with a copyright might not play
   </message>
-  <if expr="chromeos_ash or is_win">
+  <if expr="chromeos_ash or chromeos_lacros or is_win">
     <message name="IDS_SETTINGS_SITE_SETTINGS_PROTECTED_CONTENT_IDENTIFIERS_EXPLANATION" desc="Text that is displayed on the Protected Content section of Content Settings. This text explains that enabling protected content may require using a uniquely identifiable machine identifier.">
       Sites may also need to recognize your device using an identifier
     </message>
