@@ -2,13 +2,13 @@
 ## Copyright (c) 2022 Alex313031
 
 ## Preparatory setup
-First, we need to install depot_tools and Visual Studio. depot_tools is a .zip that contains tools for all google projects like Chromium, ChromiumOS, NaCl, V8, Infra, Android, Google Cloud, and Fuschia.
+First, we need to install depot_tools and Visual Studio. depot_tools is a .zip that contains tools for all Google projects like Chromium, ChromiumOS, NaCl, V8, Infra, Android, Google Cloud, and Fuschia.
 
 We will be in general following instructions from > https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md
 
 Visual Studio 2019 or 2022 is needed, and the Windows SDK version 10.0.20348.0 is needed along with its Debugging Tools.
 
-EVERYTHING in this document is to be done in command prompt. No powershell, no windows terminal (win 11).
+EVERYTHING in this document is to be done in command prompt. No powershell, no windows terminal (Win 11).
 
 The easiest way to do this is (and even if you already have Visual Studio installed, go ahead and redownload the latest installer to do this)
 (VISUAL_STUDIO_INSTALLER is the actual path/name of the installer .exe) 
@@ -48,7 +48,7 @@ Now run
 
 fetch chromium
 
-Let it download, it is very large.
+Let it download, it is large.
 
 Then cd src\v8, so that we are in C:\src\chromium\src\v8, and run (one after another)
 
@@ -135,7 +135,7 @@ git clone https://github.com/Alex313031/Thorium-AVX2.git or https://github.com/A
 And simply copy the build directory over C:\src\chromium\src\build
 
 ## Portable release
-To make a portable release, it is easiest to copy an already made portable release from github, extract it and then:
+To make a portable release, it is easiest to copy an already made portable release from GitHub, extract it, and then:
 
 1. Delete the contents of the BIN folder.
 
@@ -151,7 +151,7 @@ To make a portable release, it is easiest to copy an already made portable relea
 
 ## Updating your checkout
 
-To update the chromium checkout, just run the same commands from above (in C:\src\chromium\src\v8\)
+To update the Chromium checkout, just run the same commands from above (in C:\src\chromium\src\v8\)
 
 git checkout -f origin/main
 
