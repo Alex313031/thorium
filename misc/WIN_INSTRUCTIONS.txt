@@ -88,6 +88,8 @@ We are going to change that to the actual location and name of the PGO profile d
 
 C:\src\chromium\src\chrome\build\pgo_profiles\chrome-win64-main-1649213807-91f73deff0cf33b43bdbec74d7cefebdfe29830a.profdata
 
+You can also add API Keys to the top three lines of this file to enable Google Sync, Translate, etc. (Out of the scope of this article, for help, contact me.)
+
 Now, we are going to copy the Thorium sources. Select (via Ctrl + Left Mouse button) these folders in C:\src\Thorium:
 
 build, chrome, components, content, media, net, sandbox, third_party, tools, ui, v8
