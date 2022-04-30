@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -336,6 +336,18 @@ std::vector<GURL> PrivacySandboxSettings::FilterFledgeAllowedParties(
     }
   }
   return allowed_parties;
+}
+
+bool PrivacySandboxSettings::IsSharedStorageAllowed(
+    const url::Origin& top_frame_origin,
+    const url::Origin& accessing_origin) const {
+  ContentSettingsForOneType cookie_settings;
+  cookie_settings_->GetCookieSettings(&cookie_settings);
+
+  // Ensures that Shared Storage is only allowed if both Privacy Sandbox is
+  // enabled and full cookie access is enabled for this context.
+  return IsPrivacySandboxEnabledForContext(accessing_origin.GetURL(),
+                                           top_frame_origin, cookie_settings);
 }
 
 bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
