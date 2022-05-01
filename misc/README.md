@@ -2,4 +2,17 @@
 
 This contains .gn files, scripts, and other artifacts like vdpau-va-driver and flash player and the BUILDER file which contains notes (generally only usable by me, but feel free to ask what the info inside is for).
 
+The args.list file shows all possible build arguments, and the gn_args.list shows all possible build args after the Thorium args have been added, and the win_args.list shows all possible build arguments for Windows builds.
+
+The &#42;.gn files contain what you should use in the args.gn for platforms other than the normal Linux release (which is in the root of this repo.)
+ - 69_release_args.gn is for Chromium 60-70 versions. \
+ - android_args.gn is for Android ARM64. \
+ - cros_args.gn are for ChromiumOS on Linux. \
+ - mac_args.gn is for x64 macs. \
+ - windows_args.gn is for Windows x64 \
+
+&nbsp;&ndash; The WIN_INSTRUCTIONS.txt and WIN_CROSS_BUILD_INSTRUCTIONS.txt are for how to build Thorium for Windows natively and on Linux, respectively.
+
+&nbsp;&ndash; The thorium_devel_bookmarks contain the bookmarks I use for Thorium development and rebasing the files it uses.
+
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_infra_256.png">
