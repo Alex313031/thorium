@@ -8,13 +8,13 @@
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
 &nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 (source files for AVX2 are in that repo.) \
-&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4, SSE4.2, and pure AVX builds. \
+&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 builds. \
 &nbsp;&ndash; __NEW__: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; __NEW__: Thorium Special now also has experimental Android ARM32 & ARM64 builds. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has new ARM32 builds for things like the Raspberry Pi. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has ARM64 and x64 builds for MacOS.
 
-&nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, and AVX, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special of which some are SSE4 or SSE4.2. (See below.)
+&nbsp;&nbsp;&ndash; Includes Widevine, FFmpeg, Chrome Plugins, as well as thinLTO, CFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, AVX, and AES, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special, some of which are SSE4. (See below.)
 
 ### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_32.png">
 > - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
@@ -37,6 +37,7 @@
 > - Prefetch settings updated to respect privacy.
 > - Patches for GN and chrome_sandbox when building.
 > - Remove the addition of the Chrome APT sources.list during installation.
+> - Widevine CDM Patch for Linux.
 > - Inclusion of pak (linux) and pack_mingw (windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
