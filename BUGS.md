@@ -1,4 +1,4 @@
-## BUGS.md <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/bug.svg">
+## BUGS.md <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/bug.svg" width="28">
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/robot_256.png">
 
