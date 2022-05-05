@@ -443,11 +443,6 @@ const base::Feature kStopInBackground {
 #endif
 };
 
-// Freeze scheduler task queues in background on network idle.
-// This feature only works if stop-in-background is enabled.
-const base::Feature kFreezeBackgroundTabOnNetworkIdle{
-    "freeze-background-tab-on-network-idle", base::FEATURE_DISABLED_BY_DEFAULT};
-
 // Enable the Storage Access API. https://crbug.com/989663.
 const base::Feature kStorageAccessAPI{"StorageAccessAPI",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
@@ -461,8 +456,14 @@ const base::Feature kCssSelectorFragmentAnchor{
     "CssSelectorFragmentAnchor", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // File handling integration. https://crbug.com/829689
-const base::Feature kFileHandlingAPI{"FileHandlingAPI",
-                                     base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kFileHandlingAPI {
+  "FileHandlingAPI",
+#if BUILDFLAG(IS_ANDROID)
+      base::FEATURE_DISABLED_BY_DEFAULT
+#else
+      base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+};
 
 // File handling icons. https://crbug.com/1218213
 const base::Feature kFileHandlingIcons{"FileHandlingIcons",
@@ -714,9 +715,6 @@ const base::Feature kOffsetParentNewSpecBehavior{
 // stable for a release with no issues
 const base::Feature kCancelFormSubmissionInDefaultHandler{
     "CancelFormSubmissionInDefaultHandler", base::FEATURE_ENABLED_BY_DEFAULT};
-
-const base::Feature kKeepScriptResourceAlive{"KeepScriptResourceAlive",
-                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables the JPEG XL Image File Format (JXL).
 const base::Feature kJXL{"JXL", base::FEATURE_ENABLED_BY_DEFAULT};
