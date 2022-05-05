@@ -244,10 +244,10 @@ const char kHardwareVideoDecodeFrameRate[] = "hardware-video-decode-framerate";
 }  // namespace switches
 
 namespace media {
-	
+
 #if BUILDFLAG(ENABLE_PLATFORM_HEVC) && BUILDFLAG(IS_ANDROID)
 // Enables android HW decoding of HEVC content.
-const base::Feature kMediaCodecHEVC{"AndroidHEVC",
+const base::Feature kMediaCodecHEVC{"MediaCodecHEVC",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC) && BUILDFLAG(IS_ANDROID)
 
@@ -317,6 +317,16 @@ const base::Feature kMediaCastOverlayButton{"MediaCastOverlayButton",
 // that |kOverlayFullscreenVideo| is true, else it is ignored.
 const base::Feature kUseAndroidOverlayForSecureOnly{
     "UseAndroidOverlayForSecureOnly", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Allows usage of OS-level (platform) audio encoders.
+const base::Feature kPlatformAudioEncoder {
+  "PlatformAudioEncoder",
+#if BUILDFLAG(IS_WIN)
+      base::FEATURE_ENABLED_BY_DEFAULT
+#else
+      base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+};
 
 // If enabled, RTCVideoDecoderAdapter will wrap a DecoderStream as a video
 // decoder, rather than using MojoVideoDecoder.  This causes the RTC external
@@ -866,6 +876,42 @@ const base::Feature kD3D11HEVCDecoding{"D3D11HEVCDecoding",
 const base::Feature kD3D11Vp9kSVCHWDecoding{"D3D11Vp9kSVCHWDecoding",
                                             base::FEATURE_ENABLED_BY_DEFAULT};
 
+// The Media Foundation Rendering Strategy determines which presentation mode
+// Media Foundation Renderer should use for presenting clear content. This
+// strategy has no impact for protected content, which must always use Direct
+// Composition.
+//
+// The strategy may be one of the following options:
+// 1.) Direct Composition: Media Foundation Renderer will use a Windowsless
+//     Swapchain to present directly to a Direct Composition surface.
+// 2.) Frame Server: Media Foundation Renderer will produce Video Frames that
+//     may be passed through the Chromium video frame rendering pipeline.
+// 3.) Dynamic: Media Foundation Renderer may freely switch between Direct
+//     Composition & Frame Server mode based on the current operating
+//     conditions.
+//
+// Command line invocation:
+// --enable-features=MediaFoundationClearRendering:strategy/direct-composition
+// --enable-features=MediaFoundationClearRendering:strategy/frame-server
+// --enable-features=MediaFoundationClearRendering:strategy/dynamic
+const base::Feature kMediaFoundationClearRendering = {
+    "MediaFoundationClearRendering", base::FEATURE_ENABLED_BY_DEFAULT};
+
+constexpr base::FeatureParam<MediaFoundationClearRenderingStrategy>::Option
+    kMediaFoundationClearRenderingStrategyOptions[] = {
+        {MediaFoundationClearRenderingStrategy::kDirectComposition,
+         "direct-composition"},
+        {MediaFoundationClearRenderingStrategy::kFrameServer, "frame-server"},
+        {MediaFoundationClearRenderingStrategy::kDynamic, "dynamic"}};
+
+// TODO(crbug.com/1321817, wicarr): Media Foundation for Clear should operate in
+// dynamic mode by default. However due to a bug with dual adapters when using
+// Frame Serve mode we currently start in Direct Composition mode.
+const base::FeatureParam<MediaFoundationClearRenderingStrategy>
+    kMediaFoundationClearRenderingStrategyParam{
+        &kMediaFoundationClearRendering, "strategy",
+        MediaFoundationClearRenderingStrategy::kDirectComposition,
+        &kMediaFoundationClearRenderingStrategyOptions};
 #endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(IS_CHROMEOS)
