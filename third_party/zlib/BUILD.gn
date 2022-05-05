@@ -371,8 +371,11 @@ config("minizip_warnings") {
   visibility = [ ":*" ]
 
   if (is_clang) {
-    # zlib uses `if ((a == b))` for some reason.
-    cflags = [ "-Wno-parentheses-equality" ]
+    cflags = [
+      # zlib uses `if ((a == b))` for some reason.
+      "-Wno-parentheses-equality",
+      "-Wno-deprecated-non-prototype",
+    ]
   }
 }
 
@@ -436,7 +439,11 @@ if (!is_win || target_os != "winuwp") {
     sources = [ "contrib/minizip/minizip.c" ]
 
     if (is_clang) {
-      cflags = [ "-Wno-incompatible-pointer-types-discards-qualifiers" ]
+      cflags = [
+        "-Wno-incompatible-pointer-types-discards-qualifiers",
+
+        "-Wno-deprecated-non-prototype",
+      ]
     }
 
     if (!is_debug) {
@@ -456,7 +463,10 @@ if (!is_win || target_os != "winuwp") {
     sources = [ "contrib/minizip/miniunz.c" ]
 
     if (is_clang) {
-      cflags = [ "-Wno-incompatible-pointer-types-discards-qualifiers" ]
+      cflags = [
+        "-Wno-incompatible-pointer-types-discards-qualifiers",
+        "-Wno-deprecated-non-prototype",
+      ]
     }
 
     if (!is_debug) {
