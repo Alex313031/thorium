@@ -1,0 +1,10 @@
+COMPANY_FULLNAME=The Chromium Authors and Alex313031
+COMPANY_SHORTNAME=The Chromium Authors and Alex313031
+PRODUCT_FULLNAME=Thorium
+PRODUCT_SHORTNAME=Thorium
+PRODUCT_INSTALLER_FULLNAME=Thorium Installer
+PRODUCT_INSTALLER_SHORTNAME=Thorium Installer
+COPYRIGHT=Copyright @LASTCHANGE_YEAR@ The Chromium Authors and Alex313031. All rights reserved.
+MAC_BUNDLE_ID=org.chromium.Chromium
+MAC_CREATOR_CODE=Cr24
+MAC_TEAM_ID=
