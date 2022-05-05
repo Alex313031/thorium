@@ -2392,6 +2392,21 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_DEVICE_USE_BLOCKED_EXCEPTIONS" desc="Label for the blocked exceptions site list of the device use content setting.">
     Not allowed to know when you're actively using your device
   </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FEDERATED_IDENTITY_API_DESCRIPTION" desc="Description of the third-party sign-in content setting.">
+    Lets you sign in to websites using the account you have with an identity service
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FEDERATED_IDENTITY_API_ALLOWED" desc="Label for the enabled option of the third-party sign-in content setting.">
+    Sites can show sign-in prompts from identity services
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FEDERATED_IDENTITY_API_BLOCKED" desc="Label for the disabled option of the third-party sign-in content setting.">
+    Block sign-in prompts from identity services
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FEDERATED_IDENTITY_API_ALLOWED_EXCEPTIONS" desc="Label for the allowed exceptions site list of the third-party sign-in content setting.">
+    Allowed to show third-party sign-in prompts
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FEDERATED_IDENTITY_API_BLOCKED_EXCEPTIONS" desc="Label for the blocked exceptions site list of the third-party sign-in content setting.">
+    Not allowed to show third-party sign-in prompts
+  </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_FILE_SYSTEM_WRITE_DESCRIPTION" desc="Description of the file system write content setting.">
     Sites usually access files and folders on your device for features like automatically saving your work
   </message>
@@ -2635,6 +2650,11 @@
     </message>
     <message name="IDS_SETTINGS_SITE_SETTINGS_PROTECTED_CONTENT_IDENTIFIERS_BLOCKED_EXCEPTIONS" desc="Label for the blocked exceptions site list of the protected content content setting.">
       Not allowed to use identifiers to play protected content
+    </message>
+  </if>
+  <if expr="is_win and _google_chrome">
+    <message name="IDS_SETTINGS_SITE_SETTINGS_PROTECTED_CONTENT_IDENTIFIERS_ALLOWED_SUB_LABEL" desc="A subtitle for the ‘Protected Content IDs’ setting, shown if user chooses to allow Protected Content IDs. This text explains that enabling protected content IDs may result in live captioning not working.">
+      Chrome Live Caption might not work
     </message>
   </if>
   <message name="IDS_SETTINGS_SITE_SETTINGS_PROTOCOL_HANDLERS_DESCRIPTION" desc="Description of the protocol handlers content setting.">
