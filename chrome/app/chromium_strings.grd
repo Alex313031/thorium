@@ -685,11 +685,6 @@ Permissions you've already given to websites and apps may apply to this account.
         This file may be dangerous, so Thorium has blocked it.
       </message>
 
-      <message name="IDS_PROMPT_CONFIRM_DANGEROUS_DOWNLOAD_ACCOUNT_COMPROMISE_BODY"
-        desc="Body prompt text for the confirmation dialog asking whether the user really meant to keep a download deemed to be associated with account compromise by safebrowsing">
-        Thorium recommends that you don't download or open this file
-      </message>
-
       <!-- Abandon in-progress downloads confirmation dialog -->
       <if expr="not is_macosx">
         <message name="IDS_ABANDON_DOWNLOAD_DIALOG_BROWSER_MESSAGE" desc="Message on a dialog shown when the user closes the browser while one or more downloads are in progress. This string is shown on Windows, ChromeOS, and Linux, which all use 'Exit' to refer to closing a browser.">
@@ -921,17 +916,6 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <!-- Sync/sign-in error messages -->
-      <if expr="not chromeos_ash">
-        <message name="IDS_SYNC_SIGN_IN_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error bubble view when the user's sign-in credentials are out of date.">
-          Thorium could not sync your data because your account sign-in details are out of date.
-        </message>
-        <message name="IDS_SYNC_UNAVAILABLE_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error bubble view when sync is not available for their domain.">
-          Thorium could not sync your data because Sync is not available for your domain.
-        </message>
-        <message name="IDS_SYNC_OTHER_SIGN_IN_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sign-in error bubble view when there's an error signing in.">
-          Thorium could not sync your data due to an error signing in.
-        </message>
-      </if>
       <if expr="chromeos_ash">
         <message name="IDS_SIGNIN_ERROR_SECONDARY_ACCOUNT_DISPLAY_SOURCE" desc="Context title shown in the notification header of sign-in error notification for ChromiumOS Secondary Accounts.">
           ThoriumOS System
