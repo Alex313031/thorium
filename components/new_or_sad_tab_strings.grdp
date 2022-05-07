@@ -11,7 +11,7 @@
 
       <!-- Sad Tab Strings -->
       <message name="IDS_SAD_TAB_TITLE" desc="The title of the sad tab page that is shown when a tab crashes. This is intended to be a humorous exclamation of dismay." formatter_data="android_java">
-        Aw, Snap!
+        Aw, Fuck!
       </message>
       <message name="IDS_SAD_TAB_MESSAGE" desc="The message displayed on the sad tab page." formatter_data="android_java">
         Something went wrong while displaying this webpage.
