@@ -40,7 +40,17 @@ export EDITOR=nano &&
 
 export VISUAL=nano &&
 
+alias origin='git checkout -f origin/main' &&
+
+alias rebase='git rebase-update' &&
+
+alias gnargs='gn args out/thorium' &&
+
+alias gnls='gn ls out/thorium' &&
+
 alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
+
+alias runhooks='gclient runhooks' &&
 
 alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
