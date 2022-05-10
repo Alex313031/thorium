@@ -3,7 +3,7 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_ver_2048_grey_old.png">
 
-## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/Raspi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
+## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/RasPi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
