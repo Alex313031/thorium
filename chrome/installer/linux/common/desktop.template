@@ -169,7 +169,7 @@ Name[zh_TW]=開新視窗
 Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@
 
 [Desktop Action content-shell]
-Name=Open Content Shell
+Name=Open Thorium Shell
 Exec=/usr/bin/thorium-shell %U
 
 [Desktop Action safe-mode]
