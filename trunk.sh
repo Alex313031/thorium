@@ -14,7 +14,7 @@ git checkout -f origin/main &&
 
 cd $HOME/chromium/src &&
 
-rm -v $HOME/chromium/src/ui/webui/resources/images/infra.png &&
+rm -v -f $HOME/chromium/src/ui/webui/resources/images/infra.png &&
 
 git checkout -f origin/main &&
 
