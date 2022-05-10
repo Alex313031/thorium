@@ -42,7 +42,7 @@
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
 > - Includes installer patches and files to include ChromeDriver and content_shell, with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver. Also, patches for abseil library and mini_installer when building for AVX on Windows.
-> - Right clicking the launcher after install gives two additional desktop actions, one to open content-shell, and another to open in safe mode which disables any flags one has set in chrome://flags until the next launch.
+> - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 - For more info, read the PATCHES.md file.
 - Known bugs are in the BUGS.md file.
 
