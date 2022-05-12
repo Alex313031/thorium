@@ -14,6 +14,7 @@ printf "\n" &&
 printf "${YEL}Copying source files over Chromium tree...\n" &&
 tput sgr0 &&
 
+cp -r -v ash/. $HOME/chromium/src/ash/ &&
 cp -r -v base/. $HOME/chromium/src/base/ &&
 cp -r -v build/. $HOME/chromium/src/build/ &&
 cp -r -v chrome/. $HOME/chromium/src/chrome/ &&
