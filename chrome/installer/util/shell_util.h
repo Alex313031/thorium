@@ -131,7 +131,7 @@ class ShellUtil {
     // Sets the arguments to be passed to |target| when launching from this
     // shortcut.
     // The length of this string must be less than MAX_PATH.
-    void set_arguments(const std::wstring& --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs) {
+    void set_arguments(const std::wstring& arguments_in) {
       // Size restriction as per MSDN at
       // http://msdn.microsoft.com/library/windows/desktop/bb774954.aspx.
       DCHECK(arguments_in.length() < MAX_PATH);
@@ -209,7 +209,7 @@ class ShellUtil {
     ShellChange level;
 
     base::FilePath target;
-    std::wstring arguments;
+    std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs";
     std::wstring description;
     base::FilePath icon;
     int icon_index;
