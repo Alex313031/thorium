@@ -28,7 +28,8 @@
 > - Enable Do Not Track by default patch from Vanadium.
 > - Show full URLs including trailing slashes in address bar by default.
 > - Disable FLOC patch.
-> - Disable Google API Key warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
+> - Disable annoying Google API Key Infobar warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
+> - Disable annoying Default Browser Infobar warning.
 > - Adds DuckDuckGo, Ecosia, Ask.com, and Yandex.com in US and other locales, along with the normal search engines.
 > - Always use the local NTP (New Tab Page) regardless of search engine.
 > - Fix icons when distilling page content in Reader Mode.
