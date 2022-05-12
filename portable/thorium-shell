@@ -2,4 +2,4 @@
 
 # Copyright (c) 2022 Alex313031
 
-./content_shell --user-data-dir=$(pwd)/.profile --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading,ChromeLabs
+./content_shell --user-data-dir=$(pwd)/.profile --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ChromeLabs
