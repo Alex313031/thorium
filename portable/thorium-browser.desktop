@@ -105,14 +105,14 @@ Comment[vi]=Truy cập Internet
 Comment[zh_CN]=访问互联网
 Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
-Exec=./chrome --user-data-dir=./.config/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading %U
+Exec=./thorium-browser %U
 StartupNotify=true
 Terminal=false
-Icon=./product_logo_128.png
+Icon=@@PACKAGE@@
 Type=Application
 Categories=Network;WebBrowser;
 MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
-Actions=new-window;new-private-window;content-shell;safe-mode;
+Actions=new-window;new-private-window;content-shell;safe-mode;dark-mode;
 
 [Desktop Action new-window]
 Name=New Window
@@ -166,15 +166,19 @@ Name[uk]=Нове вікно
 Name[vi]=Cửa sổ Mới
 Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
-Exec=./chrome --user-data-dir=./.config/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading
+Exec=./thorium-browser
 
 [Desktop Action content-shell]
-Name=Open Content Shell
-Exec=./content_shell --user-data-dir=./.profile --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading
+Name=Open Thorium Shell
+Exec=./thorium-shell %U
 
 [Desktop Action safe-mode]
 Name=Open in Safe Mode
-Exec=./chrome --user-data-dir=./.config/thorium --no-default-browser-check --show-component-extension-options --no-experiments %U
+Exec=./thorium-browser --no-experiments %U
+
+[Desktop Action dark-mode]
+Name=Open in Dark Mode
+Exec=./thorium-browser --force-dark-mode %U
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
@@ -226,4 +230,4 @@ Name[uk]=Нове вікно в режимі анонімного перегля
 Name[vi]=Cửa sổ ẩn danh mới
 Name[zh_CN]=新建隐身窗口
 Name[zh_TW]=新增無痕式視窗
-Exec=./chrome --incognito --user-data-dir=./.config/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading
+Exec=./thorium-browser --incognito
