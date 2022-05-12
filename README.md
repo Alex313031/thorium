@@ -39,6 +39,7 @@
 > - Patches for GN and chrome_sandbox when building.
 > - Remove the addition of the Chrome APT sources.list during installation.
 > - Widevine CDM Patch for Linux.
+> - Enable Parallel Downloading by Default.
 > - Inclusion of pak (linux) and pack_mingw (windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
