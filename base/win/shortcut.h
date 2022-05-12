@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -96,7 +96,7 @@ struct BASE_EXPORT ShortcutProperties {
   // The name of the working directory when launching the shortcut.
   FilePath working_dir;
   // The arguments to be applied to |target| when launching from this shortcut.
-  std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs";
+  std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ChromeLabs";
   // The localized description of the shortcut.
   // The length of this string must be no larger than INFOTIPSIZE.
   std::wstring description;
