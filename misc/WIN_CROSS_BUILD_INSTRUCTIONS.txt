@@ -22,7 +22,7 @@ export VISUAL=nano
 export NINJA_SUMMARIZE_BUILD=1
 export PATH=/home/alex/depot_tools:$PATH
 export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=/home/alex/chromium/win/
-export GYP_MSVS_HASH_1023ce2e82=b46b7542fe
+export GYP_MSVS_HASH_1023ce2e82=b86447e8fb
 
 Then make these dirs
 
@@ -52,7 +52,7 @@ target_os = [ 'linux', 'win' ]
 
 Lastly, cross building requires artifacts from Visual Studio as per > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/win_cross.md
 
-Download a .zip I already made from here > https://github.com/Alex313031/Snippets/releases/tag/thor_cross_build
+Download a .zip I already made from here > https://github.com/Alex313031/Snippets/releases/tag/10.1.20348.1
 
 And place it in ~/chromium/win
 
