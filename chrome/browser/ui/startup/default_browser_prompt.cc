@@ -150,8 +150,6 @@ void ShowDefaultBrowserPrompt(Profile* profile) {
     // Handling of the browser.default_browser_setting_enabled policy setting is
     // taken care of in BrowserProcessImpl.
     return;
-  else 
-	return false;
   }
 
   PrefService* prefs = profile->GetPrefs();
