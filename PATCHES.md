@@ -97,4 +97,4 @@ Patches for mini_installer and abseil when using AVX on Windows. Credit goes to 
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, Experimental Canvas2D, showing component extensions on chrome://extensions, requiring a user gesture to initiate playback of media, VAAPI Video decoder, Page Info v2, Chrome Labs. The --enable-clear-hevc-for-testing in thorium-shell enables testing H.265 (but still won't demux it).
   - Modified by me.
 
-- Any other code/patches was written from scratch by me.
+- Any other code/patches are written from scratch by me.
