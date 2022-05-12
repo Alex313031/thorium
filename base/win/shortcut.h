@@ -62,7 +62,7 @@ struct BASE_EXPORT ShortcutProperties {
     options |= PROPERTIES_WORKING_DIR;
   }
 
-  void set_arguments(const std::wstring& --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs) {
+  void set_arguments(const std::wstring& arguments_in) {
     arguments = arguments_in;
     options |= PROPERTIES_ARGUMENTS;
   }
@@ -96,7 +96,7 @@ struct BASE_EXPORT ShortcutProperties {
   // The name of the working directory when launching the shortcut.
   FilePath working_dir;
   // The arguments to be applied to |target| when launching from this shortcut.
-  std::wstring arguments;
+  std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs";
   // The localized description of the shortcut.
   // The length of this string must be no larger than INFOTIPSIZE.
   std::wstring description;
