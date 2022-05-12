@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -209,7 +209,7 @@ class ShellUtil {
     ShellChange level;
 
     base::FilePath target;
-    std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ParallelDownloading,ChromeLabs";
+    std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ChromeLabs";
     std::wstring description;
     base::FilePath icon;
     int icon_index;
