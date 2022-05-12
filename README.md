@@ -6,7 +6,7 @@
 ## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/RasPi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
 - Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
-&nbsp;&ndash; I also build for windows less frequently > https://github.com/Alex313031/Thorium-Win \
+&nbsp;&ndash; I also build for Windows > https://github.com/Alex313031/Thorium-Win \
 &nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 (source files for AVX2 are in that repo.) \
 &nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 builds. \
 &nbsp;&ndash; __NEW__: Tigerlake (11th Gen) builds by @midzer \
