@@ -88,6 +88,13 @@ const char kDisableAudioInput[] = "disable-audio-input";
 
 // Present video content as overlays.
 const char kUseOverlaysForVideo[] = "use-overlays-for-video";
+
+// Forces AudioManagerFuchsia to assume that the AudioCapturer implements echo
+// cancellation.
+// TODO(crbug.com/852834): Remove this once AudioManagerFuchsia is updated to
+// get this information from AudioCapturerFactory.
+const char kAudioCapturerWithEchoCancellation[] =
+    "audio-capturer-with-echo-cancellation";
 #endif  // BUILDFLAG(IS_FUCHSIA)
 
 #if defined(USE_CRAS)
@@ -601,7 +608,7 @@ const base::Feature kLiveCaption{"LiveCaption",
 // tab instead" button is shown for chrome.desktopCapture captures.
 const base::Feature kShareThisTabInsteadButtonGetDisplayMedia{
     "ShareThisTabInsteadButtonGetDisplayMedia",
-    base::FEATURE_DISABLED_BY_DEFAULT};
+    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // If kShareThisTabInsteadButtonGetDisplayMedia is ENABLED, this flag controls
 // whether a "Share this tab instead" button should be enabled for
