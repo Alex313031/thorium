@@ -18,6 +18,7 @@ symbol_level = 0
 optimize_webui = true
 use_lld = true
 v8_symbol_level = 0
+use_v8_context_snapshot = true
 enable_nacl = false
 blink_symbol_level = 0
 enable_precompiled_headers = false
