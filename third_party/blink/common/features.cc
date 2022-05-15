@@ -914,6 +914,10 @@ const base::Feature kWebAppEnableUrlHandlers{"WebAppEnableUrlHandlers",
 const base::Feature kWebAppManifestLockScreen{
     "WebAppManifestLockScreen", base::FEATURE_DISABLED_BY_DEFAULT};
 
+// Enable borderless mode for desktop PWAs. go/borderless-mode
+const base::Feature kWebAppBorderless{"WebAppBorderless",
+                                      base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Makes network loading tasks unfreezable so that they can be processed while
 // the page is frozen.
 const base::Feature kLoadingTasksUnfreezable{"LoadingTasksUnfreezable",
@@ -1461,6 +1465,9 @@ const base::Feature kDispatchPopstateSync{"DispatchPopstateSync",
 // Exposes non-standard stats in the WebRTC getStats() API.
 const base::Feature kWebRtcExposeNonStandardStats{
     "WebRtc-ExposeNonStandardStats", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kSubstringSetTreeForAttributeBuckets{
+    "SubstringSetTreeForAttributeBuckets", base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
