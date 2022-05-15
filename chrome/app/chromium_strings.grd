@@ -1480,7 +1480,7 @@ Permissions you've already given to websites and apps may apply to this account.
           Installation failed. Please try again.
         </message>
         <message name="IDS_INSTALLER_DISPLAY_NAME" desc="Name for the updater metainstaller.">
-          <ph name="COMPANY_NAME">$1<ex>Thorium</ex></ph> Installer
+          <ph name="COMPANY_NAME">$1<ex>Chromium</ex></ph> Installer
         </message>
         <message name="IDS_CLOSE_BUTTON" desc="Close button tooltip">
           Close
@@ -1519,13 +1519,13 @@ Permissions you've already given to websites and apps may apply to this account.
           Canceling...
         </message>
         <message name="IDS_TEXT_RESTART_BROWSER" desc="For when a browser must be restarted to complete the installation.">
-          Thanks for installing. You must restart your browser before using <ph name="BUNDLE_NAME">$1<ex>Thorium</ex></ph>.
+          Thanks for installing. You must restart your browser before using <ph name="BUNDLE_NAME">$1<ex>Chromium</ex></ph>.
         </message>
         <message name="IDS_TEXT_RESTART_ALL_BROWSERS" desc="For when all browsers must be restarted to complete the installation.">
-          Thanks for installing. You must restart all your browsers before using <ph name="BUNDLE_NAME">$1<ex>Thorium</ex></ph>.
+          Thanks for installing. You must restart all your browsers before using <ph name="BUNDLE_NAME">$1<ex>Chromium</ex></ph>.
         </message>
         <message name="IDS_TEXT_RESTART_COMPUTER" desc="For when the computer must be restarted to complete the installation.">
-          Thanks for installing. You must restart your computer before using <ph name="BUNDLE_NAME">$1<ex>Thorium</ex></ph>.
+          Thanks for installing. You must restart your computer before using <ph name="BUNDLE_NAME">$1<ex>Chromium</ex></ph>.
         </message>
         <message name="IDS_UPDATER_CLOSE" desc="For close button on the UI post install completion.">
           Close
