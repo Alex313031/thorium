@@ -25,4 +25,4 @@ tput sgr0 &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./misc/autoninja -C ~/chromium/src/out/thorium chrome chromedriver content_shell setup mini_installer -j$@
+./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver content_shell setup mini_installer -j$@
