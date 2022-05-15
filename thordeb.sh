@@ -25,4 +25,4 @@ tput sgr0 &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./misc/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:unstable_deb" -j$@
+./infra/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:unstable_deb" -j$@
