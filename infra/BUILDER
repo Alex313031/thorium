@@ -39,6 +39,14 @@ windows above this > # /OPT:ICF is not desirable in Debug builds, since code-fol
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-polly",
+    "-mllvm", "-polly-detect-profitability-min-per-loop-insts=40",
+    "-mllvm", "-polly-invariant-load-hoisting",
+    "-mllvm", "-polly-position=early",
+    "-mllvm", "-polly-vectorizer=stripmine",
+    "-mllvm", "-polly-run-inliner",
+    "-mllvm", "-polly-enable-delicm=true",
+    "-Xclang", "-Rpass-analysis=polly",
   ]
 
   common_optimize_on_ldflags = [
@@ -65,6 +73,14 @@ windows above this > # /OPT:ICF is not desirable in Debug builds, since code-fol
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-polly",
+    "-mllvm", "-polly-detect-profitability-min-per-loop-insts=40",
+    "-mllvm", "-polly-invariant-load-hoisting",
+    "-mllvm", "-polly-position=early",
+    "-mllvm", "-polly-vectorizer=stripmine",
+    "-mllvm", "-polly-run-inliner",
+    "-mllvm", "-polly-enable-delicm=true",
+    "-Xclang", "-Rpass-analysis=polly",
   ]
 
   common_optimize_on_ldflags = [
