@@ -1936,6 +1936,11 @@ config("no_incompatible_pointer_warnings") {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
+    "/O3",
+    "/clang:-O3",
+    "/clang:-mavx",
+    "/clang:-maes",
+    "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
@@ -1982,6 +1987,11 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
+    "/O3",
+    "/clang:-O3",
+    "/clang:-mavx",
+    "/clang:-maes",
+    "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
