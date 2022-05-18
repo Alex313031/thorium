@@ -11,7 +11,7 @@ tput sgr0 &&
 mkdir -v -p $HOME/chromium/src/out/thorium/ &&
 printf "\n" &&
 
-printf "${YEL}Copying source files over Chromium tree...\n" &&
+printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
 cp -r -v ash/. $HOME/chromium/src/ash/ &&
@@ -63,7 +63,7 @@ alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-ba
 
 printf "\n" &&
 
-printf "${YEL}Dropping you to ~/chromium/src.\n" &&
+printf "${YEL}Dropping you to ~/chromium/src\n" &&
 printf "\n" &&
 
 printf "${YEL}Look in this file to see the aliases and what they're for.\n" &&
