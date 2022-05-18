@@ -1,19 +1,25 @@
-# run from within out/Default or wherever you put your build, or cd there first
-# i.e. cd /home/alex/bin/chromium-dev/
+# Copyright (c) 2022 Alex313031.
 
-find . -name "*deps*" -delete
-find . -name "*TOC*" -delete
-rm -r pyproto
-rm -r obj
-rm -r newlib_pnacl_nonsfi
-rm -r newlib_pnacl
-rm -r nacl_bootstrap_x64
-rm -r irt_x64
-rm -r glibc_x64
-rm -r gen
-rm -r etc
-rm -r clang_newlib_x64
-rm -r thinlto-cache
-rm -r fontconfig_caches
+# Run from within out\Thorium or wherever you put your build, or cd there first
+# i.e. cd C:\src\chromium\src\out\thorium
+
+echo "Cleaning up build artifacts..." &&
+
+del *deps* &&
+del *TOC* &&
+rmdir /s /q pyproto &&
+rmdir /s /q obj &&
+rmdir /s /q newlib_pnacl_nonsfi &&
+rmdir /s /q newlib_pnacl &&
+rmdir /s /q nacl_bootstrap_x64 &&
+rmdir /s /q irt_x64 &&
+rmdir /s /q glibc_x64 &&
+rmdir /s /q gen &&
+rmdir /s /q etc &&
+rmdir /s /q clang_newlib_x64 &&
+rmdir /s /q thinlto-cache &&
+rmdir /s /q fontconfig_caches &&
+
+echo "Done!"
 
 exit 0
