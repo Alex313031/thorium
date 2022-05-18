@@ -96,7 +96,7 @@ struct BASE_EXPORT ShortcutProperties {
   // The name of the working directory when launching the shortcut.
   FilePath working_dir;
   // The arguments to be applied to |target| when launching from this shortcut.
-  std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ChromeLabs";
+  std::wstring arguments = (L"--autoplay-policy=user-gesture-required");
   // The localized description of the shortcut.
   // The length of this string must be no larger than INFOTIPSIZE.
   std::wstring description;
