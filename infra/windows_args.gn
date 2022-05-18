@@ -16,6 +16,7 @@ enable_profiling = false
 is_component_build = false
 symbol_level = 0
 optimize_webui = true
+enable_webui_tab_strip = true
 use_lld = true
 v8_symbol_level = 0
 use_v8_context_snapshot = true
