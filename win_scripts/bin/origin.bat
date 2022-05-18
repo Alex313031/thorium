@@ -1,0 +1,1 @@
+git checkout -f origin/main
