@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# Copyright (c) 2022 Alex313031.
+
 # Copy and run from within out/thorium or wherever you put your build, or cd there first!
-# i.e. cd /home/alex/bin/chromium-dev/
+# i.e. cd /home/alex/bin/thorium/
 
 YEL='\033[1;33m' # Yellow
 
