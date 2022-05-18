@@ -16,6 +16,7 @@ is_component_build = false
 symbol_level = 0
 enable_nacl = false
 optimize_webui = true
+enable_webui_tab_strip = true
 use_lld = true
 blink_symbol_level = 0
 enable_precompiled_headers = false
