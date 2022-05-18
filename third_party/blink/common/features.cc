@@ -474,8 +474,14 @@ const base::Feature kAllowSyncXHRInPageDismissal{
     "AllowSyncXHRInPageDismissal", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Font enumeration and data access. https://crbug.com/535764
-const base::Feature kFontAccess{"FontAccess",
-                                base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kFontAccess {
+  "FontAccess",
+#if BUILDFLAG(IS_ANDROID)
+      base::FEATURE_DISABLED_BY_DEFAULT
+#else
+      base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+};
 
 // Kill switch for the Compute Pressure API. https://crbug.com/1067627
 const base::Feature kComputePressure{"ComputePressure",
@@ -767,14 +773,8 @@ const base::Feature kResamplingScrollEvents{"ResamplingScrollEvents",
 // Enables the device-memory, resource-width, viewport-width and DPR client
 // hints to be sent to third-party origins if the first-party has opted in to
 // receiving client hints, regardless of Permissions Policy.
-const base::Feature kAllowClientHintsToThirdParty {
-  "AllowClientHintsToThirdParty",
-#if BUILDFLAG(IS_ANDROID)
-      base::FEATURE_ENABLED_BY_DEFAULT
-#else
-      base::FEATURE_DISABLED_BY_DEFAULT
-#endif
-};
+const base::Feature kAllowClientHintsToThirdParty{
+    "AllowClientHintsToThirdParty", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kFilteringScrollPrediction{
     "FilteringScrollPrediction", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1468,6 +1468,9 @@ const base::Feature kWebRtcExposeNonStandardStats{
 
 const base::Feature kSubstringSetTreeForAttributeBuckets{
     "SubstringSetTreeForAttributeBuckets", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kPendingBeaconAPI{"PendingBeaconAPI",
+                                      base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
