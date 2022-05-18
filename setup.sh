@@ -19,6 +19,7 @@ cp -r -v base/. $HOME/chromium/src/base/ &&
 cp -r -v build/. $HOME/chromium/src/build/ &&
 cp -r -v chrome/. $HOME/chromium/src/chrome/ &&
 cp -r -v components/. $HOME/chromium/src/components &&
+cp -r -v extensions/. $HOME/chromium/src/extensions &&
 cp -r -v content/. $HOME/chromium/src/content/ &&
 cp -r -v media/. $HOME/chromium/src/media/ &&
 cp -r -v net/. $HOME/chromium/src/net/ &&
