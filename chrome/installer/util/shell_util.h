@@ -209,7 +209,7 @@ class ShellUtil {
     ShellChange level;
 
     base::FilePath target;
-    std::wstring arguments = L"--show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=ChromeLabs";
+    std::wstring arguments = (L"--autoplay-policy=user-gesture-required");
     std::wstring description;
     base::FilePath icon;
     int icon_index;
