@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2011 The Chromium Authors. All rights reserved.
+# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -46,4 +46,4 @@ exec > >(exec cat)
 exec 2> >(exec cat >&2)
 
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/@@PROGNAME@@" --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ChromeLabs "$@"
+exec -a "$0" "$HERE/@@PROGNAME@@" --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite "$@"
