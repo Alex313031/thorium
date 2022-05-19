@@ -1,3 +1,7 @@
+## Thorium Pak Customizer
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png">
+
 This contains the source code for pak.
 
 Rather than a nested git repo, it is simply copy/pasted from upstream, and contains a "bin" dir where there are binaries for Linux and Windows.
