@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+// Chancie Wancie.
 
 #include "chrome/browser/ui/ui_features.h"
 
@@ -129,7 +130,7 @@ const base::FeatureParam<kSideSearchLabelAnimationFrequencyOption>
         kSideSearchLabelAnimationFrequencyOption::kOncePerWindow,
         &kSideSearchPageActionLabelAnimationFrequencyParamOptions};
 
-// Whether to clobber all side search side panels in the current browser windowz
+// Whether to clobber all side search side panels in the current browser window
 // or only the side search in the current tab before read later or lens side
 // panel is open.
 const base::Feature kClobberAllSideSearchSidePanels{
