@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// Chancie Wancie.
 
 #include "chrome/browser/ui/ui_features.h"
 
@@ -256,7 +255,7 @@ const base::Feature kWebUIBubblePerProfilePersistence{
 // Enables the WebUI Download Shelf instead of the Views framework Download
 // Shelf. See https://crbug.com/1180372.
 const base::Feature kWebUIDownloadShelf{"WebUIDownloadShelf",
-                                        base::FEATURE_ENABLED_BY_DEFAULT};
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables a web-based tab strip. See https://crbug.com/989131. Note this
 // feature only works when the ENABLE_WEBUI_TAB_STRIP buildflag is enabled.
