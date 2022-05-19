@@ -299,12 +299,6 @@ const base::Feature kResumeBackgroundVideo {
 #endif
 };
 
-// Experimental: Try to avoid destroying the media player when transferring a
-// media element to a new document.  This is a work in progress, and may cause
-// security and/or stability issues.
-const base::Feature kReuseMediaPlayer{"ReuseMediaPlayer",
-                                      base::FEATURE_DISABLED_BY_DEFAULT};
-
 // When enabled, MediaCapabilities will check with GPU Video Accelerator
 // Factories to determine isPowerEfficient = true/false.
 const base::Feature kMediaCapabilitiesQueryGpuFactories{
@@ -331,7 +325,7 @@ const base::Feature kUseAndroidOverlayForSecureOnly{
 // Allows usage of OS-level (platform) audio encoders.
 const base::Feature kPlatformAudioEncoder {
   "PlatformAudioEncoder",
-#if BUILDFLAG(IS_WIN)
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
       base::FEATURE_ENABLED_BY_DEFAULT
 #else
       base::FEATURE_DISABLED_BY_DEFAULT
