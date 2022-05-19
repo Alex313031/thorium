@@ -129,14 +129,11 @@ const base::FeatureParam<kSideSearchLabelAnimationFrequencyOption>
         kSideSearchLabelAnimationFrequencyOption::kOncePerWindow,
         &kSideSearchPageActionLabelAnimationFrequencyParamOptions};
 
-// Whether to clobber all side search side panels in the current browser window
+// Whether to clobber all side search side panels in the current browser windowz
 // or only the side search in the current tab before read later or lens side
 // panel is open.
 const base::Feature kClobberAllSideSearchSidePanels{
     "ClobberAllSideSearchSidePanels", base::FEATURE_ENABLED_BY_DEFAULT};
-
-const base::Feature kSidePanelDragAndDrop{"SidePanelDragAndDrop",
-                                          base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Adds improved support for handling multiple contextual and global RHS browser
 // side panels. Designed specifically to handle the interim state before the v2
