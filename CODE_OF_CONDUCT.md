@@ -1,6 +1,6 @@
 # Thorium Code of Conduct
 
-Thorium and the Chromium team are committed to preserving and fostering a
+The Thorium Authors and the Chromium team are committed to preserving and fostering a
 diverse, welcoming community. Below is our community code of conduct, which
 applies to our repos, blog content, and any other Chromium-supported communication group or Thorium discussion board, as
 well as any private communication initiated in the context of these
