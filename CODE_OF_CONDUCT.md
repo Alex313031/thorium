@@ -64,7 +64,7 @@ discretion of the a Thorium Maintainer or the Chromium community managers:
  * a temporary ban from the mailing list, blog, Chromium repository or
    organization, or other Chromium-supported communication group, including
    loss of committer status;
- * A temporary ban from the Thorium repository, discussion groups, or blog.
+ * a temporary ban from the Thorium repository, discussion groups, or blog.
  * a permanent ban from any of the above, or from all current and future
    Thorium-supported or Chromium-supported communities, including loss of
    committer/maintainer status.
