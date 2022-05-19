@@ -2,9 +2,8 @@
 
 The Thorium Authors and the Chromium team are committed to preserving and fostering a
 diverse, welcoming community. Below is our community code of conduct, which
-applies to our repos, blog content, and any other Chromium-supported communication group or Thorium discussion board, as
-well as any private communication initiated in the context of these
-spaces. This code of conduct must be followed by everyone contributing to
+applies to the Thorium repository, the Chromium repository, Alex313031 blog content, and any other Chromium-supported communication group or Thorium discussion board, as well as any private communication initiated in the context of these
+spaces, including GitHub Issues. This code of conduct must be followed by everyone contributing to or engaging with
 the Thorium project, regardless of affiliation or position.
 
 Simply put, community discussions should be
