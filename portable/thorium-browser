@@ -4,4 +4,4 @@
 
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_GOOGLE_CHROME
 
-./chrome --user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ChromeLabs
+./chrome --user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo
