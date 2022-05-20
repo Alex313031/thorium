@@ -19,7 +19,7 @@ bool ShouldDisplayInExtensionSettings(Manifest::Type type,
 
   // Hide component extensions because they are only extensions as an
   // implementation detail of Chrome.
-  if (Manifest::IsComponentLocation(location) {
+  if (Manifest::IsComponentLocation(location)) {
     return true;
   }
 
