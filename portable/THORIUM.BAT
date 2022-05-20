@@ -1,1 +1,1 @@
-START /D ".\BIN\" .\BIN\chrome.exe --user-data-dir="%~dp0%USER_DATA" --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --enable-tab-audio-muting --show-component-extension-options
+START /D "%cd%\BIN\" %cd%\BIN\chrome.exe --user-data-dir="%cd%\USER_DATA" --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo
