@@ -1,0 +1,1 @@
+START /D "%cd%\BIN\104.0.5071.0\" %cd%\BIN\104.0.5071.0\content_shell.exe --user-data-dir="%cd%\USER_DATA" --no-default-browser-check --allow-outdated-plugins --disable-logging --disable-breakpad --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo
