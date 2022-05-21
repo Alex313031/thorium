@@ -1,4 +1,4 @@
-// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -102,7 +102,14 @@ LOAD_FLAG(RESTRICTED_PREFETCH, 1 << 15)
 // trusted process.
 LOAD_FLAG(CAN_USE_RESTRICTED_PREFETCH, 1 << 16)
 
-
+// True if the request should attempt to use the single-keyed cache to satisfy
+// the request. The single-keyed cache will only be used if the "unusable" flag
+// on the cache entry is not true. Otherwise it will fall back to the
+// partitioned cache. This flag also enables checksumming of the response to set
+// the "unusable" flag if necessary.
+//
+// Cannot be used together with BYPASS_CACHE, ONLY_FROM_CACHE, or DISABLE_CACHE.
+LOAD_FLAG(USE_SINGLE_KEYED_CACHE, 1 << 17)
 
 
 // This load will not send Accept-Language or User-Agent headers, and not
