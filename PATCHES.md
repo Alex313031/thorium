@@ -7,7 +7,7 @@ NEW > Added some LLVM LOOP optimizations as -mllvm flags. See here > https://git
 
 Fixed AVX Windows Builds as per > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-1003605112
 
-.desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both via the wrapper file > '--no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite'.
+.desktop files are created for Thorium itself and content-shell (named thorium-shell), with theses cmdline flags being appended to both via the wrapper file > '--no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo'.
 
 There are also additional desktop actions: when right clicking the Thorium launcher it gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 
