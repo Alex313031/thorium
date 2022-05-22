@@ -81,8 +81,8 @@ chrome_200_percent.pak: %(VersionDir)s\
 Logo.png: %(VersionDir)s\
 
 # Add component ffmpeg to Thorium.
-# [FFMPEG]
-# ffmpeg.dll: %(VersionDir)s\
+[FFMPEG]
+ffmpeg.dll: %(VersionDir)s\
 
 [TOUCH]
 
