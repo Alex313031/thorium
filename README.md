@@ -51,7 +51,7 @@
 &nbsp;&nbsp;&ndash; UPDATE: Thorium now has API Keys baked in but the instructions below are the same if you are building it yourself as I will not include the keys here. | args.gn exclude API Keys (you can get them yourself) and the PGO profile path is different for each Chromium version (only needed when building). (See below.)
 
 # Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
-_**The scripts assume the Chromium source is at $HOME/chromiums/src/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
+_**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium is at $HOME/thorium/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
 - UPDATE: For Windows and Windows AVX2, I made new dedicated instructions. If you are building on Windows use > https://github.com/Alex313031/Thorium/blob/main/misc/WIN_INSTRUCTIONS.txt and if you are building for Windows on Linux, use > https://github.com/Alex313031/Thorium/blob/main/misc/WIN_CROSS_BUILD_INSTRUCTIONS.txt
 - In general we follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys \
 - Make sure dependencies are installed by running ./chromium/src/build/install-build-deps.sh.
