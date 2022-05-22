@@ -58,15 +58,15 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
 - Run `gn args out/thorium` and the contents of 'args.gn' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'*
-- 'misc/args.list' contains an alphabetical list with descriptions of all possible build arguments; gn_args.list gives a similar list but with the flags in args.gn added.
+- 'infra/args.list' contains an alphabetical list with descriptions of all possible build arguments; gn_args.list gives a similar list but with the flags in args.gn added.
 - To build, run `./build.sh` (--help for help). For Windows, use `autoninja -C out\thorium chrome chromedriver content_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
 - To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/content_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `./thordeb.sh` (--help for help). A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/thorium-unstable/*. For Windows, just run the mini_installer.exe. \
-&nbsp;&nbsp; NOTE: To get back to "Trunk", i.e. to revert all changes in order to build vanilla chromium, just run `./trunk.sh` again. \
+&nbsp;&nbsp; NOTE: To get back to "Trunk", i.e. to revert all changes in order to build vanilla Chromium or to update your checkout, just run `./trunk.sh` again. \
 &nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *mavx*, and replace *mavx* with *msse3*.
 
 https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Chromium/ChromiumOS. \
-I also build ChromiumOS with codecs, linux-firmware/modules, and added packages at > https://github.com/Alex313031/ChromiumOS/
+I also build ChromiumOS with codecs, widevine, linux-firmware/modules, and added packages at > https://github.com/Alex313031/ChromiumOS/
 
 &minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
 &minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
