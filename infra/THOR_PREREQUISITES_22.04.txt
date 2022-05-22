@@ -1,3 +1,9 @@
-Dependencies to build Thorium on Ubuntu 22.04 Jammy Jellyfish since //chromium/src/build/install-build-deps has not been updated.
+Dependencies to build Thorium on Ubuntu 22.04 "Jammy Jellyfish" since //chromium/src/build/install-build-deps has not been updated.
 
-bison cdbs dbus-x11 elfutils devscripts flex gperf libasound2-dev libatspi2.0-dev libbrlapi-dev libbz2-dev libcap-dev libcups2-dev libcurl4-gnutls-dev libelf-dev libevdev-dev libgbm-dev libglu1-mesa-dev libgtk-3-dev libkrb5-dev libnspr4-dev libnss3-dev libpam0g-dev libpci-dev libpulse-dev libsctp-dev libspeechd-dev libsqlite3-dev libudev-dev libva-dev libxshmfence-dev libxslt1-dev libxss-dev libxt-dev libxtst-dev openbox rpm ruby subversion wdiff xcompmgr libwayland-egl1-mesa libvulkan-dev appmenu-gtk3-module appmenu-gtk2-module libinput-dev libatk1.0-dev libpango1.0-dev
+Step 1. Add umask 022 to your .bashrc file ahead of any export lines.
+
+Step 2. Modify /etc/sysctl.conf and add a line that says fs.file-max=16384
+
+Step 3. Install the packages that would have been installed by install-build.deps
+
+sudo apt install bison cdbs dbus-x11 elfutils devscripts flex gperf libasound2-dev libatspi2.0-dev libbrlapi-dev libbz2-dev libcap-dev libcups2-dev libcurl4-gnutls-dev libelf-dev libevdev-dev libgbm-dev libglu1-mesa-dev libgtk-3-dev libkrb5-dev libnspr4-dev libnss3-dev libpam0g-dev libpci-dev libpulse-dev libsctp-dev libspeechd-dev libsqlite3-dev libudev-dev libva-dev libxshmfence-dev libxslt1-dev libxss-dev libxt-dev libxtst-dev openbox rpm ruby subversion wdiff xcompmgr libwayland-egl1-mesa libvulkan-dev appmenu-gtk3-module appmenu-gtk2-module libinput-dev libatk1.0-dev libpango1.0-dev
