@@ -39,7 +39,7 @@ and reporters will remain confidential unless those individuals instruct us
 otherwise.
 
 I will always respond in some way, but also keep in mind that while all reports will be taken seriously, I or the Chromium community managers may
-not act on complaints that they feel are not violations of this code of conduct.
+not act on complaints that we feel are not violations of this code of conduct.
 
 ## We will not tolerate harassment of any kind, including but not limited to:
 
