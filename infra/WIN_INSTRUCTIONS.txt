@@ -92,7 +92,7 @@ You can also add API Keys to the top three lines of this file to enable Google S
 
 Now, we are going to copy the Thorium sources. Select (via Ctrl + Left Mouse button) these folders in C:\src\Thorium:
 
-build, chrome, components, content, media, net, sandbox, third_party, tools, ui, v8
+ash, base, build, chrome, components, content, extensions, media, net, sandbox, third_party, tools, ui, v8
 
 Then paste these in C:\chromium\src (overwriting everything)
 
