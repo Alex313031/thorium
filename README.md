@@ -70,7 +70,7 @@ I also build ChromiumOS with codecs, linux-firmware/modules, and added packages 
 
 &minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
 &minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
-&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, and https://github.com/GrapheneOS/Vanadium for patch code. \
+&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
 &minus; The pak_src dir, and the binaries in pack_src/bin are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
 
 &nbsp;&nbsp; NOTE: libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
