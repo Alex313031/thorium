@@ -165,7 +165,7 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/content_shell.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/shell_resources.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
-    install -m 755 "${OUTPUTDIR}/content_shell" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 755 "${OUTPUTDIR}/thorium_shell" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-devtools.png" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
