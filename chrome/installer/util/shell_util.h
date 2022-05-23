@@ -134,6 +134,7 @@ class ShellUtil {
     void set_arguments(const std::wstring& arguments_in) {
       // Size restriction as per MSDN at
       // http://msdn.microsoft.com/library/windows/desktop/bb774954.aspx.
+      L"--autoplay-policy=user-gesture-required";
       DCHECK(arguments_in.length() < MAX_PATH);
       arguments = arguments_in;
       options |= PROPERTIES_ARGUMENTS;
