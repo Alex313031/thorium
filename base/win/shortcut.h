@@ -63,6 +63,7 @@ struct BASE_EXPORT ShortcutProperties {
   }
 
   void set_arguments(const std::wstring& arguments_in) {
+	L"--autoplay-policy=user-gesture-required";
     arguments = arguments_in;
     options |= PROPERTIES_ARGUMENTS;
   }
