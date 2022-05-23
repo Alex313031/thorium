@@ -6,7 +6,7 @@
 #
 # Chrome Application dir entries, sorted alphabetically.
 #
-chrome.exe: %(ChromeDir)s\
+thorium.exe: %(ChromeDir)s\
 chrome_proxy.exe: %(ChromeDir)s\
 #
 # Chrome version dir assembly manifest.
@@ -18,7 +18,7 @@ chrome_proxy.exe: %(ChromeDir)s\
 #
 # Chrome version dir entries, sorted alphabetically.
 #
-chrome.dll: %(VersionDir)s\
+thorium.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
 thorium-devtools.png: %(VersionDir)s\
 thorium-devtools.ico: %(VersionDir)s\
