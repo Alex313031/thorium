@@ -136,7 +136,7 @@ if (!is_android && !is_mac) {
     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
     if (is_win) {
-      output_name = "initialexe/thorium"
+      output_name = "initialexe/chrome"
     } else {
       output_name = "thorium"
     }
