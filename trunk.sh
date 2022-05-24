@@ -16,8 +16,6 @@ cd $HOME/chromium/src &&
 
 rm -v -f $HOME/chromium/src/ui/webui/resources/images/infra.png &&
 
-rm -v -f $HOME/chromium/src/chrome/installer/mini_installer/mini_installer_exe_version.rc &&
-
 git checkout -f origin/main &&
 
 git rebase-update &&
