@@ -136,9 +136,9 @@ if (!is_android && !is_mac) {
     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
     if (is_win) {
-      output_name = "initialexe/chrome"
+      output_name = "initialexe/thorium"
     } else {
-      output_name = "chrome"
+      output_name = "thorium"
     }
 
     # Because the sources list varies so significantly per-platform, generally
