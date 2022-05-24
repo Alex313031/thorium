@@ -74,8 +74,8 @@ if (is_win) {
     # target for why this cannot be 'initial' like the DLL.
     inputs = [ "$root_out_dir/initialexe/chrome.exe" ]
     outputs = [
-      "$root_out_dir/chrome.exe",
-      "$root_out_dir/chrome.exe.pdb",
+      "$root_out_dir/thorium.exe",
+      "$root_out_dir/thorium.exe.pdb",
     ]
     args = [
       "-i",
