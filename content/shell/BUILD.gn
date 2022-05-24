@@ -514,7 +514,7 @@ if (is_android) {
     }
   }
 } else {
-  executable("content_shell") {
+  executable("thorium_shell") {
     testonly = true
 
     sources = [ "app/shell_main.cc" ]
