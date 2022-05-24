@@ -848,7 +848,7 @@ mojom("content_browsertests_mojom") {
 group("content_shell_crash_test") {
   testonly = true
   data_deps = [
-    ":content_shell",
+    ":thorium_shell",
     "//testing:test_scripts_shared",
     "//third_party/mesa_headers",
   ]
