@@ -1730,7 +1730,7 @@ if (is_linux || is_chromeos) {
       }
     }
     extract_symbols("chrome_symbols") {
-      binary = "$root_out_dir/chrome"
+      binary = "$root_out_dir/thorium"
 
       if (current_cpu == "x86") {
         # GYP used "ia32" so keep that naming for back-compat.
