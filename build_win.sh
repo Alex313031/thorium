@@ -19,10 +19,10 @@ case $1 in
 esac
 
 printf "\n" &&
-printf "${YEL}Building Thorium...\n" &&
+printf "${YEL}Building Thorium for Windows...\n" &&
 printf "\n" &&
 tput sgr0 &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver content_shell setup mini_installer -j$@
+./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j$@
