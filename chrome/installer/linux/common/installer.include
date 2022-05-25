@@ -78,6 +78,7 @@ process_template() (
     -e "s#@@PACKAGE_FILENAME@@#${PACKAGE_FILENAME}#g" \
     -e "s#@@SNAPNAME@@#${SNAPNAME}#g" \
     -e "s#@@PROGNAME@@#${PROGNAME}#g" \
+    -e "s#@@SANDNAME@@#${SANDNAME}#g" \
     -e "s#@@CHANNEL@@#${CHANNEL}#g" \
     -e "s#@@COMPANY_FULLNAME@@#${COMPANY_FULLNAME}#g" \
     -e "s#@@VERSION@@#${VERSION}#g" \
@@ -196,7 +197,7 @@ stage_install_common() {
   # where it did not support hyphens, so this is stuck as is to avoid breaking
   # anyone who expects the build artifact to have the underscore.
   # the code looks for, but the build targets can't use hyphens (scons bug?)
-  strippedfile="${OUTPUTDIR}/${PROGNAME}_sandbox.stripped"
+  strippedfile="${OUTPUTDIR}/${SANDNAME}_sandbox.stripped"
   install -m 4755 "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/chrome-sandbox"
 
   # l10n paks
