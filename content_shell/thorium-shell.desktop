@@ -128,12 +128,11 @@ Comment[vi]=Truy cập Internet
 Comment[zh_CN]=访问互联网
 Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
-Exec=/usr/bin/thorium-shell --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --show-component-extension-options --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing --enable-features=VaapiVideoDecoder,PageInfoAboutThisSite,ParallelDownloading %U
+Exec=/usr/bin/thorium-shell --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing %U
 Terminal=false
-X-MultipleArgs=false
 Type=Application
 Icon=/opt/chromium.org/thorium-unstable/thorium-devtools.png
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
-StartupWMClass=chromium
+StartupWMClass=thorium
 StartupNotify=true
