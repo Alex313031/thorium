@@ -98,7 +98,7 @@ Save and exit and the terminal will show "Generating files..." Wait for it to co
 Go back to ~/Thorium, and run ./build_win.sh
 
 NOTE: Run ./build_win.sh --help to see the (only) option, which is the number of jobs. The command it ultimately runs is:
-./misc/autoninja -C ~/chromium/src/out/thorium chrome chromedriver content_shell setup mini_installer -j
+./misc/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j
 
 You can substitute the -j# for the number of jobs. I use 8 because I have an 8 core cpu. Do not use a number more than the number of threads your CPU has.
 
