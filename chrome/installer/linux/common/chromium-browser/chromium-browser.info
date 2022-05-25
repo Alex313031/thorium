@@ -12,7 +12,7 @@ PACKAGE="thorium-browser"
 SNAPNAME="thorium"
 
 # Filename of the main executable (for generating launcher scripts, etc.)
-PROGNAME=chrome
+PROGNAME=thorium
 
 # Base directory for package installation.
 INSTALLDIR=/opt/chromium.org/thorium
