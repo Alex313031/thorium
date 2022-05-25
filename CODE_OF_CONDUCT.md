@@ -1,5 +1,7 @@
 # Thorium Code of Conduct
 
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC.png" width="256">
+
 The Thorium Authors and the Chromium team are committed to preserving and fostering a
 diverse, welcoming community. Below is our community code of conduct, which
 applies to the Thorium repository, the Chromium repository, Alex313031 blog content, and any other Chromium-supported communication group or Thorium discussion board, as well as any private communication initiated in the context of these
