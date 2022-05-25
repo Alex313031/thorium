@@ -130,6 +130,7 @@ Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
 Exec=/usr/bin/thorium-shell --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing %U
 Terminal=false
+X-MultipleArgs=True
 Type=Application
 Icon=/opt/chromium.org/thorium-unstable/thorium-devtools.png
 Categories=Network;WebBrowser;
