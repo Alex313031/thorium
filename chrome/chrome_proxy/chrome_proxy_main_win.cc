@@ -16,7 +16,7 @@ constexpr base::FilePath::CharType kChromeExecutable[] =
     FILE_PATH_LITERAL("thorium.exe");
 
 constexpr base::FilePath::CharType kChromeProxyExecutable[] =
-    FILE_PATH_LITERAL("thorium_proxy.exe");
+    FILE_PATH_LITERAL("chrome_proxy.exe");
 
 }  // namespace
 
