@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -220,9 +220,9 @@ const wchar_t kChromeDll[] = L"chrome.dll";
 const wchar_t kChromeExe[] = L"thorium.exe";
 const wchar_t kChromeNewExe[] = L"new_thorium.exe";
 const wchar_t kChromeOldExe[] = L"old_thorium.exe";
-const wchar_t kChromeProxyExe[] = L"thorium_proxy.exe";
-const wchar_t kChromeProxyNewExe[] = L"new_thorium_proxy.exe";
-const wchar_t kChromeProxyOldExe[] = L"old_thorium_proxy.exe";
+const wchar_t kChromeProxyExe[] = L"chrome_proxy.exe";
+const wchar_t kChromeProxyNewExe[] = L"new_chrome_proxy.exe";
+const wchar_t kChromeProxyOldExe[] = L"old_chrome_proxy.exe";
 const wchar_t kCmdOnOsUpgrade[] = L"on-os-upgrade";
 const wchar_t kCmdRotateDeviceTrustKey[] = L"rotate-dtkey";
 const wchar_t kCmdStoreDMToken[] = L"store-dmtoken";
