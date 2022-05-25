@@ -6,8 +6,8 @@
 #
 # Chrome Application dir entries, sorted alphabetically.
 #
-thorium.exe: %(ChromeDir)s\
-thorium_proxy.exe: %(ChromeDir)s\
+chrome.exe: %(ChromeDir)s\
+chrome_proxy.exe: %(ChromeDir)s\
 #
 # Chrome version dir assembly manifest.
 # The name of this file must match the name of the version dir, so we cannot
