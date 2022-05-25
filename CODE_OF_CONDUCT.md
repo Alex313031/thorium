@@ -48,6 +48,7 @@ not act on complaints that we feel are not violations of this code of conduct.
  * Encouraging a person to engage in self-harm.
  * Sustained disruption or derailing of threads, channels, lists, etc.
  * Offensive or violent comments, jokes or otherwise
+ * Sustained disruption of discussion
  * Inappropriate sexual content
  * Unwelcome sexual or otherwise aggressive attention
  * Continued one-on-one communication after requests to cease
