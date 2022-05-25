@@ -466,7 +466,7 @@ std::string GetIconName() {
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
   return "google-chrome";
 #else  // BUILDFLAG(CHROMIUM_BRANDING)
-  return "thorium-browser";
+  return "thorium-Browser";
 #endif
 }
 
@@ -789,7 +789,7 @@ bool IsFirefoxDefaultBrowser() {
   std::string browser;
   // We don't care about the return value here.
   base::GetAppOutput(base::CommandLine(argv), &browser);
-  return browser.find("irefox") != std::string::npos;
+  return browser.find("firefox") != std::string::npos;
 }
 
 DefaultWebClientState IsDefaultProtocolClient(const std::string& protocol) {
