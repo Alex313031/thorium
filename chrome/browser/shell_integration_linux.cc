@@ -466,7 +466,7 @@ std::string GetIconName() {
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
   return "google-chrome";
 #else  // BUILDFLAG(CHROMIUM_BRANDING)
-  return "thorium-Browser";
+  return "thorium";
 #endif
 }
 
