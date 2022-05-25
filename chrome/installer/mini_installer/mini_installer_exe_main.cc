@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -58,6 +58,7 @@ void* memset(void* dest, int c, size_t count) {
 // The compiler generates calls to memcpy for ARM64 debug builds so we need to
 // supply a memcpy implementation in that configuration.
 // See comments above for why we do this incantation.
+
 // SET BY ALEX313031 FOR ALL BUILDS BECAUSE IT CAUSES ERRORS
 // DURING CROSS-BUILDING IF UNSET.
 __attribute__((used))
