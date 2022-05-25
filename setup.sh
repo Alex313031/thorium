@@ -14,6 +14,7 @@ printf "\n" &&
 printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
+cp -r -v BUILD.gn $HOME/chromium/src/ &&
 cp -r -v ash/. $HOME/chromium/src/ash/ &&
 cp -r -v base/. $HOME/chromium/src/base/ &&
 cp -r -v build/. $HOME/chromium/src/build/ &&
