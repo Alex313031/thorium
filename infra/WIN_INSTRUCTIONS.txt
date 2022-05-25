@@ -92,7 +92,7 @@ You can also add API Keys to the top three lines of this file to enable Google S
 
 Now, we are going to copy the Thorium sources. Select (via Ctrl + Left Mouse button) these folders in C:\src\Thorium:
 
-ash, base, build, chrome, components, content, extensions, media, net, sandbox, third_party, tools, ui, v8
+ash, base, build, chrome, components, content, extensions, media, net, sandbox, third_party, tools, ui, v8 as well as the BUILD.gn in the root of Thorium.
 
 Then paste these in C:\chromium\src (overwriting everything)
 
@@ -117,7 +117,7 @@ Make sure you are in C:\src\chromium\src
 
 And run:
 
-autoninja -C out\thorium chrome chromedriver content_shell setup mini_installer -j8
+autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
 
 You can substitute the -j# for the number of jobs. I use 8 because I have an 8 core cpu. Do not use a number more than the number of threads your CPU has.
 
