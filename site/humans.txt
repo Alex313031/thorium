@@ -5,12 +5,12 @@
 
 /* TEAM */
 	
-	Web designer & Contributer: Midzer
+	Web designer & Contributer: midzer
 	Twitter: @midzer
-	From: 
+	From: Munich, Germany
 
 	Developer: Alexander Frick
-	Twitter: 
+	Twitter: @alex313031
 	From: Oklahoma, US
 	
 	Contributer: gz83
