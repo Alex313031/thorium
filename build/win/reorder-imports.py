@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors, Alex313031, and gz83. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -25,8 +25,8 @@ def reorder_imports(input_dir, output_dir, architecture):
   # correct executable in the first place, so that this script
   # only needs to verify that and not write a whole new exe.
 
-  input_image = os.path.join(input_dir, 'chrome.exe')
-  output_image = os.path.join(output_dir, 'chrome.exe')
+  input_image = os.path.join(input_dir, 'thorium.exe')
+  output_image = os.path.join(output_dir, 'thorium.exe')
 
   # pefile mmap()s the whole executable, and then parses parts of
   # it into python data structures for ease of processing.
@@ -74,7 +74,7 @@ def reorder_imports(input_dir, output_dir, architecture):
 
   pe.write(filename=output_image)
 
-  for fname in glob.iglob(os.path.join(input_dir, 'chrome.exe.*')):
+  for fname in glob.iglob(os.path.join(input_dir, 'thorium.exe.*')):
     shutil.copy(fname, os.path.join(output_dir, os.path.basename(fname)))
   return 0
 
@@ -82,9 +82,9 @@ def reorder_imports(input_dir, output_dir, architecture):
 def main(argv):
   usage = 'reorder_imports.py -i <input_dir> -o <output_dir> -a <target_arch>'
   parser = optparse.OptionParser(usage=usage)
-  parser.add_option('-i', '--input', help='reorder chrome.exe in DIR',
+  parser.add_option('-i', '--input', help='reorder thorium.exe in DIR',
       metavar='DIR')
-  parser.add_option('-o', '--output', help='write new chrome.exe to DIR',
+  parser.add_option('-o', '--output', help='write new thorium.exe to DIR',
       metavar='DIR')
   parser.add_option('-a', '--arch', help='architecture of build (optional)',
       default='ia32')
