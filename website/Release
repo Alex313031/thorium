@@ -1,6 +1,0 @@
-Architectures: amd64
-Components: main
-Description: Thorium browser packages
-Label: thorium
-Origin: dl.thorium.rocks
-Filename: pool/thorium-browser-unstable.deb
