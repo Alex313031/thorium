@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://thorium.rocks/sitemap.xml
