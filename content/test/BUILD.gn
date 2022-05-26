@@ -1305,6 +1305,7 @@ test("content_browsertests") {
     "../browser/mojo_sandbox_browsertest.cc",
     "../browser/native_io/native_io_manager_browsertest.cc",
     "../browser/navigation_browsertest.cc",
+    "../browser/navigation_id_browsertest.cc",
     "../browser/navigation_mhtml_browsertest.cc",
     "../browser/net/accept_header_browsertest.cc",
     "../browser/net/dns_https_protocol_upgrade_browsertest.cc",
@@ -1680,28 +1681,28 @@ test("content_browsertests") {
     }
   }
 
-  if (is_android || is_linux || is_chromeos || is_mac || is_win) {
-    sources += [
-      "../browser/media/capture/content_capture_device_browsertest_base.cc",
-      "../browser/media/capture/content_capture_device_browsertest_base.h",
-      "../browser/media/capture/fake_video_capture_stack.cc",
-      "../browser/media/capture/fake_video_capture_stack.h",
-      "../browser/media/capture/frame_test_util.cc",
-      "../browser/media/capture/frame_test_util.h",
-      "../browser/media/capture/web_contents_video_capture_device_browsertest.cc",
-    ]
+  if (enable_screen_capture) {
+    if (is_android || is_linux || is_chromeos || is_mac || is_win) {
+      sources += [
+        "../browser/media/capture/content_capture_device_browsertest_base.cc",
+        "../browser/media/capture/content_capture_device_browsertest_base.h",
+        "../browser/media/capture/fake_video_capture_stack.cc",
+        "../browser/media/capture/fake_video_capture_stack.h",
+        "../browser/media/capture/frame_test_util.cc",
+        "../browser/media/capture/frame_test_util.h",
+        "../browser/media/capture/web_contents_video_capture_device_browsertest.cc",
+      ]
 
-    data += [ "$root_out_dir/content_shell.pak" ]
-  }
+      data += [ "$root_out_dir/content_shell.pak" ]
+    }
 
-  if (is_linux || is_chromeos || is_mac || is_win) {
-    sources += [
-      "../browser/media/capture/mouse_cursor_overlay_controller_browsertest.cc",
-    ]
+    if (is_linux || is_chromeos || is_mac || is_win) {
+      sources += [ "../browser/media/capture/mouse_cursor_overlay_controller_browsertest.cc" ]
 
-    # For chromecast, content_browsertests does not provide a shell window.
-    if (use_aura && !is_chromecast) {
-      sources += [ "../browser/media/capture/aura_window_video_capture_device_browsertest.cc" ]
+      # For chromecast, content_browsertests does not provide a shell window.
+      if (use_aura && !is_chromecast) {
+        sources += [ "../browser/media/capture/aura_window_video_capture_device_browsertest.cc" ]
+      }
     }
   }
 
@@ -1884,7 +1885,7 @@ test("content_browsertests") {
       "../renderer/render_view_browsertest_mac.mm",
     ]
     deps += [ "//third_party/ocmock" ]
-    data_deps += [ "//content/shell:content_shell" ]
+    data_deps += [ "//content/shell:thorium_shell" ]
     data += [ "$root_out_dir/Content Shell.app/" ]
   }
 
@@ -3060,4 +3061,24 @@ if (is_android) {
       "//ui/android:ui_full_java",
     ]
   }
+}
+
+group("gpu_pytype") {
+  testonly = true
+
+  data = [
+    "//content/test/gpu/run_pytype.py",
+    "//content/test/gpu/validate_tag_consistency.py",
+
+    "//build/util/lib/results/",
+    "//content/test/gpu/flake_suppressor/",
+    "//testing/unexpected_passes_common/",
+  ]
+
+  data_deps = [
+    # This includes more than we strictly need to, but this ensures that we
+    # don't accidentally omit Python files that the real tests would be using.
+    ":telemetry_gpu_integration_test_scripts_only",
+    ":telemetry_gpu_integration_test_support",
+  ]
 }
