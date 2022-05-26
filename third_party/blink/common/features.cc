@@ -62,6 +62,11 @@ const base::Feature kExcludeLowEntropyImagesFromLCP{
 const base::FeatureParam<double> kMinimumEntropyForLCP{
     &kExcludeLowEntropyImagesFromLCP, "min_bpp", 2};
 
+// Used as a binding for controlling the runtime enabled blink feature
+// "FixedElementsDontOverscroll". This is needed for experimentation.
+const base::Feature kFixedElementsDontOverscroll{
+    "FixedElementsDontOverscroll", base::FEATURE_DISABLED_BY_DEFAULT};
+
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -224,8 +229,9 @@ const base::FeatureParam<FencedFramesImplementationType>
         FencedFramesImplementationType::kShadowDOM,
         &fenced_frame_implementation_types};
 
-// Enable the shared storage API. This base::Feature directly controls the
-// corresponding runtime enabled feature.
+// Enable the shared storage API. Note that enabling this feature does not
+// automatically expose this API to the web, it only allows the element to be
+// enabled by the runtime enabled feature, for origin trials.
 // https://github.com/pythagoraskitty/shared-storage/blob/main/README.md
 const base::Feature kSharedStorageAPI{"SharedStorageAPI",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1352,9 +1358,6 @@ const base::Feature kNoForcedFrameUpdatesForWebTests{
 const base::Feature kElementSuperRareData{"ElementSuperRareData",
                                           base::FEATURE_DISABLED_BY_DEFAULT};
 
-const base::Feature kClientHintsPartitionedCookies{
-    "ClientHintsPartitionedCookies", base::FEATURE_DISABLED_BY_DEFAULT};
-
 const base::Feature kDurableClientHintsCache{"DurableClientHintsCache",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -1463,6 +1466,11 @@ const base::Feature kSubstringSetTreeForAttributeBuckets{
 
 const base::Feature kPendingBeaconAPI{"PendingBeaconAPI",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
+
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+const base::Feature kPrefetchFontLookupTables{
+    "PrefetchFontLookupTables", base::FEATURE_DISABLED_BY_DEFAULT};
+#endif
 
 const base::Feature kSimulateClickOnAXFocus {
   "SimulateClickOnAXFocus",
