@@ -865,7 +865,7 @@ const base::Feature MEDIA_EXPORT kWasapiRawAudioCapture{
 
 // Enable VP9 kSVC decoding with HW decoder for webrtc use case on Windows.
 const base::Feature kD3D11Vp9kSVCHWDecoding{"D3D11Vp9kSVCHWDecoding",
-                                            base::FEATURE_DISABLED_BY_DEFAULT};
+                                            base::FEATURE_ENABLED_BY_DEFAULT};
 
 // The Media Foundation Rendering Strategy determines which presentation mode
 // Media Foundation Renderer should use for presenting clear content. This
@@ -907,7 +907,7 @@ const base::FeatureParam<MediaFoundationClearRenderingStrategy>
 
 #if BUILDFLAG(IS_CHROMEOS)
 const base::Feature MEDIA_EXPORT kDeprecateLowUsageCodecs{
-    "DeprecateLowUsageCodecs", base::FEATURE_ENABLED_BY_DEFAULT};
+    "DeprecateLowUsageCodecs", base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_CHROMEOS)
 
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
