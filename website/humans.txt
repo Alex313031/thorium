@@ -1,0 +1,38 @@
+## thorium.rocks humans.txt ##
+
+# Copyright (c) 2022 Alex313031.
+# https://humanstxt.org/
+
+/* TEAM */
+	
+	Web designer & Contributer: midzer
+	GitHub: @midzer
+	From: Munich, Germany
+
+	Developer: Alexander Frick
+	Twitter: @alex313031
+	From: Oklahoma, US
+	
+	Contributer: gz83
+	GitHub: @gz83
+	From: Hong Kong, China
+	
+/* THANKS */
+	
+	Robert Richard
+	GitHub: @RobRich999
+	From: US
+	
+	Jerry
+	Website: https://chromium.woolyss.com/
+	From: 
+	
+	The Chromium Authors
+	Website: https://www.chromium.org/
+	From: WorldWide
+
+/* SITE */
+	Last update: 2022/05/26
+	Language: English
+	Doctype: HTML5
+	IDE: VSCodium, Geany, Atom
