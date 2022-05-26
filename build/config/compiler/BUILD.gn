@@ -682,9 +682,11 @@ config("compiler") {
       # of "all" which means number of hardware threads) is faster.
       ldflags += [ "-Wl,--thinlto-jobs=all" ]
       if (is_apple) {
-        ldflags +=
-            [ "-Wl,-cache_path_lto," +
-              rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
+        ldflags += [
+          "-Wl,-cache_path_lto," +
+              rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
+          "-Wcrl,object_path_lto",
+        ]
       } else {
         ldflags +=
             []
@@ -1536,6 +1538,15 @@ config("default_warnings") {
       if (!is_nacl) {
         # TODO(https://crbug.com/1300731) Clean up and enable.
         cflags += [ "-Wno-unqualified-std-cast-call" ]
+      }
+
+      if (!is_nacl && !(is_chromeos ||
+                        default_toolchain == "//build/toolchain/cros:target")) {
+        # TODO(https://crbug.com/1322823): Remove flags once potential miscompile is investigated.
+        cflags += [
+          "-Xclang",
+          "-no-opaque-pointers",
+        ]
       }
 
       if (is_fuchsia) {
