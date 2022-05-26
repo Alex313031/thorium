@@ -77,10 +77,10 @@ immediately; failure to do so will result in an escalation of consequences.
 
 ## Acknowledgements
 
-This Code of Conduct is based on the Chromium Code of Conduct, which is based on the Geek Feminism Code of Conduct, the Django
-Code of Conduct and the Geek Feminism Wiki "Effective codes of conduct" guide.
+This Code of Conduct is based on the Chromium Code of Conduct > https://chromium.googlesource.com/chromium/src/+/master/CODE_OF_CONDUCT.md, which is based on the Geek Feminism Code of Conduct > https://geekfeminismdotorg.wordpress.com/about/code-of-conduct/, the Django
+Code of Conduct > https://www.djangoproject.com/conduct/, and the Geek Feminism Wiki "Effective codes of conduct" guide > https://geekfeminism.fandom.com/wiki/Code_of_conduct_evaluations.
 
 ## License
 
 This Code of Conduct is available for reuse under the Creative Commons Zero
-(CC0) license.
+(CC0) license. https://creativecommons.org/publicdomain/zero/1.0/legalcode
