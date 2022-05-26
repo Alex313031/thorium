@@ -52,6 +52,7 @@ rtc_use_h264 = true
 rtc_include_ilbc = true
 # rtc_build_with_neon = true
 rtc_build_examples = false
+# rtc_enable_avx2 = true
 enable_vr = true
 enable_platform_hevc = true
 enable_hevc_parser_and_hw_decoder = true
