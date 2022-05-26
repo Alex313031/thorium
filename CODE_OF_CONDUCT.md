@@ -1,4 +1,4 @@
-# Thorium Code of Conduct
+# Thorium Code of Conduct <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC_Light.png#gh-dark-mode-only" width="32"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC_Dark.png#gh-light-mode-only" width="32">
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC.png" width="256">
 
