@@ -23,7 +23,7 @@ CssSelectorFragmentAnchor
 Prefetchpri
 // Check if the CPU has the required instruction set to run the Speech
 
-kEnableTabMuting & kVaapiVideoDecode & kVaapiVideoEncode & LiveCaptionMultiLanguage & kD3D11HEVCDecoding & kD3D11Vp9kSVCHWDecoding & kUseChromeOSDirectVideoDecoder
+kEnableTabMuting & PlatformHEVCDecoderSupport & kVaapiVideoDecode & kVaapiVideoEncode & Vp9kSVCHWDecoding & kD3D11Vp9kSVCHWDecoding & DeprecateLowUsageCodecs & kUseChromeOSDirectVideoDecoder
 
 linux above this > # TODO(jdduke) Re-enable on mips after resolving linking
 windows above this > # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
