@@ -77,6 +77,6 @@ I also build ChromiumOS with codecs, widevine, linux-firmware/modules, and added
 
 *Thanks for using Thorium!*
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_502.jpg" width="200">
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/OLD/GitHub-Mark-32px.png">
