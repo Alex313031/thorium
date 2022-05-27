@@ -23,6 +23,9 @@
         --fontcolor: #24292f;
         --linkcolor: #0000ee;
         --visitedcolor: #551a8b;
+        --preformatted: #24292f;
+        --accent-bg: #aecbfa;
+        --border: #24292f;
     }
     @media (prefers-color-scheme: dark) {
         :root {
@@ -30,6 +33,9 @@
             --fontcolor: #ffffff;
             --linkcolor: #5bf5bf;
             --visitedcolor: #ae5ee0;
+            --preformatted: #ffffff;
+            --accent-bg: #2b2b2b;
+            --border: #666666;
         }
     }
     :root.dark {
@@ -37,13 +43,16 @@
         --fontcolor: #ffffff;
         --linkcolor: #5bf5bf;
         --visitedcolor: #ae5ee0;
+        --preformatted: #ffffff;
+        --accent-bg: #2b2b2b;
+        --border: #666666;
     }
     html {
         overflow-y: scroll;
     }
     body {
         margin: 1em auto;
-        max-width: 32em;
+        max-width: 34em;
         font-family: "Noto Sans", sans-serif;
         padding: 1rem;
         color: var(--fontcolor);
@@ -59,6 +68,20 @@
     a:visited,
     a:active {
         color: var(--visitedcolor);
+    }
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    pre {
+        padding: 1rem 1.5rem;
+        max-width: 100%;
+        overflow: auto;
+        color: var(--preformatted);
+        background: var(--accent-bg);
+        border: 1px solid var(--border);
+        border-radius: 5px;
     }
     @font-face {
         font-family: 'Noto Sans';
@@ -92,8 +115,10 @@
 </head>
 <body>
     <img src="imgs/thorium.svg" width="512" height="512" alt="Thorium Logo">
-    <img src="imgs/thorium_bubbles.svg" width="256" height="256" alt="Thorium Bubbles">
-    <h1>Thorium -<br><small>The fastest browser on earth.</small></h1>
+    <div class="d-flex">
+        <h1>Thorium -<br><small>The fastest browser on Earth.</small></h1>
+        <img src="imgs/thorium_bubbles.svg" width="128" height="128" alt="Thorium Bubbles">
+    </div>
     <hr style="height:1px">
     <p>Chromium fork for Linux, MacOS, Raspberry Pi, and Windows named after radioactive element No. 90.</p>
     <p><b>Website under construction</b>. Meanwhile, you can check out the main <a rel="noopener" href="https://github.com/Alex313031/Thorium">repository</a>, read the <a rel="noopener" href="https://alex313031.blogspot.com/">developer blog,</a> or download releases for:</p>
@@ -104,6 +129,14 @@
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium-Win/releases">Windows</a></li>
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium-AVX2/releases">Windows AVX2</a></li>
     </ul>
+    <h2>Installation/Auto-Update</h2>
+    <p>The debian repo can be used on any distribution that supports .deb packaging. It is located at <a rel="noopener" href="https://dl.thorium.rocks/">https://dl.thorium.rocks/</a>. To add to your system:</p>
+    <pre>
+wget https://dl.thorium.rocks/debian/dists/stable/thorium.list
+sudo mv thorium.list /etc/apt/sources.list.d/
+sudo apt update
+sudo apt install thorium-browser-unstable
+    </pre>
     <button>Toggle Dark/Light Mode</button>
     <script>
     document.querySelector('button').onclick = function() {
