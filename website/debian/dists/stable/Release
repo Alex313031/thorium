@@ -1,0 +1,9 @@
+Architectures: amd64
+Codename: stable
+Components: main
+Date: Sat, 26 May 2022 21:44:39 +0000
+Description: Thorium browser packages
+Label: thorium
+Origin: dl.thorium.rocks
+Suite: stable
+
