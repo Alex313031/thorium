@@ -44,7 +44,7 @@
     body {
         margin: 1em auto;
         max-width: 32em;
-        font-family: sans-serif;
+        font-family: "Noto Sans", sans-serif;
         padding: 1rem;
         color: var(--fontcolor);
         background-color: var(--bgcolor);
@@ -59,6 +59,13 @@
     a:visited,
     a:active {
         color: var(--visitedcolor);
+    }
+    @font-face {
+        font-family: 'Noto Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local("Noto Sans"),url(/fonts/noto-sans-v27-latin-regular.woff2) format("woff2"),url(/fonts/noto-sans-v27-latin-regular.woff) format("woff")
     }
     </style>
     <script>
