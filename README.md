@@ -13,6 +13,7 @@
 &nbsp;&ndash; __NEW__: Thorium Special now also has ARM64 and x64 builds for MacOS. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has new ARM64 builds for things like the Raspberry Pi. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has experimental Android ARM32 & ARM64 builds.
+&nbsp;&ndash; __NEW__: Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/
 
 &nbsp;&nbsp;&ndash; Includes Widevine, All Codecs, Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, AVX, and AES, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special, some of which are SSE4. (See below.)
 
@@ -43,7 +44,7 @@
 > - Inclusion of pak (linux) and pack_mingw (windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
-> - Includes installer patches and files to include ChromeDriver and content_shell, with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver. Also, patches for abseil library and mini_installer when building for AVX on Windows.
+> - Includes installer patches and files to include ChromeDriver and content_shell (thorium_shell), with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe onWwindows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
 > - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 - For more info, read the PATCHES.md file.
 - Known bugs are in the BUGS.md file.
@@ -59,14 +60,14 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
 - Run `gn args out/thorium` and the contents of 'args.gn' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'*
 - 'infra/args.list' contains an alphabetical list with descriptions of all possible build arguments; gn_args.list gives a similar list but with the flags in args.gn added.
-- To build, run `./build.sh` (--help for help). For Windows, use `autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
-- To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/content_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
+- To build, run `./build.sh` (--help for help). For Windows, use `build_win.sh` or `autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
+- To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/thorium_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `./thordeb.sh` (--help for help). A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/thorium-unstable/*. For Windows, just run the mini_installer.exe. \
 &nbsp;&nbsp; NOTE: To get back to "Trunk", i.e. to revert all changes in order to build vanilla Chromium or to update your checkout, just run `./trunk.sh` again. \
-&nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *mavx*, and replace *mavx* with *msse3*.
+&nbsp;&nbsp; NOTE: To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *avx*, and replace *avx* with *sse3* or *sse4*.
 
-https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Chromium/ChromiumOS. \
-I also build ChromiumOS with codecs, widevine, linux-firmware/modules, and added packages at > https://github.com/Alex313031/ChromiumOS/
+https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Thorium/ThoriumOS. \
+I also build ChromiumOS (now called ThoriumOS) with Thorium, Codecs, Widevine, linux-firmware/modules, and extra packages at > https://github.com/Alex313031/ChromiumOS/
 
 &minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
 &minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
