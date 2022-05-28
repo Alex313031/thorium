@@ -1,12 +1,14 @@
+/* Thorium Website Cascading Style Sheet */
 :root,
+	/* Set colours */
     :root.light {
         --bgcolor: #ffffff;
-        --fontcolor: #24292f;
+        --fontcolor: #000000;
         --linkcolor: #0000ee;
         --visitedcolor: #551a8b;
         --preformatted: #24292f;
         --accent-bg: #aecbfa;
-        --border: #24292f;
+        --border: #000000;
     }
     @media (prefers-color-scheme: dark) {
         :root {
@@ -29,6 +31,7 @@
         --border: #666666;
     }
     html {
+        overflow-x: scroll;
         overflow-y: scroll;
     }
     body {
@@ -43,6 +46,25 @@
         max-width: 100%;
         height: auto;
     }
+    img.thor90 {
+		border: 1px solid var(--border);
+    }
+    span.title {
+    margin-left: -0.1em;
+    }
+    h2.h2 {
+    }
+    hr.line {
+		width: 105%;
+		margin-left: -0.5em;
+		border: 1px solid var(--fontcolor);
+    }
+    p.intro {
+		padding-left: 10px;
+		border: 1px solid var(--border);
+		border-radius: 2px;
+		font-weight: 600;
+    }
     a:link{
         color: var(--linkcolor);
     }
@@ -50,6 +72,7 @@
     a:active {
         color: var(--visitedcolor);
     }
+    /* Adjust thorium_bubbles.svg */
     .d-flex {
         display: flex;
         justify-content: space-between;
@@ -64,10 +87,15 @@
         border: 1px solid var(--border);
         border-radius: 5px;
     }
+    button {
+		border: 1px solid var(--border);
+		border-radius: 5px;
+    }
+    /* Set Google Noto Sans */
     @font-face {
         font-family: 'Noto Sans';
         font-style: normal;
-        font-weight: 400;
+        font-weight: 500;
         font-display: swap;
         src: local("Noto Sans"),url(../fonts/noto-sans-v27-latin-regular.woff2) format("woff2"),url(../fonts/noto-sans-v27-latin-regular.woff) format("woff")
     }
