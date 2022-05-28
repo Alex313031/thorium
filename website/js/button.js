@@ -1,3 +1,5 @@
+// Dark mode button.
+
 document.querySelector('button').onclick = function() {
         useDark = !useDark;
         toggleDarkMode(useDark);
