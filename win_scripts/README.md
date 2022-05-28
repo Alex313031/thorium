@@ -1,4 +1,4 @@
-## Windows Build Scripts <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/winflag_animated.gif">
+## Windows Build Scripts <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/winflag_animated.gif" width="64">
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/win/thorium_mini_installer_86.png">
 
