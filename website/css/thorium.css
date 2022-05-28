@@ -1,0 +1,73 @@
+:root,
+    :root.light {
+        --bgcolor: #ffffff;
+        --fontcolor: #24292f;
+        --linkcolor: #0000ee;
+        --visitedcolor: #551a8b;
+        --preformatted: #24292f;
+        --accent-bg: #aecbfa;
+        --border: #24292f;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bgcolor: #24292f;
+            --fontcolor: #ffffff;
+            --linkcolor: #5bf5bf;
+            --visitedcolor: #ae5ee0;
+            --preformatted: #ffffff;
+            --accent-bg: #2b2b2b;
+            --border: #666666;
+        }
+    }
+    :root.dark {
+        --bgcolor: #24292f;
+        --fontcolor: #ffffff;
+        --linkcolor: #5bf5bf;
+        --visitedcolor: #ae5ee0;
+        --preformatted: #ffffff;
+        --accent-bg: #2b2b2b;
+        --border: #666666;
+    }
+    html {
+        overflow-y: scroll;
+    }
+    body {
+        margin: 1em auto;
+        max-width: 34em;
+        font-family: "Noto Sans", sans-serif;
+        padding: 1rem;
+        color: var(--fontcolor);
+        background-color: var(--bgcolor);
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    a:link{
+        color: var(--linkcolor);
+    }
+    a:visited,
+    a:active {
+        color: var(--visitedcolor);
+    }
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    pre {
+        padding: 1rem 1.5rem;
+        max-width: 100%;
+        overflow: auto;
+        color: var(--preformatted);
+        background: var(--accent-bg);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+    }
+    @font-face {
+        font-family: 'Noto Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local("Noto Sans"),url(../fonts/noto-sans-v27-latin-regular.woff2) format("woff2"),url(../fonts/noto-sans-v27-latin-regular.woff) format("woff")
+    }
