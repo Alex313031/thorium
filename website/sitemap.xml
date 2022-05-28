@@ -1,1 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xml" href="//thorium.rocks/sitemap.xml"?>
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xml" href="https://thorium.rocks/sitemap.xml"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://thorium.rocks/</loc>
+  <lastmod>2022-05-28T10:11:57+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://dl.thorium.rocks/</loc>
+  <lastmod>2022-05-28T10:11:57+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+
+<url>
+  <loc>https://thorium.rocks/humans.txt</loc>
+  <lastmod>2022-05-28T10:11:57+00:00</lastmod>
+  <priority>0.60</priority>
+</url>
+
+
+</urlset>
