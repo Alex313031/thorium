@@ -36,7 +36,7 @@
     }
     body {
         margin: 1em auto;
-        max-width: 34em;
+        max-width: 36em;
         font-family: "Noto Sans", sans-serif;
         padding: 1rem;
         color: var(--fontcolor);
@@ -49,14 +49,17 @@
     img.thor90 {
 		border: 1px solid var(--border);
     }
+    img.bubbles {
+		padding-right: 12px;
+    }
     span.title {
     margin-left: -0.1em;
     }
     h2.h2 {
     }
     hr.line {
-		width: 105%;
-		margin-left: -0.5em;
+		width: 105.3%;
+		margin-left: -1.0em;
 		border: 1px solid var(--fontcolor);
     }
     p.intro {
