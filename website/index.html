@@ -30,7 +30,7 @@
     <p class="intro">Chromium fork for Linux, MacOS, Raspberry Pi, and Windows named after radioactive element No. 90.</p>
     <h2><u>Highlights</u></h2>
     <ul>
-        <li>Compiler modifications include SSE4.2, AVX, AES and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 100</li>
+        <li>Compiler modifications include SSE4.2, AVX, AES, and Cflags, thinLTO flags, and import_instr_limit flags set to /O3, 3, and 100 respectively.</li>
         <li>LLVM LOOP optimizations as -mllvm flags</li>
     </ul>
     <p>&ensp;This nets a <b><em>2-8%</em> performance</b> improvement, depending on the benchmark and OS. See <a href="https://github.com/Alex313031/Thorium/blob/main/PATCHES.md">PATCHES.md</a> for a detailed overview of all modifications compared to vanilla Chromium regarding performance, security and useability.</p>
