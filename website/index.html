@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- https://thorium.rocks/ main index.html -->
 <html lang="en-US">
 <head>
 	<link rel="stylesheet" href="css/thorium.css">
@@ -17,37 +18,24 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#24292f">
     <meta name="theme-color" content="#ffffff">
-    <script>
-    function toggleDarkMode(useDark) {
-        if (useDark) {
-            document.documentElement.classList.add('dark');
-            document.documentElement.classList.remove('light');
-        }
-        else {
-            document.documentElement.classList.remove('dark');
-            document.documentElement.classList.add('light');
-        }
-    }
-    let useDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (!useDark && localStorage.getItem('dark-mode') === 'true') {
-        useDark = true;
-        toggleDarkMode(useDark);
-    }
-    else if (localStorage.getItem('dark-mode') === 'false') {
-        useDark = false;
-        toggleDarkMode(useDark);
-    }
-    </script>
+		<script type="text/javascript" src="js/dark.js"></script>
 </head>
 <body>
     <img src="imgs/thorium.svg" width="512" height="512" alt="Thorium Logo">
     <div class="d-flex">
-        <h1>Thorium - <br> <small><em>The fastest browser on Earth.</em></small></h1>
+        <h1><span class="title"><b><u>Thorium - </u></b></span><br> <small><b><em>The fastest browser on Earth.</em></b></small></h1>
         <img src="imgs/thorium_bubbles.svg" width="128" height="128" alt="Thorium Bubbles">
     </div>
-    <hr style="height:1px">
-    <p>Chromium fork for Linux, MacOS, Raspberry Pi, and Windows named after radioactive element No. 90.</p>
-    <p><b>Website under construction</b>. Meanwhile, you can check out the main <a rel="noopener" href="https://github.com/Alex313031/Thorium">repository</a>, read the <a rel="noopener" href="https://alex313031.blogspot.com/">developer blog,</a> or download releases for:</p>
+    <hr class="line">
+    <p class="intro">Chromium fork for Linux, MacOS, Raspberry Pi, and Windows named after radioactive element No. 90.</p>
+    <h2><u>Highlights</u></h2>
+    <ul>
+        <li>Compiler modifications include SSE4.2, AVX, AES and cflags, lto flags, and import_instr_limit flags set to /03, 3, and 100</li>
+        <li>LLVM LOOP optimizations as -mllvm flags</li>
+    </ul>
+    <p>&ensp;This nets a <b><em>2-8%</em> performance</b> improvement, depending on the benchmark and OS. See <a href="https://github.com/Alex313031/Thorium/blob/main/PATCHES.md">PATCHES.md</a> for a detailed overview of all modifications compared to vanilla Chromium regarding performance, security and useability.</p>
+    <h2><u>&#60;Links&#62;</u></h2>
+    <p> <span style="color: #fbbc04;"><b><em>Website under construction.</em></b></span> Meanwhile, you can check out the main <a rel="noopener" href="https://github.com/Alex313031/Thorium">repository</a>, read the <a rel="noopener" href="https://alex313031.blogspot.com/">developer blog,</a> or download releases for:</p>
     <ul>
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium/releases">Linux</a></li>
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium-Special/releases">MacOS (ARM and x64)</a></li>
@@ -55,16 +43,16 @@
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium-Win/releases">Windows</a></li>
         <li><a rel="noopener" href="https://github.com/Alex313031/Thorium-AVX2/releases">Windows AVX2</a></li>
     </ul>
-    <h2>Installation/Auto-Update</h2>
+    <h2 class="h2"><u>Installation/Auto-Update</u></h2>
     <p>The repo can be used on any distribution that supports .deb packaging. <br> It is located at <a rel="noopener" href="https://dl.thorium.rocks/">https://dl.thorium.rocks/</a>. To add to your system:</p>
     <pre>wget https://dl.thorium.rocks/debian/dists/stable/thorium.list
 sudo mv thorium.list /etc/apt/sources.list.d/
 sudo apt update
 sudo apt install thorium-browser-unstable</pre>
     <button>Toggle Dark/Light Mode</button>
-    <script type="text/javascript" src="js/thorium.js"></script>
+		<script type="text/javascript" src="js/button.js"></script>
     <p><em>Thanks for using Thorium!</em></p>
-    <p><em>Credits:</em> <a rel="noopener" href="https://thorium.rocks/humans.txt">HuMaNs</a></p>
-    <img src="imgs/Thorium90_504.jpg" width="200" height="200" alt="Thorium Logo">
+    <p><em>Credits: <a rel="noopener" href="https://thorium.rocks/humans.txt">HuMaNs</a></em></p>
+    <img class="thor90" src="imgs/Thorium90_504.jpg" width="200" height="200" alt="Thorium Element">
 </body>
 </html>
