@@ -6,7 +6,6 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
-
 <url>
   <loc>https://thorium.rocks/</loc>
   <lastmod>2022-05-28T10:11:57+00:00</lastmod>
@@ -23,6 +22,5 @@
   <lastmod>2022-05-28T10:11:57+00:00</lastmod>
   <priority>0.60</priority>
 </url>
-
 
 </urlset>
