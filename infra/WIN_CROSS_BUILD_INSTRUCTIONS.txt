@@ -92,7 +92,7 @@ Now, go to ~/chromium/src, and run
 
 gn args out/thorium
 
-A nano editor will come up, and you will copy/paste the contents of the windows_args.gn file into this.
+A nano editor will come up, and you will copy/paste the contents of the win_args.gn OR win_AVX2_args.gn (for AVX2) Or win_ARM_args.gn (for Windows on ARM) file into this.
 Save and exit and the terminal will show "Generating files..." Wait for it to complete, and then to actually build it:
 
 Go back to ~/Thorium, and run ./build_win.sh
