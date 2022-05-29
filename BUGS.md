@@ -7,7 +7,7 @@
 
 WONTFIX | Nov. 21, Loading PDFs crashes the browser, will be disabling Ink for now to see if it resolves the issue. This has been a bug for a couple of versions now.  EDIT: Bug posted by me here > https://bugs.chromium.org/p/chromium/issues/detail?id=1296914&q=1296914&can=2 - Me | Ink will only work on CrOS for the foreseeable future. May. 28, 2022
 
-Nov. 21, Pulseaudio does not work behind a proxy in a chroot, I.E. in crouton on ChromiumOS. Removing Pulseaudio patch did not resolve the issue. - Pierro78 on Reddit
+BUG | Nov. 21, Pulseaudio does not work behind a proxy in a chroot, I.E. in crouton on ChromiumOS. Removing Pulseaudio patch did not resolve the issue. - Pierro78 on Reddit
 
 UNFIXABLE | Nov. 30, Possible bug; setting the args.gn flag 'enable_cros_media_app = true' does not enable chrome://media-app like CrOS. - Me
 
