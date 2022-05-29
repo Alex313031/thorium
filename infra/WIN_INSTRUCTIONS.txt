@@ -81,7 +81,7 @@ python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromiu
 
 Now pay attention to the the file that is downloaded.
 
-In C:\src\Thorium\misc, there is a file called windows_args.gn. In that file toward the bottom there will be a line that says 
+In C:\src\Thorium\misc, there is a file called win_args.gn. In that file toward the bottom there will be a line that says 
 pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-win64-main-1649213807-91f73deff0cf33b43bdbec74d7cefebdfe29830a.profdata"
 
 We are going to change that to the actual location and name of the PGO profile data file we just downloaded i.e. it should look similar to this:
@@ -102,7 +102,9 @@ Go to C:\src\chromium\src and run
 
 gn args out\thorium
 
-It will pull up notepad. Copy and paste the contents of the windows_args.gn we just edited into notepad, save it, and then exit notepad. Cmd will show "generating files..."
+It will pull up notepad. Copy and paste the contents of the win_args.gn we just edited into notepad, save it, and then exit notepad. Cmd will show "generating files..."
+
+#NOTE: For AVX2 you should use the win_AVX2_args.gn and for ARM you should use the win_ARM_args.gn.
 
 But wait, we also need to cherry pick some files from Thorium and copy them into C:\src\chromium\src\out\thorium (These are things like logos, the pak binaries, etc. that are thorium specific)
 
@@ -129,8 +131,7 @@ I rename it to thorium_mini_installer.exe or thorium_avx2_mini_installer.exe for
 
 ## AVX2 Release
 
-Speaking of which! Thorium by default compiles with AVX and AES. To make the AVX2 version of it, you will follow all the steps above, except before running gn args out\thorium, 
-we need to download the avx2 sources.
+Speaking of which! Thorium by default compiles with AVX and AES. To make the AVX2 version of it, you will follow all the steps above, except before running gn args out\thorium, we need to download the avx2 sources. You should also use the win_AVX2_args.gn in the Thorium-AVX2 repo.
 
 git clone https://github.com/Alex313031/Thorium-AVX2.git or https://github.com/Alex313031/Thorium-AVX2/archive/refs/heads/main.zip
 
