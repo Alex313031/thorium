@@ -968,9 +968,11 @@ const base::FeatureParam<std::string>
     kBackgroundTracingPerformanceMark_AllowList{
         &kBackgroundTracingPerformanceMark, "allow_list", ""};
 
-// Controls whether the Sanitizer API is available.
+// Controls whether (and how much of) the Sanitizer API is available.
 const base::Feature kSanitizerAPI{"SanitizerAPI",
                                   base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kSanitizerAPIv0{"SanitizerAPIv0",
+                                    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Controls whether the Sanitizer API allows namespaced content (SVG + MathML).
 //
@@ -1473,7 +1475,7 @@ const base::Feature kPrefetchFontLookupTables{
 #endif
 
 const base::Feature kPrecompileInlineScripts{"PrecompileInlineScripts",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kSimulateClickOnAXFocus {
   "SimulateClickOnAXFocus",
