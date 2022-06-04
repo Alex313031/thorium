@@ -66,11 +66,6 @@ const base::Feature kDisplayOpenLinkAsProfile{
 const base::Feature kEvDetailsInPageInfo{"EvDetailsInPageInfo",
                                          base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Enables showing the new extensions menu and toolbar that allows the user to
-// access control permissions.
-const base::Feature kExtensionsMenuAccessControl{
-    "ExtensionsMenuAccessControl", base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Enables the reauth flow for authenticated profiles with invalid credentials
 // when the force sign-in policy is enabled.
 const base::Feature kForceSignInReauth{"ForceSignInReauth",
@@ -251,11 +246,6 @@ const base::Feature kUnifiedSidePanel{"UnifiedSidePanel",
 // with the current Profile for WebUI bubbles. See https://crbug.com/1177048.
 const base::Feature kWebUIBubblePerProfilePersistence{
     "WebUIBubblePerProfilePersistence", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Enables the WebUI Download Shelf instead of the Views framework Download
-// Shelf. See https://crbug.com/1180372.
-const base::Feature kWebUIDownloadShelf{"WebUIDownloadShelf",
-                                        base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables a web-based tab strip. See https://crbug.com/989131. Note this
 // feature only works when the ENABLE_WEBUI_TAB_STRIP buildflag is enabled.
