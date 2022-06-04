@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Settings-specific Chromium strings (included from chromium_strings.grd). -->
 <!-- Copyright (c) 2022 Alex313031. -->
+<!-- Settings-specific Chromium strings (included from chromium_strings.grd). -->
 <grit-part>
   <!-- Shared across multiple page -->
   <if expr="not chromeos_ash">
@@ -279,6 +279,11 @@
   </message>
   <message name="IDS_SETTINGS_SYNC_SIGN_IN_PROMPT_WITH_NO_ACCOUNT" desc="The text displayed to prompt users to sign in to Chromium.">
     Sign in to sync and personalize Thorium across your devices
+  </message>
+  
+  <!-- Autofill Assistant settings -->
+  <message name="IDS_SETTINGS_AUTOFILL_ASSISTANT_PREF" translateable="false" desc="The documentation string of the 'Use Google Assistant' preference to help with automated flows on the web">
+    Google Assistant in Thorium
   </message>
 
   <!-- Languages Page -->
