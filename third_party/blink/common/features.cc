@@ -996,7 +996,7 @@ const base::Feature kManagedConfiguration{"ManagedConfiguration",
 // have their rendering throttled on display:none or zero-area.
 const base::Feature kThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes{
     "ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes",
-    base::FEATURE_ENABLED_BY_DEFAULT};
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Kill switch for the Interest Group API, i.e. if disabled, the
 // API exposure will be disabled regardless of the OT config.
@@ -1130,11 +1130,6 @@ const base::Feature kClipboardCustomFormats{"ClipboardCustomFormats",
 // heuristic where images occupying the full viewport are ignored.
 const base::Feature kUsePageViewportInLCP{"UsePageViewportInLCP",
                                           base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Enable `Sec-CH-UA-Platform` client hint and request header to be sent by
-// default
-const base::Feature kUACHPlatformEnabledByDefault{
-    "UACHPlatformEnabledByDefault", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // When enabled, allow dropping alpha on media streams for rendering sinks if
 // other sinks connected do not use alpha.
@@ -1475,7 +1470,7 @@ const base::Feature kPrefetchFontLookupTables{
 #endif
 
 const base::Feature kPrecompileInlineScripts{"PrecompileInlineScripts",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kSimulateClickOnAXFocus {
   "SimulateClickOnAXFocus",
