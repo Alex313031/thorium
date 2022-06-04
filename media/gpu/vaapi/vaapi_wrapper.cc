@@ -242,7 +242,7 @@ media::VAImplementation VendorStringToImplementationType(
   } else if (base::StartsWith(va_vendor_string, "Intel iHD driver",
                               base::CompareCase::SENSITIVE)) {
     return media::VAImplementation::kIntelIHD;
-  } else if (base::StartsWith(va_vendor_string, "Splitted-Desktop Systems VDPAU",
+  } else if (base::StartsWith(va_vendor_string, "Nvidia VDPAU",
                               base::CompareCase::SENSITIVE)) {
     return media::VAImplementation::kNVIDIAVDPAU;
   }
@@ -360,7 +360,9 @@ bool IsModeDecoding(VaapiWrapper::CodecMode mode) {
 
 bool IsModeEncoding(VaapiWrapper::CodecMode mode) {
   return mode == VaapiWrapper::CodecMode::kEncodeConstantBitrate ||
-         mode == VaapiWrapper::CodecMode::kEncodeConstantQuantizationParameter;
+         mode ==
+             VaapiWrapper::CodecMode::kEncodeConstantQuantizationParameter ||
+         mode == VaapiWrapper::CodecMode::kEncodeVariableBitrate;
 }
 
 bool GetNV12VisibleWidthBytes(int visible_width,
@@ -445,8 +447,8 @@ const ProfileCodecMap& GetProfileCodecMap() {
           // VaapiWrapper does not support Profile 3.
           //{VP9PROFILE_PROFILE3, VAProfileVP9Profile3},
           {AV1PROFILE_PROFILE_MAIN, VAProfileAV1Profile0},
-          // VaapiWrapper does not support AV1 Profile 1.
-          // {AV1PROFILE_PROFILE_HIGH, VAProfileAV1Profile1},
+        // VaapiWrapper does not support AV1 Profile 1.
+        // {AV1PROFILE_PROFILE_HIGH, VAProfileAV1Profile1},
 #if BUILDFLAG(ENABLE_HEVC_PARSER_AND_HW_DECODER)
           {HEVCPROFILE_MAIN, VAProfileHEVCMain},
           {HEVCPROFILE_MAIN10, VAProfileHEVCMain10},
@@ -562,6 +564,13 @@ VADisplayState* VADisplayState::Get() {
 // static
 void VADisplayState::PreSandboxInitialization() {
   constexpr char kRenderNodeFilePattern[] = "/dev/dri/renderD%d";
+  const char kNvidiaPath[] = "/dev/dri/nvidiactl";
+
+  // TODO: Is this still needed?
+  base::File nvidia_file = base::File(
+      base::FilePath::FromUTF8Unsafe(kNvidiaPath),
+      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
+
   // This loop ends on either the first card that does not exist or the first
   // render node that is not vgem.
   for (int i = 128;; i++) {
@@ -570,12 +579,6 @@ void VADisplayState::PreSandboxInitialization() {
     base::File drm_file =
         base::File(dev_path, base::File::FLAG_OPEN | base::File::FLAG_READ |
                                  base::File::FLAG_WRITE);
-
-  const char kNvidiaPath[] = "/dev/dri/nvidiactl";
-  base::File nvidia_file = base::File(
-      base::FilePath::FromUTF8Unsafe(kNvidiaPath),
-      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
-
     if (!drm_file.IsValid())
       return;
     // Skip the virtual graphics memory manager device.
@@ -821,7 +824,8 @@ std::vector<VAEntrypoint> GetEntryPointsForProfile(const base::Lock* va_lock,
      VAEntrypointEncSliceLP},  // kEncodeConstantBitrate.
     {VAEntrypointEncSlice,
      VAEntrypointEncSliceLP},  // kEncodeConstantQuantizationParameter.
-    {VAEntrypointVideoProc}    // kVideoProcess.
+    {VAEntrypointEncSlice, VAEntrypointEncSliceLP},  // kEncodeVariableBitrate.
+    {VAEntrypointVideoProc}                          // kVideoProcess.
   };
   static_assert(std::size(kAllowedEntryPoints) == VaapiWrapper::kCodecModeMax,
                 "");
@@ -883,6 +887,8 @@ bool GetRequiredAttribs(const base::Lock* va_lock,
     required_attribs->push_back({VAConfigAttribRateControl, VA_RC_CBR});
   if (mode == VaapiWrapper::kEncodeConstantQuantizationParameter)
     required_attribs->push_back({VAConfigAttribRateControl, VA_RC_CQP});
+  if (mode == VaapiWrapper::kEncodeConstantQuantizationParameter)
+    required_attribs->push_back({VAConfigAttribRateControl, VA_RC_VBR});
 
   constexpr VAProfile kSupportedH264VaProfilesForEncoding[] = {
       VAProfileH264ConstrainedBaseline, VAProfileH264Main, VAProfileH264High};
@@ -1056,6 +1062,7 @@ void VASupportedProfiles::FillSupportedProfileInfos(base::Lock* va_lock,
 #endif
     VaapiWrapper::kEncodeConstantBitrate,
     VaapiWrapper::kEncodeConstantQuantizationParameter,
+    VaapiWrapper::kEncodeVariableBitrate,
     VaapiWrapper::kVideoProcess
   };
   static_assert(std::size(kWrapperModes) == VaapiWrapper::kCodecModeMax, "");
@@ -1820,6 +1827,7 @@ VAEntrypoint VaapiWrapper::GetDefaultVaEntryPoint(CodecMode mode,
 #endif
     case VaapiWrapper::kEncodeConstantBitrate:
     case VaapiWrapper::kEncodeConstantQuantizationParameter:
+    case VaapiWrapper::kEncodeVariableBitrate:
       if (profile == VAProfileJPEGBaseline)
         return VAEntrypointEncPicture;
       DCHECK(IsModeEncoding(mode));
@@ -2156,7 +2164,7 @@ scoped_refptr<VASurface> VaapiWrapper::CreateVASurfaceForPixmap(
   CHECK(!enforce_sequence_affinity_ ||
         sequence_checker_.CalledOnValidSequence());
   const gfx::BufferFormat buffer_format = pixmap->GetBufferFormat();
-  
+
   const uint32_t va_fourcc = BufferFormatToVAFourCC(buffer_format);
   if (!va_fourcc) {
     LOG(ERROR) << "Failed to get the VA fourcc from the buffer format";
@@ -2330,7 +2338,7 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
   DCHECK(!va_surface_size.IsEmpty());
 
   if (GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
-    LOG(ERROR) << "Disabled due to potential breakage on Nvidia GPUs.";
+    LOG(ERROR) << "Disabled due to potential breakage.";
     return nullptr;
   }
 
@@ -3038,6 +3046,10 @@ bool VaapiWrapper::Initialize(VAProfile va_profile,
   if (mode_ == kEncodeConstantQuantizationParameter) {
     DCHECK_NE(va_profile, VAProfileJPEGBaseline)
         << "JPEG Encoding doesn't support CQP bitrate control";
+  }
+  if (mode_ == kEncodeVariableBitrate) {
+    DCHECK_NE(va_profile, VAProfileJPEGBaseline)
+        << "JPEG Encoding doesn't support VBR bitrate control";
   }
 #endif  // DCHECK_IS_ON()
 
