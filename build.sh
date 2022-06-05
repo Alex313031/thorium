@@ -3,10 +3,17 @@
 # Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
+GRE='\033[1;32m' # Green
 c0=$'\033[0m' # Reset Text
 bold=$'\033[1m' # Bold Text
 underline=$'\033[4m' # Underline Text
 
+# Error handling
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || die "Failed $*"; }
+
+# --help
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${YEL}Script to build Thorium on Linux.${c0}\n" &&
@@ -20,9 +27,11 @@ esac
 
 printf "\n" &&
 printf "${YEL}Building Thorium for Linux...\n" &&
-printf "\n" &&
-tput sgr0 &&
+printf "${GRE}\n" &&
 
+# Build Thorium
 export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./infra/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell -j$@
+
+tput sgr0
