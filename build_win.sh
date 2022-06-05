@@ -34,7 +34,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j$@ &&
 
-mv -v -f ~/chromium/src/out/thorium/mini_installer ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
+mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
 
 printf "${YEL}Build Completed. Installer at //out/thorium/thorium_mini_installer.exe\n" &&
 tput sgr0
