@@ -3,6 +3,7 @@
 # Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
+RED='\033[1;31m' # Red
 GRE='\033[1;32m' # Green
 c0=$'\033[0m' # Reset Text
 bold=$'\033[1m' # Bold Text
@@ -11,7 +12,7 @@ underline=$'\033[4m' # Underline Text
 # Error handling
 yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
-try() { "$@" || die "Failed $*"; }
+try() { "$@" || die "${RED}Failed $*"; }
 
 # --help
 displayHelp () {
@@ -29,12 +30,12 @@ printf "\n" &&
 printf "${YEL}Building Thorium for Windows...\n" &&
 printf "${GRE}\n" &&
 
-# Build Thorium
+# Build Thorium and mini_installer
 export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j$@ &&
 
 mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
 
-printf "${YEL}Build Completed. Installer at //out/thorium/thorium_mini_installer.exe\n" &&
+printf "${GRE}Build Completed. ${YEL}Installer at //out/thorium/thorium_mini_installer.exe\n" &&
 tput sgr0
