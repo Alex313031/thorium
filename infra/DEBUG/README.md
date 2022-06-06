@@ -1,4 +1,4 @@
-## Thorium Debugging Infra <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/STAGING/content_shell_app_icon_192.png" width="36">
+## Thorium Debugging Infra <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/bug.svg" width="28">
 
  - This contains .gn files and scripts for generating DEBUG builds of Thorium for debugging, testing, and inspection.
  - The ABOUT_GN_ARGS.txt describes what each line in the args &#42;.gn files do, also useful for the regular build args &#42;.gn files. \
