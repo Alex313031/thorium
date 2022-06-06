@@ -14,4 +14,4 @@ set outdir=%1
 set cfg=chrome\tools\build\win\FILES.cfg
 set archive=%outdir%\chrome-win32.zip
 
-python %makezip% %outdir% %cfg% %archive%
+python3 %makezip% %outdir% %cfg% %archive%
