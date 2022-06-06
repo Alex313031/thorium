@@ -1,18 +1,8 @@
-## Thorium Debugging Infra <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
+## Thorium Debugging Infra <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/bug.svg" width="28">
 
-&nbsp;&nbsp;This contains .gn files, scripts, and other artifacts like vdpau-va-driver and flash player and the BUILDER file which contains notes (generally only usable by me, but feel free to ask what the info inside is for). \
-&nbsp;&nbsp;The args.list file shows all possible build arguments, and the gn_args.list shows all possible build args after the Thorium args have been added, and the win_args.list shows all possible build arguments for Windows builds. \
-&nbsp;&nbsp;The &#42;.gn files contain what you should use in the args.gn for platforms other than the normal Linux release (which is in the root of this repo.)
- - 69_release_args.gn is for Chromium 60-70 versions.
- - android_args.gn is for Android ARM64. > https://chromium.googlesource.com/chromium/src/+/main/docs/android_build_instructions.md
- - cros_args.gn is for ChromiumOS on Linux. > https://chromium.googlesource.com/chromium/src/+/main/docs/chromeos_build_instructions.md#Chromium-OS-on-Linux-linux_chromeos
- - mac_args.gn is for x64 macs.
- - windows_args.gn is for Windows x64 \
- - The cgpt file is an optimized build of cgpt for Linux/ChromiumOS, you can put anywhere in your $PATH > https://chromium.googlesource.com/chromiumos/platform/vboot_reference/+/refs/heads/main/README
- - The DEBUG dir is for DEBUGGING, see README.md inside it.
-
-&nbsp;&ndash; The WIN_INSTRUCTIONS.txt and WIN_CROSS_BUILD_INSTRUCTIONS.txt are for how to build Thorium for Windows natively and on Linux, respectively.
-
-&nbsp;&ndash; The thorium_devel_bookmarks.html file contain the bookmarks I use for Thorium development and rebasing the files it uses.
-
+ - This contains .gn files and scripts for generating DEBUG builds of Thorium for debugging, testing, and inspection.
+ - The ABOUT_GN_ARGS.txt describes what each line in the args &#42;.gn files do, also useful for the regular build args &#42;.gn files. \
+ &nbsp;&nbsp; #NOTE: You cannot build installers for any platform with a debug build. Running the clean.sh script in the root of the repo is highly reccomended to get your //out/thorium dir from ~6-7 GB to something reasonable, like ~1-2 GB.
+ - Running the `build_debug.sh` or `build_win_debug.sh` will build the *Thorium UI Debug Shell (views_examples_with_content)* target as well as the rest of Thorium.
+ - Running `build_debug_shell.sh` can be used for any platform, and will build the standalone Thorium UI Debug Shell. (Read the DEBUG_SHELL_README.md file).
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_infra_256.png">
