@@ -1,4 +1,4 @@
-## Copyright (c) 2022 Alex313031
+# Thorium UI Debug Shell 
 
 ## Summary
 This is a special program, built on top of content_shell and incorporating a multitude of options for testing, viewing, and debugging UI resources in Thorium. It builds views_examples_with_content, and renames it to thorium_debug_shell. Building views_examples builds the program, but without content_shell linked in (which can be accessed via the *"WebView"* option in the dropdown menu).
