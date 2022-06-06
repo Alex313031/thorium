@@ -9,6 +9,7 @@
  - mac_args.gn is for x64 macs.
  - windows_args.gn is for Windows x64 \
  - The cgpt file is an optimized build of cgpt for Linux/ChromiumOS, you can put anywhere in your $PATH > https://chromium.googlesource.com/chromiumos/platform/vboot_reference/+/refs/heads/main/README
+ - The DEBUG dir is for DEBUGGING, see README.md inside it.
 
 &nbsp;&ndash; The WIN_INSTRUCTIONS.txt and WIN_CROSS_BUILD_INSTRUCTIONS.txt are for how to build Thorium for Windows natively and on Linux, respectively.
 
