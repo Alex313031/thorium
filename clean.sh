@@ -6,6 +6,16 @@
 # i.e. cd /home/alex/bin/thorium/
 
 YEL='\033[1;33m' # Yellow
+RED='\033[1;31m' # Red
+GRE='\033[1;32m' # Green
+c0=$'\033[0m' # Reset Text
+bold=$'\033[1m' # Bold Text
+underline=$'\033[4m' # Underline Text
+
+# Error handling
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${YEL}Cleaning up build artifacts...\n" &&
@@ -29,7 +39,7 @@ rm -r clang_newlib_x64
 rm -r thinlto-cache
 rm -r fontconfig_caches
 
-printf "${YEL}Done!\n" &&
+printf "${GRE}Done cleaning artifacts.\n" &&
 tput sgr0
 
 exit 0
