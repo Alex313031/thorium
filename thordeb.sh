@@ -3,10 +3,18 @@
 # Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
+RED='\033[1;31m' # Red
+GRE='\033[1;32m' # Green
 c0=$'\033[0m' # Reset Text
 bold=$'\033[1m' # Bold Text
 underline=$'\033[4m' # Underline Text
 
+# Error handling
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || die "${RED}Failed $*"; }
+
+# --help
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${YEL}Script to build Thorium .deb package on Linux.${c0}\n" &&
@@ -20,9 +28,12 @@ esac
 
 printf "\n" &&
 printf "${YEL}Building Thorium .deb package...\n" &&
-printf "\n" &&
-tput sgr0 &&
+printf "${GRE}\n" &&
 
+# Build debian package
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./infra/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:unstable_deb" -j$@
+./infra/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:unstable_deb" -j$@ &&
+
+printf "${GRE}Done. ${YEL}Installer at //out/thorium/thorium*.deb\n" &&
+tput sgr0
