@@ -3,6 +3,16 @@
 # Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
+RED='\033[1;31m' # Red
+GRE='\033[1;32m' # Green
+c0=$'\033[0m' # Reset Text
+bold=$'\033[1m' # Bold Text
+underline=$'\033[4m' # Underline Text
+
+# Error handling
+yell() { echo "$0: $*" >&2; }
+die() { yell "$*"; exit 111; }
+try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${YEL}Creating build output directory...\n" &&
@@ -33,7 +43,7 @@ cp -r -v content_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
-printf "${YEL}Done!\n" &&
+printf "${GRE}Done!\n" &&
 printf "\n" &&
 
 printf "${YEL}Setting NINJA_SUMMARIZE_BUILD=1 and aliases to download the PGO Profiles for supported targets, and the gsync alias.\n" &&
@@ -48,7 +58,7 @@ alias origin='git checkout -f origin/main' &&
 
 alias rebase='git rebase-update' &&
 
-alias gnargs='gn args out/thorium' &&
+alias args='gn args out/thorium' &&
 
 alias gnls='gn ls out/thorium' &&
 
@@ -70,10 +80,10 @@ printf "\n" &&
 printf "${YEL}Look in this file to see the aliases and what they're for.\n" &&
 printf "\n" &&
 
-printf "${YEL}Enjoy Thorium!\n" &&
+printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&
 tput sgr0 &&
 
-cd $HOME/chromium/src &&
+cd ~/chromium/src &&
 
 exit 0
