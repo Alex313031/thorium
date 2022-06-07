@@ -18,7 +18,7 @@
 &nbsp;&nbsp;&ndash; Includes Widevine, All Codecs, Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, AVX, and AES, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special, some of which are SSE4. (See below.)
 
 ### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_dark.svg#gh-light-mode-only">
-> - Various compiler flags that improve performance and target AVX CPU's (read patches.md)
+> - Various compiler flags that improve performance and target AVX CPU's (read [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md))
 > - Experimental MPEG-DASH.
 > - JPEG XL Image File Format support.
 > - Enable Live Caption (SODA) on all builds.
@@ -46,8 +46,8 @@
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
 > - Includes installer patches and files to include ChromeDriver and content_shell (thorium_shell), with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe onWwindows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
 > - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
-- For more info, read the PATCHES.md file.
-- Known bugs are in the BUGS.md file.
+- For more info, read the [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md) file.
+- Known bugs are in the [BUGS.md](https://github.com/Alex313031/Thorium/blob/main/BUGS.md) file.
 
 &nbsp;&nbsp;&ndash; UPDATE: Thorium now has API Keys baked in but the instructions below are the same if you are building it yourself as I will not include the keys here. | args.gn exclude API Keys (you can get them yourself) and the PGO profile path is different for each Chromium version (only needed when building). (See below.)
 
@@ -58,8 +58,9 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 - Make sure dependencies are installed by running ./chromium/src/build/install-build-deps.sh.
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
-- Run `gn args out/thorium` and the contents of 'args.gn' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'*
-- 'infra/args.list' contains an alphabetical list with descriptions of all possible build arguments; gn_args.list gives a similar list but with the flags in args.gn added.
+- Run `gn args out/thorium` and the contents of 'args.gn' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'* 
+- For more info about args.gn, read the [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) file.
+- '[infra/args.list](https://github.com/Alex313031/Thorium/blob/main/infra/args.list)' contains an alphabetical list with descriptions of all possible build arguments; [gn_args.list](https://github.com/Alex313031/Thorium/blob/main/infra/gn_args.list) gives a similar list but with the flags in args.gn added.
 - To build, run `./build.sh` (--help for help). For Windows, use `build_win.sh` or `autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
 - To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/thorium_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `./thordeb.sh` (--help for help). A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/thorium-unstable/*. For Windows, just run the mini_installer.exe. \
