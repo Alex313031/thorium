@@ -771,17 +771,11 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE" desc="The name of the Search Lens for Image command in the content area context menu">
             Search image with Google Lens
           </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="The name of the Lens Region Search command in the content area context menu">
-            Search part of the page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="The name of the Lens Region Search command in the content area context menu">
-            Drag to search images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            Search page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT2" desc="The name of the Lens Region Search command in the content area context menu">
-            Drag over images to search with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="The name of the Lens Region Search command in the content area context menu">
-            Search your screen with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            Search any part of the page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT4" desc="The name of the Lens Region Search command in the content area context menu">
             Search images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
@@ -1034,17 +1028,11 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE" desc="In Title Case: The name of the Search Lens for Image command in the content area context menu">
             Search Image with Google Lens
           </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-            Search Part of the Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-            Drag to Search Images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            Search Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT2" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-            Drag over Images to Search with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-            Search Your Screen with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            Search Any Part of the Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT4" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
@@ -2546,6 +2534,10 @@ are declared in tools/grit/grit_rule.gni.
                desc="When a download is finished, let the user know.">
         Done
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_STATUS_DEEP_SCANNING_DONE"
+               desc="When a download has finished deep scanning and the result is safe, let the user know.">
+        Done, no issues found
+      </message>
       <message name="IDS_DOWNLOAD_BUBBLE_STATUS_BLOCKED"
                desc="When a download is blocked because of warnings, let the user know.">
         Blocked
@@ -2709,6 +2701,10 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_DOWNLOAD_BUBBLE_STATUS_ASYNC_SCANNING"
                desc="Status text for a download item that is being scanned.">
         Scanning...
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_STATUS_ASYNC_SCANNING_ENTERPRISE"
+               desc="Status text for a download item that is being scanned by enterprise policy.">
+        Checking with your organization's security policies...
       </message>
 
       <!-- Desktop omnibox PWA install icon -->
@@ -4650,9 +4646,6 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSION_PROMPT_WARNING_SYNCFILESYSTEM" desc="Permission string for synchronizing files to the user's Google Drive">
           Store data in your Google Drive account
         </message>
-        <message name="IDS_EXTENSION_PROMPT_WARNING_MUSIC_MANAGER_PRIVATE" desc="Permission string for accessing a unique device identifier">
-          Read a unique identifier for this computer
-        </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_NATIVE_MESSAGING" desc="Permission string for Native Messaging API.">
           Communicate with cooperating native applications
         </message>
@@ -4789,7 +4782,7 @@ are declared in tools/grit/grit_rule.gni.
       </if>
       <if expr="not reven">
         <message name="IDS_EXTENSION_INSTALL_KIOSK_MODE_ONLY" desc="Error displayed during installation of an app with 'kiosk_only' attribute but user is not in ChromeOS kiosk mode.">
-          App with 'kiosk_only' manifest attribute must be installed in ChromeOS kiosk mode
+          App with 'kiosk_only' manifest attribute must be installed in ThoriumOS kiosk mode
         </message>
       </if>
       <message name="IDS_EXTENSION_OVERLAPPING_WEB_EXTENT" desc="Error message when a user tries to install an app with a web extent that overlaps another installed app.">
@@ -5551,7 +5544,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Components -->
       <message name="IDS_COMPONENTS_TITLE" desc="Title for the chrome://components page.">
-        Thorium Components
+        Components
       </message>
       <message name="IDS_COMPONENTS_VERSION" desc="The label in front of a component version number.">
         Version:
@@ -5576,7 +5569,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <message name="IDS_COMPONENTS_OS_TEXT1_LABEL" desc="Begin label text on the os://components page from ChromeOS which directs a user to a dialog showing Chrome browser specific components - enclosing url link.">
           Looking for browser components? Visit
         </message>
-        <message name="IDS_COMPONENTS_OS_TEXT2_LABEL" desc="End label text on the os://components page from ChromeOS which directs a user to a dialog showing Thorium browser specific components - enclosing url link.">
+        <message name="IDS_COMPONENTS_OS_TEXT2_LABEL" desc="End label text on the os://components page from ChromeOS which directs a user to a dialog showing Chrome browser specific components - enclosing url link.">
           .
         </message>
         <message name="IDS_COMPONENTS_OS_LINK" translateable="false" desc="Label for a button on the os://components page from ChromeOS that will call a new window which allows to change Chrome browser components.">
@@ -6794,7 +6787,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Pick cards that keep you updated on things that matter to you
       </message>
       <message name="IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_BODY_LINE_2" desc="Line 2 of Modular NTP Desktop v1 First Run Experience's body.">
-        See all card options in <ph name="BEGIN_LINK">&lt;a is="action-link" id="customizeChromeLink" tabIndex=0 on-click="onCustomizeModuleFre_"&gt;</ph>Customize Chrome<ph name="END_LINK">&lt;/a&gt;</ph>
+        See all card options in <ph name="BEGIN_LINK">&lt;a is="action-link" id="customizeChromeLink" tabIndex=0 on-click="onCustomizeModuleFre_"&gt;</ph>Customize Thorium<ph name="END_LINK">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_OPT_IN" desc="Opt in button for Modular NTP Desktop v1 First Run Experience.">
         Got it
@@ -6918,7 +6911,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Side Panel
+        Thorium Side Panel
       </message>
 
       <!-- Read Anything strings -->
@@ -7019,7 +7012,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_TOOLTIP_SAVE_CREDIT_CARD_FAILURE" desc="The tooltip for the icon that shows the credit card is not successfully uploaded">
         Can't save card right now
       </message>
-      <message name="IDS_TOOLTIP_MIGRATE_LOCAL_CARD" desc="Tooltip for the credit card icon that appears in the address bar. Icon is shown when a user has a credit card stored locally in Thorium but not in Google Pay.">
+      <message name="IDS_TOOLTIP_MIGRATE_LOCAL_CARD" desc="Tooltip for the credit card icon that appears in the address bar. Icon is shown when a user has a credit card stored locally in Chrome but not in Google Pay.">
         Save payment method
       </message>
       <message name="IDS_TOOLTIP_TRANSLATE" desc="The tooltip for translate">
@@ -7271,7 +7264,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+T</ex></ph> can reopen accidentally closed tabs
       </message>
       <message name="IDS_READING_LIST_IN_SIDE_PANEL_PROMO" desc="Text shown on promotional UI appearing next to the side panel button">
-        Your reading list has moved to the new side panel. Try it here.
+        Your reading list has moved to the new Thorium side panel. Try it here.
       </message>
       <message name="IDS_TAB_GROUPS_NEW_GROUP_PROMO" desc="Text shown on promotional UI encouraging users to create a tab group in their tab strip">
         Organize your tabs with tab groups
@@ -7479,7 +7472,7 @@ You have # more compromised passwords. Google Password Manager recommends checki
 
 Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google Password Manager</ex></ph>.
         </message>
-        <message name="IDS_PASSWORD_MANAGER_SAFE_STATE_SETTINGS" meaning="The hyperlink text referring to Thorium settings. It replaces the placeholder in 'Check your passwords anytime in $1' string">
+        <message name="IDS_PASSWORD_MANAGER_SAFE_STATE_SETTINGS" meaning="The hyperlink text referring to Chrome settings. It replaces the placeholder in 'Check your passwords anytime in $1' string">
           Settings
         </message>
 
@@ -8647,7 +8640,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           This extension contains a serious security vulnerability.
         </message>
         <message name="IDS_EXTENSIONS_BLOCKLISTED_CWS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension or app. The extension in question violates Chrome Web Store policy.">
-          This extension violates the Thorium Web Store policy.
+          This extension violates the Chrome Web Store policy.
         </message>
         <message name="IDS_EXTENSIONS_BLOCKLISTED_POTENTIALLY_UNWANTED" desc="The text explaining the reason for disabling extension or app. The extension in question might have been installed without user consent.">
           Disabled by Thorium. This extension may be unsafe.
@@ -9629,7 +9622,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble">
           Ok
         </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL_V2" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Thorium profile for the intercepted account.">
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL_V2" desc="Label of the confirmation button in the web signin interception bubble. This action will create a new Chrome profile for the intercepted account.">
           Let's go
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CANCEL_BUTTON_LABEL" desc="Label of the cancel button in the web signin interception bubble">
@@ -12943,7 +12936,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <!-- ChromeLabs Side Panel-->
     <message name="IDS_SIDE_PANEL_EXPERIMENT_NAME" desc="Name for Side Panel experiment">
-      Side Panel
+      Thorium Side Panel
     </message>
     <message name="IDS_SIDE_PANEL_EXPERIMENT_DESCRIPTION" desc="Description for Side Panel experiment">
       Enables a browser-level side panel for a useful and persistent way to access your Reading List and Bookmarks.
@@ -13125,7 +13118,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_SETTINGS_LINK" desc="The user can choose “Go to settings” to visit chrome://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Go to settings”, the user will navigate away from this page and won’t be able to return here.">
       Go to settings
     </message>
-    <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION_ESTIMATES_INTERESTS_LINK" desc="This will be inserted as a link in IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION instead of ESTIMATE_INTERESTS_LINK placeholder. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). ">
+    <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION_ESTIMATES_INTERESTS_LINK" desc="This will be inserted as a link in IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION instead of ESTIMATE_INTERESTS_LINK placeholder. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Chrome estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). ">
       estimates your interests
     </message>
     <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_BODY_DESCRIPTION_1" desc="* “restrict” means to lessen. We don’t want to suggest that we’re “eliminating” cross-site tracking. * “cross-site tracking”: An example: a user visits site A and then site B. Based on how third-party cookies work today, when that user later visits site C, site C can be aware that the user visited sites A and B, and can even have some sense for what they did on those sites. * “stop ad spam and fraud”:  This feature isn’t really related to restricting cross-site tracking but we combined these features in the same sentence / section for structural reasons.">
