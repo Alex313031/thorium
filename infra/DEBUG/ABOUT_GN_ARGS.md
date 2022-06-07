@@ -1,4 +1,4 @@
-## When building Chromium/Thorium, you run gn args out/$DIR, where $DIR can be any name, in Thorium it is named out/thorium. These set build arguments for ninja (the Chromium build system) to parse and apply. Thorium has many set, and they vary from platform to platform, and whether or not it is a Debug build. This document explains what they do, why they are set a certain way in Thorium, and options available.
+## When building Chromium/Thorium, you run gn args out/$DIR, where $DIR can be any name; in Thorium it is named out/thorium. These set build arguments for ninja (the Chromium build system) to parse and apply. Thorium has many set, and they vary from platform to platform, and whether or not it is a Debug build. This document explains what they do, why they are set a certain way in Thorium, and options available.
 
 ## API Keys
 google_api_key = "" &#35;&#35; Set Google API Key. Unset in public Thorium repository.
