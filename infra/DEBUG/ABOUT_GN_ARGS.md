@@ -27,7 +27,7 @@ enable_stripping &#35;&#35; Set whether to strip binaries and .so/.dll libraries
 
 is_official_build &#35;&#35; Set whether this is an Official Build. This enables other optimizations and sets "Official" instead of "Developer" in chrome://version and chrome://settings/help Disabled in Debug builds.
 
-is_debug &#35;&#35; Set whether to link debugging constructs into the binary. Enabled in Debug builds.
+is_debug &#35;&#35; Set whether to link debugging constructs into the binary. Enabled in Debug builds. See > https://chromium.googlesource.com/chromium/src/+/0e94f26e8/docs/linux_debugging.md and https://www.chromium.org/developers/how-tos/debugging-on-windows/
 
 dcheck_always_on &#35;&#35; Set whether to enable DCHECK, regardless of is_debug or is_official_build. Disabled in Thorium for perforance/size except for Debug builds.
 
@@ -37,31 +37,31 @@ enable_debugallocation &#35;&#35; DEPRECATED &#35;&#35; Set whether to allocate 
 
 enable_iterator_debugging &#35;&#35; Set whether C++ iterator debugging is enabled. Only applicable if is_debug is true.
 
-disable_fieldtrial_testing_config &#35;&#35; Set whether to disable fieldtrials. Disabled for stability, privacy, and reproducibility in Thorium. Decreases the number of variations at chrome://version See https://chromium.googlesource.com/chromium/src/+/master/testing/variations/README.md
+disable_fieldtrial_testing_config &#35;&#35; Set whether to disable fieldtrials. Disabled for stability, privacy, and reproducibility in Thorium. Decreases the number of variations at chrome://version See > https://chromium.googlesource.com/chromium/src/+/master/testing/variations/README.md
 
 enable_resource_allowlist_generation &#35;&#35; Enables allowlist generation for IDR_ grit defines seen by the compiler. Only applicable for Android and Windows builds. Set to false in Thorium.
 
-enable_profiling &#35;&#35; Set whether to enable profiling, I.E. for making your own PGO *.profdata files. Set to false in Thorium for performance.
+enable_profiling &#35;&#35; Set whether to enable profiling, I.E. for making your own PGO *.profdata files. Set to false in Thorium for performance. See > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/profiling.md
 
-is_component_build &#35;&#35; Splits many parts of Thorium/Chromium into shared libraries. Avoids the long linking step towards the end of building. Enabled in debug builds, and this is what disables the creation of an installer. See https://chromium.googlesource.com/chromium/src/+/HEAD/docs/component_build.md Set to disabled in Thorium, even for Debug builds, where it is the default.
+is_component_build &#35;&#35; Splits many parts of Thorium/Chromium into shared libraries. Avoids the long linking step towards the end of building. Enabled in debug builds, and this is what disables the creation of an installer. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/component_build.md Set to disabled in Thorium, even for Debug builds, where it is the default.
 
 symbol_level &#35;&#35; Sets overall symbol level. Options are: 0, 1, and 2. Set to 0 for performance.
 
-enable_nacl &#35;&#35; Set whether Native Client (NaCL) is built. Disabled in Thorium for size, and because it is being deprecated. Enable for using some Chrome Apps and for ChromiumOS/ThoriumOS builds. See https://developer.chrome.com/docs/native-client/
+enable_nacl &#35;&#35; Set whether Native Client (NaCL) is built. Disabled in Thorium for size, and because it is being deprecated. Enable for using some Chrome Apps and for ChromiumOS/ThoriumOS builds. See > https://developer.chrome.com/docs/native-client/
 
-optimize_webui &#35;&#35; Set whether WebUI components are optimized. Uses polymer-bundler to combine/compress HTML5 resources. See https://chromium.googlesource.com/chromium/src/+/HEAD/docs/optimizing_web_uis.md Enabled in Thorium for performance.
+optimize_webui &#35;&#35; Set whether WebUI components are optimized. Uses polymer-bundler to combine/compress HTML5 resources. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/optimizing_web_uis.md Enabled in Thorium for performance.
 
 enable_webui_tab_strip &#35;&#35; Set whether the Tab Strip, and some parts of the top bar (Top Chrome) are built using WebUI technologies. Should always be enabled, except on certain old linux distros.
 
 use_lld &#35;&#35; Use LLVM lld instead of GNU ld for linking. Should always be enabled unless you are using another linker like MOLD.
 
-v8_symbol_level &#35;&#35; Set the symbol level for V8 (Chromium's JavaScript engine), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance.
+v8_symbol_level &#35;&#35; Set the symbol level for V8 (Chromium's JavaScript engine), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance. For infor about V8, see > https://v8.dev/
 
 use_v8_context_snapshot &#35;&#35; Build a seperate .bin file with V8's function templates and V8 contexts. Enabled in Thorium. &#35;&#35; TODO: Maybe disable this on Linux builds?
 
 blink_symbol_level &#35;&#35; Set the symbol level for Blink (Chromium's rendering engine.), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance.
 
-enable_precompiled_headers &#35;&#35; Sets whether to precompile some .h files before main compiling. Can speed up compiling, but is disabled in Thorium for reproducibility and to ensure any Thorium .h files are properly #included in corresponding .cc files. See https://cmake.org/cmake/help/latest/command/target_precompile_headers.html
+enable_precompiled_headers &#35;&#35; Sets whether to precompile some .h files before main compiling. Can speed up compiling, but is disabled in Thorium for reproducibility and to ensure any Thorium .h files are properly #included in corresponding .cc files. See > https://cmake.org/cmake/help/latest/command/target_precompile_headers.html
 
 media_use_ffmpeg &#35;&#35; Enable use of Chromium's ffmpeg implementation for media library/streams. Should always be enabled unless using a custom ffmpeg checkout.
 
@@ -77,7 +77,7 @@ enable_discovery &#35;&#35; Enable the Discovery SWA (System Web App) on CrOS. H
 
 enable_cros_media_app &#35;&#35; Enable the CrOS Media App, a native app for viewing media on ChromiumOS, to replace the native Files App views component. Breaks non-ChromiumOS builds. Should be enabled in ThoriumOS. &#35;&#35; NOTE: Bug filed by me upstream.
 
-proprietary_codecs &#35;&#35; Enable building ffmpeg with proprietary codecs like H.254, H.265 (HEVC), and FLAC. Must be used with ffmpeg_branding = chrome or ffmpeg_branding = chromeos. Enabled in Thorium for useability.
+proprietary_codecs &#35;&#35; Enable building ffmpeg with proprietary codecs like H.254, H.265 (HEVC), and FLAC. Must be used with ffmpeg_branding = chrome or ffmpeg_branding = chromeos. Enabled in Thorium for useability. See > https://www.chromium.org/audio-video/
 
 ffmpeg_branding &#35;&#35; Sets the internal BRANDING header in ffmpeg. Must be used with proprietary_codecs = true. Options are: "Chromium", "Chrome", and "Chromeos". is_chancie_wancie = true build will override the internal checks that "Chromeos" only be set when building for CrOS, and set it to Chromeos anyway for any platform. 
 
@@ -87,7 +87,7 @@ is_component_ffmpeg &#35;&#35; Builds ffmpeg as a shared library even when is_co
 
 use_webaudio_ffmpeg &#35;&#35; Use ffmpeg for computing FFT's (Fast Fourier Transform) in audio streams. Disabled in Thorium for performance, and because of bugs when building for AVX.
 
-use_webaudio_pffft &#35;&#35; Use the pffft library for computing FFT's in audio streams. Enabled in Thorium for performance EXCEPT on MacOS, because the native FFT library there is much faster.
+use_webaudio_pffft &#35;&#35; Use the pffft library for computing FFT's in audio streams. Enabled in Thorium for performance EXCEPT on MacOS, because the native FFT library there is much faster. See > https://bitbucket.org/jpommier/pffft/src
 
 enable_av1_decoder &#35;&#35; Enable standard AV1 decoder. Commented out in Thorium to let ninja set appropriate value for the platform.
 
@@ -95,7 +95,7 @@ enable_dav1d_decoder &#35;&#35; Enable VideoLAN dav1d AV1 decoder. Commented out
 
 use_vaapi &#35;&#35; Set the availability of VAAPI in Chromium. Should always be enabled in Thorium, except on Windows.
 
-enable_widevine &#35;&#35; Set the availability of the Widevine CDM (Content Decryption Module) for encrypted media streams like I.E on Netflix, Hulu, etc. Enabled in Thorium for useability.
+enable_widevine &#35;&#35; Set the availability of the Widevine CDM (Content Decryption Module) for encrypted media streams like I.E on Netflix, Hulu, etc. Enabled in Thorium for useability. See > https://www.widevine.com/
 
 bundle_widevine_cdm &#35;&#35; Set whether to bundle the Widevine CDM as a library in the installation folder. When enabled, it cannot be updated as its version is hard coded and tied with the chrome executable, and will not show in chrome://components as it is not built as a component. When disabled, it functions as a component and is downloaded with other components from Google servers to the user profile dir. Disabled in Thorium for transparency, and so that it can be updated irrespective of the Thorium version. Also disabled to make use of the widevine patches for Thorium on Linux. Could technically be enabled on Windows. Only enabled in ThoriumOS, with the widevine patches in that repository.
 
@@ -117,7 +117,7 @@ rtc_build_examples &#35;&#35; Set whether to build example RTC data. Useful for 
 
 rtc_enable_avx2 &#35;&#35; Set whether to use AVX2 instructions when building RTC code. Enabled only in Thorium AVX2 builds for performance.
 
-enable_vr &#35;&#35; Set whether to enable WebVR and WebXR in Chromium. Enabled in Thorium for useability. See https://webvr.info/ and https://immersiveweb.dev/
+enable_vr &#35;&#35; Set whether to enable WebVR and WebXR in Chromium. Enabled in Thorium for useability. See > https://webvr.info/ and https://immersiveweb.dev/
 
 use_vr_assets_component &#35;&#35; Set whether to enable the VR assets component. Disabled by default in non-Chrome builds. Enabled in Thorium for useability. Should also be enabled in ThoriumOS.
 
@@ -134,10 +134,10 @@ enable_platform_mpeg_h_audio &#35;&#35; Enable experimental MPEG H audio. Enable
 enable_mse_mpeg2ts_stream_parser &#35;&#35; Enable MPEG-TS media stream parsing/demuxing. Doesn't seem to work on non CrOS platforms. Enabled anyway in Thorium for all platforms for useability.
 
 ## Optimizations
-use_thin_lto &#35;&#35; Enable thinLTO optimizations. Should be enabled for all Thorium builds, even debug ones.
+use_thin_lto &#35;&#35; Enable thinLTO optimizations. Should be enabled for all Thorium builds, even debug ones. See > https://clang.llvm.org/docs/ThinLTO.html
 
 thin_lto_enable_optimizations &#35;&#35; Enable more aggressive thinLTO optimizations. Enabled in Thorium for performance, and makes use of the -O3 Cflags, LDflags, and import_instr_limit = 30 flags in the main chrome BUILD.gn file. Disabled for Debug builds.
 
-chrome_pgo_phase &#35;&#35; Set the implementation of PGO in Chromium. Options are: 0 (none), 1 (Instrumentation Phase Only), and 2 (Full PGO). 1 and 2 requires setting a *.profdata file for the platform below. Thorium uses 2, except for debug builds. 1 should only be used when profiling. Cannot be enabled on ChromiumOS/ThoriumOS. Can be disabled for faster compilation. Disabled for Debug builds.
+chrome_pgo_phase &#35;&#35; Set the implementation of PGO in Chromium. Options are: 0 (none), 1 (Instrumentation Phase Only), and 2 (Full PGO). 1 and 2 requires setting a *.profdata file for the platform below. Thorium uses 2, except for debug builds. 1 should only be used when profiling. Cannot be enabled on ChromiumOS/ThoriumOS. Can be disabled for faster compilation. Disabled for Debug builds. See > https://en.wikipedia.org/wiki/Profile-guided_optimization
 
 pgo_data_path &#35;&#35; Set the full path to the *.profdata file for PGO. Downloaded when running trunk.sh in Thorium. Disabled in debug builds and ThoriumOS.
