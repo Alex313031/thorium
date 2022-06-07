@@ -101,7 +101,7 @@ bundle_widevine_cdm &#35;&#35; Set whether to bundle the Widevine CDM as a libra
 
 enable_media_drm_storage &#35;&#35; Enable whether Widevine can use LocalStorage to hold DRM files for certain encrypted streams, like I.E. Amazon Prime. Enabled in Thorium for useability.
 
-enable_media_overlay &#35;&#35; Set whether certain media overlays are enabled. Used to be used for PiP (Picture in Picture) for videos on non-ChromiumOS platforms. Not sure what all it does now, but enabled in Thorium anyway for useability with whatever media features it enables.
+enable_media_overlay &#35;&#35; Set whether certain media overlays, I.E. volume bar, etc. are enabled. Enabled in Thorium for useability.
 
 enable_hangout_services_extension &#35;&#35; Enables building the Hangouts component Extension on Chromium/ChromiumOS. Enabled in Thorium for feature parity with Chrome. Should be enabled on ThoriumOS.
 
