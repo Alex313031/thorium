@@ -41,13 +41,13 @@ disable_fieldtrial_testing_config &#35;&#35; Set whether to disable fieldtrials.
 
 enable_resource_allowlist_generation &#35;&#35; Enables allowlist generation for IDR_ grit defines seen by the compiler. Only applicable for Android and Windows builds. Set to false in Thorium.
 
-enable_profiling &#35;&#35; Set whether to enable profiling, I.E. for making your own PGO *.profdata files. Set to false in Thorium for performance. See > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/profiling.md
+enable_profiling &#35;&#35; Set whether to enable profiling, I.E. for making your own PGO *.profdata files. Set to false in Thorium for performance. See > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/profiling.md Should be disabled in public ThoriumOS builds.
 
 is_component_build &#35;&#35; Splits many parts of Thorium/Chromium into shared libraries. Avoids the long linking step towards the end of building. In Debug builds, this is what disables the creation of an installer. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/component_build.md Set to disabled in Thorium, even for Debug builds, where it is the default.
 
 symbol_level &#35;&#35; Sets overall symbol level. Options are: 0, 1, and 2. Set to 0 for performance.
 
-enable_nacl &#35;&#35; Set whether Native Client (NaCL) is built. Disabled in Thorium for size, and because it is being deprecated. Enable for using some Chrome Apps and for ChromiumOS/ThoriumOS builds. See > https://developer.chrome.com/docs/native-client/
+enable_nacl &#35;&#35; Set whether Native Client (NaCl) is built. Disabled in Thorium for size, and because it is being deprecated. Enable for using some Chrome Apps and for ChromiumOS/ThoriumOS builds. See > https://developer.chrome.com/docs/native-client/
 
 optimize_webui &#35;&#35; Set whether WebUI components are optimized. Uses polymer-bundler to combine/compress HTML5 resources. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/optimizing_web_uis.md Enabled in Thorium for performance.
 
@@ -57,7 +57,7 @@ use_lld &#35;&#35; Use LLVM lld instead of GNU ld for linking. Should always be 
 
 v8_symbol_level &#35;&#35; Set the symbol level for V8 (Chromium's JavaScript engine), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance. For more info about V8, see > https://v8.dev/
 
-use_v8_context_snapshot &#35;&#35; Build a seperate .bin file with V8's function templates and V8 contexts. Enabled in Thorium. &#35;&#35; TODO: Maybe disable this on Linux builds?
+use_v8_context_snapshot &#35;&#35; Build a seperate .bin file with V8's function templates and V8 contexts. Enabled in Thorium. &#35;&#35; TODO: Maybe disable this on Linux builds? Should be disabled in ThoriumOS.
 
 blink_symbol_level &#35;&#35; Set the symbol level for Blink (Chromium's rendering engine.), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance.
 
@@ -71,7 +71,7 @@ enable_hls_sample_aes &#35;&#35; Enables demuxing of HLS media encrypted with AE
 
 enable_hls_demuxer &#35;&#35; Enables HLS media demuxing. &#35;&#35; INCOMPLETE upstream. Enabled in Thorium for useability.
 
-enable_ink &#35;&#35; Enable Ink (PDF Annotation) on CrOS. Breaks non-ChromiumOS builds. &#35;&#35; NOTE: Bug filed by me upstream.
+enable_ink &#35;&#35; Enable experimental Ink (PDF Annotation) on CrOS. Breaks non-ChromiumOS builds. &#35;&#35; NOTE: Bug filed by me upstream.
 
 enable_discovery &#35;&#35; Enable the Discovery SWA (System Web App) on CrOS. Has no effect on non-ChromiumOS builds. Only fully works on internal ChromeOS builds.
 
@@ -111,7 +111,7 @@ rtc_use_lto &#35;&#35; Set whether WebRTC uses thinLTO for optimization. Enabled
 
 rtc_include_ilbc &#35;&#35; Set whether to enable Google's Internet Low Bitrate Codec in WebRTC. Enabled in Thorium for performance and useability.
 
-rtc_build_with_neon &#35;&#35; Set whether to use ARM NEON SIMD instructions when building RTC code. Enabled in Thorium for performance.
+rtc_build_with_neon &#35;&#35; Set whether to use ARM NEON SIMD instructions when building RTC code. Only applicable for ARM/ARM64. Enabled in Thorium for performance.
 
 rtc_build_examples &#35;&#35; Set whether to build example RTC data. Useful for debugging. Disabled in Thorium for size.
 
@@ -123,7 +123,7 @@ use_vr_assets_component &#35;&#35; Set whether to enable the VR assets component
 
 enable_platform_hevc &#35;&#35; Set the availability of using hardware HEVC decoders/encoders. Also needed to enable H.265. Enabled in Thorium on all platforms, despite H.264 being unavailable right now for Linux. Should be enabled in ThoriumOS.
 
-enable_hevc_parser_and_hw_decoder &#35;&#35; Enabled parsing and demuxing of HEVC media. Enabled in Thorium for useability. See > https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
+enable_hevc_parser_and_hw_decoder &#35;&#35; Enable parsing and demuxing of HEVC media. Enabled in Thorium for useability. See > https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
 
 enable_platform_ac3_eac3_audio &#35;&#35; Enable building ac3 and eac3 audio codecs in ffmpeg. Enabled in Thorium for useability, despite being unavailable for some platforms. &#35;&#35; TODO: What platforms?
 
@@ -131,13 +131,13 @@ enable_platform_dolby_vision &#35;&#35; Enable Dolby vision in Chromium. Enabled
 
 enable_platform_mpeg_h_audio &#35;&#35; Enable experimental MPEG H audio. Enabled in Thorium for useability.
 
-enable_mse_mpeg2ts_stream_parser &#35;&#35; Enable MPEG-TS media stream parsing/demuxing. Doesn't seem to work on non CrOS platforms. Enabled anyway in Thorium for all platforms for useability.
+enable_mse_mpeg2ts_stream_parser &#35;&#35; Enable experimental MPEG-TS media stream parsing/demuxing. Doesn't seem to work on non CrOS platforms. Enabled anyway in Thorium for all platforms for useability.
 
 ## Optimizations
-use_thin_lto &#35;&#35; Enable thinLTO optimizations. Should be enabled for all Thorium builds, even debug ones. See > https://clang.llvm.org/docs/ThinLTO.html
+use_thin_lto &#35;&#35; Enable thinLTO optimizations. Should be enabled for all Thorium builds, even Debug ones. See > https://clang.llvm.org/docs/ThinLTO.html
 
 thin_lto_enable_optimizations &#35;&#35; Enable more aggressive thinLTO optimizations. Enabled in Thorium for performance, and makes use of the -O3 Cflags, LDflags, and import_instr_limit = 30 flags in the main chrome BUILD.gn file. Disabled for Debug builds.
 
-chrome_pgo_phase &#35;&#35; Set the implementation of PGO in Chromium. Options are: 0 (none), 1 (Instrumentation Phase Only), and 2 (Full PGO). 1 and 2 requires setting a *.profdata file for the platform below. Thorium uses 2, except for debug builds. 1 should only be used when profiling. Cannot be enabled on ChromiumOS/ThoriumOS. Can be disabled for faster compilation. Disabled for Debug builds. See > https://en.wikipedia.org/wiki/Profile-guided_optimization
+chrome_pgo_phase &#35;&#35; Set the implementation of PGO in Chromium. Options are: 0 (none), 1 (Instrumentation Phase Only), and 2 (Full PGO). 1 and 2 requires setting a *.profdata file for the platform below. Thorium uses 2, except for Debug builds. 1 should only be used when profiling. Cannot be enabled on ChromiumOS/ThoriumOS. Can be disabled for faster compilation. Disabled for Debug builds. See > https://en.wikipedia.org/wiki/Profile-guided_optimization
 
-pgo_data_path &#35;&#35; Set the full path to the *.profdata file for PGO. Downloaded when running trunk.sh in Thorium. Disabled in debug builds and ThoriumOS.
+pgo_data_path &#35;&#35; Set the full path to the *.profdata file for PGO. Downloaded when running trunk.sh in Thorium. Disabled in Debug builds and ThoriumOS.
