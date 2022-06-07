@@ -41,7 +41,7 @@
 > - Remove the addition of the Chrome APT sources.list during installation.
 > - Widevine CDM Patch for Linux.
 > - Enable Parallel Downloading by Default.
-> - Inclusion of pak (linux) and pack_mingw (windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
+> - Inclusion of <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png" width="16"> pak (linux) and pak_mingw (windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
 > - Includes installer patches and files to include ChromeDriver and content_shell (thorium_shell), with a .desktop file being provided for content_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe onWwindows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
