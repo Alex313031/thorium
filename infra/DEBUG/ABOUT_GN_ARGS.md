@@ -43,7 +43,7 @@ enable_resource_allowlist_generation &#35;&#35; Enables allowlist generation for
 
 enable_profiling &#35;&#35; Set whether to enable profiling, I.E. for making your own PGO *.profdata files. Set to false in Thorium for performance. See > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/profiling.md
 
-is_component_build &#35;&#35; Splits many parts of Thorium/Chromium into shared libraries. Avoids the long linking step towards the end of building. Enabled in debug builds, and this is what disables the creation of an installer. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/component_build.md Set to disabled in Thorium, even for Debug builds, where it is the default.
+is_component_build &#35;&#35; Splits many parts of Thorium/Chromium into shared libraries. Avoids the long linking step towards the end of building. In Debug builds, this is what disables the creation of an installer. See > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/component_build.md Set to disabled in Thorium, even for Debug builds, where it is the default.
 
 symbol_level &#35;&#35; Sets overall symbol level. Options are: 0, 1, and 2. Set to 0 for performance.
 
