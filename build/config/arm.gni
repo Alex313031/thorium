@@ -138,7 +138,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
       # build) where the target platform is x64, but V8 is configured to use
       # the arm64 simulator. Pointer authentication doesn't work properly
       # in this mode (yet).
-      arm_control_flow_integrity = "none"
+      arm_control_flow_integrity = "standard"
     }
   }
   assert(arm_control_flow_integrity == "none" ||
