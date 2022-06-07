@@ -47,7 +47,6 @@ struct BASE_EXPORT ShortcutProperties {
       PROPERTIES_TARGET | PROPERTIES_WORKING_DIR | PROPERTIES_ARGUMENTS |
       PROPERTIES_DESCRIPTION | PROPERTIES_ICON | PROPERTIES_APP_ID |
       PROPERTIES_DUAL_MODE | PROPERTIES_TOAST_ACTIVATOR_CLSID;
-  };
 
   ShortcutProperties();
   ShortcutProperties(const ShortcutProperties& other);
