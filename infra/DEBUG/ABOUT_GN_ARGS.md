@@ -67,7 +67,7 @@ media_use_ffmpeg &#35;&#35; Enable use of Chromium's ffmpeg implementation for m
 
 media_use_libvpx &#35;&#35; Enable use of Chromium's libvpx implementation for media library/streams. Used for software based decoding of VP9 and VP8A type content. Should always be enabled.
 
-enable_hls_sample_aes &#35;&#35; Enables demuxing of HLS media encrypted with AES. Uses the AES Cflags in Thorium to increase performance.
+enable_hls_sample_aes &#35;&#35; Enables demuxing of HLS media encrypted with AES. Uses the AES Cflags in Thorium to increase performance. See > https://en.wikipedia.org/wiki/AES_instruction_set
 
 enable_hls_demuxer &#35;&#35; Enables HLS media demuxing. &#35;&#35; INCOMPLETE upstream. Enabled in Thorium for useability.
 
@@ -123,7 +123,7 @@ use_vr_assets_component &#35;&#35; Set whether to enable the VR assets component
 
 enable_platform_hevc &#35;&#35; Set the availability of using hardware HEVC decoders/encoders. Also needed to enable H.265. Enabled in Thorium on all platforms, despite H.264 being unavailable right now for Linux. Should be enabled in ThoriumOS.
 
-enable_hevc_parser_and_hw_decoder &#35;&#35; Enabled parsing and demuxing of HEVC media. Enabled in Thorium for useability.
+enable_hevc_parser_and_hw_decoder &#35;&#35; Enabled parsing and demuxing of HEVC media. Enabled in Thorium for useability. See > https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding
 
 enable_platform_ac3_eac3_audio &#35;&#35; Enable building ac3 and eac3 audio codecs in ffmpeg. Enabled in Thorium for useability, despite being unavailable for some platforms. &#35;&#35; TODO: What platforms?
 
