@@ -55,7 +55,7 @@ enable_webui_tab_strip &#35;&#35; Set whether the Tab Strip, and some parts of t
 
 use_lld &#35;&#35; Use LLVM lld instead of GNU ld for linking. Should always be enabled unless you are using another linker like MOLD.
 
-v8_symbol_level &#35;&#35; Set the symbol level for V8 (Chromium's JavaScript engine), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance. For infor about V8, see > https://v8.dev/
+v8_symbol_level &#35;&#35; Set the symbol level for V8 (Chromium's JavaScript engine), regardless of symbol_level value. Options are: 0, 1, and 2. Set to 0 for performance. For more info about V8, see > https://v8.dev/
 
 use_v8_context_snapshot &#35;&#35; Build a seperate .bin file with V8's function templates and V8 contexts. Enabled in Thorium. &#35;&#35; TODO: Maybe disable this on Linux builds?
 
