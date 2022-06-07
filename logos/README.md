@@ -11,3 +11,5 @@ __IMPORTANT:__ The 'NEW' directory is where the new logos that are used since M1
  - This project also for a small time was called "Technetium", and I experimented with different logo designs; some are lost, but one of them is in the 'OLD' directory. These extra things are in the 'OLD' directory along with the Thorium logos used since the beginning up until M100.
 
 LICENSING: The Chromium Logo is licensed under Chromium's BSD-Style License, and some logos like the "bulb" and "build" logos are under Apache's License, which can be found here. The Thorium Logo is licensed under the GPL-3.0 License, however if you are going to use the logo in a derivative project, I would prefer if you let me know first.
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/error_dog.png" width="256">
