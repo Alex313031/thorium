@@ -40,6 +40,7 @@ use_webaudio_pffft = true
 # enable_dav1d_decoder = true
 enable_widevine = true
 bundle_widevine_cdm = false
+ignore_missing_widevine_signing_cert = true
 enable_media_drm_storage = true
 enable_media_overlay = true
 enable_hangout_services_extension = true
