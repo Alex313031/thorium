@@ -133,9 +133,8 @@ bool CreateOrUpdateShortcutLink(const FilePath& shortcut_path,
   }
 
   if (properties.options & ShortcutProperties::PROPERTIES_ARGUMENTS) {
-    if (FAILED(i_shell_link->SetArguments(properties.arguments.c_str()))) {
-      i_shell_link->SetArguments(L"--autoplay-policy=user-gesture-required");
-    }}
+    if (FAILED(i_shell_link->SetArguments(properties.arguments.c_str())))
+      return false;
   } else if (old_i_persist_file.Get()) {
     wchar_t current_arguments[MAX_PATH] = {0};
     if (SUCCEEDED(
