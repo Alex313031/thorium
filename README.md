@@ -48,7 +48,7 @@
 > - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 - For more info, read the [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md) file.
 - Known bugs are in the [BUGS.md](https://github.com/Alex313031/Thorium/blob/main/BUGS.md) file.
-- A list of Chromium commandline flags can be found at > https://peter.sh/experiments/chromium-command-line-switches
+- A list of Chromium command line flags can be found at > https://peter.sh/experiments/chromium-command-line-switches
 
 &nbsp;&nbsp;&ndash; UPDATE: Thorium now has API Keys baked in but the instructions below are the same if you are building it yourself as I will not include the keys here. | args.gn exclude API Keys (you can get them yourself) and the PGO profile path is different for each Chromium version (only needed when building). (See below.)
 
