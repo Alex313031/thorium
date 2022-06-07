@@ -1,17 +1,25 @@
+## When building Chromium/Thorium, you run gn args out/$DIR, where $DIR can be any name, in Thorium it is named out/thorium. These set build arguments for ninja (the Chromium build system) to parse and apply. Thorium has many set, and they vary from platform to platform, and whether or not it is a Debug build. This document explains what they do, why they are set a certain way in Thorium, and options available.
+## Copyright (c) 2022 Alex313031.
+
+## API Keys
 google_api_key = "" ## Set Google API Key. Unset in public Thorium repository.
 
 google_default_client_id = "" ## Set the Client ID. Unset in public Thorium repository.
 
 google_default_client_secret = "" ## Set the Client Secret. All three must be set to use Google Sync, Translate, etc. Unset in public Thorium repository. You can make and set your own by following https://www.chromium.org/developers/how-tos/api-keys/. ## NOTE: Thorium contributers, contact me for access to the private API_KEYS repo.
 
+## Experimental
 is_chancie_wancie_build ## Build the CrOS version of ffmpeg. Used for testing, I.E. to enable HEVC on Linux. Will break Windows/Android/Fuchsia builds. Contact me for info on usage cases and testing.
 
+## MacOS
 use_system_xcode = true ## Whether to use the local XCode. Only applicable on Mac, and must be enabled, as only internal Chrome builds have this set to false to use an internal checkout of XCode.
 
+## Cross-Building
 target_os ## Set the target Operating System. I.E. linux, win, mac, chromeos, fuchsia.
 
 target_cpu ## Set the target CPU. I.E. x86, x64, arm, arm64, mipsel, mips64el, and ppc. Can be used to cross-compile. When using arm/arm64, you should set compiler options in //thorium/build/config/arm.gni
 
+## Main
 enable_linux_installer ## Enable making a linux .deb, .rpm, or .snap installer. (Linux Only) Disabled in Debug builds.
 
 enable_distro_version_check ## Set whether to make the linux installer check for supported distro. (Linux Only) Disabled in Debug builds.
@@ -126,6 +134,7 @@ enable_platform_mpeg_h_audio ## Enable experimental MPEG H audio. Enabled in Tho
 
 enable_mse_mpeg2ts_stream_parser ## Enable MPEG-TS media stream parsing/demuxing. Doesn't seem to work on non CrOS platforms. Enabled anyway in Thorium for all platforms for useability.
 
+## Optimizations
 use_thin_lto ## Enable thinLTO optimizations. Should be enabled for all Thorium builds, even debug ones.
 
 thin_lto_enable_optimizations ## Enable more aggressive thinLTO optimizations. Enabled in Thorium for performance, and makes use of the -O3 Cflags, LDflags, and import_instr_limit = 30 flags in the main chrome BUILD.gn file. Disabled for Debug builds.
