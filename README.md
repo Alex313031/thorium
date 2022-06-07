@@ -4,7 +4,7 @@
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_ver_2048_grey_old.png">
 
 ## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/RasPi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
-- Always built with the latest x64 tip-o-tree "Trunk" build of Chromium.
+- Always built with the latest x64 tip-o-tree "Trunk" build of [Chromium](https://www.chromium.org/).
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for Windows > https://github.com/Alex313031/Thorium-Win \
 &nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 (source files for AVX2 are in that repo.) \
@@ -58,7 +58,7 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 - Make sure dependencies are installed by running ./chromium/src/build/install-build-deps.sh.
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
-- Run `gn args out/thorium` and the contents of 'args.gn' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'* 
+- Run `gn args out/thorium` and the contents of '[args.gn](https://github.com/Alex313031/Thorium/blob/main/args.gn)' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'* 
 - For more info about args.gn, read the [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) file.
 - '[infra/args.list](https://github.com/Alex313031/Thorium/blob/main/infra/args.list)' contains an alphabetical list with descriptions of all possible build arguments; [gn_args.list](https://github.com/Alex313031/Thorium/blob/main/infra/gn_args.list) gives a similar list but with the flags in args.gn added.
 - To build, run `./build.sh` (--help for help). For Windows, use `build_win.sh` or `autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
