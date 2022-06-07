@@ -99,6 +99,8 @@ enable_widevine &#35;&#35; Set the availability of the Widevine CDM (Content Dec
 
 bundle_widevine_cdm &#35;&#35; Set whether to bundle the Widevine CDM as a library in the installation folder. When enabled, it cannot be updated as its version is hard coded and tied with the chrome executable, and will not show in chrome://components as it is not built as a component. When disabled, it functions as a component and is downloaded with other components from Google servers to the user profile dir. Disabled in Thorium for transparency, and so that it can be updated irrespective of the Thorium version. Also disabled to make use of the widevine patches for Thorium on Linux. Could technically be enabled on Windows. Only enabled in ThoriumOS, with the widevine patches in that repository.
 
+ignore_missing_widevine_signing_cert &#35;&#35; Set whether to ignore Widevine CDM host verification signing due to no signing cert, regardless of is_official_build. Enabled in Thorium to mitigate possible Widevine issues.
+
 enable_media_drm_storage &#35;&#35; Enable whether Widevine can use LocalStorage to hold DRM files for certain encrypted streams, like I.E. Amazon Prime. Enabled in Thorium for useability.
 
 enable_media_overlay &#35;&#35; Set whether certain media overlays, I.E. volume bar, etc. are enabled. Enabled in Thorium for useability.
