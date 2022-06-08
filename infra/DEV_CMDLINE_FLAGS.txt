@@ -1,1 +1,1 @@
---debug --enable-benchmarking --autoplay-policy=user-gesture-required --force-dev-mode-highlighting --enable-ui-devtools --force-dark-mode
+--enable-benchmarking --autoplay-policy=user-gesture-required --force-dev-mode-highlighting --enable-ui-devtools --enable-local-file-accesses --disable-extensions-file-access-check --allow-file-access-from-files --force-dark-mode
