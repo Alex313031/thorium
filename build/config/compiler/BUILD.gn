@@ -663,16 +663,16 @@ config("compiler") {
     # should be able to better manage binary size increases on its own.
     import_instr_limit = 30
     
-    import-hot-multiplier = 20
+    import_hot_multiplier = 20
     
-    import-cold-multiplier = 5
+    import_cold_multiplier = 5
 
     if (is_win) {
       ldflags += [
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
-        "-mllvm:-import-hot-multiplier=$import-hot-multiplier",
-        "-mllvm:-import-cold-multiplier=$import-cold-multiplier",
+        "-mllvm:-import-hot-multiplier=$import_hot_multiplier",
+        "-mllvm:-import-cold-multiplier=$import_cold_multiplier",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
         # "/lldltocachepolicy:$cache_policy",
@@ -901,11 +901,11 @@ config("compiler_cpu_abi") {
     # CPU architecture. We may or may not be doing a cross compile now, so for
     # simplicity we always explicitly set the architecture.
     
-    import-instr-limit = 30
+    import_instr_limit = 30
     
-    import-hot-multiplier = 20
+    import_hot_multiplier = 20
     
-    import-cold-multiplier = 5
+    import_cold_multiplier = 5
     
     if (current_cpu == "x64") {
       cflags += [
@@ -914,7 +914,7 @@ config("compiler_cpu_abi") {
         "-mavx",
         "-maes",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-Wl,-mllvm,-import-instr-limit=$import_instr_limit", "-Wl,-mllvm,-import-hot-multiplier=$import-hot-multiplier", "-Wl,-mllvm,-import-cold-multiplier=$import-cold-multiplier", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-Wl,-mllvm,-import-instr-limit=$import_instr_limit", "-Wl,-mllvm,-import-hot-multiplier=$import_hot_multiplier", "-Wl,-mllvm,-import-cold-multiplier=$import_cold_multiplier", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
