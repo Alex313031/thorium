@@ -2,6 +2,7 @@
 
 Tools for working with Chromium development. It requires python 2.7 or 3.8 for python 3 support.
 
+<img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/OLD/infra.png" width="128">
 
 ## Tools
 
