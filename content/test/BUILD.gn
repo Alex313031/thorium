@@ -1622,6 +1622,7 @@ test("content_browsertests") {
     "//ui/base/ime/mojom",
     "//ui/compositor",
     "//ui/display",
+    "//ui/display:test_support",
     "//ui/events:test_support",
     "//ui/events/blink:blink",
     "//ui/gfx",
@@ -2064,7 +2065,6 @@ test("content_unittests") {
     "../browser/attribution_reporting/attribution_interop_unittest.cc",
     "../browser/attribution_reporting/attribution_manager_impl_unittest.cc",
     "../browser/attribution_reporting/attribution_report_network_sender_unittest.cc",
-    "../browser/attribution_reporting/attribution_report_unittest.cc",
     "../browser/attribution_reporting/attribution_storage_delegate_impl_unittest.cc",
     "../browser/attribution_reporting/attribution_storage_sql_migrations_unittest.cc",
     "../browser/attribution_reporting/attribution_storage_sql_unittest.cc",
@@ -2519,6 +2519,7 @@ test("content_unittests") {
       "../browser/web_contents/web_drag_dest_mac_unittest.mm",
       "../browser/web_contents/web_drag_source_mac_unittest.mm",
       "../common/mac/attributed_string_type_converters_unittest.mm",
+      "../common/mac/task_port_policy_unittest.cc",
       "../renderer/sandbox_mac_v2_unittest.mm",
     ]
   }
@@ -3076,6 +3077,7 @@ group("gpu_pytype") {
     "//build/util/lib/results/",
     "//content/test/gpu/gold_inexact_matching/",
     "//content/test/gpu/flake_suppressor/",
+    "//testing/pytype_common/",
     "//testing/unexpected_passes_common/",
   ]
 
