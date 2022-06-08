@@ -33,7 +33,7 @@ printf "${GRE}\n" &&
 # Build Thorium and Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell views_examples_with_content -j$@ &&
+./infra/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer views_examples_with_content -j$@ &&
 
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
