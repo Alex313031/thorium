@@ -65,7 +65,7 @@ const base::FeatureParam<double> kMinimumEntropyForLCP{
 // Used as a binding for controlling the runtime enabled blink feature
 // "FixedElementsDontOverscroll". This is needed for experimentation.
 const base::Feature kFixedElementsDontOverscroll{
-    "FixedElementsDontOverscroll", base::FEATURE_DISABLED_BY_DEFAULT};
+    "FixedElementsDontOverscroll", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
@@ -158,14 +158,9 @@ const base::Feature kPrivacySandboxAdsAPIs{"PrivacySandboxAdsAPIs",
 const base::Feature kMixedContentAutoupgrade{"AutoupgradeMixedContent",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
-// An experimental replacement for the `User-Agent` header, defined in
-// https://tools.ietf.org/html/draft-west-ua-client-hints.
+// Enables User-Agent Client Hints
 const base::Feature kUserAgentClientHint{"UserAgentClientHint",
                                          base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Enable `sec-ch-ua-full-version-list` client hint.
-const base::Feature kUserAgentClientHintFullVersionList{
-    "UserAgentClientHintFullVersionList", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Handle prefers-color-scheme user preference media feature via client hints.
 const base::Feature kPrefersColorSchemeClientHintHeader{
@@ -1124,7 +1119,7 @@ const base::Feature kAutofillShadowDOM{"AutofillShadowDOM",
 // Allows read/write of custom formats with unsanitized clipboard content. See
 // crbug.com/106449.
 const base::Feature kClipboardCustomFormats{"ClipboardCustomFormats",
-                                            base::FEATURE_DISABLED_BY_DEFAULT};
+                                            base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Uses page viewport instead of frame viewport in the Largest Contentful Paint
 // heuristic where images occupying the full viewport are ignored.
@@ -1387,7 +1382,7 @@ const base::Feature kOptimizeViewportConstrainedPaintInvalidation{
     base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kReduceUserAgentMinorVersion{
-    "ReduceUserAgentMinorVersion", base::FEATURE_DISABLED_BY_DEFAULT};
+    "ReduceUserAgentMinorVersion", base::FEATURE_ENABLED_BY_DEFAULT};
 const base::FeatureParam<std::string> kUserAgentFrozenBuildVersion{
     &kReduceUserAgentMinorVersion, "build_version", "0"};
 
@@ -1480,6 +1475,13 @@ const base::Feature kSimulateClickOnAXFocus {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 };
+
+// Allow access to WebSQL in non-secure contexts.
+const base::Feature kWebSQLNonSecureContextAccess{
+    "WebSQLNonSecureContextAccess", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kFileSystemUrlNavigation{"FileSystemUrlNavigation",
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
