@@ -1,0 +1,1 @@
+--enable-benchmarking --autoplay-policy=user-gesture-required --force-dev-mode-highlighting --enable-ui-devtools --force-dark-mode
