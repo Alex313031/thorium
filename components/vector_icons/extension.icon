@@ -1,9 +1,10 @@
 // Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// Originally from https://github.com/brave/brave-core/blob/master/vector_icons/chrome/app/vector_icons/extension.icon
+// Modified, Originally from https://github.com/brave/brave-core/blob/master/vector_icons/chrome/app/vector_icons/extension.icon
 
 PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
+STROKE, 3,
 MOVE_TO, 31.81f, 42,
 R_H_LINE_TO, 4.72f,
 R_CUBIC_TO, 0.27f, 0, 0.5f, -0.23f, 0.5f, -0.5f,
