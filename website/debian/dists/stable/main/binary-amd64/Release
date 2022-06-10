@@ -1,6 +1,0 @@
-Component: main
-Origin: dl.thorium.rocks
-Label: thorium
-Description: Thorium browser packages
-Archive: stable
-Architecture: amd64
