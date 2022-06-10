@@ -3,12 +3,13 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_ver_2048_grey_old.png">
 
-## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/RasPi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
+## Chromium fork for linux named [after radioactive element No. 90](https://en.wikipedia.org/wiki/Thorium). Windows/MacOS/RasPi/Other builds see below.
+
 - Always built with the latest x64 tip-o-tree "Trunk" build of [Chromium](https://www.chromium.org/).
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
 &nbsp;&ndash; I also build for Windows > [Thorium Win](https://github.com/Alex313031/Thorium-Win) You can also find SSE4 builds for Windows here.\
 &nbsp;&ndash; AVX2 Builds for Windows and Linux > [Thorium AVX2](https://github.com/Alex313031/Thorium-AVX2) (source files for AVX2 are in that repo.) \
-&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > [Thorium Special](https://github.com/Alex313031/Thorium-Special) You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 Linux builds. \
+&nbsp;&ndash; MacOS and Prasberry Pi Builds, as well as Special and Experimental builds, sometimes for other CPUs (read the Readme), are located at > [Thorium Special](https://github.com/Alex313031/Thorium-Special) You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 Linux builds. \
 &nbsp;&ndash; __NEW__: Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/ \
 &nbsp;&ndash; __NEW__: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; __NEW__: Thorium Special now also has ARM64 and x64 builds for MacOS. \
