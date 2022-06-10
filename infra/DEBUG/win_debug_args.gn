@@ -15,6 +15,7 @@ enable_resource_allowlist_generation = true
 enable_profiling = true
 is_component_build = false
 symbol_level = 2
+use_debug_fission = true
 optimize_webui = false
 enable_webui_tab_strip = true
 use_lld = true
