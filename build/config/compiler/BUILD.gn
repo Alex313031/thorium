@@ -893,13 +893,14 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = []
+  cflags = [ "-O3", ]
   ldflags = []
   defines = []
 
   if ((is_posix && !is_apple) || is_fuchsia) {
     # CPU architecture. We may or may not be doing a cross compile now, so for
     # simplicity we always explicitly set the architecture.
+    if (current_cpu == "x64") {
     
     import_instr_limit = 30
     
@@ -907,7 +908,6 @@ config("compiler_cpu_abi") {
     
     import_cold_multiplier = 5
     
-    if (current_cpu == "x64") {
       cflags += [
         "-m64",
         "-O3",
@@ -921,6 +921,7 @@ config("compiler_cpu_abi") {
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
+          "-O3",
           "-msse3",
         ]
       }
@@ -953,10 +954,10 @@ config("compiler_cpu_abi") {
       if (custom_toolchain == "") {
         if (is_clang) {
           if (is_android) {
-            cflags += [ "--target=mipsel-linux-android" ]
+            cflags += [ "--target=mipsel-linux-android", "-O3", ]
             ldflags += [ "--target=mipsel-linux-android" ]
           } else {
-            cflags += [ "--target=mipsel-linux-gnu" ]
+            cflags += [ "--target=mipsel-linux-gnu", "-O3", ]
             ldflags += [ "--target=mipsel-linux-gnu" ]
           }
         } else {
@@ -2062,6 +2063,7 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
+    "-O3",
   ]
 
   common_optimize_on_ldflags += [
