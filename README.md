@@ -6,14 +6,14 @@
 ## Chromium fork for linux named after radioactive element No. 90. Windows/MacOS/RasPi/Other builds see below. NEW: New builds for different architectures in Thorium-Special!
 - Always built with the latest x64 tip-o-tree "Trunk" build of [Chromium](https://www.chromium.org/).
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below. \
-&nbsp;&ndash; I also build for Windows > https://github.com/Alex313031/Thorium-Win \
-&nbsp;&ndash; AVX2 Builds for Windows and Linux > https://github.com/Alex313031/Thorium-AVX2 (source files for AVX2 are in that repo.) \
-&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > https://github.com/Alex313031/Thorium-Special You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 builds. \
+&nbsp;&ndash; I also build for Windows > [Thorium Win](https://github.com/Alex313031/Thorium-Win) You can also find SSE4 builds for Windows here.\
+&nbsp;&ndash; AVX2 Builds for Windows and Linux > [Thorium AVX2](https://github.com/Alex313031/Thorium-AVX2) (source files for AVX2 are in that repo.) \
+&nbsp;&ndash; Special and Experimental builds, sometimes for other CPUs (read the readme), and MacOS/Raspi are located at > [Thorium Special](https://github.com/Alex313031/Thorium-Special) You can find builds for Piledriver/Steamroller/Excavator CPUS, Haswell CPUs, as well as SSE4 Linux builds. \
+&nbsp;&ndash; __NEW__: Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/ \
 &nbsp;&ndash; __NEW__: Tigerlake (11th Gen) builds by @midzer \
 &nbsp;&ndash; __NEW__: Thorium Special now also has ARM64 and x64 builds for MacOS. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has new ARM64 builds for things like the Raspberry Pi. \
 &nbsp;&ndash; __NEW__: Thorium Special now also has experimental Android ARM32 & ARM64 builds.
-&nbsp;&ndash; __NEW__: Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/
 
 &nbsp;&nbsp;&ndash; Includes Widevine, All Codecs, Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations. It is built with SSE4, AVX, and AES, so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and use regular SSE3 like Chromium and Chrome, or builds from Thorium special, some of which are SSE4. (See below.)
 
@@ -54,7 +54,7 @@
 
 # Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
 _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium is at $HOME/thorium/. You may have to 'sudo chmod +x' the scripts to make them executable.**_ 
-- UPDATE: For Windows and Windows AVX2, I made new dedicated instructions. If you are building on Windows use > [WIN_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/misc/WIN_INSTRUCTIONS.txt) and if you are building for Windows on Linux, use > [WIN_CROSS_BUILD_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/misc/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
+- UPDATE: For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use > [WIN_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/misc/WIN_INSTRUCTIONS.txt) and if you are building for Windows on Linux, use > [WIN_CROSS_BUILD_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/misc/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
 - In general we follow build instructions at https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/linux/build_instructions.md and API Keys (if desired) at https://www.chromium.org/developers/how-tos/api-keys 
 - Make sure dependencies are installed by running ./chromium/src/build/install-build-deps.sh.
 - After initial download of Chromium source code, run (from where you cloned this repo) `./trunk.sh`. This will update and sync the sources and at the end it will download the PGO profile for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
