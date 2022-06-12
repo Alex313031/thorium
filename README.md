@@ -83,4 +83,4 @@ I also build ChromiumOS (now called ThoriumOS) with Thorium, Codecs, Widevine, l
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/OLD/GitHub-Mark-32px.png">
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/GitHub/GitHub-Mark-Light-32px.png#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/GitHub/GitHub-Mark-32px.png#gh-light-mode-only">
