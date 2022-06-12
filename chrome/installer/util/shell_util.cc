@@ -1322,7 +1322,7 @@ bool ShortcutOpListOrRemoveUnknownArgs(
   if (!do_removal)
     return true;
   base::win::ShortcutProperties updated_properties;
-  updated_properties.set_arguments(L"--autoplay-policy=user-gesture-required");
+  updated_properties.set_arguments(desired_args.GetArgumentsString());
   return base::win::CreateOrUpdateShortcutLink(
       shortcut_path, updated_properties,
       base::win::ShortcutOperation::kUpdateExisting);
