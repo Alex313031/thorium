@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${YEL}Script to build Thorium for Windows on Linux.${c0}\n" &&
-	printf "${underline}Usage${c0}: build_win.sh # (where # is number of jobs)\n" &&
+	printf "${underline}Usage${c0}: build_win.sh # (where # is number of jobs)${c0}\n" &&
 	printf "\n"
 }
 
@@ -37,5 +37,5 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
 
-printf "${GRE}Build Completed. ${YEL}Installer at //out/thorium/thorium_mini_installer.exe\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}Installer at //out/thorium/thorium_mini_installer.exe\n" &&
 tput sgr0
