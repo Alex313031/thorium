@@ -916,7 +916,7 @@ config("compiler_cpu_abi") {
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl) {
-        cflags += [ "--target=arm-linux-gnueabihf", "-O3", ]
+        cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-unused-command-line-argument", ]
         ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", ]
       }
       if (!is_nacl) {
@@ -930,7 +930,7 @@ config("compiler_cpu_abi") {
       }
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia) {
-        cflags += [ "--target=aarch64-linux-gnu", "-O3", ]
+        cflags += [ "--target=aarch64-linux-gnu", "-O3", "-Wno-unused-command-line-argument", ]
         ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", ]
       }
       if (is_android) {
