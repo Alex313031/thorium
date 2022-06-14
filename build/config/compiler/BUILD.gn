@@ -662,17 +662,13 @@ config("compiler") {
     # TODO(gbiv): We ideally shouldn't need to specify this; ThinLTO
     # should be able to better manage binary size increases on its own.
     import_instr_limit = 40
-    
-    import_hot_multiplier = 30
-    
-    import_cold_multiplier = 8
 
     if (is_win) {
       ldflags += [
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
-        "-mllvm:-import-hot-multiplier=$import_hot_multiplier",
-        "-mllvm:-import-cold-multiplier=$import_cold_multiplier",
+        "-mllvm:-import-hot-multiplier=30",
+        "-mllvm:-import-cold-multiplier=8",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
         # "/lldltocachepolicy:$cache_policy",
