@@ -2574,6 +2574,10 @@ are declared in tools/grit/grit_rule.gni.
                desc="Label for the button prompting to open a download while deep scanning is in progress">
         Open Now
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_REVIEW"
+               desc="Label for the button prompting the dialog containing the enterprise administrator's message explaining the violation.">
+        Review
+      </message>
       <message name="IDS_DOWNLOAD_BUBBLE_INTERRUPTED_STATUS_DISK_FULL"
                desc="Status text for a download item that was interrupted because there is not enough room on the disk to download this file.">
         Out of storage space
@@ -2613,10 +2617,6 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_DOWNLOAD_BUBBLE_INTERRUPTED_SUBPAGE_SUMMARY_BLOCKED_ORGANIZATION"
                desc="Subpage summary text for a download item that was blocked by the organization.">
         Your organization blocked this file because it didn't meet a security policy
-      </message>
-      <message name="IDS_DOWNLOAD_BUBBLE_WARNING_SUBPAGE_SUMMARY_BLOCKED_ORGANIZATION"
-               desc="Subpage summary text of warning for download item that was blocked by the organization.">
-        Your organization blocked this file because it has sensitive content
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_INTERRUPTED_STATUS_WRONG"
                desc="Status text for a download item that had something go wrong.">
@@ -2686,9 +2686,21 @@ are declared in tools/grit/grit_rule.gni.
                desc="Dangerous warning for a file with sensitive content">
         Sensitive content
       </message>
-      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_SENSITIVE_CONTENT"
-               desc="Subpage summary of dangerous warning for a file with sensitive content">
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_SENSITIVE_CONTENT_WARNING"
+               desc="Subpage summary text of warning for download item that contains sensitive content">
         Your organization recommends deleting this file because it has sensitive content
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_SENSITIVE_CONTENT_BLOCK"
+               desc="Subpage summary text of warning for download item that was blocked by the organization.">
+        Your organization blocked this file because it has sensitive or dangerous content. Ask its owner to fix.
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_ENCRYPTED"
+               desc="Subpage summary of dangerous warning for an encrypted file.">
+        Your organization blocked this file because it is encrypted. Ask its owner to decrypt.
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_TOO_BIG"
+               desc="Subpage summary of warning for a file blocked for being too large.">
+        Your organization blocked this file because it is too big for a security check. You can open files up to 50 MB.
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_TRY_AGAIN"
                desc="Retry button when a download is failed">
@@ -3748,6 +3760,9 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <message name="IDS_CERT_EXTENSION_NON_CRITICAL" desc="The text displayed in the certificate details dialog for a given extension which is not critical">
           Not Critical
+        </message>
+        <message name="IDS_CERT_DUMP_ERROR" desc="The text displayed in the certificate viewer dialog for a given field which could not be decoded">
+          Error: Unable to decode certificate
         </message>
         <message name="IDS_CERT_EXTENSION_DUMP_ERROR" desc="The text displayed in the certificate details dialog for a given extension which could not be decoded">
           Error: Unable to decode extension
@@ -5302,7 +5317,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <!-- End Extension Settings Overridden Dialog strings. -->
       <!-- Force Installed Deprecated Apps Deletion Dialog strings. -->
       <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
-        Old versions of Thorium Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
+        Old versions of Chrome Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
       </message>
       <!-- End Force Installed Deprecated Apps Deletion Dialog strings. -->
       <!-- Deprecated Apps Deletion Dialog strings. -->
@@ -5313,13 +5328,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
         "<ph name="EXTENSION_NAME">$1<ex>Google Docs</ex></ph>" is no longer supported
       </message>
       <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Chrome Apps will soon no longer launch.">
-        Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
+        Old versions of Chrome apps won't open after December 2022. You can check if there's a new version available.
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on chrome apps deprecation">
         Learn more
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE_AX_LABEL" desc="Accessibility label text for IDS_DEPRECATED_APPS_LEARN_MORE link">
-        Learn more about unsupported Thorium apps
+        Learn more about unsupported Chrome apps
       </message>
       <message name="IDS_DEPRECATED_APPS_DELETION_LINK" desc="Contains link to trigger the deprecated apps deletion dialog from chrome://apps">
         {NUM_APPS, plural,
@@ -5907,7 +5922,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
 
       <message name="IDS_EXPERIMENTAL_LACROS_WARNING_MESSAGE_PRIMARY" desc="Addendum which is sometimes added to the initial warning message.">
-        The standard browser can be found by typing "Thorium" into Launcher.
+        The standard browser can be found by typing "Chrome" into Launcher.
       </message>
 
       <message name="IDS_EXPERIMENTAL_LACROS_WARNING_MESSAGE_MANAGED" desc="Addendum which is sometimes added to the initial warning message.">
@@ -7546,9 +7561,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_PASSWORD_MANAGER_TOOLTIP_MOVE" desc="Text for the 'Manage Passwords' icon's 'move password to account' state">
           Move your password
-        </message>
-        <message name="IDS_PASSWORD_MANAGER_IMPORT_BUTTON" desc="The label of the button for importing passwords. The button appears next to the list of saved passwords in Chrome's settings.">
-          Import
         </message>
         <message name="IDS_PASSWORD_MANAGER_IMPORT_DIALOG_TITLE" desc="The title of the file selection dialog for importing passwords">
           Import Passwords To Thorium
@@ -11298,7 +11310,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
-        Web Store
+        Thorium Web Store
       </message>
 
       <!-- Desktop media picker UI for Desktop Capture API -->
@@ -13126,6 +13138,18 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_INPUT_OVERLAY_CLOSE_MENU" desc="Accessibility name tied to the close button.">
         Close menu
       </message>
+      <message name="IDS_INPUT_OVERLAY_EDIT_INSTRUCTIONS" desc="Text presented via a toltip so the user knows how to interact and edit key-bindigs.">
+        Click on any key with your mouse, then press a keyboard key to customize
+      </message>
+      <message name="IDS_INPUT_OVERLAY_EDIT_MISSING_BINDING" desc="Text presented via a toltip so the user is aware of an incomplete key-binding.">
+        Key is missing. Press a keyboard key to customize
+      </message>
+      <message name="IDS_INPUT_OVERLAY_EDIT_RESERVED_KEYS" desc="Text informing the user about keys not available for binding.">
+        The following keys aren’t supported: Tab, Shift, Control, Escape, Caps lock, Volume
+      </message>
+      <message name="IDS_INPUT_OVERLAY_EDIT_FOCUSED_KEY" desc="Text informing the user on how to proceed while having a focused key.">
+        Press a keyboard key to customize
+      </message>
     </if>
 
     <!-- Privacy Sandbox Dialog strings -->
@@ -13203,6 +13227,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_ACCEPT_TEXT" translateable="false" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
         I agree
+      </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_STARTING_SCREEN_TITLE" translateable="false" desc="The title shown on the side panel after an Automated Password Change flow has been started. This message is shown until the first response from a script is received that resets the initial state.">
+        Opening <ph name="URL">$1<ex>www.example.com</ex></ph>...
       </message>
     </if>
   </messages>
