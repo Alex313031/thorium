@@ -661,11 +661,11 @@ config("compiler") {
     # binary size than the default setting of 100.
     # TODO(gbiv): We ideally shouldn't need to specify this; ThinLTO
     # should be able to better manage binary size increases on its own.
-    import_instr_limit = 30
+    import_instr_limit = 40
     
-    import_hot_multiplier = 20
+    import_hot_multiplier = 30
     
-    import_cold_multiplier = 5
+    import_cold_multiplier = 8
 
     if (is_win) {
       ldflags += [
@@ -902,11 +902,11 @@ config("compiler_cpu_abi") {
     # simplicity we always explicitly set the architecture.
     if (current_cpu == "x64") {
     
-    import_instr_limit = 30
+    import_instr_limit = 40
     
-    import_hot_multiplier = 20
+    import_hot_multiplier = 30
     
-    import_cold_multiplier = 5
+    import_cold_multiplier = 8
     
       cflags += [
         "-m64",
