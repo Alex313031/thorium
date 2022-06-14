@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${YEL}Script to build Thorium on Linux.${c0}\n" &&
-	printf "${underline}Usage${c0}: build.sh # (where # is number of jobs)\n" &&
+	printf "${underline}Usage${c0}: build.sh # (where # is number of jobs)${c0}\n" &&
 	printf "\n"
 }
 
@@ -35,5 +35,5 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell -j$@ &&
 
-printf "${GRE}Build Completed.\n" &&
+printf "${GRE}${bold}Build Completed.\n" &&
 tput sgr0
