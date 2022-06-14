@@ -51,7 +51,7 @@ python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-
 
 printf "\n" &&
 
-printf "${GRE}Done! ${YEL}You can now run ./setup.sh.\n"
+printf "${GRE}Done! ${YEL}You can now run ./setup.sh\n"
 tput sgr0
 
 exit 0
