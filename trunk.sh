@@ -22,6 +22,10 @@ cd $HOME/chromium/src/v8/ &&
 
 git checkout -f origin/main &&
 
+cd $HOME/chromium/src/third_party/devtools-frontend/src &&
+
+git checkout -f origin/main &&
+
 cd $HOME/chromium/src &&
 
 rm -v -f $HOME/chromium/src/ui/webui/resources/images/infra.png &&
