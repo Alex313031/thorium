@@ -914,6 +914,11 @@ config("compiler_cpu_abi") {
           "-msse3",
         ]
       }
+    } else if (target_cpu == "arm64") {
+      if (!is_android && !is_nacl) {
+        cflags += [ "-Wno-unused-command-line-argument", ]
+        ldflags += [ "-Wno-unused-command-line-argument", ]
+      }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl) {
         cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-unused-command-line-argument", ]
