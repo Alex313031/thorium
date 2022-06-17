@@ -65,7 +65,7 @@ const base::FeatureParam<double> kMinimumEntropyForLCP{
 // Used as a binding for controlling the runtime enabled blink feature
 // "FixedElementsDontOverscroll". This is needed for experimentation.
 const base::Feature kFixedElementsDontOverscroll{
-    "FixedElementsDontOverscroll", base::FEATURE_ENABLED_BY_DEFAULT};
+    "FixedElementsDontOverscroll", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1519,6 +1519,9 @@ const base::Feature kSimulateClickOnAXFocus {
 #endif
 };
 
+const base::Feature kThreadedPreloadScanner{"ThreadedPreloadScanner",
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Allow access to WebSQL in non-secure contexts.
 const base::Feature kWebSQLNonSecureContextAccess{
     "WebSQLNonSecureContextAccess", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1528,6 +1531,17 @@ const base::Feature kFileSystemUrlNavigation{"FileSystemUrlNavigation",
 
 const base::Feature kEarlyExitOnNoopClassOrStyleChange{
     "EarlyExitOnNoopClassOrStyleChange", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kLocalFrameRootPrePostFCPMetrics{
+    "LocalFrameRootPrePostFCPMetrics", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// TODO(mahesh.ma): Enable for supported Android versions once feature is ready.
+const base::Feature kStylusWritingToInput{"StylusWritingToInput",
+                                          base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kDisableArrayBufferSizeLimitsForTesting{
+    "DisableArrayBufferSizeLimitsForTesting",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
