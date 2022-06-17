@@ -63,8 +63,7 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 - To build, run `./build.sh` (--help for help). For Windows, use `build_win.sh` or `autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8` *The -j# can be changed to limit or increase the number of jobs (generally should be the number of CPU cores on your machine)*
 - To install, copy/paste the contents of your *out/thorium* dir to a good location, i.e. *$HOME/bin/thorium*. **RECOMMENDED - Copy and run clean.sh within this dir to clean up build artifacts**. Then you can just run the browser with `~/bin/thorium/chrome`, the content_shell with `~/bin/thorium/thorium_shell`, or chromedriver with `~/bin/thorium/chromedriver`.
 - **Proper Install:** To install with a .deb, dont copy the contents of *out/thorium*; instead run <br/> `./thordeb.sh` (--help for help). A nice .deb file will now be in *out/thorium* and you can install it with `sudo dpkg -i *.deb` It will be called 'thorium-browser-unstable_$VERSIONNUMBER_amd64.deb', and will be installed to */opt/chromium.org/thorium-unstable/*. For Windows, just run the mini_installer.exe. \
-- **Appimage:** You can also make an [Appimage](https://appimage.org/) of Thorium after making the .deb. \
-See > https://github.com/Alex313031/Thorium/tree/main/infra/APPIMAGE#readme \
+- **Appimage:** You can also make an [Appimage](https://appimage.org/) of Thorium after making the .deb. See > [Appimage README.md](https://github.com/Alex313031/Thorium/tree/main/infra/APPIMAGE#readme)
 
 &nbsp;&nbsp; __NOTE:__ To get back to "Trunk", i.e. to revert all changes in order to build vanilla Chromium or to update your checkout, just run `./trunk.sh` again. \
 &nbsp;&nbsp; __NOTE:__ To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *avx*, and replace *avx* with *sse3* or *sse4*.
