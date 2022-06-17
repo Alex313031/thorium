@@ -1,4 +1,4 @@
-## Thorium Network Error Interstitial Resources <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/dino_32px.png">
+## Thorium Network Error Interstitial Resources&nbsp;&nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/components/200/error_network_generic.png" width="48">
 
 This directory contains the HTML template and resources displayed in the case of
 network errors received when fetching the root document or iframes. These error
@@ -7,7 +7,7 @@ pages can be previewed by following the links listed in chrome://network-errors.
 The same template is used across all desktop and mobile platforms and for main
 frames and iframes.
 
-This dir also includes the scripts and images for the Thorium Dino game.
+This dir also includes the scripts and images for the Thorium Dino game.&nbsp;&nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/dino_32px.png">
 
 ---
 See also:
