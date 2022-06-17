@@ -55,13 +55,13 @@ See > https://github.com/Alex313031/Thorium/blob/main/infra/BUILDING.md
 See > https://github.com/Alex313031/Thorium/tree/main/infra/DEBUG#readme
 
 -------
-https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Chromium discussion and https://alex313031.blogspot.com/ is a blog I made relating to Thorium/ThoriumOS. \
-I also build ChromiumOS (now called ThoriumOS) with Thorium, Codecs, Widevine, linux-firmware/modules, and extra packages at > https://github.com/Alex313031/ChromiumOS/
+&nbsp;&minus; https://www.reddit.com/r/ChromiumBrowser/ is a subreddit I made for Thorium and general Thorium/Chromium discussion, https://thorium.rocks/ is the website I made for it, and https://alex313031.blogspot.com/ is a blog I made relating to Thorium/ThoriumOS. \
+&nbsp;&minus; I also build ChromiumOS (now called ThoriumOS) with Thorium, Codecs, Widevine, linux-firmware/modules, and extra packages at > https://github.com/Alex313031/ChromiumOS/
 
-&minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
-&minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
-&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
-&minus; The pak_src dir, and the binaries in pack_src/bin are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
+&nbsp;&minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
+&nbsp;&minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
+&nbsp;&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
+&nbsp;&minus; The pak_src dir, and the binaries in pack_src/bin are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
 
 &nbsp;&nbsp; __NOTE:__ libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
 
