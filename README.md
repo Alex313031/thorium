@@ -24,22 +24,22 @@
 > - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD support patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
 > - Audio Sandbox patch.
 > - [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (DNS over HTTPS) patches from Bromite.
-> - Enable Do Not Track by default patch from Vanadium.
+> - Enable [Do Not Track](https://allaboutdnt.com/) by default patch from Vanadium.
 > - Show full URLs including trailing slashes in address bar by default.
 > - Disable [FLOC](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) patch.
 > - Disable annoying Google API Key Infobar warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Disable annoying Default Browser Infobar warning.
-> - Adds DuckDuckGo, Ecosia, Ask.com, and Yandex.com in US and other locales, along with the normal search engines.
+> - Adds [DuckDuckGo](https://duckduckgo.com/), [Ecosia](https://www.ecosia.org/), [Ask.com](https://www.ask.com/), and [Yandex.com](https://yandex.com/) in US and other locales, along with the normal search engines.
 > - Always use the local NTP (New Tab Page) regardless of search engine.
 > - Fix icons when distilling page content in [Reader Mode](https://www.howtogeek.com/423643/how-to-use-google-chromes-hidden-reader-mode/).
 > - Enable new Menu UI when right clicking the Reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
 > - Home button and Chrome Labs shown by Default.
-> - Prefetch settings updated to respect privacy.
-> - Patches for GN and chrome_sandbox when building.
+> - [Prefetch](https://www.chromium.org/developers/design-documents/dns-prefetching/) settings updated to respect privacy.
+> - Patches for [GN](https://chromium.googlesource.com/chromium/src/tools/gn/+/48062805e19b4697c5fbd926dc649c78b6aaa138/README.md) and [chrome_sandbox](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/design/sandbox.md) when building.
 > - Remove the addition of the Chrome APT sources.list during installation.
 > - Widevine CDM Patch for Linux.
 > - Enable Parallel Downloading by Default.
-> - Inclusion of <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png" width="16"> [pak](https://github.com/Alex313031/Thorium/tree/main/pak_src#readme) (Linux) and pak_mingw (Windows), a utility for packing and unpacking the &#42;.pak files in Thorium and any other Chromium based browser.
+> - Inclusion of <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png" width="16"> [pak](https://github.com/Alex313031/Thorium/tree/main/pak_src#readme) (Linux) and pak_mingw (Windows), a utility for packing and unpacking the [&#42;.pak](https://textslashplain.com/2022/05/03/chromium-internals-pak-files/) files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
 > - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
 > - Includes installer patches and files to include [ChromeDriver](https://chromedriver.chromium.org/home) and *thorium_shell* [(content_shell)](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md), with a .desktop file being provided for thorium_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe on Windows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
