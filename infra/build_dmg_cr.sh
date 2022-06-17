@@ -28,4 +28,4 @@ codesign --force --deep --sign - out/thorium/Chromium.app &&
 chrome/installer/mac/pkg-dmg --sourcefile --source out/thorium/Chromium.app --target "out/thorium/Chromium_MacOS.dmg" --volname Chromium --symlink /Applications:/Applications --format UDBZ --verbosity 2 &&
   
 printf "${GRE}.DMG Build Completed. ${YEL}Installer at //out/thorium/Chromium*.dmg\n" &&
-tput sgr0 &&
+tput sgr0
