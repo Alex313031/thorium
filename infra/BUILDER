@@ -4,7 +4,8 @@
         "-mtune=x86-64",
 ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", ]
 
-
+sudo chown root chrome-sandbox
+sudo chmod 4755 chrome-sandbox
 
 ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
 lto_opt_level
