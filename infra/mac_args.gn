@@ -3,6 +3,7 @@ google_default_client_id = ""
 google_default_client_secret = ""
 target_os = "mac"
 target_cpu = "x64"
+v8_target_cpu = "x64"
 use_system_xcode = true
 enable_stripping = true
 is_official_build = true
