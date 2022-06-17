@@ -240,6 +240,11 @@ const char kUserGestureRequiredPolicy[] = "user-gesture-required";
 // This provides a mechanism during testing to lock the decoder framerate
 // to a specific value.
 const char kHardwareVideoDecodeFrameRate[] = "hardware-video-decode-framerate";
+// Set the maximum number of decoder threads for hardware video decoders on
+// ChromeOS. This is intended to be used for development only.
+// TODO(b/195769334): Propagate this to Chrome utility process for
+// Out-of-Process video decoding.
+const char kMaxChromeOSDecoderThreads[] = "max-chromeos-decoder-threads";
 #endif
 }  // namespace switches
 
@@ -370,6 +375,16 @@ const base::FeatureParam<int> kChromeWideEchoCancellationProcessingFifoSize{
 // audio capture device.
 const base::FeatureParam<bool> kChromeWideEchoCancellationMinimizeResampling{
     &kChromeWideEchoCancellation, "minimize_resampling", true};
+
+// Dynamically sets audio::SyncReader's timeout based off of a percentage of
+// buffer duration, in an attempt to minimize glitches.
+// The default negative value indicates that no experiment is running, and
+// we shouldn't use a mixing specific timeout value.
+// If the similar kDynamicAudioTimeout feature is enabled and this value is set,
+// this parameter will override kDynamicAudioTimeout values when we are mixing.
+const base::FeatureParam<double>
+    kChromeWideEchoCancellationDynamicMixingTimeout{
+        &kChromeWideEchoCancellation, "mixing_buffer_duration_percent", -1.0};
 #endif
 
 // Make MSE garbage collection algorithm more aggressive when we are under
@@ -513,7 +528,7 @@ const base::Feature kVaapiVideoEncodeLinux{"VaapiVideoEncoder",
 // Intended for manual usage only in order to gague the status of newer driver
 // implementations.
 const base::Feature kVaapiIgnoreDriverChecks{"VaapiIgnoreDriverChecks",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_LINUX)
 
 // Enable VA-API hardware decode acceleration for AV1.
@@ -736,7 +751,7 @@ const base::Feature kMediaDrmPreprovisioningAtStartup{
 
 // Enable picture in picture web api for android.
 const base::Feature kPictureInPictureAPI{"PictureInPictureAPI",
-                                         base::FEATURE_DISABLED_BY_DEFAULT};
+                                         base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables CanPlayType() (and other queries) for HLS MIME types. Note that
 // disabling this also causes navigation to .m3u8 files to trigger downloading
@@ -1039,10 +1054,6 @@ const base::Feature kUseFakeDeviceForMediaStream{
 // estimations.
 const base::Feature kBresenhamCadence{"BresenhamCadence",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Display the playback speed button on the media controls.
-const base::Feature kPlaybackSpeedButton{"PlaybackSpeedButton",
-                                         base::FEATURE_ENABLED_BY_DEFAULT};
 
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
