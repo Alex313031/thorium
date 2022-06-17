@@ -30,6 +30,10 @@ cd $HOME/chromium/src &&
 
 rm -v -f $HOME/chromium/src/ui/webui/resources/images/infra.png &&
 
+rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-16x16.png &&
+
+rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-32x32.png &&
+
 git checkout -f origin/main &&
 
 git rebase-update &&
