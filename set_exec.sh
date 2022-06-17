@@ -63,5 +63,9 @@ sudo chmod -v +x portable/thorium-browser.desktop &&
 
 sudo chmod -v +x portable/thorium-shell.desktop &&
 
+sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
+
+sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
+
 printf "${GRE}${bold}Scripts are ready!\n" &&
 tput sgr0
