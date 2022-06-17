@@ -19,7 +19,7 @@ printf "${YEL}Generating Thorium Document .icns file for MacOS...\n" &&
 printf "${GRE}\n" &&
 
 # Copy .pngs
-export output_iconset_name"ThoriumDocument.iconset" &&
+export output_iconset_name="ThoriumDocument.iconset" &&
 
 mkdir $output_iconset_name &&
 
