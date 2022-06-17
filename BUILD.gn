@@ -18,7 +18,6 @@ import("//build/config/ui.gni")
 import("//build/gn_logs.gni")
 import("//build/util/generate_wrapper.gni")
 import("//chrome/browser/buildflags.gni")
-import("//chrome/browser/media/router/features.gni")
 import("//components/nacl/features.gni")
 import("//device/vr/buildflags/buildflags.gni")
 import("//extensions/buildflags/buildflags.gni")
@@ -234,10 +233,6 @@ group("gn_all") {
     }
   }
 
-  if (enable_openscreen) {
-    deps += [ "//chrome/browser/media/router:openscreen_unittests" ]
-  }
-
   if (!is_ios) {
     deps += [
       "//google_apis/gcm:mcs_probe",
@@ -264,6 +259,7 @@ group("gn_all") {
     deps += [
       ":d8_fuchsia",
       "//build/fuchsia/cipd",
+      "//chrome/app:chrome_fuchsia",
       "//fuchsia_web:gn_all",
       "//tools/fuchsia/size_tests:fuchsia_sizes",
 
@@ -372,7 +368,7 @@ group("gn_all") {
       "//chrome/test:android_browsertests",
       "//components:components_junit_tests",
       "//content/public/android:content_junit_tests",
-      "//content/shell/android:thorium_shell_apk",
+      "//content/shell/android:content_shell_apk",
       "//device:device_junit_tests",
       "//media/gpu:video_decode_accelerator_unittest",
       "//net/android:net_junit_tests",
@@ -419,7 +415,7 @@ group("gn_all") {
         "//chrome/android:chrome_public_unit_test_apk",
         "//chrome/browser/android/examples/custom_tabs_client:custom_tabs_client_example_apk",
         "//chrome/browser/android/examples/partner_browser_customizations_provider:partner_browser_customizations_example_apk",
-        "//content/shell/android:thorium_shell_test_apk",
+        "//content/shell/android:content_shell_test_apk",
       ]
     }
 
@@ -1673,11 +1669,9 @@ if (enable_js_type_check) {
     data_deps = [
       "chrome/browser/resources:closure_compile",
       "chrome/test:closure_compile",
-      "components/flags_ui/resources:closure_compile",
       "components/neterror/resources:closure_compile",
       "components/security_interstitials:closure_compile",
       "components/sync/driver/resources:closure_compile",
-      "components/ukm/debug:closure_compile",
       "mojo/public/tools/bindings/generators/js_templates/lite/test:closure_compile",
       "ui/webui/resources:closure_compile",
     ]
@@ -1686,9 +1680,6 @@ if (enable_js_type_check) {
         "ash/webui:closure_compile",
         "ui/file_manager:closure_compile",
       ]
-    }
-    if (is_android) {
-      data_deps += [ "components/offline_pages/resources:closure_compile" ]
     }
   }
 }
