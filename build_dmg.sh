@@ -27,5 +27,5 @@ codesign --force --deep --sign - out/thorium/Thorium.app &&
 # Build dmg package
 chrome/installer/mac/pkg-dmg --sourcefile --source out/thorium/Thorium.app --target "out/thorium/Thorium_MacOS.dmg" --volname Thorium --symlink /Applications:/Applications --format UDBZ --verbosity 2 &&
   
-printf "${GRE}.DMG Build Completed. ${YEL}Installer at //out/thorium/thorium*.dmg\n" &&
+printf "${GRE}.DMG Build Completed. ${YEL}Installer at //out/thorium/Thorium*_MacOS.dmg\n" &&
 tput sgr0 &&
