@@ -1,4 +1,4 @@
-## Thorium Network Error Interstitial Resources
+## Thorium Network Error Interstitial Resources <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/dino_32px.png">
 
 This directory contains the HTML template and resources displayed in the case of
 network errors received when fetching the root document or iframes. These error
