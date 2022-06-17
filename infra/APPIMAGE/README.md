@@ -9,6 +9,8 @@ When it is done, you will have an appimage in "out", I.E. it should be something
 
 You can use it standalone, after making it executable with `sudo chmod +x Thorium_Browser-*`, or (*reccomended*) to integrate it with your system you can use [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
 
+ - *See also:* [About Appimages](https://appimage.org/)
+
 ### About
 &ndash; This infra project uses [*pkg2appimage*](https://github.com/AppImage/pkg2appimage/blob/master/pkg2appimage) from here > https://github.com/AppImage/pkg2appimage \
 &ndash; The [*Thorium.yml*](https://github.com/Alex313031/Thorium/blob/main/infra/APPIMAGE/Thorium.yml) file was modeled after the official Chromium one from here > https://github.com/AppImage/pkg2appimage/blob/master/recipes/Chromium.yml
