@@ -33,7 +33,7 @@ printf "${GRE}\n" &&
 # Build Thorium
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver -j$@ &&
+depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver -j$@ &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh\n" &&
 tput sgr0
