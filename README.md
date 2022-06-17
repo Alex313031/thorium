@@ -63,7 +63,7 @@ See > https://github.com/Alex313031/Thorium/tree/main/infra/DEBUG#readme
 &nbsp;&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
 &nbsp;&minus; The pak_src dir, and the binaries in *pack_src/bin* are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
 
-&nbsp;&nbsp; __NOTE:__ libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
+&nbsp;&nbsp; __NOTE:__ [*libpepflashplayer.so*](https://github.com/Alex313031/Thorium/blob/main/infra/libpepflashplayer.so) is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
 
 *Thanks for using Thorium!*
 
