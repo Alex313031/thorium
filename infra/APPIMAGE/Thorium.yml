@@ -1,0 +1,65 @@
+# Copyright (c) 2022 Alex313031
+# Official Thorium builds can be downloaded from https://github.com/Alex313031/Thorium/releases
+app: Thorium
+
+ingredients:
+  script:
+    - echo $VERSION
+
+script:
+  - echo $VERSION
+  - # Copy Files 
+  - cp -r /home/alex/bin/thorium/* usr/bin/
+  - cp -r /home/alex/bin/thorium/libffmpeg.so usr/lib/
+  - # Copy Logo / Icon 
+  - cp usr/bin/product_logo_256.png thorium.png
+  - cp usr/bin/product_logo_24.png usr/share/icons/hicolor/24x24/apps/thorium.png
+  - cp usr/bin/product_logo_32.png usr/share/icons/hicolor/32x32/apps/thorium.png
+  - cp usr/bin/product_logo_48.png usr/share/icons/hicolor/48x48/apps/thorium.png
+  - cp usr/bin/product_logo_64.png usr/share/icons/hicolor/64x64/apps/thorium.png
+  - cp usr/bin/product_logo_128.png usr/share/icons/hicolor/128x128/apps/thorium.png
+  - cp usr/bin/product_logo_256.png usr/share/icons/hicolor/256x256/apps/thorium.png
+  - # Set Version
+  - ./usr/bin/thorium --version | cut -d ' ' -f2 > ../VERSION
+  - # Add Desktop file 
+  - cat > thorium-browser.desktop <<EOF
+  - [Desktop Entry]
+  - Version=1.0
+  - Name=Thorium Browser
+  - GenericName=Web Browser
+  - Comment=Access the Internet
+  - Exec=thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - StartupWMClass=thorium
+  - Keywords=browser
+  - StartupNotify=true
+  - Terminal=false
+  - X-MultipleArgs=True
+  - Icon=thorium
+  - Type=Application
+  - Categories=Network;WebBrowser;
+  - MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+  - Actions=new-window;new-private-window;content-shell;safe-mode;dark-mode;
+  - [Desktop Action new-window]
+  - Name=New Window
+  - Exec=thorium
+  - [Desktop Action content-shell]
+  - Name=Open Thorium Shell
+  - Exec=thorium_shell %U
+  - [Desktop Action safe-mode]
+  - Name=Open in Safe Mode
+  - Exec=thorium --no-experiments %U
+  - [Desktop Action dark-mode]
+  - Name=Open in Dark Mode
+  - Exec=thorium --force-dark-mode --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - [Desktop Action new-private-window]
+  - Name=New Incognito Window
+  - Exec=thorium --incognito --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - EOF
+  - # ADD AppRun 
+  - cat > ./AppRun <<\EOF
+  - #!/bin/sh
+  - HERE=$(dirname $(readlink -f "${0}"))
+  - export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
+  - "${HERE}"/usr/bin/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo $@
+  - EOF
+  - chmod a+x ./AppRun
