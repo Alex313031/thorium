@@ -41,7 +41,7 @@
 > - Enable Parallel Downloading by Default.
 > - Inclusion of <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png" width="16"> [pak](https://github.com/Alex313031/Thorium/tree/main/pak_src#readme) (Linux) and pak_mingw (Windows), a utility for packing and unpacking the [&#42;.pak](https://textslashplain.com/2022/05/03/chromium-internals-pak-files/) files in Thorium and any other Chromium based browser.
 > - Logo and Branding/Naming changed to the Thorium logo, Thorium name, and "Alex313031" being appended to "The Chromium Authors" in credits, etc.
-> - .desktop file includes useful cmdline flags that enable experimental or useful features. (read PATCHES.md)
+> - .desktop file includes useful cmdline flags that enable experimental or useful features. (See [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md))
 > - Includes installer patches and files to include [ChromeDriver](https://chromedriver.chromium.org/home) and *thorium_shell* [(content_shell)](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md), with a .desktop file being provided for thorium_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe on Windows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
 > - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 - For more info, read the [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md) file.
@@ -61,7 +61,7 @@ See > https://github.com/Alex313031/Thorium/tree/main/infra/DEBUG#readme
 &nbsp;&minus; Thanks to https://github.com/robrich999/ for some info and fixes that went into this project.\
 &nbsp;&minus; Thanks to https://github.com/midzer/ for support and helping with builds. \
 &nbsp;&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
-&nbsp;&minus; The pak_src dir, and the binaries in pack_src/bin are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
+&nbsp;&minus; The pak_src dir, and the binaries in *pack_src/bin* are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
 
 &nbsp;&nbsp; __NOTE:__ libpepflashplayer.so is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
 
