@@ -17,16 +17,16 @@
 
 ### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_dark.svg#gh-light-mode-only">
 > - Various compiler flags that improve performance and target [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) CPU's (read [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/PATCHES.md))
-> - Experimental MPEG-DASH.
-> - JPEG XL Image File Format support.
-> - Enable Live Caption (SODA) on all builds.
+> - Experimental [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) support.
+> - [JPEG XL](https://jpeg.org/jpegxl/) Image File Format support.
+> - Enable [Live Caption](https://support.google.com/chrome/answer/10538231?hl) (SODA) on all builds.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
 > - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD support patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
 > - Audio Sandbox patch.
-> - DoH (DNS over HTTPS) patches from Bromite.
+> - [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (DNS over HTTPS) patches from Bromite.
 > - Enable Do Not Track by default patch from Vanadium.
 > - Show full URLs including trailing slashes in address bar by default.
-> - Disable FLOC patch.
+> - Disable [FLOC](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) patch.
 > - Disable annoying Google API Key Infobar warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Disable annoying Default Browser Infobar warning.
 > - Adds DuckDuckGo, Ecosia, Ask.com, and Yandex.com in US and other locales, along with the normal search engines.
