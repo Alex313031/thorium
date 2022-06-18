@@ -9,8 +9,8 @@ ingredients:
 script:
   - echo $VERSION
   - # Copy Files 
-  - cp -r /home/alex/bin/thorium/* usr/bin/
-  - cp -r /home/alex/bin/thorium/libffmpeg.so usr/lib/
+  - cp -r ./thorium/* usr/bin/
+  - cp -r ./thorium/libffmpeg.so usr/lib/
   - # Copy Logo / Icon 
   - cp usr/bin/product_logo_256.png thorium.png
   - cp usr/bin/product_logo_24.png usr/share/icons/hicolor/24x24/apps/thorium.png
