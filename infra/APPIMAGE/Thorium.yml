@@ -1,26 +1,34 @@
 # Copyright (c) 2022 Alex313031
 # Official Thorium builds can be downloaded from https://github.com/Alex313031/Thorium/releases
 app: Thorium
+appId: "org.chromium.Thorium"
+
+compression: minimum
 
 ingredients:
   script:
     - echo $VERSION
 
 script:
+  - # Echo Version
   - echo $VERSION
-  - # Copy Files 
-  - cp -r ./thorium/* usr/bin/
-  - cp -r ./thorium/libffmpeg.so usr/lib/
-  - # Copy Logo / Icon 
-  - cp usr/bin/product_logo_256.png thorium.png
-  - cp usr/bin/product_logo_24.png usr/share/icons/hicolor/24x24/apps/thorium.png
-  - cp usr/bin/product_logo_32.png usr/share/icons/hicolor/32x32/apps/thorium.png
-  - cp usr/bin/product_logo_48.png usr/share/icons/hicolor/48x48/apps/thorium.png
-  - cp usr/bin/product_logo_64.png usr/share/icons/hicolor/64x64/apps/thorium.png
-  - cp usr/bin/product_logo_128.png usr/share/icons/hicolor/128x128/apps/thorium.png
-  - cp usr/bin/product_logo_256.png usr/share/icons/hicolor/256x256/apps/thorium.png
+  - # Move/Copy Files 
+  - cp -v ../../temp/libffmpeg.so usr/lib/
+  - cp -v -r ../../temp/* usr/bin/
+  - # Copy Logo/Icon 
+  - cp -v usr/bin/product_logo_256.png thorium.png
+  - cp -v usr/bin/product_logo_22.png usr/share/icons/hicolor/22x22/apps/thorium.png
+  - cp -v usr/bin/product_logo_24.png usr/share/icons/hicolor/24x24/apps/thorium.png
+  - cp -v usr/bin/product_logo_32.png usr/share/icons/hicolor/32x32/apps/thorium.png
+  - cp -v usr/bin/product_logo_48.png usr/share/icons/hicolor/48x48/apps/thorium.png
+  - cp -v usr/bin/product_logo_64.png usr/share/icons/hicolor/64x64/apps/thorium.png
+  - cp -v usr/bin/product_logo_128.png usr/share/icons/hicolor/128x128/apps/thorium.png
+  - cp -v usr/bin/product_logo_256.png usr/share/icons/hicolor/256x256/apps/thorium.png
+  - cp -v usr/bin/product_logo_512.png usr/share/icons/hicolor/512x512/apps/thorium.png
   - # Set Version
   - ./usr/bin/thorium --version | cut -d ' ' -f2 > ../VERSION
+  - # Remove redundant libffmpeg.so
+  - rm -v usr/bin/libffmpeg.so
   - # Add Desktop file 
   - cat > thorium-browser.desktop <<EOF
   - [Desktop Entry]
@@ -44,7 +52,7 @@ script:
   - Exec=thorium
   - [Desktop Action content-shell]
   - Name=Open Thorium Shell
-  - Exec=thorium_shell %U
+  - Exec=thorium-shell %U
   - [Desktop Action safe-mode]
   - Name=Open in Safe Mode
   - Exec=thorium --no-experiments %U
@@ -55,6 +63,7 @@ script:
   - Name=New Incognito Window
   - Exec=thorium --incognito --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
   - EOF
+  - chmod a+x ./thorium-browser.desktop
   - # ADD AppRun 
   - cat > ./AppRun <<\EOF
   - #!/bin/sh
