@@ -31,20 +31,27 @@ printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this director
 printf "${YEL}Extracting & Copying files from Thorium .deb package...\n" &&
 printf "${c0}\n" &&
 
+sleep 2 &&
+
 # Extract data.tar.xz
-ar x thorium-browser* &&
-tar xf data.tar.xz &&
-mkdir thorium &&
-cp -r opt/chromium.org/thorium-unstable/* thorium/ &&
-cp -r usr/bin/chromedriver thorium/ &&
-cp -r usr/bin/pak thorium/ &&
-rm -r thorium/cron &&
-rm -r thorium/thorium-browser &&
-rm -r thorium/thorium-browser-unstable &&
+mkdir -v ./temp &&
+ar xv *.deb &&
+tar xvf ./data.tar.xz &&
+cp -r -v ./opt/chromium.org/thorium-unstable/* ./temp/ &&
+cp -r -v ./usr/bin/chromedriver temp/ &&
+cp -r -v ./usr/bin/pak temp/ &&
+cp -r -v ./files/product_logo_512.png ./temp/ &&
+cp -r -v ./files/product_logo_22.png ./temp/ &&
+cp -r -v ./files/thorium-shell ./temp/ &&
+rm -r -v ./temp/cron &&
+rm -r -v ./temp/thorium-browser &&
+rm -r -v ./temp/thorium-browser-unstable &&
 
 printf "\n" &&
 printf "${YEL}Building .Appimage using Thorium.yml...\n" &&
 printf "${c0}\n" &&
+
+sleep 2 &&
 
 # Build Appimage
 chmod +x pkg2appimage &&
@@ -54,16 +61,19 @@ printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
 printf "${c0}\n" &&
 
-# Cleanup
-rm -r opt &&
-rm -r etc &&
-rm -r usr &&
-rm -r control.tar.xz &&
-rm -r data.tar.xz &&
-rm -r debian-binary &&
-rm -r Thorium/ &&
-rm -r thorium/ &&
+sleep 2 &&
 
+# Cleanup
+rm -r -v ./opt &&
+rm -r -v ./etc &&
+rm -r -v ./usr &&
+rm -r -v ./control.tar.xz &&
+rm -r -v ./data.tar.xz &&
+rm -r -v ./debian-binary &&
+rm -r -v ./Thorium/ &&
+rm -r -v ./temp/ &&
+
+printf "\n" &&
 printf "${GRE}Done! ${YEL}Appimage at //out/thorium*.Appimage\n" &&
 printf "\n" &&
 tput sgr0
