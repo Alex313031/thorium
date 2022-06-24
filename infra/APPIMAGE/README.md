@@ -1,4 +1,4 @@
-## Thorium AppImage Generation <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/STAGING/Appimage_Logo.svg" width="32">
+## Thorium AppImage Generation <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/STAGING/Appimage_Logo.svg" width="36">
 
 ### Instructions
 This directory contains files to generate an .AppImage of Thorium.
@@ -14,6 +14,6 @@ You can use it standalone, after making it executable with `sudo chmod +x Thoriu
 
  - *See also:* [About AppImages](https://appimage.org/)
 
-### About <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_infra_256.png" width="28">
+### About <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_infra_256.png" width="32">
 &ndash; This infra project uses [*pkg2appimage*](https://github.com/AppImage/pkg2appimage/blob/master/pkg2appimage) from here > https://github.com/AppImage/pkg2appimage \
 &ndash; The [*Thorium.yml*](https://github.com/Alex313031/Thorium/blob/main/infra/APPIMAGE/Thorium.yml) file was modeled after the official Chromium one from here > https://github.com/AppImage/pkg2appimage/blob/master/recipes/Chromium.yml
