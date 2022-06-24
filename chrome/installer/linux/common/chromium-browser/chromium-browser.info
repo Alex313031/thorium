@@ -27,7 +27,7 @@ ENROLLMENTDIR=/etc/chromium/policies/enrollment
 MENUNAME="Thorium Web Browser"
 
 # Brief package description.
-SHORTDESC="The web browser from Chromium.org and The Thorium Authors"
+SHORTDESC="The web browser from The Thorium Authors"
 
 # Detailed package description.
 FULLDESC="Thorium is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier."
