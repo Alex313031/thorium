@@ -15,8 +15,8 @@ die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
-printf "${YEL}Script to set chmod +x on all other Thorium scripts.\n" &&
-printf "${YEL}\n" &&
+printf "${GRE}Script to set chmod +x on all other Thorium scripts.\n" &&
+printf "${BOLD}\n" &&
 
 # Set executable permissions
 export NINJA_SUMMARIZE_BUILD=1 &&
