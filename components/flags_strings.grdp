@@ -11,7 +11,7 @@
     Search flags
   </message>
   <message name="IDS_FLAGS_UI_TITLE" translateable="false" desc="The page title for the about:flags page.">
-    Experiments
+    Thorium Flags
   </message>
   <message name="IDS_FLAGS_UI_PAGE_RESET" translateable="false" desc="Label for button that resets the flags to their default value.">
     Reset all
