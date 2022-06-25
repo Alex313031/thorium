@@ -17,7 +17,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${YEL}Script to build Thorium .appimage on Linux.${c0}\n" &&
+	printf "${bold}${GRE}Script to build Thorium .appimage on Linux.${c0}\n" &&
 	printf "${bold}${YEL}Please place the Thorium .deb file in this directory before running.${c0}\n" &&
 	printf "\n"
 }
