@@ -72,6 +72,12 @@ const char kTrySupportedChannelLayouts[] = "try-supported-channel-layouts";
 
 // Number of buffers to use for WaveOut.
 const char kWaveOutBuffers[] = "waveout-buffers";
+
+// Emulates audio capture timestamps instead of using timestamps from the actual
+// audio device.
+// See crbug.com/1315231 for more details.
+const char kUseFakeAudioCaptureTimestamps[] =
+    "use-fake-audio-capture-timestamps";
 #endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(IS_FUCHSIA)
@@ -263,14 +269,8 @@ const base::Feature kEnableTabMuting{"EnableTabMuting",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enable Picture-in-Picture.
-const base::Feature kPictureInPicture {
-  "PictureInPicture",
-#if BUILDFLAG(IS_ANDROID)
-      base::FEATURE_DISABLED_BY_DEFAULT
-#else
-      base::FEATURE_ENABLED_BY_DEFAULT
-#endif
-};
+const base::Feature kPictureInPicture{"PictureInPicture",
+                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
 #if BUILDFLAG(ENABLE_PLATFORM_HEVC)
 // Enables HEVC hardware accelerated decoding.
@@ -528,7 +528,7 @@ const base::Feature kVaapiVideoEncodeLinux{"VaapiVideoEncoder",
 // Intended for manual usage only in order to gague the status of newer driver
 // implementations.
 const base::Feature kVaapiIgnoreDriverChecks{"VaapiIgnoreDriverChecks",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_LINUX)
 
 // Enable VA-API hardware decode acceleration for AV1.
