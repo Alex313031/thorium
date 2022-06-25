@@ -16,6 +16,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${GRE}Script to set chmod +x on all other Thorium scripts.\n" &&
+tput sgr0 &&
 printf "${BOLD}\n" &&
 
 # Set executable permissions
