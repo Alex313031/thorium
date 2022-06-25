@@ -33,7 +33,7 @@ git clone https://github.com/Alex313031/Thorium.git &&
 # Make Chromium dirs
 printf "\n" &&
 mkdir -v ~/chromium &&
-mkdur -v ~/chromium/src
+mkdir -v ~/chromium/src
 mkdir -v ~/chromium/win &&
 cd $HOME/chromium/win &&
 
