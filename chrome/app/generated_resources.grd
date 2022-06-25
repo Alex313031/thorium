@@ -2825,7 +2825,7 @@ are declared in tools/grit/grit_rule.gni.
           Quit
         </message>
         <message name="IDS_QUIT_WITH_APPS_EXPLANATION" desc="Text displayed in a notification explaining that Chrome will continue running in the background as long as there are Chrome Apps open.">
-          Chrome will keep running while Thorium Apps are open.
+          Thorium will keep running while Thorium Apps are open.
         </message>
         <message name="IDS_QUIT_WITH_APPS_QUIT_LABEL" desc="Button text to quit all running Chrome apps.">
           Quit all Thorium Apps
@@ -6934,7 +6934,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Side Panel
+        Thorium Side Panel
       </message>
 
       <!-- Read Anything strings -->
@@ -11316,7 +11316,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
-        Web Store
+        Thorium Web Store
       </message>
 
       <!-- Desktop media picker UI for Desktop Capture API -->
