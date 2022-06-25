@@ -362,7 +362,7 @@
   <if expr="is_ios">
     <if expr="_google_chrome">
       <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_STORAGE_TOOLTIP" desc="Text that provides further explanation on iOS for the option in the card unmasking dialog that allows user to store a Wallet card on their local device.">
-        If enabled, Chrome will store a copy of your card on this device for faster form filling.
+        If enabled, Thorium will store a copy of your card on this device for faster form filling.
       </message>
     </if>
     <if expr="not _google_chrome">
@@ -414,6 +414,9 @@
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_CONFIRMATION_MESSAGE" desc="Message displayed after tapping a Virtual Card, and the response from the bank indicates that no further verification is required.">
     Your card is confirmed
+  </message>
+  <message name="IDS_AUTOFILL_FIDO_AUTHENTICATION_PROMPT_TITLE" desc="Title for FIDO authentication progress dialog">
+      Verifying...
   </message>
 
   <!-- WebAuthn fingerprint opt-in dialog -->
@@ -695,11 +698,17 @@
     <message name="IDS_AUTOFILL_PROMO_CODE_OFFERS_REMINDER_TITLE" desc="Title of the bubble shown on the merchant website when a merchant promo code offer is available to use.">
       Use this code at checkout
     </message>
+    <message name="IDS_AUTOFILL_GPAY_PROMO_CODE_OFFERS_REMINDER_TITLE" desc="Title of the bubble shown on the merchant website when a GPay merchant promo code offer is available to use, and the user can click on the promo code field to autofill it.">
+      Reminder: Saved promo code available
+    </message>
     <message name="IDS_AUTOFILL_PROMO_CODE_OFFER_BUTTON_TOOLTIP_NORMAL" desc="The tooltip message for a button containing a copyable promo code in the merchant promo code offer notification bubble on Desktop. This message is shown when the button is hovered over and if the button has not been clicked.">
       Click to copy
     </message>
     <message name="IDS_AUTOFILL_PROMO_CODE_OFFER_BUTTON_TOOLTIP_CLICKED" desc="The tooltip message for a button containing a copyable promo code in the merchant promo code offer notification bubble on Desktop. This message is shown when the button is hovered over and if the button has been clicked.">
       Copied to clipboard
+    </message>
+    <message name="IDS_AUTOFILL_GPAY_PROMO_CODE_OFFERS_REMINDER_VALUE_PROP_TEXT" desc="The first line of the GPay promo ocde notification bubble, consisting of the value prop text and a see details link">
+      <ph name="VALUE_PROP">$1<ex>5% off on shoes. Up to $50.</ex></ph> <ph name="DETAILS">$2<ex>See Details</ex></ph>
     </message>
   </if>
 
