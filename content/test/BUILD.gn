@@ -251,6 +251,8 @@ static_library("test_support") {
     "../public/test/permissions_test_utils.h",
     "../public/test/policy_container_utils.cc",
     "../public/test/policy_container_utils.h",
+    "../public/test/preloading_test_util.cc",
+    "../public/test/preloading_test_util.h",
     "../public/test/prerender_test_util.cc",
     "../public/test/prerender_test_util.h",
     "../public/test/private_network_access_util.cc",
@@ -499,6 +501,7 @@ static_library("test_support") {
     "//components/network_session_configurator/common:common",
     "//components/services/storage",
     "//components/startup_metric_utils/browser",
+    "//components/ukm:test_support",
     "//components/variations",
     "//components/viz/client",
     "//components/viz/host",
@@ -1886,14 +1889,14 @@ test("content_browsertests") {
       "../renderer/render_view_browsertest_mac.mm",
     ]
     deps += [ "//third_party/ocmock" ]
-    data_deps += [ "//content/shell:thorium_shell" ]
-    data += [ "$root_out_dir/Content Shell.app/" ]
+    data_deps += [ "//content/shell:Thorium_shell" ]
+    data += [ "$root_out_dir/Thorium Shell.app/" ]
   }
 
   if (is_chromeos_ash) {
     deps += [
       "//ash/components/audio",
-      "//chromeos/dbus/audio",
+      "//chromeos/ash/components/dbus/audio",
       "//chromeos/system",
     ]
   }
@@ -2059,6 +2062,7 @@ test("content_unittests") {
     "../browser/attribution_reporting/attribution_cookie_checker_impl_unittest.cc",
     "../browser/attribution_reporting/attribution_data_host_manager_impl_unittest.cc",
     "../browser/attribution_reporting/attribution_filter_data_unittest.cc",
+    "../browser/attribution_reporting/attribution_header_utils_unittest.cc",
     "../browser/attribution_reporting/attribution_host_unittest.cc",
     "../browser/attribution_reporting/attribution_insecure_random_generator_unittest.cc",
     "../browser/attribution_reporting/attribution_interop_parser_unittest.cc",
@@ -2262,7 +2266,6 @@ test("content_unittests") {
     "../browser/payments/payment_manager_unittest.cc",
     "../browser/permissions/permission_controller_impl_unittest.cc",
     "../browser/picture_in_picture/picture_in_picture_service_impl_unittest.cc",
-    "../browser/plugin_list_unittest.cc",
     "../browser/prerender/prerender_host_registry_unittest.cc",
     "../browser/prerender/prerender_host_unittest.cc",
     "../browser/presentation/presentation_service_impl_unittest.cc",
@@ -2872,7 +2875,7 @@ test("content_unittests") {
     deps += [
       "//ash/components/audio",
       "//ash/constants:constants",
-      "//chromeos/dbus/audio",
+      "//chromeos/ash/components/dbus/audio",
       "//chromeos/services/machine_learning/public/cpp:stub",
       "//chromeos/services/machine_learning/public/mojom",
     ]
@@ -2979,8 +2982,8 @@ test("content_unittests") {
     deps += [ "//ui/events:test_support" ]
   }
 
-  if (!is_win && !is_mac) {
-    sources -= [ "../browser/plugin_list_unittest.cc" ]
+  if (enable_plugins && (is_win || is_mac)) {
+    sources += [ "../browser/plugin_list_unittest.cc" ]
   }
 
   if (use_ozone) {
