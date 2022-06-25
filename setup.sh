@@ -50,7 +50,7 @@ cp -r -v third_party/. $HOME/chromium/src/third_party/ &&
 cp -r -v tools/. $HOME/chromium/src/tools/ &&
 cp -r -v ui/. $HOME/chromium/src/ui/ &&
 cp -r -v v8/. $HOME/chromium/src/v8/ &&
-cp -r -v content_shell/. $HOME/chromium/src/out/thorium/ &&
+cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
