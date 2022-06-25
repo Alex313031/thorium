@@ -14,6 +14,9 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+# Give user a chance to stop if they wish
+read -p "This script requires git and wget. Press Enter to continue, otherwise use Ctrl + C to stop and install these first."
+
 printf "\n" &&
 printf "${YEL}Installing depot_tools, cloning Thorium repo, and creating Chromium directories...\n" &&
 tput sgr0 &&
@@ -27,8 +30,8 @@ git clone https://github.com/Alex313031/Thorium.git &&
 
 # Make Chromium dirs
 sleep 1 &&
-mkdir -v chromium &&
-mkdir -v chromium/win &&
+mkdir -v ~/chromium &&
+mkdir -v ~/chromium/win &&
 cd $HOME/chromium/win &&
 
 printf "\n" &&
