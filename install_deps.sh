@@ -19,13 +19,14 @@ printf "${YEL}Installing depot_tools, cloning Thorium repo, and creating Chromiu
 tput sgr0 &&
 sleep 1 &&
 
-cd $HOME &&
+cd &&
 # Clone repos
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
 
 git clone https://github.com/Alex313031/Thorium.git &&
 
 # Make Chromium dirs
+sleep 1 &&
 mkdir -v $HOME/chromium &&
 mkdir -v $HOME/chromium/win &&
 cd $HOME/chromium/win &&
@@ -51,11 +52,11 @@ printf "export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80\n" &&
 # Give user a chance to stop if they wish
 read -p "Press Enter to continue, otherwise use Ctrl + C to stop."
 
-cd $HOME &&
+cd &&
 # Append lines to .bashrc
 echo 'umask 022' >> .bashrc &&
 
-echo 'PATH="$PATH:~/depot_tools"' >> .bashrc &&
+echo 'PATH="$PATH:$HOME/depot_tools"' >> .bashrc &&
 
 echo 'export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=~/chromium/win/' >> .bashrc &&
 
@@ -85,6 +86,7 @@ tput sgr0 &&
 # Run script to install needed libraries
 cd ~/chromium/src &&
 sudo dpkg --add-architecture i386 &&
+sudo apt update &&
 
 ./build/install-build-deps.sh --lib32 --arm --chromeos-fonts &&
 
