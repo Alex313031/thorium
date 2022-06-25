@@ -16,7 +16,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 # Give user a chance to stop if they wish
 tput setaf 1 &&
-read -p "This script requires git and wget. Press Enter to continue, otherwise use Ctrl + C to stop and install these first."
+read -p "This script requires git and wget. Press Enter to continue, otherwise use Ctrl+C to stop and install these first."
 tput sgr0 &&
 
 printf "\n" &&
@@ -31,8 +31,9 @@ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
 git clone https://github.com/Alex313031/Thorium.git &&
 
 # Make Chromium dirs
-sleep 1 &&
+printf "\n" &&
 mkdir -v ~/chromium &&
+mkdur -v ~/chromium/src
 mkdir -v ~/chromium/win &&
 cd $HOME/chromium/win &&
 
@@ -50,8 +51,8 @@ printf "\n" &&
 printf "${YEL}Adding these lines to your .bashrc...\n" &&
 tput sgr0 &&
 printf "umask 022\n" &&
-printf "PATH=$PATH:$HOME/depot_tools\n" &&
-printf "export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=$HOME/chromium/win/\n" &&
+printf "PATH=\$PATH:\$HOME/depot_tools\n" &&
+printf "export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=\$HOME/chromium/win/\n" &&
 printf "export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80\n" &&
 
 # Give user a chance to stop if they wish
@@ -115,7 +116,7 @@ cd ~/chromium &&
 echo "target_os = [ 'linux', 'win' ]" >> .gclient &&
 
 printf "\n" &&
-printf "${YEL}Running trunk.sh in ~/Thorium...\n" &&
+printf "${YEL}Running set_exec.sh in ~/Thorium...\n" &&
 tput sgr0 &&
 
 # Make set_exec.sh executable so it can make all other scripts executable
@@ -124,6 +125,10 @@ chmod +x set_exec.sh &&
 
 # Run set_exec.sh
 ./set_exec.sh &&
+
+printf "\n" &&
+printf "${YEL}Running trunk.sh in ~/Thorium...\n" &&
+tput sgr0 &&
 
 # Run final trunk.sh to sync/rebase everything with tags and branches, and to set the VS toolchain
 ./trunk.sh &&
