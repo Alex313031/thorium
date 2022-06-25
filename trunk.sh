@@ -17,7 +17,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo Linux.${c0}\n" &&
+	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo on Linux.${c0}\n" &&
 	printf "\n"
 }
 
