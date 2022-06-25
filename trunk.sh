@@ -14,6 +14,17 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+# --help
+displayHelp () {
+	printf "\n" &&
+	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo Linux.${c0}\n" &&
+	printf "\n"
+}
+
+case $1 in
+	--help) displayHelp; exit 0;;
+esac
+
 printf "\n" &&
 printf "${YEL}Rebasing/Syncing and running hooks...\n" &&
 tput sgr0 &&
