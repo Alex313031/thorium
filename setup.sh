@@ -14,6 +14,17 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+# --help
+displayHelp () {
+	printf "\n" &&
+	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
+	printf "\n"
+}
+
+case $1 in
+	--help) displayHelp; exit 0;;
+esac
+
 printf "\n" &&
 printf "${YEL}Creating build output directory...\n" &&
 tput sgr0 &&
@@ -39,7 +50,7 @@ cp -r -v third_party/. $HOME/chromium/src/third_party/ &&
 cp -r -v tools/. $HOME/chromium/src/tools/ &&
 cp -r -v ui/. $HOME/chromium/src/ui/ &&
 cp -r -v v8/. $HOME/chromium/src/v8/ &&
-cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
+cp -r -v content_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
