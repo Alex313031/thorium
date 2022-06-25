@@ -27,8 +27,8 @@ git clone https://github.com/Alex313031/Thorium.git &&
 
 # Make Chromium dirs
 sleep 1 &&
-mkdir -v $HOME/chromium &&
-mkdir -v $HOME/chromium/win &&
+mkdir -v chromium &&
+mkdir -v chromium/win &&
 cd $HOME/chromium/win &&
 
 printf "\n" &&
