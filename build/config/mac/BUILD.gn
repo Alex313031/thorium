@@ -76,9 +76,9 @@ config("runtime_library") {
     "-mmacosx-version-min=$mac_deployment_target",
   ]
 
-  asmflags = common_flags
-  cflags = common_flags
-  ldflags = common_flags
+  asmflags = [ "-O3", ] common_flags
+  cflags = [ "-O3", ] common_flags
+  ldflags = [ "-Wl,-O3", ] common_flags
 
   # Prevent Mac OS X AssertMacros.h (included by system header) from defining
   # macros that collide with common names, like 'check', 'require', and
