@@ -484,7 +484,7 @@ template("linux_package") {
     }
 
     inputs = packaging_files
-    outputs = [ "$root_out_dir/${package}_${chrome_version_full}_${deb_arch}.deb" ]
+    outputs = [ "$root_out_dir/${package}_${channel}_${chrome_version_full}_${deb_arch}.deb" ]
 
     args = [
       rebase_path("$root_out_dir/installer/debian/build.sh", root_build_dir),
