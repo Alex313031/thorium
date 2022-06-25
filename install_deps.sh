@@ -31,7 +31,7 @@ sleep 1 &&
 cd &&
 # Clone repos
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
-
+printf "\n" &&
 git clone https://github.com/Alex313031/Thorium.git &&
 
 # Make Chromium dirs
@@ -47,6 +47,7 @@ tput sgr0 &&
 sleep 1 &&
 
 # Download VS artifacts .zip
+printf "\n" &&
 wget -v https://github.com/Alex313031/Snippets/releases/download/10.1.20348.1_02/4bc2a30e80.zip &&
 sleep 1 &&
 
