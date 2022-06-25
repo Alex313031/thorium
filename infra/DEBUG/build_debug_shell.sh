@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${YEL}Script to build Thorium UI Debug Shell (views_examples_with_content).${c0}\n" &&
-	printf "${underline}Usage${c0}: build.sh # (where # is number of jobs)\n" &&
+	printf "${underline}Usage: ${c0}build_debug_shell.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
 
