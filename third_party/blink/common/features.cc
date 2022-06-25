@@ -65,7 +65,7 @@ const base::FeatureParam<double> kMinimumEntropyForLCP{
 // Used as a binding for controlling the runtime enabled blink feature
 // "FixedElementsDontOverscroll". This is needed for experimentation.
 const base::Feature kFixedElementsDontOverscroll{
-    "FixedElementsDontOverscroll", base::FEATURE_DISABLED_BY_DEFAULT};
+    "FixedElementsDontOverscroll", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kGMSCoreEmoji{"GMSCoreEmoji",
                                   base::FEATURE_ENABLED_BY_DEFAULT};
@@ -405,6 +405,12 @@ const base::Feature kIntensiveWakeUpThrottling{
 // third_party/blink/renderer/platform/scheduler/common/features.cc.
 const char kIntensiveWakeUpThrottling_GracePeriodSeconds_Name[] =
     "grace_period_seconds";
+
+// If enabled, the grace period of features::kIntensiveWakeUpThrottling will be
+// 10 seconds when a background page is loaded.
+const base::Feature kQuickIntensiveWakeUpThrottlingAfterLoading{
+    "QuickIntensiveWakeUpThrottlingAfterLoading",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Throttles Javascript timer wake ups on foreground pages.
 const base::Feature kThrottleForegroundTimers{
@@ -866,12 +872,6 @@ const base::Feature kLogUnexpectedIPCPostedToBackForwardCachedDocuments{
 // dark mode.
 const base::Feature kWebAppEnableDarkMode{"WebAppEnableDarkMode",
                                           base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Enables the "handle_links" manifest field for web apps.
-// Explainer:
-// https://github.com/WICG/pwa-url-handler/blob/main/handle_links/explainer.md
-const base::Feature kWebAppEnableHandleLinks{"WebAppEnableHandleLinks",
-                                             base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables the "launch_handler" manifest field for web apps.
 // Explainer: https://github.com/WICG/sw-launch/blob/main/launch_handler.md
@@ -1378,6 +1378,10 @@ const base::Feature kCompositedCaret{"CompositedCaret",
 const base::Feature kBackForwardCacheAppBanner{
     "BackForwardCacheAppBanner", base::FEATURE_DISABLED_BY_DEFAULT};
 
+const base::Feature kBackForwardCacheEnabledForNonPluginEmbed{
+    "BackForwardCacheEnabledForNonPluginEmbed",
+    base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Initialize CSSDefaultStyleSheets early in renderer startup.
 const base::Feature kDefaultStyleSheetsEarlyInit{
     "DefaultStyleSheetsEarlyInit", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1417,12 +1421,6 @@ const base::Feature kWindowPlacementFullscreenOnScreensChange{
 
 // TODO(crbug.com/1277431): This flag should be eventually disabled.
 const base::Feature kEventPath{"EventPath", base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Removes a paint invalidation of viewport constrained objects (sticky or
-// fixed) after scrolling.
-const base::Feature kOptimizeViewportConstrainedPaintInvalidation{
-    "OptimizeViewportConstrainedPaintInvalidation",
-    base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kReduceUserAgentMinorVersion{
     "ReduceUserAgentMinorVersion", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1475,12 +1473,6 @@ const base::Feature kClientHintsSaveData{"ClientHintsSaveData",
 
 const base::Feature kEstablishGpuChannelAsync{
     "EstablishGpuChannelAsync", base::FEATURE_DISABLED_BY_DEFAULT};
-
-const base::Feature kDeferBeginMainFrameDuringLoading{
-    "DeferBeginMainFrameDuringLoading", base::FEATURE_DISABLED_BY_DEFAULT};
-const base::FeatureParam<base::TimeDelta> kRecentBeginMainFrameCutoff = {
-    &kDeferBeginMainFrameDuringLoading, "recent_begin_main_frame_cutoff",
-    base::Milliseconds(150)};
 
 const base::Feature kDecodeScriptSourceOffThread{
     "DecodeScriptSourceOffThread", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1542,6 +1534,9 @@ const base::Feature kStylusWritingToInput{"StylusWritingToInput",
 const base::Feature kDisableArrayBufferSizeLimitsForTesting{
     "DisableArrayBufferSizeLimitsForTesting",
     base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kTimedHTMLParserBudget{"TimedHTMLParserBudget",
+                                           base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
