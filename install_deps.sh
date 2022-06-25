@@ -14,6 +14,10 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+printf "\n" &&
+printf "${GRE}Script to download all prequisites to build Thorium...\n" &&
+tput sgr0 &&
+
 # Give user a chance to stop if they wish
 tput setaf 1 &&
 read -p "This script requires git and wget. Press Enter to continue, otherwise use Ctrl+C to stop and install these first."
@@ -33,7 +37,7 @@ git clone https://github.com/Alex313031/Thorium.git &&
 # Make Chromium dirs
 printf "\n" &&
 mkdir -v ~/chromium &&
-mkdir -v ~/chromium/src
+mkdir -v ~/chromium/src &&
 mkdir -v ~/chromium/win &&
 cd $HOME/chromium/win &&
 
