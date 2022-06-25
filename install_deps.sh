@@ -15,7 +15,9 @@ die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
 # Give user a chance to stop if they wish
+tput setaf 1 &&
 read -p "This script requires git and wget. Press Enter to continue, otherwise use Ctrl + C to stop and install these first."
+tput sgr0 &&
 
 printf "\n" &&
 printf "${YEL}Installing depot_tools, cloning Thorium repo, and creating Chromium directories...\n" &&
@@ -48,12 +50,14 @@ printf "\n" &&
 printf "${YEL}Adding these lines to your .bashrc...\n" &&
 tput sgr0 &&
 printf "umask 022\n" &&
-printf "PATH=$PATH:~/depot_tools\n" &&
-printf "export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=~/chromium/win/\n" &&
+printf "PATH=$PATH:$HOME/depot_tools\n" &&
+printf "export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=$HOME/chromium/win/\n" &&
 printf "export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80\n" &&
 
 # Give user a chance to stop if they wish
+tput setaf 1 &&
 read -p "Press Enter to continue, otherwise use Ctrl + C to stop."
+tput sgr0 &&
 
 cd &&
 # Append lines to .bashrc
@@ -61,7 +65,7 @@ echo 'umask 022' >> .bashrc &&
 
 echo 'PATH="$PATH:$HOME/depot_tools"' >> .bashrc &&
 
-echo 'export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=~/chromium/win/' >> .bashrc &&
+echo 'export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=$HOME/chromium/win/' >> .bashrc &&
 
 echo 'export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80' >> .bashrc &&
 
