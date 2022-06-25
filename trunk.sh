@@ -26,6 +26,8 @@ case $1 in
 esac
 
 printf "\n" &&
+printf "${bold}${GRE}Script to Rebase/Sync Chromium repo on Linux.${c0}\n" &&
+printf "\n" &&
 printf "${YEL}Rebasing/Syncing and running hooks...\n" &&
 tput sgr0 &&
 
