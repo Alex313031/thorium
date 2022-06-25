@@ -16,7 +16,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${YEL}Script to set chmod +x on all other Thorium scripts.\n" &&
-printf "${GRE}\n" &&
+printf "${YEL}\n" &&
 
 # Set executable permissions
 export NINJA_SUMMARIZE_BUILD=1 &&
@@ -40,6 +40,8 @@ sudo chmod -v +x setup_mac.sh &&
 sudo chmod -v +x thordeb.sh &&
 
 sudo chmod -v +x trunk.sh &&
+
+sudo chmod -v +x install_deps.sh &&
 
 sudo chmod -v +x infra/build_polly.sh &&
 
