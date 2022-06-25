@@ -769,7 +769,7 @@ are declared in tools/grit/grit_rule.gni.
             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for image
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE" desc="The name of the Search Lens for Image command in the content area context menu">
-            Search image with Google Lens
+            Search image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="The name of the Lens Region Search command in the content area context menu">
             Search page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
@@ -1026,7 +1026,7 @@ are declared in tools/grit/grit_rule.gni.
             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for Image
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE" desc="In Title Case: The name of the Search Lens for Image command in the content area context menu">
-            Search Image with Google Lens
+            Search Image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
@@ -2825,10 +2825,10 @@ are declared in tools/grit/grit_rule.gni.
           Quit
         </message>
         <message name="IDS_QUIT_WITH_APPS_EXPLANATION" desc="Text displayed in a notification explaining that Chrome will continue running in the background as long as there are Chrome Apps open.">
-          Thorium will keep running while Chrome Apps are open.
+          Chrome will keep running while Thorium Apps are open.
         </message>
         <message name="IDS_QUIT_WITH_APPS_QUIT_LABEL" desc="Button text to quit all running Chrome apps.">
-          Quit all Chrome Apps
+          Quit all Thorium Apps
         </message>
         <message name="IDS_QUIT_WITH_APPS_SUPPRESSION_LABEL" desc="Button text to prevent a notification from showing in future.">
           Don't show this again
@@ -5317,7 +5317,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <!-- End Extension Settings Overridden Dialog strings. -->
       <!-- Force Installed Deprecated Apps Deletion Dialog strings. -->
       <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
-        Old versions of Chrome Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
+        Old versions of Thorium Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
       </message>
       <!-- End Force Installed Deprecated Apps Deletion Dialog strings. -->
       <!-- Deprecated Apps Deletion Dialog strings. -->
@@ -5328,13 +5328,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
         "<ph name="EXTENSION_NAME">$1<ex>Google Docs</ex></ph>" is no longer supported
       </message>
       <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Chrome Apps will soon no longer launch.">
-        Old versions of Chrome apps won't open after December 2022. You can check if there's a new version available.
+        Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on chrome apps deprecation">
         Learn more
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE_AX_LABEL" desc="Accessibility label text for IDS_DEPRECATED_APPS_LEARN_MORE link">
-        Learn more about unsupported Chrome apps
+        Learn more about unsupported Thorium apps
       </message>
       <message name="IDS_DEPRECATED_APPS_DELETION_LINK" desc="Contains link to trigger the deprecated apps deletion dialog from chrome://apps">
         {NUM_APPS, plural,
@@ -6810,7 +6810,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Pick cards that keep you updated on things that matter to you
       </message>
       <message name="IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_BODY_LINE_2" desc="Line 2 of Modular NTP Desktop v1 First Run Experience's body.">
-        See all card options in <ph name="BEGIN_LINK">&lt;a is="action-link" id="customizeChromeLink" tabIndex=0 on-click="onCustomizeModuleFre_"&gt;</ph>Customize Thorium<ph name="END_LINK">&lt;/a&gt;</ph>
+        See all card options in <ph name="BEGIN_LINK">&lt;a is="action-link" id="customizeChromeLink" tabIndex=0 on-click="onCustomizeModuleFre_"&gt;</ph>Customize Chrome<ph name="END_LINK">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_OPT_IN" desc="Opt in button for Modular NTP Desktop v1 First Run Experience.">
         Got it
@@ -6934,7 +6934,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Thorium Side Panel
+        Side Panel
       </message>
 
       <!-- Read Anything strings -->
@@ -7007,10 +7007,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Extension permissions
       </message>
       <message name="IDS_TOOLTIP_SIDE_PANEL_SHOW" desc="The tooltip for the side panel button, when closed">
-        Show side panel
+        Show Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_SIDE_PANEL_HIDE" desc="The tooltip for the side panel button, when open">
-        Hide side panel
+        Hide Thorium side panel
       </message>
       <if expr="is_macosx">
         <message name="IDS_TOOLTIP_CLOSE_TAB" desc="The tooltip for the close tab button">
@@ -7119,6 +7119,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_ACCNAME_FULLSCREEN" desc="The accessible name of the fullscreen button in the new merged menu">
         Full screen
+      </message>
+      <message name="IDS_ACCNAME_EXIT_FULLSCREEN" desc="The accessible name of the exit fullscreen button in the new merged menu">
+        Exit full screen
       </message>
       <message name="IDS_ACCNAME_HOME" desc="The accessible name for the home button">
         Home
@@ -7287,7 +7290,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+T</ex></ph> can reopen accidentally closed tabs
       </message>
       <message name="IDS_READING_LIST_IN_SIDE_PANEL_PROMO" desc="Text shown on promotional UI appearing next to the side panel button">
-        Your reading list has moved to the new side panel. Try it here.
+        Your reading list has moved to the new Thorium side panel. Try it here.
       </message>
       <message name="IDS_TAB_GROUPS_NEW_GROUP_PROMO" desc="Text shown on promotional UI encouraging users to create a tab group in their tab strip">
         Organize your tabs with tab groups
@@ -9610,9 +9613,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_SYNC_CONFIRMATION_TITLE_LACROS_NON_FORCED" desc="Title of the sync confirmation dialog/screen on lacros when sync is not forced.">
           Turn on Thorium browser sync?
         </message>
-        <message name="IDS_SYNC_CONFIRMATION_TITLE_LACROS" desc="Title of the sync confirmation dialog/screen on lacros.">
-          Thorium browser sync is on
-        </message>
         <message name="IDS_SYNC_CONFIRMATION_SYNC_INFO_TITLE_LACROS" desc="Text in the information about sync on the sync confirmation dialog/screen on lacros.">
           Your bookmarks, passwords, history, and more are synced on all your devices
         </message>
@@ -10191,6 +10191,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="Text to show as the title in the advanced source language view for TAB UI">
             Page language to translate
           </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_TRANSLATE_FULL_PAGE" desc="Text to show for the partial translate bubble button to start a full page translation">
+            Translate full page
+          </message>
         </if>
         <if expr="use_titlecase">
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_BUTTON" desc="In Title Case: Text to show for the translate bubble button to jump to the advanced panel.">
@@ -10246,6 +10249,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           </message>
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="In Title Case: Text to show as the title in the advanced source language view for TAB UI">
             Page Language to Translate
+          </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_TRANSLATE_FULL_PAGE" desc="Text to show for the partial translate bubble button to start a full page translation">
+            Translate Full Page
           </message>
         </if>
         <message name="IDS_TRANSLATE_BUBBLE_RESET" desc="Text to show for the language combobox to revert to its original state in the advanced view under TAB UI">
@@ -11310,7 +11316,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
-        Thorium Web Store
+        Web Store
       </message>
 
       <!-- Desktop media picker UI for Desktop Capture API -->
@@ -12836,7 +12842,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <message name="IDS_APP_PAUSE_HEADING_FOR_WEB_APPS" desc="Tells the user the app will be paused.">
-      You reached the time limit your parent set for <ph name="APP_NAME">$1<ex>Google Photos</ex></ph> Chrome app. You can use it for <ph name="TIME_LIMIT">$2<ex>2 hours and 30 minutes</ex></ph> tomorrow.
+      You reached the time limit your parent set for <ph name="APP_NAME">$1<ex>Google Photos</ex></ph> Thorium app. You can use it for <ph name="TIME_LIMIT">$2<ex>2 hours and 30 minutes</ex></ph> tomorrow.
     </message>
 
     <!-- App block prompt -->
