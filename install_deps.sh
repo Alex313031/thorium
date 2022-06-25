@@ -79,7 +79,8 @@ printf "${YEL}Running source ~/.bashrc..\n" &&
 tput sgr0 &&
 
 # Source .bashrc so changes take effect
-source ~/.bashrc &&
+cd &&
+source .bashrc &&
 
 printf "\n" &&
 printf "${YEL}Downloading Chromium source (This will take a while)...\n" &&
