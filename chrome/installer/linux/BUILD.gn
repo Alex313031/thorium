@@ -459,7 +459,7 @@ template("linux_package") {
   if (is_chrome_branded) {
     package = "google-chrome"
   } else {
-    package = "thorium-browser"
+    package = "Thorium_Browser"
   }
 
   deb_target_name = "${target_name}_deb"
