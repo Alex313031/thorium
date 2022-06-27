@@ -4,4 +4,4 @@
  - See > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/win_cross.md \
  - Bug I filed related to this > https://bugs.chromium.org/p/chromium/issues/detail?id=1317396
 
-For example, I use (from cmd.exe in *C:\src\depot_tools\win_toolchain\*) `python3 package_from_installed.py 2022 -w 10.0.20348.0`
+For example, I use *(from cmd.exe in C:\src\depot_tools\win_toolchain\)* `python3 package_from_installed.py 2022 -w 10.0.20348.0`
