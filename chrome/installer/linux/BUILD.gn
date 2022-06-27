@@ -533,7 +533,7 @@ template("linux_package") {
       }
 
       inputs = packaging_files
-      outputs = [ "$root_out_dir/${package}-${channel}-${chrome_version_full}-1.${rpm_arch}.rpm" ]
+      outputs = [ "$root_out_dir/${package}_${channel}_${chrome_version_full}.${rpm_arch}.rpm" ]
 
       args = [
         rebase_path("$root_out_dir/installer/rpm/build.sh", root_build_dir),
@@ -592,7 +592,7 @@ template("linux_package") {
           snap_arch,
           target_os,
         ]
-        outputs = [ "$root_out_dir/${package}-${channel}_${chrome_version_full}_${snap_arch}.snap" ]
+        outputs = [ "$root_out_dir/${package}_${channel}_${chrome_version_full}_${snap_arch}.snap" ]
       }
     }
   }
