@@ -135,5 +135,5 @@ Type=Application
 Icon=/opt/chromium.org/thorium-unstable/thorium-devtools.png
 Categories=Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml_xml;application/x-mimearchive;x-scheme-handler/http;x-scheme-handler/https;
-StartupWMClass=thorium
+StartupWMClass=thorium_shell
 StartupNotify=true
