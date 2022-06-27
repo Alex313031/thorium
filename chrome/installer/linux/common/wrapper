@@ -34,10 +34,18 @@ else
 fi
 export LD_LIBRARY_PATH
 
-export CHROME_VERSION_EXTRA="@@CHANNEL@@"
+# APPNAME for gtk.
+APPNAME=thorium
+
+# Set the correct file name for the desktop file
+export CHROME_DESKTOP="thorium-browser-unstable.desktop"
+
+# Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
+DIST=`cat /etc/debian_version`
+export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Ubuntu 22.04, running on $DIST"
 
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
-export GNOME_DISABLE_CRASH_DIALOG=SET_BY_GOOGLE_CHROME
+export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM
 
 # Sanitize std{in,out,err} because they'll be shared with untrusted child
 # processes (http://crbug.com/376567).
