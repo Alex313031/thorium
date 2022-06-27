@@ -574,13 +574,13 @@ if (is_android) {
     fuchsia_component("content_shell_component") {
       testonly = true
       manifest = "fuchsia/content_shell.cmx"
-      data_deps = [ ":content_shell" ]
+      data_deps = [ ":thorium_shell" ]
       visibility = [ ":*" ]
     }
 
     fuchsia_package("content_shell_pkg") {
       testonly = true
-      package_name = "content_shell"
+      package_name = "thorium_shell"
       deps = [ ":content_shell_component" ]
     }
 
