@@ -120,7 +120,7 @@ std::string GetDesktopName(base::Environment* env) {
   std::string name;
   if (env->GetVar("CHROME_DESKTOP", &name) && !name.empty())
     return name;
-  return "thorium-browser.desktop";
+  return "thorium-browser-unstable.desktop";
 #endif
 }
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
