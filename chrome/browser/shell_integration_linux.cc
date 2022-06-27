@@ -789,7 +789,7 @@ bool IsFirefoxDefaultBrowser() {
   std::string browser;
   // We don't care about the return value here.
   base::GetAppOutput(base::CommandLine(argv), &browser);
-  return browser.find("firefox") != std::string::npos;
+  return browser.find("thorium-browser") != std::string::npos;
 }
 
 DefaultWebClientState IsDefaultProtocolClient(const std::string& protocol) {
