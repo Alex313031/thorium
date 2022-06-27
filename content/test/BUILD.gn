@@ -1889,8 +1889,8 @@ test("content_browsertests") {
       "../renderer/render_view_browsertest_mac.mm",
     ]
     deps += [ "//third_party/ocmock" ]
-    data_deps += [ "//content/shell:Thorium_shell" ]
-    data += [ "$root_out_dir/Thorium Shell.app/" ]
+    data_deps += [ "//content/shell:thorium_shell" ]
+    data += [ "$root_out_dir/Content Shell.app/" ]
   }
 
   if (is_chromeos_ash) {
