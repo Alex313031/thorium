@@ -668,6 +668,9 @@
   <message name="IDS_SETTINGS_PASSWORD_COPIED_TO_CLIPBOARD" desc="Label for a tooltip following copying a password to the clipboard.">
     Password copied to clipboard
   </message>
+  <message name="IDS_SETTINGS_PASSWORD_USERNAME_COPIED_TO_CLIPBOARD" desc="Label for a tooltip following copying a username of a credential to the clipboard.">
+    Username copied to clipboard
+  </message>
   <message name="IDS_SETTINGS_PASSWORD_MOVE_PASSWORDS_TO_ACCOUNT" desc="Message displayed in the moving multiple passwords to the user Google Account banner.">
     To easily use them on all your devices, you can move them to your Google Account
   </message>
@@ -3422,6 +3425,9 @@
   </message>
   <message name="IDS_SETTINGS_COOKIES_CACHE_STORAGE" desc="The text shown when there is Cache Storage (name of a Web standard) in the Cookies table">
     Cache Storage
+  </message>
+  <message name="IDS_SETTINGS_COOKIES_QUOTA_STORAGE" desc="The text shown when there is Quota Managed Storage in the Cookies table">
+    Quota-managed storage
   </message>
 
   <!-- Sync / People Page -->
