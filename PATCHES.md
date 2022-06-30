@@ -99,6 +99,8 @@ Enable UI Features: Side Search, Side Panel Journeys, Chrome Labs, Extensions Ac
 Enable Precompiling of Inline Scripts in HTML
   - Modified by me.
 
+Patch Windows installer to close previous browser instance > https://github.com/Hibbiki/chromium-win64/blob/master/patch/0001-Patch-installer-to-close-previous-browser-instance-o.patch
+
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
