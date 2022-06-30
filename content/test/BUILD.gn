@@ -509,6 +509,7 @@ static_library("test_support") {
     "//content/browser:for_content_tests",
     "//content/browser/attribution_reporting:attribution_reporting_proto",
     "//content/child:for_content_tests",
+    "//content/common:for_content_tests",
     "//content/gpu",
     "//content/public/browser",
     "//content/public/browser:proto",
@@ -623,8 +624,6 @@ static_library("test_support") {
 
   if (enable_plugins) {
     sources += [
-      "../public/test/fake_pepper_plugin_instance.cc",
-      "../public/test/fake_pepper_plugin_instance.h",
       "../public/test/ppapi_test_utils.cc",
       "../public/test/ppapi_test_utils.h",
       "ppapi_unittest.cc",
@@ -789,7 +788,7 @@ if (is_fuchsia) {
     data = [ "//content/test/gpu/fuchsia_util.py" ]
     data_deps = [
       "//chrome/app:chrome_fuchsia",
-      "//fuchsia_web/webengine:web_engine_shell",
+      "//fuchsia_web/shell",
       "//fuchsia_web/webengine:web_engine_with_webui_installer",
     ]
   }
@@ -1655,6 +1654,8 @@ test("content_browsertests") {
   if (enable_plugins) {
     sources += [
       "../browser/plugin_service_impl_browsertest.cc",
+      "../renderer/pepper/fake_pepper_plugin_instance.cc",
+      "../renderer/pepper/fake_pepper_plugin_instance.h",
       "../renderer/pepper/mock_renderer_ppapi_host.cc",
       "../renderer/pepper/mock_renderer_ppapi_host.h",
       "../renderer/pepper/pepper_device_enumeration_host_helper_unittest.cc",
@@ -2272,6 +2273,7 @@ test("content_unittests") {
     "../browser/private_aggregation/private_aggregation_budget_key_unittest.cc",
     "../browser/private_aggregation/private_aggregation_budget_storage_unittest.cc",
     "../browser/private_aggregation/private_aggregation_budgeter_unittest.cc",
+    "../browser/private_aggregation/private_aggregation_host_unittest.cc",
     "../browser/quota/quota_change_dispatcher_unittest.cc",
     "../browser/renderer_host/ancestor_throttle_unittest.cc",
     "../browser/renderer_host/back_forward_cache_metrics_unittest.cc",
@@ -2335,7 +2337,6 @@ test("content_unittests") {
     "../browser/renderer_host/navigation_request_unittest.cc",
     "../browser/renderer_host/navigation_throttle_runner_unittest.cc",
     "../browser/renderer_host/navigator_unittest.cc",
-    "../browser/renderer_host/origin_policy_throttle_unittest.cc",
     "../browser/renderer_host/overscroll_controller_unittest.cc",
     "../browser/renderer_host/policy_container_host_unittest.cc",
     "../browser/renderer_host/recently_destroyed_hosts_unittest.cc",
@@ -2643,6 +2644,7 @@ test("content_unittests") {
     "//content/browser/private_aggregation/proto:private_aggregation_budgets_proto",
     "//content/child:for_content_tests",
     "//content/common:buildflags",
+    "//content/common:for_content_tests",
     "//content/gpu",
     "//content/public/browser",
     "//content/public/browser:proto",
@@ -2749,6 +2751,10 @@ test("content_unittests") {
     "//testing/buildbot/filters:content_unittests_filters",
     "//third_party/mesa_headers",
   ]
+
+  if (is_mac) {
+    data_deps += [ "//device/fido/strings:fido_test_strings" ]
+  }
 
   if (is_posix) {
     sources += [ "../browser/posix_file_descriptor_info_impl_unittest.cc" ]
