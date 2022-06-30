@@ -1,6 +1,7 @@
 google_api_key = ""
 google_default_client_id = ""
 google_default_client_secret = ""
+visual_studio_version = "2022"
 target_os = "win"
 target_cpu = "x64"
 enable_stripping = true
