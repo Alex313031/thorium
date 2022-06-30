@@ -34,8 +34,14 @@ else
 fi
 export LD_LIBRARY_PATH
 
-# APPNAME for gtk.
+# APPNAME for GTK.
 APPNAME=thorium
+
+# Set DESKTOP variable
+DESKTOP="thorium-browser-unstable"
+
+# Set XDG Title variable
+TITLE="Thorium Browser"
 
 # Set the correct file name for the desktop file
 export CHROME_DESKTOP="thorium-browser-unstable.desktop"
