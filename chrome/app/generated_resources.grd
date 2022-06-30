@@ -576,6 +576,9 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_READ_ANYTHING" desc="Context menu menuitem to open page in Read Anything view">
            Open in Reader
           </message>
+          <message name="IDS_CONTENT_CONTEXT_RUN_PDF_OCR" desc="Context menu menuitem that runs a local machine intelligence model to extract the content of the current PDF and pass it to assisstive technologies.">
+           Recognize P&amp;DF text
+          </message>
           <message name="IDS_CONTENT_CONTEXT_RELOAD" desc="The name of the Reload command in the content area context menu">
             &amp;Reload
           </message>
@@ -821,6 +824,9 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_READ_ANYTHING" desc="Context menu menuitem to open page in Read Anything view">
            Open in Reader
           </message>
+          </message>
+          <message name="IDS_CONTENT_CONTEXT_RUN_PDF_OCR" desc="Context menu menuitem that runs a local machine intelligence model to extract the content of the current PDF and pass it to assisstive technologies.">
+           Recognize P&amp;DF text
           <message name="IDS_CONTENT_CONTEXT_RELOAD" desc="In Title Case: The name of the Reload command in the content area context menu">
             &amp;Reload
           </message>
@@ -12288,6 +12294,13 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WEBAUTHN_BLUETOOTH_POWER_ON_MANUAL_NEXT" desc="Button text. The user clicks this once they manually turned on Bluetooth, so that Chrome would retry connecting to security keys over Bluetooth.">
         Try again
       </message>
+      
+      <if expr="is_macosx">
+        <message name="IDS_WEBAUTHN_BLUETOOTH_PERMISSION" desc="Body text in a dialog that appears when the user has requested some function that depends on Bluetooth, but Chrome doesn't have permission to use Bluetooth. The action on this dialog is a button that will open the macOS System Preferences so that the user can grant permission.">
+          Thorium needs permission to use Bluetooth to connect to your device
+        </message>
+      </if>
+      
       <message name="IDS_WEBAUTHN_TRANSPORT_POPUP_LABEL" desc="Menu item text. The user selects this to verify their identity on a web site (i.e. sign in) using a different hardware-based authentication mechanism from what they have selected previously.">
         Choose another option
       </message>
@@ -12738,6 +12751,29 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_DEEP_SCANNING_TIMED_OUT_DIALOG_OPEN_NOW_BUTTON" desc="The text on the open now button in tab modal dialog when deep scanning times out.">
       Open now
     </message>
+    
+    <!-- Tailored security dialog for consented primary accounts -->
+    <message name="IDS_TAILORED_SECURITY_ENABLED_MODAL_TITLE" desc="Title shown in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      Enhanced Safe Browsing is on
+    </message>
+    <message name="IDS_TAILORED_SECURITY_DISABLED_MODAL_TITLE" desc="Title shown in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      Enhanced Safe Browsing is off
+    </message>
+
+    <message name="IDS_TAILORED_SECURITY_ENABLED_MODAL_MAIN_TEXT" desc="Title shown in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      You have Thorium's strongest security against dangerous websites, downloads and extensions
+    </message>
+    <message name="IDS_TAILORED_SECURITY_DISABLED_MODAL_MAIN_TEXT" desc="Title shown in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      You're getting standard security protection. To get more protection against dangerous websites, downloads, and extensions, turn on Enhanced Safe Browsing.
+    </message>
+    <message name="IDS_TAILORED_SECURITY_MODAL_ACCEPT_BUTTON" desc="The text on the accept button in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      OK
+    </message>
+    <message name="IDS_TAILORED_SECURITY_MODAL_SETTINGS_BUTTON" desc="The text on the cancel button in the tab modal dialog when the account tailored security setting changes for a consented primary account">
+      Thorium settings
+    </message>
+    
+    
 
     <!-- Tailored security dialog for unconsented primary accounts -->
     <message name="IDS_TAILORED_SECURITY_UNCONSENTED_MODAL_TITLE" desc="Title shown in the tab modal dialog when the account tailored security setting changes for an unconsented primary account">
