@@ -17,5 +17,8 @@ libu2f-udev
 # added since the library is dlopen()'ed.
 libvulkan1
 
-#Add unrar for unrar support
+# Add unrar for unrar support
 unrar
+
+# For the VDPAU patch.
+vdpau-driver-all
