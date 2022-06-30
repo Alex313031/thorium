@@ -87,6 +87,7 @@ group("gn_all") {
     "//components/gwp_asan:gwp_asan_unittests",
     "//infra/orchestrator:orchestrator_all",
     "//net:net_unittests",
+    "//sandbox:sandbox_unittests",
     "//services:services_unittests",
     "//services/service_manager/public/cpp",
     "//skia:skia_unittests",
@@ -365,6 +366,7 @@ group("gn_all") {
       "//net/android:net_junit_tests",
       "//services:services_junit_tests",
       "//testing/android/junit:junit_unit_tests",
+      "//third_party/android_lint:custom_lint_java",
       "//third_party/catapult/devil",
       "//third_party/r8:custom_d8_java",
       "//tools/android:android_tools",
@@ -998,7 +1000,6 @@ if (is_chromeos_ash) {
       "//components/exo/wayland:wayland_client_tests",
       "//media:media_unittests",
       "//media/capture:capture_unittests",
-      "//ppapi/examples/video_decode",
       "//sandbox/linux:chrome_sandbox",
       "//sandbox/linux:sandbox_linux_unittests",
       "//third_party/breakpad:minidump_stackwalk($host_toolchain)",
@@ -1011,6 +1012,10 @@ if (is_chromeos_ash) {
       "//tools/perf/clear_system_cache",
       "//ui/ozone/gl:ozone_gl_unittests",
     ]
+
+    if (enable_plugins) {
+      data_deps += [ "//ppapi/examples/video_decode" ]
+    }
 
     if (use_v4l2_codec || use_vaapi) {
       data_deps += [
