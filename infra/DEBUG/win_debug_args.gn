@@ -3,6 +3,7 @@ google_default_client_id = ""
 google_default_client_secret = ""
 target_os = "win"
 target_cpu = "x64"
+visual_studio_version = "2022"
 enable_stripping = false
 is_official_build = false
 is_debug = true
