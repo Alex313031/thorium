@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-PATH_COLOR_ARGB, 0xFF, 0x33, 0x67, 0xD6,
+PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
 MOVE_TO, 41, 22,
 R_H_LINE_TO, -3,
 R_V_LINE_TO, -8,
