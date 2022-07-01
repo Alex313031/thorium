@@ -116,7 +116,8 @@ prep_staging_common() {
     "${STAGEDIR}/usr/share/applications" \
     "${STAGEDIR}/usr/share/appdata" \
     "${STAGEDIR}/usr/share/gnome-control-center/default-apps" \
-    "${STAGEDIR}/usr/share/man/man1"
+    "${STAGEDIR}/usr/share/man/man1" \
+    "${STAGEDIR}/${INSTALLDIR}/lib"
 }
 
 get_version_info() {
@@ -168,7 +169,6 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 755 "${OUTPUTDIR}/thorium_shell" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 755 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
-    install -m 755 -d "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 755 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 644 "${OUTPUTDIR}/thorium-devtools.png" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
