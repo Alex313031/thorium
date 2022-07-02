@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Name=Thorium Content Shell
+Name=Thorium Shell
 Name[ast]=Restolador web Chromium
 Name[ca]=Navegador web Chromium
 Name[de]=Chromium-Webbrowser
@@ -75,7 +75,7 @@ GenericName[vi]=Bộ duyệt Web
 GenericName[zh_CN]=网页浏览器
 GenericName[zh_HK]=網頁瀏覽器
 GenericName[zh_TW]=網頁瀏覽器
-Comment=Run Chromium Tests
+Comment=Run Thorium Tests in content_shell
 Comment[ar]=الدخول إلى الإنترنت
 Comment[ast]=Accesu a Internet
 Comment[bg]=Достъп до интернет
@@ -131,6 +131,7 @@ Comment[zh_TW]=連線到網際網路
 Exec=/usr/bin/thorium-shell --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing %U
 Terminal=false
 X-MultipleArgs=True
+Keywords=shell
 Type=Application
 Icon=/opt/chromium.org/thorium-unstable/thorium-devtools.png
 Categories=Network;WebBrowser;
