@@ -16,3 +16,7 @@ _**The scripts assume the Chromium source is at $HOME/chromiums/src/ and Thorium
 &nbsp;&nbsp; __NOTE:__ To get back to "Trunk", i.e. to revert all changes in order to build vanilla Chromium or to update your checkout, just run `./trunk.sh` again. \
 &nbsp;&nbsp; __NOTE:__ To compile without AVX, simply go to *//chromium/src/build/config/compiler/BUILD.gn*, search for *avx*, and replace *avx* with *sse3* or *sse4*. \
 &nbsp;&nbsp; __UPDATE:__ Thorium now has API Keys baked in but the instructions below are the same if you are building it yourself as I will not include the keys here. | args.gn exclude API Keys (you can get them yourself) and the PGO profile path is different for each Chromium version (only needed when building). (See above.)
+
+*Happy Thorium Building!*
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
