@@ -25,7 +25,7 @@ const char kPrivacySandboxManuallyControlledV2[] =
 
 const char kPrivacySandboxPageViewed[] = "privacy_sandbox.page_viewed";
 
-const char kPrivacySandboxDataAccessibleSince[] =
+const char kPrivacySandboxTopicsDataAccessibleSince[] =
     "privacy_sandbox.topics_data_accessible_since";
 
 const char kPrivacySandboxBlockedTopics[] = "privacy_sandbox.blocked_topics";
