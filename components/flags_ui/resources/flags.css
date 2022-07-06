@@ -70,7 +70,7 @@ html {
 .logo {
   width: 32px;
   float: left;
-  background: url(../../../ui/webui/resources/images/hazard.svg) left center / 48px no-repeat;
+  background: url(./hazard.svg) left center / 48px no-repeat;
   line-height: 48px;
   margin-bottom: 1.05em;
 }
