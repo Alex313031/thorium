@@ -105,6 +105,8 @@ Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.
 
 Allow setting a custom NTP with cmdline flag --custom-ntp > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-custom-ntp.patch
 
+Allow removing the Side Panel button with cmdline flag --hide-sidepanel-button > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-hide-side-panel-button.patch
+
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
