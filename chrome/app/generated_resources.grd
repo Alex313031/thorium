@@ -7092,7 +7092,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Open with
         </message>
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_REMEMBER_SELECTION" desc="Message contained in a checkbox that must be marked in order for the intent picker to not be shown again for a similar URL.">
-          Remember my choice
+          Remember this choice
         </message>
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_OPEN" desc="Message contained in a button to continue the navigation in an app selected by the user.">
           Open
@@ -9694,6 +9694,12 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE_V2" desc="Title of the web signin interception bubble. 'Separate' is an action verb. The prompt is shown to let the user choose to keep the browsing activity for a new account in the same profile as an existing one or to move it to a new profile.">
           Separate your browsing?
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble.">
+          This new profile will be managed by your organization. <ph name="BEGIN_LINK">&lt;a href="$1" target=&quot;_blank&quot;&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_BY_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble, with the manager domain name.">
+          This new profile will be managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>. <ph name="BEGIN_LINK">&lt;a href="$2" target=&quot;_blank&quot;&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
       </if>
 
