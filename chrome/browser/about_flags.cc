@@ -1264,19 +1264,6 @@ const FeatureEntry::FeatureVariation
         {"Signed-out Users", {}, 0, "t4693176"},
         {"All Users", {}, 0, "t4693177"}};
 
-constexpr FeatureEntry::FeatureParam kOmniboxZeroSuggestInMemoryCache[] = {
-    {"ZeroSuggestCacheCounterfactual", "true"}};
-constexpr FeatureEntry::FeatureParam kOmniboxZeroSuggestCacheDuration15Secs[] =
-    {{"ZeroSuggestCacheDurationSec", "15"},
-     {"ZeroSuggestCacheCounterfactual", "true"}};
-
-constexpr FeatureEntry::FeatureVariation
-    kOmniboxZeroSuggestPrefetchingVariations[] = {
-        {"In-memory cache", kOmniboxZeroSuggestInMemoryCache,
-         std::size(kOmniboxZeroSuggestInMemoryCache), nullptr},
-        {"15 sec HTTP cache", kOmniboxZeroSuggestCacheDuration15Secs,
-         std::size(kOmniboxZeroSuggestCacheDuration15Secs), nullptr}};
-
 const FeatureEntry::FeatureParam kOmniboxUIMaxAutocompleteMatches3[] = {
     {OmniboxFieldTrial::kUIMaxAutocompleteMatchesParam, "3"}};
 const FeatureEntry::FeatureParam kOmniboxUIMaxAutocompleteMatches4[] = {
@@ -1889,9 +1876,6 @@ const FeatureEntry::FeatureParam kTabGridLayoutAndroid_NewTabVariation[] = {
     {"tab_grid_layout_android_new_tab", "NewTabVariation"},
     {"allow_to_refetch", "true"}};
 
-const FeatureEntry::FeatureParam kTabGridLayoutAndroid_NewTabTile[] = {
-    {"tab_grid_layout_android_new_tab_tile", "NewTabTile"}};
-
 const FeatureEntry::FeatureParam kTabGridLayoutAndroid_TallNTV[] = {
     {"thumbnail_aspect_ratio", "0.85"},
     {"allow_to_refetch", "true"},
@@ -1914,8 +1898,6 @@ const FeatureEntry::FeatureParam kTabGridLayoutAndroid_TabGroupAutoCreation[] =
 const FeatureEntry::FeatureVariation kTabGridLayoutAndroidVariations[] = {
     {"New Tab Variation", kTabGridLayoutAndroid_NewTabVariation,
      std::size(kTabGridLayoutAndroid_NewTabVariation), nullptr},
-    {"New Tab Tile", kTabGridLayoutAndroid_NewTabTile,
-     std::size(kTabGridLayoutAndroid_NewTabTile), nullptr},
     {"Tall NTV", kTabGridLayoutAndroid_TallNTV,
      std::size(kTabGridLayoutAndroid_TallNTV), nullptr},
     {"Search term chip", kTabGridLayoutAndroid_SearchChip,
@@ -2015,6 +1997,14 @@ const FeatureEntry::FeatureVariation kFeedPositionAndroidVariations[] = {
      std::size(kFeedPositionAndroid_push_down_feed_large), nullptr},
     {"Pull up Feed", kFeedPositionAndroid_pull_up_feed,
      std::size(kFeedPositionAndroid_pull_up_feed), nullptr},
+};
+
+const FeatureEntry::FeatureParam kSearchResumption_use_new_service[] = {
+    {"use_new_service", "true"}};
+const FeatureEntry::FeatureVariation
+    kSearchResumptionModuleAndroidVariations[] = {
+        {"Use New Service", kSearchResumption_use_new_service,
+         std::size(kSearchResumption_use_new_service), nullptr},
 };
 
 const FeatureEntry::FeatureParam kFeatureNotificationGuide_low_engaged[] = {
@@ -3928,6 +3918,9 @@ const FeatureEntry kFeatureEntries[] = {
          chrome::android::kAdaptiveButtonInTopToolbarCustomizationV2,
          kAdaptiveButtonInTopToolbarCustomizationVariations,
          "OptionalToolbarButtonCustomization")},
+    {"android-media-picker", flag_descriptions::kAndroidMediaPickerSupportName,
+     flag_descriptions::kAndroidMediaPickerSupportDescription, kOsAndroid,
+     FEATURE_VALUE_TYPE(photo_picker::features::kAndroidMediaPickerSupport)},
     {"contextual-page-actions-with-price-tracking",
      flag_descriptions::kContextualPageActionsWithPriceTrackingName,
      flag_descriptions::kContextualPageActionsWithPriceTrackingDescription,
@@ -4296,7 +4289,7 @@ const FeatureEntry kFeatureEntries[] = {
 #endif  // BUILDFLAG(IS_MAC)
 #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
     {"web-share", flag_descriptions::kWebShareName,
-     flag_descriptions::kWebShareDescription, kOsWin | kOsCrOS,
+     flag_descriptions::kWebShareDescription, kOsWin | kOsCrOS | kOsMac,
      FEATURE_VALUE_TYPE(features::kWebShare)},
 #endif  // BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
 
@@ -5008,9 +5001,7 @@ const FeatureEntry kFeatureEntries[] = {
     {"omnibox-zero-suggest-prefetching",
      flag_descriptions::kOmniboxZeroSuggestPrefetchingName,
      flag_descriptions::kOmniboxZeroSuggestPrefetchingDescription, kOsAll,
-     FEATURE_WITH_PARAMS_VALUE_TYPE(omnibox::kZeroSuggestPrefetching,
-                                    kOmniboxZeroSuggestPrefetchingVariations,
-                                    "OmniboxBundledExperimentV1")},
+     FEATURE_VALUE_TYPE(omnibox::kZeroSuggestPrefetching)},
 
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) || \
     BUILDFLAG(IS_WIN) || BUILDFLAG(IS_FUCHSIA)
@@ -5697,7 +5688,10 @@ const FeatureEntry kFeatureEntries[] = {
     {"enable-search-resumption-module",
      flag_descriptions::kSearchResumptionModuleAndroidName,
      flag_descriptions::kSearchResumptionModuleAndroidDescription, kOsAndroid,
-     FEATURE_VALUE_TYPE(chrome::android::kSearchResumptionModuleAndroid)},
+     FEATURE_WITH_PARAMS_VALUE_TYPE(
+         chrome::android::kSearchResumptionModuleAndroid,
+         kSearchResumptionModuleAndroidVariations,
+         "kSearchResumptionModuleAndroid")},
 
     {"enable-close-tab-suggestions",
      flag_descriptions::kCloseTabSuggestionsName,
@@ -7121,13 +7115,6 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kLauncherHideContinueSectionName,
      flag_descriptions::kLauncherHideContinueSectionDescription, kOsCrOS,
      FEATURE_VALUE_TYPE(ash::features::kLauncherHideContinueSection)},
-    {"launcher-nudge", flag_descriptions::kLauncherNudgeName,
-     flag_descriptions::kLauncherNudgeDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(ash::features::kShelfLauncherNudge)},
-    {"launcher-nudge-short-interval",
-     flag_descriptions::kLauncherNudgeShortIntervalName,
-     flag_descriptions::kLauncherNudgeShortIntervalDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(ash::features::kLauncherNudgeShortInterval)},
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -8188,6 +8175,16 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_VALUE_TYPE(features::kDelegatedCompositing)},
 #endif
 
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || \
+    BUILDFLAG(IS_CHROMEOS_ASH)
+    {"document-picture-in-picture-api",
+     flag_descriptions::kDocumentPictureInPictureApiName,
+     flag_descriptions::kDocumentPictureInPictureApiDescription,
+     kOsMac | kOsWin | kOsLinux | kOsCrOS,
+     FEATURE_VALUE_TYPE(features::kPictureInPictureV2)},
+#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) ||
+        // BUILDFLAG(IS_CHROMEOS_ASH)
+
     {"web-midi", flag_descriptions::kWebMidiName,
      flag_descriptions::kWebMidiDescription, kOsAll,
      FEATURE_VALUE_TYPE(features::kWebMidi)},
@@ -8748,6 +8745,14 @@ const FeatureEntry kFeatureEntries[] = {
      kOsCrOS | kOsLacros,
      FEATURE_VALUE_TYPE(apps::features::kLinkCapturingAutoDisplayIntentPicker)},
 #endif  // BUILDFLAG(IS_CHROMEOS)
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+    {"enable-biometric-authentication-in-settings",
+     flag_descriptions::kEnableBiometricAuthenticationInSettingsName,
+     flag_descriptions::kEnableBiometricAuthenticationInSettingsDescription,
+     kOsMac | kOsWin,
+     FEATURE_VALUE_TYPE(
+         password_manager::features::kEnableBiometricAuthenticationInSettings)},
+#endif
 
     // NOTE: Adding a new flag requires adding a corresponding entry to enum
     // "LoginCustomFlags" in tools/metrics/histograms/enums.xml. See "Flag
