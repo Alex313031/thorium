@@ -560,12 +560,12 @@ void VaapiVideoDecodeAccelerator::InitiateSurfaceSetChange(
   requested_visible_rect_ = visible_rect;
   if (buffer_allocation_mode_ == BufferAllocationMode::kSuperReduced) {
     // Add one to the reference frames for the one being currently egressed.
-    requested_num_reference_frames_ = num_reference_frames + 1;
+    requested_num_reference_frames_ = num_reference_frames + 4;
     requested_num_pics_ = num_pics - num_reference_frames;
   } else if (buffer_allocation_mode_ == BufferAllocationMode::kReduced) {
     // Add one to the reference frames for the one being currently egressed,
     // and an extra allocation for both |client_| and |decoder_|.
-    requested_num_reference_frames_ = num_reference_frames + 2;
+    requested_num_reference_frames_ = num_reference_frames + 5;
     requested_num_pics_ = num_pics - num_reference_frames + 1;
   } else {
     requested_num_reference_frames_ = 0;
