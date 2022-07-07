@@ -1169,6 +1169,14 @@ bool BrowserView::GetIsPictureInPictureType() const {
   return browser_->is_type_picture_in_picture();
 }
 
+float BrowserView::GetInitialAspectRatio() const {
+  return browser_->create_params().initial_aspect_ratio;
+}
+
+bool BrowserView::GetLockAspectRatio() const {
+  return browser_->create_params().lock_aspect_ratio;
+}
+
 bool BrowserView::GetTopControlsSlideBehaviorEnabled() const {
   return top_controls_slide_controller_ &&
          top_controls_slide_controller_->IsEnabled();
