@@ -3116,6 +3116,7 @@ const FeatureEntry::FeatureVariation
 //
 // When adding a new choice, add it to the end of the list.
 const FeatureEntry kFeatureEntries[] = {
+#include "chrome/browser/thorium_flag_entries.h"
 // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
 // //tools/flags/generate_unexpire_flags.py.
 #include "build/chromeos_buildflags.h"
@@ -3145,14 +3146,6 @@ const FeatureEntry kFeatureEntries[] = {
     {"disable-webrtc-hw-encoding", flag_descriptions::kWebrtcHwEncodingName,
      flag_descriptions::kWebrtcHwEncodingDescription, kOsAndroid | kOsCrOS,
      SINGLE_DISABLE_VALUE_TYPE(switches::kDisableWebRtcHWEncoding)},
-    {"custom-ntp",
-     "Custom New Tab Page",
-     "Allows setting a custom URL for the new tab page.  Value can be internal (e.g. `about:blank`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`).  This applies for incognito windows as well when not set to a `chrome://` internal page.",
-     kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
-    {"hide-sidepanel-button",
-     "Hide SidePanel Button",
-     "Hides the Thorium Side Panel Button.",
-     kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
 #if !BUILDFLAG(IS_ANDROID)
     {"enable-reader-mode", flag_descriptions::kEnableReaderModeName,
      flag_descriptions::kEnableReaderModeDescription, kOsDesktop,
