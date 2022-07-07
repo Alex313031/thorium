@@ -51,6 +51,8 @@ rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-32x32.png &&
 
 rm -v -f $HOME/chromium/src/content/shell/app/thorium_shell.ico &&
 
+rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_entries.h &&
+
 git checkout -f origin/main &&
 
 git rebase-update &&
