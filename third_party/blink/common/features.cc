@@ -35,7 +35,7 @@ const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
 const base::Feature kBackForwardCacheDedicatedWorker{
-    "BackForwardCacheDedicatedWorker", base::FEATURE_DISABLED_BY_DEFAULT};
+    "BackForwardCacheDedicatedWorker", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enable intervention for download that was initiated from or occurred in an ad
 // frame without user activation.
@@ -155,6 +155,9 @@ const base::Feature kLayoutNGBlockInInline{"LayoutNGBlockInInline",
 const base::Feature kPrivacySandboxAdsAPIs{"PrivacySandboxAdsAPIs",
                                            base::FEATURE_DISABLED_BY_DEFAULT};
 
+const base::Feature kPrivateNetworkAccessPermissionPrompt{
+    "PrivateNetworkAccessPermissionPrompt", base::FEATURE_DISABLED_BY_DEFAULT};
+
 const base::Feature kMixedContentAutoupgrade{"AutoupgradeMixedContent",
                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -165,6 +168,9 @@ const base::Feature kUserAgentClientHint{"UserAgentClientHint",
 // Handle prefers-color-scheme user preference media feature via client hints.
 const base::Feature kPrefersColorSchemeClientHintHeader{
     "PrefersColorSchemeClientHintHeader", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kVariableCOLRV1{"VariableCOLRV1",
+                                    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Controls whether the Viewport Height client hint can be added to request
 // headers.
@@ -221,7 +227,7 @@ const base::FeatureParam<FencedFramesImplementationType>::Option
 const base::FeatureParam<FencedFramesImplementationType>
     kFencedFramesImplementationTypeParam{
         &kFencedFrames, "implementation_type",
-        FencedFramesImplementationType::kShadowDOM,
+        FencedFramesImplementationType::kMPArch,
         &fenced_frame_implementation_types};
 
 // Enable the shared storage API. Note that enabling this feature does not
@@ -527,9 +533,9 @@ const base::Feature kWebFontsCacheAwareTimeoutAdaption {
 const base::Feature kBlockingFocusWithoutUserActivation{
     "BlockingFocusWithoutUserActivation", base::FEATURE_DISABLED_BY_DEFAULT};
 
-// A server-side switch for the REALTIME_AUDIO thread priority of
+// A server-side switch for the kRealtimeAudio thread type of
 // RealtimeAudioWorkletThread object. This can be controlled by a field trial,
-// it will use the NORMAL priority thread when disabled.
+// it will use the kNormal type thread when disabled.
 const base::Feature kAudioWorkletThreadRealtimePriority{
     "AudioWorkletThreadRealtimePriority", base::FEATURE_ENABLED_BY_DEFAULT};
 
@@ -634,17 +640,6 @@ const base::Feature kBlinkHeapIncrementalMarking{
 // also adds additional verification passes.
 const base::Feature kBlinkHeapIncrementalMarkingStress{
     "BlinkHeapIncrementalMarkingStress", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Controls whether we use ThreadPriority::DISPLAY for renderer
-// compositor & IO threads.
-const base::Feature kBlinkCompositorUseDisplayThreadPriority {
-  "BlinkCompositorUseDisplayThreadPriority",
-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
-      base::FEATURE_ENABLED_BY_DEFAULT
-#else
-      base::FEATURE_DISABLED_BY_DEFAULT
-#endif
-};
 
 // When enabled, enforces new interoperable semantics for 3D transforms.
 // See crbug.com/1008483.
