@@ -256,6 +256,7 @@ class ProcessPathPrefixFilter : public base::ProcessFilter {
 
 // Gracefully closes previous Chrome process in |target_path|.
 void ClosePreviousChromeProcess(const base::FilePath& target_path) {
+  const wchar_t kChromeExe[] = L"thorium.exe";
   ProcessPathPrefixFilter target_path_filter(target_path.value());
   base::CleanupProcesses(installer::kChromeExe, base::TimeDelta(),
                          content::RESULT_CODE_NORMAL_EXIT, &target_path_filter);
