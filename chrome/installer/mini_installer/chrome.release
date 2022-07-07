@@ -21,8 +21,8 @@ chrome_proxy.exe: %(ChromeDir)s\
 blink_test_plugin.dll: %(VersionDir)s\
 chrome.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
-thorium-devtools.png: %(VersionDir)s\
-thorium-devtools.ico: %(VersionDir)s\
+thorium_shell.png: %(VersionDir)s\
+thorium_shell.ico: %(VersionDir)s\
 chromedriver.exe: %(VersionDir)s\
 chromedriver.lib: %(VersionDir)s\
 chrome_child.dll: %(VersionDir)s\
