@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #ifndef CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
+#define CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
     {"custom-ntp",
      "Custom New Tab Page",
      "Allows setting a custom URL for the new tab page.  Value can be internal (e.g. `about:blank`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`).  This applies for incognito windows as well when not set to a `chrome://` internal page.",
@@ -11,5 +12,4 @@
      "Hide SidePanel Button",
      "Hides the Thorium Side Panel Button.",
      kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
-#define CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
