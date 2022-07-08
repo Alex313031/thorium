@@ -96,6 +96,7 @@
 #include "chrome/browser/prefetch/search_prefetch/field_trial_settings.h"
 #include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader.h"
 #include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.h"
+#include "chrome/browser/preloading/navigation_ablation_throttle.h"
 #include "chrome/browser/privacy_sandbox/privacy_sandbox_settings_factory.h"
 #include "chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.h"
 #include "chrome/browser/profiles/profile.h"
@@ -238,6 +239,7 @@
 #include "components/security_interstitials/content/ssl_cert_reporter.h"
 #include "components/security_interstitials/content/ssl_error_handler.h"
 #include "components/security_interstitials/content/ssl_error_navigation_throttle.h"
+#include "components/services/storage/public/cpp/storage_prefs.h"
 #include "components/site_isolation/pref_names.h"
 #include "components/site_isolation/preloaded_isolated_origins.h"
 #include "components/site_isolation/site_isolation_policy.h"
@@ -366,6 +368,7 @@
 #include "chrome/browser/ash/profiles/profile_helper.h"
 #include "chrome/browser/ash/smb_client/fileapi/smbfs_file_system_backend_delegate.h"
 #include "chrome/browser/ash/system/input_device_settings.h"
+#include "chrome/browser/ash/system_extensions/system_extensions_profile_utils.h"
 #include "chrome/browser/ash/system_extensions/system_extensions_provider.h"
 #include "chrome/browser/chromeos/fileapi/external_file_url_loader_factory.h"
 #include "chrome/browser/chromeos/fileapi/file_system_backend.h"
@@ -2321,13 +2324,6 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
                                                               process, profile);
     }
 
-    // This passes the preference set by an enterprise policy on to a blink
-    // switch so that we know whether to force WebSQL to be enabled.
-    if (g_browser_process->local_state()->GetBoolean(
-            policy::policy_prefs::kWebSQLAccess)) {
-      command_line->AppendSwitch(blink::switches::kWebSQLAccess);
-    }
-
 #if BUILDFLAG(IS_CHROMEOS_ASH)
     const std::string& login_profile =
         browser_command_line.GetSwitchValueASCII(ash::switches::kLoginProfile);
@@ -2349,6 +2345,17 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
 
       if (prefs->GetBoolean(prefs::kPrintPreviewDisabled))
         command_line->AppendSwitch(switches::kDisablePrintPreview);
+
+      // This passes the preference set by an enterprise policy on to a blink
+      // switch so that we know whether to force WebSQL/WebSQL in non-secure
+      // context to be enabled.
+      if (prefs->GetBoolean(storage::kWebSQLAccess)) {
+        command_line->AppendSwitch(blink::switches::kWebSQLAccess);
+      }
+      if (prefs->GetBoolean(storage::kWebSQLNonSecureContextEnabled)) {
+        command_line->AppendSwitch(
+            blink::switches::kWebSQLNonSecureContextEnabled);
+      }
 
 #if !BUILDFLAG(IS_ANDROID)
       InstantService* instant_service =
@@ -2671,14 +2678,12 @@ void ChromeContentBrowserClient::WillStartServiceWorker(
   DCHECK(context);
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  if (!ash::SystemExtensionsProvider::IsEnabled())
+  auto* profile = Profile::FromBrowserContext(context);
+  if (!ash::IsSystemExtensionsEnabled(profile))
     return;
 
-  auto* system_extensions_provider =
-      ash::SystemExtensionsProvider::Get(Profile::FromBrowserContext(context));
-  if (system_extensions_provider)
-    system_extensions_provider->WillStartServiceWorker(script_url,
-                                                       render_process_host);
+  ash::SystemExtensionsProvider::Get(profile).WillStartServiceWorker(
+      script_url, render_process_host);
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 }
 
@@ -4546,6 +4551,8 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
             profile->GetPrefs()),
         &throttles);
   }
+
+  MaybeAddThrottle(MaybeCreateNavigationAblationThrottle(handle), &throttles);
 
   return throttles;
 }
