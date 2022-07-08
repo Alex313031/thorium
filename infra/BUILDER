@@ -15,6 +15,12 @@ cflags = [ "-O
 config("no_symbols") {
 -Copt-level= -Ctarget-feature=+sse4,+avx
 
+Native Theme
+base::CommandLine::ForCurrentProcess()->HasSwitch("force-dark-mode");
+
+Media Switches
+base::CommandLine::ForCurrentProcess()->HasSwitch("no-autoplay");
+
 kShowHomeButton
 
 const base::Feature kAutomaticLazyFrameLoadingToAds{
