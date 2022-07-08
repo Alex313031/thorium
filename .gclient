@@ -9,3 +9,4 @@ solutions = [
 ]
 
 target_os=['linux', 'chromeos', 'win' ]
+target_cpu = [ 'x64', 'arm64', 'arm' ]
