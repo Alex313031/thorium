@@ -1,0 +1,34 @@
+<!-- Copyright 2022 The Chromium Authors and Alex313031 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>thorium-browser-unstable.desktop</id>
+  <update_contact>alex313031@gmail.com</update_contact>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and GPL-3.0 and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
+  <name>Thorium Web Browser</name>
+  <summary>The web browser from Alex313031</summary>
+  <description>
+    <p>
+    Thorium is an open-source browser project that aims to build a safer, faster,
+    and more stable way to experience the web.
+    </p>
+    <p>
+    We invite you to join our effort to build a powerful platform for developing a
+    new generation of web applications.
+    </p>
+    <p>
+    Thorium supports Vorbis, Theora, WebM, AAC, H.264, MP3, and HTML5 audio and video standards.
+    </p>
+  </description>
+  <url type="homepage">https://github.com/Alex313031/Thorium</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium_Screenshot.png</image>
+      <caption/>
+    </screenshot>
+  </screenshots>
+  <translation/>
+  <developer_name>The Chromium Authors and Alex313031</developer_name>
+  <url type="bugtracker">https://github.com/Alex313031/Thorium/issues</url>
+  <url type="help">https://chromium.googlesource.com/chromium/src/+/main/docs/linux/debugging.md</url>
+</component>

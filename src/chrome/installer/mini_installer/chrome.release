@@ -1,0 +1,124 @@
+# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+[GENERAL]
+#
+# Chrome Application dir entries, sorted alphabetically.
+#
+thorium.exe: %(ChromeDir)s\
+chrome_proxy.exe: %(ChromeDir)s\
+#
+# Chrome version dir assembly manifest.
+# The name of this file must match the name of the version dir, so we cannot
+# hard-code it.
+# // TODO(caitkp): Find a way to do this without wildcards.
+#
+*.*.*.*.manifest: %(VersionDir)s\
+#
+# Chrome version dir entries, sorted alphabetically.
+#
+blink_test_plugin.dll: %(VersionDir)s\
+chrome.dll: %(VersionDir)s\
+chrome_100_percent.pak: %(VersionDir)s\
+thorium_shell.png: %(VersionDir)s\
+thorium_shell.ico: %(VersionDir)s\
+chromedriver.exe: %(VersionDir)s\
+chromedriver.lib: %(VersionDir)s\
+chrome_child.dll: %(VersionDir)s\
+chrome_elf.dll: %(VersionDir)s\
+chrome_pwa_launcher.exe: %(VersionDir)s\
+thorium_shell.exe: %(VersionDir)s\
+content_resources.pak: %(VersionDir)s\
+content_shell.pak: %(VersionDir)s\
+d3dcompiler_47.dll: %(VersionDir)s\
+eventlog_provider.dll: %(VersionDir)s\
+icudtl.dat: %(VersionDir)s\
+libEGL.dll: %(VersionDir)s\
+libGLESv2.dll: %(VersionDir)s\
+mojo_core.dll: %(VersionDir)s\
+nacl64.exe: %(VersionDir)s\
+nacl_irt_x86_32.nexe: %(VersionDir)s\
+nacl_irt_x86_64.nexe: %(VersionDir)s\
+notification_helper.exe: %(VersionDir)s\
+optimization_guide_internal.dll: %(VersionDir)s\
+resources.pak: %(VersionDir)s\
+shell_resources.pak: %(VersionDir)s\
+ui_resources_100_percent.pak: %(VersionDir)s\
+vk_swiftshader.dll: %(VersionDir)s\
+vk_swiftshader_icd.json: %(VersionDir)s\
+vulkan-1.dll: %(VersionDir)s\
+v8_context_snapshot.bin: %(VersionDir)s\
+#
+# Add pak to Thorium.
+#
+pack.bat: %(VersionDir)s\
+unpack.bat: %(VersionDir)s\
+pak_mingw32.exe: %(VersionDir)s\
+pak_mingw64.exe: %(VersionDir)s\
+#
+# Sub directories living in the version dir
+#
+Extensions\*.*: %(VersionDir)s\Extensions\
+locales\*.pak: %(VersionDir)s\Locales
+
+#
+# VisualElements sub-dir.
+#
+# All or none of the *Logo*.png files need to be present as the creation of
+# VisualElementsManifest.xml is based on the existence of
+# %(VersionDir)\VisualElements.
+Logo.png: %(VersionDir)s\VisualElements\
+SmallLogo.png: %(VersionDir)s\VisualElements\
+
+#
+# MEI Preload sub dir
+#
+MEIPreload\manifest.json: %(VersionDir)s\MEIPreload\
+MEIPreload\preloaded_data.pb: %(VersionDir)s\MEIPreload\
+
+[HIDPI]
+chrome_200_percent.pak: %(VersionDir)s\
+Logo.png: %(VersionDir)s\
+
+# Add component ffmpeg to Thorium.
+[FFMPEG]
+ffmpeg.dll: %(VersionDir)s\
+
+[TOUCH]
+
+[GOOGLE_CHROME]
+# The elevation service is only installed for Google Chrome builds.
+elevation_service.exe: %(VersionDir)s\
+
+#
+# Sub directories living in the version dir
+#
+default_apps\*.crx: %(VersionDir)s\default_apps\
+default_apps\external_extensions.json: %(VersionDir)s\default_apps\
+
+#
+# VisualElements sub-dir.
+#
+LogoBeta.png: %(VersionDir)s\VisualElements\
+LogoCanary.png: %(VersionDir)s\VisualElements\
+LogoDev.png: %(VersionDir)s\VisualElements\
+SmallLogoBeta.png: %(VersionDir)s\VisualElements\
+SmallLogoCanary.png: %(VersionDir)s\VisualElements\
+SmallLogoDev.png: %(VersionDir)s\VisualElements\
+
+#
+# Widevine CDM sub-dir
+#
+WidevineCdm\manifest.json: %(VersionDir)s\WidevineCdm\
+WidevineCdm\LICENSE: %(VersionDir)s\WidevineCdm\
+WidevineCdm\_platform_specific\win_x86\widevinecdm.dll: %(VersionDir)s\WidevineCdm\_platform_specific\win_x86\
+WidevineCdm\_platform_specific\win_x86\widevinecdm.dll.sig: %(VersionDir)s\WidevineCdm\_platform_specific\win_x86\
+WidevineCdm\_platform_specific\win_x64\widevinecdm.dll: %(VersionDir)s\WidevineCdm\_platform_specific\win_x64\
+WidevineCdm\_platform_specific\win_x64\widevinecdm.dll.sig: %(VersionDir)s\WidevineCdm\_platform_specific\win_x64\
+
+[SNAPSHOTBLOB]
+# The snapshot_blob.bin V8 snapshot is needed in builds that don't use
+# v8_context_snapshot.bin, such as Linux-Windows cross-builds.
+# It has its own section here so that it's only included when necessary.
+snapshot_blob.bin: %(VersionDir)s\
