@@ -42,7 +42,7 @@ sudo chmod -v +x thordeb.sh &&
 
 sudo chmod -v +x trunk.sh &&
 
-sudo chmod -v +x install_deps.sh &&
+sudo chmod -v +x infra/install_deps.sh &&
 
 sudo chmod -v +x infra/build_polly.sh &&
 
