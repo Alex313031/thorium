@@ -35,27 +35,27 @@ printf "\n" &&
 printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
-cp -r -v BUILD.gn $HOME/chromium/src/ &&
-cp -r -v ash/. $HOME/chromium/src/ash/ &&
-cp -r -v base/. $HOME/chromium/src/base/ &&
-cp -r -v build/. $HOME/chromium/src/build/ &&
-cp -r -v chrome/. $HOME/chromium/src/chrome/ &&
-cp -r -v components/. $HOME/chromium/src/components/ &&
-cp -r -v extensions/. $HOME/chromium/src/extensions/ &&
-cp -r -v content/. $HOME/chromium/src/content/ &&
-cp -r -v media/. $HOME/chromium/src/media/ &&
-cp -r -v net/. $HOME/chromium/src/net/ &&
-cp -r -v sandbox/. $HOME/chromium/src/sandbox/ &&
-cp -r -v third_party/. $HOME/chromium/src/third_party/ &&
-cp -r -v tools/. $HOME/chromium/src/tools/ &&
-cp -r -v ui/. $HOME/chromium/src/ui/ &&
-cp -r -v v8/. $HOME/chromium/src/v8/ &&
-cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
-cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
-cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
+cp -r -v src/BUILD.gn $HOME/chromium/src/ &&
+cp -r -v src/ash/. $HOME/chromium/src/ash/ &&
+cp -r -v src/base/. $HOME/chromium/src/base/ &&
+cp -r -v src/build/. $HOME/chromium/src/build/ &&
+cp -r -v src/chrome/. $HOME/chromium/src/chrome/ &&
+cp -r -v src/components/. $HOME/chromium/src/components/ &&
+cp -r -v src/extensions/. $HOME/chromium/src/extensions/ &&
+cp -r -v src/content/. $HOME/chromium/src/content/ &&
+cp -r -v src/media/. $HOME/chromium/src/media/ &&
+cp -r -v src/net/. $HOME/chromium/src/net/ &&
+cp -r -v src/sandbox/. $HOME/chromium/src/sandbox/ &&
+cp -r -v src/third_party/. $HOME/chromium/src/third_party/ &&
+cp -r -v src/tools/. $HOME/chromium/src/tools/ &&
+cp -r -v src/ui/. $HOME/chromium/src/ui/ &&
+cp -r -v src/v8/. $HOME/chromium/src/v8/ &&
+cp -r -v src/thorium_shell/. $HOME/chromium/src/out/thorium/ &&
+cp -r -v src/pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
+cp -r -v src/pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
 # Workaround for DevTools
-cp -r -v third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/
+cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/
 
 printf "${GRE}Done!\n" &&
 printf "\n" &&
