@@ -81,10 +81,9 @@ const base::Feature kPaintHoldingCrossOrigin{"PaintHoldingCrossOrigin",
 
 // Enable eagerly setting up a CacheStorage interface pointer and
 // passing it to service workers on startup as an optimization.
-// TODO(crbug/1077916): Re-enable once the issue with COOP/COEP is fixed.
 const base::Feature kEagerCacheStorageSetupForServiceWorkers{
     "EagerCacheStorageSetupForServiceWorkers",
-    base::FEATURE_DISABLED_BY_DEFAULT};
+    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Controls script streaming.
 const base::Feature kScriptStreaming{"ScriptStreaming",
@@ -467,6 +466,10 @@ const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
 // Enables CSS selector fragment anchors. https://crbug.com/1252460
 const base::Feature kCssSelectorFragmentAnchor{
     "CssSelectorFragmentAnchor", base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Drop input events before user sees first paint https://crbug.com/1255485
+const base::Feature kDropInputEventsBeforeFirstPaint{
+    "DropInputEventsBeforeFirstPaint", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // File handling integration. https://crbug.com/829689
 const base::Feature kFileHandlingAPI {
@@ -1532,6 +1535,9 @@ const base::Feature kDisableArrayBufferSizeLimitsForTesting{
 
 const base::Feature kTimedHTMLParserBudget{"TimedHTMLParserBudget",
                                            base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kCSSOverflowForReplacedElements{
+    "CSSOverflowForReplacedElements", base::FEATURE_ENABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
