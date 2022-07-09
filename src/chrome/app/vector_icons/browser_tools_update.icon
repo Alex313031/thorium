@@ -1,0 +1,19 @@
+// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+CANVAS_DIMENSIONS, 16,
+PATH_COLOR_ARGB, 0xFF, 0x33, 0x67, 0xD6,
+CIRCLE, 8, 8, 8,
+CLOSE,
+NEW_PATH,
+PATH_COLOR_ARGB, 0xFF, 0xFF, 0xFF, 0xFF,
+MOVE_TO, 6, 12,
+R_H_LINE_TO, 4,
+V_LINE_TO, 9,
+R_H_LINE_TO, 2,
+LINE_TO, 8, 4,
+LINE_TO, 4, 9,
+R_H_LINE_TO, 2,
+R_V_LINE_TO, 3,
+CLOSE
