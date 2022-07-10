@@ -69,6 +69,6 @@ script:
   - #!/bin/sh
   - HERE=$(dirname $(readlink -f "${0}"))
   - export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
-  - "${HERE}"/usr/bin/thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo $@
+  - "${HERE}"/usr/bin/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo $@
   - EOF
   - chmod a+x ./AppRun
