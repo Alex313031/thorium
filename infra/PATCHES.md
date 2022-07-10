@@ -108,9 +108,17 @@ Patch Windows installer to close previous browser instance > https://github.com/
 
 Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.d/ during installation, and prevents apt from complaining about removing the nonexistent file during an apt remove --purge. - Created by me.
 
-Allow setting a custom NTP with cmdline flag --custom-ntp > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-custom-ntp.patch
+Enable Dark Mode flag Patch
+  - Made by me.
 
-Allow removing the Side Panel button with cmdline flag --hide-sidepanel-button > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-hide-side-panel-button.patch
+Disable AutoPlay flag Patch
+  - Made by me.
+
+Enable Saving pages from all Schemes Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/enable-page-saving-on-more-pages.patch
+
+Allow setting a custom NTP flag Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-custom-ntp.patch
+
+Allow removing the Side Panel button flag Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-hide-side-panel-button.patch
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
