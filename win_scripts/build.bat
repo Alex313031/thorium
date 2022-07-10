@@ -9,6 +9,6 @@ set NINJA_SUMMARIZE_BUILD=1 &&
 
 echo "Building Thorium..." &&
 
-autoninja -C out\thorium chrome chromedriver content_shell setup mini_installer views_examples_with_content -j %1
+autoninja -C out\thorium chrome chromedriver content_shell setup mini_installer -j %1
 
 exit 0
