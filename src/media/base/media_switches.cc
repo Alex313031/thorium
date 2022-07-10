@@ -956,7 +956,7 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   if (base::FeatureList::IsEnabled(media::kUnifiedAutoplay))
     return switches::autoplay::kDocumentUserActivationRequiredPolicy;
     
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("no-autoplay"))
+  if (command_line.HasSwitch("no-autoplay"))
     return switches::autoplay::kUserGestureRequiredPolicy;
 
 // The default value is platform dependent.
