@@ -2,4 +2,4 @@
 
 # Copyright (c) 2022 Alex313031
 
-./thorium_shell --data-path=$(pwd)/.config/thorium-shell --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo
+./thorium_shell --data-path=$(pwd)/.config/thorium-shell --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo
