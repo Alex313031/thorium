@@ -7,6 +7,22 @@ cd C:\src\chromium\src\v8 &&
 
 git checkout -f origin/main &&
 
+cd C:\src\chromium\src\third_party\devtools-frontend\src
+
+git checkout -f origin/main &&
+
+rm C:\src\chromium\src\ui\webui\resources\images\infra.png &&
+
+rm C:\src\chromium\src\components\flags_ui\resources\hazard.svg &&
+
+rm C:\src\chromium\src\components\neterror\resources\favicon-16x16.png &&
+
+rm C:\src\chromium\src\components\neterror\resources\favicon-32x32.png &&
+
+rm C:\src\chromium\src\content\shell\app\thorium_shell.ico &&
+
+rm C:\src\chromium\src\chrome\browser\thorium_flag_entries.h &&
+
 cd C:\src\chromium\src &&
 
 git checkout -f origin/main &&
