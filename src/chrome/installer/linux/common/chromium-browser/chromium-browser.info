@@ -24,7 +24,7 @@ INSTALLDIR=/opt/chromium.org/thorium
 ENROLLMENTDIR=/etc/chromium/policies/enrollment
 
 # Display string for desktop menu/icon.
-MENUNAME="Thorium Web Browser"
+MENUNAME="Thorium Browser"
 
 # Brief package description.
 SHORTDESC="The web browser from The Thorium Authors"
