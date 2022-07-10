@@ -5,6 +5,8 @@
 
 echo "Cleaning up build artifacts..." &&
 
+cd C:\src\chromium\src\out\thorium &&
+
 del *deps* &&
 del *TOC* &&
 rmdir /s /q pyproto &&
