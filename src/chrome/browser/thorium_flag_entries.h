@@ -4,6 +4,10 @@
 
 #ifndef CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
+    {"force-dark-mode",
+     "Force Dark Mode",
+     "Enables Dark Mode for all Thorium instances.",
+     kOsDesktop, SINGLE_VALUE_TYPE("force-dark-mode")},
     {"custom-ntp",
      "Custom New Tab Page",
      "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). This applies for incognito windows as well when not set to a `chrome://` internal page.",
@@ -12,10 +16,6 @@
      "Hide Side Panel Button",
      "Hides the Thorium Side Panel Button.",
      kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
-     {"force-dark-mode",
-     "Force Dark Mode",
-     "Enables Dark Mode (like in Incognito windows) for all Thorium instances.",
-     kOsDesktop, SINGLE_VALUE_TYPE("force-dark-mode")},
      {"no-autoplay",
      "Disable AutoPlay",
      "Disables AutoPlay for all Thorium instances.",
