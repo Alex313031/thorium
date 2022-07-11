@@ -118,7 +118,7 @@ config("compiler") {
       if (host_cpu == "x86" || host_cpu == "x64") {
         cflags += [ "-m64" ]
       } else {
-        cflags += [ "--target=x86_64-windows" ]
+        cflags += [ "--target=x86_64-windows", "/O3", "/clang:-O3", "-Xclang", "-O3", "-Wno-unused-command-line-argument", ]
       }
     } else if (current_cpu == "arm64") {
       cflags += [ "--target=arm64-windows", "/O3", "/clang:-O3", "-Xclang", "-O3", "-Wno-unused-command-line-argument", ]
