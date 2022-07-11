@@ -535,21 +535,12 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
-
-    # TODO(crbug.com/1290191): Some ios tests fail without this.
-    if (is_ios) {
-      cflags += [
-        "-Xclang",
-        "-disable-noundef-analysis",
-      ]
-    }
   }
   
   # Rust compiler setup (for either clang or rustc).
   if (enable_rust) {
     defines += [ "RUST_ENABLED" ]
   }
-
 
   # C11/C++11 compiler flags setup.
   # ---------------------------
@@ -1950,33 +1941,12 @@ config("no_incompatible_pointer_warnings") {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
     "/O3",
     "/clang:-O3",
     "-Xclang", "-O3",
   ]
 
-  common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-enable-loopinterchange",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt",
-  ]
+  common_optimize_on_ldflags += []
 
 if (is_win) {
   common_optimize_on_cflags += [
@@ -1999,33 +1969,12 @@ if (is_win) {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
     "/O3",
     "/clang:-O3",
     "-Xclang", "-O3",
   ]
 
-  common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-enable-loopinterchange",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt",
-  ]
+  common_optimize_on_ldflags += []
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
@@ -2045,31 +1994,10 @@ if (is_win) {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
     "-O3",
   ]
 
-  common_optimize_on_ldflags += [
-    "-Wl,-mllvm,-extra-vectorizer-passes",
-    "-Wl,-mllvm,-enable-cond-stores-vec",
-    "-Wl,-mllvm,-slp-vectorize-hor-store",
-    "-Wl,-mllvm,-enable-loopinterchange",
-    "-Wl,-mllvm,-enable-loop-distribute",
-    "-Wl,-mllvm,-enable-unroll-and-jam",
-    "-Wl,-mllvm,-enable-loop-flatten",
-    "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
-    "-Wl,-mllvm,-unroll-runtime-multi-exit",
-    "-Wl,-mllvm,-aggressive-ext-opt",
-  ]
+  common_optimize_on_ldflags += []
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -2449,8 +2377,7 @@ config("symbols") {
       cflags += [ "-g0" ]
     }
 
-    if (!is_nacl && is_clang && !is_tsan && !is_asan &&
-        !(is_ios && enable_ios_bitcode)) {
+    if (!is_nacl && is_clang && !is_tsan && !is_asan) {
       # gcc generates dwarf-aranges by default on -g1 and -g2. On clang it has
       # to be manually enabled.
       #
@@ -2545,7 +2472,7 @@ config("minimal_symbols") {
     if (is_clang) {
       # -gline-tables-only is the same as -g1, but clang-cl only exposes the
       # former.
-      cflags += [ "-g0" ]
+      cflags += [ "-gline-tables-only" ]
     }
   } else {
     cflags = []
@@ -2574,8 +2501,7 @@ config("minimal_symbols") {
       cflags += [ "-g0" ]
     }
 
-    if (!is_nacl && is_clang && !is_tsan && !is_asan &&
-        !(is_ios && enable_ios_bitcode)) {
+    if (!is_nacl && is_clang && !is_tsan && !is_asan) {
       # See comment for -gdwarf-aranges in config("symbols").
       cflags += [ "-gdwarf-aranges" ]
     }
