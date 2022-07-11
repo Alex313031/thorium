@@ -1,5 +1,7 @@
 ## Thorium for ARM CPUs <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/arm_logo.png" width="128">
-This contains a special [*BUILD.gn*](https://github.com/Alex313031/Thorium/blob/main/arm/config/compiler/BUILD.gn) file for making an ARM32/ARM64 build of Thorium for Linux or Windows. Just run `setup_arm.sh` in here after running the normal `setup.sh` that's in the root of this repo.
+This contains a special [*BUILD.gn*](https://github.com/Alex313031/Thorium/blob/main/arm/config/compiler/BUILD.gn) file for making an ARM32/ARM64 build of Thorium for Raspberry Pi or Windows. Just run `setup_arm.sh` in here after running the normal `setup.sh` that's in the root of this repo.
+
+__NOTE:__ This dir is only for Raspberry Pi and Windows On ARM. For regular Linux ARM builds, and MacOS ARM builds, you can just use the regular files in the repo.
 
  -  Windows On ARM (WoA) Builds: Use the [win_ARM_args.gn](https://github.com/Alex313031/Thorium/blob/main/arm/win_ARM_args.gn) file for your *args.gn*.
 
