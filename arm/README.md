@@ -3,4 +3,4 @@ This contains a special [*BUILD.gn*](https://github.com/Alex313031/Thorium/blob/
 
 ## Raspberry Pi Builds &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Raspberry_Pi_Logo.svg" width="28">
 __IMPORTANT:__ For a [Raspberry Pi](https://www.raspberrypi.org/) build (ARM64), the contents of [raspi_arm.gni](https://github.com/Alex313031/Thorium/blob/main/arm/raspi_arm.gni) should be manually copied and used in *//chromium/src/build/config/arm.gni*, AND the contents of [raspi_args.gn](https://github.com/Alex313031/Thorium/blob/main/arm/raspi_args.gn) should be used for your *args.gn*. \
-__&nbsp;&ndash;&nbsp;Note that ARM32 Raspberry Pi builds of Thorium are not supported.__
+__&nbsp;&ndash;&nbsp;Note that ARM32 Raspberry Pi builds of Thorium are not supported.__ They should only be used on Raspi 3B, 3B+, 4, and 400 models with a 64 Bit OS. For more info, see > [Here](https://www.raspberrypi.com/news/raspberry-pi-os-64-bit/).
