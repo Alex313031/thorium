@@ -3,6 +3,7 @@ google_default_client_id = ""
 google_default_client_secret = ""
 target_os = "linux"
 target_cpu = "arm64"
+v8_target_cpu = "arm64"
 use_system_minigbm = false
 use_vc4_minigbm = true
 enable_linux_installer = true
