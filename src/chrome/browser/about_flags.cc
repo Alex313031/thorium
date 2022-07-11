@@ -57,6 +57,7 @@
 #include "chrome/browser/sharing_hub/sharing_hub_features.h"
 #include "chrome/browser/signin/signin_features.h"
 #include "chrome/browser/site_isolation/about_flags.h"
+#include "chrome/browser/ui/app_list/search/files/item_suggest_cache.h"
 #include "chrome/browser/ui/app_list/search/search_features.h"
 #include "chrome/browser/ui/browser_navigator_params.h"
 #include "chrome/browser/ui/ui_features.h"
@@ -1990,6 +1991,26 @@ const FeatureEntry::FeatureParam kFeedPositionAndroid_push_down_feed_large[] = {
 const FeatureEntry::FeatureParam kFeedPositionAndroid_pull_up_feed[] = {
     {"pull_up_feed", "true"}};
 
+const FeatureEntry::FeatureParam
+    kFeedPositionAndroid_push_down_feed_large_target_feed_active[] = {
+        {"push_down_feed_large", "true"},
+        {"feed_active_targeting", "active"}};
+
+const FeatureEntry::FeatureParam
+    kFeedPositionAndroid_push_down_feed_large_target_non_feed_active[] = {
+        {"push_down_feed_large", "true"},
+        {"feed_active_targeting", "non-active"}};
+
+const FeatureEntry::FeatureParam
+    kFeedPositionAndroid_pull_up_feed_target_feed_active[] = {
+        {"pull_up_feed", "true"},
+        {"feed_active_targeting", "active"}};
+
+const FeatureEntry::FeatureParam
+    kFeedPositionAndroid_pull_up_feed_target_non_feed_active[] = {
+        {"pull_up_feed", "true"},
+        {"feed_active_targeting", "non-active"}};
+
 const FeatureEntry::FeatureVariation kFeedPositionAndroidVariations[] = {
     {"Push down Feed (small)", kFeedPositionAndroid_push_down_feed_small,
      std::size(kFeedPositionAndroid_push_down_feed_small), nullptr},
@@ -1997,6 +2018,23 @@ const FeatureEntry::FeatureVariation kFeedPositionAndroidVariations[] = {
      std::size(kFeedPositionAndroid_push_down_feed_large), nullptr},
     {"Pull up Feed", kFeedPositionAndroid_pull_up_feed,
      std::size(kFeedPositionAndroid_pull_up_feed), nullptr},
+    {"Push down Feed (large) with targeting Feed active users",
+     kFeedPositionAndroid_push_down_feed_large_target_feed_active,
+     std::size(kFeedPositionAndroid_push_down_feed_large_target_feed_active),
+     nullptr},
+    {"Push down Feed (large) with targeting non-Feed active users",
+     kFeedPositionAndroid_push_down_feed_large_target_non_feed_active,
+     std::size(
+         kFeedPositionAndroid_push_down_feed_large_target_non_feed_active),
+     nullptr},
+    {"Pull up Feed with targeting Feed active users",
+     kFeedPositionAndroid_pull_up_feed_target_feed_active,
+     std::size(kFeedPositionAndroid_pull_up_feed_target_feed_active), nullptr},
+    {"Pull up Feed with targeting non-Feed active users",
+     kFeedPositionAndroid_pull_up_feed_target_non_feed_active,
+     std::size(kFeedPositionAndroid_pull_up_feed_target_non_feed_active),
+     nullptr},
+
 };
 
 const FeatureEntry::FeatureParam kSearchResumption_use_new_service[] = {
@@ -2596,6 +2634,37 @@ const FeatureEntry::FeatureParam kProductivityLauncher_WithoutContinue[] = {
 const FeatureEntry::FeatureVariation kProductivityLauncherVariations[] = {
     {"without Continue", kProductivityLauncher_WithoutContinue,
      std::size(kProductivityLauncher_WithoutContinue), nullptr}};
+
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay10Mins[] = {
+    {"long_delay_minutes", "10"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay12Hours[] = {
+    {"long_delay_minutes", "720"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay24Hours[] = {
+    {"long_delay_minutes", "1440"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay36Hours[] = {
+    {"long_delay_minutes", "2160"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay48Hours[] = {
+    {"long_delay_minutes", "2880"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay60Hours[] = {
+    {"long_delay_minutes", "3600"}};
+const FeatureEntry::FeatureParam kLauncherItemSuggest_LongDelay72Hours[] = {
+    {"long_delay_minutes", "4320"}};
+
+const FeatureEntry::FeatureVariation kLauncherItemSuggestVariations[] = {
+    {"with 10 minute long delay", kLauncherItemSuggest_LongDelay10Mins,
+     std::size(kLauncherItemSuggest_LongDelay10Mins), nullptr},
+    {"with 12 hour long delay", kLauncherItemSuggest_LongDelay12Hours,
+     std::size(kLauncherItemSuggest_LongDelay12Hours), nullptr},
+    {"with 24 hour long delay", kLauncherItemSuggest_LongDelay24Hours,
+     std::size(kLauncherItemSuggest_LongDelay24Hours), nullptr},
+    {"with 36 hour long delay", kLauncherItemSuggest_LongDelay36Hours,
+     std::size(kLauncherItemSuggest_LongDelay36Hours), nullptr},
+    {"with 48 hour long delay", kLauncherItemSuggest_LongDelay48Hours,
+     std::size(kLauncherItemSuggest_LongDelay48Hours), nullptr},
+    {"with 60 hour long delay", kLauncherItemSuggest_LongDelay60Hours,
+     std::size(kLauncherItemSuggest_LongDelay60Hours), nullptr},
+    {"with 72 hour long delay", kLauncherItemSuggest_LongDelay72Hours,
+     std::size(kLauncherItemSuggest_LongDelay72Hours), nullptr}};
 
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
@@ -5862,6 +5931,12 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_VALUE_TYPE(chrome::android::kCCTRealTimeEngagementSignals)},
 #endif
 
+#if BUILDFLAG(IS_ANDROID)
+    {"cct-brand-transparency", flag_descriptions::kCCTBrandTransparencyName,
+     flag_descriptions::kCCTBrandTransparencyDescription, kOsAndroid,
+     FEATURE_VALUE_TYPE(chrome::android::kCCTBrandTransparency)},
+#endif
+
 #if BUILDFLAG(IS_CHROMEOS)
     {"allow-dsp-based-aec", flag_descriptions::kCrOSDspBasedAecAllowedName,
      flag_descriptions::kCrOSDspBasedAecAllowedDescription, kOsCrOS | kOsLacros,
@@ -5908,6 +5983,11 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kEnableCssSelectorFragmentAnchorName,
      flag_descriptions::kEnableCssSelectorFragmentAnchorDescription, kOsAll,
      FEATURE_VALUE_TYPE(blink::features::kCssSelectorFragmentAnchor)},
+
+    {"drop-input-events-before-first-paint",
+     flag_descriptions::kDropInputEventsBeforeFirstPaintName,
+     flag_descriptions::kDropInputEventsBeforeFirstPaintDescription, kOsAll,
+     FEATURE_VALUE_TYPE(blink::features::kDropInputEventsBeforeFirstPaint)},
 
     {"enable-resampling-input-events",
      flag_descriptions::kEnableResamplingInputEventsName,
@@ -6192,11 +6272,6 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kEnableNeuralPalmAdaptiveHoldDescription, kOsCrOS,
      FEATURE_VALUE_TYPE(ui::kEnableNeuralPalmAdaptiveHold)},
 
-    {"enable-neural-palm-rejection-model-v2",
-     flag_descriptions::kEnableNeuralPalmRejectionModelV2Name,
-     flag_descriptions::kEnableNeuralPalmRejectionModelV2Description, kOsCrOS,
-     FEATURE_VALUE_TYPE(ui::kEnableNeuralPalmRejectionModelV2)},
-
     {"enable-neural-stylus-palm-rejection",
      flag_descriptions::kEnableNeuralStylusPalmRejectionName,
      flag_descriptions::kEnableNeuralStylusPalmRejectionDescription, kOsCrOS,
@@ -6413,6 +6488,13 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kMouseSubframeNoImplicitCaptureName,
      flag_descriptions::kMouseSubframeNoImplicitCaptureDescription, kOsAll,
      FEATURE_VALUE_TYPE(features::kMouseSubframeNoImplicitCapture)},
+
+#if BUILDFLAG(IS_CHROMEOS)
+    {"global-media-controls-for-cast",
+     flag_descriptions::kGlobalMediaControlsForCastName,
+     flag_descriptions::kGlobalMediaControlsForCastDescription, kOsCrOS,
+     FEATURE_VALUE_TYPE(media::kGlobalMediaControlsForCast)},
+#endif  // BUILDFLAG(IS_CHROMEOS)
 
 #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
     BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_FUCHSIA)
@@ -7090,6 +7172,11 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_WITH_PARAMS_VALUE_TYPE(ash::features::kProductivityLauncher,
                                     kProductivityLauncherVariations,
                                     "ProductivityLauncher")},
+    {"launcher-item-suggest", flag_descriptions::kLauncherItemSuggestName,
+     flag_descriptions::kLauncherItemSuggestDescription, kOsCrOS,
+     FEATURE_WITH_PARAMS_VALUE_TYPE(app_list::ItemSuggestCache::kExperiment,
+                                    kLauncherItemSuggestVariations,
+                                    "LauncherItemSuggest")},
     {"autocomplete-extended-suggestions",
      flag_descriptions::kAutocompleteExtendedSuggestionsName,
      flag_descriptions::kAutocompleteExtendedSuggestionsDescription, kOsCrOS,
@@ -7476,13 +7563,6 @@ const FeatureEntry kFeatureEntries[] = {
     {"chrome-labs", flag_descriptions::kChromeLabsName,
      flag_descriptions::kChromeLabsDescription, kOsDesktop,
      FEATURE_VALUE_TYPE(features::kChromeLabs)},
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    {"launcher-search-normalization",
-     flag_descriptions::kEnableLauncherSearchNormalizationName,
-     flag_descriptions::kEnableLauncherSearchNormalizationDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(app_list_features::kEnableLauncherSearchNormalization)},
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
     {"enable-first-party-sets", flag_descriptions::kEnableFirstPartySetsName,
      flag_descriptions::kEnableFirstPartySetsDescription, kOsAll,
