@@ -535,21 +535,12 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
-
-    # TODO(crbug.com/1290191): Some ios tests fail without this.
-    if (is_ios) {
-      cflags += [
-        "-Xclang",
-        "-disable-noundef-analysis",
-      ]
-    }
   }
   
   # Rust compiler setup (for either clang or rustc).
   if (enable_rust) {
     defines += [ "RUST_ENABLED" ]
   }
-
 
   # C11/C++11 compiler flags setup.
   # ---------------------------
@@ -2453,8 +2444,7 @@ config("symbols") {
       cflags += [ "-g0" ]
     }
 
-    if (!is_nacl && is_clang && !is_tsan && !is_asan &&
-        !(is_ios && enable_ios_bitcode)) {
+    if (!is_nacl && is_clang && !is_tsan && !is_asan) {
       # gcc generates dwarf-aranges by default on -g1 and -g2. On clang it has
       # to be manually enabled.
       #
@@ -2549,7 +2539,7 @@ config("minimal_symbols") {
     if (is_clang) {
       # -gline-tables-only is the same as -g1, but clang-cl only exposes the
       # former.
-      cflags += [ "-g0" ]
+      cflags += [ "-gline-tables-only" ]
     }
   } else {
     cflags = []
@@ -2578,8 +2568,7 @@ config("minimal_symbols") {
       cflags += [ "-g0" ]
     }
 
-    if (!is_nacl && is_clang && !is_tsan && !is_asan &&
-        !(is_ios && enable_ios_bitcode)) {
+    if (!is_nacl && is_clang && !is_tsan && !is_asan) {
       # See comment for -gdwarf-aranges in config("symbols").
       cflags += [ "-gdwarf-aranges" ]
     }
