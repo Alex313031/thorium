@@ -16,7 +16,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     # The ARM architecture. This will be a string like "armv6" or "armv7-a".
     # An empty string means to use the default for the arm_version.
-    arm_arch = ""
+    arm_arch = "armv8.5-a"
 
     # The ARM floating point hardware. This will be a string like "neon" or
     # "vfpv3". An empty string means to use the default for the arm_version.
