@@ -31,7 +31,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     arm_use_neon = "true"
 
     # Whether to enable optional NEON code paths.
-    arm_optionally_use_neon = false
+    arm_optionally_use_neon = true
 
     # Thumb is a reduced instruction set available on some ARM processors that
     # has increased code density.
