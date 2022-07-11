@@ -535,8 +535,15 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
+
+    # TODO(crbug.com/1235145): Investigate why/if this should be needed.
+    if (is_win) {
+      cflags += [ "/clang:-ffp-contract=off" ]
+    } else {
+      cflags += [ "-ffp-contract=off" ]
+    }
   }
-  
+
   # Rust compiler setup (for either clang or rustc).
   if (enable_rust) {
     defines += [ "RUST_ENABLED" ]
@@ -877,10 +884,10 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = [ "-O3", ]
+  cflags = []
   ldflags = []
   defines = []
-  
+
   configs = []
   if (is_chromeos) {
     configs += [ "//build/config/chromeos:compiler_cpu_abi" ]
@@ -892,31 +899,23 @@ config("compiler_cpu_abi") {
     if (current_cpu == "x64") {
       cflags += [
         "-m64",
-        "-O3",
-        "-mavx",
-        "-maes",
+        "-msse3",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=30", "-Wl,-mllvm,-import-cold-multiplier=8", ]
+      ldflags += [ "-m64" ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
-          "-O3",
           "-msse3",
         ]
-      }
-    } else if (target_cpu == "arm64") {
-      if (!is_android && !is_nacl) {
-        cflags += [ "-Wno-unused-command-line-argument", ]
-        ldflags += [ "-Wno-unused-command-line-argument", ]
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-unused-command-line-argument", ]
-        ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=arm-linux-gnueabihf", "-O3", ]
+        ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", ]
       }
       if (!is_nacl) {
         cflags += [
@@ -930,8 +929,8 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=aarch64-linux-gnu", "-O3", "-Wno-unused-command-line-argument", ]
-        ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=aarch64-linux-gnu", "-O3", ]
+        ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", ]
       }
       if (is_android) {
         # Outline atomics crash on Exynos 9810. http://crbug.com/1272795
@@ -943,10 +942,10 @@ config("compiler_cpu_abi") {
       if (custom_toolchain == "") {
         if (is_clang) {
           if (is_android) {
-            cflags += [ "--target=mipsel-linux-android", "-O3", ]
+            cflags += [ "--target=mipsel-linux-android" ]
             ldflags += [ "--target=mipsel-linux-android" ]
           } else {
-            cflags += [ "--target=mipsel-linux-gnu", "-O3", ]
+            cflags += [ "--target=mipsel-linux-gnu" ]
             ldflags += [ "--target=mipsel-linux-gnu" ]
           }
         } else {
@@ -1547,7 +1546,7 @@ config("default_warnings") {
         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
         "-Wno-ignored-pragma-optimize",
       ]
-      
+
       if (!is_nacl) {
         # TODO(https://crbug.com/1300731) Clean up and enable.
         cflags += [ "-Wno-unqualified-std-cast-call" ]
@@ -1936,25 +1935,15 @@ config("no_incompatible_pointer_warnings") {
 
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
-
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
-
-  common_optimize_on_cflags += [
+if (is_win) {
+  common_optimize_on_cflags = [
+    "/Ob2",  # Both explicit and auto inlining.
+    "/Oy-",  # Disable omitting frame pointers, must be after /O2.
+    "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
     "/O3",
     "/clang:-O3",
     "-Xclang", "-O3",
   ]
-
-  common_optimize_on_ldflags += []
-
-if (is_win) {
-  common_optimize_on_cflags += [
-    "/Ob2",  # Both explicit and auto inlining.
-    "/Oy-",  # Disable omitting frame pointers, must be after /O2.
-    "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
-  ]
-  common_optimize_on_ldflags += []
   if (!is_asan) {
     common_optimize_on_cflags += [
       # Put data in separate COMDATs. This allows the linker
@@ -1965,20 +1954,10 @@ if (is_win) {
       "/Gw",
     ]
   }
-  common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
 
-  common_optimize_on_cflags += [
-    "/O3",
-    "/clang:-O3",
-    "-Xclang", "-O3",
-  ]
-
-  common_optimize_on_ldflags += []
-  
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
-  
   if (!is_debug && !is_component_build) {
     common_optimize_on_ldflags += [ "/OPT:ICF" ]  # Redundant COMDAT folding.
   }
@@ -1986,18 +1965,14 @@ if (is_win) {
   if (is_official_build) {
     common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
-    common_optimize_on_cflags += []
   }
 } else {
-
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
-
+  
   common_optimize_on_cflags += [
     "-O3",
   ]
-
-  common_optimize_on_ldflags += []
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -2102,9 +2077,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", ]
+    rustflags = [ "-Copt-level=3" ]
   } else {
-    rustflags = [ "-Copt-level=3", ]
+    rustflags = [ "-Copt-level=3" ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2172,7 +2147,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", ]
+    rustflags = [ "-Copt-level=3" ]
   }
 }
 
@@ -2205,7 +2180,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", ]
+    rustflags = [ "-Copt-level=3" ]
   }
 }
 
@@ -2447,7 +2422,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g0", "-Copt-level=3", ]
+  rustflags = [ "-g0", "-Copt-level=3" ]
 }
 
 # Minimal symbols.
@@ -2472,7 +2447,7 @@ config("minimal_symbols") {
     if (is_clang) {
       # -gline-tables-only is the same as -g1, but clang-cl only exposes the
       # former.
-      cflags += [ "-gline-tables-only" ]
+      cflags += [ "-g0" ]
     }
   } else {
     cflags = []
@@ -2519,7 +2494,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3" ]
 }
 
 # This configuration contains function names only. That is, the compiler is
