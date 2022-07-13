@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 PATH_COLOR_ARGB, 0xFF, 0x19, 0x67, 0xD2,
+FLIPS_IN_RTL,
 MOVE_TO, 41, 22,
 R_H_LINE_TO, -3,
 R_V_LINE_TO, -8,
