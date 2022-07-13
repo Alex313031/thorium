@@ -1,0 +1,23 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+CANVAS_DIMENSIONS, 24,
+PATH_COLOR_ARGB, 0xFF, 0xE5, 0x1C, 0x23,
+MOVE_TO, 11.38f, 12.5f,
+LINE_TO, 4.27f, 5.39f,
+LINE_TO, 4.27f, 4.27f,
+LINE_TO, 5.39f, 4.27f,
+LINE_TO, 12.5f, 11.38f,
+LINE_TO, 19.61f, 4.27f,
+LINE_TO, 20.73f, 4.27f,
+LINE_TO, 20.73f, 5.39f,
+LINE_TO, 13.62f, 12.5f,
+LINE_TO, 20.73f, 19.61f,
+LINE_TO, 20.73f, 20.73f,
+LINE_TO, 19.61f, 20.73f,
+LINE_TO, 12.5f, 13.62f,
+LINE_TO, 5.39f, 20.73f,
+LINE_TO, 4.27f, 20.73f,
+LINE_TO, 4.27f, 19.61f,
+CLOSE

@@ -1,0 +1,21 @@
+// Copyright 2019 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// New tab button in toolbar used with the touch-friendly WebUI tab strip.
+
+CANVAS_DIMENSIONS, 24,
+PATH_COLOR_ARGB, 0xFF, 0x19, 0x67, 0xD2,
+MOVE_TO, 21, 13,
+R_H_LINE_TO, -8,
+R_V_LINE_TO, 8,
+R_H_LINE_TO, -3,
+R_V_LINE_TO, -8,
+H_LINE_TO, 2,
+R_V_LINE_TO, -3,
+R_H_LINE_TO, 8,
+V_LINE_TO, 2,
+R_H_LINE_TO, 3,
+R_V_LINE_TO, 8,
+R_H_LINE_TO, 8,
+CLOSE
