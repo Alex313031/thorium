@@ -28,6 +28,7 @@ chromedriver.lib: %(VersionDir)s\
 chrome_child.dll: %(VersionDir)s\
 chrome_elf.dll: %(VersionDir)s\
 chrome_pwa_launcher.exe: %(VersionDir)s\
+chrome_wer.dll: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
 content_resources.pak: %(VersionDir)s\
 content_shell.pak: %(VersionDir)s\
