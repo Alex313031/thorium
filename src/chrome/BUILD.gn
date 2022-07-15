@@ -198,6 +198,7 @@ if (!is_android && !is_mac) {
         "//components/crash/core/app",
         "//components/crash/core/app:run_as_crashpad_handler",
         "//components/crash/core/common",
+        "//components/crash/win:chrome_wer",
         "//components/flags_ui:switches",
         "//content:sandbox_helper_win",
         "//content/public/common:static_switches",
@@ -296,6 +297,12 @@ if (!is_android && !is_mac) {
       # This will avoid conflicting of exposed symbols.
       if (is_chromeos_device) {
         ldflags += [ "-L" + rebase_path(root_out_dir) ]
+      }
+      
+      # On Chrome OS builds (for both ash-chrome and lacros-chrome), put
+      # a metadata.json file in root directory containing Chrome version.
+      if (is_chromeos) {
+        deps += [ "//build:version_metadata" ]
       }
 
       # Chrome OS debug builds for arm need to pass --long-plt to the linker.
@@ -1600,10 +1607,6 @@ group("strings") {
 if (is_android) {
   java_cpp_enum("partner_bookmarks_javagen") {
     sources = [ "browser/android/bookmarks/partner_bookmarks_reader.h" ]
-  }
-
-  java_cpp_enum("quick_action_category_enum_javagen") {
-    sources = [ "browser/android/contextualsearch/resolved_search_term.h" ]
   }
 
   java_cpp_enum("offline_pages_enum_javagen") {
