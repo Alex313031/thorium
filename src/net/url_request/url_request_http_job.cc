@@ -578,44 +578,9 @@ void URLRequestHttpJob::StartTransactionInternal() {
 }
 
 void URLRequestHttpJob::AddExtraHeaders() {
-  if (!request_info_.extra_headers.HasHeader(
-          HttpRequestHeaders::kAcceptEncoding)) {
-    // If a range is specifically requested, set the "Accepted Encoding" header
-    // to "identity"
-    if (request_info_.extra_headers.HasHeader(HttpRequestHeaders::kRange)) {
-      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kAcceptEncoding,
-                                            "identity");
-    } else {
-      // Supply Accept-Encoding headers first so that it is more likely that
-      // they will be in the first transmitted packet. This can sometimes make
-      // it easier to filter and analyze the streams to assure that a proxy has
-      // not damaged these headers. Some proxies deliberately corrupt
-      // Accept-Encoding headers.
-      std::vector<std::string> advertised_encoding_names;
-      if (request_->Supports(SourceStream::SourceType::TYPE_GZIP)) {
-        advertised_encoding_names.push_back("gzip");
-      }
-      if (request_->Supports(SourceStream::SourceType::TYPE_DEFLATE)) {
-        advertised_encoding_names.push_back("deflate");
-      }
-      if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
-      // Advertise "br" encoding only if transferred data is opaque to proxy.
-      if (request()->context()->enable_brotli() &&
-          request_->Supports(SourceStream::SourceType::TYPE_BROTLI)) {
-        if (request()->url().SchemeIsCryptographic() ||
-            IsLocalhost(request()->url())) {
-          advertised_encoding_names.push_back("br");
-        }
-      }
-      } // minimal headers
-      if (!advertised_encoding_names.empty()) {
-        // Tell the server what compression formats are supported.
-        request_info_.extra_headers.SetHeader(
-            HttpRequestHeaders::kAcceptEncoding,
-            base::JoinString(base::make_span(advertised_encoding_names), ", "));
-      }
-    }
-  }
+  request_info_.extra_headers.SetAcceptEncodingIfMissing(
+      request()->url(), request()->accepted_stream_types(),
+      request()->context()->enable_brotli());
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
     // Only add default Accept-Language if the request didn't have it
