@@ -1,40 +1,50 @@
 # Copyright (c) 2022 Alex313031 and JPratama7
 # Maintainer: JPratama7 <josepratama080@gmail.com>
 
-pkgname=thorium-browser-unstable-bin
-pkgver=104.0.5083.0
+pkgbase=thorium-browser-unstable
+pkgname=${pkgbase}-bin
+pkgver=105.0.5167.0
 pkgrel=1
 pkgdesc="Chromium fork for Linux named after radioactive element No. 90."
 arch=('x86_64')
 url="https://thorium.rocks"
 license=('GPL3')
-depends=('alsa-lib' 'ca-certificates' 'dbus' 'gtk3' 'libcups' 'nss' 'ttf-liberation' 'xdg-utils')
-optdepends=('pipewire: WebRTC desktop sharing under Wayland'
-            'kdialog: support for native dialogs in Plasma'
-            'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
-            'kwallet: support for storing passwords in KWallet on Plasma')
+depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
+         'ttf-liberation' 'libxtst' 'dbus' 'libpulse' 'pciutils' 'libva'
+         'desktop-file-utils' 'hicolor-icon-theme')
+optdepends=(
+	'pipewire: WebRTC desktop sharing under Wayland'
+	'kdialog: for file dialogs in KDE'
+	'gnome-keyring: for storing passwords in GNOME keyring'
+	'kwallet: for storing passwords in KWallet'
+    'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
+    'kwallet: support for storing passwords in KWallet on Plasma'
+)
 provides=("${pkgname%-bin}")
-conflicts=("${pkgname%-bin}" 'chromium')
+conflicts=("${pkgname%-bin}")
 options=('!strip' '!emptydirs')
-source=("https://github.com/Alex313031/Thorium/releases/download/M${pkgver}/thorium-browser_${pkgver}-1_amd64.deb")
-sha512sums=('cc0392baa4c8d866b1487ec4e740a5b810cd599848b438d7029d8268d3290336cafb68754705eba5c6362dff8dcd77759dbe476e7ace283db7027bf6108924dc')
+source_x86_64=("https://github.com/Alex313031/Thorium/releases/download/M${pkgver}/thorium-browser_${pkgver}_amd64.deb"
+#"https://github.com/Alex313031/Thorium/releases/download/M${pkgver}/thorium-browser_${pkgver}-${pkgrel}_amd64.deb"
+)
+sha512sums_x86_64=('216ec81322ef3a8963e0844e24a78830c44811768bc6446f652df91317e3df40d68146c74f94fb064b97292677327f7e2ea8835ac985f5fa931b1aeeb2580d90')
 
 package() {
-  bsdtar -xf data.tar.xz -C "$pkgdir/"
+  # Extract package data
+  tar xf data.tar.xz -C "${pkgdir}"
 
   chmod 4755 "$pkgdir/opt/chromium.org/thorium-unstable/chrome-sandbox"
-
-  for icon_size in 16 24 32 48 64 128 256; do
+  
+  # install icons
+  for i in 16x16 24x24 32x32 48x48 64x64 128x128 256x256; do
     icons_dir=usr/share/icons/hicolor/${icon_size}x${icon_size}/apps
-    install -Dm644 "$pkgdir/opt/chromium.org/thorium-unstable/product_logo_${icon_size}.png" \
-      "$pkgdir/${icons_dir}/${pkgname%-bin}.png"
+    install -Dm644 "${pkgdir}"/opt/chromium.org/thorium/product_logo_${i/x*}.png \
+                       "${pkgdir}"/usr/share/icons/hicolor/${i}/apps/thorium-browser-unstable.png
   done
-  install -Dm644 "$pkgdir/opt/chromium.org/thorium-unstable/thorium-devtools.png" -t \
+  install -Dm644 "$pkgdir/opt/chromium.org/thorium/thorium_shell.png" -t \
     "$pkgdir/usr/share/icons/hicolor/256x256/apps/"
 
   rm -r \
     "$pkgdir"/etc/ \
-    "$pkgdir"/opt/chromium.org/thorium-unstable/cron/ \
-    "$pkgdir"/opt/chromium.org/thorium-unstable/product_logo_*.{png,xpm} \
+    "$pkgdir"/opt/chromium.org/thorium/cron/ \
     "$pkgdir"/usr/share/menu/
 }
