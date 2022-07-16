@@ -19,8 +19,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${YEL}Cleaning up build artifacts...\n" &&
-printf "\n" &&
-tput sgr0 &&
+printf "${RED}\n" &&
 
 cd ~/chromium/src/out/thorium
 
