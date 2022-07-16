@@ -3,6 +3,7 @@
 # Copyright (c) 2022 Alex313031.
 
 YEL='\033[1;33m' # Yellow
+CYA='\033[1;96m' # Cyan
 RED='\033[1;31m' # Red
 GRE='\033[1;32m' # Green
 c0=$'\033[0m' # Reset Text
@@ -28,7 +29,7 @@ esac
 
 printf "\n" &&
 printf "${YEL}Building Thorium .deb package...\n" &&
-printf "${GRE}\n" &&
+printf "${CYA}\n" &&
 
 # Build debian package
 export NINJA_SUMMARIZE_BUILD=1 &&
