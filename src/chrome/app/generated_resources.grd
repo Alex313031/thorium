@@ -458,7 +458,7 @@ are declared in tools/grit/grit_rule.gni.
         Main menu
       </message>
       <message name="IDS_HISTORY_HISTORY_MENU_ITEM" desc="Label displayed in history sidebar button to display history.">
-        Thorium history
+        Chrome history
       </message>
       <message name="IDS_HISTORY_NO_SYNCED_RESULTS" desc="Text indicating that there are no synced tabs from other devices.">
         No tabs from other devices
@@ -467,13 +467,13 @@ are declared in tools/grit/grit_rule.gni.
         Tabs from other devices
       </message>
       <message name="IDS_HISTORY_SIGN_IN_BUTTON" desc="Label displayed on a button to let user sign in to Chrome to get synced tab history.">
-        Sign in to Thorium
+        Sign in to Chrome
       </message>
       <message name="IDS_HISTORY_SIGN_IN_PROMO" desc="Text of the sign-in promo. This will show up if a user is not logged in and has no synced tabs.">
         Continue from another device
       </message>
       <message name="IDS_HISTORY_SIGN_IN_PROMO_DESC" desc="Description of the sign-in promo. Further tells users to sign in to Chrome to see synced tabs from other devices.">
-        To get your tabs from your other devices, sign in to Thorium.
+        To get your tabs from your other devices, sign in to Chrome.
       </message>
 
       <!-- Generic terms -->
@@ -643,6 +643,10 @@ are declared in tools/grit/grit_rule.gni.
 
           <message name="IDS_CONTENT_CONTEXT_COPYLINKTOTEXT" desc="The name of the Copy Link to Highlight command in the content area context menu">
             Copy link to highlight
+          </message>
+
+          <message name="IDS_CONTENT_CONTEXT_ADD_A_NOTE" desc="The name of the Add Note command in the content area context menu">
+            Add a note
           </message>
 
           <message name="IDS_CONTENT_CONTEXT_REMOVELINKTOTEXT" desc="The name of the Remove Highlights command in the content area context menu">
@@ -894,6 +898,10 @@ are declared in tools/grit/grit_rule.gni.
 
           <message name="IDS_CONTENT_CONTEXT_COPYLINKTOTEXT" desc="In Title Case: The name of the Copy Link to Highlight command in the content area context menu">
             Copy Link to Highlight
+          </message>
+
+          <message name="IDS_CONTENT_CONTEXT_ADD_A_NOTE" desc="In Title Case: The name of the Add Note command in the content area context menu">
+            Add a Note
           </message>
 
           <message name="IDS_CONTENT_CONTEXT_REMOVELINKTOTEXT" desc="In TitleCase: The name of the Remove Highlights command in the content area context menu">
@@ -1432,7 +1440,7 @@ are declared in tools/grit/grit_rule.gni.
         Managed by <ph name="MANAGER">$1<ex>example.com</ex></ph>
       </message>
       <message name="IDS_CHROME_TIPS" desc="The text label of the Help menu item which takes the user to the Chrome Tips page.">
-        Tips for Thorium
+        Tips for Chrome
       </message>
       <message name="IDS_CHROME_WHATS_NEW" desc="The text label of the Help menu item which takes the user to the Chrome What's New page.">
         What's New
@@ -2734,6 +2742,10 @@ are declared in tools/grit/grit_rule.gni.
                desc="Status text for a download item that is being scanned by enterprise policy.">
         Checking with your organization's security policies...
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_INCOGNITO_INFORMATION_ROW"
+               desc="For Incognito/Guest mode, text notifying that downloads are visible to others on the device.">
+        Anyone using this device can see downloaded files
+      </message>
 
       <!-- Desktop omnibox PWA install icon -->
       <if expr="not is_android">
@@ -2841,10 +2853,10 @@ are declared in tools/grit/grit_rule.gni.
           Quit
         </message>
         <message name="IDS_QUIT_WITH_APPS_EXPLANATION" desc="Text displayed in a notification explaining that Chrome will continue running in the background as long as there are Chrome Apps open.">
-          Thorium will keep running while Thorium Apps are open.
+          Chrome will keep running while Chrome Apps are open.
         </message>
         <message name="IDS_QUIT_WITH_APPS_QUIT_LABEL" desc="Button text to quit all running Chrome apps.">
-          Quit all Thorium Apps
+          Quit all Chrome Apps
         </message>
         <message name="IDS_QUIT_WITH_APPS_SUPPRESSION_LABEL" desc="Button text to prevent a notification from showing in future.">
           Don't show this again
@@ -3023,7 +3035,7 @@ are declared in tools/grit/grit_rule.gni.
           Device Credentials
         </message>
         <!--
-          NOTE: As per Bluetooth v4.2 spec. (section 3.2.3.2):
+          NOTE: As per Bluetooth spec. v4.2 [Vol 3, Part C] (section 3.2.3.2):
           > When the Bluetooth PIN is referred to on the UI level, the term
           > 'Bluetooth Passkey' should be used."
         -->
@@ -3035,6 +3047,12 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <message name="IDS_BLUETOOTH_DEVICE_PAIR_CONFIRM_LABEL" desc="Label of the text prompt for Bluetooth device pair confirmation.">
           Bluetooth device <ph name="DEVICE">$1</ph> would like permission to pair.
+        </message>
+        <message name="IDS_BLUETOOTH_DEVICE_PASSKEY_CONFIRM_TITLE" desc="Title of the Bluetooth device pair passkey confirmation prompt dialog.">
+          Confirm passkey
+        </message>
+        <message name="IDS_BLUETOOTH_DEVICE_PASSKEY_CONFIRM_LABEL" desc="Label of the text prompt for Bluetooth device pair passkey confirmation.">
+          Please confirm that <ph name="PASSKEY">$1<ex>123456</ex></ph> is the passkey displayed on Bluetooth device <ph name="DEVICE">$2</ph>.
         </message>
       </if>
 
@@ -4161,7 +4179,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
       <message name="IDS_UTILITY_PROCESS_FILE_UTILITY_NAME" desc="The name of the utility process used for various Chrome specific file operations.">
-          Thorium File Utilities
+          Chrome File Utilities
       </message>
       <if expr="not is_android">
         <message name="IDS_UTILITY_PROCESS_PROFILE_IMPORTER_NAME" desc="The name of the utility process used for importing profiles.">
@@ -4184,7 +4202,7 @@ are declared in tools/grit/grit_rule.gni.
         </if>
         <if expr="not reven">
           <message name="IDS_UTILITY_PROCESS_IMAGE_WRITER_NAME" desc="The name of the utility process used for writing ChromeOS system images.">
-            ThoriumOS System Image Writer
+            ChromeOS System Image Writer
           </message>
         </if>
       </if>
@@ -4197,7 +4215,7 @@ are declared in tools/grit/grit_rule.gni.
         No-op Service
       </message>
       <message name="IDS_SERVICE_PROCESS_DOCUMENT_ANALYSIS_NAME" desc="The name of the service process used for document analysis operations as part of Safe Browsing.">
-        Thorium Document Analysis
+        Chrome Document Analysis
       </message>
       <!-- Theme preview infobar -->
       <message name="IDS_THEME_INSTALL_INFOBAR_LABEL" desc="Text displayed on an infobar when a theme has been installed.">
@@ -4295,18 +4313,18 @@ are declared in tools/grit/grit_rule.gni.
         Repair "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"?
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_PROMPT_TITLE_APP" desc="Titlebar of the prompt window for an externally installed app">
-        Another program on your computer added an app that may change the way Thorium works.
+        Another program on your computer added an app that may change the way Chrome works.
 
 
 <ph name="EXTENSION_NAME">$1<ex>Babylon Toolbar</ex></ph>
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_PROMPT_TITLE_EXTENSION" desc="Titlebar of the prompt window for an externally installed extension">
-        Another program on your computer added an extension that may change the way Thorium works.
+        Another program on your computer added an extension that may change the way Chrome works.
 
 <ph name="EXTENSION_NAME">$1<ex>Babylon Toolbar</ex></ph>
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_PROMPT_TITLE_THEME" desc="Titlebar of the prompt window for an externally installed theme">
-        Another program on your computer added a theme that may change the way Thorium works.
+        Another program on your computer added a theme that may change the way Chrome works.
 
 <ph name="EXTENSION_NAME">$1<ex>Babylon Toolbar</ex></ph>
       </message>
@@ -4333,7 +4351,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_PROMPT_ABORT_BUTTON" desc="Button on the external install prompt to remove an extension installed by a third party.">
-        Remove from Thorium
+        Remove from Chrome
       </message>
 
       <!-- Extension alerts. -->
@@ -4748,7 +4766,7 @@ are declared in tools/grit/grit_rule.gni.
           Read information about your browser, OS, and device
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_ENTERPRISE_REMOTE_APPS" desc="Permission string for access to the Remote Apps Enterprise API.">
-          Add remote apps to the ThoriumOS launcher
+          Add remote apps to the ChromeOS launcher
         </message>
         <if expr="reven">
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
@@ -4763,13 +4781,13 @@ are declared in tools/grit/grit_rule.gni.
         </if>
         <if expr="not reven">
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
-            Run ThoriumOS diagnostic tests.
+            Run ChromeOS diagnostic tests.
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY" desc="Permission string for chrome.os.telemetry API.">
-            Read ThoriumOS device information and device data.
+            Read ChromeOS device information and device data.
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
-            Read ThoriumOS device and component serial numbers.
+            Read ChromeOS device and component serial numbers.
           </message>
         </if>
       </if>
@@ -4829,7 +4847,7 @@ are declared in tools/grit/grit_rule.gni.
       </if>
       <if expr="not reven">
         <message name="IDS_EXTENSION_INSTALL_KIOSK_MODE_ONLY" desc="Error displayed during installation of an app with 'kiosk_only' attribute but user is not in ChromeOS kiosk mode.">
-          App with 'kiosk_only' manifest attribute must be installed in ThoriumOS kiosk mode
+          App with 'kiosk_only' manifest attribute must be installed in ChromeOS kiosk mode
         </message>
       </if>
       <message name="IDS_EXTENSION_OVERLAPPING_WEB_EXTENT" desc="Error message when a user tries to install an app with a web extent that overlaps another installed app.">
@@ -5245,7 +5263,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Repair app
       </message>
       <message name="IDS_EXTENSION_WEB_STORE_TITLE" desc="Text for the Chrome Web Store">
-        Thorium Web Store
+        Chrome Web Store
       </message>
       <message name="IDS_EXTENSION_WEB_STORE_TITLE_SHORT" desc="Shortened version of text for the Chrome Web Store">
         Web Store
@@ -5284,13 +5302,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
         "<ph name="EXTENSION_NAME">$1<ex>Babylon Toolbar</ex></ph>" added
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_ALERT_BUBBLE_HEADING_APP" desc="The heading text (below the title) for the bubble that alerts the user that a new external app was installed.">
-        Another program on your computer added an app that may change the way Thorium works.
+        Another program on your computer added an app that may change the way Chrome works.
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_ALERT_BUBBLE_HEADING_EXTENSION" desc="The heading text (below the title) for the bubble that alerts the user that a new external extension was installed.">
-        Another program on your computer added an extension that may change the way Thorium works.
+        Another program on your computer added an extension that may change the way Chrome works.
       </message>
       <message name="IDS_EXTENSION_EXTERNAL_INSTALL_ALERT_BUBBLE_HEADING_THEME" desc="The heading text (below the title) for the bubble that alerts the user that a new external theme was installed.">
-        Another program on your computer added a theme that may change the way Thorium works.
+        Another program on your computer added a theme that may change the way Chrome works.
       </message>
 
       <message name="IDS_EXTENSIONS_UNSUPPORTED_DISABLED_TITLE" desc="Title of the dialog shown when unsupported extensions have been disabled">
@@ -5343,7 +5361,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <!-- End Extension Settings Overridden Dialog strings. -->
       <!-- Force Installed Deprecated Apps Deletion Dialog strings. -->
       <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
-        Old versions of Thorium Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
+        Old versions of Chrome Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
       </message>
       <!-- End Force Installed Deprecated Apps Deletion Dialog strings. -->
       <!-- Deprecated Apps Deletion Dialog strings. -->
@@ -5354,13 +5372,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
         "<ph name="EXTENSION_NAME">$1<ex>Google Docs</ex></ph>" is no longer supported
       </message>
       <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Chrome Apps will soon no longer launch.">
-        Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
+        Old versions of Chrome apps won't open after December 2022. You can check if there's a new version available.
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on chrome apps deprecation">
         Learn more
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE_AX_LABEL" desc="Accessibility label text for IDS_DEPRECATED_APPS_LEARN_MORE link">
-        Learn more about unsupported Thorium apps
+        Learn more about unsupported Chrome apps
       </message>
       <message name="IDS_DEPRECATED_APPS_DELETION_LINK" desc="Contains link to trigger the deprecated apps deletion dialog from chrome://apps">
         {NUM_APPS, plural,
@@ -5948,7 +5966,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
 
       <message name="IDS_EXPERIMENTAL_LACROS_WARNING_MESSAGE_PRIMARY" desc="Addendum which is sometimes added to the initial warning message.">
-        The standard browser can be found by typing "Thorium" into Launcher.
+        The standard browser can be found by typing "Chrome" into Launcher.
       </message>
 
       <message name="IDS_EXPERIMENTAL_LACROS_WARNING_MESSAGE_MANAGED" desc="Addendum which is sometimes added to the initial warning message.">
@@ -6359,7 +6377,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Restore default shortcuts
       </message>
       <message name="IDS_NTP_CUSTOM_BG_CHROME_WALLPAPERS" desc="The text label of the Chrome backgrounds option for background customization.(On the New Tab Page)">
-        Thorium backgrounds
+        Chrome backgrounds
       </message>
       <message name="IDS_NTP_CUSTOM_BG_UPLOAD_AN_IMAGE" desc="The text label of the upload an image option for background customization. (On the New Tab Page)">
         Upload an image
@@ -6437,7 +6455,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Color and theme
       </message>
       <message name="IDS_NTP_CUSTOMIZE_NO_BACKGROUND_LABEL" desc="The label for the 'Classic Chrome' tile in the customization menu on the New Tab Page">
-        Classic Thorium
+        Classic Chrome
       </message>
       <message name="IDS_NTP_CUSTOMIZE_UPLOAD_FROM_DEVICE_LABEL" desc="The label for the 'Upload from device' tile in the customization menu on the New Tab Page">
         Upload from device
@@ -6595,7 +6613,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         You’re seeing suggested recipes based on your recent Search activity for recipes.
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
-        You can manage settings from the card menu or see more options in Customize Thorium.
+        You can manage settings from the card menu or see more options in Customize Chrome.
       </message>
       <message name="IDS_NTP_MODULES_RECIPE_TASKS_SENTENCE" desc="Name of the recipe tasks module in sentence case shown in various UIs.">
         Recipe ideas
@@ -6634,7 +6652,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         You’re seeing carts that help you easily get back to items you left in shopping carts across the web.
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
-        You can manage settings from the card menu or see more options in Customize Thorium.
+        You can manage settings from the card menu or see more options in Customize Chrome.
       </message>
       <message name="IDS_NTP_MODULES_CART_ITEM_COUNT_SINGULAR" desc="Item count displayed on chrome cart module when there is a single item in a cart.">
         <ph name="ITEM_COUNT_ONE">$1<ex>1</ex></ph> item
@@ -6670,7 +6688,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         You’re seeing suggested files to help you easily get back to your most recent activity in Google Drive.
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
-        You can manage settings from the card menu or see more options in Customize Thorium.
+        You can manage settings from the card menu or see more options in Customize Chrome.
       </message>
       <message name="IDS_NTP_MODULES_PHOTOS_TITLE" desc="Title shown in the header of the photos module.">
         From your Google Photos
@@ -6697,7 +6715,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         You’re seeing photo and video highlights from your Google Photos library. You can control what shows up in your highlights at <ph name="BEGIN_LINK">&lt;a href="https://photos.google.com/settings?referrer=CHROME_NTP" target="_blank"&gt;</ph>photos.google.com/settings<ph name="END_LINK">&lt;/a&gt;</ph>.
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
-        You can manage settings for this card from the card menu or see more options in Customize Thorium.
+        You can manage settings for this card from the card menu or see more options in Customize Chrome.
       </message>
       <message name="IDS_NTP_MODULES_PHOTOS_MEMORIES_EXPLORE" desc="Text to encourage users to explore Google Photos in the new tab page.">
         Explore more of your memories in Google Photos
@@ -6806,7 +6824,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Got it
       </message>
       <message name="IDS_NTP_MODULES_CART_DISCOUNT_CONSENT_CONTENT_V2" desc="Text shown on the consent card for getting discount asking if users would like to give their consent to the feature.">
-        Let Thorium find personalized discounts on your carts?
+        Let Chrome find personalized discounts on your carts?
       </message>
       <message name="IDS_NTP_MODULES_CART_DISCOUNT_CONSENT_CONTENT_V3" desc="Text shown on the consent card for getting discount asking if users would like to give their consent to the feature.">
         Let Google use your cart to find available discounts?
@@ -6846,6 +6864,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_NTP_MODULES_FIRST_RUN_EXPERIENCE_OPT_OUT_TOAST" desc="Opt out toast for Modular NTP Desktop v1 First Run Experience.">
        You won't see cards on this page again
+      </message>
+      <message name="IDS_NTP_MODULES_FEED_TITLE" desc="Title shown in the header of the Following feed NTP module on the new tab page showing updates from sites followed by the user.">
+        Following
       </message>
 
       <!-- Extensions NTP Middle Slot Promo -->
@@ -6965,7 +6986,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_SIDE_PANEL_COMBO_BOX_GOOGLE_LENS_LABEL" desc="The name of the Google Lens in the side panel combo box">
         Google Lens
       </message>
-
+      
       <!-- Read Anything strings -->
       <!-- TODO(crbug.com/1266555): Add final strings and make them translateable. -->
       <message name="IDS_READ_ANYTHING_TITLE" desc="Title of the Read Anything feature, which gives users an accessible reading experience." translateable="false">
@@ -6999,7 +7020,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Enable featured Thorium experiments
       </message>
       <message name="IDS_TOOLTIP_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The tooltip for the left aligned side panel toggle button">
-        Toggle left aligned side panel
+        Toggle left aligned Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_CHROMELABS_COMBOBOX" desc="The tooltip for the Chrome Labs combobox to select between experiment states">
         Select experiment state for <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph>
@@ -7101,16 +7122,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Open
         </message>
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_STAY_IN_CHROME" desc="Message contained in a button to continue the navigation within Chrome.">
-          Stay in Thorium
+          Stay in Chrome
         </message>
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_INITIATING_ORIGIN" desc="The label for the initiating origin of the intent picker.">
           From <ph name="ORIGIN">$1<ex>https://google.com</ex></ph>
         </message>
         <message name="IDS_INTENT_CHIP_OPEN_IN_APP" desc="The label of a button or dialog to open the current webpage in an installed app.">
           Open in app
-        </message>
-        <message name="IDS_INTENT_CHIP_IPH" desc="The text for the In-Product Help bubble for the Intent Chip.">
-          Open websites in apps installed on your device
         </message>
 
         <if expr="chromeos_ash or chromeos_lacros">
@@ -7124,10 +7142,16 @@ Keep your key file in a safe place. You will need it to create new versions of y
             <message name="IDS_INTENT_PICKER_SELECT_AN_APP_SUBTITLE" desc="The subtitle of a dialog containing a list of installed applications. The dialog allows the user to select an app to open a web link.">
               Select an app on your <ph name="DEVICE_TYPE">$1<ex>Chromebook</ex></ph> to open this link
             </message>
+            <message name="IDS_INTENT_CHIP_IPH_CHROME_OS" desc="The text for the In-Product Help bubble for the Intent Chip on ChromeOS devices.">
+              Open websites in apps installed on your <ph name="DEVICE_TYPE">$1<ex>Chromebook</ex></ph>
+            </message>
           </then>
           <else>
             <message name="IDS_INTENT_PICKER_SELECT_AN_APP_GENERIC_SUBTITLE" desc="The subtitle of a dialog containing a list of installed applications. The dialog allows the user to select an app to open a web link.">
               Select an app on your device to open this link
+            </message>
+            <message name="IDS_INTENT_CHIP_IPH_GENERIC" desc="The text for the In-Product Help bubble for the Intent Chip.">
+              Open websites in apps installed on your device
             </message>
           </else>
         </if>
@@ -7183,7 +7207,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Thorium Experiments
       </message>
       <message name="IDS_ACCNAME_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The accessible name for the left aligned side panel toggle button">
-        Left aligned side panel
+        Left aligned Thorium side panel
       </message>
       <message name="IDS_ACCESSIBLE_TEXT_CHROMELABS_BUTTON_ADDED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Chrome Labs experiments button is added to the toolbar by an enterprise policy change.">
         Enterprise policy changed. Experiments button added to toolbar. Click the button to open a dialog to enable experiments.
@@ -7236,6 +7260,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_ACCNAME_EXTENSIONS_MENU_SITE_ACCESS_COMBOBOX" desc="The accessible name for the extension's site access combobox in the extensions menu.">
         Site Access Option
       </message>
+      <message name="IDS_ACCNAME_WEB_APP_DETAILED_INSTALL_DIALOG_LEADING_SCROLL_BUTTON" desc="The accessible name for the web app detailed install dialog scroll left button.">
+        Scroll backward
+      </message>
+      <message name="IDS_ACCNAME_WEB_APP_DETAILED_INSTALL_DIALOG_TRAILING_SCROLL_BUTTON" desc="The accessible name for the web app detailed install dialog scroll right button.">
+        Scroll forward
+      </message>
 
       <!-- Clipboard permission -->
       <message name="IDS_ALLOWED_CLIPBOARD_TITLE" desc="Title of the info bubble shown when a site has been allowed access to read the contents of the system clipboard.">
@@ -7274,7 +7304,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Get back here fast by bookmarking this tab
       </message>
       <message name="IDS_CHROME_TIP" desc="Accessible name used by a screen reader for the in-product-help or tutorial bubble icon." is_accessibility_with_no_ui="true">
-        Thorium tip
+        Chrome tip
       </message>
       <message name="IDS_GLOBAL_MEDIA_CONTROLS_PROMO" desc="Text shown on promotional UI appearing next to the global media controls toolbar button.">
         New! Control your music, videos, and more.
@@ -7313,7 +7343,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         To get back here quickly, install <ph name="APP_NAME">$1<ex>Google Maps</ex></ph> by clicking the install button
       </message>
       <message name="IDS_UPDATED_CONNECTION_SECURITY_INDICATORS_PROMO" desc="Text shown on promotional UI appearing next to the new omnibox connection security icon">
-        Your connection is always secure unless Thorium tells you otherwise
+        Your connection is always secure unless Chrome tells you otherwise
       </message>
       <message name="IDS_REOPEN_TAB_PROMO_SCREENREADER" desc="Text announced encouraging users to reopen a tab with the given shortcut">
         <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+T</ex></ph> can reopen accidentally closed tabs
@@ -7439,12 +7469,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
          Show original content?
       </message>
       <message name="IDS_NEAR_OOM_REDUCTION_MESSAGE_DESCRIPTION" desc="The description of the message stating that the browser removed some content on the page using too much memory.">
-         To save memory, Thorium removed some content
+         To save memory, Chrome removed some content
       </message>
 
       <!-- Tailored Security Prompt for Unconsented users -->
       <message name="IDS_TAILORED_SECURITY_UNCONSENTED_MESSAGE_TITLE" desc="The title of the message asking if the user wants to enable Enhanced Safe Browsing">
-         Also turn on Enhanced Safe Browsing for this Thorium profile?
+         Also turn on Enhanced Safe Browsing for this Chrome profile?
       </message>
       <message name="IDS_TAILORED_SECURITY_UNCONSENTED_MESSAGE_ACCEPT" desc="The text on the 'accept' button when asking if the user wants to enable Enhanced Safe Browsing">
         Turn on
@@ -7507,8 +7537,8 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
         <message name="IDS_PASSWORD_MANAGER_MORE_TO_FIX_BODY_MESSAGE" desc="The content of the bubble notifying that there are no more problems with compromised credentials.">
           {COUNT, plural,
-          =1 {Successfully changed the compromised password. You have # more compromised password. Thorium recommends checking this password now.}
-          other {Successfully changed the compromised password. You have # more compromised passwords. Thorium recommends checking these passwords now.}}
+          =1 {Successfully changed the compromised password. You have # more compromised password. Chrome recommends checking this password now.}
+          other {Successfully changed the compromised password. You have # more compromised passwords. Chrome recommends checking these passwords now.}}
         </message>
         <message name="IDS_PASSWORD_MANAGER_MORE_TO_FIX_BODY_MESSAGE_GOOGLE_PASSWORD_MANAGER" desc="The content of the bubble notifying that there are no more problems with compromised credentials.">
           {COUNT, plural,
@@ -7595,10 +7625,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           Move your password
         </message>
         <message name="IDS_PASSWORD_MANAGER_IMPORT_DIALOG_TITLE" desc="The title of the file selection dialog for importing passwords">
-          Import Passwords To Thorium
+          Import Passwords To Chrome
         </message>
         <message name="IDS_PASSWORD_MANAGER_EXPORT_DIALOG_TITLE" desc="The title of the file selection dialog for exporting passwords">
-          Export Passwords From Thorium
+          Export Passwords From Chrome
         </message>
         <message name="IDS_PASSWORD_MANAGER_MOVE_TITLE" desc="The title of the 'move password to account' bubble">
           Move to Google Account?
@@ -7613,7 +7643,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           Save passwords?
         </message>
         <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_DESCRIPTION" desc="The description text of the 'save unsynced credentials' bubble.">
-          Thorium couldn't save these passwords in your Google Account. You can still save them on this device.
+          Chrome couldn't save these passwords in your Google Account. You can still save them on this device.
         </message>
         <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_DESCRIPTION_GPM" desc="The description text of the 'save unsynced credentials' bubble.">
           Google Password Manager couldn't save these passwords in your Google Account. You can save them to this device.
@@ -7816,7 +7846,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           This information helps us better understand your Assistant issue. It's stored for up to 90 days and access is restricted to appropriate engineering and feedback teams.
         </message>
         <message name="IDS_FEEDBACK_BLUETOOTH_LOGS_MESSAGE" desc="Message shown after user clicks on the bluetooth logs hyperlink">
-          To better diagnose Bluetooth issues, Googlers can include additional Bluetooth logs with their feedback reports. When this option is checked, your report will include btsnoop and HCI logs from your current session, sanitized to remove as much PII as possible. Access to these logs will be restricted to managers of the ThoriumOS product group in Listnr. Logs will be purged after 90 days.
+          To better diagnose Bluetooth issues, Googlers can include additional Bluetooth logs with their feedback reports. When this option is checked, your report will include btsnoop and HCI logs from your current session, sanitized to remove as much PII as possible. Access to these logs will be restricted to managers of the ChromeOS product group in Listnr. Logs will be purged after 90 days.
         </message>
         <message name="IDS_FEEDBACK_OFFLINE_DIALOG_TITLE" desc="The title of the message box displayed when the user attempts to send a report while offline">
           Feedback Report
@@ -7877,10 +7907,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Clear browsing data
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_NOTICE" desc="A dialog informing the user that their Chrome browsing history was deleted, but other forms of history can still be found on Google My Activity.">
-        The selected data has been removed from Thorium and synced devices. Your Google Account may have other forms of browsing history like searches and activity from other Google services at <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/a&gt;</ph>.
+        The selected data has been removed from Chrome and synced devices. Your Google Account may have other forms of browsing history like searches and activity from other Google services at <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/a&gt;</ph>.
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_NOTICE_TITLE" desc="Title of a dialog that informs the user that the deletion of Chrome's browsing data has been completed.">
-        Cleared Thorium data
+        Cleared Chrome data
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_NOTICE_OK" desc="Button in a dialog that informs the user that the deletion of Chrome's browsing data has been completed.">
         Ok, got it
@@ -7908,7 +7938,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </message>
 
       <message name="IDS_ZOOMLEVELS_CHROME_ERROR_PAGES_LABEL" desc="Label for zoom level list entry for Chrome error pages.">
-        (Thorium error pages)
+        (Chrome error pages)
       </message>
 
       <!-- Automatic updates -->
@@ -8381,6 +8411,12 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_TAB_SEARCH_EXPAND_RECENTLY_CLOSED_ITEMS" desc="The label for the button that toggles showing the recently closed items list section.">
         Toggle Recently Closed Items
       </message>
+      <message name="IDS_TAB_SEARCH_EXPAND_RECENTLY_CLOSED" desc="The tooltip for the RECENTLY CLOSED button when it's collapsed">
+        Expand recently closed
+      </message>
+      <message name="IDS_TAB_SEARCH_COLLAPSE_RECENTLY_CLOSED" desc="The tooltip for the RECENTLY CLOSED button when it's expanded">
+        Collapse recently closed
+      </message>
 
       <!-- Strings for Window Titles in Menus -->
       <if expr="not use_titlecase">
@@ -8492,10 +8528,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <ph name="APP_NAME">$1<ex>html5rocks.com</ex></ph> is sharing a window.
       </message>
       <message name="IDS_MEDIA_TAB_CAPTURE_NOTIFICATION_TEXT" desc="label used in screen capture notification UI to show the screen sharing status when the stream is consumed by the same app initiating the window picker">
-        <ph name="APP_NAME">$1<ex>html5rocks.com</ex></ph> is sharing a Thorium tab.
+        <ph name="APP_NAME">$1<ex>html5rocks.com</ex></ph> is sharing a Chrome tab.
       </message>
       <message name="IDS_MEDIA_TAB_CAPTURE_WITH_AUDIO_NOTIFICATION_TEXT" desc="label used in screen capture notification UI to show the screen sharing status when the stream is consumed by the same app initiating the window picker">
-        <ph name="APP_NAME">$1<ex>html5rocks.com</ex></ph> is sharing a Thorium tab and audio.
+        <ph name="APP_NAME">$1<ex>html5rocks.com</ex></ph> is sharing a Chrome tab and audio.
       </message>
       <message name="IDS_MEDIA_SCREEN_CAPTURE_NOTIFICATION_HIDE" desc="Text shown on a link that hides the notification that the screen is being captured.">
         Hide
@@ -8588,7 +8624,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <!-- Killed Tab Strings -->
       <if expr="chromeos_ash or chromeos_lacros">
         <message name="IDS_KILLED_TAB_BY_OOM_MESSAGE" desc="The message displayed on the killed tab page when the page was killed by an out of memory error.">
-          Either Thorium ran out of memory or the process for the webpage was terminated for some other reason.  To continue, reload or go to another page.
+          Either Chrome ran out of memory or the process for the webpage was terminated for some other reason.  To continue, reload or go to another page.
         </message>
       </if>
       <message name="IDS_KILLED_TAB_FEEDBACK_MESSAGE" desc="The text to auto-populate the feedback page with. The triple single quotes are needed to preserve the line break.">
@@ -8672,7 +8708,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <!-- Extension install location strings -->
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_UNKNOWN" desc="The text explaining the the installation location is unknown.">
-          Not from Thorium Web Store.
+          Not from Chrome Web Store.
         </message>
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_3RD_PARTY" desc="The text explaining the the installation came from a 3rd party app.">
           Installed by a third party.
@@ -8695,7 +8731,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           This extension violates the Chrome Web Store policy.
         </message>
         <message name="IDS_EXTENSIONS_BLOCKLISTED_POTENTIALLY_UNWANTED" desc="The text explaining the reason for disabling extension or app. The extension in question might have been installed without user consent.">
-          Disabled by Thorium. This extension may be unsafe.
+          Disabled by Chrome. This extension may be unsafe.
         </message>
 
         <!-- Enhanced Safe Browsing CRX allowlist warning -->
@@ -8710,7 +8746,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_RESET_PROFILE_SETTINGS_EXPLANATION_IN_BULLET_POINTS" desc="A label formatted with bullet points describing the consequences of the 'reset profile settings' feature">
           This action will:
           <ph name="LINE_BREAKS">&lt;br&gt;&lt;br&gt;</ph>
-           • Reset Thorium settings and Thorium shortcuts
+           • Reset Chrome settings and Chrome shortcuts
            <ph name="LINE_BREAK">&lt;br&gt;</ph>
            • Disable extensions
            <ph name="LINE_BREAK">&lt;br&gt;</ph>
@@ -8722,7 +8758,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           <ph name="THIRD_PARTY_TOOL_NAME">$1<ex>SuperDuper PC Cleaner Pro</ex></ph> wants to reset your settings.
         </message>
         <message name="IDS_TRIGGERED_RESET_PROFILE_SETTINGS_EXPLANATION" desc="Dialog title for reset dialog triggered by a third party tool">
-          <ph name="THIRD_PARTY_TOOL_NAME">$1<ex>SuperDuper PC Cleaner Pro</ex></ph> wants to restore your Thorium settings to their original defaults. This will reset your homepage, new tab page and search engine, disable your extensions, and unpin all tabs. It will also clear other temporary and cached data, such as cookies, content and site data.
+          <ph name="THIRD_PARTY_TOOL_NAME">$1<ex>SuperDuper PC Cleaner Pro</ex></ph> wants to restore your Chrome settings to their original defaults. This will reset your homepage, new tab page and search engine, disable your extensions, and unpin all tabs. It will also clear other temporary and cached data, such as cookies, content and site data.
         </message>
         <message name="IDS_TRIGGERED_RESET_PROFILE_SETTINGS_DEFAULT_TOOL_NAME" desc="Default tool name when a reset was triggered but a name could not be found.">
           A cleanup tool
@@ -8817,7 +8853,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Shared Tab
       </message>
       <message name="IDS_TOOLBAR_BUTTON_SEND_TAB_TO_SELF_BUTTON_HINT_TEXT" desc="The hint text shown on received tab dialog shown from the toolbar button. Where 'THERE' is the device the user selected.">
-        Choose a device. Then, to see the page, open Thorium there.
+        Choose a device. Then, to see the page, open Chrome there.
       </message>
       <if expr="use_titlecase">
         <then>
@@ -9640,7 +9676,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </message>
       <if expr="chromeos_lacros">
         <message name="IDS_SYNC_CONFIRMATION_TITLE_LACROS_NON_FORCED" desc="Title of the sync confirmation dialog/screen on lacros when sync is not forced.">
-          Turn on Thorium browser sync?
+          Turn on Chrome browser sync?
         </message>
         <message name="IDS_SYNC_CONFIRMATION_SYNC_INFO_TITLE_LACROS" desc="Text in the information about sync on the sync confirmation dialog/screen on lacros.">
           Your bookmarks, passwords, history, and more are synced on all your devices
@@ -9768,7 +9804,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Passwords from your Google Account will also be available on this device while you're signed in
       </message>
       <message name="IDS_ACCOUNT_PASSWORDS_REAUTH_DESC_ALREADY_SAVED_LOCALLY" desc="Body of the account password storage reauth tab modal dialog, shown in the case where the password was already saved locally.">
-        Thorium saved your password to this device, but you can save it to your Google Account instead. Then, all passwords in your Google Account will also be available while you're signed in.
+        Chrome saved your password to this device, but you can save it to your Google Account instead. Then, all passwords in your Google Account will also be available while you're signed in.
       </message>
       <message name="IDS_ACCOUNT_PASSWORDS_REAUTH_CONFIRM_BUTTON_LABEL" desc="Label of the confirmation button in the account password storage reauth tab modal dialog.">
         Yes
@@ -9875,7 +9911,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
 '''
       </message>
       <message name="IDS_COULDNT_STARTUP_PROFILE_ERROR" desc="Error displayed when Chrome cannot start because profiles were not opened correctly.">
-        Cannot start Thorium because something went wrong when opening your profile. Try to restart Thorium.
+        Cannot start Chrome because something went wrong when opening your profile. Try to restart Chrome.
       </message>
       <message name="IDS_REFUSE_TO_RUN_AS_ROOT" desc="Short error message displayed in an error dialog on startup if the user tries to run Chrome as root.">
         <ph name="PRODUCT_NAME">$1<ex>Google Chrome</ex></ph> can not be run as root.
@@ -10844,7 +10880,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Location is turned off in Mac System Preferences
         </message>
         <message name="IDS_GEOLOCATION_TURNED_OFF_IN_MACOS_SETTINGS" desc="Title for the geolocation bubble that is used when a site requests geolocation, but geolocation is blocked on an OS level in macOS.">
-          Turn on "Thorium" in Location Services on your Mac
+          Turn on "Google Chrome" in Location Services on your Mac
         </message>
         <message name="IDS_GEOLOCATION_TURNED_OFF" desc="Description text in the omnibox icon showing when location permission is blocked on an OS level in macOS.">
           Location turned off
@@ -11351,7 +11387,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
-        Thorium Web Store
+        Web Store
       </message>
 
       <!-- Desktop media picker UI for Desktop Capture API -->
@@ -12004,13 +12040,13 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <!-- Windows 10 toast strings -->
     <if expr="is_win">
       <message name="IDS_WIN10_TOAST_BROWSE_FAST" desc="Toast message variant: browse fast.">
-        Browse fast with Thorium
+        Browse fast with Google Chrome
       </message>
       <message name="IDS_WIN10_TOAST_BROWSE_SAFELY" desc="Toast message variant: browse safely.">
-        Browse safely with Thorium
+        Browse safely with Google Chrome
       </message>
       <message name="IDS_WIN10_TOAST_BROWSE_SMART" desc="Toast message variant: browse smart.">
-        Browse smart with Thorium
+        Browse smart with Chrome
       </message>
       <message name="IDS_WIN10_TOAST_SWITCH_FAST" desc="Toast message variant: switch to a fast browser.">
         Switch to a fast browser
@@ -12025,10 +12061,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Switch to a smart and secure browser
       </message>
       <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Google recommends Chrome.">
-        Alex313031 recommends Thorium
+        Google recommends Chrome
       </message>
       <message name="IDS_WIN10_TOAST_OPEN_CHROME" desc="The label on the button to dismiss the toast and launch Chrome.">
-        Open Thorium
+        Open Chrome
       </message>
       <message name="IDS_WIN10_TOAST_NO_THANKS" desc="The label on the button to dismiss the toast without launching Chrome.">
         No thanks
@@ -12047,7 +12083,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
 
     <!-- Automation infobar -->
     <message name="IDS_CONTROLLED_BY_AUTOMATION" desc="Message shown when the browser session is being controlled by an automated test.">
-      Thorium is being controlled by automated test software.
+      Chrome is being controlled by automated test software.
     </message>
 
     <!-- Security Key permission -->
@@ -12323,13 +12359,13 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WEBAUTHN_BLUETOOTH_POWER_ON_MANUAL_NEXT" desc="Button text. The user clicks this once they manually turned on Bluetooth, so that Chrome would retry connecting to security keys over Bluetooth.">
         Try again
       </message>
-      
+
       <if expr="is_macosx">
         <message name="IDS_WEBAUTHN_BLUETOOTH_PERMISSION" desc="Body text in a dialog that appears when the user has requested some function that depends on Bluetooth, but Chrome doesn't have permission to use Bluetooth. The action on this dialog is a button that will open the macOS System Preferences so that the user can grant permission.">
-          Thorium needs permission to use Bluetooth to connect to your device
+          Chrome needs permission to use Bluetooth to connect to your device
         </message>
       </if>
-      
+
       <message name="IDS_WEBAUTHN_TRANSPORT_POPUP_LABEL" desc="Menu item text. The user selects this to verify their identity on a web site (i.e. sign in) using a different hardware-based authentication mechanism from what they have selected previously.">
         Choose another option
       </message>
@@ -12390,7 +12426,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Use your Android phone as a security key
       </message>
       <message name="IDS_WEBAUTHN_CABLE_V2_ACTIVATE_DESCRIPTION_SHORT" desc="Second line of text in an item letting the user know how they can use Chrome on their Android phone as a security key. The substring 'Use phone as a security key' refers to the string IDS_PHONE_AS_SECURITY_KEY_TEXT in Chrome on Android.">
-        Open Thorium on your Android phone, and go to "Settings > Passwords > Use phone as a security key", and follow the instructions there.
+        Open Chrome on your Android phone, and go to "Settings > Passwords > Use phone as a security key", and follow the instructions there.
       </message>
 
       <!-- WebAuthn authenticator PIN entry/setup -->
@@ -12530,34 +12566,34 @@ Please help our engineers fix this problem. Tell us what happened right before y
 
       <!-- Side Search -->
       <message name="IDS_ACCNAME_SIDE_SEARCH_TOOL" desc="The accessible name for the side search tool.">
-        Side Search
+        Thorium Side Search
       </message>
       <message name="IDS_ACCNAME_SIDE_SEARCH_TOOLBAR_BUTTON_ACTIVATED" desc="The accessible name for the side search toolbar button when the button is active and the side panel is open.">
-        Close search in side panel. Search is open in the side panel.
+        Close search in Thorium side panel. Search is open in the side panel.
       </message>
       <message name="IDS_ACCNAME_SIDE_SEARCH_TOOLBAR_BUTTON_NOT_ACTIVATED" desc="The accessible name for the side search toolbar button when the button is not active and the side panel is not open.">
-        Open search in side panel. Search is not open in the side panel.
+        Open search in Thorium side panel. Search is not open in the Thorium side panel.
       </message>
       <message name="IDS_ACCNAME_SIDE_SEARCH_CLOSE_BUTTON" desc="The accessible name for the side search header close button.">
-        Close search in side panel
+        Close search in Thorium side panel
       </message>
       <message name="IDS_ACCNAME_SIDE_SEARCH_FEEDBACK_BUTTON" desc="The accessible name for the side search header feedback button.">
         Submit Feedback
       </message>
       <message name="IDS_SIDE_SEARCH_PROMO" desc="Promo UI shown next to the side search button to encourage its use.">
-        See more search results in side panel
+        See more search results in Thorium side panel
       </message>
       <message name="IDS_SIDE_SEARCH_ENTRYPOINT_LABEL" desc="The label text that is animated-in when the omnibox entrypoint is first shown.">
         See more search results
       </message>
       <message name="IDS_TOOLTIP_SIDE_SEARCH_TOOLBAR_BUTTON_ACTIVATED" desc="The tooltip for the side search toolbar button when the button is active and the side panel is open.">
-        Close search in side panel
+        Close search in Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_SIDE_SEARCH_TOOLBAR_BUTTON_NOT_ACTIVATED" desc="The tooltip for the side search toolbar button when the button is not active and the side panel is not open.">
-        Open search in side panel
+        Open search in Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_SIDE_SEARCH_CLOSE_BUTTON" desc="The tooltip for the side search header close button.">
-        Close search in side panel
+        Close search in Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_SIDE_SEARCH_FEEDBACK_BUTTON" desc="The tooltip for the side search header feedback button.">
         Submit Feedback
@@ -12780,10 +12816,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_DEEP_SCANNING_TIMED_OUT_DIALOG_OPEN_NOW_BUTTON" desc="The text on the open now button in tab modal dialog when deep scanning times out.">
       Open now
     </message>
-    
+
     <!-- Tailored security dialog for unconsented primary accounts -->
     <message name="IDS_TAILORED_SECURITY_UNCONSENTED_MODAL_TITLE" desc="Title shown in the tab modal dialog when the account tailored security setting changes for an unconsented primary account">
-      Also turn on Enhanced Safe Browsing for this Thorium profile?
+      Also turn on Enhanced Safe Browsing for this Chrome profile?
     </message>
     <message name="IDS_TAILORED_SECURITY_UNCONSENTED_ACCEPT_BUTTON" desc="The text on the accept button in the tab modal dialog when the account tailored security setting changes for an unconsented primary account">
       Turn on
@@ -12797,7 +12833,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Enhanced Safe Browsing is on
     </message>
     <message name="IDS_TAILORED_SECURITY_CONSENTED_ENABLE_MESSAGE_DESCRIPTION" desc="Description shown in the Android message when the account tailored security setting changes for a consented primary account">
-      You&#x2019;re on Thorium&#x2019;s strongest security
+      You&#x2019;re on Chrome&#x2019;s strongest security
     </message>
     <message name="IDS_TAILORED_SECURITY_CONSENTED_DISABLE_MESSAGE_TITLE" desc="Title shown in the Android message when the account tailored security setting changes for a consented primary account">
       Enhanced Safe Browsing is off
@@ -12884,7 +12920,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <message name="IDS_APP_PAUSE_HEADING_FOR_WEB_APPS" desc="Tells the user the app will be paused.">
-      You reached the time limit your parent set for <ph name="APP_NAME">$1<ex>Google Photos</ex></ph> Thorium app. You can use it for <ph name="TIME_LIMIT">$2<ex>2 hours and 30 minutes</ex></ph> tomorrow.
+      You reached the time limit your parent set for <ph name="APP_NAME">$1<ex>Google Photos</ex></ph> Chrome app. You can use it for <ph name="TIME_LIMIT">$2<ex>2 hours and 30 minutes</ex></ph> tomorrow.
     </message>
 
     <!-- App block prompt -->
@@ -13211,7 +13247,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Limited sharing between sites
     </message>
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION" desc="The body text of the bubble. * “During the trials”: The trials happen in addition to today’s current system (which is based on third-party cookies). In other words, even by agreeing to or remaining in a trial, the user’s core experience doesn’t change much. This is an experiment, and we need the user to understand as much. ">
-      During trials, Thorium is exploring ways to limit spam, fraud, and sharing between sites. Thorium also <ph name="ESTIMATE_INTERESTS_LINK">$1<ex>estimates your interests</ex></ph> that sites can use to show you ads. You can manage your interests in settings.
+      During trials, Chrome is exploring ways to limit spam, fraud, and sharing between sites. Chrome also <ph name="ESTIMATE_INTERESTS_LINK">$1<ex>estimates your interests</ex></ph> that sites can use to show you ads. You can manage your interests in settings.
     </message>
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_SETTINGS_LINK" desc="The user can choose “Go to settings” to visit chrome://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Go to settings”, the user will navigate away from this page and won’t be able to return here.">
       Go to settings
@@ -13220,7 +13256,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       estimates your interests
     </message>
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION_ESTIMATES_INTERESTS_LINK_A11Y_NAME" desc="The accessible text read for IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION_ESTIMATES_INTERESTS_LINK. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Chrome estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). ">
-      estimates your interests - Thorium can estimate your interests
+      estimates your interests - Chrome can estimate your interests
     </message>
     <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_BODY_DESCRIPTION_1" desc="* “restrict” means to lessen. We don’t want to suggest that we’re “eliminating” cross-site tracking. * “cross-site tracking”: An example: a user visits site A and then site B. Based on how third-party cookies work today, when that user later visits site C, site C can be aware that the user visited sites A and B, and can even have some sense for what they did on those sites. * “stop ad spam and fraud”:  This feature isn’t really related to restricting cross-site tracking but we combined these features in the same sentence / section for structural reasons.">
       We’re exploring ways to restrict cross-site tracking while enabling sites to stop ad spam and fraud.
@@ -13258,26 +13294,26 @@ Please help our engineers fix this problem. Tell us what happened right before y
 
     <!-- Automated Password Change on Desktop strings -->
     <if expr="not is_android">
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_TITLE" translateable="false" desc="The title for the Automated Password Change on Desktop onboarding dialog. The onboarding dialog is a modal dialog that is shown if a user has not previously consented to using Assistant features.">
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_TITLE" desc="The title for the Automated Password Change on Desktop onboarding dialog. The onboarding dialog is a modal dialog that is shown if a user has not previously consented to using Assistant features.">
         Let Google Assistant help you change your password
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_DESCRIPTION" translateable="false" desc="The description / sub-title of the Automated Password Change on Desktop onboarding dialog.">
-        Google Assistant in Thorium can complete actions across websites for you
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_DESCRIPTION" desc="The description / sub-title of the Automated Password Change on Desktop onboarding dialog.">
+        Google Assistant in Chrome can complete actions across websites for you
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_CONSENT_TEXT" translateable="false" desc="The description of what kind of data Google will send and process in order to enable Automated Password Change. This is shown at the bottom of the onboarding dialog.">
-        To help you complete tasks, Google will receive the URLs and contents of sites on which you use Assistant, as well as information you submit through Assistant. This information may be stored in your Google Account. You can turn it off in Thorium settings. <ph name="LEARN_MORE">$1<ex>Learn more</ex></ph>
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_CONSENT_TEXT" desc="The description of what kind of data Google will send and process in order to enable Automated Password Change. This is shown at the bottom of the onboarding dialog.">
+        To help you complete tasks, Google will receive the URLs and contents of sites on which you use Assistant, as well as information you submit through Assistant. This information may be stored in your Google Account. You can turn off Assistant in Chrome settings. <ph name="LEARN_MORE">$1<ex>Learn more</ex></ph>
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_LEARN_MORE" translateable="false" desc="The text displayed on a link on the onboarding dialog that a user can click to navigate to a Google website with detailed information on how Automated Password Change on Desktop/ Assistant works and what data is collected.">
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_LEARN_MORE" desc="The text displayed on a link on the onboarding dialog that a user can click to navigate to a Google website with detailed information on how Automated Password Change on Desktop/ Assistant works and what data is collected.">
         Learn more
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_CANCEL_TEXT" translateable="false" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_CANCEL_TEXT" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
         Cancel
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_ACCEPT_TEXT" translateable="false" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_ACCEPT_TEXT" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
         I agree
       </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_STARTING_SCREEN_TITLE" translateable="false" desc="The title shown on the side panel after an Automated Password Change flow has been started. This message is shown until the first response from a script is received that resets the initial state.">
-        Opening <ph name="URL">$1<ex>www.example.com</ex></ph>...
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_STARTING_SCREEN_TITLE" desc="The title shown on the side panel after an Automated Password Change flow has been started. This message is shown until the first response from a script is received that resets the initial state.">
+        Opening <ph name="URL">$1<ex>example.com</ex></ph>...
       </message>
     </if>
   </messages>
