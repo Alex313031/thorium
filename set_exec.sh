@@ -22,6 +22,8 @@ printf "${BOLD}\n" &&
 # Set executable permissions
 export NINJA_SUMMARIZE_BUILD=1 &&
 
+sudo chmod -v +x depot_tools/autoninja &&
+
 sudo chmod -v +x build.sh &&
 
 sudo chmod -v +x build_dmg.sh &&
