@@ -676,8 +676,7 @@ group("gn_all") {
     deps += [ "//third_party/breakpad:symupload($host_toolchain)" ]
   }
 
-  # TODO(crbug.com/1330636): Remove the Fuchsia `is_chromecast` condition.
-  if (is_cast_android || is_castos || (is_fuchsia && is_chromecast)) {
+  if (is_cast_android || is_castos || (is_fuchsia && enable_cast_receiver)) {
     deps += [ "//chromecast:cast_test_lists" ]
   }
 
@@ -1408,7 +1407,6 @@ if (!is_ios) {
       data += [
         "//third_party/blink/web_tests/platform/win/",
         "//third_party/blink/web_tests/platform/win10/",
-        "//third_party/blink/web_tests/platform/win7/",
       ]
       if (is_linux || is_fuchsia) {
         data += [ "//third_party/blink/web_tests/platform/linux/" ]
@@ -1475,7 +1473,6 @@ if (!is_ios) {
       data += [
         "//third_party/blink/web_tests/platform/win/",
         "//third_party/blink/web_tests/platform/win10/",
-        "//third_party/blink/web_tests/platform/win7/",
       ]
       if (is_linux || is_fuchsia) {
         data += [ "//third_party/blink/web_tests/platform/linux/" ]
