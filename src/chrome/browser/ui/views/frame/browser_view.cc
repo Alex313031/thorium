@@ -95,6 +95,7 @@
 #include "chrome/browser/ui/views/autofill/autofill_bubble_handler_impl.h"
 #include "chrome/browser/ui/views/bookmarks/bookmark_bar_view.h"
 #include "chrome/browser/ui/views/bookmarks/bookmark_bubble_view.h"
+#include "chrome/browser/ui/views/color_provider_browser_helper.h"
 #include "chrome/browser/ui/views/download/bubble/download_toolbar_button_view.h"
 #include "chrome/browser/ui/views/download/download_in_progress_dialog_view.h"
 #include "chrome/browser/ui/views/download/download_shelf_view.h"
@@ -863,6 +864,8 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
   tab_strip_region_view_ = top_container_->AddChildView(
       std::make_unique<TabStripRegionView>(std::move(tabstrip)));
 
+  ColorProviderBrowserHelper::CreateForBrowser(browser_.get());
+
   // Create WebViews early so |webui_tab_strip_| can observe their size.
   auto devtools_web_view =
       std::make_unique<views::WebView>(browser_->profile());
@@ -912,7 +915,7 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
   }
 #endif
 
-  if (browser_->is_type_normal() && IsSideSearchEnabled(browser_->profile())) {
+  if (side_search::IsEnabledForBrowser(browser_.get())) {
     if (!base::FeatureList::IsEnabled(features::kUnifiedSidePanel)) {
       side_search_side_panel_ = AddChildView(std::make_unique<SidePanel>(this));
       left_aligned_side_panel_separator_ =
