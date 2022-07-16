@@ -178,6 +178,10 @@
 #include "chromeos/lacros/lacros_service.h"
 #endif
 
+#if BUILDFLAG(IS_CHROMEOS)
+#include "chrome/browser/apps/intent_helper/supported_links_infobar_delegate.h"
+#endif
+
 namespace {
 
 const char kOsOverrideForTabletSite[] = "Linux; Android 9; Chrome tablet";
@@ -692,7 +696,7 @@ void NewWindow(Browser* browser) {
     }
     apps::AppLaunchParams params = apps::AppLaunchParams(
         app_id, launch_container, WindowOpenDisposition::NEW_WINDOW,
-        apps::mojom::LaunchSource::kFromKeyboard);
+        apps::LaunchSource::kFromKeyboard);
     apps::AppServiceProxyFactory::GetForProfile(profile)
         ->BrowserAppLauncher()
         ->LaunchAppWithParams(std::move(params));
@@ -705,7 +709,7 @@ void NewWindow(Browser* browser) {
   if (extension && extension->is_hosted_app()) {
     const auto app_launch_params = CreateAppLaunchParamsUserContainer(
         profile, extension, WindowOpenDisposition::NEW_WINDOW,
-        apps::mojom::LaunchSource::kFromKeyboard);
+        apps::LaunchSource::kFromKeyboard);
     OpenApplicationWindow(
         profile, app_launch_params,
         extensions::AppLaunchInfo::GetLaunchWebURL(extension));
@@ -1708,8 +1712,13 @@ Browser* OpenInChrome(Browser* hosted_app_browser) {
       source_tabstrip->DetachWebContentsAtForInsertion(
           source_tabstrip->active_index()),
       true);
-  apps::MaybeShowIntentPicker(
-      target_browser->tab_strip_model()->GetActiveWebContents());
+  auto* web_contents =
+      target_browser->tab_strip_model()->GetActiveWebContents();
+  apps::MaybeShowIntentPicker(web_contents);
+#if BUILDFLAG(IS_CHROMEOS)
+  apps::SupportedLinksInfoBarDelegate::RemoveSupportedLinksInfoBar(
+      web_contents);
+#endif
   target_browser->window()->Show();
   return target_browser;
 }
