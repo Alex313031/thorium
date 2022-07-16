@@ -13,6 +13,7 @@
 
 #include "base/base_switches.h"
 #include "base/bind.h"
+#include "base/callback.h"
 #include "base/command_line.h"
 #include "base/dcheck_is_on.h"
 #include "base/i18n/base_i18n_switches.h"
@@ -686,6 +687,23 @@ const base::Feature kNetworkServiceCodeIntegrity{
 #endif  // BUILDFLAG(IS_WIN) && !defined(COMPONENT_BUILD) &&
         // !defined(ADDRESS_SANITIZER)
 
+// A small ChromeBrowserMainExtraParts that invokes a callback when threads are
+// ready. Used to initialize ChromeContentBrowserClient data that needs the UI
+// thread.
+class ChromeBrowserMainExtraPartsThreadNotifier final
+    : public ChromeBrowserMainExtraParts {
+ public:
+  explicit ChromeBrowserMainExtraPartsThreadNotifier(
+      base::OnceClosure threads_ready_closure)
+      : threads_ready_closure_(std::move(threads_ready_closure)) {}
+
+  // ChromeBrowserMainExtraParts:
+  void PostCreateThreads() final { std::move(threads_ready_closure_).Run(); }
+
+ private:
+  base::OnceClosure threads_ready_closure_;
+};
+
 bool IsSSLErrorOverrideAllowedForOrigin(const GURL& request_url,
                                         PrefService* prefs) {
   DCHECK(request_url.SchemeIsCryptographic());
@@ -792,6 +810,7 @@ bool HandleNewTabPageLocationOverride(
 
   // Don't change the URL when incognito mode.
   if (profile->IsOffTheRecord())
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("custom-ntp"))
     return false;
 
   std::string ntp_location =
@@ -1444,9 +1463,14 @@ ChromeContentBrowserClient::CreateBrowserMainParts(bool is_integration_test) {
       is_integration_test, &startup_data_);
 #else
   NOTREACHED();
-  main_parts = std::make_unique<ChromeBrowserManiParts>(is_integration_test,
+  main_parts = std::make_unique<ChromeBrowserMainParts>(is_integration_test,
                                                         &startup_data_);
 #endif
+
+  main_parts->AddParts(
+      std::make_unique<ChromeBrowserMainExtraPartsThreadNotifier>(
+          base::BindOnce(&ChromeContentBrowserClient::InitOnUIThread,
+                         weak_factory_.GetWeakPtr())));
 
   bool add_profiles_extra_parts = true;
 #if BUILDFLAG(IS_ANDROID)
@@ -1519,11 +1543,6 @@ void ChromeContentBrowserClient::PostAfterStartupTask(
     const scoped_refptr<base::SequencedTaskRunner>& task_runner,
     base::OnceClosure task) {
   AfterStartupTaskUtils::PostTask(from_here, task_runner, std::move(task));
-
-  InitNetworkContextsParentDirectory();
-
-  DCHECK_CURRENTLY_ON(BrowserThread::UI);
-  safe_browsing_service_ = g_browser_process->safe_browsing_service();
 }
 
 bool ChromeContentBrowserClient::IsBrowserStartupComplete() {
@@ -2680,10 +2699,11 @@ ChromeContentBrowserClient::AllowServiceWorker(
       HostContentSettingsMapFactory::GetForProfile(profile));
 }
 
-void ChromeContentBrowserClient::WillStartServiceWorker(
-    content::BrowserContext* context,
-    const GURL& script_url,
-    content::RenderProcessHost* render_process_host) {
+void ChromeContentBrowserClient::
+    UpdateEnabledBlinkRuntimeFeaturesInIsolatedWorker(
+        content::BrowserContext* context,
+        const GURL& script_url,
+        std::vector<std::string>& out_forced_enabled_runtime_features) {
   DCHECK(context);
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -2691,8 +2711,9 @@ void ChromeContentBrowserClient::WillStartServiceWorker(
   if (!ash::IsSystemExtensionsEnabled(profile))
     return;
 
-  ash::SystemExtensionsProvider::Get(profile).WillStartServiceWorker(
-      script_url, render_process_host);
+  ash::SystemExtensionsProvider::Get(profile)
+      .UpdateEnabledBlinkRuntimeFeaturesInIsolatedWorker(
+          script_url, out_forced_enabled_runtime_features);
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 }
 
@@ -4198,8 +4219,8 @@ bool ChromeContentBrowserClient::PreSpawnChild(
 
   // Allow loading Chrome's DLLs.
   for (const auto* dll : {chrome::kBrowserResourcesDll, chrome::kElfDll}) {
-    result = policy->AddRule(sandbox::TargetPolicy::SUBSYS_SIGNED_BINARY,
-                             sandbox::TargetPolicy::SIGNED_ALLOW_LOAD,
+    result = policy->AddRule(sandbox::SubSystem::kSignedBinary,
+                             sandbox::Semantics::kSignedAllowLoad,
                              GetModulePath(dll).value().c_str());
     if (result != sandbox::SBOX_ALL_OK)
       return false;
@@ -4698,7 +4719,12 @@ void ChromeContentBrowserClient::OverridePageVisibilityState(
   }
 }
 
-void ChromeContentBrowserClient::InitNetworkContextsParentDirectory() {
+void ChromeContentBrowserClient::InitOnUIThread() {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+
+  safe_browsing_service_ = g_browser_process->safe_browsing_service();
+
+  // Initialize `network_contexts_parent_directory_`.
   base::FilePath user_data_dir;
   base::PathService::Get(chrome::DIR_USER_DATA, &user_data_dir);
   DCHECK(!user_data_dir.empty());
@@ -6307,20 +6333,6 @@ bool ChromeContentBrowserClient::IsClipboardCopyAllowed(
   return service->IsUrlAllowedToCopy(url, data_size_in_bytes,
                                      &replacement_data);
 }
-
-#if BUILDFLAG(ENABLE_PLUGINS)
-bool ChromeContentBrowserClient::ShouldAllowPluginCreation(
-    const url::Origin& embedder_origin,
-    const content::PepperPluginInfo& plugin_info) {
-#if BUILDFLAG(ENABLE_PDF)
-  if (plugin_info.name == ChromeContentClient::kPDFInternalPluginName) {
-    return IsPdfInternalPluginAllowedOrigin(embedder_origin);
-  }
-#endif  // BUILDFLAG(ENABLE_PDF)
-
-  return true;
-}
-#endif  // BUILDFLAG(ENABLE_PLUGINS)
 
 #if BUILDFLAG(ENABLE_VR)
 content::XrIntegrationClient*
