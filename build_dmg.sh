@@ -3,6 +3,7 @@
 # Copyright (c) 2022 Alex313031 and Midzer.
 
 YEL='\033[1;33m' # Yellow
+CYA='\033[1;96m' # Cyan
 RED='\033[1;31m' # Red
 GRE='\033[1;32m' # Green
 c0=$'\033[0m' # Reset Text
@@ -16,7 +17,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
 printf "${YEL}Building .dmg of Thorium...\n" &&
-printf "${GRE}\n" &&
+printf "${CYA}\n" &&
 
 # Fix file attr
 xattr -csr out/thorium/Thorium.app &&
