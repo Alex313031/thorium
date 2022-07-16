@@ -1,6 +1,7 @@
 # Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+
 import("//build/config/chrome_build.gni")
 import("//build/config/chromecast_build.gni")
 import("//build/config/chromeos/ui_mode.gni")
@@ -25,24 +26,32 @@ import("//third_party/closure_compiler/compile_js.gni")
 import("//tools/grit/grit_rule.gni")
 import("//tools/v8_context_snapshot/v8_context_snapshot.gni")
 import("//v8/gni/v8.gni")
+
 if (is_android) {
   import("//build/config/android/rules.gni")  # For generate_jni().
 }
+
 if (enable_rust) {
   rust_static_library("content_private_test_support") {
     testonly = true
+
     crate_name = "content_private_test_support"
     crate_root = "content_private_test_support.rs"
     sources = [ crate_root ]
+
     public_deps = [ ":browser_test_macro" ]
+
     deps = [
       ":test_support",
       "//testing/rust_gtest_interop",
     ]
+
     visibility = [ "//content/*" ]
   }
+
   rust_macro("browser_test_macro") {
     testonly = true
+
     crate_name = "browser_test_macro"
     crate_root = "browser_test_macro.rs"
     sources = [ crate_root ]
@@ -50,19 +59,23 @@ if (enable_rust) {
       "//third_party/rust/proc_macro2/v1:lib",
       "//third_party/rust/quote/v1:lib",
     ]
+
     # This target is part of `content_private_test_support`.
     visibility = [ ":*" ]
   }
 }
+
 # Use a static library here because many test binaries depend on this but don't
 # require many files from it. This makes linking more efficient.
 static_library("test_support") {
   testonly = true
+
   # See comment at the top of //content/BUILD.gn for why this is disabled in
   # component builds.
   if (is_component_build) {
     check_includes = false
   }
+
   sources = [
     "../browser/accessibility/test_browser_accessibility_delegate.cc",
     "../browser/accessibility/test_browser_accessibility_delegate.h",
@@ -448,11 +461,13 @@ static_library("test_support") {
     "web_contents_observer_test_utils.cc",
     "web_contents_observer_test_utils.h",
   ]
+
   configs += [
     "//build/config:precompiled_headers",
     "//v8:external_startup_data",
     "//tools/v8_context_snapshot:use_v8_context_snapshot",
   ]
+
   public_deps = [
     ":test_interfaces",
     "//components/download/public/common:test_support",
@@ -478,6 +493,7 @@ static_library("test_support") {
     "//third_party/blink/public/strings:strings_grit",
     "//ui/gl:test_support",
   ]
+
   deps = [
     ":content_test_mojo_bindings",
     "//base/third_party/dynamic_annotations",
@@ -527,6 +543,7 @@ static_library("test_support") {
     "//services/device/public/mojom",
     "//services/metrics/public/cpp:metrics_cpp",
     "//storage/browser/quota:mojo_bindings",
+
     # TODO(jam): remove this by adding a public header for the NetworkContext
     # public testing method.
     "//services/network:network_service",
@@ -569,13 +586,16 @@ static_library("test_support") {
     "//url/mojom:url_mojom_gurl",
     "//v8",
   ]
+
   if (enable_rust) {
     deps += [ "//testing/rust_gtest_interop" ]
   }
+
   data_deps = [
     "//content/shell:pak",
     "//tools/v8_context_snapshot:v8_context_snapshot",
   ]
+
   if (is_android) {
     sources += [
       "../public/test/test_synchronous_compositor_android.cc",
@@ -595,6 +615,7 @@ static_library("test_support") {
       "../browser/serial/serial_test_utils.h",
     ]
   }
+
   # HID support is not available without udev.
   is_linux_without_udev = (is_linux || is_chromeos) && !use_udev
   if (!is_linux_without_udev && !is_android) {
@@ -603,6 +624,7 @@ static_library("test_support") {
       "../browser/hid/hid_test_utils.h",
     ]
   }
+
   if (enable_plugins) {
     sources += [
       "../public/test/ppapi_test_utils.cc",
@@ -619,26 +641,31 @@ static_library("test_support") {
       "//ppapi/shared_impl:test_support",
     ]
   }
+
   if (use_atk) {
     configs += [
       "//build/config/linux/atk",
       "//build/config/linux/atspi2",
     ]
   }
+
   if (use_glib) {
     configs += [ "//build/config/linux:glib" ]
   }
+
   if (use_aura) {
     sources += [
       "mock_overscroll_controller_delegate_aura.cc",
       "mock_overscroll_controller_delegate_aura.h",
     ]
+
     deps += [
       "//ui/aura:test_support",
       "//ui/resources:ui_test_pak",
       "//ui/wm",
     ]
   }
+
   if (use_aura || is_mac) {
     deps += [
       "//components/viz/common",
@@ -646,11 +673,13 @@ static_library("test_support") {
       "//third_party/libvpx",
       "//ui/compositor",
     ]
+
     sources += [
       "../browser/compositor/test/test_image_transport_factory.cc",
       "../browser/compositor/test/test_image_transport_factory.h",
     ]
   }
+
   if (is_mac) {
     sources += [
       "../browser/renderer_host/test_render_widget_host_view_mac_factory.h",
@@ -662,9 +691,11 @@ static_library("test_support") {
       "//ui/views:test_support",
     ]
   }
+
   if (use_ozone) {
     deps += [ "//ui/ozone" ]
   }
+
   if (is_win) {
     sources += [
       "dwrite_font_fake_sender_win.cc",
@@ -678,11 +709,13 @@ static_library("test_support") {
     ]
     libs = [ "oleacc.lib" ]
   }
+
   if (is_android) {
     sources += [
       "mock_overscroll_refresh_handler_android.cc",
       "mock_overscroll_refresh_handler_android.h",
     ]
+
     deps += [
       "//components/discardable_memory/service",
       "//media/capture/video/android:android",
@@ -691,27 +724,33 @@ static_library("test_support") {
       "//ui/shell_dialogs",
     ]
   }
+
   if (is_win) {
     deps += [ "//sandbox" ]
   }
+
   if (v8_use_external_startup_data) {
     deps += [ "//gin:gin" ]
   }
+
   if (is_mac) {
     deps += [
       "//sandbox/mac:seatbelt",
       "//ui/accelerated_widget_mac",
     ]
   }
+
   if (use_ozone) {
     deps += [ "//ui/platform_window/common" ]
   }
+
   if (enable_vr) {
     sources += [
       "../public/test/xr_test_utils.cc",
       "../public/test/xr_test_utils.h",
     ]
   }
+
   if (is_chromeos_lacros) {
     deps += [
       "//chromeos/crosapi/cpp",
@@ -721,6 +760,7 @@ static_library("test_support") {
       "//chromeos/startup:constants",
     ]
   }
+
   if (is_linux || is_chromeos) {
     sources += [
       "sandbox_status_service.cc",
@@ -728,6 +768,7 @@ static_library("test_support") {
     ]
   }
 }
+
 # Fuchsia performance tests on smart displays use web_engine and a browser
 # like shell instead of an actual browser, so Fuchsia needs a separate target.
 if (is_fuchsia) {
@@ -755,17 +796,20 @@ if (is_fuchsia) {
     ]
   }
 }
+
 group("telemetry_gpu_integration_test_scripts_only") {
   testonly = true
   deps = [
     "//tools/perf/chrome_telemetry_build:telemetry_chrome_test_without_chrome",
   ]
+
   data = [ "//testing/scripts/run_isolated_script_test.py" ]
   data_deps = [
     ":telemetry_gpu_integration_test_data",
     "//testing:test_scripts_shared",
   ]
 }
+
 group("telemetry_gpu_integration_test_support") {
   testonly = true
   data = [
@@ -778,10 +822,13 @@ group("telemetry_gpu_integration_test_support") {
     "//tools/perf/page_sets/maps_perf_test/performance.html",
     "//tools/perf/page_sets/maps_perf_test/tracked.js",
     "//tools/perf/page_sets/maps_perf_test/worker.js",
+
     # For GpuProcess.video
     "//content/test/data/media/bear.ogv",
+
     # For webgl_conformance
     "//third_party/webgl/",
+
     # For pixel_test and trace_test
     "//media/test/data/four-colors.mp4",
     "//media/test/data/four-colors.y4m",
@@ -792,22 +839,29 @@ group("telemetry_gpu_integration_test_support") {
     "//media/test/data/four-colors-vp9.webm",
     "//media/test/data/four-colors-vp9-i420a.webm",
     "//media/test/data/four-colors-incompatible-stride.y4m",
+
     # For power
     "//media/test/data/bear-1280x720.mp4",
+
     # For Skia Gold pixel test functionality.
     "//build/skia_gold_common/",
+
     # For isolate contract.
     "//testing/scripts/gpu_integration_test_adapter.py",
     "//testing/scripts/run_gpu_integration_test_as_googletest.py",
   ]
+
   data_deps = [
     ":telemetry_gpu_integration_test_data",
+
     # For WebGPU CTS tests.
     "//third_party/dawn/webgpu-cts",
+
     # For anything using Skia Gold (pixel, maps).
     "//ui/base:goldctl",
   ]
 }
+
 group("webgpu_cts_scripts") {
   testonly = true
   data = [
@@ -818,6 +872,7 @@ group("webgpu_cts_scripts") {
     "//third_party/dawn/third_party/webgpu-cts/tsconfig.json",
   ]
 }
+
 group("telemetry_gpu_common_data") {
   testonly = true
   data = [
@@ -825,34 +880,43 @@ group("telemetry_gpu_common_data") {
     "//content/test/gpu/gpu_path_util/",
     "//content/test/gpu/gpu_tests/",
     "//content/test/gpu/unittest_data/",
+
     "//third_party/dawn/webgpu-cts/",
+
     "//content/test/gpu/gpu_project_config.py",
     "//content/test/gpu/run_gpu_integration_test.py",
   ]
 }
+
 group("telemetry_gpu_unittest_data") {
   testonly = true
   data = [ "//content/test/gpu/run_unittests.py" ]
   data_deps = [ ":telemetry_gpu_common_data" ]
 }
+
 group("telemetry_gpu_integration_test_data") {
   testonly = true
   data = [
     "//content/test/gpu/gold_inexact_matching/",
     "//content/test/gpu/power_measurement_results/",
+
     "//content/test/gpu/measure_power_intel.py",
     "//content/test/gpu/run_gpu_integration_test.py",
   ]
   data_deps = [ ":telemetry_gpu_common_data" ]
 }
+
 if (enable_rust) {
   rust_static_library("rust_public_browsertest_support") {
     testonly = true
+
     crate_name = "content_public_browsertest_support"
     crate_root = "../public/test/content_public_browsertest_support.rs"
     sources = [ crate_root ]
+
     sources += [ "../public/test/content_browser_test.rs" ]
     cxx_bindings = [ "../public/test/content_browser_test.rs" ]
+
     deps = [
       ":browsertest_support",
       ":content_private_test_support",
@@ -860,15 +924,18 @@ if (enable_rust) {
     ]
   }
 }
+
 # browsertest_support can be used by targets that run content_shell based
 # browser tests.
 static_library("browsertest_support") {
   testonly = true
+
   # See comment at the top of //content/BUILD.gn for why this is disabled in
   # component builds.
   if (is_component_build) {
     check_includes = false
   }
+
   sources = [
     "../browser/browsing_data/browsing_data_browsertest_utils.cc",
     "../browser/browsing_data/browsing_data_browsertest_utils.h",
@@ -888,12 +955,14 @@ static_library("browsertest_support") {
     "resource_load_observer.cc",
     "resource_load_observer.h",
   ]
+
   public_deps = [
     "//base",
     "//skia",
     "//testing/gmock",
     "//testing/gtest",
   ]
+
   deps = [
     ":test_support",
     "//base:i18n",
@@ -914,23 +983,29 @@ static_library("browsertest_support") {
     "//ui/base",
     "//ui/base/ime/init",
   ]
+
   if (is_android) {
     deps += [ "//content/public/app" ]
   } else {
     deps += [ "//content/public/browser" ]
   }
+
   if (use_aura && toolkit_views && !is_castos) {
     deps += [ "//ui/views" ]
   }
+
   if (is_mac) {
     sources += [ "../public/test/content_browser_test_utils_mac.mm" ]
     deps += [ "//ui/base/mojom" ]
   }
+
   if (is_chromeos_lacros) {
     deps += [ "//chromeos/lacros:lacros" ]
   }
+
   configs += [ "//v8:external_startup_data" ]
 }
+
 mojom("content_test_mojo_bindings") {
   sources = [
     "../public/test/test_service.mojom",
@@ -943,6 +1018,7 @@ mojom("content_test_mojo_bindings") {
     "//url/mojom:url_mojom_gurl",
   ]
 }
+
 mojom("web_ui_test_mojo_bindings") {
   testonly = true
   sources = [
@@ -952,27 +1028,32 @@ mojom("web_ui_test_mojo_bindings") {
   public_deps = [ "//url/mojom:url_mojom_gurl" ]
   webui_module_path = "/content/test/data"
 }
+
 js_library("web_ui_mojo_test_js") {
   sources = [ "data/web_ui_mojo_test.js" ]
   deps = [ ":web_ui_test_mojo_bindings_webui_js" ]
 }
+
 # NOTE: Building this target serves as a compile test for type-checking of
 # WebUI JS that consumes generated Mojom JS bindings.
 js_type_check("web_ui_mojo_test_js_type_check") {
   deps = [ ":web_ui_mojo_test_js" ]
   closure_flags = default_closure_args + mojom_js_args
 }
+
 mojom("mojo_web_test_bindings") {
   testonly = true
   sources = [
     "data/lite_js_test.mojom",
     "data/mojo_web_test_helper_test.mojom",
   ]
+
   # This mojom interface is exposed publicly to web tests which use
   # prepackaged redistributable JS bindings. It is therefore not desirable to
   # scramble these messages.
   scramble_message_ids = false
 }
+
 mojom("test_interfaces") {
   testonly = true
   sources = [ "echo.test-mojom" ]
@@ -980,6 +1061,7 @@ mojom("test_interfaces") {
     sources += [ "sandbox_status.test-mojom" ]
   }
 }
+
 mojom("mojo_bindings_web_test_mojom") {
   testonly = true
   sources = [
@@ -989,33 +1071,42 @@ mojom("mojo_bindings_web_test_mojom") {
   scramble_message_ids = false
   js_generate_struct_deserializers = true
 }
+
 if (is_android) {
   static_library("android_test_message_pump_support") {
     testonly = true
+
     # See comment at the top of //content/BUILD.gn for why this is disabled in
     # component builds.
     if (is_component_build) {
       check_includes = false
     }
+
     sources = [
       "../public/test/nested_message_pump_android.cc",
       "../public/test/nested_message_pump_android.h",
     ]
+
     public_deps = [ "//base" ]
+
     deps = [ "//content/public/test/android:test_support_content_jni_headers" ]
   }
 }
+
 static_library("blink_test_browser_support") {
   testonly = true
+
   # See comment at the top of //content/BUILD.gn for why this is disabled in
   # component builds.
   if (is_component_build) {
     check_includes = false
   }
+
   sources = [
     "../public/test/blink_test_browser_support.h",
     "blink_test_browser_support.cc",
   ]
+
   deps = [
     "//content/browser:for_content_tests",
     "//content/public/browser",
@@ -1023,20 +1114,25 @@ static_library("blink_test_browser_support") {
     "//skia",
   ]
 }
+
 if (is_android) {
   import("//build/config/android/rules.gni")
+
   content_browsertests_manifest =
       "${target_gen_dir}/content_browsertests_manifest/AndroidManifest.xml"
+
   jinja_template("content_browsertests_manifest") {
     testonly = true
     input =
         "//content/shell/android/browsertests_apk/AndroidManifest.xml.jinja2"
     output = content_browsertests_manifest
   }
+
   generate_jni("content_browsertests_jni_headers") {
     testonly = true
     sources = [ "//content/public/android/javatests/src/org/chromium/content/browser/fakes/TestViewAndroidDelegate.java" ]
   }
+
   android_library("content_browsertests_java") {
     testonly = true
     resources_package = "org.chromium.content_browsertests_apk"
@@ -1060,6 +1156,7 @@ if (is_android) {
       "//ui/android:ui_java",
     ]
   }
+
   android_resources("content_browsertests_resources") {
     testonly = true
     sources = [
@@ -1068,13 +1165,16 @@ if (is_android) {
     ]
   }
 }
+
 test("content_browsertests") {
   use_xvfb = use_xvfb_in_this_config
+
   # See comment at the top of //content/BUILD.gn for why this is disabled in
   # component builds.
   if (is_component_build) {
     check_includes = false
   }
+
   sources = [
     "../app/mojo/mojo_browsertest.cc",
     "../app_shim_remote_cocoa/window_occlusion_browsertest_mac.mm",
@@ -1398,25 +1498,33 @@ test("content_browsertests") {
     "../test/top_frame_population_browsertest.cc",
     "../test/url_loader_interceptor_test.cc",
   ]
+
   rs_sources = [ "../browser/smoke_rust_browsertest.rs" ]
+
   if (enable_reporting) {
     sources +=
         [ "../browser/net/cross_origin_opener_policy_reporting_browsertest.cc" ]
   }
+
   if (use_viz_debugger) {
     sources += [
       "../browser/devtools/protocol/visual_debugger_handler_browsertest.cc",
     ]
   }
+
   defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
   configs += [ "//build/config:precompiled_headers" ]
+
   rs_deps = [ ":rust_public_browsertest_support" ]
+
   public_deps = [
     ":test_interfaces",
     ":web_ui_mojo_test_resources",
     "//content:content_resources",
     "//content:dev_ui_content_resources",
   ]
+
   deps = [
     ":browsertest_support",
     ":content_test_mojo_bindings",
@@ -1535,15 +1643,18 @@ test("content_browsertests") {
     "//ui/snapshot",
     "//ui/webui:test_support",
   ]
+
   data = [
     "data/",
     "//media/test/data/",
   ]
+
   data_deps = [
     "//content/shell:pak",
     "//testing/buildbot/filters:content_browsertests_filters",
     "//third_party/mesa_headers",
   ]
+
   if (enable_plugins) {
     sources += [
       "../browser/plugin_service_impl_browsertest.cc",
@@ -1578,6 +1689,7 @@ test("content_browsertests") {
       data += [ "$root_out_dir/ppapi_tests.plugin/" ]
     }
   }
+
   if (enable_screen_capture) {
     if (is_android || is_linux || is_chromeos || is_mac || is_win) {
       sources += [
@@ -1589,16 +1701,20 @@ test("content_browsertests") {
         "../browser/media/capture/frame_test_util.h",
         "../browser/media/capture/web_contents_video_capture_device_browsertest.cc",
       ]
+
       data += [ "$root_out_dir/content_shell.pak" ]
     }
+
     if (is_linux || is_chromeos || is_mac || is_win) {
       sources += [ "../browser/media/capture/mouse_cursor_overlay_controller_browsertest.cc" ]
+
       # For chromecast, content_browsertests does not provide a shell window.
       if (use_aura && !is_castos) {
         sources += [ "../browser/media/capture/aura_window_video_capture_device_browsertest.cc" ]
       }
     }
   }
+
   if (is_linux || is_chromeos || is_mac || is_win || is_fuchsia) {
     deps += [ "//third_party/libyuv" ]
     data += [
@@ -1606,14 +1722,17 @@ test("content_browsertests") {
       "//third_party/pywebsocket3/src/mod_pywebsocket/",
     ]
   }
+
   if (!is_chromeos_ash) {
     sources +=
         [ "../browser/media/media_keys_listener_manager_impl_browsertest.cc" ]
   }
+
   if (is_chromeos) {
     sources +=
         [ "../browser/lock_screen/lock_screen_service_impl_browsertest.cc" ]
   }
+
   if (is_win) {
     sources += [
       "../browser/accessibility/accessibility_browsertest.cc",
@@ -1630,6 +1749,7 @@ test("content_browsertests") {
       "../browser/renderer_host/direct_manipulation_win_browsertest.cc",
       "../browser/scheduler/responsiveness/native_event_observer_browsertest_win.cc",
     ]
+
     deps += [
       "//net:net_resources",
       "//sandbox",
@@ -1640,9 +1760,12 @@ test("content_browsertests") {
       "//third_party/iaccessible2",
       "//third_party/isimpledom",
     ]
+
     libs = [ "uiautomationcore.lib" ]
+
     configs += [ "//build/config/win:delayloads" ]
   }
+
   if (is_linux || is_chromeos) {
     sources += [
       "../browser/utility_process_sandbox_browsertest.cc",
@@ -1652,6 +1775,7 @@ test("content_browsertests") {
       "//printing/buildflags",
       "//ui/gfx:test_support",
     ]
+
     if (use_atk) {
       sources += [
         "../browser/accessibility/accessibility_auralinux_browsertest.cc",
@@ -1661,9 +1785,11 @@ test("content_browsertests") {
       configs += [ "//build/config/linux/atk" ]
     }
   }
+
   if (is_chromeos_ash) {
     deps += [ "//chromeos/ash/components/assistant:buildflags" ]
   }
+
   if (is_android) {
     if (is_component_build) {
       sources += [ "../browser/android/render_widget_host_connector.cc" ]
@@ -1701,6 +1827,7 @@ test("content_browsertests") {
         "${target_gen_dir}/content_browsertests_manifest/AndroidManifest.xml"
     android_manifest_dep = ":content_browsertests_manifest"
     use_default_launcher = false
+
     if (enable_chrome_android_internal) {
       data_deps += [ "//clank/build/bot/filters:content_browsertests_filters" ]
     }
@@ -1734,6 +1861,7 @@ test("content_browsertests") {
   if (is_posix) {
     deps += [ "//services/tracing:test_utils" ]
   }
+
   # HID support is not available without udev.
   is_linux_without_udev = (is_linux || is_chromeos) && !use_udev
   if (!is_linux_without_udev && !is_android) {
@@ -1749,6 +1877,7 @@ test("content_browsertests") {
       "//services/device/public/cpp/hid:test_support",
     ]
   }
+
   if (is_mac) {
     sources += [
       "../browser/accessibility/ax_tree_formatter_mac_browsertest.mm",
@@ -1768,6 +1897,7 @@ test("content_browsertests") {
     data_deps += [ "//content/shell:thorium_shell" ]
     data += [ "$root_out_dir/Thorium Shell.app/" ]
   }
+
   if (is_chromeos_ash) {
     deps += [
       "//ash/components/audio",
@@ -1775,17 +1905,21 @@ test("content_browsertests") {
       "//chromeos/system",
     ]
   }
+
   if (use_aura && !is_win) {
     deps += [ "//ui/events:test_support" ]
   }
+
   if (use_aura) {
     sources +=
         [ "../browser/compositor/image_transport_factory_browsertest.cc" ]
   }
+
   if (enable_vr) {
     sources += [ "../browser/xr/metrics/session_metrics_browsertest.cc" ]
     deps += [ "//device/vr:vr_fakes" ]
   }
+
   if ((is_win || is_chromeos || is_linux) && !is_tsan) {
     # NOTE: We don't bother to build these tests when TSan is enabled, because
     # they can't properly launch a child content_shell in that environment.
@@ -1803,6 +1937,7 @@ test("content_browsertests") {
       deps += [ "//ui/ozone" ]
     }
   }
+
   if (!is_chrome_branded) {
     # These tests depend on single process mode, which is disabled
     # in official builds.
@@ -1812,12 +1947,14 @@ test("content_browsertests") {
       "../renderer/render_thread_impl_discardable_memory_browsertest.cc",
       "../renderer/savable_resources_browsertest.cc",
     ]
+
     deps += [
       "//components/discardable_memory/client",
       "//components/discardable_memory/common",
       "//components/discardable_memory/service",
     ]
   }
+
   if (use_aura) {
     deps += [
       "//ui/aura",
@@ -1836,28 +1973,35 @@ test("content_browsertests") {
       "../browser/web_contents/web_contents_view_aura_browsertest.cc",
     ]
   }
+
   if (is_castos || is_cast_android) {
     sources -= [
       # The cast shell media pipeline doesn't produce real video frames that we
       # can inspect.
       "../browser/media/media_color_browsertest.cc",
+
       # The cast shell has plugin support but no pdf, causing blocked scheme PDF
       # tests to fail.
       "../browser/renderer_host/blocked_scheme_navigation_browsertest.cc",
+
       # The multi-window tests don't work on cast_shell. Since there's little
       # added value in running the single-window test on this platform, just
       # exclude them all.
       "../browser/snapshot_browsertest.cc",
     ]
   }
+
   if (use_ozone) {
     deps += [ "//ui/ozone" ]
   }
+
   if (is_chromeos_ash) {
     deps += [ "//chromeos/dbus/constants" ]
   }
+
   if (is_fuchsia) {
     use_test_server = true
+
     use_cfv2 = false
     additional_manifest_fragments = [
       "//build/config/fuchsia/test/audio_capabilities.test-cmx",
@@ -1869,8 +2013,10 @@ test("content_browsertests") {
     ]
   }
 }
+
 grit("web_ui_mojo_test_resources") {
   source = "web_ui_mojo_test_resources.grd"
+
   outputs = [
     "grit/web_ui_mojo_test_resources.h",
     "grit/web_ui_mojo_test_resources_map.cc",
@@ -1879,6 +2025,7 @@ grit("web_ui_mojo_test_resources") {
   ]
   deps = [ ":web_ui_test_mojo_bindings_webui_js" ]
 }
+
 static_library("run_all_unittests") {
   testonly = true
   sources = [ "run_all_unittests.cc" ]
@@ -1890,13 +2037,16 @@ static_library("run_all_unittests") {
     deps += [ "//content/common:set_process_title_linux" ]
   }
 }
+
 test("content_unittests") {
   use_xvfb = use_xvfb_in_this_config
+
   # See comment at the top of //content/BUILD.gn for why this is disabled in
   # component builds.
   if (is_component_build) {
     check_includes = false
   }
+
   defines = []
   sources = [
     "../browser/accessibility/browser_accessibility_manager_unittest.cc",
@@ -2364,6 +2514,7 @@ test("content_unittests") {
     "test_aggregation_service_impl_unittest.cc",
     "test_render_frame_host_unittest.cc",
   ]
+
   if (is_mac) {
     sources += [
       "../browser/accessibility/browser_accessibility_mac_unittest.mm",
@@ -2385,6 +2536,7 @@ test("content_unittests") {
       "../renderer/sandbox_mac_v2_unittest.mm",
     ]
   }
+
   if (use_atk) {
     sources += [
       "../browser/accessibility/browser_accessibility_auralinux_unittest.cc",
@@ -2392,21 +2544,26 @@ test("content_unittests") {
     ]
     configs += [ "//build/config/linux/atk" ]
   }
+
   if (is_fuchsia) {
     sources += [
       "../browser/accessibility/browser_accessibility_fuchsia_unittest.cc",
       "../browser/accessibility/browser_accessibility_manager_fuchsia_unittest.cc",
     ]
+
     use_cfv1 = false
+
     # TODO(https://crbug.com/1185811): Investigate removing the requirement for
     # job_policy_ambient_mark_vmo_exec for the sake of V8's allocator in tests.
     test_runner_shard = "//build/config/fuchsia/test/elf_test_ambient_exec_runner.shard.test-cml"
+
     additional_manifest_fragments = [
       "//build/config/fuchsia/test/fonts.shard.test-cml",
       "//build/config/fuchsia/test/network.shard.test-cml",
       "//third_party/fuchsia-sdk/sdk/pkg/vulkan/client.shard.cml",
     ]
   }
+
   if (is_android) {
     sources += [
       "../browser/accessibility/browser_accessibility_android_unittest.cc",
@@ -2418,10 +2575,12 @@ test("content_unittests") {
       "../common/android/gin_java_bridge_value_unittest.cc",
     ]
   }
+
   if (is_win) {
     sources +=
         [ "../renderer/media/win/overlay_state_observer_impl_unittest.cc" ]
   }
+
   if (is_linux || is_chromeos) {
     sources += [
       "../browser/compute_pressure/cpu_probe_linux_unittest.cc",
@@ -2429,6 +2588,7 @@ test("content_unittests") {
       "../browser/compute_pressure/sysfs_cpufreq_core_parser_unittest.cc",
     ]
   }
+
   if (is_android || is_linux || is_chromeos || is_mac || is_win || is_fuchsia) {
     data = [
       "$root_out_dir/content_shell.pak",
@@ -2438,11 +2598,14 @@ test("content_unittests") {
       "//content/test/data/browsing_topics/",
     ]
   }
+
   configs += [ "//build/config:precompiled_headers" ]
+
   public_deps = [
     "//content:content_resources",
     "//content:dev_ui_content_resources",
   ]
+
   deps = [
     ":content_test_mojo_bindings",
     ":run_all_unittests",
@@ -2590,30 +2753,37 @@ test("content_unittests") {
     "//ui/latency:test_support",
     "//ui/shell_dialogs:shell_dialogs",
   ]
+
   data_deps = [
     "//testing/buildbot/filters:content_unittests_filters",
     "//third_party/mesa_headers",
   ]
+
   if (is_mac) {
     data_deps += [ "//device/fido/strings:fido_test_strings" ]
   }
+
   if (is_posix) {
     sources += [ "../browser/posix_file_descriptor_info_impl_unittest.cc" ]
     deps += [ "//services/tracing:test_utils" ]
   }
+
   if (is_linux || is_chromeos) {
     deps += [ "//components/crash/content/browser/error_reporting" ]
   }
+
   if (is_fuchsia) {
     deps +=
         [ "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.accessibility.semantics" ]
   }
+
   if (enable_basic_printing) {
     deps += [
       "//printing",
       "//printing/backend",
     ]
   }
+
   if (enable_plugins) {
     sources += [
       "../browser/ppapi_plugin_sandboxed_process_launcher_delegate_unittest.cc",
@@ -2636,6 +2806,7 @@ test("content_unittests") {
       "//ppapi/shared_impl:test_support",
     ]
   }
+
   if (enable_library_cdms) {
     sources += [
       "../browser/media/key_system_support_impl_unittest.cc",
@@ -2643,12 +2814,14 @@ test("content_unittests") {
       "../browser/media/media_license_storage_host_unittest.cc",
     ]
   }
+
   # Screen capture unit tests.
   if (enable_screen_capture) {
     sources += [
       "../browser/media/capture/frame_sink_video_capture_device_unittest.cc",
       "../browser/media/capture/web_contents_frame_tracker_unittest.cc",
     ]
+
     if (!is_android) {
       deps += [
         "//content/common:buildflags",
@@ -2662,6 +2835,7 @@ test("content_unittests") {
       ]
     }
   }
+
   if (is_linux || is_chromeos) {
     if (use_dbus) {
       deps += [ "//dbus:test_support" ]
@@ -2737,6 +2911,7 @@ test("content_unittests") {
       "../renderer/media/android/stream_texture_proxy_unittest.cc",
       "../renderer/media/android/stream_texture_wrapper_impl_unittest.cc",
     ]
+
     deps += [
       ":content_unittests_java",
       ":content_unittests_jni_headers",
@@ -2750,11 +2925,13 @@ test("content_unittests") {
       "//third_party/blink/public/common:font_unique_name_table_proto",
       "//ui/android:android",
     ]
+
     if (use_v8_context_snapshot) {
       deps += [ "//tools/v8_context_snapshot:v8_context_snapshot_assets" ]
     } else {
       deps += [ "//v8:v8_external_startup_data_assets" ]
     }
+
     defines += [ "APPCACHE_USE_SIMPLE_CACHE" ]
   } else {
     # Non-Android.
@@ -2770,6 +2947,7 @@ test("content_unittests") {
       "../browser/tracing/tracing_ui_unittest.cc",
     ]
   }
+
   # HID support is not available without udev.
   is_linux_without_udev = (is_linux || is_chromeos) && !use_udev
   if (!is_linux_without_udev && !is_android) {
@@ -2797,6 +2975,7 @@ test("content_unittests") {
       ]
     }
   }
+
   if (use_aura) {
     deps += [
       "//ui/aura:test_support",
@@ -2812,12 +2991,15 @@ test("content_unittests") {
       "../browser/web_contents/web_contents_view_aura_unittest.cc",
     ]
   }
+
   if (use_aura || toolkit_views) {
     deps += [ "//ui/events:test_support" ]
   }
+
   if (enable_plugins && (is_win || is_mac)) {
     sources += [ "../browser/plugin_list_unittest.cc" ]
   }
+
   if (use_ozone) {
     deps += [ "//ui/ozone" ]
     if (ozone_platform_x11) {
@@ -2827,25 +3009,31 @@ test("content_unittests") {
       ]
     }
   }
+
   if (is_mac) {
     deps += [ "//third_party/boringssl" ]
   }
+
   if (is_linux || is_chromeos) {
     sources += [ "../common/set_process_title_linux_unittest.cc" ]
     deps += [ "//content/common:set_process_title_linux" ]
   }
+
   if (enable_vr) {
     sources += [ "../browser/xr/service/xr_runtime_manager_unittest.cc" ]
     deps += [ "//device/vr:vr_fakes" ]
   }
+
   # TODO(crbug.com/1293538): Update to check is_cast_audio_only
   if (is_castos || is_cast_android) {
     deps += [ "//chromecast:chromecast_buildflags" ]
   }
 }
+
 if (enable_nocompile_tests) {
   nocompile_test("content_nocompile_tests") {
     sources = [ "../browser/browser_task_traits_unittest.nc" ]
+
     deps = [
       ":run_all_unittests",
       "//base",
@@ -2854,9 +3042,11 @@ if (enable_nocompile_tests) {
     ]
   }
 }
+
 group("fuzzers") {
   deps = [ "//content/test/fuzzer" ]
 }
+
 # This group defines the isolate files needed to run
 # test_buildbucket_api_gpu_cases.py on bots. This also tells the build system
 # when the tests should be re-run - when one of the dependent files changes.
@@ -2865,20 +3055,24 @@ group("test_buildbucket_api_gpu_use_cases") {
   data = [
     # The test runner and its dependencies.
     "//testing/scripts/test_buildbucket_api_gpu_use_cases.py",
+
     "//content/test/gpu/gather_power_measurement_results.py",
     "//content/test/gpu/gather_swarming_json_results.py",
   ]
   data_deps = [ "//testing:test_scripts_shared" ]
 }
+
 if (is_android) {
   content_java_sources_needing_jni = [
     "//content/public/android/javatests/src/org/chromium/content/browser/sms/SmsProviderFakes.java",
     "//content/public/android/javatests/src/org/chromium/content/browser/fakes/TestViewAndroidDelegate.java",
   ]
+
   generate_jni("content_unittests_jni_headers") {
     testonly = true
     sources = content_java_sources_needing_jni
   }
+
   android_library("content_unittests_java") {
     testonly = true
     sources = content_java_sources_needing_jni
@@ -2894,16 +3088,20 @@ if (is_android) {
     ]
   }
 }
+
 group("gpu_pytype") {
   testonly = true
+
   data = [
     "//content/test/gpu/run_pytype.py",
     "//content/test/gpu/validate_tag_consistency.py",
+
     "//content/test/gpu/gold_inexact_matching/",
     "//content/test/gpu/flake_suppressor/",
     "//content/test/gpu/unexpected_passes/",
     "//testing/unexpected_passes_common/",
   ]
+
   data_deps = [
     # This includes more than we strictly need to, but this ensures that we
     # don't accidentally omit Python files that the real tests would be using.
