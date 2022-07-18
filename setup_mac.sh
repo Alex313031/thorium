@@ -31,7 +31,10 @@ cp -r -v src/build/. $HOME/chromium/src/build/ &&
 cp -r -v src/chrome/. $HOME/chromium/src/chrome/ &&
 cp -r -v src/components/. $HOME/chromium/src/components/ &&
 cp -r -v src/extensions/. $HOME/chromium/src/extensions/ &&
+cp -r -v src/content/browser/. $HOME/chromium/src/content/browser/ &&
+cp -r -v src/content/common/. $HOME/chromium/src/content/common/ &&
 cp -r -v src/content/gpu/. $HOME/chromium/src/content/gpu/ &&
+cp -r -v src/content/public/. $HOME/chromium/src/content/public/ &&
 cp -r -v src/media/. $HOME/chromium/src/media/ &&
 cp -r -v src/net/. $HOME/chromium/src/net/ &&
 cp -r -v src/sandbox/. $HOME/chromium/src/sandbox/ &&
