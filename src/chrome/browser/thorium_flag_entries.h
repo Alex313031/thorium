@@ -20,4 +20,8 @@
      "Disable AutoPlay",
      "Disables AutoPlay for all Thorium instances.",
      kOsDesktop, SINGLE_VALUE_TYPE("no-autoplay")},
+    {"show-avatar-button",
+     "Show/Hide the Avatar Button",
+     "Show the Avatar/People/Profile button in the browser toolbar: Always, Incognito|Guest only, or Never.",
+     kOsDesktop, MULTI_VALUE_TYPE(kShowAvatarButtonChoices)},
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
