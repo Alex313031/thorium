@@ -596,9 +596,6 @@ void FlagsState::GetFlagFeatureEntries(
   for (const FeatureEntry& entry : feature_entries_) {
     std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry))
-      if (flags::IsFlagExpired(flags_storage, entry.internal_name))
-        desc.insert(0, "!!! NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON !!! ");
-      else
       continue;
 
     base::Value::Dict data;
@@ -984,7 +981,6 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
     if (!entry.InternalNameMatches(name))
       continue;
     if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry))
-      if (!flags::IsFlagExpired(storage, entry.internal_name))
       continue;
     return true;
   }
