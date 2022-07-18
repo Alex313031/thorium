@@ -125,6 +125,8 @@ Unexpire Flags by Default Patch > https://github.com/ungoogled-software/ungoogle
 
 Disable Download Quarantine Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/disable-download-quarantine.patch
 
+Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-show-avatar-button.patch
+
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
