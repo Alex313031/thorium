@@ -23,6 +23,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/values.h"
 #include "build/build_config.h"
+#include "chrome/browser/unexpire_flags.h"
 #include "components/flags_ui/feature_entry.h"
 #include "components/flags_ui/flags_storage.h"
 #include "components/flags_ui/flags_ui_switches.h"
@@ -593,13 +594,17 @@ void FlagsState::GetFlagFeatureEntries(
   int current_platform = GetCurrentPlatform();
 
   for (const FeatureEntry& entry : feature_entries_) {
+    std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry))
+      if (flags::IsFlagExpired(flags_storage, entry.internal_name))
+        desc.insert(0, "!!! NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON !!! ");
+      else
       continue;
 
     base::Value::Dict data;
     data.Set("internal_name", entry.internal_name);
     data.Set("name", entry.visible_name);
-    data.Set("description", entry.visible_description);
+    data.Set("description", desc);
 
     base::Value::List supported_platforms;
     AddOsStrings(entry.supported_platforms, &supported_platforms);
@@ -979,6 +984,7 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
     if (!entry.InternalNameMatches(name))
       continue;
     if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry))
+      if (!flags::IsFlagExpired(storage, entry.internal_name))
       continue;
     return true;
   }
