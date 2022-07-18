@@ -27,4 +27,6 @@ FIXED | Since M100, Thorium on Windows had a bug where, when running, the icon o
 
 FIXED | Since M98, Thorium would not run correctly on Windows 10/11 without compatiblity mode set to Win 7/8. It has been resolved. - Multiple Users | Fixed by me May. 2022
 
-BUG | Searching the chrome://settings page on all Windows builds of Thorium causes a crash. Should investigate with bisection and/or a debug build with stack trace or attaching a debugger. - Multiple Users
+BUG | Searching the chrome://settings page on all Windows builds of Thorium causes a crash. Should investigate with bisection and/or a debug build with stack trace or attaching a debugger. UPDATE: Clicking "Customize Thorium" on NTP also triggers same crash. - Multiple Users
+
+BUG | Playing H.265/HEVC Content on Linux does not work - lovelytwo on GitHub |
