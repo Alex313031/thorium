@@ -38,7 +38,7 @@ export LD_LIBRARY_PATH
 APPNAME=thorium
 
 # Set DESKTOP variable
-DESKTOP="thorium-browser-unstable"
+# DESKTOP="thorium-browser-unstable"
 
 # Set XDG Title variable
 TITLE="Thorium Browser"
