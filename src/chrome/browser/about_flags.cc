@@ -3199,6 +3199,8 @@ const FeatureEntry::FeatureVariation
 // calculate and verify checksum.
 //
 // When adding a new choice, add it to the end of the list.
+
+#include "chrome/browser/thorium_flag_choices.h"
 const FeatureEntry kFeatureEntries[] = {
 #include "chrome/browser/thorium_flag_entries.h"
 // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
