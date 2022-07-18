@@ -1,0 +1,22 @@
+// Copyright 2015 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// A variant of ic_close with rounded corners.
+CANVAS_DIMENSIONS, 32,
+PATH_COLOR_ARGB, 0xFF, 0xE5, 0x1C, 0x23,
+STROKE, 3.5f,
+MOVE_TO, 8.75f, 8.75f,
+R_LINE_TO, 14.5f, 14.5f,
+MOVE_TO, 8.75f, 23.25f,
+R_LINE_TO, 14.5f, -14.5f
+
+// A variant of ic_close with rounded corners and optimized for 1x scale factor
+// devices.
+CANVAS_DIMENSIONS, 16,
+PATH_COLOR_ARGB, 0xFF, 0xE5, 0x1C, 0x23,
+STROKE, 1.85f,
+MOVE_TO, 4, 4,
+R_LINE_TO, 8, 8,
+MOVE_TO, 4, 12,
+R_LINE_TO, 8, -8
