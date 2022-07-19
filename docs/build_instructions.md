@@ -1,5 +1,7 @@
 # Checking out and building Thorium on Linux
 
+There are instructions for other platforms here in the Thorium Docs directory.
+
 [TOC]
 
 ## System requirements
@@ -52,12 +54,15 @@ dependencies.
 $ fetch --nohooks chromium
 ```
 
-the `--nohooks` flag is ommitted on other platforms, we just use it on linux to explicitly run the hooks later.
+The `--nohooks` flag is ommitted on other platforms, we just use it on linux to explicitly run the hooks
+later, after installing the prerequisites.
+`fetch` and `repo` are used to download, rebase, and sync all Google repositories, including Chromium, ChromiumOS, 
+Android, Fuchsia, Infra, Monorail, GN, etc.
 
 If you don't want the full repo history, you can save a lot of time by
-adding the `--no-history` flag to `fetch`.
+adding the `--no-history` flag to `fetch`. This is equivalent to a shallow git clone with a depth of 1.
 
-Expect the command to take 30 minutes on even a fast connection, and many
+Expect the command to take 20 minutes on a fast (150mbps+) connection, and many
 hours on slower ones.
 
 If you've already installed the build dependencies on the machine (from another
@@ -66,7 +71,7 @@ will automatically execute `gclient runhooks` at the end.
 
 When `fetch` completes, it will have created a hidden `.gclient` file and a
 directory called `src` in the working directory. The remaining instructions
-assume you have switched to the `src` directory:
+assume you have switched to the `src` directory, so:
 
 ```shell
 $ cd src
