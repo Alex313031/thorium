@@ -1,6 +1,8 @@
 # Checking out and building Thorium on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 There are instructions for other platforms here in the Thorium Docs directory.
+You can also read the [old building instructions](https://github.com/Alex313031/Thorium/blob/main/infra/BUILDING.md).
+For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use > [WIN_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_INSTRUCTIONS.txt) and if you are building for Windows on Linux, use > [WIN_CROSS_BUILD_INSTRUCTIONS.txt](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
 
 ## System requirements
 
@@ -114,8 +116,8 @@ $ gclient runhooks
 
 *Optional*: You can also [build with API
 keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
-build to talk to some Google services like Google Sync, Translate, and GeoLocation. Thorium has its own keys
-in a private repository,  if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
+build to talk to some Google services like Google Sync, Translate, and GeoLocation. <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="28"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="28">
+Thorium has its own keys in a private repository,  if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
 you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
 to enable Sync.
 
@@ -317,3 +319,7 @@ For the optional packages:
 ### Gentoo
 
 You can install the deps by doing a dry run of `emerge www-client/chromium`.
+
+*Happy Thorium Building!*
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
