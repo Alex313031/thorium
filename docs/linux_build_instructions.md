@@ -214,25 +214,19 @@ $ out/thorium/thorium
 
 ### Tests
 
-You can find out more about GoogleTest at its
+See the [Debugging](#debugging) section below, as well as
+[Thorium UI Debug Shell](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/DEBUG_SHELL_README.md).
+
+Learn about [how to use Chromedriver](https://chromedriver.chromium.org/getting-started) and Google Test at its
 [GitHub page](https://github.com/google/googletest).
 
 ## Update your checkout and revert to latest vanilla tip-o-tree Chromium. <a name="updating"></a>
 
-Simply run `trunk.sh`
+Simply run `trunk.sh` in the root of the Thorium repo or execute the commands inside.
 
 ```shell
-$ git rebase-update
-$ gclient sync
+$ ./trunk.sh
 ```
-
-The first command updates the primary Chromium source repository and rebases
-any of your local branches on top of tip-of-tree (aka the Git branch
-`origin/main`). If you don't want to use this script, you can also just use
-`git pull` or other common Git commands to update the repo.
-
-The second command syncs dependencies to the appropriate versions and re-runs
-hooks as needed.
 
 ## Tips, tricks, and troubleshooting
 
@@ -242,10 +236,10 @@ hooks as needed.
 *   You may want to [use a chroot](using_a_chroot.md) to
     isolate yourself from versioning or packaging conflicts.
 *   Cross-compiling for ARM? See [LinuxChromiumArm](chromium_arm.md).
-*   Want to use Eclipse as your IDE? See
-    [LinuxEclipseDev](eclipse_dev.md).
-*   Want to use your built version as your default browser? See
-    [LinuxDevBuildAsDefaultBrowser](dev_build_as_default_browser.md).
+*   [Atom](https://atom.io/) and [Geany](https://www.geany.org/) are reccomended IDEs for working on Thorium.
+
+### Debugging <a name="debugging"></a>
+*   See the [Thorium DEBUG](https://github.com/Alex313031/Thorium/tree/main/infra/DEBUG#readme) dir, including the [More Info](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/README.md#more-info-) section, and [DEBUGGING.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/DEBUGGING.md).
 
 ## Notes for other distros <a name="notes"></a>
 
