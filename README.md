@@ -50,7 +50,7 @@
 - A list of Chromium command line flags can be found at > https://peter.sh/experiments/chromium-command-line-switches
 
 ## Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
-See > https://github.com/Alex313031/Thorium/blob/main/infra/BUILDING.md
+See > https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING.md
 
 ## Debugging <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/bug.svg" width="28">
 See > https://github.com/Alex313031/Thorium/tree/main/infra/DEBUG#readme
