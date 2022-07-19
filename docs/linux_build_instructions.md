@@ -320,6 +320,7 @@ For the optional packages:
 ### Gentoo
 
 You can install the deps by doing a dry run of `emerge www-client/chromium`.
+
 ---------------------------------
 *Happy Thorium Building!*
 
