@@ -15,7 +15,9 @@ There are instructions for other platforms here in the Thorium Docs directory.
 Most development is done on Ubuntu (currently 18.04, Bionic Beaver). Ubuntu 16.04 no longer works. 20.04 and Debian 11 will work.
 There are some instructions for other distros below, but they are mostly unsupported.
 
-## Install `depot_tools`
+__The scripts to build thorium assume that depot_tools and chromium are both in $HOME!__
+
+## Install *depot_tools*
 
 Clone the `depot_tools` repository:
 
@@ -23,17 +25,10 @@ Clone the `depot_tools` repository:
 $ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 ```
 
-Add `depot_tools` to the end of your PATH (you will probably want to put this
-in your `~/.bashrc` or `~/.zshrc`). Assuming you cloned `depot_tools` to
-`/path/to/depot_tools`:
-
-```shell
-$ export PATH="$PATH:/path/to/depot_tools"
-```
-
-When cloning `depot_tools` to your home directory **do not** use `~` on PATH,
+Add *depot_tools* to the end of your *$PATH* (you will probably want to put this
+in your `~/.bashrc` or `~/.zshrc`). When cloning *depot_tools* to your home directory **do not** use `~` on PATH,
 otherwise `gclient runhooks` will fail to run. Rather, you should use either
-`$HOME` or the absolute path:
+`$HOME` or the absolute path. So, assuming you cloned *depot_tools* to *$HOME*:
 
 ```shell
 $ export PATH="$PATH:${HOME}/depot_tools" or $ export PATH="$PATH:/home/alex/depot_tools"
@@ -41,13 +36,13 @@ $ export PATH="$PATH:${HOME}/depot_tools" or $ export PATH="$PATH:/home/alex/dep
 
 ## Get the code
 
-Create a `chromium` directory for the checkout and change to it.
+Create a *chromium* directory for the checkout and change to it.
 
 ```shell
 $ mkdir ~/chromium && cd ~/chromium
 ```
 
-Run the `fetch` tool from depot_tools to check out the code and its
+Run the *fetch* tool from depot_tools to check out the code and its
 dependencies.
 
 ```shell
@@ -66,11 +61,11 @@ Expect the command to take 20 minutes on a fast (150mbps+) connection, and many
 hours on slower ones.
 
 If you've already installed the build dependencies on the machine (from another
-checkout, for example), you can omit the `--nohooks` flag and `fetch`
+checkout, for example), you can omit the `--nohooks` flag and *fetch*
 will automatically execute `gclient runhooks` at the end.
 
-When `fetch` completes, it will have created a hidden `.gclient` file and a
-directory called `src` in the working directory. The remaining instructions
+When *fetch* completes, it will have created a hidden `.gclient` file and a
+directory called `src` in the *chromium* directory. The remaining instructions
 assume you have switched to the `src` directory, so:
 
 ```shell
@@ -79,8 +74,8 @@ $ cd src
 
 ### Install additional build dependencies
 
-Once you have checked out the code, and assuming you're using Ubuntu, run
-[build/install-build-deps.sh](/build/install-build-deps.sh)
+Once you have checked out the code, and assuming you're using Ubuntu, run the
+[*`install-build-deps.sh`*](https://chromium.googlesource.com/chromium/src/+/main/build/install-build-deps.sh) script.
 
 ```shell
 $ ./build/install-build-deps.sh
