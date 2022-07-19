@@ -1,4 +1,4 @@
-# Checking out and building Thorium on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
+# Checking out and building Thorium <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 There are instructions for other platforms here in the Thorium Docs directory.
 You can also read the [old building instructions](https://github.com/Alex313031/Thorium/blob/main/infra/BUILDING.md).
