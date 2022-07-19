@@ -1,0 +1,143 @@
+## These are instruction for cross building Thorium for Windows, on Linux. Preliminary file for @gz83, to be eventually migrated to a Wiki with building instructions for all paltforms.
+## Copyright (c) 2022 Alex313031
+
+## In general, this document follows information from > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/win_cross.md and https://chromium.googlesource.com/chromium/src/+/main/docs/linux/build_instructions.md
+
+## Preparatory setup
+First, make sure you are running Ubuntu 18.04/20.04, or Debian 10/11, or Arch, and have nano and unrar installed.
+
+First, we need to install depot_tools. depot_tools is a .zip that contains tools for all Google projects like Chromium, ChromiumOS, NaCl, V8, Infra, Android, Google Cloud, and Fuschia.
+
+We are assuming that depot_tools, chromium, and thorium will all be in $HOME.
+
+First, (in $HOME), download depot_tools.
+
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+
+Then, open your .bashrc and add these to the end. (SUBSTITUTING FOR THE ACTUAL PATH, I.E. mine says alex because my name is Alex lol.)
+
+umask 022
+export EDITOR=nano
+export VISUAL=nano
+export NINJA_SUMMARIZE_BUILD=1
+export PATH=/home/alex/depot_tools:$PATH
+export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=/home/alex/chromium/win/
+export GYP_MSVS_HASH_1023ce2e82=b86447e8fb
+
+Then make these dirs
+
+mkdir ~/chromium
+mkdir ~/chromium/win
+
+Then cd ~/chromium, and run
+
+fetch --nohooks chromium
+
+Let it download, it is large.
+Then cd ~/chromium/src, and run
+
+./build/install-build-deps.sh --no-arm --lib32
+
+Then run 
+
+gclient runhooks
+
+We now have a Chromium checkout, however we need to modify the .gclient file to download Windows dependencies.
+
+Edit the .gclient file in chromium (not chromium/src)
+
+And append to the bottom this line:
+
+target_os = [ 'linux', 'win' ]
+
+Lastly, cross building requires artifacts from Visual Studio as per > https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/win_cross.md
+
+Download a .zip I already made from here > https://github.com/Alex313031/Snippets/releases/tag/10.1.20348.1
+
+And place it in ~/chromium/win
+
+## Setting up Thorium
+
+Now, lets download the Thorium tree, so run (in $HOME)
+
+git clone https://github.com/Alex313031/Thorium.git OR
+
+Download the latest .zip > https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip
+
+Then cd ~/Thorium, and we need to make some files executable. So run
+
+sudo chmod +x build.sh
+sudo chmod +x build_win.sh
+sudo chmod +x setup.sh
+sudo chmod +x trunk.sh
+sudo chmod +x clean.sh
+sudo chmod +x misc/autoninja
+
+## Setting up the build
+Then, run (in order)
+
+./trunk.sh   // Pay attention to the PGO profile that is downloaded, the script downloads the PGO profile *.profdata files for Linux, Windows, and MacOS.
+./setup.sh
+
+Now we need to set up the PGO profile and set the args.gn
+
+Open ~/Thorium/misc/windows_arg.gn and edit the last line that looks like
+
+/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-win64-main-1649213807-91f73deff0cf33b43bdbec74d7cefebdfe29830a.profdata
+
+And edit it to point to the actual location of that PGO file from above. 
+You can also add API Keys to the top three lines of this file to enable Google Sync, Translate, etc. (Out of the scope of this article, for help, contact me.)
+
+Now, go to ~/chromium/src, and run 
+
+gn args out/thorium
+
+A nano editor will come up, and you will copy/paste the contents of the win_args.gn OR win_AVX2_args.gn (for AVX2) Or win_ARM_args.gn (for Windows on ARM) file into this.
+Save and exit and the terminal will show "Generating files..." Wait for it to complete, and then to actually build it:
+
+Go back to ~/Thorium, and run ./build_win.sh
+
+NOTE: Run ./build_win.sh --help to see the (only) option, which is the number of jobs. The command it ultimately runs is:
+./misc/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j
+
+You can substitute the -j# for the number of jobs. I use 8 because I have an 8 core cpu. Do not use a number more than the number of threads your CPU has.
+
+So for example, I run ./build_win.sh 8
+
+In the end, you will have a nice installer called mini_installer.exe in ~/chromium/src/out/thorium/
+
+I rename it to thorium_mini_installer.exe or thorium_avx2_mini_installer.exe for releases. Just double click to install Thorium to C:\Users\$USERNAME\AppData\Local\Thorium
+
+## AVX2 Release
+
+Speaking of which! Thorium by default compiles with AVX and AES. To make the AVX2 version of it, you will follow all the steps above, except before running gn args out\thorium, 
+we need to download the avx2 sources.
+
+git clone https://github.com/Alex313031/Thorium-AVX2.git or https://github.com/Alex313031/Thorium-AVX2/archive/refs/heads/main.zip
+
+And simply copy the build directory over ~/chromium/src/build
+
+## Make a portable release.
+To make a portable release, it is easiest to copy an already made portable release from GitHub, extract it, and then:
+
+1. Delete the contents of the BIN folder.
+
+2. Use 7-Zip to extract the contents of the new mini_installer you just made, and then extract the chrome.7z that was inside it.
+
+3. Copy the contents of Chrome-bin into the BIN folder in the portable folder.
+
+4. Edit CONTENT_SHELL.bat to point to the actual location as the version number will have changed.
+
+5. Likewise, edit the version number in the name of the whole portable folder to reflect the new Thorium.
+
+6. Finally, rezip it up with 7-Zip. To use it, read the README.txt inside. 
+
+## Updating your checkout
+
+To update the Chromium checkout, just run (from ~/Thorium)
+
+./trunk
+
+To update Thorium, do a git pull main or redownload the latest .zip
+
+Enjoy!

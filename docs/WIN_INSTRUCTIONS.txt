@@ -1,0 +1,175 @@
+## These are instruction for building Thorium for Windows, natively on Windows. Preliminary file for @gz83, to be eventually migrated to a Wiki with building instructions for all paltforms.
+## Copyright (c) 2022 Alex313031
+
+## Preparatory setup
+First, we need to install depot_tools and Visual Studio. depot_tools is a .zip that contains tools for all Google projects like Chromium, ChromiumOS, NaCl, V8, Infra, Android, Google Cloud, and Fuschia.
+
+We will be in general following instructions from > https://chromium.googlesource.com/chromium/src/+/main/docs/windows_build_instructions.md
+
+Visual Studio 2019 or 2022 is needed, and the Windows SDK version 10.0.20348.0 is needed along with its Debugging Tools.
+
+EVERYTHING in this document is to be done in command prompt. No powershell, no windows terminal (Win 11).
+
+The easiest way to do this is (and even if you already have Visual Studio installed, go ahead and redownload the latest installer to do this)
+(VISUAL_STUDIO_INSTALLER is the actual path/name of the installer .exe) 
+$VISUAL_STUDIO_INSTALLER --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --includeRecommended
+
+As noted above The SDK Debugging Tools must also be installed. If the Windows 10 SDK was installed via the Visual Studio installer, then they can be installed by going to: 
+Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change.
+
+Then download depot_tools. We are assuming that depot_tools, chromium, and thorium will all be in C:\src\.
+
+https://storage.googleapis.com/chrome-infra/depot_tools.zip
+
+Then, If you have Administrator access, Modify the PATH system variable and put C:\src\depot_tools at the front (or at least in front of any directory that might already have a copy of Python or Git).
+Also, add a DEPOT_TOOLS_WIN_TOOLCHAIN environment variable in the same way, and set it to 0. This tells depot_tools to use your locally installed version of Visual Studio 
+(by default, depot_tools will try to use a google-internal version).
+Also, add a NINJA_SUMMARIZE_BUILD environment variable the same way, and set it to 1.
+
+Then, go to C:\src in cmd, and run
+
+gclient
+
+Now, lets configure git (you can skip the user.name and user.email if it is already configured)
+
+git config --global user.name "My Name"
+git config --global user.email "my-name@chromium.org"
+git config --global core.autocrlf false
+git config --global core.filemode false
+git config --global branch.autosetuprebase always
+
+Now let's make the chromium dir.
+
+mkdir chromium && cd chromium
+
+So you should be in C:\src\chromium
+
+Now run
+
+fetch chromium
+
+Let it download, it is large.
+
+Then cd src\v8, so that we are in C:\src\chromium\src\v8, and run (one after another)
+
+git checkout -f origin/main
+
+cd ..
+
+git checkout -f origin/main
+
+git rebase-update
+
+git fetch --tags
+
+gclient sync --with_branch_heads --with_tags -f -R -D
+
+gclient runhooks
+
+Good, now we have a full Chromium checkout ready to be built, but to turn it into Thorium, we must copy the Thorium sources over the Chromium tree.
+
+## Thorium Setup
+So, lets download Thorium in C:\src
+
+git clone https://github.com/Alex313031/Thorium.git or download the .zip and unpack it there > https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip
+
+Now, go back to C:\chromium\src
+
+We are going to download the PGO profile (which changes with every release) so that we can set it in our args.gn file, which ninja (the build system) parses before compiling. So run
+
+python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
+
+Now pay attention to the the file that is downloaded.
+
+In C:\src\Thorium\misc, there is a file called win_args.gn. In that file toward the bottom there will be a line that says 
+pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-win64-main-1649213807-91f73deff0cf33b43bdbec74d7cefebdfe29830a.profdata"
+
+We are going to change that to the actual location and name of the PGO profile data file we just downloaded i.e. it should look similar to this:
+
+C:\src\chromium\src\chrome\build\pgo_profiles\chrome-win64-main-1649213807-91f73deff0cf33b43bdbec74d7cefebdfe29830a.profdata
+
+You can also add API Keys to the top three lines of this file to enable Google Sync, Translate, etc. (Out of the scope of this article, for help, contact me.)
+
+Now, we are going to copy the Thorium sources. Select (via Ctrl + Left Mouse button) these folders in C:\src\Thorium:
+
+ash, base, build, chrome, components, content, extensions, media, net, sandbox, third_party, tools, ui, v8 as well as the BUILD.gn in the root of Thorium.
+
+Then paste these in C:\chromium\src (overwriting everything)
+
+Now, we are going to set up the build.
+
+Go to C:\src\chromium\src and run
+
+gn args out\thorium
+
+It will pull up notepad. Copy and paste the contents of the win_args.gn we just edited into notepad, save it, and then exit notepad. Cmd will show "generating files..."
+
+#NOTE: For AVX2 you should use the win_AVX2_args.gn and for ARM you should use the win_ARM_args.gn.
+
+But wait, we also need to cherry pick some files from Thorium and copy them into C:\src\chromium\src\out\thorium (These are things like logos, the pak binaries, etc. that are thorium specific)
+
+content_shell\thorium-devtools.ico and content_shell\thorium-devtools.png AND
+
+All the files in pak_src\bin\pak-win
+
+## Compilation
+Finally, we are ready to compile Thorium!
+
+Make sure you are in C:\src\chromium\src
+
+And run:
+
+autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
+
+You can substitute the -j# for the number of jobs. I use 8 because I have an 8 core cpu. Do not use a number more than the number of threads your CPU has.
+
+In the end, you will have a nice installer:
+
+C:\src\chromium\src\out\thorium\mini_installer.exe 
+
+I rename it to thorium_mini_installer.exe or thorium_avx2_mini_installer.exe for releases. Just double click to install Thorium to C:\Users\$USERNAME\AppData\Local\Thorium
+
+## AVX2 Release
+
+Speaking of which! Thorium by default compiles with AVX and AES. To make the AVX2 version of it, you will follow all the steps above, except before running gn args out\thorium, we need to download the avx2 sources. You should also use the win_AVX2_args.gn in the Thorium-AVX2 repo.
+
+git clone https://github.com/Alex313031/Thorium-AVX2.git or https://github.com/Alex313031/Thorium-AVX2/archive/refs/heads/main.zip
+
+And simply copy the build directory over C:\src\chromium\src\build
+
+## Portable release
+To make a portable release, it is easiest to copy an already made portable release from GitHub, extract it, and then:
+
+1. Delete the contents of the BIN folder.
+
+2. Use 7-Zip to extract the contents of the new mini_installer you just made, and then extract the chrome.7z that was inside it.
+
+3. Copy the contents of Chrome-bin into the BIN folder in the portable folder.
+
+4. Edit CONTENT_SHELL.bat to point to the actual location as the version number will have changed.
+
+5. Likewise, edit the version number in the name of the whole portable folder to reflect the new Thorium.
+
+6. Finally, rezip it up with 7-Zip. To use it, read the README.txt inside. 
+
+## Updating your checkout
+
+To update the Chromium checkout, just run the same commands from above (in C:\src\chromium\src\v8\)
+
+git checkout -f origin/main
+
+cd ..
+
+git checkout -f origin/main
+
+git rebase-update
+
+git fetch --tags
+
+gclient sync --with_branch_heads --with_tags -f -R -D
+
+gclient runhooks
+
+To update Thorium, do a git pull main or redownload the latest .zip
+
+Enjoy!
