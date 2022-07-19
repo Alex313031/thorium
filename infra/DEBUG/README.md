@@ -8,7 +8,8 @@
 &nbsp;&nbsp; __NOTE:__ Running either of the above will make a directory in //out/thorium called Thorium_UI_Debug_Shell with all the artifacts and Readme inside, suitable for zipping up and distributing to users.
  - For more information, read the [DEBUG_SHELL_README.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/DEBUG_SHELL_README.md) file).
  
-### More Info <a name="moreinfo"></a> 
+### More Info <a name="moreinfo"></a>
+__The [*DEBUGGING.md*](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/DEBUGGING.md) file is a slightly modified version of the upstream Chromium one.__ \
 __*&#42;For more information about debugging,* See > [Logging](https://www.chromium.org/for-testers/enable-logging/), &nbsp;[Network Logging](https://www.chromium.org/for-testers/providing-network-details/), &nbsp;[Linux](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux/debugging.md), &nbsp;[MacOS](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/mac/debugging.md), &nbsp;[Android](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/android_debugging_instructions.md), &nbsp;[ChromiumOS](https://www.chromium.org/chromium-os/how-tos-and-troubleshooting/debugging-features/), &nbsp;and [Windows](https://chromium.googlesource.com/playground/chromium-org-site/+/refs/heads/main/developers/how-tos/debugging-on-windows/index.md), &nbsp;including [WinDBG Help](https://chromium.googlesource.com/playground/chromium-org-site/+/refs/heads/main/developers/how-tos/debugging-on-windows/windbg-help.md), &nbsp;and [Dump Example](https://chromium.googlesource.com/playground/chromium-org-site/+/refs/heads/main/developers/how-tos/debugging-on-windows/example-of-working-with-a-dump.md).__
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_infra_256.png" width="200">
