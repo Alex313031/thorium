@@ -1,8 +1,6 @@
-# Checking out and building Thorium on Linux
+# Checking out and building Thorium on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 There are instructions for other platforms here in the Thorium Docs directory.
-
-[TOC]
 
 ## System requirements
 
@@ -164,9 +162,9 @@ This is especially useful if you use
 [git-worktree](http://git-scm.com/docs/git-worktree) and keep multiple local
 working directories going at once.
 
-## Build Thorium!
+## Build Thorium
 
-Build Thorium (the "chrome" target), as well as `chrome_sandbox, chromdriver, and thorium_shell (based on [content_shell]() using the `build.sh`
+Build Thorium (the "chrome" target), as well as [chrome_sandbox](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux/sandboxing.md), [chromedriver](https://chromedriver.chromium.org/home), and [thorium_shell](https://github.com/Alex313031/Thorium/tree/main/thorium_shell#readme) (based on [content_shell](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md#as-a-simple-browser) ), using the `build.sh`
 in the root of the Thorium repo (where the # is the number of jobs):
 
 ```shell
