@@ -124,14 +124,16 @@ to enable Sync.
 First, we need to run `trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium.
 It should be used before every seperate build. See the [Updating](#updating) section.
 
+This will update and sync the sources and at the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
+- Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
+
 Chromium and Thorium use [Ninja](https://ninja-build.org) as their main build tool, along with
 a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
 to generate `.ninja` files in the build output directory. You can create any number of *build directories*
-with different configurations. To create a build directory, run:
-
-```shell
-$ gn args out/thorium
-```
+with different configurations. To create a build directory:
+- Run `gn args out/thorium` and the contents of '[args.gn](https://github.com/Alex313031/Thorium/blob/main/args.gn)' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'* 
+- For more info about args.gn, read the [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) file.
+- '[infra/args.list](https://github.com/Alex313031/Thorium/blob/main/infra/args.list)' contains an alphabetical list with descriptions of all possible build arguments; [gn_args.list](https://github.com/Alex313031/Thorium/blob/main/infra/gn_args.list) gives a similar list but with the flags in args.gn added.
 
 You can list all the possible build arguments and pipe it to a text file by running:
 
@@ -141,8 +143,8 @@ $ gn args out/thorium --list >> /path/to/ARGS.list
 
 * You only have to run this once for each new build directory, Ninja will
   update the build files as needed.
-* You can replace `thorium` with another name, but
-  it should be a subdirectory of `out`. Note that if you choose another name, the `trunk.sh` and `build.sh` scripts will not work.
+* You can replace *thorium* with another name, but
+  it should be a subdirectory of *out*. Note that if you choose another name, the `trunk.sh` and `build.sh` scripts will not work.
 * For information on the args.gn that Thorium uses, see [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/docs/ABOUT_GN_ARGS.md).  
 * For other build arguments, including release settings, see [GN build
   configuration](https://www.chromium.org/developers/gn-build-configuration).
@@ -190,14 +192,14 @@ in the root of the Thorium repo (where the # is the number of jobs):
 $ ./build.sh 8
 ```
 
-You could also manually issue the command (where -j is number of jobs):
+You could also manually issue the command (where -j is the number of jobs):
 
 ```shell
 $ autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell -j8
 ```
 
 `autoninja` is a wrapper that automatically provides optimal values for the
-arguments passed to `ninja`. *build.sh* uses a custom autoninja in the *depot_tools* directory in Thorium.
+arguments passed to `ninja`. `build.sh` uses a [custom autoninja](https://github.com/Alex313031/Thorium/blob/main/depot_tools/autoninja) in the *depot_tools* directory in Thorium.
 
 You can get a list of all of the other build targets from GN by running `gn ls
 out/thorium` from the command line. To compile one, pass the GN label to Ninja
@@ -211,6 +213,18 @@ Once it is built, you can simply run the browser:
 ```shell
 $ out/thorium/thorium
 ```
+**RECOMMENDED** *- Copy and run [clean.sh](https://github.com/Alex313031/Thorium/blob/main/clean.sh) within this dir to clean up build artifacts.*
+
+## Installing Thorium
+
+Of course, you will probably want to make an installation package. To make a .deb file
+run `thordeb.sh` (where the # is the number of jobs) in the root of the repo:
+
+```shell
+$ ./thordeb.sh 8
+```
+To make an appimage, copy the .deb to `//thorium/infra/APPIMAGE/`
+and follow the [Instructions](https://github.com/Alex313031/Thorium/blob/main/infra/APPIMAGE/README.md#instructions) therein.
 
 ### Tests
 
@@ -232,10 +246,10 @@ $ ./trunk.sh
 
 ### More links
 
-*   Information about [building with Clang](../clang.md).
-*   You may want to [use a chroot](using_a_chroot.md) to
+*   Information about [building with Clang](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/clang.md).
+*   You may want to [use a chroot](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/linux/using_a_chroot.md) to
     isolate yourself from versioning or packaging conflicts.
-*   Cross-compiling for ARM? See [LinuxChromiumArm](chromium_arm.md).
+*   Cross-compiling for ARM? (Raspberry Pi) See the [Thorium ARM](https://github.com/Alex313031/Thorium/tree/main/arm#readme) dir and [chromium_arm.md](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/linux/chromium_arm.md).
 *   [Atom](https://atom.io/) and [Geany](https://www.geany.org/) are reccomended IDEs for working on Thorium.
 
 ### Debugging <a name="debugging"></a>
