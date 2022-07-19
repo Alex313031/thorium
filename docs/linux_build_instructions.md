@@ -13,7 +13,7 @@ There are instructions for other platforms here in the Thorium Docs directory.
 Most development is done on Ubuntu (currently 18.04, Bionic Beaver). Ubuntu 16.04 no longer works. 20.04 and Debian 11 will work.
 There are some instructions for other distros below, but they are mostly unsupported.
 
-__The scripts to build thorium assume that depot_tools and chromium are both in $HOME!__
+__The scripts to build Thorium assume that depot_tools, thorium and chromium are both in $HOME!__
 
 ## Install *depot_tools*
 
@@ -33,6 +33,22 @@ $ export PATH="$PATH:${HOME}/depot_tools" or $ export PATH="$PATH:/home/alex/dep
 ```
 
 ## Get the code
+
+### Thorium Code
+
+Clone the Thorium repo into *$HOME*
+
+```shell
+$ git clone https://github.com/Alex313031/Thorium.git
+```
+
+Then, make the `set_exec.sh` script executable and run it (this will set all the other scripts in the repo as executable).
+
+```shell
+$ chmod +x set_exec.sh && ./set_exec.sh
+```
+
+### Chromium Code
 
 Create a *chromium* directory for the checkout and change to it.
 
@@ -105,6 +121,9 @@ to enable Sync.
 
 ## Setting up the build
 
+First, we need to run `trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium.
+It should be used before every seperate build. See the [Updating](#updating) section.
+
 Chromium and Thorium use [Ninja](https://ninja-build.org) as their main build tool, along with
 a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
 to generate `.ninja` files in the build output directory. You can create any number of *build directories*
@@ -162,7 +181,7 @@ This is especially useful if you use
 [git-worktree](http://git-scm.com/docs/git-worktree) and keep multiple local
 working directories going at once.
 
-## Build Thorium
+## Build Thorium <a name="build"></a>
 
 Build Thorium (the "chrome" target), as well as [chrome_sandbox](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux/sandboxing.md), [chromedriver](https://chromedriver.chromium.org/home), and [thorium_shell](https://github.com/Alex313031/Thorium/tree/main/thorium_shell#readme) (based on [content_shell](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md#as-a-simple-browser) ), using the `build.sh`
 in the root of the Thorium repo (where the # is the number of jobs):
@@ -185,35 +204,22 @@ out/thorium` from the command line. To compile one, pass the GN label to Ninja
 with no preceding "//" (so, for `//chrome/test:unit_tests` use `autoninja -C
 out/thorium chrome/test:unit_tests`).
 
-## Run Chromium
+## Run Thorium
 
 Once it is built, you can simply run the browser:
 
 ```shell
-$ out/Default/chrome
+$ out/thorium/thorium
 ```
 
-## Running test targets
-
-First build the unit_tests binary by running the command:
-
-```shell
-$ autoninja -C out/Default unit_tests
-```
-
-You can run the tests by running the unit_tests binary. You can also limit which
-tests are run using the `--gtest_filter` arg, e.g.:
-
-```shell
-$ out/Default/unit_tests --gtest_filter="PushClientTest.*"
-```
+### Tests
 
 You can find out more about GoogleTest at its
 [GitHub page](https://github.com/google/googletest).
 
-## Update your checkout
+## Update your checkout and revert to latest vanilla tip-o-tree Chromium. <a name="updating"></a>
 
-To update an existing checkout, you can run
+Simply run `trunk.sh`
 
 ```shell
 $ git rebase-update
@@ -230,32 +236,6 @@ hooks as needed.
 
 ## Tips, tricks, and troubleshooting
 
-### Linker Crashes
-
-If, during the final link stage:
-
-```
-LINK out/Debug/chrome
-```
-
-You get an error like:
-
-```
-collect2: ld terminated with signal 6 Aborted terminate called after throwing an instance of 'std::bad_alloc'
-collect2: ld terminated with signal 11 [Segmentation fault], core dumped
-```
-
-you are probably running out of memory when linking. You *must* use a 64-bit
-system to build. Try the following build settings (see [GN build
-configuration](https://www.chromium.org/developers/gn-build-configuration) for
-other settings):
-
-*   Build in release mode (debugging symbols require more memory):
-    `is_debug = false`
-*   Turn off symbols: `symbol_level = 0`
-*   Build in component mode (this is for development only, it will be slower and
-    may have broken functionality): `is_component_build = true`
-
 ### More links
 
 *   Information about [building with Clang](../clang.md).
@@ -267,12 +247,6 @@ other settings):
 *   Want to use your built version as your default browser? See
     [LinuxDevBuildAsDefaultBrowser](dev_build_as_default_browser.md).
 
-## Next Steps
-
-If you want to contribute to the effort toward a Chromium-based browser for
-Linux, please check out the [Linux Development page](development.md) for
-more information.
-
 ## Notes for other distros <a name="notes"></a>
 
 ### Arch Linux
@@ -280,8 +254,10 @@ more information.
 Instead of running `install-build-deps.sh` to install build dependencies, run:
 
 ```shell
-$ sudo pacman -S --needed python perl gcc gcc-libs bison flex gperf pkgconfig \
-nss alsa-lib glib2 gtk3 nspr freetype2 cairo dbus libgnome-keyring \
+$ sudo pacman -S --needed automake autoconf base-devel curl xz squashfs-tools p7zip \
+git tk python python-pkgconfig python-virtualenv python-oauth2client python-oauthlib \
+perl gcc gcc-libs bison flex gperf pkgconfig dbus icoutils \
+nss alsa-lib glib2 gtk3 nspr freetype2 cairo libgnome-keyring \
 xorg-server-xvfb xorg-xdpyinfo
 ```
 
@@ -291,7 +267,7 @@ For the optional packages on Arch Linux:
 *   `wdiff` is not in the main repository but `dwdiff` is. You can get `wdiff`
     in AUR/`yaourt`
 
-### Crostini (Debian based)
+### Crostini on ChromiumOS/ThoriumOS (Debian based)
 
 First install the `file` and `lsb-release` commands for the script to run properly:
 
@@ -303,7 +279,7 @@ Then invoke install-build-deps.sh with the `--no-arm` argument,
 because the ARM toolchain doesn't exist for this configuration:
 
 ```shell
-$ sudo install-build-deps.sh --no-arm
+$ sudo build/install-build-deps.sh --no-arm
 ```
 
 ### Fedora
@@ -332,117 +308,4 @@ For the optional packages:
 
 ### Gentoo
 
-You can just run `emerge www-client/chromium`.
-
-### OpenSUSE
-
-Use `zypper` command to install dependencies:
-
-(openSUSE 11.1 and higher)
-
-```shell
-sudo zypper in subversion pkg-config python perl bison flex gperf \
-     mozilla-nss-devel glib2-devel gtk-devel wdiff lighttpd gcc gcc-c++ \
-     mozilla-nspr mozilla-nspr-devel php5-fastcgi alsa-devel libexpat-devel \
-     libjpeg-devel libbz2-devel
-```
-
-For 11.0, use `libnspr4-0d` and `libnspr4-dev` instead of `mozilla-nspr` and
-`mozilla-nspr-devel`, and use `php5-cgi` instead of `php5-fastcgi`.
-
-(openSUSE 11.0)
-
-```shell
-sudo zypper in subversion pkg-config python perl \
-     bison flex gperf mozilla-nss-devel glib2-devel gtk-devel \
-     libnspr4-0d libnspr4-dev wdiff lighttpd gcc gcc-c++ libexpat-devel \
-     php5-cgi alsa-devel gtk3-devel jpeg-devel
-```
-
-The Ubuntu package `sun-java6-fonts` contains a subset of Java of the fonts used.
-Since this package requires Java as a prerequisite anyway, we can do the same
-thing by just installing the equivalent openSUSE Sun Java package:
-
-```shell
-sudo zypper in java-1_6_0-sun
-```
-
-WebKit is currently hard-linked to the Microsoft fonts. To install these using `zypper`
-
-```shell
-sudo zypper in fetchmsttfonts pullin-msttf-fonts
-```
-
-To make the fonts installed above work, as the paths are hardcoded for Ubuntu,
-create symlinks to the appropriate locations:
-
-```shell
-sudo mkdir -p /usr/share/fonts/truetype/msttcorefonts
-sudo ln -s /usr/share/fonts/truetype/arial.ttf /usr/share/fonts/truetype/msttcorefonts/Arial.ttf
-sudo ln -s /usr/share/fonts/truetype/arialbd.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/arialbi.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/ariali.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/comic.ttf /usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf
-sudo ln -s /usr/share/fonts/truetype/comicbd.ttf /usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/cour.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New.ttf
-sudo ln -s /usr/share/fonts/truetype/courbd.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/courbi.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/couri.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/impact.ttf /usr/share/fonts/truetype/msttcorefonts/Impact.ttf
-sudo ln -s /usr/share/fonts/truetype/times.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf
-sudo ln -s /usr/share/fonts/truetype/timesbd.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/timesbi.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/timesi.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/verdana.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanab.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanai.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanaz.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Bold_Italic.ttf
-```
-
-The Ubuntu package `sun-java6-fonts` contains a subset of Java of the fonts used.
-Since this package requires Java as a prerequisite anyway, we can do the same
-thing by just installing the equivalent openSUSE Sun Java package:
-
-```shell
-sudo zypper in java-1_6_0-sun
-```
-
-WebKit is currently hard-linked to the Microsoft fonts. To install these using `zypper`
-
-```shell
-sudo zypper in fetchmsttfonts pullin-msttf-fonts
-```
-
-To make the fonts installed above work, as the paths are hardcoded for Ubuntu,
-create symlinks to the appropriate locations:
-
-```shell
-sudo mkdir -p /usr/share/fonts/truetype/msttcorefonts
-sudo ln -s /usr/share/fonts/truetype/arial.ttf /usr/share/fonts/truetype/msttcorefonts/Arial.ttf
-sudo ln -s /usr/share/fonts/truetype/arialbd.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/arialbi.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/ariali.ttf /usr/share/fonts/truetype/msttcorefonts/Arial_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/comic.ttf /usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS.ttf
-sudo ln -s /usr/share/fonts/truetype/comicbd.ttf /usr/share/fonts/truetype/msttcorefonts/Comic_Sans_MS_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/cour.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New.ttf
-sudo ln -s /usr/share/fonts/truetype/courbd.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/courbi.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/couri.ttf /usr/share/fonts/truetype/msttcorefonts/Courier_New_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/impact.ttf /usr/share/fonts/truetype/msttcorefonts/Impact.ttf
-sudo ln -s /usr/share/fonts/truetype/times.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman.ttf
-sudo ln -s /usr/share/fonts/truetype/timesbd.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/timesbi.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Bold_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/timesi.ttf /usr/share/fonts/truetype/msttcorefonts/Times_New_Roman_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/verdana.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanab.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Bold.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanai.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Italic.ttf
-sudo ln -s /usr/share/fonts/truetype/verdanaz.ttf /usr/share/fonts/truetype/msttcorefonts/Verdana_Bold_Italic.ttf
-```
-
-And then for the Java fonts:
-
-```shell
-sudo mkdir -p /usr/share/fonts/truetype/ttf-lucida
-sudo find /usr/lib*/jvm/java-1.6.*-sun-*/jre/lib -iname '*.ttf' -print \
-     -exec ln -s {} /usr/share/fonts/truetype/ttf-lucida \;
-```
+You can install the deps by doing a dry run of `emerge www-client/chromium`.
