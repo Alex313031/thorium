@@ -107,13 +107,19 @@ to enable Sync.
 
 ## Setting up the build
 
-Chromium uses [Ninja](https://ninja-build.org) as its main build tool along with
+Chromium and Thorium use [Ninja](https://ninja-build.org) as their main build tool, along with
 a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
 to generate `.ninja` files in the build output directory. You can create any number of *build directories*
 with different configurations. To create a build directory, run:
 
 ```shell
-$ gn gen out/thorium
+$ gn args out/thorium
+```
+
+You can list all the possible build arguments and pipe it to a text file by running:
+
+```shell
+$ gn args out/thorium --list >> /path/to/ARGS.list
 ```
 
 * You only have to run this once for each new build directory, Ninja will
@@ -128,68 +134,9 @@ $ gn gen out/thorium
 * For more info on GN, run `gn help` on the command line or read the
   [quick start guide](https://gn.googlesource.com/gn/+/main/docs/quick_start.md).
 
-### <a name="faster-builds"></a>Faster builds
-
-This section contains some things you can change to speed up your builds,
-sorted so that the things that make the biggest difference are first.
-
-#### Use Goma
-
-Google developed the distributed compiler called
-[Goma](https://chromium.googlesource.com/infra/goma/client).
-
-If you would like to use `Goma` provisioned by Google,
-please follow [Goma for Chromium contributors](https://chromium.googlesource.com/infra/goma/client/+/HEAD/doc/early-access-guide.md).
-
-If you are a Google employee, see
-[go/building-chrome](https://goto.google.com/building-chrome) instead.
-
-#### Disable NaCl
-
-By default, the build includes support for
-[Native Client (NaCl)](https://developer.chrome.com/native-client), but
-most of the time you won't need it. You can set the GN argument
-`enable_nacl=false` and it won't be built.
-
-#### Include fewer debug symbols
-
-By default GN produces a build with all of the debug assertions enabled
-(`is_debug=true`) and including full debug info (`symbol_level=2`). Setting
-`symbol_level=1` will produce enough information for stack traces, but not
-line-by-line debugging. Setting `symbol_level=0` will include no debug
-symbols at all. Either will speed up the build compared to full symbols.
-
-#### Disable debug symbols for Blink and v8
-
-Due to its extensive use of templates, the Blink code produces about half
-of our debug symbols. If you don't ever need to debug Blink, you can set
-the GN arg `blink_symbol_level=0`. Similarly, if you don't need to debug v8 you
-can improve build speeds by setting the GN arg `v8_symbol_level=0`.
-
-#### Use Icecc
-
-[Icecc](https://github.com/icecc/icecream) is the distributed compiler with a
-central scheduler to share build load. Currently, many external contributors use
-it. e.g. Intel, Opera, Samsung (this is not useful if you're using Goma).
-
-In order to use `icecc`, set the following GN args:
-
-```
-use_debug_fission=false
-is_clang=false
-```
-
-See these links for more on the
-[bundled_binutils limitation](https://github.com/icecc/icecream/commit/b2ce5b9cc4bd1900f55c3684214e409fa81e7a92),
-the [debug fission limitation](http://gcc.gnu.org/wiki/DebugFission).
-
-Using the system linker may also be necessary when using glibc 2.21 or newer.
-See [related bug](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=808181).
-
 #### ccache
 
-You can use [ccache](https://ccache.dev) to speed up local builds (again,
-this is not useful if you're using Goma).
+You can use [ccache](https://ccache.dev) to speed up local builds.
 
 Increase your ccache hit rate by setting `CCACHE_BASEDIR` to a parent directory
 that the working directories all have in common (e.g.,
@@ -217,57 +164,28 @@ This is especially useful if you use
 [git-worktree](http://git-scm.com/docs/git-worktree) and keep multiple local
 working directories going at once.
 
-#### Using tmpfs
+## Build Thorium!
 
-You can use tmpfs for the build output to reduce the amount of disk writes
-required. I.e. mount tmpfs to the output directory where the build output goes:
-
-As root:
-
-    mount -t tmpfs -o size=20G,nr_inodes=40k,mode=1777 tmpfs /path/to/out
-
-*** note
-**Caveat:** You need to have enough RAM + swap to back the tmpfs. For a full
-debug build, you will need about 20 GB. Less for just building the chrome target
-or for a release build.
-***
-
-Quick and dirty benchmark numbers on a HP Z600 (Intel core i7, 16 cores
-hyperthreaded, 12 GB RAM)
-
-*   With tmpfs:
-    *   12m:20s
-*   Without tmpfs
-    *   15m:40s
-
-### Smaller builds
-
-The Chrome binary contains embedded symbols by default. You can reduce its size
-by using the Linux `strip` command to remove this debug information. You can
-also reduce binary size by disabling debug mode, disabling dchecks, and turning
-on all optimizations by enabling official build mode, with these GN args:
-
-```
-is_debug = false
-dcheck_always_on = false
-is_official_build = true
-```
-
-## Build Chromium
-
-Build Chromium (the "chrome" target) with Ninja using the command:
+Build Thorium (the "chrome" target), as well as `chrome_sandbox, chromdriver, and thorium_shell (based on [content_shell]() using the `build.sh`
+in the root of the Thorium repo (where the # is the number of jobs):
 
 ```shell
-$ autoninja -C out/Default chrome
+$ ./build.sh 8
 ```
 
-(`autoninja` is a wrapper that automatically provides optimal values for the
-arguments passed to `ninja`.)
+You could also manually issue the command (where -j is number of jobs):
+
+```shell
+$ autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell -j8
+```
+
+`autoninja` is a wrapper that automatically provides optimal values for the
+arguments passed to `ninja`. *build.sh* uses a custom autoninja in the *depot_tools* directory in Thorium.
 
 You can get a list of all of the other build targets from GN by running `gn ls
-out/Default` from the command line. To compile one, pass the GN label to Ninja
+out/thorium` from the command line. To compile one, pass the GN label to Ninja
 with no preceding "//" (so, for `//chrome/test:unit_tests` use `autoninja -C
-out/Default chrome/test:unit_tests`).
+out/thorium chrome/test:unit_tests`).
 
 ## Run Chromium
 
