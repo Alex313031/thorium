@@ -81,43 +81,49 @@ Once you have checked out the code, and assuming you're using Ubuntu, run the
 $ ./build/install-build-deps.sh
 ```
 
+You can run it with the flag `--help` to see arguments. For example, you would want `--lib32` if building for 32 bit Linux, `--arm` for building
+a Raspberry Pi release, `--chromeos-fonts` for building Thorium for ThoriumOS, and `--quick-check` just to verify needed libraries are installed.
+
 You may need to adjust the build dependencies for other distros. There are
 some [notes](#notes) at the end of this document, but we make no guarantees
-for their accuracy.
+for their accuracy, as distros get updated over time.
 
 ### Run the hooks
 
 Once you've run `install-build-deps` at least once, you can now run the
 Chromium-specific hooks, which will download additional binaries and other
-things you might need:
+things like LLVM and a Debian Sysroot.:
 
 ```shell
 $ gclient runhooks
 ```
 
-*Optional*: You can also [install API
+*Optional*: You can also [build with API
 keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
-build to talk to some Google services, but this is not necessary for most
-development and testing purposes.
+build to talk to some Google services like Google Sync, Translate, and GeoLocation. Thorium has its own keys
+in a private repository,  if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
+you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
+to enable Sync.
 
 ## Setting up the build
 
 Chromium uses [Ninja](https://ninja-build.org) as its main build tool along with
-a tool called [GN](https://gn.googlesource.com/gn/+/main/docs/quick_start.md)
-to generate `.ninja` files. You can create any number of *build directories*
+a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
+to generate `.ninja` files in the build output directory. You can create any number of *build directories*
 with different configurations. To create a build directory, run:
 
 ```shell
-$ gn gen out/Default
+$ gn gen out/thorium
 ```
 
 * You only have to run this once for each new build directory, Ninja will
   update the build files as needed.
-* You can replace `Default` with another name, but
-  it should be a subdirectory of `out`.
+* You can replace `thorium` with another name, but
+  it should be a subdirectory of `out`. Note that if you choose another name, the `trunk.sh` and `build.sh` scripts will not work.
+* For information on the args.gn that Thorium uses, see [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/docs/ABOUT_GN_ARGS.md).  
 * For other build arguments, including release settings, see [GN build
   configuration](https://www.chromium.org/developers/gn-build-configuration).
-  The default will be a debug component build matching the current host
+  The default will be a vanilla Chromium debug component build matching the current host
   operating system and CPU.
 * For more info on GN, run `gn help` on the command line or read the
   [quick start guide](https://gn.googlesource.com/gn/+/main/docs/quick_start.md).
