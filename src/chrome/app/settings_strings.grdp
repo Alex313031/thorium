@@ -527,9 +527,6 @@
   <message name="IDS_SETTINGS_REMOVE_COMPROMISED_PASSWORD_CONFIRMATION_DESCRIPTION" desc="Compromised password remove dialog conformation description">
     Removing this password will not delete your account on <ph name="DOMAIN">$1<ex>airbnb.com</ex></ph>. Change your password or delete your account on <ph name="DOMAIN_LINK">$2<ex>&lt;a href="https://airbnb.com" target="_blank"&gt;airbnb.com&lt;/a&gt;</ex></ph> to keep it safe from others.
   </message>
-  <message name="IDS_SETTINGS_COMPROMISED_EDIT_PASSWORD_SITE" desc="A label for the field, which displays the site for which the password was saved. The field is part of a dialog, which allows the user to edit the password.">
-    Site
-  </message>
   <message name="IDS_SETTINGS_COMPROMISED_EDIT_PASSWORD_APP" desc="A label for the field, which displays the app for which the password was saved. The field is part of a dialog, which allows the user to edit the password.">
     App
   </message>
@@ -1253,6 +1250,11 @@
   <message name="IDS_SETTINGS_LANGUAGES_PAGE_TITLE" desc="Name of the settings page which displays language preferences.">
     Languages
   </message>
+  <if expr="not chromeos_ash">
+    <message name="IDS_SETTINGS_LANGUAGES_CARD_TITLE" desc="Name of the card which manages language preferences.">
+      Preferred languages
+    </message>
+  </if>
   <message name="IDS_SETTINGS_LANGUAGE_SEARCH" desc="Placeholder/label for the text input field that allows a user to filter languages.">
     Search languages
   </message>
@@ -1316,6 +1318,9 @@
     </message>
     <message name="IDS_SETTINGS_LANGUAGES_SPELL_CHECK_ENHANCED_DESCRIPTION" desc="Description for the type of spell check that sends the text the user types to Google for spelling suggestions. It is important that it is communicated that the text the user types in the browser will be sent to Google.">
       Uses the same spell checker that’s used in Google search. Text you type in the browser is sent to Google.
+    </message>
+    <message name="IDS_SETTINGS_LANGUAGES_OFFER_TO_ENABLE_SPELL_CHECK" desc="The label of the toggle that enables the spell check service.">
+      Check for spelling errors when you type text on web pages
     </message>
     <if expr="not is_macosx">
       <message name="IDS_SETTING_LANGUAGES_SPELL_CHECK_DISABLED_REASON" desc="Text that indicates to the user that spell check options are disabled because none of the languages they have added have spell check support.">
@@ -1990,6 +1995,14 @@
   <message name="IDS_SETTINGS_MANAGE_CERTIFICATES_DESCRIPTION" desc="Secondary, continued explanation of how to manage SSL certificates and settings in Privacy options">
     Manage HTTPS/SSL certificates and settings
   </message>
+  <if expr="chrome_root_store_supported">
+    <message name="IDS_SETTINGS_MANAGE_DEVICE_CERTIFICATES" desc="Text for manage device certificates button in Privacy options">
+      Manage device certificates
+    </message>
+    <message name="IDS_SETTINGS_MANAGE_DEVICE_CERTIFICATES_DESCRIPTION" desc="Secondary, continued explanation of how to manage SSL device certificates and settings in Privacy options">
+      Manage HTTPS/SSL certificates on your device
+    </message>
+  </if>
   <message name="IDS_SETTINGS_MANAGE" desc="Text displayed on a button, which when clicked opens the Extensions subpage for managing an extension">
     Manage
   </message>
