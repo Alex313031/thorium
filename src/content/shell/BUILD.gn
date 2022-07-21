@@ -493,7 +493,7 @@ if (is_android) {
       content_shell_version,
     ]
   }
-  mac_app_bundle("content_shell") {
+  mac_app_bundle("thorium_shell") {
     testonly = true
     output_name = content_shell_product_name
     sources = [ "app/shell_main_mac.cc" ]
@@ -578,19 +578,19 @@ if (is_android) {
       visibility = [ ":*" ]
     }
 
-    fuchsia_package("content_shell_pkg") {
+    fuchsia_package("thorium_shell_pkg") {
       testonly = true
       package_name = "thorium_shell"
       deps = [ ":content_shell_component" ]
     }
 
-    fuchsia_package_installer("content_shell_fuchsia") {
+    fuchsia_package_installer("thorium_shell_fuchsia") {
       testonly = true
       visibility = [
         ":*",  # See https://crbug.com/1328459#c4.
         "//:*",
       ]
-      package = ":content_shell_pkg"
+      package = ":thorium_shell_pkg"
       package_name = "thorium_shell"
     }
   }
