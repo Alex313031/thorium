@@ -27,5 +27,5 @@
      {"webgl-msaa-sample-count",
      "WebGL MSAA Sample Count",
      "Set a default sample count for WebGL if MSAA is enabled on the GPU.",
-     kOsDesktop, MULTI_VALUE_TYPE(kWebglMSAASampleCount)},
+     kOsDesktop, MULTI_VALUE_TYPE(kWebglMSAASampleCountChoices)},
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
