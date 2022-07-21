@@ -24,4 +24,8 @@
      "Show/Hide the Avatar Button",
      "Show the Avatar/People/Profile button in the browser toolbar: Always, Incognito|Guest only, or Never.",
      kOsDesktop, MULTI_VALUE_TYPE(kShowAvatarButtonChoices)},
+     {"webgl-msaa-sample-count",
+     "WebGL MSAA Sample Count",
+     "Set a default sample count for WebGL if MSAA is enabled on the GPU.",
+     kOsDesktop, MULTI_VALUE_TYPE(kWebglMSAASampleCount)},
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
