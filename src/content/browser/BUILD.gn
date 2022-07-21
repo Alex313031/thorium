@@ -108,6 +108,7 @@ source_set("browser") {
     "//components/web_package",
     "//content:content_resources",
     "//content:dev_ui_content_resources",
+    "//content/browser/aggregation_service/proto:aggregatable_report_proto",
     "//content/browser/attribution_reporting:attribution_reporting_proto",
     "//content/browser/attribution_reporting:mojo_bindings",
     "//content/browser/background_fetch:background_fetch_proto",
@@ -367,6 +368,8 @@ source_set("browser") {
     "aggregation_service/aggregatable_report.h",
     "aggregation_service/aggregatable_report_assembler.cc",
     "aggregation_service/aggregatable_report_assembler.h",
+    "aggregation_service/aggregatable_report_scheduler.cc",
+    "aggregation_service/aggregatable_report_scheduler.h",
     "aggregation_service/aggregatable_report_sender.cc",
     "aggregation_service/aggregatable_report_sender.h",
     "aggregation_service/aggregation_service.cc",
@@ -696,21 +699,10 @@ source_set("browser") {
     "code_cache/simple_lru_cache.h",
     "compositor/surface_utils.cc",
     "compositor/surface_utils.h",
-    "compute_pressure/compute_pressure_host.cc",
-    "compute_pressure/compute_pressure_host.h",
-    "compute_pressure/compute_pressure_manager.cc",
-    "compute_pressure/compute_pressure_manager.h",
-    "compute_pressure/compute_pressure_quantizer.cc",
-    "compute_pressure/compute_pressure_quantizer.h",
-    "compute_pressure/compute_pressure_sample.h",
-    "compute_pressure/compute_pressure_sampler.cc",
-    "compute_pressure/compute_pressure_sampler.h",
-    "compute_pressure/cpu_core_speed_info.cc",
-    "compute_pressure/cpu_core_speed_info.h",
-    "compute_pressure/cpu_probe.cc",
-    "compute_pressure/cpu_probe.h",
-    "compute_pressure/cpuid_base_frequency_parser.cc",
-    "compute_pressure/cpuid_base_frequency_parser.h",
+    "compute_pressure/pressure_quantizer.cc",
+    "compute_pressure/pressure_quantizer.h",
+    "compute_pressure/pressure_service_impl.cc",
+    "compute_pressure/pressure_service_impl.h",
     "contacts/contacts_manager_impl.cc",
     "contacts/contacts_manager_impl.h",
     "contacts/contacts_provider.h",
@@ -1787,6 +1779,8 @@ source_set("browser") {
     "renderer_host/render_widget_host_view_child_frame.h",
     "renderer_host/render_widget_targeter.cc",
     "renderer_host/render_widget_targeter.h",
+    "renderer_host/renderer_cancellation_throttle.cc",
+    "renderer_host/renderer_cancellation_throttle.h",
     "renderer_host/renderer_sandboxed_process_launcher_delegate.cc",
     "renderer_host/renderer_sandboxed_process_launcher_delegate.h",
     "renderer_host/should_swap_browsing_instance.h",
@@ -2412,12 +2406,6 @@ source_set("browser") {
   if (is_linux || is_chromeos) {
     sources += [
       "child_process_launcher_helper_linux.cc",
-      "compute_pressure/cpu_probe_linux.cc",
-      "compute_pressure/cpu_probe_linux.h",
-      "compute_pressure/procfs_stat_cpu_parser.cc",
-      "compute_pressure/procfs_stat_cpu_parser.h",
-      "compute_pressure/sysfs_cpufreq_core_parser.cc",
-      "compute_pressure/sysfs_cpufreq_core_parser.h",
       "font_access/font_enumeration_data_source_linux.cc",
       "font_access/font_enumeration_data_source_linux.h",
       "font_service.cc",
@@ -2466,7 +2454,10 @@ source_set("browser") {
 
   if (is_linux) {
     sources += [ "speech/tts_linux.cc" ]
-    deps += [ "//third_party/speech-dispatcher" ]
+    deps += [
+      "//third_party/speech-dispatcher",
+      "//ui/linux:linux_ui",
+    ]
   }
 
   # ChromeOS also defines linux but their memory-monitors conflict.
@@ -2612,7 +2603,6 @@ source_set("browser") {
         "media/capture/aura_window_video_capture_device.h",
         "media/capture/mouse_cursor_overlay_controller_aura.cc",
       ]
-      deps += [ "//ui/aura/cursor" ]
     }
 
     if (is_mac) {
@@ -3095,10 +3085,10 @@ source_set("browser") {
       "//ash/components/audio",
       "//ash/constants",
       "//chromeos/ash/components/assistant:buildflags",
+      "//chromeos/ash/components/network",
       "//chromeos/dbus",
       "//chromeos/dbus/power",
       "//chromeos/dbus/power:power_manager_proto",
-      "//chromeos/network",
       "//chromeos/system",
       "//components/session_manager/core",
     ]
