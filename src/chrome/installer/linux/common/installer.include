@@ -117,7 +117,8 @@ prep_staging_common() {
     "${STAGEDIR}/usr/share/appdata" \
     "${STAGEDIR}/usr/share/gnome-control-center/default-apps" \
     "${STAGEDIR}/usr/share/man/man1" \
-    "${STAGEDIR}/${INSTALLDIR}/lib"
+    "${STAGEDIR}/${INSTALLDIR}/lib" \
+    "${STAGEDIR}/${INSTALLDIR}/resources/inspector_overlay"
 }
 
 get_version_info() {
@@ -167,7 +168,7 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/content_shell.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/shell_resources.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
-    install -m 644 "${OUTPUTDIR}/resources/*" "${STAGEDIR}/${INSTALLDIR}/resources/"
+    install -m 644 "${OUTPUTDIR}/resources/inspector_overlay/*" "${STAGEDIR}/${INSTALLDIR}/resources/inspector_overlay/"
     install -m 755 "${OUTPUTDIR}/thorium_shell" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/lib"
