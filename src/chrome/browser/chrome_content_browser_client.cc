@@ -86,9 +86,6 @@
 #include "chrome/browser/plugins/pdf_iframe_navigation_throttle.h"
 #include "chrome/browser/plugins/plugin_utils.h"
 #include "chrome/browser/policy/profile_policy_connector.h"
-#include "chrome/browser/prefetch/no_state_prefetch/chrome_no_state_prefetch_contents_delegate.h"
-#include "chrome/browser/prefetch/no_state_prefetch/no_state_prefetch_manager_factory.h"
-#include "chrome/browser/prefetch/no_state_prefetch/no_state_prefetch_navigation_throttle.h"
 #include "chrome/browser/prefetch/prefetch_prefs.h"
 #include "chrome/browser/prefetch/prefetch_proxy/chrome_prefetch_service_delegate.h"
 #include "chrome/browser/prefetch/prefetch_proxy/chrome_speculation_host_delegate.h"
@@ -100,6 +97,9 @@
 #include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader.h"
 #include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.h"
 #include "chrome/browser/preloading/navigation_ablation_throttle.h"
+#include "chrome/browser/preloading/prefetch/no_state_prefetch/chrome_no_state_prefetch_contents_delegate.h"
+#include "chrome/browser/preloading/prefetch/no_state_prefetch/no_state_prefetch_manager_factory.h"
+#include "chrome/browser/preloading/prefetch/no_state_prefetch/no_state_prefetch_navigation_throttle.h"
 #include "chrome/browser/privacy_sandbox/privacy_sandbox_settings_factory.h"
 #include "chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.h"
 #include "chrome/browser/profiles/profile.h"
@@ -2453,6 +2453,13 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
             prefs->GetBoolean(policy::policy_prefs::kEventPathEnabled)
                 ? blink::switches::kEventPathPolicy_ForceEnable
                 : blink::switches::kEventPathPolicy_ForceDisable);
+      } else if (chrome::GetChannel() < version_info::Channel::BETA) {
+        // When its Enterprise Policy is unspecified, disable Event.path by
+        // default on Canary and Dev to help the deprecation and removal.
+        // See crbug.com/1277431 for more details.
+        command_line->AppendSwitchASCII(
+            blink::switches::kEventPathPolicy,
+            blink::switches::kEventPathPolicy_ForceDisable);
       }
 
       // The IntensiveWakeUpThrottling feature is typically managed via a
@@ -3638,11 +3645,13 @@ void ChromeContentBrowserClient::OverrideWebkitPrefs(
         if (registrar.IsLocallyInstalled(app_id))
           web_prefs->web_app_scope = registrar.GetAppScope(app_id);
 
+#if BUILDFLAG(IS_CHROMEOS_ASH)
         auto* system_app = browser->app_controller()->system_app();
         if (system_app) {
           web_prefs->allow_scripts_to_close_windows =
               system_app->ShouldAllowScriptsToCloseWindows();
         }
+#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
       }
     }
 #endif
