@@ -16,4 +16,18 @@ const FeatureEntry::Choice kShowAvatarButtonChoices[] = {
      "show-avatar-button",
      "never"}
 };
+
+const FeatureEntry::Choice kWebglMSAASampleCountChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"0",
+     switches::kWebglMSAASampleCount, "0"},
+    {"2",
+     switches::kWebglMSAASampleCount, "2"},
+    {"4",
+     switches::kWebglMSAASampleCount, "4"},
+    {"8",
+     switches::kWebglMSAASampleCount, "8"},
+    {"16",
+     switches::kWebglMSAASampleCount, "16"},
+};
 #endif  // CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
