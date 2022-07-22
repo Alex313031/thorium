@@ -1,6 +1,6 @@
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
 
-## List of patches included in Thorium <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/patches.png" width="32">
+## List of patches/changes/features included in Thorium <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/patches.png" width="32">
 
 Compiler modifications include SSE4.2, AVX, AES, and CFLAGS, LTO flags, and import_instr_limit flags set to /03, 3, and 30, respectively. \
 NEW > Added some LLVM LOOP optimizations as -mllvm flags. See here > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-976883814
@@ -130,6 +130,8 @@ Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-
 Enable Reader Mode Patch - Made by me.
 
 WebGl and Native GPU Rasterization MSAA Sample Count chrome://flags Patch - Made by Me.
+
+Devtools UI Patch - Made by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
