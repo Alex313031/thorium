@@ -527,6 +527,10 @@ const base::Feature kUseR16Texture{"use-r16-texture",
 const base::Feature kUnifiedAutoplay{"UnifiedAutoplay",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Equivalent to kUserGestureRequiredPolicy. Thorium Flag.
+const base::Feature kNoAutoPlay{"no-autoplay",
+                                     base::FEATURE_DISABLED_BY_DEFAULT};
+
 #if BUILDFLAG(IS_LINUX)
 // Enable vaapi video decoding on linux. This is already enabled by default on
 // chromeos, but needs an experiment on linux.
@@ -728,7 +732,7 @@ const base::Feature kAutoplayIgnoreWebAudio{"AutoplayIgnoreWebAudio",
 
 // Whether we should show a setting to disable autoplay policy.
 const base::Feature kAutoplayDisableSettings{"AutoplayDisableSettings",
-                                             base::FEATURE_DISABLED_BY_DEFAULT};
+                                             base::FEATURE_ENABLED_BY_DEFAULT};
 
 #if BUILDFLAG(IS_ANDROID)
 // Should we allow video playback to use an overlay if it's not needed for
@@ -961,9 +965,9 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
 
   if (base::FeatureList::IsEnabled(media::kUnifiedAutoplay))
     return switches::autoplay::kDocumentUserActivationRequiredPolicy;
-    
-  if (command_line.HasSwitch("no-autoplay"))
-    return switches::autoplay::kUserGestureRequiredPolicy;
+  
+  if (base::FeatureList::IsEnabled(media::kNoAutoPlay))
+    return switches::autoplay::kUserGestureRequiredPolicy;  
 
 // The default value is platform dependent.
 #if BUILDFLAG(IS_ANDROID)
