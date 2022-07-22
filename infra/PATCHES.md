@@ -129,9 +129,11 @@ Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-
 
 Enable Reader Mode Patch - Made by me.
 
-WebGl and Native GPU Rasterization MSAA Sample Count chrome://flags Patch - Made by Me.
+WebGL and Native GPU Rasterization MSAA Sample Count chrome://flags Patch - Made by me.
 
-Devtools UI Patch - Made by me.
+Number of Raster Threads chrome://flags Patch - Made by me.
+
+Devtools UI chrome://flags Patch - Made by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
