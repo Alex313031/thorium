@@ -30,4 +30,32 @@ const FeatureEntry::Choice kWebglMSAASampleCountChoices[] = {
     {"16",
      switches::kWebglMSAASampleCount, "16"},
 };
+
+const FeatureEntry::Choice kGpuRasterizationMSAASampleCountChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"0",
+     switches::kGpuRasterizationMSAASampleCount, "0"},
+    {"2",
+     switches::kGpuRasterizationMSAASampleCount, "2"},
+    {"4",
+     switches::kGpuRasterizationMSAASampleCount, "4"},
+    {"8",
+     switches::kGpuRasterizationMSAASampleCount, "8"},
+    {"16",
+     switches::kGpuRasterizationMSAASampleCount, "16"},
+};
+
+const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"1",
+     switches::kNumRasterThreads, "1"},
+    {"2",
+     switches::kNumRasterThreads, "2"},
+    {"3",
+     switches::kNumRasterThreads, "3"},
+    {"4",
+     switches::kNumRasterThreads, "4"},
+    {"6",
+     switches::kNumRasterThreads, "6"},
+};
 #endif  // CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
