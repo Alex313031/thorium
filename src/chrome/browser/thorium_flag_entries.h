@@ -19,7 +19,7 @@
      {"no-autoplay",
      "Disable AutoPlay",
      "Disables AutoPlay for all Thorium instances.",
-     kOsDesktop, SINGLE_VALUE_TYPE("no-autoplay")},
+     kOsDesktop, SINGLE_VALUE_TYPE(switches::autoplay::kUserGestureRequiredPolicy)},
     {"show-avatar-button",
      "Show/Hide the Avatar Button",
      "Show the Avatar/People/Profile button in the browser toolbar: Always, Incognito|Guest only, or Never.",
