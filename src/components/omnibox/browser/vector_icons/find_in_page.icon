@@ -3,7 +3,7 @@
 // You can obtain one at http://mozilla.org/MPL/2.0/.
 
 CANVAS_DIMENSIONS, 24,
-PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8
+PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
 MOVE_TO, 16, 12,
 CUBIC_TO, 16, 9.79f, 14.21f, 8, 12, 8,
 CUBIC_TO, 9.79f, 8, 8, 9.79f, 8, 12,
