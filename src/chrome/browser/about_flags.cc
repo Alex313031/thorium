@@ -693,6 +693,19 @@ const FeatureEntry::FeatureVariation
          kFencedFramesImplementationTypeMPArch,
          std::size(kFencedFramesImplementationTypeMPArch), nullptr}};
 
+const FeatureEntry::FeatureParam kSearchSuggestionPrerenderUsingPrefetch[] = {
+    {"implementation_type", "use_prefetch"}};
+const FeatureEntry::FeatureParam kSearchSuggestionPrerenderIgnoringPrefetch[] =
+    {{"implementation_type", "ignore_prefetch"}};
+
+const FeatureEntry::FeatureVariation
+    kSearchSuggsetionPrerenderTypeVariations[] = {
+        {"use prefetched request", kSearchSuggestionPrerenderUsingPrefetch,
+         std::size(kSearchSuggestionPrerenderUsingPrefetch), nullptr},
+        {"ignore prefetched request",
+         kSearchSuggestionPrerenderIgnoringPrefetch,
+         std::size(kSearchSuggestionPrerenderIgnoringPrefetch), nullptr}};
+
 #if BUILDFLAG(IS_ANDROID)
 const FeatureEntry::FeatureParam kCloseTabSuggestionsStale_Immediate[] = {
     {"baseline_tab_suggestions", "true"},
@@ -5136,6 +5149,12 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kOmniboxMostVisitedTilesDescription, kOsAndroid,
      FEATURE_VALUE_TYPE(omnibox::kMostVisitedTiles)},
 
+    {"omnibox-remove-suggestion-header-capitalization",
+     flag_descriptions::kOmniboxRemoveSuggestionHeaderCapitalizationName,
+     flag_descriptions::kOmniboxRemoveSuggestionHeaderCapitalizationDescription,
+     kOsAndroid,
+     FEATURE_VALUE_TYPE(omnibox::kOmniboxRemoveSuggestionHeaderCapitalization)},
+
     {"omnibox-remove-suggestion-header-chevron",
      flag_descriptions::kOmniboxRemoveSuggestionHeaderChevronName,
      flag_descriptions::kOmniboxRemoveSuggestionHeaderChevronDescription,
@@ -6203,6 +6222,11 @@ const FeatureEntry kFeatureEntries[] = {
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 #if BUILDFLAG(IS_ANDROID)
+    {"ntp-tiles-title-wrap-around",
+     flag_descriptions::kNewTabPageTilesTitleWrapAroundName,
+     flag_descriptions::kNewTabPageTilesTitleWrapAroundDescription, kOsAndroid,
+     FEATURE_VALUE_TYPE(chrome::android::kNewTabPageTilesTitleWrapAround)},
+
     {"new-window-app-menu", flag_descriptions::kNewWindowAppMenuName,
      flag_descriptions::kNewWindowAppMenuDescription, kOsAndroid,
      FEATURE_VALUE_TYPE(chrome::android::kNewWindowAppMenu)},
@@ -6236,6 +6260,10 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_WITH_PARAMS_VALUE_TYPE(share::kDesktopSharePreview,
                                     kDesktopSharePreviewVariations,
                                     "DesktopSharePreview")},
+    {"sharing-desktop-share-to-google-collections",
+     flag_descriptions::kSharingDesktopShareToGoogleCollectionsName,
+     flag_descriptions::kSharingDesktopShareToGoogleCollectionsDescription,
+     kOsDesktop, FEATURE_VALUE_TYPE(share::kShareToGoogleCollections)},
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -7092,14 +7120,22 @@ const FeatureEntry kFeatureEntries[] = {
          page_info::kPageInfoDiscoverability,
          kPageInfoDiscoverabilityTimeoutVariations,
          "kPageInfoDiscoverabilityTimeoutVariations")},
+#endif  // BUILDFLAG(IS_ANDROID)
 
+#if !BUILDFLAG(IS_ANDROID)
+    {"page-info-hide-site-settings",
+     flag_descriptions::kPageInfoHideSiteSettingsName,
+     flag_descriptions::kPageInfoHideSiteSettingsDescription, kOsDesktop,
+     FEATURE_VALUE_TYPE(page_info::kPageInfoHideSiteSettings)},
+#endif  // !BUILDFLAG(IS_ANDROID)
+
+#if BUILDFLAG(IS_ANDROID)
     {"page-info-history", flag_descriptions::kPageInfoHistoryName,
      flag_descriptions::kPageInfoHistoryDescription, kOsAndroid,
      FEATURE_VALUE_TYPE(page_info::kPageInfoHistory)},
     {"page-info-store-info", flag_descriptions::kPageInfoStoreInfoName,
      flag_descriptions::kPageInfoStoreInfoDescription, kOsAndroid,
      FEATURE_VALUE_TYPE(page_info::kPageInfoStoreInfo)},
-
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -7675,7 +7711,10 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kSupportSearchSuggestionForPrerender2Name,
      flag_descriptions::kSupportSearchSuggestionForPrerender2Description,
      kOsAll,
-     FEATURE_VALUE_TYPE(features::kSupportSearchSuggestionForPrerender2)},
+     FEATURE_WITH_PARAMS_VALUE_TYPE(
+         features::kSupportSearchSuggestionForPrerender2,
+         kSearchSuggsetionPrerenderTypeVariations,
+         "SearchSuggestionPrerender")},
 
     {"chrome-labs", flag_descriptions::kChromeLabsName,
      flag_descriptions::kChromeLabsDescription, kOsDesktop,
@@ -8533,6 +8572,13 @@ const FeatureEntry kFeatureEntries[] = {
 #endif
 
 #if !BUILDFLAG(IS_ANDROID)
+    {"enable-tailored-security-desktop-notice",
+     flag_descriptions::kTailoredSecurityDesktopNoticeName,
+     flag_descriptions::kTailoredSecurityDesktopNoticeDescription, kOsDesktop,
+     FEATURE_VALUE_TYPE(safe_browsing::kTailoredSecurityDesktopNotice)},
+#endif
+
+#if !BUILDFLAG(IS_ANDROID)
     {"screen-ai", flag_descriptions::kScreenAIName,
      flag_descriptions::kScreenAIDescription, kOsDesktop,
      FEATURE_VALUE_TYPE(features::kScreenAI)},
@@ -8792,6 +8838,12 @@ const FeatureEntry kFeatureEntries[] = {
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if !BUILDFLAG(IS_ANDROID)
+    {"safety-check-permissions", flag_descriptions::kSafetyCheckPermissionsName,
+     flag_descriptions::kSafetyCheckPermissionsDescription, kOsDesktop,
+     FEATURE_VALUE_TYPE(features::kSafetyCheckPermissions)},
+#endif  // !BUILDFLAG(IS_ANDROID)
+
+#if !BUILDFLAG(IS_ANDROID)
     {media_router::switches::kAccessCodeCastDeviceDurationSwitch,
      flag_descriptions::kAccessCodeCastDeviceDurationName,
      flag_descriptions::kAccessCodeCastDeviceDurationDescription, kOsDesktop,
@@ -8918,6 +8970,13 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_VALUE_TYPE(features::kRequestDesktopSiteAdditions)},
 #endif  // BUILDFLAG(IS_ANDROID)
 
+#if BUILDFLAG(IS_ANDROID)
+    {"request-desktop-site-defaults",
+     flag_descriptions::kRequestDesktopSiteDefaultsName,
+     flag_descriptions::kRequestDesktopSiteDefaultsDescription, kOsAndroid,
+     FEATURE_VALUE_TYPE(chrome::android::kRequestDesktopSiteDefaults)},
+#endif  // BUILDFLAG(IS_ANDROID)
+
 #if !BUILDFLAG(IS_ANDROID)
     {"enable-web-hid-on-extension-service-worker",
      flag_descriptions::kEnableWebHidOnExtensionServiceWorkerName,
@@ -8979,10 +9038,17 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kStylusWritingToInputDescription, kOsAndroid,
      FEATURE_VALUE_TYPE(blink::features::kStylusWritingToInput)},
 #endif  // BUILDFLAG(IS_ANDROID)
-        // NOTE: Adding a new flag requires adding a corresponding entry to enum
-        // "LoginCustomFlags" in tools/metrics/histograms/enums.xml. See "Flag
-        // Histograms" in tools/metrics/histograms/README.md (run the
-        // AboutFlagsHistogramTest unit test to verify this process).
+
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+    {"enable-media-dynamic-cgroup", flag_descriptions::kMediaDynamicCgroupName,
+     flag_descriptions::kMediaDynamicCgroupDescription, kOsCrOS,
+     PLATFORM_FEATURE_NAME_TYPE("CrOSLateBootMediaDynamicCgroup")},
+#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+
+    // NOTE: Adding a new flag requires adding a corresponding entry to enum
+    // "LoginCustomFlags" in tools/metrics/histograms/enums.xml. See "Flag
+    // Histograms" in tools/metrics/histograms/README.md (run the
+    // AboutFlagsHistogramTest unit test to verify this process).
 };
 
 class FlagsStateSingleton : public flags_ui::FlagsState::Delegate {
