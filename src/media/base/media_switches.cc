@@ -971,6 +971,7 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
 // The default value is platform dependent.
 #if BUILDFLAG(IS_ANDROID)
   return switches::autoplay::kUserGestureRequiredPolicy;
+#endif
 }
 
 // Enables Media Engagement Index recording. This data will be used to determine
