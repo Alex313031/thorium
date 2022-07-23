@@ -1445,8 +1445,11 @@ source_set("browser") {
     "private_aggregation/private_aggregation_budget_storage.h",
     "private_aggregation/private_aggregation_budgeter.cc",
     "private_aggregation/private_aggregation_budgeter.h",
+    "private_aggregation/private_aggregation_features.cc",
+    "private_aggregation/private_aggregation_features.h",
     "private_aggregation/private_aggregation_host.cc",
     "private_aggregation/private_aggregation_host.h",
+    "private_aggregation/private_aggregation_manager.cc",
     "private_aggregation/private_aggregation_manager.h",
     "private_aggregation/private_aggregation_manager_impl.cc",
     "private_aggregation/private_aggregation_manager_impl.h",
@@ -2685,7 +2688,8 @@ source_set("browser") {
     ]
   }
 
-  if (enable_plugins) {
+  # TODO(crbug.com/1306610): Split out files that only need `enable_plugins`.
+  if (enable_ppapi) {
     sources += [
       "../public/browser/plugin_service.h",
       "media/session/pepper_playback_observer.cc",
@@ -2906,8 +2910,6 @@ source_set("browser") {
       "android/web_contents_observer_proxy.h",
       "contacts/contacts_provider_android.cc",
       "contacts/contacts_provider_android.h",
-      "devtools/devtools_frame_trace_recorder.cc",
-      "devtools/devtools_frame_trace_recorder.h",
       "font_unique_name_lookup/font_unique_name_lookup.cc",
       "font_unique_name_lookup/font_unique_name_lookup.h",
       "font_unique_name_lookup/font_unique_name_lookup_service.cc",
