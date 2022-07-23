@@ -19,7 +19,7 @@
      {"no-autoplay",
      "Disable AutoPlay",
      "Disables AutoPlay for all Thorium instances.",
-     kOsDesktop, SINGLE_VALUE_TYPE(kNoAutoPlay)},
+     kOsDesktop, SINGLE_VALUE_TYPE(kUserGestureRequiredPolicy)},
     {"show-avatar-button",
      "Show/Hide the Avatar Button",
      "Show the Avatar/People/Profile button in the browser toolbar: Always, Incognito|Guest only, or Never.",
@@ -38,6 +38,6 @@
      kOsDesktop, MULTI_VALUE_TYPE(kNumRasterThreadsChoices)},
      {"enable-ui-devtools",
      "Enable Native UI Inspection in DevTools",
-     "Enable Native UI Inspection in DevTools UI. Inspect at `chrome://inspect/#native-ui`",
-     kOsDesktop, SINGLE_VALUE_TYPE("enable-ui-devtools")},
+     "Enables inspection of Native UI elements in DevTools. Inspect at `chrome://inspect/#native-ui`",
+     SINGLE_VALUE_TYPE(kEnableUiDevTools)},
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
