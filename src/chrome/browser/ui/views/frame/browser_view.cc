@@ -118,7 +118,7 @@
 #include "chrome/browser/ui/views/fullscreen_control/fullscreen_control_host.h"
 #include "chrome/browser/ui/views/global_media_controls/media_toolbar_button_view.h"
 #include "chrome/browser/ui/views/hats/hats_next_web_dialog.h"
-#include "chrome/browser/ui/views/incognito_clear_browsing_data_dialog.h"
+#include "chrome/browser/ui/views/incognito_clear_browsing_data_dialog_coordinator.h"
 #include "chrome/browser/ui/views/infobars/infobar_container_view.h"
 #include "chrome/browser/ui/views/location_bar/intent_chip_button.h"
 #include "chrome/browser/ui/views/location_bar/intent_picker_view.h"
@@ -254,6 +254,7 @@
 #if BUILDFLAG(IS_CHROMEOS_ASH)
 #include "ash/public/cpp/accelerators.h"
 #include "ash/public/cpp/metrics_util.h"
+#include "chrome/browser/ash/crosapi/browser_util.h"
 #include "chrome/browser/ui/ash/window_properties.h"
 #include "chrome/grit/chrome_unscaled_resources.h"
 #include "ui/compositor/throughput_tracker.h"
@@ -4134,12 +4135,32 @@ bool BrowserView::ShouldUseImmersiveFullscreenForUrl(const GURL& url) const {
 #endif
 }
 
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+namespace {
+bool ShouldBeHandledByLacrosInstead(int command) {
+  switch (command) {
+    case IDC_NEW_INCOGNITO_WINDOW:
+    case IDC_NEW_TAB:
+    case IDC_NEW_WINDOW:
+    case IDC_RESTORE_TAB:
+      // TODO(neis): Add more here, perhaps anything tab-related.
+      return true;
+    default:
+      return false;
+  }
+}
+}  // namespace
+#endif
+
 void BrowserView::LoadAccelerators() {
   views::FocusManager* focus_manager = GetFocusManager();
   DCHECK(focus_manager);
 
   // Let's fill our own accelerator table.
   const bool is_app_mode = chrome::IsRunningInForcedAppMode();
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  const bool is_lacros_only = !crosapi::browser_util::IsAshWebBrowserEnabled();
+#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
   const std::vector<AcceleratorMapping> accelerator_list(GetAcceleratorList());
   for (const auto& entry : accelerator_list) {
     // In app mode, only allow accelerators of white listed commands to pass
@@ -4147,6 +4168,13 @@ void BrowserView::LoadAccelerators() {
     if (is_app_mode && !chrome::IsCommandAllowedInAppMode(
                            entry.command_id, browser()->is_type_popup()))
       continue;
+
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+    // When Lacros is the only browser, disable some browser commands in Ash so
+    // that Lacros can handle them instead.
+    if (is_lacros_only && ShouldBeHandledByLacrosInstead(entry.command_id))
+      continue;
+#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
     ui::Accelerator accelerator(entry.keycode, entry.modifiers);
     accelerator_table_[accelerator] = entry.command_id;
@@ -4290,21 +4318,14 @@ void BrowserView::ShowHatsDialog(
 }
 
 void BrowserView::ShowIncognitoClearBrowsingDataDialog() {
-  IncognitoClearBrowsingDataDialog::Show(
-      static_cast<views::View*>(BrowserView::GetBrowserViewForBrowser(browser())
-                                    ->toolbar_button_provider()
-                                    ->GetAvatarToolbarButton()),
-      browser()->profile(),
-      IncognitoClearBrowsingDataDialog::Type::kDefaultBubble);
+  IncognitoClearBrowsingDataDialogCoordinator::GetOrCreateForBrowser(browser())
+      ->Show(IncognitoClearBrowsingDataDialogInterface::Type::kDefaultBubble);
 }
 
 void BrowserView::ShowIncognitoHistoryDisclaimerDialog() {
-  IncognitoClearBrowsingDataDialog::Show(
-      static_cast<views::View*>(BrowserView::GetBrowserViewForBrowser(browser())
-                                    ->toolbar_button_provider()
-                                    ->GetAvatarToolbarButton()),
-      browser()->profile(),
-      IncognitoClearBrowsingDataDialog::Type::kHistoryDisclaimerBubble);
+  IncognitoClearBrowsingDataDialogCoordinator::GetOrCreateForBrowser(browser())
+      ->Show(IncognitoClearBrowsingDataDialogInterface::Type::
+                 kHistoryDisclaimerBubble);
 }
 
 ExclusiveAccessContext* BrowserView::GetExclusiveAccessContext() {
