@@ -526,9 +526,6 @@ const base::Feature kUseR16Texture{"use-r16-texture",
 // autoplay policy.
 const base::Feature kUnifiedAutoplay{"UnifiedAutoplay",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
-                                     
-const base::Feature kNoAutoplay{"NoAutoplay",
-                                     base::FEATURE_DISABLED_BY_DEFAULT};
 
 #if BUILDFLAG(IS_LINUX)
 // Enable vaapi video decoding on linux. This is already enabled by default on
@@ -965,8 +962,8 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   if (base::FeatureList::IsEnabled(media::kUnifiedAutoplay))
     return switches::autoplay::kDocumentUserActivationRequiredPolicy;
   
-  if (base::FeatureList::IsEnabled(media::kNoAutoplay))
-    return switches::autoplay::kUserGestureRequiredPolicy;
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("no-autoplay"))
+    return switches::autoplay::kUserGestureRequiredPolicy;  
 
 // The default value is platform dependent.
 #if BUILDFLAG(IS_ANDROID)
