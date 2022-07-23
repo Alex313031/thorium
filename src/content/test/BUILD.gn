@@ -627,7 +627,7 @@ static_library("test_support") {
     ]
   }
 
-  if (enable_plugins) {
+  if (enable_ppapi) {
     sources += [
       "../public/test/ppapi_test_utils.cc",
       "../public/test/ppapi_test_utils.h",
@@ -1553,6 +1553,7 @@ test("content_browsertests") {
     "//components/viz/host",
     "//components/viz/test:test_support",
     "//components/web_package",
+    "//components/web_package/test_support",
     "//content/app:for_content_tests",
     "//content/browser:for_content_tests",
     "//content/browser/attribution_reporting:attribution_reporting_proto",
@@ -1658,7 +1659,8 @@ test("content_browsertests") {
     "//third_party/mesa_headers",
   ]
 
-  if (enable_plugins) {
+  # TODO(crbug.com/1306610): Split out files that only need `enable_plugins`.
+  if (enable_ppapi) {
     sources += [
       "../browser/plugin_service_impl_browsertest.cc",
       "../renderer/pepper/fake_pepper_plugin_instance.cc",
@@ -1877,7 +1879,6 @@ test("content_browsertests") {
       "//device/fido:fido",
       "//device/fido:mocks",
       "//device/fido:test_support",
-      "//services/device/public/cpp/hid:test_support",
     ]
   }
 
@@ -1905,6 +1906,7 @@ test("content_browsertests") {
     deps += [
       "//ash/components/audio",
       "//chromeos/ash/components/dbus/audio",
+      "//chromeos/dbus/debug_daemon",
       "//chromeos/system",
     ]
   }
@@ -2775,7 +2777,7 @@ test("content_unittests") {
     ]
   }
 
-  if (enable_plugins) {
+  if (enable_ppapi) {
     sources += [
       "../browser/ppapi_plugin_sandboxed_process_launcher_delegate_unittest.cc",
       "../browser/renderer_host/pepper/browser_ppapi_host_test.cc",
@@ -2956,8 +2958,6 @@ test("content_unittests") {
       "//device/fido:cablev2_test_util",
       "//device/fido:mocks",
       "//device/fido:test_support",
-      "//services/device/hid:test_support",
-      "//services/device/public/cpp/hid:test_support",
     ]
     if (is_chromeos) {
       deps += [
