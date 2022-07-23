@@ -39,5 +39,5 @@
      {"enable-ui-devtools",
      "Enable Native UI Inspection in DevTools",
      "Enables inspection of Native UI elements in DevTools. Inspect at `chrome://inspect/#native-ui`",
-     SINGLE_VALUE_TYPE(ui_devtools::switches::kEnableUiDevTools)},
+     kOsDesktop, SINGLE_VALUE_TYPE(ui_devtools::switches::kEnableUiDevTools)},
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
