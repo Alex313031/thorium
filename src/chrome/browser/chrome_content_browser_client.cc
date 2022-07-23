@@ -93,13 +93,13 @@
 #include "chrome/browser/prefetch/prefetch_proxy/prefetch_proxy_service.h"
 #include "chrome/browser/prefetch/prefetch_proxy/prefetch_proxy_service_factory.h"
 #include "chrome/browser/prefetch/prefetch_proxy/prefetch_proxy_url_loader_interceptor.h"
-#include "chrome/browser/prefetch/search_prefetch/field_trial_settings.h"
-#include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader.h"
-#include "chrome/browser/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.h"
 #include "chrome/browser/preloading/navigation_ablation_throttle.h"
 #include "chrome/browser/preloading/prefetch/no_state_prefetch/chrome_no_state_prefetch_contents_delegate.h"
 #include "chrome/browser/preloading/prefetch/no_state_prefetch/no_state_prefetch_manager_factory.h"
 #include "chrome/browser/preloading/prefetch/no_state_prefetch/no_state_prefetch_navigation_throttle.h"
+#include "chrome/browser/preloading/prefetch/search_prefetch/field_trial_settings.h"
+#include "chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader.h"
+#include "chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.h"
 #include "chrome/browser/privacy_sandbox/privacy_sandbox_settings_factory.h"
 #include "chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.h"
 #include "chrome/browser/profiles/profile.h"
@@ -269,6 +269,7 @@
 #include "content/public/browser/permission_controller.h"
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/render_process_host.h"
+#include "content/public/browser/site_isolation_mode.h"
 #include "content/public/browser/sms_fetcher.h"
 #include "content/public/browser/tts_controller.h"
 #include "content/public/browser/tts_platform.h"
@@ -686,6 +687,13 @@ const base::Feature kNetworkServiceCodeIntegrity{
 
 #endif  // BUILDFLAG(IS_WIN) && !defined(COMPONENT_BUILD) &&
         // !defined(ADDRESS_SANITIZER)
+
+#if BUILDFLAG(IS_ANDROID)
+// Kill switch that allows falling back to the legacy behavior on Android when
+// it comes to site isolation for Gaia's origin (|GaiaUrls::gaia_origin()|).
+const base::Feature kAllowGaiaOriginIsolationOnAndroid{
+    "AllowGaiaOriginIsolationOnAndroid", base::FEATURE_ENABLED_BY_DEFAULT};
+#endif  // BUILDFLAG(IS_ANDROID)
 
 // A small ChromeBrowserMainExtraParts that invokes a callback when threads are
 // ready. Used to initialize ChromeContentBrowserClient data that needs the UI
@@ -1313,6 +1321,31 @@ bool IsErrorPageAutoReloadEnabled() {
 bool IsTopChromeWebUIURL(const GURL& url) {
   return url.SchemeIs(content::kChromeUIScheme) &&
          base::EndsWith(url.host_piece(), chrome::kChromeUITopChromeDomain);
+}
+
+bool DoesGaiaOriginRequireDedicatedProcess() {
+#if !BUILDFLAG(IS_ANDROID)
+  return true;
+#else
+  // Sign-in process isolation is not strictly needed on Android, see
+  // https://crbug.com/739418. On Android, it's more optional but it does
+  // improve security generally and specifically it allows the exposure of
+  // certain optional privileged APIs.
+
+  // Kill switch that falls back to the legacy behavior.
+  if (!base::FeatureList::IsEnabled(kAllowGaiaOriginIsolationOnAndroid)) {
+    return false;
+  }
+
+  if (site_isolation::SiteIsolationPolicy::
+          ShouldDisableSiteIsolationDueToMemoryThreshold(
+              content::SiteIsolationMode::kPartialSiteIsolation)) {
+    // Insufficient memory to isolate Gaia's origin.
+    return false;
+  }
+
+  return true;
+#endif  // !BUILDFLAG(IS_ANDROID)
 }
 
 }  // namespace
@@ -2122,11 +2155,9 @@ std::vector<url::Origin>
 ChromeContentBrowserClient::GetOriginsRequiringDedicatedProcess() {
   std::vector<url::Origin> isolated_origin_list;
 
-// Sign-in process isolation is not needed on Android, see
-// https://crbug.com/739418.
-#if !BUILDFLAG(IS_ANDROID)
-  isolated_origin_list.push_back(GaiaUrls::GetInstance()->gaia_origin());
-#endif
+  if (DoesGaiaOriginRequireDedicatedProcess()) {
+    isolated_origin_list.push_back(GaiaUrls::GetInstance()->gaia_origin());
+  }
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
   auto origins_from_extensions = ChromeContentBrowserClientExtensionsPart::
