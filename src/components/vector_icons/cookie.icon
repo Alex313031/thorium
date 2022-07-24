@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at http://mozilla.org/MPL/2.0/.
 
-PATH_COLOR_ARGB, 0xFF, 0x87, 0xFF, 0xC5,
 MOVE_TO, 17.3f, 32.5f,
 R_ARC_TO, 1.5f, 1.5f, 0, 0, 1, -1.5f, 1.5f,
 R_ARC_TO, 1.5f, 1.5f, 0, 0, 1, -1.5f, -1.5f,
