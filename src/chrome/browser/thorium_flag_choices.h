@@ -4,6 +4,17 @@
 
 #ifndef CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
+
+const FeatureEntry::Choice kAutoplayPolicyChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"No User Gesture Required",
+     switches::kAutoplayPolicy, "no-user-gesture-required"},
+    {"User Gesture Required",
+     switches::kAutoplayPolicy, "user-gesture-required"},
+    {"Document User Activation Required",
+     switches::kAutoplayPolicy, "document-user-activation-required"},
+};
+
 const FeatureEntry::Choice kShowAvatarButtonChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Always",
@@ -31,6 +42,16 @@ const FeatureEntry::Choice kWebglMSAASampleCountChoices[] = {
      switches::kWebglMSAASampleCount, "16"},
 };
 
+const FeatureEntry::Choice kWebglAntialiasingModeChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"None",
+     switches::kWebglAntialiasingMode, "none"},
+    {"Explicit",
+     switches::kWebglAntialiasingMode, "explicit"},
+    {"Implicit",
+     switches::kWebglAntialiasingMode, "implicit"},
+};
+
 const FeatureEntry::Choice kGpuRasterizationMSAASampleCountChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"0",
@@ -55,7 +76,6 @@ const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
      blink::switches::kNumRasterThreads, "3"},
     {"4",
      blink::switches::kNumRasterThreads, "4"},
-    {"6",
-     blink::switches::kNumRasterThreads, "6"},
 };
+
 #endif  // CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
