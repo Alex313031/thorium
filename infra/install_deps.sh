@@ -48,7 +48,7 @@ sleep 1 &&
 
 # Download VS artifacts .zip
 printf "\n" &&
-wget -v https://github.com/Alex313031/Snippets/releases/download/10.1.20348.1_02/4bc2a30e80.zip &&
+wget -v https://github.com/Alex313031/Snippets/releases/download/10.1.20348.1_04/15be23e584.zip &&
 sleep 1 &&
 
 # Alert user to .bashrc changes
@@ -58,7 +58,7 @@ tput sgr0 &&
 printf "umask 022\n" &&
 printf "PATH=\$PATH:\$HOME/depot_tools\n" &&
 printf "export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=\$HOME/chromium/win/\n" &&
-printf "export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80\n" &&
+printf "export GYP_MSVS_HASH_1023ce2e82=15be23e584\n" &&
 
 # Give user a chance to stop if they wish
 tput setaf 1 &&
@@ -73,7 +73,7 @@ echo 'PATH="$PATH:$HOME/depot_tools"' >> .bashrc &&
 
 echo 'export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=$HOME/chromium/win/' >> .bashrc &&
 
-echo 'export GYP_MSVS_HASH_1023ce2e82=4bc2a30e80' >> .bashrc &&
+echo 'export GYP_MSVS_HASH_1023ce2e82=15be23e584' >> .bashrc &&
 
 printf "\n" &&
 printf "${YEL}Running source ~/.bashrc..\n" &&
@@ -102,7 +102,7 @@ cd ~/chromium/src &&
 sudo dpkg --add-architecture i386 &&
 sudo apt update &&
 
-./build/install-build-deps.sh --lib32 --arm --chromeos-fonts &&
+./build/install-build-deps.sh --arm --chromeos-fonts &&
 
 printf "\n" &&
 printf "${YEL}Running hooks...\n" &&
