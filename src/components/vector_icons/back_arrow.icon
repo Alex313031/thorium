@@ -3,7 +3,7 @@
 // You can obtain one at http://mozilla.org/MPL/2.0/.
 
 CANVAS_DIMENSIONS, 32,
-STROKE, 0.5,
+STROKE, 1.0,
 MOVE_TO, 23.01f, 25.86f,
 LINE_TO, 23.01f, 25.85f,
 LINE_TO, 23.01f, 6.15f,
@@ -33,7 +33,7 @@ CUBIC_TO, 21.91f, 3.26f, 22.65f, 3, 23.34f, 3,
 CLOSE
 
 CANVAS_DIMENSIONS, 16,
-STROKE, 0.5,
+STROKE, 1.0,
 MOVE_TO, 11.63f, 2.48f,
 R_CUBIC_TO, 0, 0.01f, -0.13f, 0.04f, -0.35f, 0.19f,
 LINE_TO, 4.86f, 7.33f,
