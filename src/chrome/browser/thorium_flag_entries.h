@@ -4,6 +4,7 @@
 
 #ifndef CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
+
     {"force-dark-mode",
      "Enable Dark Mode",
      "Enables dark mode for all Thorium instances.",
@@ -63,7 +64,7 @@
     {"enable-local-file-accesses",
      "Enable Local File Accesses",
      "Enable local file accesses. Useful for web development.",
-     kOsDesktop, SINGLE_VALUE_TYPE(switches::kEnableLocalFileAccesses)},
+     kOsDesktop, SINGLE_VALUE_TYPE("enable-local-file-accesses")},
     {"allow-file-access-from-files",
      "Allow File URI Access from Files",
      "By default, file:// URIs cannot read other file:// URIs. This is an override for web developers who need the old behavior for testing.",
@@ -72,6 +73,8 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
+    
+#if BUILDFLAG(IS_WIN)
     {"enable-win7-webrtc-hw-h264-decoding",
      "Windows 7 WebRTC H.264 Hardware Decoding",
      "Enables H.264 hardware decode acceleration for WebRTC on Windows 7.",
@@ -84,4 +87,6 @@
      "Enable Exclusive Audio Streams",
      "Use exclusive mode audio streaming for Windows Vista and higher. Leads to lower latencies for audio streams which uses the AudioParameters::AUDIO_PCM_LOW_LATENCY audio path. See http://msdn.microsoft.com/en-us/library/windows/desktop/dd370844.aspx for details.",
      kOsWin, SINGLE_VALUE_TYPE(switches::kEnableExclusiveAudio)},
+#endif // BUILDFLAG(IS_WIN)
+
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
