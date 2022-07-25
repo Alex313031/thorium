@@ -53,5 +53,5 @@ R_V_LINE_TO, 2.5f,
 MOVE_TO, 10.5f, 6,
 R_V_LINE_TO, 1.5f,
 MOVE_TO, 12.5f, 5,
-R_V_LINE_TO, 4.5f
+R_V_LINE_TO, 4.5f,
 CLOSE
