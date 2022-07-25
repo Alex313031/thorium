@@ -299,7 +299,7 @@ group("gn_all") {
       "//ui/views:views_unittests",
       "//ui/views/examples:views_examples",
       "//ui/views/examples:views_examples_unittests",
-      "//ui/views/examples:views_examples_with_content",
+      "//ui/views/examples:thorium_ui_debug_shell",
     ]
   }
 
