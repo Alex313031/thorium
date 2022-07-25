@@ -365,7 +365,7 @@ void ShellPlatformDelegate::CreatePlatformWindow(
   views::Widget::InitParams params;
   params.bounds = gfx::Rect(initial_size);
   params.delegate = delegate.release();
-  params.wm_class_class = "Thorium_Shell";
+  params.wm_class_class = "Thorium Shell";
   params.wm_class_name = params.wm_class_class;
   shell_data.window_widget->Init(std::move(params));
 #endif
