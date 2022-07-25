@@ -36,7 +36,7 @@ script:
   - Name=Thorium Browser
   - GenericName=Web Browser
   - Comment=Access the Internet
-  - Exec=thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - Exec=thorium --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required %U
   - StartupWMClass=thorium
   - Keywords=browser
   - StartupNotify=true
@@ -58,10 +58,10 @@ script:
   - Exec=thorium --no-experiments %U
   - [Desktop Action dark-mode]
   - Name=Open in Dark Mode
-  - Exec=thorium --force-dark-mode --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - Exec=thorium --force-dark-mode --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required %U
   - [Desktop Action new-private-window]
   - Name=New Incognito Window
-  - Exec=thorium --incognito --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo %U
+  - Exec=thorium --incognito --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required %U
   - EOF
   - chmod a+x ./thorium-browser.desktop
   - # ADD AppRun 
@@ -69,6 +69,6 @@ script:
   - #!/bin/sh
   - HERE=$(dirname $(readlink -f "${0}"))
   - export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
-  - "${HERE}"/usr/bin/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-features=PageInfoAboutThisSiteMoreInfo $@
+  - "${HERE}"/usr/bin/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required $@
   - EOF
   - chmod a+x ./AppRun
