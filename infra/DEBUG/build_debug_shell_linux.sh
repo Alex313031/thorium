@@ -28,7 +28,7 @@ case $1 in
 esac
 
 printf "\n" &&
-printf "${YEL}Building Thorium UI Debug Shell...\n" &&
+printf "${YEL}Building Thorium UI Debug Shell for Linux...\n" &&
 printf "${CYA}\n" &&
 
 # Build Thorium UI Debug Shell
@@ -54,19 +54,15 @@ cp -r -f -v DEBUG_SHELL_README.md ~/chromium/src/out/thorium/Thorium_UI_Debug_Sh
 cp -r -f -v ~/chromium/src/out/thorium/locales ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/test_fonts ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
 cp -r -f -v ~/chromium/src/out/thorium/libblink_test_plugin.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/blink_test_plugin.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/icudtl.dat ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/content_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libEGL.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libGLESv2.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/libEGL.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/libGLESv2.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libvk_swiftshader.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libvulkan.so.1 ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/vulkan-1.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader_icd.json ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot.bin ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot_generator ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
@@ -75,8 +71,6 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Th
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_with_content ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/thorium_debug_shell &&
-cp -r -f -v ~/chromium/src/out/thorium/views_examples_with_content.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/thorium_debug_shell.exe &&
-
 
 printf "${GRE}Thorium UI Debug Shell Build Completed.\n" &&
 tput sgr0
