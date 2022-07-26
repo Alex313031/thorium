@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${YEL}Script to build Thorium for Windows on Linux.${c0}\n" &&
+	printf "${bold}${YEL}Script to build Thorium DEBUG for Windows on Linux.${c0}\n" &&
 	printf "${underline}Usage: ${c0}build_debug_win.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
@@ -34,7 +34,7 @@ printf "${CYA}\n" &&
 # Build Thorium and Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-../../depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer views_examples_with_content -j$@ &&
+../../depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer thorium_ui_debug_shell -j$@ &&
 
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
@@ -65,7 +65,7 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/s
 cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/views_examples_with_content.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/thorium_debug_shell.exe &&
+cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
 printf "${GRE}Debug Windows Build Completed.\n" &&
 tput sgr0
