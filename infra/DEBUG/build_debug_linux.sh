@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${YEL}Script to build Thorium on Linux.${c0}\n" &&
+	printf "${bold}${YEL}Script to build Thorium DEBUG on Linux.${c0}\n" &&
 	printf "${underline}Usage: ${c0}build_debug_linux.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
@@ -34,7 +34,7 @@ printf "${CYA}\n" &&
 # Build Thorium and Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-../../depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell views_examples_with_content -j$@ &&
+../../depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell thorium_ui_debug_shell -j$@ &&
 
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
@@ -54,6 +54,7 @@ cp -r -f -v ~/chromium/src/out/thorium/locales ~/chromium/src/out/thorium/Thoriu
 cp -r -f -v ~/chromium/src/out/thorium/test_fonts ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
+cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/libblink_test_plugin.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/icudtl.dat ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/content_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
@@ -68,7 +69,7 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/s
 cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/views_examples_with_content ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/thorium_debug_shell &&
+cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
 printf "${GRE}Debug Linux Build Completed.\n" &&
 tput sgr0
