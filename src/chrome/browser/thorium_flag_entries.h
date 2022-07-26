@@ -85,7 +85,7 @@
      kOsWin, SINGLE_VALUE_TYPE(switches::kDisableWindows10CustomTitlebar)},
     {"enable-exclusive-audio",
      "Enable Exclusive Audio Streams",
-     "Use exclusive mode audio streaming for Windows Vista and higher. Leads to lower latencies for audio streams which uses the AudioParameters::AUDIO_PCM_LOW_LATENCY audio path. See http://msdn.microsoft.com/en-us/library/windows/desktop/dd370844.aspx for details.",
+     "Use exclusive mode audio streaming for Windows Vista and higher. Leads to lower latencies for audio streams which use the AudioParameters::AUDIO_PCM_LOW_LATENCY audio path. See https://docs.microsoft.com/en-us/windows/win32/coreaudio/exclusive-mode-streams for details.",
      kOsWin, SINGLE_VALUE_TYPE(switches::kEnableExclusiveAudio)},
 #endif // BUILDFLAG(IS_WIN)
 
