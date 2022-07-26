@@ -34,7 +34,7 @@ printf "${CYA}\n" &&
 # Build Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-../../depot_tools/autoninja -C ~/chromium/src/out/thorium views_examples_with_content -j$@ &&
+../../depot_tools/autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
 
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
@@ -66,7 +66,7 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/s
 cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/views_examples_with_content.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/thorium_debug_shell.exe &&
+cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
 printf "${GRE}Thorium UI Debug Shell Build Completed.\n" &&
 tput sgr0
