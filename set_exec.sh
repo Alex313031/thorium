@@ -50,7 +50,9 @@ sudo chmod -v +x infra/build_polly.sh &&
 
 sudo chmod -v +x infra/DEBUG/build_debug_linux.sh &&
 
-sudo chmod -v +x infra/DEBUG/build_debug_shell.sh &&
+sudo chmod -v +x infra/DEBUG/build_debug_shell_linux.sh &&
+
+sudo chmod -v +x infra/DEBUG/build_debug_shell_win.sh &&
 
 sudo chmod -v +x infra/DEBUG/build_debug_win.sh &&
 
