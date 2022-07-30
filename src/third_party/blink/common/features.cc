@@ -281,10 +281,14 @@ const base::Feature kPrerender2 {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 };
+const char kPrerender2MaxNumOfRunningSpeculationRules[] =
+    "max_num_of_running_speculation_rules";
 
 const base::Feature kPrerender2MemoryControls{"Prerender2MemoryControls",
                                               base::FEATURE_ENABLED_BY_DEFAULT};
 const char kPrerender2MemoryThresholdParamName[] = "memory_threshold_in_mb";
+const char kPrerender2MemoryAcceptablePercentOfSystemMemoryParamName[] =
+    "acceptable_percent_of_system_memory";
 
 bool IsPrerender2Enabled() {
   return base::FeatureList::IsEnabled(blink::features::kPrerender2);
@@ -433,7 +437,7 @@ const base::Feature kServiceWorkerUpdateDelay{
     "ServiceWorkerUpdateDelay", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enable the use of Speculation Rules in access the private prefetch proxy
-// (chrome/browser/prefetch/prefetch_proxy/).
+// (chrome/browser/preloading/prefetch/prefetch_proxy/).
 // https://crbug.com/1190167
 const base::Feature kSpeculationRulesPrefetchProxy {
   "SpeculationRulesPrefetchProxy",
@@ -1346,10 +1350,6 @@ const base::Feature kEarlyCodeCache{"EarlyCodeCache",
 const base::Feature kClientHintsMetaHTTPEquivAcceptCH{
     "ClientHintsMetaHTTPEquivAcceptCH", base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Allow use of a named meta tag to set and delegate client hints.
-const base::Feature kClientHintsMetaNameAcceptCH{
-    "ClientHintsMetaNameAcceptCH", base::FEATURE_DISABLED_BY_DEFAULT};
-
 // Allow use of a http-equiv meta tag to set and delegate client hints.
 const base::Feature kClientHintsMetaEquivDelegateCH{
     "ClientHintsMetaEquivDelegateCH", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1560,6 +1560,9 @@ const base::Feature kTimedHTMLParserBudget{"TimedHTMLParserBudget",
 
 const base::Feature kCSSOverflowForReplacedElements{
     "CSSOverflowForReplacedElements", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kScrollUpdateOptimizations{
+    "ScrollUpdateOptimizations", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kClipboardUnsanitizedContent{
     "ClipboardUnsanitizedContent", base::FEATURE_DISABLED_BY_DEFAULT};
