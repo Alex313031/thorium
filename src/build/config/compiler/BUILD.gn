@@ -375,7 +375,7 @@ config("compiler") {
   if ((is_posix && !is_apple) || is_fuchsia) {
     if (enable_profiling) {
       if (!is_debug) {
-        cflags += [ "-g0" ]
+        cflags += [ "-g" ]
 
         if (enable_full_stack_frames_for_profiling) {
           cflags += [
@@ -2439,7 +2439,7 @@ config("symbols") {
     # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
     # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
     if ((!is_nacl || is_clang) && current_os != "zos") {
-      cflags += [ "-g0" ]
+      cflags += [ "-g2" ]
     }
 
     if (!is_nacl && is_clang && !is_tsan && !is_asan) {
@@ -2456,7 +2456,7 @@ config("symbols") {
     }
 
     if (is_apple) {
-      swiftflags = [ "-g0" ]
+      swiftflags = [ "-g" ]
     }
 
     if (use_debug_fission) {
@@ -2512,7 +2512,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
+  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx", ]
 }
 
 # Minimal symbols.
@@ -2563,7 +2563,7 @@ config("minimal_symbols") {
     # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
     # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
     if (!is_nacl || is_clang) {
-      cflags += [ "-g0" ]
+      cflags += [ "-g" ]
     }
 
     if (!is_nacl && is_clang && !is_tsan && !is_asan) {
