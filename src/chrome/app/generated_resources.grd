@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2022 Alex313031. -->
 
 <!--
 This file contains definitions of resources that will be translated for each
@@ -345,11 +346,7 @@ are declared in tools/grit/grit_rule.gni.
       <if expr="enable_supervised_users">
         <part file="supervised_user_error_page_strings.grdp" />
       </if>
-
-      <if expr="chromeos_ash">
-        <part file="web_time_limit_error_page_strings.grdp" />
-      </if>
-
+      
       <!-- TODO add all of your "string table" messages here.  Remember to
       change nontranslateable parts of the messages into placeholders (using the
       <ph> element).  You can also use the 'grit add' tool to help you identify
@@ -789,7 +786,7 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="The name of the Lens Region Search command in the content area context menu">
             Search inside image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT4" desc="The name of the Lens Region Search command in the content area context menu">
+          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="The name of the Lens Region Search command in the content area context menu">
             Search images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_GOTOURL" desc="The name of the Go to 'url' command in the content area context menu">
@@ -1059,7 +1056,7 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
               Search inside Image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT4" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
+          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_GOTOURL" desc="In Title Case: The name of the Go to url for 'string' command in the content area context menu">
@@ -5307,7 +5304,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Repair app
       </message>
       <message name="IDS_EXTENSION_WEB_STORE_TITLE" desc="Text for the Chrome Web Store">
-        Chrome Web Store
+        Thorium Web Store
       </message>
       <message name="IDS_EXTENSION_WEB_STORE_TITLE_SHORT" desc="Shortened version of text for the Chrome Web Store">
         Web Store
@@ -6662,6 +6659,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="BREAK">&lt;br&gt;</ph>
         You can manage settings from the card menu or see more options in Customize Chrome.
       </message>
+      <message name="IDS_NTP_MODULES_RECIPE_EXTENDED_INFO" desc="Text shown in the body of the info dialog of the recipe module for Recipes V1.1.">
+        You’re seeing recipes based on your recent Search activity for recipes.
+        <ph name="BREAK">&lt;br&gt;</ph>
+        <ph name="BREAK">&lt;br&gt;</ph>
+        You can manage settings from the card menu or see more options in Customize Chrome.
+      </message>
       <message name="IDS_NTP_MODULES_RECIPE_TASKS_SENTENCE" desc="Name of the recipe tasks module in sentence case shown in various UIs.">
         Recipe ideas
       </message>
@@ -7028,10 +7031,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Side Panel
+        Thorium Side Panel
       </message>
       <message name="IDS_SIDE_PANEL_COMBO_BOX_GOOGLE_LENS_LABEL" desc="The name of the Google Lens in the side panel combo box">
         Google Lens
+      </message>
+      <message name="IDS_ACCNAME_SIDE_PANEL_RESIZE" is_accessibility_with_no_ui="true" desc="Screen reader announcement when the side panel resize handle is focused.">
+        Side Panel Resize Handle
       </message>
 
       <!-- Read Anything strings -->
@@ -7076,7 +7082,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Press to go back, context menu to see history
       </message>
       <message name="IDS_TOOLTIP_CHROMELABS_BUTTON" desc="The tooltip for the Chrome Labs button in the toolbar">
-        Enable featured experiments
+        Enable featured Thorium experiments
       </message>
       <message name="IDS_TOOLTIP_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The tooltip for the left aligned side panel toggle button">
         Toggle left aligned side panel
@@ -7116,10 +7122,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Extension permissions
       </message>
       <message name="IDS_TOOLTIP_SIDE_PANEL_SHOW" desc="The tooltip for the side panel button, when closed">
-        Show side panel
+        Show Thorium side panel
       </message>
       <message name="IDS_TOOLTIP_SIDE_PANEL_HIDE" desc="The tooltip for the side panel button, when open">
-        Hide side panel
+        Hide Thorium side panel
       </message>
       <if expr="is_macosx">
         <message name="IDS_TOOLTIP_CLOSE_TAB" desc="The tooltip for the close tab button">
@@ -7263,7 +7269,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Saved Tab Group button
       </message>
       <message name="IDS_ACCNAME_CHROMELABS_BUTTON" desc="The accessible name for the Chrome Labs experiments button">
-        Experiments
+        Thorium Experiments
       </message>
       <message name="IDS_ACCNAME_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The accessible name for the left aligned side panel toggle button">
         Left aligned side panel
@@ -7408,7 +7414,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+T</ex></ph> can reopen accidentally closed tabs
       </message>
       <message name="IDS_READING_LIST_IN_SIDE_PANEL_PROMO" desc="Text shown on promotional UI appearing next to the side panel button">
-        Your reading list has moved to the new side panel. Try it here.
+        Your reading list has moved to the new Thorium side panel. Try it here.
       </message>
       <message name="IDS_TAB_GROUPS_NEW_GROUP_PROMO" desc="Text shown on promotional UI encouraging users to create a tab group in their tab strip">
         Organize your tabs with tab groups
@@ -9749,6 +9755,20 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
       </if>
 
+      <!--  Sync Confirmation section of the Signin Intercept first run experience flow -->
+      <message name="IDS_SYNC_CONFIRMATION_WELCOME_TITLE_SIGNIN_INTERCEPT" desc="Title of the sync confirmation dialog in the Signin Intercept flow, after the user creates a new profile through this flow.">
+        Welcome, <ph name="USERNAME">$1<ex>Bob</ex></ph>
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_SYNC_INFO_SIGNIN_INTERCEPT" desc="Information about sync on the sync confirmation dialog in the Signin Intercept flow">
+        Turn on sync to get your bookmarks, passwords, history, and more on this device and anywhere else you're syncing.
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_MANAGE_SYNC_BUTTON_LABEL" desc="Label of the button in the sync confirmation dialog of the Signin Intercept flow to open settings">
+        Manage sync
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TURN_ON_SYNC_BUTTON_LABEL" desc="Label of the confirmation button in the sync confirmation dialog of the Signin Intercept flow">
+        Turn on sync
+      </message>
+
       <!--- Sync Confirmation section of the tab modal signin flow when sync is disabled by policy -->
       <message name="IDS_SYNC_DISABLED_CONFIRMATION_CHROME_SYNC_TITLE" desc="Title of the chrome sync section of the sync confirmation dialog in the tab modal signin flow when sync is disabled by policy">
         Sync is disabled by your administrator
@@ -11456,7 +11476,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
-        Web Store
+        Thorium Web Store
       </message>
 
       <!-- Desktop media picker UI for Desktop Capture API -->
@@ -11612,6 +11632,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_TAB_AX_LABEL_NAMED_GROUP_FORMAT" desc="Accessibility label text for a tab, when it is in a group that has been named by the user. Example: 'Google Search - Part of group MyGroupName'">
         <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Part of group <ph name="GROUP_NAME">$2</ph>
+      </message>
+      <message name="IDS_TAB_AX_LABEL_PINNED_FORMAT" is_accessibility_with_no_ui="true" desc="Accessibility label text, when a tab is pinned. Example: 'Google Search - Pinned'">
+        <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Pinned
       </message>
       <if expr="chromeos_ash or chromeos_lacros">
         <message name="IDS_TAB_AX_LABEL_PERMISSION_REQUESTED_FORMAT" desc="Accessibility label text for ChromeOS, when a tab has a pending request. Example: 'Google Search - Permission requested, press F6 to respond'.">
@@ -13097,7 +13120,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <message name="IDS_WINDOW_TITLE_EXPERIMENTS"
              desc="Window title for the Chrome Labs bubble">
-      Experiments
+      Thorium Experiments
     </message>
     <if expr="use_titlecase">
     <message name="IDS_CHROMELABS_SEND_FEEDBACK" desc="In Title Case: The label for the button that will allow users to submit feedback from Chrome Labs.">
@@ -13137,7 +13160,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <!-- ChromeLabs Side Panel-->
     <message name="IDS_SIDE_PANEL_EXPERIMENT_NAME" desc="Name for Side Panel experiment">
-      Side Panel
+      Thorium Side Panel
     </message>
     <message name="IDS_SIDE_PANEL_EXPERIMENT_DESCRIPTION" desc="Description for Side Panel experiment">
       Enables a browser-level side panel for a useful and persistent way to access your Reading List and Bookmarks.
