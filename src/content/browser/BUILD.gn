@@ -23,6 +23,14 @@ import("//printing/buildflags/buildflags.gni")
 import("//third_party/blink/public/public_features.gni")
 import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
 
+buildflag_header("buildflags") {
+  header = "buildflags.h"
+
+  use_socket_broker = is_android
+
+  flags = [ "USE_SOCKET_BROKER=$use_socket_broker" ]
+}
+
 source_set("browser") {
   # Only the public target should depend on this. All other targets (even
   # internal content ones) should depend on the public one.
@@ -50,6 +58,7 @@ source_set("browser") {
   ldflags = []
 
   deps = [
+    ":buildflags",
     "//base",
     "//base:base_static",
     "//base:clang_profiling_buildflags",
@@ -835,6 +844,8 @@ source_set("browser") {
     "devtools/shared_worker_devtools_agent_host.h",
     "devtools/shared_worker_devtools_manager.cc",
     "devtools/shared_worker_devtools_manager.h",
+    "devtools/web_contents_devtools_agent_host.cc",
+    "devtools/web_contents_devtools_agent_host.h",
     "devtools/worker_devtools_agent_host.cc",
     "devtools/worker_devtools_agent_host.h",
     "devtools/worker_devtools_manager.cc",
@@ -1096,6 +1107,8 @@ source_set("browser") {
     "interest_group/debuggable_auction_worklet.h",
     "interest_group/debuggable_auction_worklet_tracker.cc",
     "interest_group/debuggable_auction_worklet_tracker.h",
+    "interest_group/interest_group_auction.cc",
+    "interest_group/interest_group_auction.h",
     "interest_group/interest_group_manager_impl.cc",
     "interest_group/interest_group_manager_impl.h",
     "interest_group/interest_group_permissions_cache.cc",
@@ -1326,6 +1339,7 @@ source_set("browser") {
     "notifications/platform_notification_context_impl.h",
     "notifications/platform_notification_service_proxy.cc",
     "notifications/platform_notification_service_proxy.h",
+    "origin_agent_cluster_isolation_state.cc",
     "origin_agent_cluster_isolation_state.h",
     "payments/installed_payment_apps_finder_impl.cc",
     "payments/installed_payment_apps_finder_impl.h",
@@ -2470,6 +2484,8 @@ source_set("browser") {
       "tracing/cros_tracing_agent.h",
     ]
     deps += [
+      "//chromeos/ash/components/dbus/debug_daemon",
+      "//chromeos/dbus",
       "//components/chromeos_camera:mojo_mjpeg_decode_accelerator",
       "//services/data_decoder/public/cpp",
       "//services/data_decoder/public/mojom",
@@ -3088,9 +3104,6 @@ source_set("browser") {
       "//ash/constants",
       "//chromeos/ash/components/assistant:buildflags",
       "//chromeos/ash/components/network",
-      "//chromeos/dbus",
-      "//chromeos/dbus/power",
-      "//chromeos/dbus/power:power_manager_proto",
       "//chromeos/system",
       "//components/session_manager/core",
     ]
