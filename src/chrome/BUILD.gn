@@ -135,11 +135,6 @@ if (!is_android && !is_mac) {
   executable("chrome_initial") {
     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
-    
-    # TODO (crbug.com/1345158): Re-enable once the linker has been fixed or
-    # the limit on the bots raised.
-    configs += [ ":disable_thinlto_cache_flags" ]
-    
     if (is_win) {
       output_name = "initialexe/thorium"
     } else {
