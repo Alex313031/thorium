@@ -72,7 +72,6 @@
 #include "chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.h"
 #include "chrome/browser/ui/recently_audible_helper.h"
 #include "chrome/browser/ui/sad_tab_helper.h"
-#include "chrome/browser/ui/send_tab_to_self/send_tab_to_self_bubble_view.h"
 #include "chrome/browser/ui/sharing_hub/sharing_hub_bubble_controller.h"
 #include "chrome/browser/ui/sharing_hub/sharing_hub_bubble_view.h"
 #include "chrome/browser/ui/side_search/side_search_utils.h"
@@ -130,8 +129,9 @@
 #include "chrome/browser/ui/views/permissions/permission_chip.h"
 #include "chrome/browser/ui/views/profiles/avatar_toolbar_button.h"
 #include "chrome/browser/ui/views/profiles/profile_indicator_icon.h"
-#include "chrome/browser/ui/views/profiles/profile_menu_view_base.h"
+#include "chrome/browser/ui/views/profiles/profile_menu_coordinator.h"
 #include "chrome/browser/ui/views/qrcode_generator/qrcode_generator_bubble.h"
+#include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_view.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_device_picker_bubble_view.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_icon_view.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_promo_bubble_view.h"
@@ -529,8 +529,10 @@ class BrowserViewLayoutDelegateImpl : public BrowserViewLayoutDelegate {
   int GetTopInsetInBrowserView() const override {
     // BrowserView should fill the full window when window controls overlay
     // is enabled.
-    if (browser_view_->IsWindowControlsOverlayEnabled())
+    if (browser_view_->IsWindowControlsOverlayEnabled() ||
+        browser_view_->IsBorderlessModeEnabled()) {
       return 0;
+    }
     return browser_view_->frame()->GetTopInset() - browser_view_->y();
   }
 
@@ -857,6 +859,7 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
         browser_->app_controller()->GetTabMenuModelFactory();
 
     UpdateWindowControlsOverlayEnabled();
+    UpdateBorderlessModeEnabled();
   }
   // TabStrip takes ownership of the controller.
   auto tabstrip_controller = std::make_unique<BrowserTabStripController>(
@@ -1272,7 +1275,7 @@ void BrowserView::SetBounds(const gfx::Rect& bounds) {
     return;
 
   ExitFullscreen();
-  GetWidget()->SetBounds(bounds);
+  frame_->SetBounds(bounds);
 }
 
 void BrowserView::Close() {
@@ -1328,6 +1331,11 @@ bool BrowserView::IsOnCurrentWorkspace() const {
                             on_current_workspace.has_value());
   if (on_current_workspace.has_value())
     return on_current_workspace.value();
+
+  // If the window is not cloaked, it is not on another desktop because
+  // windows on another virtual desktop are always cloaked.
+  if (!gfx::IsWindowCloaked(native_win->GetHost()->GetAcceleratedWidget()))
+    return true;
 
   Microsoft::WRL::ComPtr<IVirtualDesktopManager> virtual_desktop_manager;
   if (!SUCCEEDED(::CoCreateInstance(_uuidof(VirtualDesktopManager), nullptr,
@@ -1848,6 +1856,8 @@ void BrowserView::FullscreenStateChanged() {
 
   if (AppUsesWindowControlsOverlay())
     UpdateWindowControlsOverlayEnabled();
+  if (AppUsesBorderlessMode())
+    UpdateBorderlessModeEnabled();
 
 #endif  // BUILDFLAG(IS_MAC)
 
@@ -1985,6 +1995,9 @@ void BrowserView::ToolbarSizeChanged(bool is_animating) {
   // that the visibility of the infobar may have changed.
   if (AppUsesWindowControlsOverlay())
     UpdateWindowControlsOverlayEnabled();
+
+  if (AppUsesBorderlessMode())
+    UpdateBorderlessModeEnabled();
 }
 
 void BrowserView::TabDraggingStatusChanged(bool is_dragging) {
@@ -2090,9 +2103,39 @@ void BrowserView::UpdateWindowControlsOverlayToggleVisible() {
     frame_->GetFrameView()->SetWindowControlsOverlayToggleVisible(should_show);
 }
 
+void BrowserView::UpdateBorderlessModeEnabled() {
+  bool borderless_mode_enabled = AppUsesBorderlessMode();
+
+  if (toolbar_ && toolbar_->custom_tab_bar() &&
+      toolbar_->custom_tab_bar()->GetVisible()) {
+    borderless_mode_enabled = false;
+  } else if (infobar_container_ && infobar_container_->GetVisible()) {
+    borderless_mode_enabled = false;
+  } else if (IsImmersiveModeEnabled()) {
+    borderless_mode_enabled = false;
+  }
+
+  if (borderless_mode_enabled == borderless_mode_enabled_)
+    return;
+  borderless_mode_enabled_ = borderless_mode_enabled;
+
+  if (frame_ && frame_->GetFrameView()) {
+    frame_->GetFrameView()->UpdateBorderlessModeEnabled();
+  }
+}
+
 void BrowserView::ToggleWindowControlsOverlayEnabled() {
   browser()->app_controller()->ToggleWindowControlsOverlayEnabled();
   UpdateWindowControlsOverlayEnabled();
+}
+
+bool BrowserView::IsBorderlessModeEnabled() const {
+  return borderless_mode_enabled_;
+}
+
+bool BrowserView::AppUsesBorderlessMode() const {
+  return browser()->app_controller() &&
+         browser()->app_controller()->AppUsesBorderlessMode();
 }
 
 void BrowserView::UpdateSidePanelHorizontalAlignment() {
@@ -2309,8 +2352,16 @@ bool BrowserView::IsToolbarVisible() const {
   // This Mac-only preference disables display of the toolbar in fullscreen mode
   // so we need to take it into account when determining if the toolbar is
   // visible - especially as pertains to anchoring views.
-  if (IsFullscreen() && !browser()->profile()->GetPrefs()->GetBoolean(
-                            prefs::kShowFullscreenToolbar)) {
+  bool show_fullscreen_toolbar = true;
+  if (web_app::AppBrowserController::IsWebApp(browser())) {
+    const web_app::AppBrowserController* controller =
+        browser()->app_controller();
+    show_fullscreen_toolbar = controller->AlwaysShowToolbarInFullscreen();
+  } else {
+    show_fullscreen_toolbar = browser()->profile()->GetPrefs()->GetBoolean(
+        prefs::kShowFullscreenToolbar);
+  }
+  if (IsFullscreen() && !show_fullscreen_toolbar) {
     return false;
   }
 #endif
@@ -2988,6 +3039,10 @@ std::u16string BrowserView::GetAccessibleTabLabel(bool include_app_name,
     }
   }
 
+  // Tab is pinned.
+  if (tabstrip_->IsTabPinned(tabstrip_->tab_at(index)))
+    title = l10n_util::GetStringFUTF16(IDS_TAB_AX_LABEL_PINNED_FORMAT, title);
+
   // Tab has crashed.
   if (tabstrip_->IsTabCrashed(index))
     return l10n_util::GetStringFUTF16(IDS_TAB_AX_LABEL_CRASHED_FORMAT, title);
@@ -3504,7 +3559,9 @@ bool BrowserView::ShouldDescendIntoChildForEventHandling(
   // Window for PWAs with window-controls-overlay display override should claim
   // mouse events that fall within the draggable region.
   web_app::AppBrowserController* controller = browser()->app_controller();
-  if (IsWindowControlsOverlayEnabled() && controller &&
+  bool is_wco_or_borderless_mode =
+      IsWindowControlsOverlayEnabled() || IsBorderlessModeEnabled();
+  if (is_wco_or_borderless_mode && controller &&
       controller->draggable_region().has_value()) {
     // Draggable regions are defined relative to the web contents.
     gfx::Point point_in_contents_web_view_coords(location);
@@ -3975,8 +4032,10 @@ void BrowserView::UpdateDevToolsForContents(
     // When strategy.hide_inspected_contents() returns true, we are hiding
     // contents_web_view_ behind the devtools_web_view_. Otherwise,
     // contents_web_view_ should be right above the devtools_web_view_.
-    int devtools_index = contents_container_->GetIndexOf(devtools_web_view_);
-    int contents_index = contents_container_->GetIndexOf(contents_web_view_);
+    size_t devtools_index =
+        contents_container_->GetIndexOf(devtools_web_view_).value();
+    size_t contents_index =
+        contents_container_->GetIndexOf(contents_web_view_).value();
     bool devtools_is_on_top = devtools_index > contents_index;
     if (strategy.hide_inspected_contents() != devtools_is_on_top)
       contents_container_->ReorderChildView(contents_web_view_, devtools_index);
@@ -4055,17 +4114,13 @@ void BrowserView::ProcessFullscreen(bool fullscreen,
         Activate();
       }
 
-      // Maximized windows must be restored to move to another display.
-      const bool was_maximized = frame_->IsMaximized();
-      if (was_maximized)
-        frame_->Restore();
-
+      const bool was_maximized = IsMaximized();
       if (restore_pre_fullscreen_bounds_callback_.is_null()) {
-        // TODO(crbug.com/1227805): GetRestoredBounds() yields maximized bounds
-        // on Linux when the window is maximized and then made fullscreen on the
-        // current screen, before (now) requesting fullscreen on another screen.
-        // This causes the window's pre-maximized (restored) bounds to be lost.
-        const gfx::Rect restored_bounds = frame_->GetRestoredBounds();
+        // Use GetBounds(), rather than GetRestoredBounds(), when the window is
+        // not maximized, to restore snapped window bounds on fullscreen exit.
+        // TODO(crbug.com/1034783): Support lower-layer fullscreen-on-display.
+        const gfx::Rect bounds_to_restore =
+            was_maximized ? GetRestoredBounds() : GetBounds();
         restore_pre_fullscreen_bounds_callback_ = base::BindOnce(
             [](base::WeakPtr<BrowserView> view, const gfx::Rect& bounds,
                bool maximize) {
@@ -4074,14 +4129,25 @@ void BrowserView::ProcessFullscreen(bool fullscreen,
                 // screen was disconnected or repositioned during fullscreen.
                 view->frame()->SetBoundsConstrained(bounds);
                 if (maximize)
-                  view->frame()->Maximize();
+                  view->Maximize();
               }
             },
-            weak_ptr_factory_.GetWeakPtr(), restored_bounds, was_maximized);
+            weak_ptr_factory_.GetWeakPtr(), bounds_to_restore, was_maximized);
       }
 
-      frame_->SetBounds({display.work_area().origin(),
-                         frame_->GetWindowBoundsInScreen().size()});
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+      // Always Restore() on ChromeOS Ash, to support moving snapped windows.
+      // TODO(crbug.com/1250088): Find a similar workaround on ChromeOS Lacros.
+      // TODO(crbug.com/1034783): Support lower-layer fullscreen-on-display.
+      const bool should_restore_window = true;
+#else
+      const bool should_restore_window = was_maximized;
+#endif
+      // Restore the window as needed, so it can be moved to the target display.
+      if (should_restore_window)
+        Restore();
+      SetBounds({display.work_area().origin(),
+                 frame_->GetWindowBoundsInScreen().size()});
     }
   }
   frame_->SetFullscreen(fullscreen);
@@ -4284,14 +4350,8 @@ void BrowserView::UpdateAcceleratorMetrics(const ui::Accelerator& accelerator,
 }
 
 void BrowserView::ShowAvatarBubbleFromAvatarButton(bool is_source_accelerator) {
-  // Do not show avatar bubble if there is no avatar menu button.
-  views::Button* avatar_button =
-      toolbar_button_provider_->GetAvatarToolbarButton();
-  if (!avatar_button)
-    return;
-
-  ProfileMenuViewBase::ShowBubble(avatar_button, browser(),
-                                  is_source_accelerator);
+  ProfileMenuCoordinator::GetOrCreateForBrowser(browser())->Show(
+      is_source_accelerator);
 }
 
 void BrowserView::MaybeShowProfileSwitchIPH() {
