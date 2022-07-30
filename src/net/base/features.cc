@@ -149,6 +149,14 @@ const base::Feature kPartitionExpectCTStateByNetworkIsolationKey{
 const base::Feature kPartitionNelAndReportingByNetworkIsolationKey{
     "PartitionNelAndReportingByNetworkIsolationKey",
     base::FEATURE_DISABLED_BY_DEFAULT};
+    
+const base::Feature kEnableDoubleKeyNetworkAnonymizationKey{
+    "EnableDoubleKeyNetworkAnonymizationKey",
+    base::FEATURE_DISABLED_BY_DEFAULT};
+    
+const base::Feature kEnableCrossSiteFlagNetworkAnonymizationKey{
+    "EnableCrossSiteFlagNetworkAnonymizationKey",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kExpectCTPruning{"ExpectCTPruning",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
