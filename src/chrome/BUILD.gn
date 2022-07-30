@@ -45,9 +45,9 @@ if (is_android) {
   import("//build/config/mac/mac_sdk.gni")
   import("//build/config/mac/rules.gni")
   import("//build/util/branding.gni")
-  import("//build/util/version.gni")
   import("//chrome/browser/buildflags.gni")
   import("//chrome/updater/branding.gni")
+  import("//chrome/version.gni")
   import("//content/public/app/mac_helpers.gni")
   import("//media/cdm/library_cdm/cdm_paths.gni")
   import("//third_party/icu/config.gni")
@@ -111,16 +111,6 @@ group("assert_no_deps") {
   # for no reason and is easy to mess up. See the comment at the top of
   # //chrome/installer/util/BUILD.gn.
   assert_no_deps = [ "//chrome/installer/util:strings" ]
-}
-
-config("disable_thinlto_cache_flags") {
-  if (is_linux && use_thin_lto) {
-    # This build target has so many inputs that LLD will run into the default
-    # vm.max_map_count limit of 65530 memory mappings when using the ThinLTO
-    # cache.
-    # TODO (crbug.com/1183211): Re-enable once the linker has been fixed.
-    ldflags = [ "-Wl,--thinlto-cache-dir=" ]
-  }
 }
 
 if (!is_android && !is_mac) {
