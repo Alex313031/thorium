@@ -598,9 +598,7 @@ const base::Feature kVideoBlitColorAccuracy{"video-blit-color-accuracy",
 // Enable VP9 k-SVC decoding with HW decoder for webrtc use case.
 const base::Feature kVp9kSVCHWDecoding {
   "Vp9kSVCHWDecoding",
-// TODO(crbug.com/1325698): Remove  defined(ARCH_CPU_X86_FAMILY) once this is
-// enabled by default on ChromeOS ARM devices.
-#if defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS)
+#if BUILDFLAG(IS_CHROMEOS)
       base::FEATURE_ENABLED_BY_DEFAULT
 #else
       base::FEATURE_ENABLED_BY_DEFAULT
@@ -793,7 +791,7 @@ const base::Feature kUsePooledSharedImageVideoProvider{
 // Historically we hardcoded sRGB for color space. This flags controls if we
 // pass real color space to VideoFrame/SharedImages.
 const base::Feature kUseRealColorSpaceForAndroidVideo{
-    "UseRealColorSpaceForAndroidVideo", base::FEATURE_DISABLED_BY_DEFAULT};
+    "UseRealColorSpaceForAndroidVideo", base::FEATURE_ENABLED_BY_DEFAULT};
 
 #endif  // BUILDFLAG(IS_ANDROID)
 
@@ -932,13 +930,10 @@ constexpr base::FeatureParam<MediaFoundationClearRenderingStrategy>::Option
         {MediaFoundationClearRenderingStrategy::kFrameServer, "frame-server"},
         {MediaFoundationClearRenderingStrategy::kDynamic, "dynamic"}};
 
-// TODO(crbug.com/1321817, wicarr): Media Foundation for Clear should operate in
-// dynamic mode by default. However due to a bug with dual adapters when using
-// Frame Serve mode we currently start in Direct Composition mode.
 const base::FeatureParam<MediaFoundationClearRenderingStrategy>
     kMediaFoundationClearRenderingStrategyParam{
         &kMediaFoundationClearRendering, "strategy",
-        MediaFoundationClearRenderingStrategy::kDirectComposition,
+        MediaFoundationClearRenderingStrategy::kDynamic,
         &kMediaFoundationClearRenderingStrategyOptions};
 #endif  // BUILDFLAG(IS_WIN)
 
