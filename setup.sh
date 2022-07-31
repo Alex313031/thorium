@@ -18,6 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
+	printf "${bold}${YEL}Use the --mac flag for MacOS builds.${c0}\n" &&
 	printf "\n"
 }
 
@@ -57,6 +58,18 @@ cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 # Workaround for DevTools
 mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
+
+# MacOS Widevine Workaround
+copyMacOS () {
+	printf "\n" &&
+	printf "${YEL}Copying cdm_registration.cc for MacOS...${c0}\n" &&
+	cp -r -v infra/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
+	printf "\n"
+}
+
+case $1 in
+	--mac) copyMacOS;
+esac
 
 printf "${GRE}Done!\n" &&
 printf "\n" &&
