@@ -421,7 +421,7 @@ config("compiler") {
       }
     }
   }
-  
+
   # Apple compiler flags setup.
   # ---------------------------------
   if (is_apple) {
@@ -1537,7 +1537,7 @@ config("default_warnings") {
         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
         "-Wno-ignored-pragma-optimize",
       ]
-      
+
       if (!is_nacl) {
         cflags += [
           # TODO(https://crbug.com/1300731) Clean up and enable.
@@ -2527,7 +2527,7 @@ config("minimal_symbols") {
       cflags += [ "-gcodeview-ghash" ]
       ldflags = [ "/DEBUG:GHASH" ]
     } else {
-      ldflags = [ "/DEBUG:NONE" ]
+      ldflags = [ "/DEBUG" ]
     }
 
     # All configs using /DEBUG should include this:
@@ -2563,7 +2563,7 @@ config("minimal_symbols") {
     # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
     # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
     if (!is_nacl || is_clang) {
-      cflags += [ "-g" ]
+      cflags += [ "-g1" ]
     }
 
     if (!is_nacl && is_clang && !is_tsan && !is_asan) {
@@ -2592,7 +2592,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG:NONE" ]
+    ldflags = [ "/DEBUG" ]
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]
