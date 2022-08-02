@@ -70,6 +70,10 @@ sudo chmod -v +x portable/thorium-browser.desktop &&
 
 sudo chmod -v +x portable/thorium-shell.desktop &&
 
+sudo chmod -v +x portable/make_portable_linux.sh &&
+
+sudo chmod -v +x portable/make_portable_win.sh &&
+
 sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
 
 sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
