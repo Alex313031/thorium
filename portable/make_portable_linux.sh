@@ -53,9 +53,9 @@ rm -r -v ./temp/thorium-browser-unstable &&
 cp -r -v ./usr/bin/chromedriver temp/ &&
 cp -r -v ./usr/bin/pak temp/ &&
 cp -r -v ./README.linux temp/README.txt &&
-cp -r -v ./thorium-browser temp/ &&
+cp -r -v ./THORIUM-PORTABLE temp/ &&
 cp -r -v ./thorium-browser.desktop temp/ &&
-cp -r -v ./thorium-shell temp/ &&
+cp -r -v ./THORIUM-SHELL temp/ &&
 cp -r -v ./thorium-shell.desktop temp/ &&
 
 printf "\n" &&
