@@ -709,6 +709,16 @@ config("compiler") {
         ldflags += [ "-fwhole-program-vtables" ]
       }
     }
+    
+    if (is_win && target_cpu == "arm64") {
+      cflags += [ "-O3", "-Wno-error", "-Wno-unreachable-code", "-Wno-unused-command-line-argument", ]
+      ldflags += [ "-Wno-unused-command-line-argument", ]
+    }
+    
+    if (is_linux && target_cpu == "arm64") {
+      cflags += [ "-O3", "-Wno-error", "-Wno-unreachable-code", "-Wno-unused-command-line-argument", ]
+      ldflags += [ "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+    }
 
     # This flag causes LTO to create an .ARM.attributes section with the correct
     # architecture. This is necessary because LLD will refuse to link a program
