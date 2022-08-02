@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0048 NEW)
 project(chrome-pak VERSION 2.0.1 LANGUAGES C CXX)
 option(LGPL "Use custom startfiles on windows for smaller binary, requiring GNU Lesser General Public License 2.1+." ON)
