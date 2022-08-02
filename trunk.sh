@@ -55,7 +55,7 @@ gsyncShallow () {
 	
 	git rebase-update &&
 	
-	gclient sync -f -R -D --no-history &&
+	gclient sync -f -R -D --no-history --shallow &&
 	
 	gclient runhooks &&
 	
