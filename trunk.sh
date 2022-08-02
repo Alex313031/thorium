@@ -42,8 +42,10 @@ gsyncShallow () {
 	cd $HOME/chromium/src &&
 	
 	rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-16x16.png &&
+	rm -v -f $HOME/chromium/src/components/neterror/resources/images/favicon-16x16.png &&
 	
 	rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-32x32.png &&
+	rm -v -f $HOME/chromium/src/components/neterror/resources/images/favicon-32x32.png &&
 	
 	rm -v -f $HOME/chromium/src/content/shell/app/thorium_shell.ico &&
 	
@@ -103,8 +105,10 @@ git checkout -f origin/main &&
 cd $HOME/chromium/src &&
 
 rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-16x16.png &&
+rm -v -f $HOME/chromium/src/components/neterror/resources/images/favicon-16x16.png &&
 
 rm -v -f $HOME/chromium/src/components/neterror/resources/favicon-32x32.png &&
+rm -v -f $HOME/chromium/src/components/neterror/resources/images/favicon-32x32.png &&
 
 rm -v -f $HOME/chromium/src/content/shell/app/thorium_shell.ico &&
 
