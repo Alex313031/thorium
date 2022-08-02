@@ -2709,23 +2709,6 @@ const FeatureEntry::FeatureVariation kCheckOfflineCapabilityVariations[] = {
 };
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-const FeatureEntry::FeatureParam kCategoricalSearch_Unranked[] = {
-    {"ranking", "none"}};
-
-const FeatureEntry::FeatureParam kCategoricalSearch_ByItem[] = {
-    {"ranking", "item"}};
-
-const FeatureEntry::FeatureParam kCategoricalSearch_ByUsage[] = {
-    {"ranking", "usage"}};
-
-const FeatureEntry::FeatureVariation kCategoricalSearchVariations[] = {
-    {"Unranked", kCategoricalSearch_Unranked,
-     std::size(kCategoricalSearch_Unranked), nullptr},
-    {"By item", kCategoricalSearch_ByItem, std::size(kCategoricalSearch_ByItem),
-     nullptr},
-    {"By usage", kCategoricalSearch_ByUsage,
-     std::size(kCategoricalSearch_ByUsage), nullptr}};
-
 const FeatureEntry::FeatureParam kProductivityLauncher_WithoutContinue[] = {
     {"enable_continue", "false"}};
 
@@ -3939,19 +3922,12 @@ const FeatureEntry kFeatureEntries[] = {
     {"debug-packed-apps", flag_descriptions::kDebugPackedAppName,
      flag_descriptions::kDebugPackedAppDescription, kOsDesktop,
      SINGLE_VALUE_TYPE(switches::kDebugPackedApps)},
-    {"username-first-flow", flag_descriptions::kUsernameFirstFlowName,
-     flag_descriptions::kUsernameFirstFlowDescription, kOsAll,
-     FEATURE_VALUE_TYPE(password_manager::features::kUsernameFirstFlow)},
     {"username-first-flow-fallback-crowdsourcing",
      flag_descriptions::kUsernameFirstFlowFallbackCrowdsourcingName,
      flag_descriptions::kUsernameFirstFlowFallbackCrowdsourcingDescription,
      kOsAll,
      FEATURE_VALUE_TYPE(
          password_manager::features::kUsernameFirstFlowFallbackCrowdsourcing)},
-    {"username-first-flow-filling",
-     flag_descriptions::kUsernameFirstFlowFillingName,
-     flag_descriptions::kUsernameFirstFlowFillingDescription, kOsAll,
-     FEATURE_VALUE_TYPE(password_manager::features::kUsernameFirstFlowFilling)},
     {"enable-show-autofill-signatures",
      flag_descriptions::kShowAutofillSignaturesName,
      flag_descriptions::kShowAutofillSignaturesDescription, kOsAll,
@@ -6199,7 +6175,7 @@ const FeatureEntry kFeatureEntries[] = {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
     {"enable-assistant-dsp", flag_descriptions::kEnableGoogleAssistantDspName,
      flag_descriptions::kEnableGoogleAssistantDspDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(chromeos::assistant::features::kEnableDspHotword)},
+     FEATURE_VALUE_TYPE(ash::assistant::features::kEnableDspHotword)},
 
     {"deprecate-assistant-stylus-features",
      flag_descriptions::kDeprecateAssistantStylusFeaturesName,
@@ -6276,8 +6252,7 @@ const FeatureEntry kFeatureEntries[] = {
     {"enable-assistant-stereo-input",
      flag_descriptions::kEnableGoogleAssistantStereoInputName,
      flag_descriptions::kEnableGoogleAssistantStereoInputDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(
-         chromeos::assistant::features::kEnableStereoAudioInput)},
+     FEATURE_VALUE_TYPE(ash::assistant::features::kEnableStereoAudioInput)},
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
     {"enable-gpu-service-logging",
@@ -6659,7 +6634,7 @@ const FeatureEntry kFeatureEntries[] = {
     {"enable-assistant-routines",
      flag_descriptions::kEnableAssistantRoutinesName,
      flag_descriptions::kEnableAssistantRoutinesDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(chromeos::assistant::features::kAssistantRoutines)},
+     FEATURE_VALUE_TYPE(ash::assistant::features::kAssistantRoutines)},
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -6835,7 +6810,7 @@ const FeatureEntry kFeatureEntries[] = {
      FEATURE_VALUE_TYPE(ash::features::kDeviceForceScheduledReboot)},
     {"enable-assistant-aec", flag_descriptions::kEnableGoogleAssistantAecName,
      flag_descriptions::kEnableGoogleAssistantAecDescription, kOsCrOS,
-     FEATURE_VALUE_TYPE(chromeos::assistant::features::kAssistantAudioEraser)},
+     FEATURE_VALUE_TYPE(ash::assistant::features::kAssistantAudioEraser)},
 #endif
 
 #if BUILDFLAG(IS_WIN)
@@ -7328,14 +7303,6 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kMacAddressRandomizationName,
      flag_descriptions::kMacAddressRandomizationDescription, kOsCrOS,
      FEATURE_VALUE_TYPE(ash::features::kMacAddressRandomization)},
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    {"categorical-search", flag_descriptions::kCategoricalSearchName,
-     flag_descriptions::kCategoricalSearchDescription, kOsCrOS,
-     FEATURE_WITH_PARAMS_VALUE_TYPE(app_list_features::kCategoricalSearch,
-                                    kCategoricalSearchVariations,
-                                    "LauncherCategoricalSearch")},
 
     {"search-result-inline-icon",
      flag_descriptions::kSearchResultInlineIconName,
@@ -8363,7 +8330,7 @@ const FeatureEntry kFeatureEntries[] = {
      flag_descriptions::kDocumentPictureInPictureApiName,
      flag_descriptions::kDocumentPictureInPictureApiDescription,
      kOsMac | kOsWin | kOsLinux | kOsCrOS,
-     FEATURE_VALUE_TYPE(features::kPictureInPictureV2)},
+     FEATURE_VALUE_TYPE(features::kDocumentPictureInPictureAPI)},
 #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) ||
         // BUILDFLAG(IS_CHROMEOS_ASH)
 
