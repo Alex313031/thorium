@@ -262,6 +262,7 @@ executable("thorium_ui_debug_shell") {
     "//content",
     "//content:sandbox_helper_win",
     "//sandbox",
+    "//ui/color:mixers",
     "//ui/views_content_client",
   ]
 
