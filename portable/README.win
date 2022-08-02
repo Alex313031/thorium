@@ -5,11 +5,11 @@
 # Unpack .zip to wherever
 
 Contains THORIUM.BAT for running portable/standalone.
-	- Also contains THORIUM_SHELL.BAT for running the Thorium Content Shell (blink).
+	- Also contains THORIUM_SHELL.BAT for running the Thorium Content Shell.
 	
 
 BIN - Contains Thorium
-	- Contains thorium-devtools.ico for setting an icon for content_shell.exe if you make a shortcut.
+	- Contains thorium-devtools.ico for setting an icon for thorium_shell.exe if you make a shortcut.
 
 USER_DATA - Contains user profile data.
 
