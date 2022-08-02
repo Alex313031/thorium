@@ -128,7 +128,7 @@ Comment[vi]=Truy cập Internet
 Comment[zh_CN]=访问互联网
 Comment[zh_HK]=連線到網際網路
 Comment[zh_TW]=連線到網際網路
-Exec=/usr/bin/thorium-shell --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required --enable-clear-hevc-for-testing %U
+Exec=/usr/bin/thorium-shell %U
 Terminal=false
 X-MultipleArgs=True
 Keywords=shell
