@@ -38,7 +38,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     # has increased code density.
     arm_use_thumb = true
   }
-  
+
   # For lacros build, we use ARM v8 by default.
   if (is_chromeos_lacros && arm_arch == "") {
     arm_version = 8
@@ -69,7 +69,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
   if (arm_version == 6) {
     if (arm_arch == "") {
-    # v8 can still with version 6 but only with the armv6k extension.
+      # v8 can still with version 6 but only with the armv6k extension.
       arm_arch = "armv6k"
     }
     if (arm_tune != "") {
