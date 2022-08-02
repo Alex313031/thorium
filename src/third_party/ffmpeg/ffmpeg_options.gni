@@ -10,7 +10,7 @@ import("//build/config/sanitizers/sanitizers.gni")
 if (is_chrome_branded) {
   _default_ffmpeg_branding = "Chrome"
 } else {
-  _default_ffmpeg_branding = "Chromium"
+  _default_ffmpeg_branding = "Chrome"
 }
 
 # Initialize declaration of Chancie Wancie build argument.
