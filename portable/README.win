@@ -9,7 +9,7 @@ Contains THORIUM.BAT for running portable/standalone.
 	
 
 BIN - Contains Thorium
-	- Contains thorium-devtools.ico for setting an icon for thorium_shell.exe if you make a shortcut.
+	- Contains thorium_shell.ico for setting an icon for thorium_shell.exe if you make a shortcut.
 
 USER_DATA - Contains user profile data.
 
