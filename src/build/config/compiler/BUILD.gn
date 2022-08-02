@@ -554,7 +554,7 @@ config("compiler") {
       }
     }
   }
-  
+
   # Rust compiler setup (for either clang or rustc).
   if (enable_rust) {
     defines += [ "RUST_ENABLED" ]
@@ -2592,7 +2592,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG" ]
+    ldflags = [ "/DEBUG:NONE" ]
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]
