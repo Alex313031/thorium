@@ -38,7 +38,6 @@ tput sgr0 &&
 
 cp -r -v src/BUILD.gn $HOME/chromium/src/ &&
 cp -r -v src/ash/. $HOME/chromium/src/ash/ &&
-cp -r -v src/base/. $HOME/chromium/src/base/ &&
 cp -r -v src/build/. $HOME/chromium/src/build/ &&
 cp -r -v src/chrome/. $HOME/chromium/src/chrome/ &&
 cp -r -v src/components/. $HOME/chromium/src/components/ &&
