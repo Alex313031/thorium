@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Copyright (c) 2022 Alex313031
-
-export GNOME_DISABLE_CRASH_DIALOG=SET_BY_GOOGLE_CHROME
-
-./thorium --user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api --autoplay-policy=user-gesture-required

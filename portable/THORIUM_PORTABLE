@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Let the wrapped binary know that it has been run through the wrapper.
+export CHROME_WRAPPER="`readlink -f "$0"`"
+
+HERE="`dirname "$CHROME_WRAPPER"`"
+
+# Always use our versions of ffmpeg libs.
+# This also makes RPMs find the compatibly-named library symlinks.
+if [[ -n "$LD_LIBRARY_PATH" ]]; then
+  LD_LIBRARY_PATH="$HERE:$HERE/lib:$LD_LIBRARY_PATH"
+else
+  LD_LIBRARY_PATH="$HERE:$HERE/lib"
+fi
+export LD_LIBRARY_PATH
+
+# APPNAME for GTK.
+APPNAME=thorium
+
+# Set DESKTOP variable
+# DESKTOP="thorium-browser-unstable"
+
+# Set XDG Title variable
+TITLE="Thorium Portable"
+
+# Set the correct file name for the desktop file
+export CHROME_DESKTOP="thorium-browser.desktop"
+
+# Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
+DIST=`cat /etc/debian_version`
+export CHROME_VERSION_EXTRA="unstable, (Portable)"
+
+# We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
+export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM
+
+# Sanitize std{in,out,err} because they'll be shared with untrusted child
+# processes (http://crbug.com/376567).
+exec < /dev/null
+exec > >(exec cat)
+exec 2> >(exec cat >&2)
+
+# Note: exec -a below is a bashism.
+exec -a "$0" "$HERE/thorium" -user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api "$@"
