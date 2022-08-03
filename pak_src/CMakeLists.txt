@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0048 NEW)
-project(chrome-pak VERSION 2.0.1 LANGUAGES C CXX)
+project(pak VERSION 2.0.2 LANGUAGES C)
 option(LGPL "Use custom startfiles on windows for smaller binary, requiring GNU Lesser General Public License 2.1+." ON)
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release." FORCE)
