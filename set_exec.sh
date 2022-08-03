@@ -78,5 +78,7 @@ sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
 
 sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
 
+sudo chmod -v +x pac_src/build.sh &&
+
 printf "${GRE}${bold}Scripts are ready!\n" &&
 tput sgr0
