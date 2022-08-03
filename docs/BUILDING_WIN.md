@@ -1,4 +1,4 @@
-# Checking out and Building Thorium for Windows
+# Checking out and Building Thorium for Windows <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 ## System requirements
 
@@ -17,7 +17,7 @@ Chromium requires [Visual Studio 2019](https://visualstudio.microsoft.com/vs/old
 to build, but [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) (>=17.0.0)
 is preferred. Visual Studio can also be used to debug Chromium, and version 2022 is
 preferred for this as it handles Chromium's large debug information much better.
-The *clang-cl* compiler is used but Visual Studio's header files, libraries, and
+The *clang-cl* compiler is used, but Visual Studio's header files, libraries, and
 some tools are required. Visual Studio Community Edition will work. You must install the "Desktop development with
 C++" component and the "MFC/ATL support" sub-components. This can be done from
 the command line by passing these arguments to the Visual Studio installer (see
@@ -32,7 +32,7 @@ full set for that case is:
 VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --includeRecommended
 ```
 
--You must have the version 10.1.20348.0 [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
+ - You must have the version 10.1.20348.0 [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
 installed. This can be installed separately or by checking the appropriate box
 in the Visual Studio Installer (Note that MSVS 2022 will try to install the 19043 version by default, uncheck this and check the 20348 version).
 There is also experimental support for the Windows 11 10.1.22000.0 version.
@@ -47,24 +47,24 @@ to install the Debugging Tools.
 ## Install `depot_tools`
 
 Download the [depot_tools bundle](https://storage.googleapis.com/chrome-infra/depot_tools.zip)
-and extract it somewhere (eg: C:\src\depot_tools).
+and extract it to *C:\src\depot_tools*.
 
-*** note
-**Warning:** **DO NOT** use drag-n-drop or copy-n-paste extract from Explorer,
+***note
+__Warning:__ __*DO NOT*__ use drag-n-drop or copy-n-paste extract from Explorer,
 this will not extract the hidden “.git” folder which is necessary for
 depot_tools to autoupdate itself. You can use “Extract all…” from the
-context menu though.
+context menu, or 7-Zip though.
 ***
 
 Add depot_tools to the start of your PATH (must be ahead of any installs of
-Python. Note that environment variable names are case insensitive).
+Python). Note that environment variable names are case insensitive.
 
 Assuming you unzipped the bundle to *C:\src\depot_tools*, open:
 
 Control Panel → System and Security → System → Advanced system settings
 
 If you have Administrator access, Modify the PATH system variable and
-put `C:\src\depot_tools` at the front (or at least in front of any directory
+put `C:\src\depot_tools` at the front, by clicking "Move Up". (Or at least in front of any directory
 that might already have a copy of Python or Git).
 
 If you don't have Administrator access, you can add a user-level PATH
@@ -85,7 +85,7 @@ for Visual Studio 2019, or
 `vs2022_install` = __C:\Program Files\Microsoft Visual Studio\2022\Community__
 for Visual Studio 2022.
 
-Once all of this is done, we will download some infra archives using `gclient`
+Once all of this is done, we will download some infra archives using `gclient`. \
 From a cmd.exe shell, run:
 
 ```shell
@@ -155,11 +155,11 @@ cd src
 
 *Optional*: You can also build with [API
 keys](https://www.chromium.org/developers/how-tos/api-keys) if you want features like Google Sync, Translate, Gelocation API, etc.
-Thorium release builds use a private API Keys repo, if you would like access, contact me. Otherwise you can follow the above link to learn how to make your own private developer keys.
+Thorium release builds use a private API Keys repo. If you would like access, contact me. Otherwise you can follow the above link to learn how to make your own private developer keys.
 
 ##  Downloading the Thorium code
 
-You can either use git clone, or download a .zip from the repo. It should be placed side by side with the Chromium directory in *C:\src*
+You can either use git clone, or download a .zip from the repo. It should be placed side by side with the Chromium directory in *C:\src*. \
 Using Git:
 
 ```shell
@@ -183,7 +183,7 @@ Next, we will download the PGO profile for Thorium, which changes with every rev
 ```shell
 python3 tools\update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 ```
-This will download a *.profdata file, looking something like `chrome-win64-main-1659409120-058034bd778fed227d12a29fd0edd0942810dbf8.profdata`
+This will download a *.profdata file, looking something like `chrome-win64-main-1659409120-058034bd778fed227d12a29fd0edd0942810dbf8.profdata`. \
 Take note of this, as we will be using it in the `args.gn` below.
 
 ### Creating the build directory
@@ -195,8 +195,8 @@ gn args out\thorium
 ```
 
 This will open up notepad.exe, and this is where we will specify build arguments ("args") which direct Ninja on how to lay out the build directory tree.
-We will be copy/pasting the contents of the [win_args.gn](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.gn) file from *C:\src\Thorium\infra\win_args.gn* into notepad.
-Notice the three lines at the top, related to API Keys. It is fine to leave them blank, or add the ones you have made.
+We will be copy/pasting the contents of the [win_args.gn](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.gn) file (from *C:\src\Thorium\infra\win_args.gn*) into notepad.
+Notice the three lines at the top, related to API Keys. It is fine to leave them blank, or add the ones you have made. \
 __At the bottom__, though, notice the line that says *pgo_data_path = ""*. This is where we will put the full path to the PGO profile data file we downloaded earlier.
 
 That line should look something like:
@@ -209,18 +209,18 @@ That line should look something like:
 
 ## Build Thorium
 
-Build Thorium, and the other things like chromedriver and thorium_shell with Ninja using the command:
+Build Thorium, and the other things like [chromedriver](https://chromedriver.chromium.org/home) and [thorium_shell](https://github.com/Alex313031/Thorium/tree/main/thorium_shell#readme) with Ninja using the command:
 
 ```shell
 autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
 ```
-(Where -j# can be any number, and should generally be set to the number of cores on your CPU)
+(Where -j# can be any number, and should generally be set to the number of cores on your CPU).
 
 `autoninja` is a wrapper that automatically provides optimal values for the
 arguments passed to `ninja`.
 
 You can get a list of all of the other build targets from GN by running
-`gn ls out/Default` from the command line. To compile one, pass to Ninja
+`gn ls out\thorium` from the command line. To compile one, pass to Ninja
 the GN label with no preceding "//" (so for `//chrome/test:unit_tests`
 use autoninja -C out/Default chrome/test:unit_tests).
 
@@ -239,7 +239,7 @@ To update an existing Chromium checkout, you should run the `trunk.bat` script i
 ```shell
 cd C:\src\Thorium\win_scripts && trunk.bat
 ```
-(This script will also download the latest PGO profile data file at the end.)
+(This script will also download the latest PGO profile data file at the end; useful when making fresh builds.)
 
 This syncs the subrepositories to the appropriate versions,
 deleting those that are no longer needed, and re-runs the hooks as needed.
@@ -247,7 +247,7 @@ deleting those that are no longer needed, and re-runs the hooks as needed.
 To update an existing Thorium checkout, just download the latest .zip, or do a git pull:
 
 ```shell
-cd C:\src\Thorium\win_scripts && trunk.bat
+git pull origin main
 ```
 
 *Happy Thorium Building!*
