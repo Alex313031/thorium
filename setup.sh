@@ -34,6 +34,7 @@ tput sgr0 &&
 mkdir -v -p $HOME/chromium/src/out/thorium/ &&
 printf "\n" &&
 
+printf "\n" &&
 printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
@@ -55,9 +56,18 @@ cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
-# Workaround for DevTools
+echo " # Workaround for DevTools" &&
 mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
+
+printf "\n" &&
+printf "${YEL}Making some scripts executable...\n" &&
+tput sgr0 &&
+chmod -v +x $HOME/chromium/src/tools/clang/scripts/build.py &&
+
+chmod -v +x $HOME/chromium/src/tools/gn/bootstrap/bootstrap.py &&
+
+chmod -v +x $HOME/chromium/src/chrome/installer/linux/debian/build.sh &&
 
 # MacOS Widevine Workaround
 copyMacOS () {
@@ -74,7 +84,7 @@ esac
 printf "${GRE}Done!\n" &&
 printf "\n" &&
 
-printf "${YEL}Setting NINJA_SUMMARIZE_BUILD=1 and aliases to download the PGO Profiles for supported targets, and the gsync alias.\n" &&
+printf "${YEL}Exporting variables and setting handy aliases.\n" &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
@@ -84,13 +94,17 @@ export VISUAL=nano &&
 
 alias origin='git checkout -f origin/main' &&
 
+alias gfetch='git fetch --tags' &&
+
 alias rebase='git rebase-update' &&
+
+alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
 
 alias args='gn args out/thorium' &&
 
 alias gnls='gn ls out/thorium' &&
 
-alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
+alias show='git show-ref' &&
 
 alias runhooks='gclient runhooks' &&
 
@@ -99,19 +113,42 @@ alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-b
 alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
 alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+printf "\n" &&
+tput sgr0 &&
 
+printf "export ${CYA}NINJA_SUMMARIZE_BUILD=1${c0}\n" &&
+
+printf "export ${CYA}EDITOR=nano${c0}\n" &&
+
+printf "export ${CYA}VISUAL=nano${c0}\n" &&
 printf "\n" &&
 
-printf "${YEL}Dropping you to ~/chromium/src\n" &&
-printf "\n" &&
+printf "alias ${YEL}origin${c0} = ${CYA}git checkout -f origin/main${c0}\n" &&
 
-printf "${YEL}Look in this file to see the aliases and what they're for.\n" &&
+printf "alias ${YEL}gfetch${c0} = ${CYA}git fetch --tags${c0}\n" &&
+
+printf "alias ${YEL}rebase${c0} = ${CYA}git rebase-update${c0}\n" &&
+
+printf "alias ${YEL}gsync${c0} = ${CYA}gclient sync --with_branch_heads --with_tags -f -R -D${c0}\n" &&
+
+printf "alias ${YEL}args${c0} = ${CYA}gn args out/thorium${c0}\n" &&
+
+printf "alias ${YEL}gnls${c0} = ${CYA}gn ls out/thorium${c0}\n" &&
+
+printf "alias ${YEL}show${c0} = ${CYA}git show-ref${c0}\n" &&
+
+printf "alias ${YEL}runhooks${c0} = ${CYA}gclient runhooks${c0}\n" &&
+
+printf "alias ${YEL}pgo${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+
+printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+
+printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+
 printf "\n" &&
 
 printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&
-tput sgr0 &&
-
-cd ~/chromium/src &&
+tput sgr0
 
 exit 0
