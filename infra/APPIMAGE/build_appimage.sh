@@ -31,6 +31,8 @@ printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this director
 printf "${YEL}Extracting & Copying files from Thorium .deb package...\n" &&
 printf "${c0}\n" &&
 
+rm -r -f ./temp/ &&
+
 sleep 2 &&
 
 # Extract data.tar.xz
