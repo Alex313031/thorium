@@ -17,20 +17,19 @@ Chromium requires [Visual Studio 2019](https://visualstudio.microsoft.com/vs/old
 to build, but [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) (>=17.0.0)
 is preferred. Visual Studio can also be used to debug Chromium, and version 2022 is
 preferred for this as it handles Chromium's large debug information much better.
-The clang-cl compiler is used but Visual Studio's header files, libraries, and
-some tools are required. Visual Studio Community Edition should work if its
-license is appropriate for you. You must install the "Desktop development with
+The *clang-cl* compiler is used but Visual Studio's header files, libraries, and
+some tools are required. Visual Studio Community Edition will work. You must install the "Desktop development with
 C++" component and the "MFC/ATL support" sub-components. This can be done from
 the command line by passing these arguments to the Visual Studio installer (see
 below for ARM64 instructions):
 ```shell
-$ VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --includeRecommended
+VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --includeRecommended
 ```
 
 If you want to build for Windows on ARM64 then some extra arguments are needed. The
 full set for that case is:
 ```shell
-$ VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --includeRecommended
+VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --includeRecommended
 ```
 
 -You must have the version 10.1.20348.0 [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
@@ -90,7 +89,7 @@ Once all of this is done, we will download some infra archives using `gclient`
 From a cmd.exe shell, run:
 
 ```shell
-$ gclient
+gclient
 ```
 
 On first run, gclient will install all the Windows-specific bits needed to work
@@ -120,24 +119,24 @@ that point to 'App Installer'.
 First, configure Git:
 
 ```shell
-$ git config --global user.name "My Name"
-$ git config --global user.email "my-name@chromium.org"
-$ git config --global core.autocrlf false
-$ git config --global core.filemode false
-$ git config --global branch.autosetuprebase always
+git config --global user.name "My Name"
+git config --global user.email "my-name@chromium.org"
+git config --global core.autocrlf false
+git config --global core.filemode false
+git config --global branch.autosetuprebase always
 ```
 
 Create a `chromium` directory in *C:\src* for the checkout and change to it.
 
 ```shell
-$ cd / && cd src && mkdir chromium && cd chromium
+cd / && cd src && mkdir chromium && cd chromium
 ```
 
 Run the `fetch` tool from `depot_tools` to check out the code and its
 dependencies.
 
 ```shell
-$ fetch chromium
+fetch chromium
 ```
 
 If you don't want the full repo history, you can save a lot of time by
@@ -151,7 +150,7 @@ directory called `src` in the working directory. The remaining instructions
 assume you have switched to this directory (i.e. *C:\src\chromium\src*):
 
 ```shell
-$ cd src
+cd src
 ```
 
 *Optional*: You can also build with [API
@@ -164,7 +163,7 @@ You can either use git clone, or download a .zip from the repo. It should be pla
 Using Git:
 
 ```shell
-$ git clone https://github.com/Alex313031/Thorium.git
+git clone https://github.com/Alex313031/Thorium.git
 ```
 Or download the .zip (Make sure to rename the extracted dir to just Thorium, not Thorium-main).
 [https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip](https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip)
@@ -175,14 +174,14 @@ First, we need to copy the Thorium source files over the Chromium tree.
 Run the `setup.bat` script in *Thorium\win_scripts* to automate this.
 
 ```shell
-$ cd C:\src\Thorium\win_scripts && setup.bat
+cd C:\src\Thorium\win_scripts && setup.bat
 ```
 It will drop you back to *C:\src\chromium\src*, which is where the rest of the commands will be carried out.
 
 Next, we will download the PGO profile for Thorium, which changes with every revision. Run:
 
 ```shell
-$ python3 tools\update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
+python3 tools\update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles
 ```
 This will download a *.profdata file, looking something like `chrome-win64-main-1659409120-058034bd778fed227d12a29fd0edd0942810dbf8.profdata`
 Take note of this, as we will be using it in the `args.gn` below.
@@ -192,7 +191,7 @@ Chromium & Thorium use [Ninja](https://ninja-build.org) as its main build tool a
 a tool called [GN](https://gn.googlesource.com/gn/+/main/docs/quick_start.md) to generate `.ninja` files. Create the build directory by running:
 
 ```shell
-$ gn args out\thorium
+gn args out\thorium
 ```
 
 This will open up notepad.exe, and this is where we will specify build arguments ("args") which direct Ninja on how to lay out the build directory tree.
@@ -213,7 +212,7 @@ That line should look something like:
 Build Thorium, and the other things like chromedriver and thorium_shell with Ninja using the command:
 
 ```shell
-$ autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
+autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
 ```
 (Where -j# can be any number, and should generally be set to the number of cores on your CPU)
 
@@ -230,7 +229,7 @@ use autoninja -C out/Default chrome/test:unit_tests).
 Once it is built, you can simply install the browser.
 
 ```shell
-$ out\thorium\mini_installer.exe
+out\thorium\mini_installer.exe
 ```
 
 ## Update your checkout
@@ -238,7 +237,7 @@ $ out\thorium\mini_installer.exe
 To update an existing Chromium checkout, you should run the `trunk.bat` script in win_scripts:
 
 ```shell
-$ cd C:\src\Thorium\win_scripts && trunk.bat
+cd C:\src\Thorium\win_scripts && trunk.bat
 ```
 (This script will also download the latest PGO profile data file at the end.)
 
@@ -248,7 +247,7 @@ deleting those that are no longer needed, and re-runs the hooks as needed.
 To update an existing Thorium checkout, just download the latest .zip, or do a git pull:
 
 ```shell
-$ cd C:\src\Thorium\win_scripts && trunk.bat
+cd C:\src\Thorium\win_scripts && trunk.bat
 ```
 
 *Happy Thorium Building!*
