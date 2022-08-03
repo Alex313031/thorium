@@ -15,3 +15,7 @@ https://github.com/myfreeer/
 
 And the original repo is:
 https://github.com/myfreeer/chrome-pak-customizer
+
+### Building
+
+- Simply run `build.sh`
