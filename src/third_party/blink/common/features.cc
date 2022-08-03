@@ -67,6 +67,12 @@ const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
 const base::Feature kBackForwardCacheDedicatedWorker{
     "BackForwardCacheDedicatedWorker", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Accumulates the fetch requests for resources while parsing chunks of HTML so
+// they can be evaluated, prioritized and processed as a group rather than as
+// they are discovered.
+const base::Feature kBatchFetchRequests{"BatchFetchRequests",
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
+
 // Enable intervention for download that was initiated from or occurred in an ad
 // frame without user activation.
 const base::Feature kBlockingDownloadsInAdFrameWithoutUserActivation{
@@ -295,7 +301,7 @@ const base::FeatureParam<base::TimeDelta>
 const base::FeatureParam<base::TimeDelta>
     kSharedStorageOriginStalenessThreshold = {
         &kSharedStorageAPI, "SharedStorageOriginStalenessThreshold",
-        base::Days(60)};
+        base::Days(30)};
 
 // Enables the Prerender2 feature: https://crbug.com/1126305
 // Note that default enabling this does not enable the Prerender2 features
