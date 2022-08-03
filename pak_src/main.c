@@ -40,7 +40,7 @@ void reset () {
 
 #define PAK_VERSION_STRING  \
 	"\n"  \
-	"Pak v2.0.1\n\n"  \
+	"Pak v2.0.2\n\n"  \
 	
 #define CHROMIUM_ASCII  \
 	"\n"  \
@@ -77,7 +77,7 @@ void reset () {
     "-v \033[0mPrint version info.\033[1;96m\n\n"  \
     "-h \033[0mPrint this help info.\033[1;96m\n\n"  \
     "-c \033[0mPrint some fun Chromium ASCII Art!.\n\n"  \
-	"\033[1;31mNote: Existing destination files will be overwritten!\033[1;33m\n\n"  \
+	"\033[1;31mNote: Existing destination files will be overwritten!\033[0m\n\n"  \
 	
 void printHelp() {
     // get self path
@@ -153,7 +153,7 @@ void printChromium() {
 int pakUnpackPath(char *pakFilePath, char *outputPath) {
     PakFile pakFile = readFile(pakFilePath);
     if (pakFile.buffer == NULL) {
-        printf("Error: cannot read pak file %s", pakFilePath);
+        printf("\033[1;31mError: Cannot read .pak file %s\033[0m\n", pakFilePath);
         return 1;
     }
     MyPakHeader myHeader;
@@ -170,6 +170,8 @@ int pakUnpackPath(char *pakFilePath, char *outputPath) {
         return 4;
     }
     freeFile(pakFile);
+    printf("\033[1;32\nmUnpacked %s\033[0m", pakFilePath);
+    printf("\033[1;32m to %s\033[0m\n\n", outputPath);
     return 0;
 }
 
@@ -198,7 +200,7 @@ int pakPackIndexFile(char *indexPath, char *outputFilePath) {
 
     pakIndexFile = readFile(indexPath);
     if (pakIndexFile.buffer == NULL) {
-        printf("Error: cannot read file %s", indexPath);
+        printf("\033[1;31mError: Cannot read pak index file %s\033[0m\n", indexPath);
         returnCode = 6;
         goto PAK_PACK_INDEX_END;
     }
@@ -217,7 +219,7 @@ int pakPackIndexFile(char *indexPath, char *outputFilePath) {
         goto PAK_PACK_INDEX_END;
     }
     if (!writeFile(outputFilePath2, pakPackedFile)) {
-        printf("Error: cannot write to %s", outputFilePath2);
+        printf("\033[1;31mError: Cannot write to %s\033[0m\n", outputFilePath2);
         returnCode = 9;
         goto PAK_PACK_INDEX_END;
     }
@@ -231,6 +233,7 @@ PAK_PACK_INDEX_END:
         free(outputFilePath2);
     if (freeFilesPath && filesPath != NULL)
         free(filesPath);
+printf("\033[1;32m\nPacked %s\033[0m\n\n", outputFilePath);
     return returnCode;
 }
 
