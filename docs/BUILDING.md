@@ -1,9 +1,9 @@
-# Checking out and building Thorium <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
+# Checking out and building Thorium on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 There are instructions for other platforms here in the Thorium Docs directory.
 You can also read the [old building instructions](https://github.com/Alex313031/Thorium/blob/main/infra/BUILDING.md).
 #### Windows
-For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use [WIN_INSTRUCTIONS](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_INSTRUCTIONS.txt) and if you are building for Windows on Linux, use [WIN_CROSS_BUILD_INSTRUCTIONS](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
+For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use [BUILDING_WIN.md](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING_WIN.md) and if you are building for Windows on Linux, use [WIN_CROSS_BUILD_INSTRUCTIONS](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
 
 ## System requirements
 
