@@ -177,10 +177,11 @@ PakFile pakPack(PakFile pakIndex, char *path) { // TODO
         }
     }
     pakFile = pakPackFiles(&myHeader, resFiles, pakAlias);
-    printf("\nresource_count=%u\nalias_count=%u\n", myHeader.resource_count,
+    printf("\nresource_count = %u\nalias_count = %u\n", myHeader.resource_count,
            myHeader.alias_count);
-    printf("version=%u\nencoding=%u\n", myHeader.version, myHeader.encoding);
-    printf("\npak size: %u\n", pakFile.size);
+    printf("version = %u\nencoding = %u\n", myHeader.version, myHeader.encoding);
+    printf("\n.pak size: %u", pakFile.size);
+    printf(" bytes\n");
 PAK_PACK_END:
     if (resFiles != NULL) {
         for (uint32_t i = 0; i < myHeader.resource_count; i++) {
