@@ -251,3 +251,5 @@ git pull origin main
 ```
 
 *Happy Thorium Building!*
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
