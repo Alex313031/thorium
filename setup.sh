@@ -20,6 +20,7 @@ displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
 	printf "${bold}${YEL}Use the --mac flag for MacOS builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --raspi flag for Raspberry Pi builds.${c0}\n" &&
 	printf "\n"
 }
 
@@ -79,6 +80,19 @@ copyMacOS () {
 
 case $1 in
 	--mac) copyMacOS;
+esac
+
+# Raspberry Pi Source Files
+copyRaspi () {
+	printf "\n" &&
+	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
+	cp -r -v arm/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v arm/arm.gni $HOME/chromium/src/build/config/ &&
+	printf "\n"
+}
+
+case $1 in
+	--raspi) copyRaspi;
 esac
 
 printf "${GRE}Done!\n" &&
@@ -148,6 +162,15 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 printf "\n" &&
 
 cat $HOME/thorium/logos/thorium_ascii_art.txt &&
+
+# Display raspi ascii art
+displayRaspi () {
+	cat $HOME/thorium/logos/raspi_ascii_art.txt
+}
+
+case $1 in
+	--raspi) displayRaspi;
+esac
 
 printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&
