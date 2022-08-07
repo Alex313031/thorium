@@ -2035,13 +2035,11 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-polly-detect-profitability-min-per-loop-insts=40",
-    "-mllvm", "-polly-invariant-load-hoisting",
+    "-mllvm", "-polly",
     "-mllvm", "-polly-position=early",
     "-mllvm", "-polly-vectorizer=stripmine",
-    "-mllvm", "-polly-parallel",
-    "-mllvm", "-polly-omp-backend=LLVM",
-    "-mllvm", "-polly",
+    "-mllvm", "-polly-invariant-load-hoisting",
+    "-mllvm", "-polly-detect-profitability-min-per-loop-insts=40",
     "-O3",
   ]
 
@@ -2056,7 +2054,6 @@ if (is_win) {
     "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
     "-Wl,-mllvm,-unroll-runtime-multi-exit",
     "-Wl,-mllvm,-aggressive-ext-opt",
-    "-Wl,-mllvm", "-Wl,-polly",
   ]
 
   if (is_android) {
