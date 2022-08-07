@@ -147,6 +147,8 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 
 printf "\n" &&
 
+cat $HOME/thorium/logos/thorium_ascii_art.txt &&
+
 printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&
 tput sgr0
