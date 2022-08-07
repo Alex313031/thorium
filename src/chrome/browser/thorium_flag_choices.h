@@ -78,4 +78,20 @@ const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
      blink::switches::kNumRasterThreads, "4"},
 };
 
+const FeatureEntry::Choice kPasswordStoreChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"Basic",
+     switches::kPasswordStore, "basic"},
+    {"Kwallet",
+     switches::kPasswordStore, "kwallet"},
+    {"Kwallet5",
+     switches::kPasswordStore, "kwallet5"},
+    {"Gnome",
+     switches::kPasswordStore, "gnome"},
+    {"Gnome-Keyring",
+     switches::kPasswordStore, "gnome-keyring"},
+    {"Gnome-LibSecret",
+     switches::kPasswordStore, "gnome-libsecret"},
+};
+
 #endif  // CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
