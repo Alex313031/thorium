@@ -62,6 +62,4 @@ printf "\n" &&
 printf "${GRE}Completed. ${YEL}You can now run ./trunk.sh\n"
 tput sgr0 &&
 
-cat $HOME/thorium/logos/thorium_ascii_art.txt &&
-
 exit 0
