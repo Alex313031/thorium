@@ -75,6 +75,15 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
+     
+#if BUILDFLAG(IS_LINUX)
+     {"password-store",
+     "Password Store Backend",
+     "Choose the password store backend, instead of using the automatically detected one. "
+     "Sometimes the default detected backend is incorrect, or you would want `Basic`, "
+     "instead of the platform provided password stores on Linux. (i.e. for portable usage.)",
+     kOsLinux, MULTI_VALUE_TYPE(kPasswordStoreChoices)},
+#endif // BUILDFLAG(IS_LINUX)
     
 #if BUILDFLAG(IS_WIN)
     {"enable-win7-webrtc-hw-h264-decoding",
