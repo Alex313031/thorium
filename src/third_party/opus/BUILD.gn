@@ -59,9 +59,6 @@ config("opus_private_config") {
       "/wd4305",  # Disable truncation warning in celt/pitch.c .
       "/wd4334",  # Disable 32-bit shift warning in src/opus_encoder.c .
       "/fp:precise",
-      "/clang:-fno-fast-math",
-      "/clang:-Wno-error",
-      "/clang:-Wno-overriding-t-option",
     ]
   } else {
     defines += [
@@ -94,10 +91,11 @@ config("opus_private_config") {
 
       # Some systems may have SSE4.1+ support.
       "OPUS_X86_MAY_HAVE_SSE4_1",
+      "OPUS_X86_PRESUME_SSE4_1",
 
       # At present libopus has no AVX functions so no sources are add for this,
       # if you see linker errors on AVX code the this flag is why.
-      "OPUS_X86_MAY_HAVE_AVX",
+      #"OPUS_X86_MAY_HAVE_AVX",
     ]
   }
 
