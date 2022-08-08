@@ -78,6 +78,11 @@ html {
   margin-bottom: 1.05em;
 }
 
+.logo2 {
+  line-height: 48px;
+  margin-bottom: 1.05em;
+}
+
 body {
   color: var(--primary-color);
   display: flex;
