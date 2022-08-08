@@ -60,6 +60,7 @@ config("opus_private_config") {
       "/wd4334",  # Disable 32-bit shift warning in src/opus_encoder.c .
       "/fp:precise",
       "/clang:-fno-fast-math",
+      "/clang:-Wno-error",
       "/clang:-Wno-overriding-t-option",
     ]
   } else {
