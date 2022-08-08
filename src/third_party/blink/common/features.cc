@@ -210,7 +210,7 @@ const base::Feature kVariableCOLRV1{"VariableCOLRV1",
 // Controls whether the Viewport Height client hint can be added to request
 // headers.
 const base::Feature kViewportHeightClientHintHeader{
-    "ViewportHeightClientHintHeader", base::FEATURE_DISABLED_BY_DEFAULT};
+    "ViewportHeightClientHintHeader", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Used to control the collection of anchor element metrics (crbug.com/856683).
 // If kNavigationPredictor is enabled, then metrics of anchor elements
@@ -911,13 +911,6 @@ const base::Feature kWebAppEnableDarkMode{"WebAppEnableDarkMode",
 // Explainer: https://github.com/WICG/sw-launch/blob/main/launch_handler.md
 const base::Feature kWebAppEnableLaunchHandler{
     "WebAppEnableLaunchHandler", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Enables the deprecated syntax for the above "launch_handler": {
-//   "route_to": "existing-client",
-//   "navigate_existing_client: "always" | "never"
-// }
-const base::Feature kWebAppEnableLaunchHandlerV1API{
-    "WebAppEnableLaunchHandlerV1API", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables Unique ID feature in web apps. Controls parsing of "id" field in web
 // app manifests. See explainer for more information:
