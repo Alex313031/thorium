@@ -37,6 +37,7 @@ config("opus_private_config") {
     "OPUS_BUILD",
     "OPUS_EXPORT=",
     "ENABLE_HARDENING",
+    "FLOAT_APPROX",
 
     # Prefer alloca() over variable length arrays which are often inefficient;
     # the opus code will automatically handle this correctly per-platform.
@@ -58,7 +59,6 @@ config("opus_private_config") {
     cflags += [
       "/wd4305",  # Disable truncation warning in celt/pitch.c .
       "/wd4334",  # Disable 32-bit shift warning in src/opus_encoder.c .
-      "/fp:precise",
     ]
   } else {
     defines += [
@@ -95,7 +95,7 @@ config("opus_private_config") {
 
       # At present libopus has no AVX functions so no sources are add for this,
       # if you see linker errors on AVX code the this flag is why.
-      #"OPUS_X86_MAY_HAVE_AVX",
+      "OPUS_X86_MAY_HAVE_AVX",
     ]
   }
 
