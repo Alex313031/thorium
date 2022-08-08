@@ -202,7 +202,7 @@ if (use_opus_x86_optimization) {
       cflags = [ "-msse4.1" ]
     }
     if (is_win) {
-      cflags += [ "-fno-fast-math" ]
+      cflags += [ "-Xclang", "-fno-fast-math" ]
     }
   }
   # TODO(dalecurtis): If libopus ever adds AVX support, add an opus_avx block.
