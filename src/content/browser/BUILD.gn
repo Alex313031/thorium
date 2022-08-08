@@ -971,6 +971,8 @@ source_set("browser") {
     "gpu/gpu_data_manager_impl.h",
     "gpu/gpu_data_manager_impl_private.cc",
     "gpu/gpu_data_manager_impl_private.h",
+    "gpu/gpu_disk_cache_factory.cc",
+    "gpu/gpu_disk_cache_factory.h",
     "gpu/gpu_feature_checker_impl.cc",
     "gpu/gpu_feature_checker_impl.h",
     "gpu/gpu_internals_ui.cc",
@@ -984,8 +986,6 @@ source_set("browser") {
     "gpu/gpu_process_host_receiver_bindings.cc",
     "gpu/peak_gpu_memory_tracker_impl.cc",
     "gpu/peak_gpu_memory_tracker_impl.h",
-    "gpu/shader_cache_factory.cc",
-    "gpu/shader_cache_factory.h",
     "handwriting/handwriting_recognition_service_factory.cc",
     "handwriting/handwriting_recognition_service_factory.h",
     "handwriting/handwriting_recognition_service_impl.cc",
@@ -1455,6 +1455,8 @@ source_set("browser") {
     "preloading/prerender/prerender_navigation_throttle.h",
     "preloading/prerender/prerender_navigation_utils.cc",
     "preloading/prerender/prerender_navigation_utils.h",
+    "preloading/prerender/prerender_page_holder.cc",
+    "preloading/prerender/prerender_page_holder.h",
     "preloading/prerender/prerender_subframe_navigation_throttle.cc",
     "preloading/prerender/prerender_subframe_navigation_throttle.h",
     "preloading/speculation_rules/speculation_host_impl.cc",
@@ -2711,18 +2713,24 @@ source_set("browser") {
     ]
   }
 
-  # TODO(crbug.com/1306610): Split out files that only need `enable_plugins`.
-  if (enable_ppapi) {
+  if (enable_plugins) {
     sources += [
       "../public/browser/plugin_service.h",
-      "media/session/pepper_playback_observer.cc",
-      "media/session/pepper_playback_observer.h",
-      "media/session/pepper_player_delegate.cc",
-      "media/session/pepper_player_delegate.h",
       "plugin_list.cc",
       "plugin_list.h",
       "plugin_service_impl.cc",
       "plugin_service_impl.h",
+      "renderer_host/plugin_registry_impl.cc",
+      "renderer_host/plugin_registry_impl.h",
+    ]
+  }
+
+  if (enable_ppapi) {
+    sources += [
+      "media/session/pepper_playback_observer.cc",
+      "media/session/pepper_playback_observer.h",
+      "media/session/pepper_player_delegate.cc",
+      "media/session/pepper_player_delegate.h",
       "ppapi_plugin_process_host.cc",
       "ppapi_plugin_process_host.h",
       "ppapi_plugin_process_host_receiver_bindings.cc",
@@ -2772,8 +2780,6 @@ source_set("browser") {
       "renderer_host/pepper/pepper_udp_socket_message_filter.h",
       "renderer_host/pepper/quota_reservation.cc",
       "renderer_host/pepper/quota_reservation.h",
-      "renderer_host/plugin_registry_impl.cc",
-      "renderer_host/plugin_registry_impl.h",
     ]
     deps += [
       "//ppapi/host",
