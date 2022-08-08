@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031 and gz83. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -202,7 +202,7 @@ if (use_opus_x86_optimization) {
       cflags = [ "-msse4.1" ]
     }
     if (is_win) {
-      cflags = [ "-fno-fast-math" ]
+      cflags += [ "-fno-fast-math" ]
     }
   }
   # TODO(dalecurtis): If libopus ever adds AVX support, add an opus_avx block.
