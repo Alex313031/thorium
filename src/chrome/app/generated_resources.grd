@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
 
 <!--
 This file contains definitions of resources that will be translated for each
@@ -296,11 +295,11 @@ are declared in tools/grit/grit_rule.gni.
       <part file="profiles_strings.grdp" />
 
       <!-- Thorium-OS-specific strings -->
-      <if expr="is_Thoriumos">
-        <part file="Thoriumos_shared_strings.grdp" />
+      <if expr="is_chromeos">
+        <part file="chromeos_shared_strings.grdp" />
       </if>
-      <if expr="Thoriumos_ash">
-        <part file="Thoriumos_strings.grdp" />
+      <if expr="chromeos_ash">
+        <part file="chromeos_strings.grdp" />
         <part file="os_settings_strings.grdp" />
         <part file="os_settings_search_tag_strings.grdp" />
         <part file="sharesheet_strings.grdp" />
@@ -323,7 +322,7 @@ are declared in tools/grit/grit_rule.gni.
       </if>
 
       <!-- Welcome strings -->
-      <if expr="not Thoriumos_ash and not is_android">
+      <if expr="not chromeos_ash and not is_android">
         <part file="welcome_strings.grdp" />
       </if>
 
@@ -380,7 +379,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_PERMISSIONS_REQUESTED_SCREENREADER_ANNOUNCEMENT" desc="Announcement to screen readers on ThoriumOS when permission is requested to inform users of how to focus the permission UI.">
           Permission requested, press Ctrl + Forward to respond
         </message>
@@ -390,7 +389,7 @@ are declared in tools/grit/grit_rule.gni.
           Permission requested, press ⌘ + Option + Down arrow to respond
         </message>
       </if>
-      <if expr="not is_Thoriumos and not is_macosx and toolkit_views">
+      <if expr="not is_chromeos and not is_macosx and toolkit_views">
         <message name="IDS_PERMISSIONS_REQUESTED_SCREENREADER_ANNOUNCEMENT" desc="Announcement to screen readers on Windows, Linux or Fuchsia when permission is requested to inform users of how to focus the permission UI.">
           Permission requested, press F6 to respond
         </message>
@@ -598,14 +597,14 @@ are declared in tools/grit/grit_rule.gni.
             &amp;View frame source
           </message>
 
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="The name of the Open Link in New Tab command in the content area context menu">
             Open link in new &amp;tab
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="The name of the Open Link in New Window command in the content area context menu">
             Open link in new &amp;window
           </message>
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD" desc="The name of the open a link in Incognito window command">
             Open link in inco&amp;gnito window
           </message>
@@ -856,14 +855,14 @@ are declared in tools/grit/grit_rule.gni.
             &amp;View Frame Source
           </message>
 
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="In Title Case: The name of the Open Link in New Tab command in the content area context menu">
             Open Link in New &amp;Tab
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="In Title Case: The name of the Open Link in New Window command in the content area context menu">
             Open Link in New &amp;Window
           </message>
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD" desc="In Title Case: The name of the open a link in Incognito window command">
             Open Link in Inco&amp;gnito Window
           </message>
@@ -1290,7 +1289,7 @@ are declared in tools/grit/grit_rule.gni.
         </if>
       </if>
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_VISIT_DESKTOP_OF_LRU_USER" desc="The text label of the menu item which allows the user to move a window from one users desktop to another.">
           Move window to <ph name="USER_NAME">$1<ex>User name</ex></ph> (<ph name="USER_EMAIL">$2<ex>john@google.com</ex></ph>)
         </message>
@@ -1410,7 +1409,7 @@ are declared in tools/grit/grit_rule.gni.
       </if>
 
       <!-- App menu -->
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_TOGGLE_REQUEST_TABLET_SITE" desc="The toggle to request mobile version site on a touch dev.">
           Request mobile site
         </message>
@@ -1429,7 +1428,7 @@ are declared in tools/grit/grit_rule.gni.
         Review
       </message>
       <message name="IDS_TOS_NOTIFICATION_LINK" desc="The URL for the new TOS change link." translateable="false">
-        https://www.google.com/Thorium/privacy/eula_text.html
+        https://www.google.com/chrome/privacy/eula_text.html
       </message>
 
       <message name="IDS_HELP_MENU" desc="The text label of the Help sub-menu item in the wrench menu">
@@ -1441,10 +1440,10 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_MANAGED_BY" desc="The text label of the 'Managed by' UI in the app menu, for enterprise users. MANAGER can be a domain or an email address.">
         Managed by <ph name="MANAGER">$1<ex>example.com</ex></ph>
       </message>
-      <message name="IDS_Thorium_TIPS" desc="The text label of the Help menu item which takes the user to the Thorium Tips page.">
+      <message name="IDS_CHROME_TIPS" desc="The text label of the Help menu item which takes the user to the Thorium Tips page.">
         Tips for Thorium
       </message>
-      <message name="IDS_Thorium_WHATS_NEW" desc="The text label of the Help menu item which takes the user to the Thorium What's New page.">
+      <message name="IDS_CHROME_WHATS_NEW" desc="The text label of the Help menu item which takes the user to the Thorium What's New page.">
         What's New
       </message>
       <if expr="not use_titlecase">
@@ -1801,7 +1800,7 @@ are declared in tools/grit/grit_rule.gni.
                desc="When starting a download, let the user know we're starting the download.">
         Starting...
       </message>
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_DOWNLOAD_STATUS_IN_PROGRESS_TITLE"
                  desc="The title of a download notification: the current download status is in progress.">
                  Downloading <ph name="FILE_NAME">$1<ex>somedocument.pdf</ex></ph>
@@ -1969,65 +1968,65 @@ are declared in tools/grit/grit_rule.gni.
         <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> may be dangerous. Send to Google for scanning?
       </message>
       <message name="IDS_BLOCK_REASON_UNCOMMON_DOWNLOAD"
-         desc="Message shown to the user on Thorium://downloads page to explain that this download is blocked because it is uncommon.">
+         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it is uncommon.">
         This file is not commonly downloaded and may be dangerous.
       </message>
       <message name="IDS_BLOCK_REASON_UNCOMMON_DOWNLOAD_IN_ADVANCED_PROTECTION"
-         desc="Message shown to the user on Thorium://downloads page to explain that this download is blocked because it is uncommon. This variant is shown when the user is enrolled in the Advanced Protection program.">
+         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it is uncommon. This variant is shown when the user is enrolled in the Advanced Protection program.">
         This file was blocked by Advanced Protection.
       </message>
       <message name="IDS_BLOCK_REASON_GENERIC_DOWNLOAD"
-         desc="Message shown to the user on Thorium://downloads page to explain that this download is blocked because it may be dangerous.">
+         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it may be dangerous.">
         This type of file may harm your computer.
       </message>
       <message name="IDS_BLOCK_REASON_MIXED_CONTENT"
-         desc="Message shown to the user on Thorium://downloads page to explain that this download is blocked because it is mixed-content.">
+         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it is mixed-content.">
         This file can't be downloaded securely
       </message>
       <message name="IDS_BLOCK_REASON_DEEP_SCANNING"
-        desc="Message shown on Thorium://downloads when a download is being scanned">
+        desc="Message shown on chrome://downloads when a download is being scanned">
         This file is being scanned.
       </message>
       <message name="IDS_BLOCK_REASON_ACCOUNT_COMPROMISE"
-        desc="Message shown to the user on Thorium://downloads page to explain that this download is blocked because it is associated with account compromise.">
+        desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it is associated with account compromise.">
         This file could let attackers steal your personal information.
       </message>
       <message name="IDS_DEEP_SCANNED_SAFE_DESCRIPTION"
-        desc="Message shown to the user on Thorium://downloads page to explain this this download was deep scanned, and found to be safe.">
+        desc="Message shown to the user on chrome://downloads page to explain this this download was deep scanned, and found to be safe.">
         Security checks are done
       </message>
       <message name="IDS_DEEP_SCANNED_OPENED_DANGEROUS_DESCRIPTION"
-        desc="Message shown to the user on Thorium://downloads page to explain this this download was deep scanned, and found to be malicious.">
+        desc="Message shown to the user on chrome://downloads page to explain this this download was deep scanned, and found to be malicious.">
         This file is dangerous
       </message>
-      <message name="IDS_BLOCK_REASON_SENSITIVE_CONTENT_WARNING" desc="Message shown to the user on Thorium://downloads page to explain this download is showing a warning because it contains sensitive content">
+      <message name="IDS_BLOCK_REASON_SENSITIVE_CONTENT_WARNING" desc="Message shown to the user on chrome://downloads page to explain this download is showing a warning because it contains sensitive content">
         This file has sensitive content
       </message>
-      <message name="IDS_SENSITIVE_CONTENT_BLOCKED_DESCRIPTION" desc="Message shown to the user on Thorium://downloads page to explain this download is blocked because it contains sensitive content">
+      <message name="IDS_SENSITIVE_CONTENT_BLOCKED_DESCRIPTION" desc="Message shown to the user on chrome://downloads page to explain this download is blocked because it contains sensitive content">
         This file has sensitive or dangerous content. Ask its owner to fix.
       </message>
-      <message name="IDS_BLOCKED_TOO_LARGE_DESCRIPTION" desc="Message shown to the user on Thorium://downloads page to explain this download is blocked because it is too large for deep scanning">
+      <message name="IDS_BLOCKED_TOO_LARGE_DESCRIPTION" desc="Message shown to the user on chrome://downloads page to explain this download is blocked because it is too large for deep scanning">
         This file is too big for a security check. You can open files up to 50 MB.
       </message>
-      <message name="IDS_BLOCKED_PASSWORD_PROTECTED_DESCRIPTION" desc="Message shown to the user on Thorium://downloads page to explain this download is blocked because it is password protected">
+      <message name="IDS_BLOCKED_PASSWORD_PROTECTED_DESCRIPTION" desc="Message shown to the user on chrome://downloads page to explain this download is blocked because it is password protected">
         This file is encrypted. Ask its owner to decrypt.
       </message>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_PROMPT_BLOCKED_MIXED_DOWNLOAD_TITLE"
                  desc="In the download notification, a title of the message shown on a download blocked for being insecure.">
           Insecure download blocked
         </message>
       </if>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_PROMPT_BLOCKED_MALICIOUS_DOWNLOAD_TITLE"
                  desc="In the download notification, a title of message shown for blocked download">
           Dangerous download blocked
         </message>
       </if>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_PROMPT_SEND_TO_SAFEBROWSING_DOWNLOAD_TITLE"
                  desc="In the download notification, a title of message shown indicating that the file may be malicious and Safe Browsing recommends sending the file to Google">
           Scan file before opening?
@@ -2075,7 +2074,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
       <message name="IDS_CONFIRM_DOWNLOAD_RESTORE"
-               desc="Text for the button used to validate the downloading of a dangerous download on Thorium://downloads page.">
+               desc="Text for the button used to validate the downloading of a dangerous download on chrome://downloads page.">
         Keep dangerous file
       </message>
       <message name="IDS_CONTINUE_EXTENSION_DOWNLOAD"
@@ -2107,7 +2106,7 @@ are declared in tools/grit/grit_rule.gni.
                desc="Placeholder text/label for the search input in the download page">
         Search downloads
       </message>
-      <message name="IDS_DOWNLOAD_NO_DOWNLOADS" desc="A message shown when the user has no downloads to show on Thorium://downloads.">
+      <message name="IDS_DOWNLOAD_NO_DOWNLOADS" desc="A message shown when the user has no downloads to show on chrome://downloads.">
         Files you download appear here
       </message>
       <message name="IDS_DOWNLOAD_ITEM_DROPDOWN_BUTTON_ACCESSIBLE_TEXT" desc="Text for the dropdown button that opens the download item options menu">
@@ -4141,13 +4140,13 @@ are declared in tools/grit/grit_rule.gni.
           Renderer
         </message>
         <message name="IDS_TASK_MANAGER_DEDICATED_WORKER_PREFIX" desc="The prefix for a Task Manager dedicated worker row">
-          Dedicated Worker: <ph name="SCRIPT_URL">$1<ex>https://googleThorium.github.io/samples/dedicated-worker/basic/dedicated-worker.js</ex></ph>
+          Dedicated Worker: <ph name="SCRIPT_URL">$1<ex>https://googlechrome.github.io/samples/dedicated-worker/basic/dedicated-worker.js</ex></ph>
         </message>
         <message name="IDS_TASK_MANAGER_SHARED_WORKER_PREFIX" desc="The prefix for a Task Manager shared worker row">
-          Shared Worker: <ph name="SCRIPT_URL">$1<ex>https://googleThorium.github.io/samples/shared-worker/basic/shared-worker.js</ex></ph>
+          Shared Worker: <ph name="SCRIPT_URL">$1<ex>https://googlechrome.github.io/samples/shared-worker/basic/shared-worker.js</ex></ph>
         </message>
         <message name="IDS_TASK_MANAGER_SERVICE_WORKER_PREFIX" desc="The prefix for a Task Manager service worker row">
-          Service Worker: <ph name="SCRIPT_URL">$1<ex>https://googleThorium.github.io/samples/service-worker/basic/service-worker.js</ex></ph>
+          Service Worker: <ph name="SCRIPT_URL">$1<ex>https://googlechrome.github.io/samples/service-worker/basic/service-worker.js</ex></ph>
         </message>
         <message name="IDS_TASK_MANAGER_UNKNOWN_PLUGIN_NAME" desc="The prefix for a Task Manager plugin row">
           Unknown plugin
@@ -4214,7 +4213,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_UTILITY_PROCESS_IPP_PARSER_SERVICE_NAME" desc="The name of the utility process used for parsing IPP requests out-of-process.">
           IPP Parser
         </message>
@@ -4420,7 +4419,7 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_BLOCKLISTED_EXTENSIONS_ALERT_ITEM" desc="Name of the extension that is blocklisted">
         "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"
       </message>
-      <message name="IDS_POLICY_BLOCKED_EXTENSION_ALERT_ITEM_DETAIL" desc="A statement that an extension has been newly blocklisted. https://support.google.com/Thorium/answer/1210215 contains the language on which we're basing the phrasing.">
+      <message name="IDS_POLICY_BLOCKED_EXTENSION_ALERT_ITEM_DETAIL" desc="A statement that an extension has been newly blocklisted. https://support.google.com/chrome/answer/1210215 contains the language on which we're basing the phrasing.">
         The extension "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" was blocked by your administrator
       </message>
       <message name="IDS_EXTENSION_ALERT_ITEM_OK" desc="The title of the default button acknowledging the information presented.">
@@ -4810,24 +4809,24 @@ are declared in tools/grit/grit_rule.gni.
           Add remote apps to the ThoriumOS launcher
         </message>
         <if expr="reven">
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_DIAGNOSTICS" desc="Permission string for Thorium.os.diagnostcs API.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
             Run ThoriumOS Flex diagnostic tests.
           </message>
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_TELEMETRY" desc="Permission string for Thorium.os.telemetry API.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY" desc="Permission string for chrome.os.telemetry API.">
             Read ThoriumOS Flex device information and device data.
           </message>
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
             Read ThoriumOS Flex device and component serial numbers.
           </message>
         </if>
         <if expr="not reven">
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_DIAGNOSTICS" desc="Permission string for Thorium.os.diagnostcs API.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
             Run ThoriumOS diagnostic tests.
           </message>
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_TELEMETRY" desc="Permission string for Thorium.os.telemetry API.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY" desc="Permission string for chrome.os.telemetry API.">
             Read ThoriumOS device information and device data.
           </message>
-          <message name="IDS_EXTENSION_PROMPT_WARNING_ThoriumOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
+          <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
             Read ThoriumOS device and component serial numbers.
           </message>
         </if>
@@ -4840,7 +4839,7 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_APP_CANT_DOWNGRADE_VERSION" desc="Error message when a user tries to install an app with a lower version than a version that it already installed.">
         Attempted to downgrade app.
       </message>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_EXTENSION_CANT_INSTALL_IN_DEVICE_LOCAL_ACCOUNT" desc="Error message when a user tries to install or the administrator tries to force-install through policy an extension that is not allowed in a device-local account.">
           <ph name="EXTENSION_NAME">$1<ex>Google Talk</ex></ph> (extension ID "<ph name="EXTENSION_ID">$2<ex>nckgahadagoaajjgafhacjanaoiihapd</ex></ph>") is not allowed in this type of session.
         </message>
@@ -4855,7 +4854,7 @@ are declared in tools/grit/grit_rule.gni.
         Installation is not enabled
       </message>
       <message name="IDS_EXTENSION_INSTALL_INCORRECT_APP_CONTENT_TYPE" desc="Error displayed during installation of apps when the app is not served with the correct content-type.">
-        Apps must be served with content-type "<ph name="CONTENT_TYPE">$1<ex>application/x-Thorium-extension</ex></ph>"
+        Apps must be served with content-type "<ph name="CONTENT_TYPE">$1<ex>application/x-chrome-extension</ex></ph>"
       </message>
       <message name="IDS_EXTENSION_INSTALL_INCORRECT_INSTALL_HOST" desc="Error displayed during installation of apps when the app is served from a different host than it affects.">
         Apps must be served from the host they affect
@@ -4879,7 +4878,7 @@ are declared in tools/grit/grit_rule.gni.
         Unable to install "<ph name="APP_NAME">$1<ex>Google Play Movies &amp; TV</ex></ph>" because it is not allowed by "<ph name="IMPORT_NAME">$2<ex>Google Cast API</ex></ph>"
       </message>
       <message name="IDS_EXTENSION_INSTALL_GALLERY_ONLY" desc="Error displayed when an app or extension that has an update URL used by the gallery is installed when not directly downloaded from the gallery.">
-        This can only be added from the <ph name="Thorium_WEB_STORE">$1<ex>Web Store</ex></ph>
+        This can only be added from the <ph name="CHROME_WEB_STORE">$1<ex>Web Store</ex></ph>
       </message>
       <if expr="reven">
         <message name="IDS_EXTENSION_INSTALL_KIOSK_MODE_ONLY" desc="Error displayed during installation of an app with 'kiosk_only' attribute but user is not in ThoriumOS Flex kiosk mode.">
@@ -4898,7 +4897,7 @@ are declared in tools/grit/grit_rule.gni.
         Could not load '<ph name="IMAGE_PATH">$1<ex>/path/to/file</ex></ph>' for theme.
       </message>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_EXTENSION_NOTIFICATION_INSTALLED" desc="Toast message shown when an application is successfully installed.">
           <ph name="APP">$1<ex>Google Keep</ex></ph> installed
         </message>
@@ -4927,22 +4926,22 @@ are declared in tools/grit/grit_rule.gni.
           To use this extension, type "<ph name="EXTENSION_KEYWORD">$1<ex>search</ex></ph>", then TAB, then your command or search.
         </message>
 
-        <if expr="not Thoriumos_ash and not is_macosx">
-          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the Thorium://extensions/ management page">
+        <if expr="not chromeos_ash and not is_macosx">
+          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the chrome://extensions/ management page">
             Manage your extensions by clicking Extensions in the Tools menu.
           </message>
         </if>
-        <if expr="Thoriumos_ash">
-          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the Thorium://extensions/ management page on ThoriumOS">
+        <if expr="chromeos_ash">
+          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the chrome://extensions/ management page on ThoriumOS">
             Manage your extensions by clicking Extensions in the "More tools" menu.
           </message>
         </if>
         <if expr="is_macosx">
-          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the Thorium://extensions/ management page on MAC OS X">
+          <message name="IDS_EXTENSION_INSTALLED_MANAGE_INFO" desc="Text displayed in the InfoBubble with instructions on how to find the chrome://extensions/ management page on MAC OS X">
             Manage your extensions by clicking Extensions in the Window menu.
           </message>
         </if>
-        <message name="IDS_EXTENSION_INSTALLED_MANAGE_SHORTCUTS" desc="Text for the link in the InfoBubble that opens the Thorium://extensions page with the Configure Commands UI visible.">
+        <message name="IDS_EXTENSION_INSTALLED_MANAGE_SHORTCUTS" desc="Text for the link in the InfoBubble that opens the chrome://extensions page with the Configure Commands UI visible.">
           Manage shortcuts
         </message>
 
@@ -4977,7 +4976,7 @@ are declared in tools/grit/grit_rule.gni.
         </message>
       </if>
 
-      <!-- Extensions strings, which are not used by Thorium://extensions. -->
+      <!-- Extensions strings, which are not used by chrome://extensions. -->
       <if expr="enable_extensions">
         <message name="IDS_EXTENSIONS_LOAD_ERROR_ALERT_HEADING" desc="The title of the section that describes an extension load error.">
           Error Loading Extension
@@ -5035,7 +5034,7 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_RUN_ON_ALL_SITES_V2" desc="The label in an extension's context menu to always allow the extension access on all sites (sentence case).">
             Always on all sites
           </message>
-           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_PERMISSIONS_PAGE" desc="The label in an extension's context menu that the user can click to open site permissions page in Thorium://extensions (sentence case).">
+           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_PERMISSIONS_PAGE" desc="The label in an extension's context menu that the user can click to open site permissions page in chrome://extensions (sentence case).">
             Manage site permissions
           </message>
           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_RUN_ON_CLICK" desc="The label in an extension's context menu to allow the extension access to the page only when the user clicks on the extension action (sentence case).">
@@ -5068,10 +5067,10 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_EXTENSIONS_PINNED_BY_ADMIN" desc="The text indicating that an extension has been 'pinned' to the toolbar by the controlling administrator (sentence case).">
             Pinned by your administrator
           </message>
-          <message name="IDS_MANAGE_EXTENSION" desc="The text for the button in the extension's context menu used to open the Thorium://extensions/?id=xxx page and manage a specific extension (sentence case).">
+          <message name="IDS_MANAGE_EXTENSION" desc="The text for the button in the extension's context menu used to open the chrome://extensions/?id=xxx page and manage a specific extension (sentence case).">
             Manage extension
           </message>
-          <message name="IDS_MANAGE_EXTENSIONS" desc="The text of the button in the extensions toolbar menu used to open the Thorium://extensions page and manage all extensions (sentence case).">
+          <message name="IDS_MANAGE_EXTENSIONS" desc="The text of the button in the extensions toolbar menu used to open the chrome://extensions page and manage all extensions (sentence case).">
             Manage extensions
           </message>
           <message name="IDS_EXTENSION_ACTION_INSPECT_POPUP" desc="The text for the right-click menu of page and browser actions which shows the popup and opens the developer tools (sentence case).">
@@ -5109,7 +5108,7 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_RUN_ON_ALL_SITES_V2" desc="The label in an extension's context menu to always allow the extension access on all sites (title case).">
             Always on All Sites
           </message>
-          <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_PERMISSIONS_PAGE" desc="The label in an extension's context menu that the user can click to open site permissions page in Thorium://extensions (title case).">
+          <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_PERMISSIONS_PAGE" desc="The label in an extension's context menu that the user can click to open site permissions page in chrome://extensions (title case).">
             Manage Site Permissions
           </message>
           <message name="IDS_EXTENSIONS_CONTEXT_MENU_PAGE_ACCESS_RUN_ON_CLICK" desc="The label in an extension's context menu to allow the extension access to the page only when the user clicks on the extension action (title case).">
@@ -5151,10 +5150,10 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_EXTENSIONS_PINNED_BY_ADMIN" desc="The text indicating that an extension has been 'pinned' to the toolbar by the controlling administrator (title case).">
             Pinned by your Administrator
           </message>
-          <message name="IDS_MANAGE_EXTENSION" desc="The text for the button in the extension's context menu used to open the Thorium://extensions/?id=xxx page and manage a specific extension (title case).">
+          <message name="IDS_MANAGE_EXTENSION" desc="The text for the button in the extension's context menu used to open the chrome://extensions/?id=xxx page and manage a specific extension (title case).">
             Manage Extension
           </message>
-          <message name="IDS_MANAGE_EXTENSIONS" desc="The text for the button in the extensions toolbar menu used to open the Thorium://extensions page and manage all extensions (title case).">
+          <message name="IDS_MANAGE_EXTENSIONS" desc="The text for the button in the extensions toolbar menu used to open the chrome://extensions page and manage all extensions (title case).">
             Manage Extensions
           </message>
           <message name="IDS_EXTENSION_ACTION_INSPECT_POPUP" desc="The text for the right-click menu of page and browser actions which shows the popup and opens the developer tools (title case).">
@@ -5439,13 +5438,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
         Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
       </message>
-      <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on Thorium apps deprecation">
+      <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on chrome apps deprecation">
         Learn more
       </message>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE_AX_LABEL" desc="Accessibility label text for IDS_DEPRECATED_APPS_LEARN_MORE link">
         Learn more about unsupported Thorium apps
       </message>
-      <message name="IDS_DEPRECATED_APPS_DELETION_LINK" desc="Contains link to trigger the deprecated apps deletion dialog from Thorium://apps">
+      <message name="IDS_DEPRECATED_APPS_DELETION_LINK" desc="Contains link to trigger the deprecated apps deletion dialog from chrome://apps">
         {NUM_APPS, plural,
         =1 {Remove 1 unsupported app}
         other {Remove # unsupported apps}}
@@ -5586,11 +5585,11 @@ Keep your key file in a safe place. You will need it to create new versions of y
         ''' It also controls what page is shown when you click the Home button or search from the Omnibox. '''
       </message>
 
-      <!-- Strings for the print job confirmation dialog triggered by Thorium.printing -->
-      <message name="IDS_EXTENSIONS_PRINTING_API_PRINT_REQUEST_BUBBLE_TITLE" desc="Title of a bubble with print job confirmation dialog triggered by Thorium.printing API">
+      <!-- Strings for the print job confirmation dialog triggered by chrome.printing -->
+      <message name="IDS_EXTENSIONS_PRINTING_API_PRINT_REQUEST_BUBBLE_TITLE" desc="Title of a bubble with print job confirmation dialog triggered by chrome.printing API">
         Print request
       </message>
-      <message name="IDS_EXTENSIONS_PRINTING_API_PRINT_REQUEST_BUBBLE_HEADING" desc="Heading of a bubble with print job confirmation dialog triggered by Thorium.printing API">
+      <message name="IDS_EXTENSIONS_PRINTING_API_PRINT_REQUEST_BUBBLE_HEADING" desc="Heading of a bubble with print job confirmation dialog triggered by chrome.printing API">
         "<ph name="EXTENSION_NAME">$1<ex>Managed Printing</ex></ph>" wants to print <ph name="FILE_NAME">$2<ex>sample.pdf</ex></ph> with <ph name="PRINTER_NAME">$3<ex>Lexmark CS417dn</ex></ph>.
       </message>
       <message name="IDS_EXTENSIONS_PRINTING_API_PRINT_REQUEST_ALLOW" desc="Text for the allow button on the print job confirmation dialog">
@@ -5652,7 +5651,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         App Settings
       </message>
 
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <then>
           <message name="IDS_WEB_APP_SETTINGS_LINK" desc="Text of the link pointing to the app settings page. This appears at the bottom of the Permissions pane of the Page Information Window for app windows (in place of 'Site settings').">
             App settings
@@ -5662,7 +5661,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
           </message>
         </then>
         <else>
-          <message name="IDS_WEB_APP_SETTINGS_LINK" desc="Text of the link pointing to the app settings page. The link appears in app window/tab -> page info bubble in place of Site Settings, and in Thorium://apps right click menu">
+          <message name="IDS_WEB_APP_SETTINGS_LINK" desc="Text of the link pointing to the app settings page. The link appears in app window/tab -> page info bubble in place of Site Settings, and in chrome://apps right click menu">
             Settings
           </message>
           <message name="IDS_WEB_APP_SETTINGS_LINK_TOOLTIP" desc="The text of the tooltip on IDS_WEB_APP_SETTINGS_LINK.">
@@ -5672,7 +5671,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </if>
 
       <!-- Components -->
-      <message name="IDS_COMPONENTS_TITLE" desc="Title for the Thorium://components page.">
+      <message name="IDS_COMPONENTS_TITLE" desc="Title for the chrome://components page.">
         Components
       </message>
       <message name="IDS_COMPONENTS_VERSION" desc="The label in front of a component version number.">
@@ -5694,7 +5693,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Checking for status...
       </message>
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_COMPONENTS_OS_TEXT1_LABEL" desc="Begin label text on the os://components page from ThoriumOS which directs a user to a dialog showing Thorium browser specific components - enclosing url link.">
           Looking for browser components? Visit
         </message>
@@ -5702,17 +5701,17 @@ Keep your key file in a safe place. You will need it to create new versions of y
           .
         </message>
         <message name="IDS_COMPONENTS_OS_LINK" translateable="false" desc="Label for a button on the os://components page from ThoriumOS that will call a new window which allows to change Thorium browser components.">
-          Thorium://components
+          chrome://components
         </message>
       </if>
-      <if expr="Thoriumos_lacros">
-        <message name="IDS_COMPONENTS_OS_TEXT1_LABEL" desc="Begin label text on the Thorium://components page from ThoriumOS which directs a user to a dialog showing OS specific components - enclosing url link.">
+      <if expr="chromeos_lacros">
+        <message name="IDS_COMPONENTS_OS_TEXT1_LABEL" desc="Begin label text on the chrome://components page from ThoriumOS which directs a user to a dialog showing OS specific components - enclosing url link.">
           Looking for system components? Visit
         </message>
-        <message name="IDS_COMPONENTS_OS_TEXT2_LABEL" desc="End label text on the Thorium://components page from ThoriumOS which directs a user to a dialog showing OS specific components - enclosing url link.">
+        <message name="IDS_COMPONENTS_OS_TEXT2_LABEL" desc="End label text on the chrome://components page from ThoriumOS which directs a user to a dialog showing OS specific components - enclosing url link.">
           .
         </message>
-        <message name="IDS_COMPONENTS_OS_LINK" translateable="false" desc="Label for button on the Thorium://components page from ThoriumOS that will call a new window which allows to change system components.">
+        <message name="IDS_COMPONENTS_OS_LINK" translateable="false" desc="Label for button on the chrome://components page from ThoriumOS that will call a new window which allows to change system components.">
           os://components
         </message>
       </if>
@@ -5904,52 +5903,52 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <!-- End of Sync Promo strings for Desktop Identity Consistency. -->
 
       <!-- WebRTC logs -->
-      <message name="IDS_WEBRTC_LOGS_TITLE" desc="Title for the Thorium://webrtc-logs page.">
+      <message name="IDS_WEBRTC_LOGS_TITLE" desc="Title for the chrome://webrtc-logs page.">
         WebRTC logs
       </message>
-      <message name="IDS_WEBRTC_TEXT_LOGS_LOG_COUNT_BANNER_FORMAT" desc="Format for WebRTC text log count banner on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_TEXT_LOGS_LOG_COUNT_BANNER_FORMAT" desc="Format for WebRTC text log count banner on chrome://webrtc-logs">
         WebRTC text logs (<ph name="WEBRTC_TEXT_LOG_COUNT">$1<ex>3</ex></ph>)
       </message>
-      <message name="IDS_WEBRTC_EVENT_LOGS_LOG_COUNT_BANNER_FORMAT" desc="Format for WebRTC event log count banner on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_EVENT_LOGS_LOG_COUNT_BANNER_FORMAT" desc="Format for WebRTC event log count banner on chrome://webrtc-logs">
         WebRTC event logs (<ph name="WEBRTC_EVENT_LOG_COUNT">$1<ex>3</ex></ph>)
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_HEADER_FORMAT" desc="Format for uploaded log entry headings on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_LOGS_LOG_HEADER_FORMAT" desc="Format for uploaded log entry headings on chrome://webrtc-logs">
         WebRTC log captured <ph name="WEBRTC_LOG_CAPTURE_TIME">$1<ex>Tuesday, January 25, 2011 2:58:02 PM</ex></ph>
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_LOCAL_FILE_LABEL_FORMAT" desc="Format for local log entry label on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_LOGS_LOG_LOCAL_FILE_LABEL_FORMAT" desc="Format for local log entry label on chrome://webrtc-logs">
         Local file:
       </message>
-      <message name="IDS_WEBRTC_LOGS_NO_LOCAL_LOG_FILE_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when there is no local log file">
+      <message name="IDS_WEBRTC_LOGS_NO_LOCAL_LOG_FILE_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when there is no local log file">
         No local log file.
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_UPLOAD_TIME_FORMAT" desc="Format for uploaded log entry upload time on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_LOGS_LOG_UPLOAD_TIME_FORMAT" desc="Format for uploaded log entry upload time on chrome://webrtc-logs">
         Uploaded <ph name="WEBRTC_LOG_UPLOAD_TIME">$1<ex>Tuesday, January 25, 2011 2:58:02 PM</ex></ph>
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_FAILED_UPLOAD_TIME_FORMAT" desc="Format for a log's failed upload attempt entry on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_LOGS_LOG_FAILED_UPLOAD_TIME_FORMAT" desc="Format for a log's failed upload attempt entry on chrome://webrtc-logs">
         Upload failed (<ph name="WEBRTC_LOG_UPLOAD_TIME">$1<ex>Tuesday, January 25, 2011 2:58:02 PM</ex></ph>).
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_REPORT_ID_FORMAT" desc="Format for uploaded log entry report ID on Thorium://webrtc-logs. This is the ID on the server to which the log was uploaded.">
+      <message name="IDS_WEBRTC_LOGS_LOG_REPORT_ID_FORMAT" desc="Format for uploaded log entry report ID on chrome://webrtc-logs. This is the ID on the server to which the log was uploaded.">
         Report ID <ph name="WEBRTC_LOG_REPORT_ID">$1<ex>8fa95dbb6f2ec862</ex></ph>
       </message>
-      <message name="IDS_WEBRTC_LOGS_BUG_LINK_LABEL" desc="Link text for filing a bug on Thorium://webrtc-logs">
+      <message name="IDS_WEBRTC_LOGS_BUG_LINK_LABEL" desc="Link text for filing a bug on chrome://webrtc-logs">
         File bug
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_PENDING_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when the log is still pending upload.">
+      <message name="IDS_WEBRTC_LOGS_LOG_PENDING_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when the log is still pending upload.">
         Log upload pending.
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_ACTIVELY_UPLOADED_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when the log is currently being uploaded.">
+      <message name="IDS_WEBRTC_LOGS_LOG_ACTIVELY_UPLOADED_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when the log is currently being uploaded.">
         Log upload underway.
       </message>
-      <message name="IDS_WEBRTC_LOGS_LOG_NOT_UPLOADED_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when the log has not been uploaded">
+      <message name="IDS_WEBRTC_LOGS_LOG_NOT_UPLOADED_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when the log has not been uploaded">
         Log not uploaded.
       </message>
       <message name="IDS_WEBRTC_LOGS_EVENT_LOG_LOCAL_LOG_ID" desc="The ID of the log. This ID is assigned even if the log is not uploaded.">
         Local log ID: <ph name="WEBRTC_EVENT_LOG_LOCAL_ID">$1<ex>A83BC19927509874309F2EE002174235</ex></ph>.
       </message>
-      <message name="IDS_WEBRTC_LOGS_NO_TEXT_LOGS_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when there are no captured text logs">
+      <message name="IDS_WEBRTC_LOGS_NO_TEXT_LOGS_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when there are no captured text logs">
         You have no recently captured WebRTC text logs.
       </message>
-      <message name="IDS_WEBRTC_LOGS_NO_EVENT_LOGS_MESSAGE" desc="The explanatory message for Thorium://webrtc-logs when there are no captured event logs">
+      <message name="IDS_WEBRTC_LOGS_NO_EVENT_LOGS_MESSAGE" desc="The explanatory message for chrome://webrtc-logs when there are no captured event logs">
         You have no recently captured WebRTC event logs.
       </message>
 
@@ -5976,7 +5975,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PLUGIN_BLOCKED_NO_LOADING" desc="The placeholder text for a blocked plugin that cannot be manually loaded by the user.">
         <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> is blocked
       </message>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_NACL_PLUGIN_BLOCKED" desc="The placeholder text for a blocked plugin.">
           This plugin is not supported on this device
         </message>
@@ -6075,7 +6074,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
 
-      <!-- Thoriumos bookmark app add to shelf strings -->
+      <!-- chromeos bookmark app add to shelf strings -->
       <message name="IDS_ADD_TO_SHELF_INFOBAR_TITLE" desc="Label displayed in an infobar asking users to add to the site to their shelf">
         Add this site to your shelf to use it any time
       </message>
@@ -6114,8 +6113,8 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
 
-      <!-- Thorium://browser-switch strings -->
-      <if expr="toolkit_views and not Thoriumos_lacros and not Thoriumos_ash">
+      <!-- chrome://browser-switch strings -->
+      <if expr="toolkit_views and not chromeos_lacros and not chromeos_ash">
         <message name="IDS_ABOUT_BROWSER_SWITCH_TITLE" desc="about:browser-switch page title">
           Legacy Browser Support
         </message>
@@ -6147,18 +6146,18 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Only http, https and file protocols are supported for browser redirects.
         </message>
 
-        <!-- Thorium://browser-switch/internals strings -->
+        <!-- chrome://browser-switch/internals strings -->
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_DESC" desc="about:browser-switch/internals page description">
           Legacy Browser Support (LBS) allows specific URLs patterns to be opened in an alternative browser that supports legacy features required to properly run those sites.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_TITLE" desc="about:browser-switch/internals page title">
           Legacy Browser Support (LBS) - Internals
         </message>
-        <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_NOTHING_SHOWN" desc="nothing to show on Thorium://browser-switch/internals, because the policy BrowserSwitcherEnabled is disabled">
+        <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_NOTHING_SHOWN" desc="nothing to show on chrome://browser-switch/internals, because the policy BrowserSwitcherEnabled is disabled">
           Nothing to show
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_LBS_DISABLED" desc="about:browser-switch/internals text shown when the policy BrowserSwitcherEnabled is disabled">
-          LBS is currently disabled. You can enable LBS by setting the <ph name="BEGIN_LINK">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherEnabled" class="policy-prop"&gt;</ph>{BrowserSwitcherEnabled}<ph name="END_LINK">&lt;/a&gt;</ph> policy.
+          LBS is currently disabled. You can enable LBS by setting the <ph name="BEGIN_LINK">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherEnabled" class="policy-prop"&gt;</ph>{BrowserSwitcherEnabled}<ph name="END_LINK">&lt;/a&gt;</ph> policy.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_URL_CHECKER_TITLE" desc="about:browser-switch/internals, section URL Checker, title of the section">
           URL Checker
@@ -6215,9 +6214,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
           The list of websites that redirect to alternative browser.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_FORCE_OPEN_IN_FIRST_PARAGRAPH" desc="about:browser-switch/internals, section Force Open In. 1 of 2 parapgraphs. This text shows that URLs that will be opened in an alternative browser are affected by the BrowserSwitcherUrlList, BrowserSwitcherExternalSitelistUrl and BrowserSwitcherUseIeSitelist policies">
-          This list is affected by <ph name="BEGIN_LINK1">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherUrlList" class="policy-prop"&gt;</ph>{BrowserSwitcherUrlList}<ph name="END_LINK1">&lt;/a&gt;</ph>
-          , <ph name="BEGIN_LINK2">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherExternalSitelistUrl" class="policy-prop"&gt;</ph>{BrowserSwitcherExternalSitelistUrl}<ph name="END_LINK2">&lt;/a&gt;</ph>
-           and <ph name="BEGIN_LINK3">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherUseIeSitelist" class="policy-prop"&gt;</ph>{BrowserSwitcherUseIeSitelist}<ph name="END_LINK3">&lt;/a&gt;</ph>
+          This list is affected by <ph name="BEGIN_LINK1">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherUrlList" class="policy-prop"&gt;</ph>{BrowserSwitcherUrlList}<ph name="END_LINK1">&lt;/a&gt;</ph>
+          , <ph name="BEGIN_LINK2">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherExternalSitelistUrl" class="policy-prop"&gt;</ph>{BrowserSwitcherExternalSitelistUrl}<ph name="END_LINK2">&lt;/a&gt;</ph>
+           and <ph name="BEGIN_LINK3">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherUseIeSitelist" class="policy-prop"&gt;</ph>{BrowserSwitcherUseIeSitelist}<ph name="END_LINK3">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_FORCE_OPEN_IN_SECOND_PARAGRAPH" desc="about:browser-switch/internals, section Force Open In. 2 of 2 parapgraphs. this text describes that the URLs in the table below will be forced to open in a specific browser">
           URLs matching these rules will be forced to open in a specific browser.
@@ -6238,8 +6237,8 @@ Keep your key file in a safe place. You will need it to create new versions of y
           The list of websites that can open in either browser.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_IGNORE_FIRST_PARAGRAPH" desc="about:browser-switch/internals, section Ignore, 1 of 2 paragraph. This text mentions that the list of URLs that can be opened in either browser are given by the BrowserSwitcherExternalGreylistUrl and BrowserSwitcherUrlGreylist policies">
-          This list is affected by <ph name="BEGIN_LINK1">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherExternalGreylistUrl" class="policy-prop"&gt;</ph>{BrowserSwitcherExternalGreylistUrl}<ph name="END_LINK1">&lt;/a&gt;</ph>
-          and <ph name="BEGIN_LINK2">&lt;a href="https://Thoriumenterprise.google/policies/#BrowserSwitcherUrlGreylist" class="policy-prop"&gt;</ph>{BrowserSwitcherUrlGreylist}<ph name="END_LINK2">&lt;/a&gt;</ph>
+          This list is affected by <ph name="BEGIN_LINK1">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherExternalGreylistUrl" class="policy-prop"&gt;</ph>{BrowserSwitcherExternalGreylistUrl}<ph name="END_LINK1">&lt;/a&gt;</ph>
+          and <ph name="BEGIN_LINK2">&lt;a href="https://chromeenterprise.google/policies/#BrowserSwitcherUrlGreylist" class="policy-prop"&gt;</ph>{BrowserSwitcherUrlGreylist}<ph name="END_LINK2">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_IGNORE_SECOND_PARAGRAPH" desc="about:browser-switch/internals, section Ignore, 2 of 2 paragraph. This text shows that URLs matching these rules won't trigger in a specific browser">
           URLs matching these rules won't trigger a browser switch and can be open in either <ph name="BROWSER_NAME">$1</ph> or <ph name="ALTERNATIVE_BROWSER_NAME">$2</ph>.
@@ -6252,7 +6251,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_ABOUT_OS_TEXT1_LABEL" desc="Begin label text on the os://about page from ThoriumOS which directs a user to a dialog showing Thorium browser specific about page - enclosing url link.">
           Looking for the browser about page? Visit
         </message>
@@ -6260,17 +6259,17 @@ Keep your key file in a safe place. You will need it to create new versions of y
           .
         </message>
         <message name="IDS_ABOUT_OS_LINK" translateable="false" desc="Label for button on the os://about page from ThoriumOS which shows the user the link to the Thorium browser specific about page.">
-          Thorium://about
+          chrome://about
         </message>
       </if>
-      <if expr="Thoriumos_lacros">
-        <message name="IDS_ABOUT_OS_TEXT1_LABEL" desc="Begin label text on the Thorium://about page from ThoriumOS which directs a user to a dialog showing system specific about page - enclosing url link.">
+      <if expr="chromeos_lacros">
+        <message name="IDS_ABOUT_OS_TEXT1_LABEL" desc="Begin label text on the chrome://about page from ThoriumOS which directs a user to a dialog showing system specific about page - enclosing url link.">
           Looking for the system about page? Visit
         </message>
-        <message name="IDS_ABOUT_OS_TEXT2_LABEL" desc="End label text on the Thorium://about page from ThoriumOS which directs a user to a dialog showing system specific about page - enclosing url link.">
+        <message name="IDS_ABOUT_OS_TEXT2_LABEL" desc="End label text on the chrome://about page from ThoriumOS which directs a user to a dialog showing system specific about page - enclosing url link.">
           .
         </message>
-        <message name="IDS_ABOUT_OS_LINK" translateable="false" desc="Label for button on the Thorium://about page from ThoriumOS which shows the user the link to the system specific about page.">
+        <message name="IDS_ABOUT_OS_LINK" translateable="false" desc="Label for button on the chrome://about page from ThoriumOS which shows the user the link to the system specific about page.">
           os://about
         </message>
       </if>
@@ -6441,7 +6440,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CONFIRM_MSG_RESTORE_DEFAULTS" desc="The text label of the restore default shortcuts button when editing a custom link. (On the New Tab Page)">
         Restore default shortcuts
       </message>
-      <message name="IDS_NTP_CUSTOM_BG_Thorium_WALLPAPERS" desc="The text label of the Thorium backgrounds option for background customization.(On the New Tab Page)">
+      <message name="IDS_NTP_CUSTOM_BG_CHROME_WALLPAPERS" desc="The text label of the Thorium backgrounds option for background customization.(On the New Tab Page)">
         Thorium backgrounds
       </message>
       <message name="IDS_NTP_CUSTOM_BG_UPLOAD_AN_IMAGE" desc="The text label of the upload an image option for background customization. (On the New Tab Page)">
@@ -6710,19 +6709,19 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_MODULES_RECIPE_VIEWED_TASKS_LOWER_THESE" desc="Name of the historical veresion of the recipe tasks module in lowercase shown in various UIs.">
         these recently viewed recipes
       </message>
-      <message name="IDS_NTP_MODULES_CART_SENTENCE" desc="Name of the Thorium cart module in sentence case shown in various UIs.">
+      <message name="IDS_NTP_MODULES_CART_SENTENCE" desc="Name of the chrome cart module in sentence case shown in various UIs.">
         Your carts
       </message>
-      <message name="IDS_NTP_MODULES_CART_SENTENCE_V2" desc="Name of the Thorium cart module V2 in sentence case shown in various UIs.">
+      <message name="IDS_NTP_MODULES_CART_SENTENCE_V2" desc="Name of the chrome cart module V2 in sentence case shown in various UIs.">
         In your shopping cart
       </message>
-      <message name="IDS_NTP_MODULES_CART_LOWER" desc="Name of the Thorium cart module in lowercase shown in various UIs.">
+      <message name="IDS_NTP_MODULES_CART_LOWER" desc="Name of the chrome cart module in lowercase shown in various UIs.">
         carts
       </message>
-      <message name="IDS_NTP_MODULES_CART_LOWER_THESE" desc="Name of the Thorium cart module in lowercase shown in various UIs.">
+      <message name="IDS_NTP_MODULES_CART_LOWER_THESE" desc="Name of the chrome cart module in lowercase shown in various UIs.">
         these carts
       </message>
-      <message name="IDS_NTP_MODULES_CART_LOWER_YOUR" desc="Name of the Thorium cart module in lowercase shown in various UIs.">
+      <message name="IDS_NTP_MODULES_CART_LOWER_YOUR" desc="Name of the chrome cart module in lowercase shown in various UIs.">
         your carts
       </message>
       <message name="IDS_NTP_MODULES_CART_INFO" desc="Text shown in the body of the info dialog of the cart module.">
@@ -6731,10 +6730,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="BREAK">&lt;br&gt;</ph>
         You can manage settings from the card menu or see more options in Customize Thorium.
       </message>
-      <message name="IDS_NTP_MODULES_CART_ITEM_COUNT_SINGULAR" desc="Item count displayed on Thorium cart module when there is a single item in a cart.">
+      <message name="IDS_NTP_MODULES_CART_ITEM_COUNT_SINGULAR" desc="Item count displayed on chrome cart module when there is a single item in a cart.">
         <ph name="ITEM_COUNT_ONE">$1<ex>1</ex></ph> item
       </message>
-      <message name="IDS_NTP_MODULES_CART_ITEM_COUNT_MULTIPLE" desc="Item count displayed on Thorium cart module when there are multiple items in a cart.">
+      <message name="IDS_NTP_MODULES_CART_ITEM_COUNT_MULTIPLE" desc="Item count displayed on chrome cart module when there are multiple items in a cart.">
         <ph name="ITEM_COUNT_MULTIPLE">$1<ex>2</ex></ph> items
       </message>
       <message name="IDS_NTP_MODULES_DRIVE_SENTENCE" desc="Name of the Drive module in sentence case shown in various UIs.">
@@ -6789,7 +6788,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         memories from Google Photos
       </message>
       <message name="IDS_NTP_MODULES_PHOTOS_INFO" desc="Text shown in the body of the info dialog of the Photos module.">
-        You’re seeing photo and video highlights from your Google Photos library. You can control what shows up in your highlights at <ph name="BEGIN_LINK">&lt;a href="https://photos.google.com/settings?referrer=Thorium_NTP" target="_blank"&gt;</ph>photos.google.com/settings<ph name="END_LINK">&lt;/a&gt;</ph>.
+        You’re seeing photo and video highlights from your Google Photos library. You can control what shows up in your highlights at <ph name="BEGIN_LINK">&lt;a href="https://photos.google.com/settings?referrer=CHROME_NTP" target="_blank"&gt;</ph>photos.google.com/settings<ph name="END_LINK">&lt;/a&gt;</ph>.
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
         You can manage settings for this card from the card menu or see more options in Customize Thorium.
@@ -6864,13 +6863,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_MODULES_CART_MODULE_MENU_HIDE_TOAST_MESSAGE" desc="Text shown in the toast confirming the cart module has been temporarily hidden.">
         Carts hidden. They'll reappear when you make changes.
       </message>
-      <message name="IDS_NTP_MODULES_CART_CART_MENU_HIDE_MERCHANT" desc="An option in the action menu of one cart in the Thorium cart module. When clicked, cart from that merchant will be temporarily hidden. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com). ">
+      <message name="IDS_NTP_MODULES_CART_CART_MENU_HIDE_MERCHANT" desc="An option in the action menu of one cart in the chrome cart module. When clicked, cart from that merchant will be temporarily hidden. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com). ">
         Hide <ph name="MERCHANT">$1<ex>Amazon</ex></ph>
       </message>
       <message name="IDS_NTP_MODULES_CART_CART_MENU_HIDE_MERCHANT_TOAST_MESSAGE" desc="Text shown in the toast confirming the cart for a specific merchant has been temporarily hidden. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com).">
         <ph name="MERCHANT">$1<ex>Amazon</ex> hidden. You'll see it again when you revisit your cart.</ph>
       </message>
-      <message name="IDS_NTP_MODULES_CART_CART_MENU_REMOVE_MERCHANT" desc="An option in the action menu of one cart in the Thorium cart module. When clicked, cart from that merchant wil be permanently removed. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com).">
+      <message name="IDS_NTP_MODULES_CART_CART_MENU_REMOVE_MERCHANT" desc="An option in the action menu of one cart in the chrome cart module. When clicked, cart from that merchant wil be permanently removed. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com).">
         Never show <ph name="MERCHANT">$1<ex>Amazon</ex></ph>
       </message>
       <message name="IDS_NTP_MODULES_CART_CART_MENU_REMOVE_MERCHANT_TOAST_MESSAGE" desc="Text shown in the toast confirming the cart for a specific merchant has been permanently removed. Note that the MERCHANT field can be either merchant name (e.g. Amazon) or domain (e.g. amazon.com).">
@@ -6948,13 +6947,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Extensions NTP Middle Slot Promo -->
       <message name="IDS_EXTENSIONS_PROMO_PERFORMANCE">
-        Web browsing should be fast. Take a moment to <ph name="BEGIN_LINK">&lt;a href="Thorium://extensions"&gt;</ph>check your extensions<ph name="END_LINK">&lt;/a&gt;</ph> now.
+        Web browsing should be fast. Take a moment to <ph name="BEGIN_LINK">&lt;a href="chrome://extensions"&gt;</ph>check your extensions<ph name="END_LINK">&lt;/a&gt;</ph> now.
       </message>
       <message name="IDS_EXTENSIONS_PROMO_PRIVACY">
-        Safety matters. Take a moment and <ph name="BEGIN_LINK">&lt;a href="Thorium://extensions"&gt;</ph>check your extensions now<ph name="END_LINK">&lt;/a&gt;</ph>
+        Safety matters. Take a moment and <ph name="BEGIN_LINK">&lt;a href="chrome://extensions"&gt;</ph>check your extensions now<ph name="END_LINK">&lt;/a&gt;</ph>
       </message>
       <message name="IDS_EXTENSIONS_PROMO_NEUTRAL">
-        Got extensions? <ph name="BEGIN_LINK">&lt;a href="Thorium://extensions"&gt;</ph>Manage your extensions<ph name="END_LINK">&lt;/a&gt;</ph> in one easy place.
+        Got extensions? <ph name="BEGIN_LINK">&lt;a href="chrome://extensions"&gt;</ph>Manage your extensions<ph name="END_LINK">&lt;/a&gt;</ph> in one easy place.
       </message>
 
       <if expr="is_android">
@@ -7108,16 +7107,16 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_ACCDESCRIPTION_BACK" desc="Help text that explains to keyboard users how to interact with the back button, similar to the tooltip presented to mouse users.">
         Press to go back, context menu to see history
       </message>
-      <message name="IDS_TOOLTIP_ThoriumLABS_BUTTON" desc="The tooltip for the Thorium Labs button in the toolbar">
+      <message name="IDS_TOOLTIP_CHROMELABS_BUTTON" desc="The tooltip for the Thorium Labs button in the toolbar">
         Enable featured Thorium experiments
       </message>
       <message name="IDS_TOOLTIP_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The tooltip for the left aligned side panel toggle button">
         Toggle left aligned side panel
       </message>
-      <message name="IDS_TOOLTIP_ThoriumLABS_COMBOBOX" desc="The tooltip for the Thorium Labs combobox to select between experiment states">
+      <message name="IDS_TOOLTIP_CHROMELABS_COMBOBOX" desc="The tooltip for the Thorium Labs combobox to select between experiment states">
         Select experiment state for <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph>
       </message>
-      <message name="IDS_TOOLTIP_ThoriumLABS_FEEDBACK_BUTTON" desc="The tooltip for the Thorium Labs Send Feedback button">
+      <message name="IDS_TOOLTIP_CHROMELABS_FEEDBACK_BUTTON" desc="The tooltip for the Thorium Labs Send Feedback button">
         Send feedback for <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph>
       </message>
       <message name="IDS_TOOLTIP_FORWARD" desc="The tooltip for forward button">
@@ -7213,7 +7212,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_OPEN" desc="Message contained in a button to continue the navigation in an app selected by the user.">
           Open
         </message>
-        <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_STAY_IN_Thorium" desc="Message contained in a button to continue the navigation within Thorium.">
+        <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_STAY_IN_CHROME" desc="Message contained in a button to continue the navigation within Thorium.">
           Stay in Thorium
         </message>
         <message name="IDS_INTENT_PICKER_BUBBLE_VIEW_INITIATING_ORIGIN" desc="The label for the initiating origin of the intent picker.">
@@ -7223,7 +7222,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Open in app
         </message>
 
-        <if expr="is_Thoriumos">
+        <if expr="is_chromeos">
           <then>
             <message name="IDR_INTENT_PICKER_SUPPORTED_LINKS_INFOBAR_MESSAGE" desc="The text of an infobar asking if the user wants to open web links supported by a particular app (e.g. https://www.youtube.com) in that app.">
               Always use the <ph name="APP">$1<ex>YouTube</ex></ph> app to open supported web links?
@@ -7234,7 +7233,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
             <message name="IDS_INTENT_PICKER_SELECT_AN_APP_SUBTITLE" desc="The subtitle of a dialog containing a list of installed applications. The dialog allows the user to select an app to open a web link.">
               Select an app on your <ph name="DEVICE_TYPE">$1<ex>Thoriumbook</ex></ph> to open this link
             </message>
-            <message name="IDS_INTENT_CHIP_IPH_Thorium_OS" desc="The text for the In-Product Help bubble for the Intent Chip on ThoriumOS devices.">
+            <message name="IDS_INTENT_CHIP_IPH_CHROME_OS" desc="The text for the In-Product Help bubble for the Intent Chip on ThoriumOS devices.">
               Open websites in apps installed on your <ph name="DEVICE_TYPE">$1<ex>Thoriumbook</ex></ph>
             </message>
           </then>
@@ -7295,22 +7294,22 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_ACCNAME_SAVED_TAB_GROUP_BUTTON_ROLE_DESCRIPTION" desc="The accessible role description for tab group buttons.">
         Saved Tab Group button
       </message>
-      <message name="IDS_ACCNAME_ThoriumLABS_BUTTON" desc="The accessible name for the Thorium Labs experiments button">
+      <message name="IDS_ACCNAME_CHROMELABS_BUTTON" desc="The accessible name for the Thorium Labs experiments button">
         Thorium Experiments
       </message>
       <message name="IDS_ACCNAME_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The accessible name for the left aligned side panel toggle button">
         Left aligned side panel
       </message>
-      <message name="IDS_ACCESSIBLE_TEXT_ThoriumLABS_BUTTON_ADDED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is added to the toolbar by an enterprise policy change.">
+      <message name="IDS_ACCESSIBLE_TEXT_CHROMELABS_BUTTON_ADDED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is added to the toolbar by an enterprise policy change.">
         Enterprise policy changed. Experiments button added to toolbar. Click the button to open a dialog to enable experiments.
       </message>
-      <message name="IDS_ACCESSIBLE_TEXT_ThoriumLABS_BUTTON_REMOVED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is removed from the toolbar by an enterprise policy change.">
+      <message name="IDS_ACCESSIBLE_TEXT_CHROMELABS_BUTTON_REMOVED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is removed from the toolbar by an enterprise policy change.">
         Enterprise policy changed. Experiments button removed from toolbar.
       </message>
-      <message name="IDS_ACCNAME_ThoriumLABS_COMBOBOX" desc="The accessible name for the experiment's combobox to select between experiment states. ">
+      <message name="IDS_ACCNAME_CHROMELABS_COMBOBOX" desc="The accessible name for the experiment's combobox to select between experiment states. ">
         Select experiment state for the <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph> experiment.
       </message>
-       <message name="IDS_ACCNAME_ThoriumLABS_COMBOBOX_MAC" desc="The accessible name for the experiment's combobox to select between experiment states. This is used only for MacOS">
+       <message name="IDS_ACCNAME_CHROMELABS_COMBOBOX_MAC" desc="The accessible name for the experiment's combobox to select between experiment states. This is used only for MacOS">
         Select experiment state for the <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph> experiment. Experiment description: <ph name="EXPERIMENT_DESCRIPTION">$2<ex>Enables tab strip to scroll left and right when full.</ex></ph>
       </message>
       <message name="IDS_ACCNAME_SEPARATOR" desc="The accessible name for a separator.">
@@ -7395,7 +7394,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_BOOKMARK_PROMO_2" desc="Text shown on promotional UI appearing next to the Bookmarks button, which encourages users to use it.">
         Get back here fast by bookmarking this tab
       </message>
-      <message name="IDS_Thorium_TIP" desc="Accessible name used by a screen reader for the in-product-help or tutorial bubble icon." is_accessibility_with_no_ui="true">
+      <message name="IDS_CHROME_TIP" desc="Accessible name used by a screen reader for the in-product-help or tutorial bubble icon." is_accessibility_with_no_ui="true">
         Thorium tip
       </message>
       <message name="IDS_GLOBAL_MEDIA_CONTROLS_PROMO" desc="Text shown on promotional UI appearing next to the global media controls toolbar button.">
@@ -7956,12 +7955,12 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_FEEDBACK_OFFLINE_DIALOG_TEXT" desc="The content of the message box displayed when the user attempts to send a report while offline">
           Thank you for your feedback. You are offline now, and your report will be sent later.
         </message>
-        <if expr="not Thoriumos_ash">
+        <if expr="not chromeos_ash">
           <message name="IDS_FEEDBACK_INCLUDE_SYSTEM_INFORMATION_CHKBOX" desc="Checkbox for including system information on the bug report dialog box">
             Send <ph name="BEGIN_LINK1">&lt;a href="#" id="sys-info-url"&gt;</ph>system information<ph name="END_LINK1">&lt;/a&gt;</ph>
           </message>
         </if>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_FEEDBACK_INCLUDE_SYSTEM_INFORMATION_AND_METRICS_CHKBOX" desc="Checkbox for including system information and metrics on the bug report dialog box">
             Send <ph name="BEGIN_LINK1">&lt;a href="#" id="sys-info-url"&gt;</ph>system information<ph name="END_LINK1">&lt;/a&gt;</ph> and <ph name="BEGIN_LINK2">&lt;a href="#" id="histograms-url"&gt;</ph>metrics<ph name="END_LINK2">&lt;/a&gt;</ph>
           </message>
@@ -8039,7 +8038,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         None available
       </message>
 
-      <message name="IDS_ZOOMLEVELS_Thorium_ERROR_PAGES_LABEL" desc="Label for zoom level list entry for Thorium error pages.">
+      <message name="IDS_ZOOMLEVELS_CHROME_ERROR_PAGES_LABEL" desc="Label for zoom level list entry for Thorium error pages.">
         (Thorium error pages)
       </message>
 
@@ -8074,7 +8073,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           Error details:
         </message>
       </if>
-      <if expr="is_win or Thoriumos_ash">
+      <if expr="is_win or chromeos_ash">
         <message name="IDS_UPGRADE_DISABLED_BY_POLICY" desc="Status label: Upgrades disabled by policy">
           Updates are disabled by your administrator.
         </message>
@@ -8090,22 +8089,22 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
 
       <!-- Thorium Cleanup prompt and web UI -->
       <if expr="is_win">
-        <message name="IDS_Thorium_CLEANUP_PROMPT_DETAILS_BUTTON_LABEL" desc="The button in the Thorium Cleanup dialog that lets users see more details, such as what files will be deleted from their computer. Thorium browser shows the dialog when unwanted software, like ad injectors or software that changes the user's settings without their knowledge, is found on the user's computer. Noun; verb 'See' is omitted.">
+        <message name="IDS_CHROME_CLEANUP_PROMPT_DETAILS_BUTTON_LABEL" desc="The button in the Thorium Cleanup dialog that lets users see more details, such as what files will be deleted from their computer. Thorium browser shows the dialog when unwanted software, like ad injectors or software that changes the user's settings without their knowledge, is found on the user's computer. Noun; verb 'See' is omitted.">
           Details
         </message>
-        <message name="IDS_Thorium_CLEANUP_PROMPT_REMOVE_BUTTON_LABEL" desc="A button in the Thorium Cleanup dialog. When clicked, Thorium will begin to remove unwanted software and restore browser settings to default values. Appears next to a 'Cancel' button and a 'Details' button that opens a page that shows which unwanted software will be deleted. 'Remove' is imperative.">
+        <message name="IDS_CHROME_CLEANUP_PROMPT_REMOVE_BUTTON_LABEL" desc="A button in the Thorium Cleanup dialog. When clicked, Thorium will begin to remove unwanted software and restore browser settings to default values. Appears next to a 'Cancel' button and a 'Details' button that opens a page that shows which unwanted software will be deleted. 'Remove' is imperative.">
           Remove
         </message>
-        <message name="IDS_Thorium_CLEANUP_PROMPT_TITLE" desc="Title of the Thorium Cleanup dialog. Thorium browser shows the dialog when unwanted software, like ad injectors or software that changes the user's settings without their knowledge, is found on the user's computer. Appears above a description of what the cleanup dialog does, along with a 'Remove', 'Cancel', and 'Details' button. 'Remove' is imperative, asking the user, do you want Thorium to remove harmful software?">
+        <message name="IDS_CHROME_CLEANUP_PROMPT_TITLE" desc="Title of the Thorium Cleanup dialog. Thorium browser shows the dialog when unwanted software, like ad injectors or software that changes the user's settings without their knowledge, is found on the user's computer. Appears above a description of what the cleanup dialog does, along with a 'Remove', 'Cancel', and 'Details' button. 'Remove' is imperative, asking the user, do you want Thorium to remove harmful software?">
           Remove harmful software?
         </message>
-        <message name="IDS_Thorium_CLEANUP_REBOOT_PROMPT_TITLE" desc="Title of the Thorium Cleanup reboot prompt dialog. Thorium browser shows the dialog when the user runs the Thorium Cleanup tool and computer restart is required to finish the cleanup. User must take additional action to finish the cleanup. 'Restart' is imperative.">
+        <message name="IDS_CHROME_CLEANUP_REBOOT_PROMPT_TITLE" desc="Title of the Thorium Cleanup reboot prompt dialog. Thorium browser shows the dialog when the user runs the Thorium Cleanup tool and computer restart is required to finish the cleanup. User must take additional action to finish the cleanup. 'Restart' is imperative.">
           To finish removing harmful software, restart your computer
         </message>
-        <message name="IDS_Thorium_CLEANUP_REBOOT_PROMPT_RESTART_BUTTON_LABEL" desc="A button in the Thorium Cleanup reboot prompt dialog. Clicking this button causes the user's computer to turn off (shut down) and turn back on again. Imperative.">
+        <message name="IDS_CHROME_CLEANUP_REBOOT_PROMPT_RESTART_BUTTON_LABEL" desc="A button in the Thorium Cleanup reboot prompt dialog. Clicking this button causes the user's computer to turn off (shut down) and turn back on again. Imperative.">
           Restart computer
         </message>
-        <message name="IDS_Thorium_CLEANUP_LOGS_PERMISSION" desc="A checkbox label, appearing on the Thorium Cleanup modal dialog, asking the user for permission to send details about the cleanup operation to Google.">
+        <message name="IDS_CHROME_CLEANUP_LOGS_PERMISSION" desc="A checkbox label, appearing on the Thorium Cleanup modal dialog, asking the user for permission to send details about the cleanup operation to Google.">
           Report details to Google
         </message>
       </if>
@@ -8329,7 +8328,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
  for unfollowing a site.">
           Unfollow site
         </message>
-        <if expr="is_Thoriumos">
+        <if expr="is_chromeos">
           <message name="IDS_TAB_CXMENU_GROUPED_BY_DESK_MENU_ITEM_A11Y" desc="The a11y message for menu items in 'Move tabs to another window' when grouped by desk.">
             <ph name="TAB_TITLE">$1<ex>Google News</ex></ph> belongs to desk <ph name="DESK_TITLE">$2<ex>School</ex></ph>
           </message>
@@ -8645,7 +8644,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Stop sharing
       </message>
 
-      <!-- Strings for the certificate selection dialog triggered by Thorium.platformKeys -->
+      <!-- Strings for the certificate selection dialog triggered by chrome.platformKeys -->
       <message name="IDS_PLATFORM_KEYS_SELECT_CERT_DIALOG_TEXT" desc="The text in the dialog that prompts the user to select a certificate when an extension requests certificates through the platformKeys API.">
         <ph name="EXTENSION_NAME">$1<ex>My OpenVPN App</ex></ph> wants permanent access to a certificate to authenticate itself on your behalf.
       </message>
@@ -8710,7 +8709,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_FIRSTRUN_DLG_MAC_OPTIONS_SEND_USAGE_STATS_LABEL" desc="Label for checkbox to ask whether to send usage stats to Google">
           Help make <ph name="PRODUCT_NAME">$1<ex>Google Thorium</ex></ph> better by automatically sending usage statistics and crash reports to Google
         </message>
-        <message name="IDS_FIRSTRUN_DLG_MAC_START_Thorium_BUTTON" desc="Button to Start Google Thorium">
+        <message name="IDS_FIRSTRUN_DLG_MAC_START_CHROME_BUTTON" desc="Button to Start Google Thorium">
           Start <ph name="PRODUCT_NAME">$1<ex>Google Thorium</ex></ph>
         </message>
       </if>
@@ -8724,7 +8723,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Send feedback
       </message>
       <!-- Killed Tab Strings -->
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_KILLED_TAB_BY_OOM_MESSAGE" desc="The message displayed on the killed tab page when the page was killed by an out of memory error.">
           Either Thorium ran out of memory or the process for the webpage was terminated for some other reason.  To continue, reload or go to another page.
         </message>
@@ -8744,40 +8743,40 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
       </if>
 
-      <!-- Thorium://help -->
+      <!-- chrome://help -->
       <if expr="not is_android">
-        <if expr="not Thoriumos_ash and use_titlecase">
+        <if expr="not chromeos_ash and use_titlecase">
           <message name="IDS_RELAUNCH_BUTTON" desc="Titlecase: The label for the relaunch button that relaunches the browser once update is complete">
             Relaunch
           </message>
         </if>
-        <if expr="not Thoriumos_ash and not use_titlecase">
+        <if expr="not chromeos_ash and not use_titlecase">
           <message name="IDS_RELAUNCH_BUTTON" desc="The label for the relaunch button that relaunches the browser once update is complete">
             Relaunch
           </message>
         </if>
-        <if expr="Thoriumos_ash and use_titlecase">
+        <if expr="chromeos_ash and use_titlecase">
           <message name="IDS_RELAUNCH_BUTTON" desc="Titlecase: The label for the relaunch button that relaunches the browser once update is complete">
             Restart
           </message>
         </if>
-        <if expr="Thoriumos_ash and not use_titlecase">
+        <if expr="chromeos_ash and not use_titlecase">
           <message name="IDS_RELAUNCH_BUTTON" desc="The label for the relaunch button that relaunches the browser once update is complete">
             Restart
           </message>
         </if>
       </if> <!-- not is_android -->
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_ARC_LABEL" desc="Label for ARC">
           ARC
         </message>
         <message name="IDS_PLATFORM_LABEL" desc="Label for Platform">
           Platform
         </message>
-      </if> <!-- Thoriumos_ash -->
+      </if> <!-- chromeos_ash -->
 
-      <!-- Settings related strings not specific to Thorium://settings.
+      <!-- Settings related strings not specific to chrome://settings.
            (Settings specific strings are in settings_strings.grdp).
            Android uses native UI for settings -->
       <if expr="not is_android">
@@ -8837,7 +8836,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
 
         <!-- Enhanced Safe Browsing CRX allowlist warning -->
-        <message name="IDS_EXTENSIONS_SAFE_BROWSING_CRX_ALLOWLIST_WARNING" desc="A warning shown in 'Thorium://extensions' when the extension is not included in the Enhanced Safe Browsing CRX allowlist.">
+        <message name="IDS_EXTENSIONS_SAFE_BROWSING_CRX_ALLOWLIST_WARNING" desc="A warning shown in 'chrome://extensions' when the extension is not included in the Enhanced Safe Browsing CRX allowlist.">
            This extension is not trusted by Enhanced Safe Browsing.
         </message>
 
@@ -9105,7 +9104,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           Share
         </message>
         <!-- Desktop Screenshots Image Editor app strings; filled in to component webui
-            loaded into Thorium-untrusted://image-editor -->
+            loaded into chrome-untrusted://image-editor -->
         <message name="IDS_BROWSER_SHARING_SCREENSHOT_IMAGE_EDITOR_TOOLTIP_SELECTION" desc="The tooltip for the image editor's selection tool button.">
           Selection Tool
         </message>
@@ -9375,9 +9374,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Your account <ph name="EMAIL">$1<ex>john.doe@example.com</ex></ph> is no longer allowed as the primary account. Because this account is managed by <ph name="DOMAIN">$2<ex>example.com</ex></ph>, your bookmarks, history, passwords, and other settings will be cleared from this device.
       </message>
 
-      <!-- Managed UI on pages like Thorium://settings and Thorium://downloads -->
+      <!-- Managed UI on pages like chrome://settings and chrome://downloads -->
       <if expr="not is_android">
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_DEVICE_MANAGED_WITH_HYPERLINK" desc="Message to end users in Enterprise/EDU, with a link for more info (ThoriumOS)">
             Your <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph><ph name="DEVICE_TYPE">$2<ex>Thoriumbook</ex></ph> is managed<ph name="END_LINK">&lt;/a&gt;</ph> by your organization
           </message>
@@ -9504,13 +9503,13 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
               desc="Heading used when a person enters Guest Session">
           You're browsing as a Guest
         </message>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_NEW_TAB_GUEST_SESSION_DESCRIPTION"
               desc="Used when a person enters Guest Session">
             Pages you view in this window won't appear in the browser history and they won't leave other traces, like cookies, on the computer after you sign out. Files you download and bookmarks you create won't be preserved.
           </message>
         </if>
-        <if expr="not Thoriumos_ash">
+        <if expr="not chromeos_ash">
           <message name="IDS_NEW_TAB_GUEST_SESSION_DESCRIPTION"
               desc="Used when a person enters Guest Session">
             Pages you view in this window won't appear in the browser history and they won't leave other traces, like cookies, on the computer after you close all open Guest windows. Any files you download will be preserved, however.
@@ -9656,7 +9655,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
                  desc="Text for the button that opens the app in a tab. (In sentence case.)">
           Open in a tab
         </message>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_APP_CONTEXT_MENU_ACTIVATE_ARC"
                    desc="Text for the button that activates Android App. (In sentence case.)">
             Open
@@ -9733,7 +9732,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
                  desc="Text for the button that opens the app in a tab. (In title case.)">
           Open in a Tab
         </message>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_APP_CONTEXT_MENU_ACTIVATE_ARC"
                    desc="Text for the button that activates Android App. (In title case.)">
             Open
@@ -9783,7 +9782,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_SYNC_CONFIRMATION_REFRESHED_SETTINGS_BUTTON_LABEL" desc="Label of the button in the sync confirmation screen to open sync settings">
         Sync settings
       </message>
-      <if expr="Thoriumos_lacros">
+      <if expr="chromeos_lacros">
         <message name="IDS_SYNC_CONFIRMATION_TITLE_LACROS_NON_FORCED" desc="Title of the sync confirmation dialog/screen on lacros when sync is not forced.">
           Turn on Thorium browser sync?
         </message>
@@ -9807,7 +9806,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </message>
 
       <!--- Sync Confirmation section of the tab modal signin flow when sync is disabled by policy -->
-      <message name="IDS_SYNC_DISABLED_CONFIRMATION_Thorium_SYNC_TITLE" desc="Title of the Thorium sync section of the sync confirmation dialog in the tab modal signin flow when sync is disabled by policy">
+      <message name="IDS_SYNC_DISABLED_CONFIRMATION_CHROME_SYNC_TITLE" desc="Title of the chrome sync section of the sync confirmation dialog in the tab modal signin flow when sync is disabled by policy">
         Sync is disabled by your administrator
       </message>
       <message name="IDS_SYNC_DISABLED_CONFIRMATION_DETAILS" desc="Body of the sync confirmation dialog in the tab modal signin flow when sync is disabled by policy">
@@ -9826,7 +9825,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </message>
 
       <!-- Dice Web Signin Interception Bubble-->
-      <if expr="not Thoriumos_ash and not is_android and not Thoriumos_lacros">
+      <if expr="not chromeos_ash and not is_android and not chromeos_lacros">
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_NEW_PROFILE_BUTTON_LABEL" desc="Label of the confirmation button in the web signin interception bubble">
           Ok
         </message>
@@ -9865,7 +9864,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
       </if>
 
-      <if expr="not Thoriumos_ash and not is_android">
+      <if expr="not chromeos_ash and not is_android">
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_ENTERPRISE_PROFILE_NAME" desc="Default name for work profiles created after signin interception">
           Work
         </message>
@@ -9979,7 +9978,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_EXTERNAL_PROTOCOL_CHECKBOX_PER_ORIGIN_TEXT" desc="The External Protocol Dialog is shown when a navigation is started from a webpage, such as https://google.com, to a URL where the protocol indicates that a different software application on the machine should be opened, external to the browser. For example, 'skype:' may indicate that the Skype application be opened. This string describes a checkbox that allows the user to opt out of seeing this confirmation dialog in the future from pages with the same origin as the current page, when trying to launch the same protocol currently being launched">
         Always allow <ph name="ORIGIN">$1<ex>https://google.com</ex></ph> to open links of this type in the associated app
       </message>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_EXTERNAL_PROTOCOL_CLOSE_BUTTON_TEXT" desc="Button in External Protocol Dialog that closes the dialog">
           Close
         </message>
@@ -10094,7 +10093,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_DEFAULT_DOWNLOAD_FILENAME" desc="Default name for downloaded files when we have no idea what they could be.">
         download
       </message>
-      <if expr="is_macosx or Thoriumos_ash">
+      <if expr="is_macosx or chromeos_ash">
         <message name="IDS_BROWSER_WINDOW_MAC_TAB_UNTITLED" desc="Tabs and windows on MacOS with no title use this string.">
           Untitled
         </message>
@@ -10198,7 +10197,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Open settings
       </message>
 
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_SYNC_PASSPHRASE_ERROR_BUBBLE_VIEW_MESSAGE" desc="Message in the sync error bubble view when the user needs to enter their sync passphrase.">
           To start sync, enter your passphrase
         </message>
@@ -10219,7 +10218,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <!-- Android uses native UI to handle Sync settings -->
       <if expr="not is_android">
         <!-- Sync options dialog strings -->
-        <if expr="not Thoriumos_ash">
+        <if expr="not chromeos_ash">
           <message name="IDS_SYNC_OVERVIEW" desc="The message that appears in the options dialog when sync has not been set up by the user.">
             Sign in to get your bookmarks, history, passwords and other settings on all your devices. You'll also automatically be signed in to your Google services.
           </message>
@@ -10258,22 +10257,22 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_SYNC_SERVER_IS_UNREACHABLE" desc="The message to display in the New Tab Page and Settings Page sync section when the server is unreachable.">
           Couldn't connect to the sync server. Retrying...
         </message>
-        <if expr="not Thoriumos_ash">
+        <if expr="not chromeos_ash">
           <message name="IDS_SYNC_RELOGIN_ERROR" desc="The text to display on in the hyperlink when the user needs to sign in again to use sync.">
             Sign in again to resume sync
           </message>
         </if>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_SYNC_RELOGIN_ERROR" desc="The text to display on in the hyperlink when the user needs to sign out and sign in again to use sync on ThoriumOS.">
             Sign out then sign in again to start sync
           </message>
         </if>
-        <if expr="not Thoriumos_ash">
+        <if expr="not chromeos_ash">
           <message name="IDS_SYNC_RELOGIN_BUTTON" desc="The text to display on the button when the user needs to sign in again to use sync.">
             Sign in again
           </message>
         </if>
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <message name="IDS_SYNC_RELOGIN_BUTTON" desc="The text to display on the button when the user needs to sign out and sign in again to use sync on ThoriumOS.">
             Sign out
           </message>
@@ -10294,7 +10293,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Advanced settings
         </message>
 
-        <if expr="Thoriumos_ash">
+        <if expr="chromeos_ash">
           <!-- Spinner dialog for waiting sync backend to start up -->
           <message name="IDS_SYNC_SETUP_SPINNER_TITLE" desc="The title of the sync setup dialog showing spinner.">
             Please wait...
@@ -10466,12 +10465,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_NOTIFICATION_REPLY_PLACEHOLDER" desc="Placeholder text shown in the text box before any text is entered when replying directly to a notification.">
         Send message
       </message>
-      <if expr="not Thoriumos_ash">
+      <if expr="not chromeos_ash">
         <message name="IDS_NOTIFICATION_MUTED_MESSAGE" desc="Informative message describing that notification content is currently hidden while the screen is being shared. Shown as the body of a notification." meaning="Not on ThoriumOS.">
           Details are hidden while you share your screen
         </message>
       </if>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_NOTIFICATION_MUTED_MESSAGE" desc="Informative message describing that notification content is currently hidden while the screen is being shared. Shown as the body of a notification." meaning="On ThoriumOS only.">
           Details are hidden while you share your screen
         </message>
@@ -10563,7 +10562,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
                 Wrong index.
         </message>
         <message name="IDS_JAVASCRIPT_UNSUPPORTED_ERROR_APPLESCRIPT_MAC" desc="Error dialog title to be displayed when the user attempts to execute JavaScript via AppleScript. Mac-only.">
-          Executing JavaScript through AppleScript is turned off. To turn it on, from the menu bar, go to View &gt; Developer &gt; Allow JavaScript from Apple Events. For more information: https://support.google.com/Thorium/?p=applescript
+          Executing JavaScript through AppleScript is turned off. To turn it on, from the menu bar, go to View &gt; Developer &gt; Allow JavaScript from Apple Events. For more information: https://support.google.com/chrome/?p=applescript
         </message>
       </if> <!-- is_macosx -->
 
@@ -11239,7 +11238,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_ABOUT_LINUX_PROXY_CONFIG_BODY" desc="HTML body of page shown on systems where system proxy configuration is unsupported.">
           &lt;p&gt;When running <ph name="PRODUCT_NAME">$1<ex>Google Thorium</ex></ph> under a supported desktop environment, the system proxy settings will be used.  However, either your system is not supported or there was a problem launching your system configuration.&lt;/p&gt;
 
-          &lt;p&gt;But you can still configure via the command line.  Please see &lt;code&gt;man <ph name="PRODUCT_BINARY_NAME">$2<ex>google-Thorium</ex></ph>&lt;/code&gt; for more information on flags and environment variables.&lt;/p&gt;
+          &lt;p&gt;But you can still configure via the command line.  Please see &lt;code&gt;man <ph name="PRODUCT_BINARY_NAME">$2<ex>google-chrome</ex></ph>&lt;/code&gt; for more information on flags and environment variables.&lt;/p&gt;
         </message>
       </if>
 
@@ -11333,7 +11332,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
 
       <!-- Shelf strings -->
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_SHELF_CONTEXT_MENU_CLOSE" desc="Title text for the 'close' context menu item of the shelf">
           Close
         </message>
@@ -11363,12 +11362,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
 
       <!-- Caret browsing. -->
-      <if expr="not Thoriumos_ash">
+      <if expr="not chromeos_ash">
         <message name="IDS_ENABLE_CARET_BROWSING_INFO" desc="Information in the confirmation dialog for enabling caret browsing">
           You can navigate pages with a text cursor. Press F7 to turn off.
         </message>
       </if>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_ENABLE_CARET_BROWSING_INFO" desc="Information in the confirmation dialog for enabling caret browsing">
           You can navigate pages with a text cursor. Press Ctrl+Search+7 to turn off.
         </message>
@@ -11446,7 +11445,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </if>
 
       <!-- App List. -->
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_APP_ACTION_SHORTCUT_ACCESSIBILITY_NAME" desc="Hint text for the search result that performs a specific action with an app.">
           <ph name="ACTION_NAME">$1<ex>Compose</ex></ph> with <ph name="APP_NAME">$2<ex>GMail</ex></ph> App
         </message>
@@ -11509,7 +11508,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </if>
 
       <!-- Translated apps strings -->
-      <message name="IDS_Thorium_SHORTCUT_DESCRIPTION" desc="Description for the Thorium app shortcut in the app launcher.">
+      <message name="IDS_CHROME_SHORTCUT_DESCRIPTION" desc="Description for the Thorium app shortcut in the app launcher.">
         A fast, simple, and secure web browser, built for the modern web.
       </message>
       <message name="IDS_WEBSTORE_NAME_STORE" desc="Name for the WebStore app in the app launcher.">
@@ -11673,7 +11672,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_TAB_AX_LABEL_PINNED_FORMAT" is_accessibility_with_no_ui="true" desc="Accessibility label text, when a tab is pinned. Example: 'Google Search - Pinned'">
         <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Pinned
       </message>
-      <if expr="is_Thoriumos">
+      <if expr="is_chromeos">
         <message name="IDS_TAB_AX_LABEL_PERMISSION_REQUESTED_FORMAT" desc="Accessibility label text for ThoriumOS, when a tab has a pending request. Example: 'Google Search - Permission requested, press F6 to respond'.">
           <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Permission requested, press Ctrl + Forward to respond
         </message>
@@ -11683,7 +11682,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Permission requested, press ⌘ + Option + Up arrow to respond
         </message>
       </if>
-      <if expr="not is_Thoriumos and not is_macosx and toolkit_views">
+      <if expr="not is_chromeos and not is_macosx and toolkit_views">
         <message name="IDS_TAB_AX_LABEL_PERMISSION_REQUESTED_FORMAT" desc="Accessibility label text for Windows, Linux or Fuchsia, when a tab has a pending request. Example: 'Google Search - Permission requested, press F6 to respond'.">
           <ph name="WINDOW_TITLE">$1<ex>Google Search</ex></ph> - Permission requested, press F6 to respond
         </message>
@@ -11737,7 +11736,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
 
       <!-- Accessibility alerts -->
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_A11Y_ALERT_CAPS_OFF" desc="Alert sent to the accessibility api when caps lock is turned off.">
           caps lock off
         </message>
@@ -11791,11 +11790,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
 
       <!-- About device logs UI display strings -->
-      <message name="IDS_DEVICE_LOG_TITLE" desc="Title of the Thorium://device-log page">
+      <message name="IDS_DEVICE_LOG_TITLE" desc="Title of the chrome://device-log page">
         Device Log
       </message>
       <message name="IDS_DEVICE_AUTO_REFRESH" desc="Instructions for how to auto-refresh the page">
-        Add a query param in URL to auto-refresh the page: Thorium://device-log/?refresh=&lt;sec&gt;
+        Add a query param in URL to auto-refresh the page: chrome://device-log/?refresh=&lt;sec&gt;
       </message>
       <message name="IDS_DEVICE_LOG_REFRESH" desc="Button to refresh device log entries">
         Refresh
@@ -11860,7 +11859,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_DEVICE_LOG_TIME_DETAIL" desc="Detailed timestamps checkbox in device event log">
         Detailed Timestamps
       </message>
-      <message name="IDS_DEVICE_LOG_ENTRY" desc="Format string for lines in Thorium://device-log.">
+      <message name="IDS_DEVICE_LOG_ENTRY" desc="Format string for lines in chrome://device-log.">
         [<ph name="TIMESTAMP">$1<ex>Timestamp</ex></ph>]
         <ph name="FILE_INFO">$2<ex>file:123</ex></ph>
         <ph name="EVENT_NAME">$3<ex>Event Description</ex></ph>
@@ -11874,7 +11873,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <ph name="USB_DEVICE_NAME">$1<ex>Nexus 5</ex></ph> detected
     </message>
 
-    <if expr="Thoriumos_ash">
+    <if expr="chromeos_ash">
       <!-- CrOSUsb Notification -->
       <message name="IDS_CROSUSB_DEVICE_DETECTED_NOTIFICATION" desc="Content for notification shown to the user when a USB device gets plugged in.">
           Open Settings to connect <ph name="USB_DEVICE_NAME">$1<ex>Nexus 5</ex></ph> to <ph name="USB_VM_NAME">$2<ex>Linux</ex></ph>
@@ -11915,7 +11914,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <if expr="not is_android">
       <!-- Device Chooser Prompt -->
       <message name="IDS_BLUETOOTH_DEVICE_CHOOSER_PROMPT_EXTENSION_NAME" desc="The label that is used to introduce Bluetooth chooser details to the user in a popup when it is from a Thorium extension.">
-        "<ph name="Thorium_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to pair
+        "<ph name="CHROME_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to pair
       </message>
       <message name="IDS_BLUETOOTH_DEVICE_CHOOSER_TURN_ADAPTER_OFF" desc="Text of a link the user can click to get help information when Bluetooth adapter is turned off.">
         <ph name="TURN_ON_BLUETOOTH_LINK">$1<ex>Turn on Bluetooth</ex></ph> to allow pairing
@@ -11946,7 +11945,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
     </if>
     <message name="IDS_USB_DEVICE_CHOOSER_PROMPT_EXTENSION_NAME" desc="The label that is used to introduce USB chooser details to the user in a popup when it is from a Thorium extension.">
-      "<ph name="Thorium_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect
+      "<ph name="CHROME_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect
     </message>
     <message name="IDS_DEVICE_CHOOSER_ACCNAME_COMPATIBLE_DEVICES_LIST" desc="The accessible name for the list of compatible devices, read to screen reader users when navigating to the container.">
       Compatible devices
@@ -11983,7 +11982,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <ph name="Origin">$1<ex>www.google.com</ex></ph> wants to connect to a serial port
       </message>
       <message name="IDS_SERIAL_PORT_CHOOSER_PROMPT_EXTENSION_NAME" desc="The label that is used to introduce serial port chooser details to the user in a popup when it is from a Thorium extension.">
-        "<ph name="Thorium_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect to a serial port
+        "<ph name="CHROME_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect to a serial port
       </message>
       <message name="IDS_SERIAL_PORT_CHOOSER_NAME_WITH_PATH" desc="User option displaying a human-readable name for a serial port with the device path in parenthesis">
         <ph name="FRIENDLY_NAME">$1<ex>Virtual COM Port</ex></ph> (<ph name="DEVICE_PATH">$2<ex>COM1</ex></ph>)
@@ -12023,7 +12022,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <ph name="Origin">$1<ex>www.google.com</ex></ph> wants to connect to a HID device
       </message>
       <message name="IDS_HID_CHOOSER_PROMPT_EXTENSION_NAME" desc="The label that is used to introduce Human Interface Device (HID) chooser details to the user in a popup when it is from a Thorium extension.">
-        "<ph name="Thorium_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect to a HID device
+        "<ph name="CHROME_EXTENSION_NAME">$1<ex>Thorium Extension Name</ex></ph>" wants to connect to a HID device
       </message>
       <message name="IDS_HID_CHOOSER_ITEM_WITHOUT_NAME" desc="User option displaying the device IDs for a Human Interface Device (HID) without a device name.">
         Unknown Device (<ph name="DEVICE_ID">$1<ex>1234:abcd</ex></ph>)
@@ -12150,7 +12149,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </if>
 
     <!-- Framebust / Blocked Redirection intervention message -->
-    <!-- Android strings are declared in android_Thorium_strings.grd. -->
+    <!-- Android strings are declared in android_chrome_strings.grd. -->
     <message name="IDS_REDIRECT_BLOCKED_MESSAGE" desc="The message stating that a redirect (noun) was blocked on this page. This will be followed on a separate line with the address the user was being redirected to.">
       Redirect blocked:
     </message>
@@ -12199,7 +12198,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Google recommends Thorium.">
         Google recommends Thorium
       </message>
-      <message name="IDS_WIN10_TOAST_OPEN_Thorium" desc="The label on the button to dismiss the toast and launch Thorium.">
+      <message name="IDS_WIN10_TOAST_OPEN_CHROME" desc="The label on the button to dismiss the toast and launch Thorium.">
         Open Thorium
       </message>
       <message name="IDS_WIN10_TOAST_NO_THANKS" desc="The label on the button to dismiss the toast without launching Thorium.">
@@ -12382,33 +12381,33 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <!-- File System Access restricted directory and file dialogs. -->
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_TITLE" desc="Title of dialog explaining that the user selected a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_TITLE" desc="Title of dialog explaining that the user selected a directory that chrome doesn't want to expose to the web">
       Can't open this folder
     </message>
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_TEXT" desc="Text of dialog explaining that the user selected a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_TEXT" desc="Text of dialog explaining that the user selected a directory that chrome doesn't want to expose to the web">
       <ph name="ORIGIN">$1<ex>example.com</ex></ph> can't open this folder because it contains system files
     </message>
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_BUTTON" desc="Text of the button in dialog explaining that the user selected a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_DIRECTORY_BUTTON" desc="Text of the button in dialog explaining that the user selected a directory that chrome doesn't want to expose to the web">
       Choose a different folder
     </message>
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_TITLE" desc="Title of dialog explaining that the user selected a file in a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_TITLE" desc="Title of dialog explaining that the user selected a file in a directory that chrome doesn't want to expose to the web">
       Can't open this file
     </message>
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_TEXT" desc="Text of dialog explaining that the user selected a file in a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_TEXT" desc="Text of dialog explaining that the user selected a file in a directory that chrome doesn't want to expose to the web">
       <ph name="ORIGIN">$1<ex>example.com</ex></ph> can't open files in this folder because it contains system files
     </message>
-    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_BUTTON" desc="Text of the button in dialog explaining that the user selected a file in a directory that Thorium doesn't want to expose to the web">
+    <message name="IDS_FILE_SYSTEM_ACCESS_RESTRICTED_FILE_BUTTON" desc="Text of the button in dialog explaining that the user selected a file in a directory that chrome doesn't want to expose to the web">
       Choose a different file
     </message>
 
     <!-- Relaunch notification bubble and dialog. -->
     <if expr="not is_android">
-      <if expr="not Thoriumos_ash">
+      <if expr="not chromeos_ash">
         <message name="IDS_RELAUNCH_ACCEPT_BUTTON" desc="The text in the accept button of a dialog that causes the browser to be relaunched immediately.">
           Relaunch now
         </message>
       </if>
-      <if expr="Thoriumos_ash">
+      <if expr="chromeos_ash">
         <message name="IDS_RELAUNCH_ACCEPT_BUTTON" desc="The text in the accept button of a dialog that causes the device to be restarted immediately.">
           Restart now
         </message>
@@ -13154,7 +13153,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <!-- ThoriumLabs bubble -->
-    <message name="IDS_ThoriumLABS_RELAUNCH_BUTTON_LABEL"
+    <message name="IDS_CHROMELABS_RELAUNCH_BUTTON_LABEL"
              desc="Label on the button in the footer of the Thorium Labs bubble which will relaunch the browser.">
       Relaunch
     </message>
@@ -13163,28 +13162,28 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Thorium Experiments
     </message>
     <if expr="use_titlecase">
-    <message name="IDS_ThoriumLABS_SEND_FEEDBACK" desc="In Title Case: The label for the button that will allow users to submit feedback from Thorium Labs.">
+    <message name="IDS_CHROMELABS_SEND_FEEDBACK" desc="In Title Case: The label for the button that will allow users to submit feedback from Thorium Labs.">
         Send Feedback
     </message>
     </if>
     <if expr="not use_titlecase">
-      <message name="IDS_ThoriumLABS_SEND_FEEDBACK" desc="The label for the button that will allow users to submit feedback from Thorium Labs.">
+      <message name="IDS_CHROMELABS_SEND_FEEDBACK" desc="The label for the button that will allow users to submit feedback from Thorium Labs.">
         Send feedback
     </message>
     </if>
-    <message name="IDS_ThoriumLABS_SEND_FEEDBACK_DESCRIPTION_PLACEHOLDER" desc="The placeholder text for the send feedback dialog to submit feedback for each experiment.">
+    <message name="IDS_CHROMELABS_SEND_FEEDBACK_DESCRIPTION_PLACEHOLDER" desc="The placeholder text for the send feedback dialog to submit feedback for each experiment.">
       Send feedback for <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph>.
     </message>
-    <message name="IDS_ThoriumLABS_DEFAULT" desc="Label for combobox option for the default experiment state">
+    <message name="IDS_CHROMELABS_DEFAULT" desc="Label for combobox option for the default experiment state">
       Default
     </message>
-    <message name="IDS_ThoriumLABS_ENABLED" desc="Label for combobox option for the enable experiment state">
+    <message name="IDS_CHROMELABS_ENABLED" desc="Label for combobox option for the enable experiment state">
       Enabled
     </message>
-    <message name="IDS_ThoriumLABS_DISABLED" desc="Label for combobox option for the disabled experiment state">
+    <message name="IDS_CHROMELABS_DISABLED" desc="Label for combobox option for the disabled experiment state">
       Disabled
     </message>
-    <message name = "IDS_ThoriumLABS_ENABLED_WITH_VARIATION_NAME" desc="Label for combobox option for an enabled variation that will have a description describing what variation is enabled in the placeholder.">
+    <message name = "IDS_CHROMELABS_ENABLED_WITH_VARIATION_NAME" desc="Label for combobox option for an enabled variation that will have a description describing what variation is enabled in the placeholder.">
       Enabled – <ph name="VARIATION_NAME">$1<ex>tabs shrink to pinned tab width</ex></ph>
     </message>
 
@@ -13297,7 +13296,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <!-- Input overlay strings -->
-    <if expr="Thoriumos_ash">
+    <if expr="chromeos_ash">
       <message name="IDS_INPUT_OVERLAY_GAME_CONTROLS_ALPHA" desc="Generic feature name during alpha phase, to be displayed in educational and settigns UI.">
         Game controls
       </message>
@@ -13406,7 +13405,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION" desc="The body text of the bubble.* “Thorium is finding new ways”: “finding” is meant to convey a work in progress, like “build” in the title. The features are live and functional, but still in beta. So we want a verb that’s stronger than “exploring” but weaker than “launching”. * “reduce tracking”: This used to read “reduce cross-site tracking”, but we’ve dropped “cross-site” because it makes the idea unnecessarily complicated. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). * “Then” is an important keyword. It suggests some amount of time later. The first step is that interests are generated. Later (minutes or weeks), a different site might request interests.">
       Thorium is finding new ways to reduce tracking and keep you even safer as you browse. Thorium also <ph name="ESTIMATE_INTERESTS_LINK">$1<ex>estimates your interests</ex></ph> and enables you to manage them. Then, sites you visit can ask Thorium for your interests to show you ads.
     </message>
-    <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_SETTINGS_LINK" desc="The user can choose “Go to settings” to visit Thorium://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Go to settings”, the user will navigate away from this page and won’t be able to return here.">
+    <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_SETTINGS_LINK" desc="The user can choose “Go to settings” to visit chrome://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Go to settings”, the user will navigate away from this page and won’t be able to return here.">
       Go to settings
     </message>
     <message name="IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION_ESTIMATES_INTERESTS_LINK" desc="This will be inserted as a link in IDS_PRIVACY_SANDBOX_BUBBLE_NOTICE_DESCRIPTION instead of ESTIMATE_INTERESTS_LINK placeholder. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). ">
@@ -13427,7 +13426,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_LEARN_MORE_SECTION_2_BULLET_POINT_3"  desc="FLEDGE API Bullet 3 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How you can manage your data:” is bold and serves as a label to help people skimming the page. * “To protect your privacy”: Today, most data is kept for long periods of time. This new Topics API doesn’t retain estimated topics for more than 3 weeks. The only reason for this feature is to protect the user’s privacy. * “auto”: isn’t strictly necessary, but it conveys that this feature is an ongoing part of the service. This isn’t describing, for example, a one-time deletion. * “older than 4 weeks”: We’re trying to convey a rolling delete. Imagine a user opens a browser for the very first time. As the user browses, sites can store info with Thorium for up to 4 weeks. So in week 1, the user visits site A. When week 5 starts, site A is removed from the list of sites. * “a site you visit…”: If a user visits site A every week for months on end, that site will remain on the user’s list of sites for months on end. * “Or you can…”: Say a user strongly dislikes www.siteB.com. But that user might visit siteB.com as part of their job, or just to see how bad it really is. The user can stop siteB from defining interests for them. This block lasts indefinitely.">
       <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How you can manage your data:<ph name="END_BOLD">&lt;/b&gt;</ph> To protect your privacy, we auto-delete sites from the list that are older than 4 weeks. A site you visit again might appear on the list again. Or you can remove a site if you don’t want that site to ever define interests for you.
     </message>
-    <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_ACCEPT_BUTTON" desc="A button that allows the user to accept joining the Privacy Sandbox trials. If the user chooses “Yes, I’m in”: 1)  this consent page disappears and the flow is complete 2) The Privacy Sandbox trials are turned on for this user. These features include everything described above. The page that hosts the settings will appear at Thorium://settings/privacySandbox. Saying “Yes, I’m in” is like turning the toggle on. “No thanks” is like keeping the toggle off.">
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_ACCEPT_BUTTON" desc="A button that allows the user to accept joining the Privacy Sandbox trials. If the user chooses “Yes, I’m in”: 1)  this consent page disappears and the flow is complete 2) The Privacy Sandbox trials are turned on for this user. These features include everything described above. The page that hosts the settings will appear at chrome://settings/privacySandbox. Saying “Yes, I’m in” is like turning the toggle on. “No thanks” is like keeping the toggle off.">
       Yes, I’m in
     </message>
     <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_DECLINE_BUTTON" desc="A button that allows the user to decline joining the Privacy Sandbox trials. If the user chooses “No thanks” this consent page disappears and the flow is complete.">
@@ -13445,7 +13444,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_ACKNOWLEDGE_BUTTON" desc="The user can acknowledge the changes with “Got it”. This consent page disappears and the flow is complete.">
       Got it
     </message>
-    <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_OPEN_SETTINGS_BUTTON" desc="The user can choose “Settings” to visit Thorium://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Settings”, the user will navigate away from this page and won’t be able to return here.">
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_OPEN_SETTINGS_BUTTON" desc="The user can choose “Settings” to visit chrome://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Settings”, the user will navigate away from this page and won’t be able to return here.">
       Settings
     </message>
 
