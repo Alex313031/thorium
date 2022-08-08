@@ -1,6 +1,6 @@
-# Cross-Compiling Thorium for Windows on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
+# Cross-Compiling Thorium for Windows on Linux &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
-As many Chromium developers are on Linux/Mac, cross-compiling Chromium for
+As many Thorium developers are on Linux/Mac, cross-compiling Thorium for
 Windows targets facilitates development for Windows targets on non-Windows
 machines.
 
