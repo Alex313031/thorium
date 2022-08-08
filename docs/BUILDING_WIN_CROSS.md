@@ -1,4 +1,4 @@
-# Cross-Compiling Thorium for Windows on Linux
+# Cross-Compiling Thorium for Windows on Linux <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 As many Chromium developers are on Linux/Mac, cross-compiling Chromium for
 Windows targets facilitates development for Windows targets on non-Windows
@@ -70,3 +70,7 @@ Follow [Setting up the build](https://github.com/Alex313031/Thorium/blob/main/do
 root of the Thorium repo, use the [`win_args.gn`](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.gn), from *~/Thorium/infra/*
 
 Then, to build, run `build_win.sh`, instead of `build.sh`. See > [Here](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING.md#build-thorium-).
+
+*Happy Thorium Building!*
+
+<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
