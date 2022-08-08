@@ -78,6 +78,7 @@ const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
      blink::switches::kNumRasterThreads, "4"},
 };
 
+#if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Basic",
@@ -93,5 +94,6 @@ const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {"Gnome-LibSecret",
      switches::kPasswordStore, "gnome-libsecret"},
 };
+#endif // BUILDFLAG(IS_LINUX)
 
 #endif  // CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
