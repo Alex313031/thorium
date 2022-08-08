@@ -56,9 +56,9 @@ gsyncShallow () {
 	
 	git checkout -f origin/main &&
 	
-	git rebase-update &&
+	git rebase-update --current &&
 	
-	gclient sync -f -R -D --no-history --shallow &&
+	gclient sync -R -D --no-history --shallow &&
 	
 	gclient runhooks &&
 	
