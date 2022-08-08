@@ -25,11 +25,26 @@ displayHelp () {
 	printf "${bold}${GRE}Script to clone the latest LLVM being used by the Chromium Project, and builds a local ${c0}\n" &&
 	printf "${bold}${GRE}LLVM toolchain with Polly to use the Polly optimizations in the main Thorium BUILD.gn${c0}\n" &&
 	printf "${bold}${YEL}Use the --pgo flag to build LLVM with PGO.${c0}\n" &&
+	printf "${bold}${YEL}Use the --jobs or -j flag to set the number of jobs (should be less or equal to the number of CPU cores).${c0}\n" &&
+	printf "${bold}${YEL}Use the --verbose or -v flag to make Ninja show verbose commands.${c0}\n" &&
+	printf "${bold}${YEL}Use the --version flag to show version, and --help to show help.${c0}\n" &&
 	printf "\n"
 }
 
 case $1 in
 	--help) displayHelp; exit 0;;
+esac
+
+# --version
+displayVersion () {
+	cd ~/chromium/src &&
+	printf "\n"
+	python3 tools/clang/scripts/build.py --version &&
+	printf "\n"
+}
+
+case $1 in
+	--version) displayVersion; exit 0;;
 esac
 
 # Build with PGO
@@ -38,9 +53,9 @@ buildPollyPGO () {
 
 	printf "${GRE}Building LLVM and Polly using PGO...${c0}\n" &&
 	printf "\n"
-	sleep 3 &&
+	sleep 1 &&
 	
-	python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto --pgo &&
+	python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto --pgo $@ &&
 	
 	printf "\n"
 	printf "${GRE}Done! You can now run ./build.sh\n" &&
@@ -57,9 +72,10 @@ printf "\n" &&
 printf "${bold}${GRE}Clones latest LLVM being used by the Chromium Project, and builds a local LLVM toolchain with Polly ${c0}\n" &&
 printf "${bold}${GRE}to use the Polly optimizations in the main Thorium BUILD.gn${c0}\n" &&
 printf "${bold}${YEL}Use the --pgo flag to build LLVM with PGO.${c0}\n" &&
+printf "${bold}${YEL}Use the --jobs or -j flag to set the number of jobs (should be less or equal to the number of CPU cores)${c0}\n" &&
+printf "${bold}${YEL}Use the --verbose or -v flag to make Ninja show verbose commands.${c0}\n" &&
+printf "${bold}${YEL}Use the --version flag to show version, and --help to show help.${c0}\n" &&
 printf "\n"
-
-sleep 2 &&
 
 cd ~/chromium/src &&
 
@@ -67,7 +83,7 @@ printf "${GRE}Building LLVM and Polly...${c0}\n" &&
 printf "\n"
 sleep 1 &&
 
-python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto &&
+python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto $@ &&
 
 printf "\n"
 printf "${GRE}Done! You can now run ./build.sh\n" &&
