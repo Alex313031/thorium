@@ -14,14 +14,14 @@
      "Enables high contrast mode for all Thorium instances.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kForceHighContrast)},
     {"tab-outlines-in-low-contrast-themes",
-     "Tab Outlines in Low Contrast Themes";
+     "Tab Outlines in Low Contrast Themes",
      "Expands the range of situations in which tab outline strokes are "
-     "displayed, improving accessiblity in dark and incognito mode.";
+     "displayed, improving accessiblity in dark and incognito mode.",
      kOsDesktop, SINGLE_VALUE_TYPE(features::kTabOutlinesInLowContrastThemes)},
     {"prominent-dark-mode-active-tab-title",
-     "Prominent Dark Mode Active Tab Titles";
+     "Prominent Dark Mode Active Tab Titles",
      "Makes the active tab title in dark mode bolder so the active tab is "
-     "easier to identify.";
+     "easier to identify.",
      kOsDesktop, SINGLE_VALUE_TYPE(features::kProminentDarkModeActiveTabTitle)},
     {"custom-ntp",
      "Custom New Tab Page",
