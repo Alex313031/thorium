@@ -129,6 +129,7 @@ It should be used before every seperate build. See the [Updating](#updating) sec
 
 This will update and sync the sources and at the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
+- NOTE: To build for MacOS, use `./setup.sh --mac`. To build for Raspberry Pi, use `./setup.sh --raspi`.
 
 Chromium and Thorium use [Ninja](https://ninja-build.org) as their main build tool, along with
 a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
