@@ -201,7 +201,7 @@ if (use_opus_x86_optimization) {
     if (!is_win || is_clang) {
       cflags = [ "-msse4.1" ]
     }
-    if (is_win || is_clang) {
+    if (is_win) {
       cflags = [ "-fno-fast-math" ]
     }
   }
