@@ -58,7 +58,8 @@ config("opus_private_config") {
     cflags += [
       "/wd4305",  # Disable truncation warning in celt/pitch.c .
       "/wd4334",  # Disable 32-bit shift warning in src/opus_encoder.c .
-      "-Xclang", "-fno-fast-math",
+      "/fp:precise",
+      "/clang:-fno-fast-math",
     ]
   } else {
     defines += [
