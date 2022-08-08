@@ -17,12 +17,12 @@
      "Tab Outlines in Low Contrast Themes",
      "Expands the range of situations in which tab outline strokes are "
      "displayed, improving accessiblity in dark and incognito mode.",
-     kOsDesktop, SINGLE_VALUE_TYPE(features::kTabOutlinesInLowContrastThemes)},
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kTabOutlinesInLowContrastThemes)},
     {"prominent-dark-mode-active-tab-title",
      "Prominent Dark Mode Active Tab Titles",
      "Makes the active tab title in dark mode bolder so the active tab is "
      "easier to identify.",
-     kOsDesktop, SINGLE_VALUE_TYPE(features::kProminentDarkModeActiveTabTitle)},
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kProminentDarkModeActiveTabTitle)},
     {"custom-ntp",
      "Custom New Tab Page",
      "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). This applies for incognito windows as well when not set to a `chrome://` internal page.",
