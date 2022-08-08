@@ -598,14 +598,14 @@ are declared in tools/grit/grit_rule.gni.
             &amp;View frame source
           </message>
 
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and Thorium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="The name of the Open Link in New Tab command in the content area context menu">
             Open link in new &amp;tab
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="The name of the Open Link in New Window command in the content area context menu">
             Open link in new &amp;window
           </message>
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and Thorium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD" desc="The name of the open a link in Incognito window command">
             Open link in inco&amp;gnito window
           </message>
@@ -856,14 +856,14 @@ are declared in tools/grit/grit_rule.gni.
             &amp;View Frame Source
           </message>
 
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and Thorium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="In Title Case: The name of the Open Link in New Tab command in the content area context menu">
             Open Link in New &amp;Tab
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="In Title Case: The name of the Open Link in New Window command in the content area context menu">
             Open Link in New &amp;Window
           </message>
-          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and Thorium_strings.grd. -->
+          <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD_INAPP in google_Thorium_strings.grd and chromium_strings.grd. -->
           <message name="IDS_CONTENT_CONTEXT_OPENLINKOFFTHERECORD" desc="In Title Case: The name of the open a link in Incognito window command">
             Open Link in Inco&amp;gnito Window
           </message>
@@ -4267,7 +4267,7 @@ are declared in tools/grit/grit_rule.gni.
       </message>
 
       <!-- Critical Notification bubble -->
-      <message name="IDS_CRITICAL_NOTIFICATION_RESTART" desc="Button label a button on the bubble that appears when there is a critical update and Thorium/Thorium must restart to install it. Pressing the buton will cause Thorium/Thorium to restart.">
+      <message name="IDS_CRITICAL_NOTIFICATION_RESTART" desc="Button label a button on the bubble that appears when there is a critical update and Thorium/Chromium must restart to install it. Pressing the buton will cause Thorium/Chromium to restart.">
         Restart now
       </message>
 
@@ -6179,7 +6179,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Reason: The inverted rule <ph name="REVERT_RULE">$1<ex>!example.com</ex></ph> was found in the "Force open in" list.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_OPEN_BROWSER_DEFAULT_REASON" desc="about:browser-switch/internals, section URL Checker, the explaination reason for check result, displayed when the entered URL did not match any listed rule and default browser will not get switched">
-          Reason: LBS stays in <ph name="DEFAULT_OPEN_BROWSER">$1<ex>Thorium</ex></ph> by default.
+          Reason: LBS stays in <ph name="DEFAULT_OPEN_BROWSER">$1<ex>Chromium</ex></ph> by default.
         </message>
         <message name="IDS_ABOUT_BROWSER_SWITCH_INTERNALS_INVALID_URL" desc="about:browser-switch/internals, section URL Checker, specific error message when the url is invalid">
           Invalid URL. Make sure it is formatted properly.
@@ -7058,7 +7058,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Thorium Side Panel
+        Side Panel
       </message>
       <message name="IDS_SIDE_PANEL_COMBO_BOX_GOOGLE_LENS_LABEL" desc="The name of the Google Lens in the side panel combo box">
         Google Lens
@@ -13200,7 +13200,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <!-- ThoriumLabs Side Panel-->
     <message name="IDS_SIDE_PANEL_EXPERIMENT_NAME" desc="Name for Side Panel experiment">
-      Thorium Side Panel
+      Side Panel
     </message>
     <message name="IDS_SIDE_PANEL_EXPERIMENT_DESCRIPTION" desc="Description for Side Panel experiment">
       Enables a browser-level side panel for a useful and persistent way to access your Reading List and Bookmarks.
@@ -13480,6 +13480,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_CLOSE_SIDE_PANEL" desc="The label of the button shown in the side panel after a sucessfull run. Once a user clicks on it, the side panel will close." translateable="false">
         Done
+      </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_TITLE" desc="The title shown in the side panel when an error with the script execution occurred." translateable="false">
+        Something went wrong.
+      </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_DESCRIPTION" desc="The description shown in the side panel when an error with the script execution occurred." translateable="false">
+        Check the site and try changing your password.
       </message>
     </if>
   </messages>
