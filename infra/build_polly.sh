@@ -38,7 +38,7 @@ esac
 # --version
 displayVersion () {
 	cd ~/chromium/src &&
-	printf "\n"
+	printf "\n" &&
 	python3 tools/clang/scripts/build.py --version &&
 	printf "\n"
 }
