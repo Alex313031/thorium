@@ -25,6 +25,7 @@ import subprocess
 import sys
 import tempfile
 
+os.environ['NINJA_SUMMARIZE_BUILD'] = "1"
 os.environ['NINJA_STATUS'] = "[%r processes, %f/%t @ %o/s | %e sec. ] "
 
 from update import (CDS_URL, CHROMIUM_DIR, CLANG_REVISION, LLVM_BUILD_DIR,
@@ -503,58 +504,61 @@ def gn_arg(v):
 
 
 def main():
-  parser = argparse.ArgumentParser(description='Build Clang.')
+  parser = argparse.ArgumentParser(description='Build LLVM/Clang.')
   parser.add_argument('--bootstrap', action='store_true',
-                      help='first build clang with CC, then with itself.')
+                      help='First build clang with CC, then with itself.')
   parser.add_argument('--build-mac-arm', action='store_true',
-                      help='Build arm binaries. Only valid on macOS.')
+                      help='Build ARM64 binaries. Only valid on MacOS.')
   parser.add_argument('--disable-asserts', action='store_true',
-                      help='build with asserts disabled')
+                      help='Build with assertions disabled.')
   parser.add_argument('--host-cc',
-                      help='build with host C compiler, requires --host-cxx as '
-                      'well')
+                      help='Build with host C compiler, requires --host-cxx as '
+                      'well.')
   parser.add_argument('--host-cxx',
-                      help='build with host C++ compiler, requires --host-cc '
-                      'as well')
-  parser.add_argument('--gcc-toolchain', help='what gcc toolchain to use for '
+                      help='Build with host C++ compiler, requires --host-cc '
+                      'as well.')
+  parser.add_argument('--gcc-toolchain', help='What gcc toolchain to use for '
                       'building; --gcc-toolchain=/opt/foo picks '
                       '/opt/foo/bin/gcc')
-  parser.add_argument('--pgo', action='store_true', help='build with PGO')
+  parser.add_argument('--pgo', action='store_true', help='Build with PGO.')
   parser.add_argument('--thinlto',
                       action='store_true',
-                      help='build with ThinLTO')
+                      help='Build with ThinLTO.')
   parser.add_argument('--llvm-force-head-revision', action='store_true',
-                      help='build the latest revision')
+                      help='Build the latest revision.')
   parser.add_argument('--run-tests', action='store_true',
-                      help='run tests after building')
+                      help='Run tests after building.')
   parser.add_argument('--skip-build', action='store_true',
-                      help='do not build anything')
+                      help='Do not actually build anything.')
   parser.add_argument('--skip-checkout', action='store_true',
-                      help='do not create or update any checkouts')
+                      help='Do not create or update any checkouts.')
   parser.add_argument('--build-dir',
-                      help='Override build directory')
+                      help='Override the build directory.')
   parser.add_argument('--extra-tools', nargs='*', default=[],
-                      help='select additional chrome tools to build')
+                      help='Select additional Chrome tools to build.')
   parser.add_argument('--use-system-cmake', action='store_true',
-                      help='use the cmake from PATH instead of downloading '
-                      'and using prebuilt cmake binaries')
+                      help='Use the cmake from PATH instead of downloading '
+                      'and using prebuilt cmake binaries.')
   parser.add_argument('--with-android', type=gn_arg, nargs='?', const=True,
-                      help='build the Android ASan runtime (linux only)',
+                      help='Build the Android ASan runtime. (Linux only)',
                       default=sys.platform.startswith('linux'))
   parser.add_argument('--with-fuchsia',
                       type=gn_arg,
                       nargs='?',
                       const=True,
-                      help='build the Fuchsia runtimes (linux and mac only)',
+                      help='Build the Fuchsia runtimes. (Linux and Mac only)',
                       default=sys.platform.startswith('linux')
                       or sys.platform.startswith('darwin'))
   parser.add_argument('--without-android', action='store_false',
-                      help='don\'t build Android ASan runtime (linux only)',
+                      help='Don\'t build Android ASan runtime. (Linux only)',
                       dest='with_android')
   parser.add_argument('--without-fuchsia', action='store_false',
-                      help='don\'t build Fuchsia clang_rt runtime (linux/mac)',
+                      help='Don\'t build Fuchsia clang_rt runtime. (Linux and Mac only)',
                       dest='with_fuchsia',
                       default=sys.platform in ('linux2', 'darwin'))
+  parser.add_argument('-j', '--jobs', nargs='?', default='10', help='Number of jobs'),
+  parser.add_argument('-v', '--verbose', action='store_const', const='-vdstats', default='-dstats', help='Be verbose during compile.'),
+  parser.add_argument('--version', action='version', version='\033[1;96mVersion 2.0.1', help='Show version number and exit.')
   args = parser.parse_args()
 
   global CLANG_REVISION, PACKAGE_VERSION, LLVM_BUILD_DIR
@@ -856,10 +860,10 @@ def main():
     if lld is not None: bootstrap_args.append('-DCMAKE_LINKER=' + lld)
     RunCommand(['cmake'] + bootstrap_args + [os.path.join(LLVM_DIR, 'llvm')],
                msvc_arch='x64')
-    RunCommand(['ninja'], msvc_arch='x64')
+    RunCommand(['ninja', '-j', args.jobs, args.verbose], msvc_arch='x64')
     if args.run_tests:
-      RunCommand(['ninja', 'check-all'], msvc_arch='x64')
-    RunCommand(['ninja', 'install'], msvc_arch='x64')
+      RunCommand(['ninja', 'check-all', '-j', args.jobs, args.verbose], msvc_arch='x64')
+    RunCommand(['ninja', 'install', '-j', args.jobs, args.verbose], msvc_arch='x64')
 
     if sys.platform == 'win32':
       cc = os.path.join(LLVM_BOOTSTRAP_INSTALL_DIR, 'bin', 'clang-cl.exe')
@@ -902,7 +906,7 @@ def main():
 
     RunCommand(['cmake'] + instrument_args + [os.path.join(LLVM_DIR, 'llvm')],
                msvc_arch='x64')
-    RunCommand(['ninja', 'clang'], msvc_arch='x64')
+    RunCommand(['ninja', 'clang', '-j', args.jobs, args.verbose], msvc_arch='x64')
     print('Instrumented compiler built.')
 
     # Train by building some C++ code.
@@ -1176,11 +1180,11 @@ def main():
              msvc_arch='x64',
              env=deployment_env)
   CopyLibstdcpp(args, LLVM_BUILD_DIR)
-  RunCommand(['ninja'], msvc_arch='x64')
+  RunCommand(['ninja', '-j', args.jobs, args.verbose], msvc_arch='x64')
 
   if chrome_tools:
     # If any Chromium tools were built, install those now.
-    RunCommand(['ninja', 'cr-install'], msvc_arch='x64')
+    RunCommand(['ninja', 'cr-install', '-j', args.jobs, args.verbose], msvc_arch='x64')
 
   if not args.build_mac_arm:
     VerifyVersionOfBuiltClangMatchesVERSION()
@@ -1189,7 +1193,7 @@ def main():
   # Run tests.
   if (not args.build_mac_arm and
       (args.run_tests or args.llvm_force_head_revision)):
-    RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'cr-check-all'], msvc_arch='x64')
+    RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'cr-check-all', '-j', args.jobs, args.verbose], msvc_arch='x64')
 
   if not args.build_mac_arm and args.run_tests:
     env = None
@@ -1199,7 +1203,7 @@ def main():
       # interception, so its tests can't pass.
       env['LIT_FILTER_OUT'] = ('^SanitizerCommon-(a|l|m|ub|t)san-x86_64-Linux' +
                                ' :: Linux/crypt_r.cpp$')
-    RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'check-all'],
+    RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'check-all', '-j', args.jobs, args.verbose],
                env=env,
                msvc_arch='x64')
 
