@@ -159,7 +159,7 @@ printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 
 printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 
-printf "\n" &&
+printf "${CYA}\n" &&
 
 cat $HOME/thorium/logos/thorium_ascii_art.txt &&
 
