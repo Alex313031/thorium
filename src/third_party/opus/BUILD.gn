@@ -26,6 +26,7 @@ use_opus_arm_rtcd =
 
 config("opus_config") {
   include_dirs = [ "src/include" ]
+  defines = [ "FLOAT_APPROX" ]
 
   if (use_opus_fixed_point) {
     defines = [ "OPUS_FIXED_POINT" ]
