@@ -1557,6 +1557,11 @@ const base::Feature kPrefetchFontLookupTables{
 const base::Feature kPrecompileInlineScripts{"PrecompileInlineScripts",
                                              base::FEATURE_DISABLED_BY_DEFAULT};
 
+const base::Feature kPretokenizeCSS{"PretokenizeCSS",
+                                    base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<bool> kPretokenizeInlineSheets = {
+    &kPretokenizeCSS, "pretokenize_inline_sheets", true};
+
 const base::Feature kSimulateClickOnAXFocus {
   "SimulateClickOnAXFocus",
 #if BUILDFLAG(IS_WIN)
@@ -1598,6 +1603,9 @@ const base::Feature kScrollUpdateOptimizations{
 
 const base::Feature kClipboardUnsanitizedContent{
     "ClipboardUnsanitizedContent", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kWebRtcThreadsUseResourceEfficientType{
+    "WebRtcThreadsUseResourceEfficientType", base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
