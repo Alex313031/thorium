@@ -1,0 +1,15 @@
+Name: pak
+Short Name: pak
+URL: https://github.com/Alex313031/Thorium/tree/main/pak_src
+Version: 2.0.2
+Date: 08/02/22
+Revision: 2.0.2
+License: MIT
+License File: CREDITS.chromium
+Upstream Git: https://github.com/myfreeer/chrome-pak-customizer
+Description: A simple command-line tool to pack and unpack pak files in Chromium-based browsers.
+
+pak Layout:
+==============
+
+Usage: pak -u | pak -p | pak -h | pak -v
