@@ -72,6 +72,17 @@
       "id": 3
     },
 
+
+    "brave": {
+      "name": "Brave",
+      "keyword": "brave.com",
+      "favicon_url": "https://brave.com/static-assets/images/brave-favicon.png",
+      "search_url": "https://search.brave.com/search?q={searchTerms}",
+      "suggest_url": "https://search.brave.com/api/suggest?q={searchTerms}",
+      "type": "SEARCH_ENGINE_BRAVE",
+      "id": 103
+    },
+
     "coccoc": {
       "name": "Cốc Cốc",
       "keyword": "coccoc.com",
