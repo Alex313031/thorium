@@ -1,0 +1,2 @@
+For cross-building for Windows on Linux, a Visual Studio artifacts archive is needed. 
+I have uploaded one here > https://github.com/Alex313031/Snippets/releases/tag/thor_cross_build
