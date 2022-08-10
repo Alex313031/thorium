@@ -44,4 +44,4 @@ exec > >(exec cat)
 exec 2> >(exec cat >&2)
 
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/thorium" -user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api "$@"
+exec -a "$0" "$HERE/thorium" --user-data-dir=$(pwd)/.config/thorium --no-default-browser-check --enable-experimental-web-platform-features --new-canvas-2d-api "$@"
