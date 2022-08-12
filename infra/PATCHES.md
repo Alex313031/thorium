@@ -129,11 +129,20 @@ Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-
 
 Enable Reader Mode Patch - Made by me.
 
-WebGL and Native GPU Rasterization MSAA Sample Count chrome://flags Patch - Made by me.
+Disable WebGL2, WebGL Anti-Aliasing Mode, WebGL MSAA Sample Count, and Native GPU Rasterization MSAA Sample Count chrome://flags Patches - Made by me.
 
 Number of Raster Threads chrome://flags Patch - Made by me.
 
-Devtools UI chrome://flags Patch - Made by me.
+Enable Native UI Inspection in DevTools chrome://flags Patch - Made by me.
+
+Enable High Contrast mode Patch - Made by me.
+
+Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Security chrome://flags Patches - Made by me.
+
+Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/add-hevc-ffmpeg-decoder-parser.patch
+  - Modified by me.
+
+Always show the Apps button in Bookmarks Bar Patch - Made by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
