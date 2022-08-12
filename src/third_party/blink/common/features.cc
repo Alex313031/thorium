@@ -637,20 +637,6 @@ const base::FeatureParam<int> kForceDarkForegroundLightnessThresholdParam{
 const base::FeatureParam<int> kForceDarkBackgroundLightnessThresholdParam{
     &kForceWebContentsDarkMode, "background_lightness_threshold", -1};
 
-const base::FeatureParam<ForceDarkIncreaseTextContrast>::Option
-    forcedark_increase_text_contrast_options[] = {
-        {ForceDarkIncreaseTextContrast::kUseBlinkSettings,
-         "use_blink_settings_for_method"},
-        {ForceDarkIncreaseTextContrast::kFalse, "false"},
-        {ForceDarkIncreaseTextContrast::kTrue, "true"}};
-
-// Should text contrast be increased.
-const base::FeatureParam<ForceDarkIncreaseTextContrast>
-    kForceDarkIncreaseTextContrastParam{
-        &kForceWebContentsDarkMode, "increase_text_contrast",
-        ForceDarkIncreaseTextContrast::kUseBlinkSettings,
-        &forcedark_increase_text_contrast_options};
-
 // Instructs WebRTC to honor the Min/Max Video Encode Accelerator dimensions.
 const base::Feature kWebRtcUseMinMaxVEADimensions {
   "WebRtcUseMinMaxVEADimensions",
@@ -755,13 +741,6 @@ const base::FeatureParam<int> kCacheCodeOnIdleDelayParam{&kCacheCodeOnIdle,
 // landed and no compat issues are reported.
 const base::Feature kOffsetParentNewSpecBehavior{
     "OffsetParentNewSpecBehavior", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Makes form elements cancel previous form submissions made by the same form
-// when the default event handler schedules a form submission.
-// TODO(crbug.com/1234409): Remove this flag when this feature has been in
-// stable for a release with no issues
-const base::Feature kCancelFormSubmissionInDefaultHandler{
-    "CancelFormSubmissionInDefaultHandler", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables the JPEG XL Image File Format (JXL).
 const base::Feature kJXL{"JXL", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1152,11 +1131,6 @@ const base::Feature kUsePageViewportInLCP{"UsePageViewportInLCP",
 const base::Feature kAllowDropAlphaForMediaStream{
     "AllowDropAlphaForMediaStream", base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
-// by the top level site to reduce fingerprinting.
-const base::Feature kThirdPartyStoragePartitioning{
-    "ThirdPartyStoragePartitioning", base::FEATURE_DISABLED_BY_DEFAULT};
-
 // API that allows installed PWAs to add additional shortcuts by means of
 // installing sub app components.
 const base::Feature kDesktopPWAsSubApps{"DesktopPWAsSubApps",
@@ -1169,6 +1143,13 @@ const base::Feature kCORSErrorsIssueOnly{"CORSErrorsIssueOnly",
 
 const base::Feature kPersistentQuotaIsTemporaryQuota{
     "PersistentQuotaIsTemporaryQuota", base::FEATURE_DISABLED_BY_DEFAULT};
+
+bool IsPersistentQuotaIsTemporaryQuota() {
+  return !base::CommandLine::ForCurrentProcess()->HasSwitch(
+             switches::kPersistentQuotaEnabled) &&
+         base::FeatureList::IsEnabled(
+             features::kPersistentQuotaIsTemporaryQuota);
+}
 
 const base::Feature kDelayLowPriorityRequestsAccordingToNetworkState{
     "DelayLowPriorityRequestsAccordingToNetworkState",
@@ -1529,6 +1510,9 @@ const base::FeatureParam<DelayAsyncScriptDelayType>
         DelayAsyncScriptDelayType::kFinishedParsing,
         &delay_async_script_execution_delay_types};
 
+const base::FeatureParam<bool> kDelayAsyncScriptExecutionCrossSiteOnlyParam{
+    &kDelayAsyncScriptExecution, "cross_site_only", false};
+
 const base::Feature kForceDeferScriptIntervention{
     "ForceDeferScriptIntervention", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1606,6 +1590,9 @@ const base::Feature kClipboardUnsanitizedContent{
 
 const base::Feature kWebRtcThreadsUseResourceEfficientType{
     "WebRtcThreadsUseResourceEfficientType", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kThrottleIntersectionObserverUMA{
+    "ThrottleIntersectionObserverUMA", base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
