@@ -1952,6 +1952,8 @@ source_set("browser") {
     "service_worker/service_worker_updated_script_loader.h",
     "service_worker/service_worker_version.cc",
     "service_worker/service_worker_version.h",
+    "service_worker/url_loader_client_checker.cc",
+    "service_worker/url_loader_client_checker.h",
     "shared_storage/shared_storage_budget_charger.cc",
     "shared_storage/shared_storage_budget_charger.h",
     "shared_storage/shared_storage_document_service_impl.cc",
@@ -2452,6 +2454,7 @@ source_set("browser") {
     deps += [
       "//components/crash/content/browser/error_reporting",
       "//components/services/font:lib",
+      "//content/common:sandbox_support_linux",
       "//media/mojo/mojom/stable:stable_video_decoder",
       "//third_party/blink/public/mojom:memory_usage_monitor_linux_mojo_bindings",
     ]
