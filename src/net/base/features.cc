@@ -146,11 +146,11 @@ const base::Feature kPartitionExpectCTStateByNetworkIsolationKey{
 const base::Feature kPartitionNelAndReportingByNetworkIsolationKey{
     "PartitionNelAndReportingByNetworkIsolationKey",
     base::FEATURE_DISABLED_BY_DEFAULT};
-    
+
 const base::Feature kEnableDoubleKeyNetworkAnonymizationKey{
     "EnableDoubleKeyNetworkAnonymizationKey",
     base::FEATURE_DISABLED_BY_DEFAULT};
-    
+
 const base::Feature kEnableCrossSiteFlagNetworkAnonymizationKey{
     "EnableCrossSiteFlagNetworkAnonymizationKey",
     base::FEATURE_DISABLED_BY_DEFAULT};
@@ -336,4 +336,13 @@ constexpr int kStorageAccessAPIDefaultImplicitGrantLimit = 5;
 const base::FeatureParam<int> kStorageAccessAPIImplicitGrantLimit{
     &kStorageAccessAPI, "storage-access-api-implicit-grant-limit",
     kStorageAccessAPIDefaultImplicitGrantLimit};
+const base::FeatureParam<bool> kStorageAccessAPIGrantsUnpartitionedStorage(
+    &kStorageAccessAPI,
+    "storage-access-api-grants-unpartitioned-storage",
+    false);
+
+// Enables partitioning of third party storage (IndexedDB, CacheStorage, etc.)
+// by the top level site to reduce fingerprinting.
+const base::Feature kThirdPartyStoragePartitioning{
+    "ThirdPartyStoragePartitioning", base::FEATURE_DISABLED_BY_DEFAULT};
 }  // namespace net::features
