@@ -191,6 +191,7 @@
 #include "components/startup_metric_utils/browser/startup_metric_utils.h"
 #include "components/translate/core/browser/language_state.h"
 #include "components/translate/core/browser/translate_manager.h"
+#include "components/user_education/common/feature_promo_handle.h"
 #include "components/user_education/common/help_bubble_factory_registry.h"
 #include "components/user_education/views/help_bubble_view.h"
 #include "components/version_info/channel.h"
@@ -3576,7 +3577,13 @@ void BrowserView::GetAccessiblePanes(std::vector<views::View*>* panes) {
     panes->push_back(infobar_container_);
   if (download_shelf_)
     panes->push_back(download_shelf_->GetView());
-// TODO(crbug.com/1055150): Implement for mac.
+  if (right_aligned_side_panel_)
+    panes->push_back(right_aligned_side_panel_);
+  if (lens_side_panel_)
+    panes->push_back(lens_side_panel_);
+  if (side_search_side_panel_)
+    panes->push_back(side_search_side_panel_);
+  // TODO(crbug.com/1055150): Implement for mac.
   panes->push_back(contents_web_view_);
   if (devtools_web_view_->GetVisible())
     panes->push_back(devtools_web_view_);
@@ -4321,8 +4328,7 @@ void BrowserView::UpdateAcceleratorMetrics(const ui::Accelerator& accelerator,
 
   if (command_id == IDC_BOOKMARK_THIS_TAB) {
     UMA_HISTOGRAM_ENUMERATION("Bookmarks.EntryPoint",
-                              BOOKMARK_ENTRY_POINT_ACCELERATOR,
-                              BOOKMARK_ENTRY_POINT_LIMIT);
+                              BookmarkEntryPoint::kAccelerator);
   }
   if (command_id == IDC_NEW_TAB &&
       browser_->SupportsWindowFeature(Browser::FEATURE_TABSTRIP)) {
@@ -4472,10 +4478,10 @@ bool BrowserView::CloseFeaturePromo(const base::Feature& iph_feature) {
          feature_promo_controller_->CloseBubble(iph_feature);
 }
 
-user_education::FeaturePromoController::PromoHandle
-BrowserView::CloseFeaturePromoAndContinue(const base::Feature& iph_feature) {
+user_education::FeaturePromoHandle BrowserView::CloseFeaturePromoAndContinue(
+    const base::Feature& iph_feature) {
   if (!IsFeaturePromoActive(iph_feature))
-    return user_education::FeaturePromoController::PromoHandle();
+    return user_education::FeaturePromoHandle();
   return feature_promo_controller_->CloseBubbleAndContinuePromo(iph_feature);
 }
 
