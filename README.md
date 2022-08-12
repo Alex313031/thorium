@@ -18,6 +18,7 @@
 ### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_dark.svg#gh-light-mode-only">
 > - Various compiler flags that improve performance and target [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) CPU's (read [PATCHES.md](https://github.com/Alex313031/Thorium/blob/main/infra/PATCHES.md))
 > - Experimental [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) support.
+> - HEVC/H.265 support on Linux and Windows.
 > - [JPEG XL](https://jpeg.org/jpegxl/) Image File Format support.
 > - Enable [Live Caption](https://support.google.com/chrome/answer/10538231?hl) (SODA) on all builds.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
