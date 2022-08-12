@@ -39,8 +39,6 @@ sudo chmod -v +x clean.sh &&
 
 sudo chmod -v +x setup.sh &&
 
-sudo chmod -v +x setup_mac.sh &&
-
 sudo chmod -v +x thordeb.sh &&
 
 sudo chmod -v +x trunk.sh &&
@@ -63,9 +61,9 @@ sudo chmod -v +x logos/NEW/mac/gen/app/build_icns.sh &&
 
 sudo chmod -v +x logos/NEW/mac/gen/document/build_icns.sh &&
 
-sudo chmod -v +x portable/thorium-browser &&
+sudo chmod -v +x portable/THORIUM-PORTABLE &&
 
-sudo chmod -v +x portable/thorium-shell &&
+sudo chmod -v +x portable/THORIUM-SHELL &&
 
 sudo chmod -v +x portable/thorium-browser.desktop &&
 
@@ -79,7 +77,7 @@ sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
 
 sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
 
-sudo chmod -v +x pac_src/build.sh &&
+sudo chmod -v +x pak_src/build.sh &&
 
 printf "${GRE}${bold}Scripts are ready!\n" &&
 tput sgr0
