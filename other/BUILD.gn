@@ -1950,7 +1950,6 @@ config("no_incompatible_pointer_warnings") {
     "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-polly",
   ]
 
 if (is_win) {
@@ -2003,7 +2002,6 @@ if (is_win) {
     "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-polly",
   ]
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
@@ -2035,7 +2033,6 @@ if (is_win) {
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-polly",
-    "-mllvm", "-polly-position=early",
     "-O3",
   ]
 
