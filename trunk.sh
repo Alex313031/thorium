@@ -52,7 +52,7 @@ gsyncShallow () {
 	
 	rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_choices.h &&
 	
-	rm -v -f $HOME/chromium/src/third_party/pak &&
+	rm -v -r -f $HOME/chromium/src/third_party/pak &&
 	
 	git checkout -f origin/main &&
 	
@@ -146,7 +146,7 @@ rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_entries.h &&
 
 rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_choices.h &&
 
-rm -v -f $HOME/chromium/src/third_party/pak &&
+rm -v -r -f $HOME/chromium/src/third_party/pak &&
 
 git checkout -f origin/main &&
 
