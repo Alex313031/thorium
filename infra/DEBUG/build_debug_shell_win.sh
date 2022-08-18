@@ -62,7 +62,6 @@ cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader.dll ~/chromium/src/out/tho
 cp -r -f -v ~/chromium/src/out/thorium/vulkan-1.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader_icd.json ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot.bin ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot_generator ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
