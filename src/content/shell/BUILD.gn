@@ -242,6 +242,8 @@ static_library("content_shell_lib") {
     "//components/metrics",
     "//components/metrics:net",
     "//components/metrics:test_support",
+    "//components/network_hints/browser:browser",
+    "//components/network_hints/renderer",
     "//components/network_session_configurator/common",
     "//components/performance_manager",
     "//components/permissions",
@@ -371,7 +373,7 @@ static_library("content_shell_lib") {
   }
 
   if (is_chromeos_ash) {
-    deps += [ "//chromeos/dbus" ]
+    deps += [ "//chromeos/ash/components/dbus" ]
   }
 
   if (is_chromeos_lacros) {
@@ -482,7 +484,7 @@ repack("pak") {
 }
 
 if (is_android) {
-  group("content_shell") {
+  group("thorium_shell") {
     testonly = true
     deps = [ "//content/shell/android:content_shell_apk" ]
   }
@@ -624,7 +626,7 @@ if (is_mac) {
     outputs = [ "{{bundle_resources_dir}}/{{source_file_part}}" ]
   }
 
-  if (enable_plugins) {
+  if (enable_ppapi) {
     bundle_data("content_shell_framework_plugins") {
       sources = [
         "$root_out_dir/blink_deprecated_test_plugin.plugin",
@@ -702,7 +704,7 @@ if (is_mac) {
       ":content_shell_swiftshader_library",
     ]
 
-    if (enable_plugins) {
+    if (enable_ppapi) {
       deps += [ ":content_shell_framework_plugins" ]
     }
 
