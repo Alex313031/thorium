@@ -62,6 +62,22 @@ const base::FeatureParam<int> kSkipFrameCountForLazyEmbeds(
 const base::Feature kAutomaticLazyFrameLoadingToEmbedUrls{
     "AutomaticLazyFrameLoadingToEmbedUrls", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Define the strategy for LazyEmbeds to decide which frames we apply
+// lazy-loading or not. If the loading strategy is kAllowList, the detection
+// logic is based on the allowlist that kAutomaticLazyFrameLoadingToEmbedUrls
+// passes to the client. If the strategy is kNonAds, the detection logic is
+// based on the Ad Tagging in chromium.
+const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>::
+    Option kAutomaticLazyFrameLoadingToEmbedLoadingStrategies[] = {
+        {AutomaticLazyFrameLoadingToEmbedLoadingStrategy::kAllowList,
+         "allow_list"},
+        {AutomaticLazyFrameLoadingToEmbedLoadingStrategy::kNonAds, "non_ads"}};
+const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>
+    kAutomaticLazyFrameLoadingToEmbedLoadingStrategyParam{
+        &kAutomaticLazyFrameLoadingToEmbedUrls, "strategy",
+        AutomaticLazyFrameLoadingToEmbedLoadingStrategy::kAllowList,
+        &kAutomaticLazyFrameLoadingToEmbedLoadingStrategies};
+
 // Allows pages with DedicatedWorker to stay eligible for the back/forward
 // cache.
 const base::Feature kBackForwardCacheDedicatedWorker{
@@ -374,14 +390,6 @@ const base::Feature kPurgeRendererMemoryWhenBackgrounded {
 const base::Feature kWindowOpenNewPopupBehavior{
     "WindowOpenNewPopupBehavior", base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Changes the default RTCPeerConnection constructor behavior to use Unified
-// Plan as the SDP semantics. When the feature is enabled, Unified Plan is used
-// unless the default is overridden (by passing {sdpSemantics:'plan-b'} as the
-// argument). This was shipped in M72.
-// The feature is still used by virtual test suites exercising Plan B.
-const base::Feature kRTCUnifiedPlanByDefault{"RTCUnifiedPlanByDefault",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Determines if the SDP attrbute extmap-allow-mixed should be offered by
 // default or not. The default value can be overridden by passing
 // {offerExtmapAllowMixed:false} as an argument to the RTCPeerConnection
@@ -494,6 +502,11 @@ const base::Feature kStopInBackground {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 };
+
+// Enable an experimental extension to the StorageAccessAPI.
+// https://crbug.com/1351540
+const base::Feature kStorageAccessAPIForSiteExtension{
+    "StorageAccessAPIForSiteExtension", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enable text snippets in URL fragments. https://crbug.com/919204.
 const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
@@ -1105,13 +1118,6 @@ const base::Feature kBrowsingTopicsBypassIPIsPubliclyRoutableCheck{
     "BrowsingTopicsBypassIPIsPubliclyRoutableCheck",
     base::FEATURE_DISABLED_BY_DEFAULT};
 
-// When <dialog>s are closed, this focuses the "previously focused" element
-// which had focus when the <dialog> was first opened.
-// TODO(crbug.com/649162): Remove DialogFocusNewSpecBehavior after
-// the feature is in stable with no issues.
-const base::Feature kDialogFocusNewSpecBehavior{
-    "DialogFocusNewSpecBehavior", base::FEATURE_ENABLED_BY_DEFAULT};
-
 // Makes autofill look across shadow boundaries when collecting form controls to
 // fill.
 const base::Feature kAutofillShadowDOM{"AutofillShadowDOM",
@@ -1142,7 +1148,7 @@ const base::Feature kCORSErrorsIssueOnly{"CORSErrorsIssueOnly",
                                          base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kPersistentQuotaIsTemporaryQuota{
-    "PersistentQuotaIsTemporaryQuota", base::FEATURE_DISABLED_BY_DEFAULT};
+    "PersistentQuotaIsTemporaryQuota", base::FEATURE_ENABLED_BY_DEFAULT};
 
 bool IsPersistentQuotaIsTemporaryQuota() {
   return !base::CommandLine::ForCurrentProcess()->HasSwitch(
@@ -1150,6 +1156,9 @@ bool IsPersistentQuotaIsTemporaryQuota() {
          base::FeatureList::IsEnabled(
              features::kPersistentQuotaIsTemporaryQuota);
 }
+
+const base::Feature kPrefixedStorageInfo{"PrefixedStorageInfo",
+                                         base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kDelayLowPriorityRequestsAccordingToNetworkState{
     "DelayLowPriorityRequestsAccordingToNetworkState",
@@ -1167,6 +1176,9 @@ const base::FeatureParam<int> kMaxNumOfThrottleableRequestsInTightMode{
 
 const base::Feature kHTMLParamElementUrlSupport{
     "HTMLParamElementUrlSupport", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kHTMLPopupAttribute{"HTMLPopupAttribute",
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::FeatureParam<base::TimeDelta> kHttpRttThreshold{
     &kDelayLowPriorityRequestsAccordingToNetworkState, "HttpRttThreshold",
@@ -1380,9 +1392,6 @@ const base::Feature kPrefetchAndroidFonts{"PrefetchAndroidFonts",
                                           base::FEATURE_ENABLED_BY_DEFAULT};
 #endif
 
-const base::Feature kCompositedCaret{"CompositedCaret",
-                                     base::FEATURE_ENABLED_BY_DEFAULT};
-
 const base::Feature kBackForwardCacheAppBanner{
     "BackForwardCacheAppBanner", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1513,6 +1522,13 @@ const base::FeatureParam<DelayAsyncScriptDelayType>
 const base::FeatureParam<bool> kDelayAsyncScriptExecutionCrossSiteOnlyParam{
     &kDelayAsyncScriptExecution, "cross_site_only", false};
 
+const base::Feature kLowPriorityAsyncScriptExecution{
+    "LowPriorityAsyncScriptExecution", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::FeatureParam<base::TimeDelta>
+    kTimeoutForLowPriorityAsyncScriptExecution{
+        &kLowPriorityAsyncScriptExecution, "timeout", base::Milliseconds(0)};
+
 const base::Feature kForceDeferScriptIntervention{
     "ForceDeferScriptIntervention", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1545,6 +1561,8 @@ const base::Feature kPretokenizeCSS{"PretokenizeCSS",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
 const base::FeatureParam<bool> kPretokenizeInlineSheets = {
     &kPretokenizeCSS, "pretokenize_inline_sheets", true};
+const base::FeatureParam<bool> kPretokenizeExternalSheets = {
+    &kPretokenizeCSS, "pretokenize_external_sheets", true};
 
 const base::Feature kSimulateClickOnAXFocus {
   "SimulateClickOnAXFocus",
@@ -1583,10 +1601,16 @@ const base::Feature kCSSOverflowForReplacedElements{
     "CSSOverflowForReplacedElements", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kScrollUpdateOptimizations{
-    "ScrollUpdateOptimizations", base::FEATURE_DISABLED_BY_DEFAULT};
+    "ScrollUpdateOptimizations", base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kClipboardUnsanitizedContent{
     "ClipboardUnsanitizedContent", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kThreadedHtmlTokenizer{"ThreadedHtmlTokenizer",
+                                           base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::FeatureParam<int> kThreadedHtmlTokenizerTokenMaxCount{
+    &kThreadedHtmlTokenizer, "max-count", 2048};
 
 const base::Feature kWebRtcThreadsUseResourceEfficientType{
     "WebRtcThreadsUseResourceEfficientType", base::FEATURE_DISABLED_BY_DEFAULT};
