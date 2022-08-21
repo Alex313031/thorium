@@ -78,6 +78,7 @@
 #include "chrome/browser/ui/status_bubble.h"
 #include "chrome/browser/ui/tab_contents/core_tab_helper.h"
 #include "chrome/browser/ui/tab_dialogs.h"
+#include "chrome/browser/ui/tabs/tab_enums.h"
 #include "chrome/browser/ui/tabs/tab_group.h"
 #include "chrome/browser/ui/tabs/tab_group_model.h"
 #include "chrome/browser/ui/tabs/tab_strip_user_gesture_details.h"
@@ -233,7 +234,7 @@ void CreateAndShowNewWindowWithContents(
   // The page transition below is only for the purpose of inserting the tab.
   new_browser->tab_strip_model()->AddWebContents(std::move(contents), -1,
                                                  ui::PAGE_TRANSITION_LINK,
-                                                 TabStripModel::ADD_ACTIVE);
+                                                 AddTabTypes::ADD_ACTIVE);
 }
 
 bool GetTabURLAndTitleToSave(content::WebContents* web_contents,
@@ -305,8 +306,8 @@ WebContents* GetTabAndRevertIfNecessaryHelper(Browser* browser,
       browser->tab_strip_model()->AddWebContents(
           std::move(new_tab), -1, ui::PAGE_TRANSITION_LINK,
           (disposition == WindowOpenDisposition::NEW_FOREGROUND_TAB)
-              ? TabStripModel::ADD_ACTIVE
-              : TabStripModel::ADD_NONE,
+              ? AddTabTypes::ADD_ACTIVE
+              : AddTabTypes::ADD_NONE,
           group);
       return raw_new_tab;
     }
@@ -317,7 +318,7 @@ WebContents* GetTabAndRevertIfNecessaryHelper(Browser* browser,
           Browser::Create(Browser::CreateParams(browser->profile(), true));
       new_browser->tab_strip_model()->AddWebContents(std::move(new_tab), -1,
                                                      ui::PAGE_TRANSITION_LINK,
-                                                     TabStripModel::ADD_ACTIVE);
+                                                     AddTabTypes::ADD_ACTIVE);
       new_browser->window()->Show();
       return raw_new_tab;
     }
@@ -651,7 +652,7 @@ base::WeakPtr<content::NavigationHandle> OpenCurrentURL(Browser* browser) {
   // should be inherited, in which case the group is inherited instead of the
   // opener.
   params.tabstrip_add_types =
-      TabStripModel::ADD_FORCE_INDEX | TabStripModel::ADD_INHERIT_OPENER;
+      AddTabTypes::ADD_FORCE_INDEX | AddTabTypes::ADD_INHERIT_OPENER;
   params.input_start = location_bar->GetMatchSelectionTimestamp();
   params.is_using_https_as_default_scheme =
       location_bar->IsInputTypedUrlWithoutScheme();
@@ -734,8 +735,8 @@ void NewTab(Browser* browser) {
   // TODO(asvitkine): This is invoked programmatically from several places.
   // Audit the code and change it so that the histogram only gets collected for
   // user-initiated commands.
-  UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", TabStripModel::NEW_TAB_COMMAND,
-                            TabStripModel::NEW_TAB_ENUM_COUNT);
+  UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_COMMAND,
+                            NewTabTypes::NEW_TAB_ENUM_COUNT);
 
   // Notify IPH that new tab was opened.
   auto* reopen_tab_iph =
@@ -903,12 +904,12 @@ void MoveTabsToNewWindow(Browser* browser,
         browser->tab_strip_model()->DetachWebContentsAtForInsertion(
             adjusted_index);
 
-    int add_types = pinned ? TabStripModel::ADD_PINNED : 0;
+    int add_types = pinned ? AddTabTypes::ADD_PINNED : 0;
     // The last tab made active takes precedence, so activate the last active
     // tab, with a fallback for the first tab (i == 0) if the active tab isn’t
     // in the set of tabs being moved.
     if (i == 0 || tab_indices[i] == active_index)
-      add_types = add_types | TabStripModel::ADD_ACTIVE;
+      add_types = add_types | AddTabTypes::ADD_ACTIVE;
 
     new_browser->tab_strip_model()->AddWebContents(std::move(contents_move), -1,
                                                    ui::PAGE_TRANSITION_TYPED,
@@ -942,9 +943,8 @@ WebContents* DuplicateTabAt(Browser* browser, int index) {
     TabStripModel* tab_strip_model = browser->tab_strip_model();
     const int contents_index = tab_strip_model->GetIndexOfWebContents(contents);
     pinned = tab_strip_model->IsTabPinned(contents_index);
-    int add_types = TabStripModel::ADD_ACTIVE |
-                    TabStripModel::ADD_INHERIT_OPENER |
-                    (pinned ? TabStripModel::ADD_PINNED : 0);
+    int add_types = AddTabTypes::ADD_ACTIVE | AddTabTypes::ADD_INHERIT_OPENER |
+                    (pinned ? AddTabTypes::ADD_PINNED : 0);
     const auto old_group = tab_strip_model->GetTabGroupForTab(contents_index);
     tab_strip_model->InsertWebContentsAt(
         contents_index + 1, std::move(contents_dupe), add_types, old_group);
@@ -978,8 +978,8 @@ void MoveTabsToExistingWindow(Browser* source,
     std::unique_ptr<WebContents> contents_move =
         source->tab_strip_model()->DetachWebContentsAtForInsertion(
             adjusted_index);
-    int add_types = TabStripModel::ADD_ACTIVE |
-                    (pinned ? TabStripModel::ADD_PINNED : 0);
+    int add_types =
+        AddTabTypes::ADD_ACTIVE | (pinned ? AddTabTypes::ADD_PINNED : 0);
     target->tab_strip_model()->AddWebContents(
         std::move(contents_move), -1, ui::PAGE_TRANSITION_TYPED, add_types);
   }
