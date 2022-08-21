@@ -31,7 +31,7 @@
 > - Disable [FLOC](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) patch.
 > - Disable annoying Google API Key Infobar warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Disable annoying Default Browser Infobar warning.
-> - Adds [DuckDuckGo](https://duckduckgo.com/), [Ecosia](https://www.ecosia.org/), [Ask.com](https://www.ask.com/), and [Yandex.com](https://yandex.com/) in US and other locales, along with the normal search engines.
+> - Adds [DuckDuckGo](https://duckduckgo.com/), [Brave Search](https://search.brave.com/), [Ecosia](https://www.ecosia.org/), [Ask.com](https://www.ask.com/), and [Yandex.com](https://yandex.com/) in US and other locales, along with the normal search engines.
 > - Always use the local NTP (New Tab Page) regardless of search engine.
 > - Fix icons when distilling page content in [Reader Mode](https://www.howtogeek.com/423643/how-to-use-google-chromes-hidden-reader-mode/).
 > - Enable new Menu UI when right clicking the Reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
