@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2022 Alex313031. -->
 
 <!--
 This file contains definitions of resources that will be translated for each
@@ -333,7 +334,7 @@ are declared in tools/grit/grit_rule.gni.
 
        <!-- Password Manager strings -->
       <if expr="not is_android">
-        <part file="password_manager_strings.grdp" />
+        <part file="password_manager_ui_strings.grdp" />
       </if>
 
       <!-- Printing specific strings -->
@@ -4300,7 +4301,7 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_MULTIPLE_EXTENSIONS_TITLE" desc="Title of the bubble to tell users that in order to run or block an extension, they'll need to refresh the page.">
           Reload the page to use these extensions
         </message>
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_UPDATE_PERMISSIONS_TITLE" desc="Title of the bubble to tell users that in order to change site permissions, they'll need to refresh the page.">
+        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_UPDATE_PERMISSIONS_TITLE" desc="Title of the bubble to tell users that in order to apply the changes selected, they'll need to refresh the page.">
           Reload the page to apply your changes
         </message>
       </if>
@@ -5788,9 +5789,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PASSWORD_MANAGER_CONFIRM_SAVED_TITLE" desc="The title text used in the passwords bubble after the user has saved a password.">
         Password saved
       </message>
-      <message name="IDS_PASSWORD_GENERATION_SUGGESTION" desc="Text shown next to a generated password describing it as a suggestion.">
-        Use suggested password
-      </message>
 
       <if expr="not use_titlecase">
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM" desc="Text shown next to a generated password describing it as a suggestion.">
@@ -7059,7 +7057,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- Side panel strings -->
       <message name="IDS_SIDE_PANEL_TITLE" desc="Title of the Side Panel">
-        Thorium Side Panel
+        Side Panel
       </message>
       <message name="IDS_SIDE_PANEL_COMBO_BOX_GOOGLE_LENS_LABEL" desc="The name of the Google Lens in the side panel combo box">
         Google Lens
@@ -7644,11 +7642,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <message name="IDS_PASSWORD_MANAGER_UPDATED_BUBBLE_TITLE" desc="Title of the bubble notifying the user that the password was updated.">
           Password updated
         </message>
-        <message name="IDS_PASSWORD_MANAGER_MORE_TO_FIX_BODY_MESSAGE" desc="The content of the bubble notifying that there are no more problems with compromised credentials.">
-          {COUNT, plural,
-          =1 {Successfully changed the compromised password. You have # more compromised password. Thorium recommends checking this password now.}
-          other {Successfully changed the compromised password. You have # more compromised passwords. Thorium recommends checking these passwords now.}}
-        </message>
         <message name="IDS_PASSWORD_MANAGER_MORE_TO_FIX_BODY_MESSAGE_GOOGLE_PASSWORD_MANAGER" desc="The content of the bubble notifying that there are no more problems with compromised credentials.">
           {COUNT, plural,
           =1 {Successfully changed the compromised password.
@@ -7658,16 +7651,10 @@ You have # more compromised password. Google Password Manager recommends checkin
 
 You have # more compromised passwords. Google Password Manager recommends checking these passwords now.}}
         </message>
-        <message name="IDS_PASSWORD_MANAGER_SAFE_STATE_BODY_MESSAGE" desc="The content of the bubble notifying that there are more problems to fix after the user changed a compromised password.">
-          Successfully changed the compromised password. Check your passwords anytime in <ph name="SETTINGS">$1<ex>Settings</ex></ph>.
-        </message>
         <message name="IDS_PASSWORD_MANAGER_SAFE_STATE_BODY_MESSAGE_GOOGLE_PASSWORD_MANAGER" desc="The content of the bubble notifying that there are more problems to fix after the user changed a compromised password.">
           Successfully changed the compromised password.
 
 Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google Password Manager</ex></ph>.
-        </message>
-        <message name="IDS_PASSWORD_MANAGER_SAFE_STATE_SETTINGS" meaning="The hyperlink text referring to Thorium settings. It replaces the placeholder in 'Check your passwords anytime in $1' string">
-          Settings
         </message>
 
         <if expr="not use_titlecase">
@@ -7745,20 +7732,11 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_PASSWORD_MANAGER_MOVE_HINT" desc="Label describing the effect of moving an existing credential to the user's account store">
           Move your password to your Google Account to access it securely wherever you're signed in
         </message>
-        <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_TITLE" desc="The title of the 'save unsynced credentials' bubble.">
-          Passwords not saved
-        </message>
         <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_TITLE_GPM" desc="The title of the 'save unsynced credentials' bubble.">
           Save passwords?
         </message>
-        <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_DESCRIPTION" desc="The description text of the 'save unsynced credentials' bubble.">
-          Thorium couldn't save these passwords in your Google Account. You can still save them on this device.
-        </message>
         <message name="IDS_PASSWORD_MANAGER_UNSYNCED_CREDENTIALS_BUBBLE_DESCRIPTION_GPM" desc="The description text of the 'save unsynced credentials' bubble.">
           Google Password Manager couldn't save these passwords in your Google Account. You can save them to this device.
-        </message>
-        <message name="IDS_PASSWORD_MANAGER_SAVE_UNSYNCED_CREDENTIALS_BUTTON" desc="Button text for the 'save unsynced credentials' bubble's save option.">
-          Save
         </message>
 
         <if expr="not use_titlecase">
@@ -12408,6 +12386,20 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Choose a different file
     </message>
 
+    <!-- File System Access dangerous file dialogs. -->
+    <message name="IDS_FILE_SYSTEM_ACCESS_DANGEROUS_FILE_TITLE" desc="Title of dialog explaining that the user is attempting to save a file with a dangerous extension">
+      Save <ph name="FILE">$1<ex>filename.exe</ex></ph>?
+    </message>
+    <message name="IDS_FILE_SYSTEM_ACCESS_DANGEROUS_FILE_TEXT" desc="Text of dialog explaining that the user is attempting to save a file with a dangerous extension">
+      This type of file can be dangerous. Only save this file if you trust <ph name="ORIGIN">$1<ex>example.com</ex></ph>
+    </message>
+    <message name="IDS_FILE_SYSTEM_ACCESS_DANGEROUS_FILE_DONT_SAVE" desc="Text of the button allowing the user to choose to not save a file with a dangerous extension">
+      Don't save
+    </message>
+    <message name="IDS_FILE_SYSTEM_ACCESS_DANGEROUS_FILE_SAVE" desc="Text of the button allowing the user to choose to save a file with a dangerous extension">
+      Save
+    </message>
+
     <!-- Relaunch notification bubble and dialog. -->
     <if expr="not is_android">
       <if expr="not chromeos_ash">
@@ -13207,7 +13199,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <!-- ThoriumLabs Side Panel-->
     <message name="IDS_SIDE_PANEL_EXPERIMENT_NAME" desc="Name for Side Panel experiment">
-      Thorium Side Panel
+      Side Panel
     </message>
     <message name="IDS_SIDE_PANEL_EXPERIMENT_DESCRIPTION" desc="Description for Side Panel experiment">
       Enables a browser-level side panel for a useful and persistent way to access your Reading List and Bookmarks.
@@ -13248,6 +13240,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <!-- Lens Region Search bubble dialog -->
     <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
       Drag over any image to search
+    </message>
+    <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT_ALT1" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
+      Select image area to search
+    </message>
+    <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT_ALT2" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
+     Select any part of the page to search
     </message>
     <!-- ThoriumLabs Thumbnail Tab Strip -->
     <message name="IDS_THUMBNAIL_TAB_STRIP_EXPERIMENT_NAME" desc="Name for Thumbnail Tab Strip experiment">
@@ -13483,7 +13481,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Successfully changed the compromised password
       </message>
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_DESCRIPTION" desc="The description shown on the side panel after an Automated Password Change flow has been succeeded." translateable="false" >
-        Check your passwords any time in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google Password Manager</ex></ph>.
+        Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google Password Manager</ex></ph>.
       </message>
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_CLOSE_SIDE_PANEL" desc="The label of the button shown in the side panel after a sucessfull run. Once a user clicks on it, the side panel will close." translateable="false">
         Done
