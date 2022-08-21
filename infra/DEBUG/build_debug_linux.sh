@@ -48,14 +48,15 @@ cp -r -f -v ./icons/icon_64.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shel
 cp -r -f -v ./icons/icon_128.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ./icons/thorium_debug_shell.ico ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 cp -r -f -v DEBUG_SHELL_README.md ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/README.md &&
 cp -r -f -v Thorium_Debug_Shell.sh ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 cp -r -f -v ~/chromium/src/out/thorium/locales ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/test_fonts ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/resources ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
 cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ~/chromium/src/out/thorium/libffmpeg.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
 cp -r -f -v ~/chromium/src/out/thorium/libblink_test_plugin.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/icudtl.dat ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/content_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
@@ -71,6 +72,7 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Th
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ClearKeyCdm ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
 printf "${GRE}Debug Linux Build Completed.\n" &&
 tput sgr0
