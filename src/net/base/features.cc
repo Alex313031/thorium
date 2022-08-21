@@ -286,8 +286,8 @@ const base::Feature kPartitionedCookies{"PartitionedCookies",
 const base::Feature kPartitionedCookiesBypassOriginTrial{
     "PartitionedCookiesBypassOriginTrial", base::FEATURE_DISABLED_BY_DEFAULT};
 
-const base::Feature kNoncedPartitionedCookies{
-    "NoncedPartitionedCookies", base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kNoncedPartitionedCookies{"NoncedPartitionedCookies",
+                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kExtraCookieValidityChecks{
     "ExtraCookieValidityChecks", base::FEATURE_ENABLED_BY_DEFAULT};
@@ -301,11 +301,7 @@ const base::Feature kClampCookieExpiryTo400Days(
 
 const base::Feature kStaticKeyPinningEnforcement(
     "StaticKeyPinningEnforcement",
-#if BUILDFLAG(IS_ANDROID)
-    base::FEATURE_DISABLED_BY_DEFAULT);
-#else
     base::FEATURE_ENABLED_BY_DEFAULT);
-#endif
 
 const base::Feature kCookieDomainRejectNonASCII{
     "CookieDomainRejectNonASCII", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -329,6 +325,9 @@ const base::FeatureParam<int>
     kOptimizeNetworkBuffersFilterSourceStreamBufferSize{
         &kOptimizeNetworkBuffers, "filter_source_stream_buffer_size",
         32 * 1024};
+
+const base::FeatureParam<bool> kOptimizeNetworkBuffersInputStreamCheckAvailable{
+    &kOptimizeNetworkBuffers, "input_stream_check_available", true};
 
 const base::Feature kStorageAccessAPI{"StorageAccessAPI",
                                       base::FEATURE_ENABLED_BY_DEFAULT};
