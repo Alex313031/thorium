@@ -62,7 +62,7 @@ Disable Default Browser Infobar Patch
   - Made by me.
 
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
-  - Modified by me. Adds DuckDuckGo, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
+  - Modified by me. Adds DuckDuckGo, Brave Search, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
 
 Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/12.1/patches/0052-always-use-local-new-tab-page.patch
 
