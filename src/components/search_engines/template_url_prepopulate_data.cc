@@ -32,6 +32,7 @@ const PrepopulatedEngine* const engines_default[] = {
     &bing,
     &yahoo,
     &duckduckgo,
+    &brave,
     &ecosia,
     &ask,
     &yandex_com,
@@ -244,6 +245,7 @@ const PrepopulatedEngine* const engines_DE[] = {
     &bing,
     &ecosia,
     &duckduckgo,
+    &brave,
     &yahoo_de,
 };
 
@@ -333,6 +335,8 @@ const PrepopulatedEngine* const engines_FR[] = {
     &google,
     &bing,
     &yahoo_fr,
+    &duckduckgo,
+    &brave,
     &qwant,
     &ecosia,
 };
@@ -343,7 +347,9 @@ const PrepopulatedEngine* const engines_GB[] = {
     &bing,
     &yahoo_uk,
     &duckduckgo,
+    &brave,
     &ecosia,
+    &yandex_com,
 };
 
 // Greece
@@ -946,6 +952,7 @@ const PrepopulatedEngine* const engines_US[] = {
     &bing,
     &yahoo,
     &duckduckgo,
+    &brave,
     &ecosia,
     &ask,
     &yandex_com,
