@@ -89,6 +89,8 @@ static_library("test_support") {
     "../browser/attribution_reporting/attribution_parser_test_utils.h",
     "../browser/attribution_reporting/attribution_test_utils.cc",
     "../browser/attribution_reporting/attribution_test_utils.h",
+    "../browser/back_forward_cache_test_util.cc",
+    "../browser/back_forward_cache_test_util.h",
     "../browser/background_fetch/background_fetch_test_base.cc",
     "../browser/background_fetch/background_fetch_test_base.h",
     "../browser/background_fetch/background_fetch_test_browser_context.cc",
@@ -143,6 +145,8 @@ static_library("test_support") {
     "../browser/sms/test/mock_sms_web_contents_delegate.h",
     "../browser/sms/test/mock_user_consent_handler.cc",
     "../browser/sms/test/mock_user_consent_handler.h",
+    "../browser/usb/usb_test_utils.cc",
+    "../browser/usb/usb_test_utils.h",
     "../browser/web_package/mock_signed_exchange_handler.cc",
     "../browser/web_package/mock_signed_exchange_handler.h",
     "../browser/web_package/mock_web_bundle_reader_factory.cc",
@@ -392,6 +396,8 @@ static_library("test_support") {
     "mock_overscroll_observer.h",
     "mock_platform_notification_service.cc",
     "mock_platform_notification_service.h",
+    "mock_reduce_accept_language_controller_delegate.cc",
+    "mock_reduce_accept_language_controller_delegate.h",
     "mock_render_widget_host_delegate.cc",
     "mock_render_widget_host_delegate.h",
     "mock_ssl_host_state_delegate.cc",
@@ -545,6 +551,7 @@ static_library("test_support") {
     "//services/data_decoder/public/cpp:test_support",
     "//services/data_decoder/public/mojom",
     "//services/device/public/mojom",
+    "//services/device/public/mojom:usb",
     "//services/metrics/public/cpp:metrics_cpp",
     "//storage/browser/quota:mojo_bindings",
 
@@ -688,6 +695,7 @@ static_library("test_support") {
     sources += [
       "../browser/renderer_host/test_render_widget_host_view_mac_factory.h",
       "../browser/renderer_host/test_render_widget_host_view_mac_factory.mm",
+      "../public/test/browser_test_utils_mac.mm",
       "../public/test/text_input_test_utils_mac.mm",
     ]
     deps += [
@@ -858,9 +866,6 @@ group("telemetry_gpu_integration_test_support") {
   data_deps = [
     ":telemetry_gpu_integration_test_data",
 
-    # For WebGPU CTS tests.
-    "//third_party/dawn/webgpu-cts",
-
     # For anything using Skia Gold (pixel, maps).
     "//ui/base:goldctl",
   ]
@@ -889,6 +894,10 @@ group("telemetry_gpu_common_data") {
 
     "//content/test/gpu/gpu_project_config.py",
     "//content/test/gpu/run_gpu_integration_test.py",
+  ]
+  data_deps = [
+    # For WebGPU CTS tests.
+    "//third_party/dawn/webgpu-cts",
   ]
 }
 
@@ -1204,6 +1213,7 @@ test("content_browsertests") {
     "../browser/accessibility/site_per_process_accessibility_browsertest.cc",
     "../browser/accessibility/snapshot_ax_tree_browsertest.cc",
     "../browser/accessibility/touch_accessibility_aura_browsertest.cc",
+    "../browser/aggregation_service/aggregation_service_internals_browsertest.cc",
     "../browser/attribution_reporting/attribution_internals_browsertest.cc",
     "../browser/attribution_reporting/attribution_src_browsertest.cc",
     "../browser/attribution_reporting/attributions_browsertest.cc",
@@ -1314,7 +1324,6 @@ test("content_browsertests") {
     "../browser/mojo_sandbox_browsertest.cc",
     "../browser/native_io/native_io_manager_browsertest.cc",
     "../browser/navigation_browsertest.cc",
-    "../browser/navigation_id_browsertest.cc",
     "../browser/navigation_mhtml_browsertest.cc",
     "../browser/net/accept_header_browsertest.cc",
     "../browser/net/dns_https_protocol_upgrade_browsertest.cc",
@@ -1335,6 +1344,8 @@ test("content_browsertests") {
     "../browser/origin_trials/origin_trials_browsertest.cc",
     "../browser/payments/payment_app_browsertest.cc",
     "../browser/performance_memory_browsertest.cc",
+    "../browser/performance_timeline_back_forward_cache_restoration_browsertest.cc",
+    "../browser/performance_timeline_navigation_id_browsertest.cc",
     "../browser/picture_in_picture/video_picture_in_picture_content_browsertest.cc",
     "../browser/pointer_lock_browsertest.cc",
     "../browser/pointer_lock_browsertest.h",
@@ -1435,6 +1446,7 @@ test("content_browsertests") {
     "../browser/tracing/memory_tracing_browsertest.cc",
     "../browser/tracing/startup_tracing_browsertest.cc",
     "../browser/tracing/tracing_controller_browsertest.cc",
+    "../browser/usb/usb_browsertest.cc",
     "../browser/utility_process_host_browsertest.cc",
     "../browser/vibration_browsertest.cc",
     "../browser/web_contents/file_chooser_impl_browsertest.cc",
@@ -1909,7 +1921,7 @@ test("content_browsertests") {
 
   if (is_chromeos_ash) {
     deps += [
-      "//ash/components/audio",
+      "//chromeos/ash/components/audio",
       "//chromeos/ash/components/dbus/audio",
       "//chromeos/ash/components/dbus/debug_daemon",
       "//chromeos/system",
@@ -2017,6 +2029,7 @@ test("content_browsertests") {
     additional_manifest_fragments = [
       "//build/config/fuchsia/test/audio_output.shard.test-cml",
       "//build/config/fuchsia/test/fonts.shard.test-cml",
+      "//build/config/fuchsia/test/mark_vmo_executable.shard.test-cml",
       "//build/config/fuchsia/test/network.shard.test-cml",
       "//build/config/fuchsia/test/present_view.shard.test-cml",
       "//third_party/fuchsia-sdk/sdk/pkg/vulkan/client.shard.cml",
@@ -2069,6 +2082,7 @@ test("content_unittests") {
     "../browser/aggregation_service/aggregatable_report_sender_unittest.cc",
     "../browser/aggregation_service/aggregatable_report_unittest.cc",
     "../browser/aggregation_service/aggregation_service_impl_unittest.cc",
+    "../browser/aggregation_service/aggregation_service_internals_handler_impl_unittest.cc",
     "../browser/aggregation_service/aggregation_service_key_fetcher_unittest.cc",
     "../browser/aggregation_service/aggregation_service_network_fetcher_impl_unittest.cc",
     "../browser/aggregation_service/aggregation_service_storage_sql_unittest.cc",
@@ -2297,6 +2311,7 @@ test("content_unittests") {
     "../browser/private_aggregation/private_aggregation_host_unittest.cc",
     "../browser/private_aggregation/private_aggregation_manager_impl_unittest.cc",
     "../browser/quota/quota_change_dispatcher_unittest.cc",
+    "../browser/reduce_accept_language/reduce_accept_language_utils_unittest.cc",
     "../browser/renderer_host/ancestor_throttle_unittest.cc",
     "../browser/renderer_host/back_forward_cache_metrics_unittest.cc",
     "../browser/renderer_host/clipboard_host_impl_unittest.cc",
@@ -2427,6 +2442,7 @@ test("content_unittests") {
     "../browser/storage_partition_impl_unittest.cc",
     "../browser/tracing/background_startup_tracing_observer_unittest.cc",
     "../browser/tracing/background_tracing_config_unittest.cc",
+    "../browser/usb/web_usb_service_impl_unittest.cc",
     "../browser/web_contents/aura/gesture_nav_simple_unittest.cc",
     "../browser/web_contents/web_contents_delegate_unittest.cc",
     "../browser/web_contents/web_contents_impl_unittest.cc",
@@ -2567,6 +2583,7 @@ test("content_unittests") {
 
     additional_manifest_fragments = [
       "//build/config/fuchsia/test/fonts.shard.test-cml",
+      "//build/config/fuchsia/test/mark_vmo_executable.shard.test-cml",
       "//build/config/fuchsia/test/network.shard.test-cml",
       "//third_party/fuchsia-sdk/sdk/pkg/vulkan/client.shard.cml",
     ]
@@ -2642,6 +2659,7 @@ test("content_unittests") {
     "//components/viz/test:test_support",
     "//content/app:for_content_tests",
     "//content/browser:for_content_tests",
+    "//content/browser/aggregation_service:for_content_tests",
     "//content/browser/attribution_reporting:attribution_reporting_proto",
     "//content/browser/background_fetch:background_fetch_proto",
     "//content/browser/cache_storage:cache_storage_proto",
@@ -2883,8 +2901,8 @@ test("content_unittests") {
   if (is_chromeos_ash) {
     sources += [ "../browser/handwriting/handwriting_recognition_service_impl_cros_unittest.cc" ]
     deps += [
-      "//ash/components/audio",
       "//ash/constants:constants",
+      "//chromeos/ash/components/audio",
       "//chromeos/ash/components/dbus/audio",
       "//chromeos/services/machine_learning/public/cpp:stub",
       "//chromeos/services/machine_learning/public/mojom",
