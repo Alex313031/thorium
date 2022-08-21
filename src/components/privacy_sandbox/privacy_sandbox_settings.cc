@@ -114,10 +114,10 @@ bool PrivacySandboxSettings::IsTopicsAllowedForContext(
 }
 
 bool PrivacySandboxSettings::IsTopicAllowed(const CanonicalTopic& topic) {
-  auto* blocked_topics =
-      pref_service_->GetList(prefs::kPrivacySandboxBlockedTopics);
+  const auto& blocked_topics =
+      pref_service_->GetValueList(prefs::kPrivacySandboxBlockedTopics);
 
-  for (const auto& item : blocked_topics->GetList()) {
+  for (const auto& item : blocked_topics) {
     auto blocked_topic =
         CanonicalTopic::FromValue(*item.GetDict().Find(kBlockedTopicsTopicKey));
     if (!blocked_topic)
@@ -328,8 +328,15 @@ bool PrivacySandboxSettings::IsSharedStorageAllowed(
                                            top_frame_origin);
 }
 
+bool PrivacySandboxSettings::IsPrivateAggregationAllowed(
+    const url::Origin& top_frame_origin,
+    const url::Origin& reporting_origin) const {
+  return IsPrivacySandboxEnabledForContext(reporting_origin.GetURL(),
+                                           top_frame_origin);
+}
+
 bool PrivacySandboxSettings::IsPrivacySandboxEnabled() const {
-  // If the delegate is restricting access, the Privacy Sandbox is disabled.
+  // If the delegate is restricting access the Privacy Sandbox is disabled.
   if (delegate_->IsPrivacySandboxRestricted())
     return false;
 
