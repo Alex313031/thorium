@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031 and tomByrer. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -23,12 +23,12 @@
     // When adding new engines, increment this number and use it as the new
     // max ID. This is used by UMA stats and must be updated to include the full
     // range or else not all engines will be counted in stats.
-    "kMaxPrepopulatedEngineID": 102,
+    "kMaxPrepopulatedEngineID": 103,
 
     // Increment this if you change the data in ways that mean users with
     // existing data should get a new version. Otherwise, existing data may
     // continue to be used and updates made here will not always appear.
-    "kCurrentDataVersion": 134
+    "kCurrentDataVersion": 135
   },
 
   // The following engines are included in country lists and are added to the
@@ -70,6 +70,16 @@
       "image_url_post_params": "imageBin={google:imageThumbnailBase64}",
       "type": "SEARCH_ENGINE_BING",
       "id": 3
+    },
+    
+    "brave": {
+      "name": "Brave",
+      "keyword": "brave.com",
+      "favicon_url": "https://brave.com/static-assets/images/brave-favicon.png",
+      "search_url": "https://search.brave.com/search?q={searchTerms}",
+      "suggest_url": "https://search.brave.com/api/suggest?q={searchTerms}",
+      "type": "SEARCH_ENGINE_BRAVE",
+      "id": 103
     },
 
     "coccoc": {
