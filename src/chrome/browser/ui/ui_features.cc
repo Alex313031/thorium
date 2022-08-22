@@ -16,6 +16,22 @@ namespace features {
 const base::Feature kAllowWindowDragUsingSystemDragDrop{
     "AllowWindowDragUsingSystemDragDrop", base::FEATURE_ENABLED_BY_DEFAULT};
 
+#if !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
+const base::Feature kDesktopPWAsAppHomePage{"DesktopPWAsAppHomePage",
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
+#endif  // !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
+
+// Enables showing the email of the flex org admin that setup CBCM in the
+// management disclosures.
+
+#if BUILDFLAG(IS_CHROMEOS)
+extern const base::Feature kFlexOrgManagementDisclosure{
+    "FlexOrgManagementDisclosure", base::FEATURE_DISABLED_BY_DEFAULT};
+#else
+extern const base::Feature kFlexOrgManagementDisclosure{
+    "FlexOrgManagementDisclosure", base::FEATURE_ENABLED_BY_DEFAULT};
+#endif  // BUILDFLAG(IS_CHROMEOS)
+
 // Enables Chrome Labs menu in the toolbar. See https://crbug.com/1145666
 const base::Feature kChromeLabs{"ChromeLabs",
                                 base::FEATURE_ENABLED_BY_DEFAULT};
@@ -56,7 +72,7 @@ const base::Feature kAccessCodeCastUI{"AccessCodeCastUI",
 // Enables displaying the submenu to open a link with a different profile
 // even if there is no other profile opened in a separate window
 const base::Feature kDisplayOpenLinkAsProfile{
-    "DisplayOpenLinkAsProfile", base::FEATURE_DISABLED_BY_DEFAULT};
+    "DisplayOpenLinkAsProfile", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables showing the EV certificate details in the Page Info bubble.
 const base::Feature kEvDetailsInPageInfo{"EvDetailsInPageInfo",
@@ -90,7 +106,7 @@ const base::Feature kSideSearch{"SideSearch",
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 const base::Feature kSideSearchFeedback{"SideSearchFeedback",
-                                        base::FEATURE_DISABLED_BY_DEFAULT};
+                                        base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Controls whether the Side Search feature is configured to support any
 // participating Chrome search engine. This should always be enabled with
@@ -128,6 +144,17 @@ const base::FeatureParam<int> kSideSearchPageActionLabelAnimationMaxCount{
 const base::Feature kClobberAllSideSearchSidePanels{
     "ClobberAllSideSearchSidePanels", base::FEATURE_ENABLED_BY_DEFAULT};
 
+// Feature that controls whether or not feature engagement configurations can be
+// used to control automatic triggering for side search.
+const base::Feature kSideSearchAutoTriggering{"SideSearchAutoTriggering",
+                                              base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Feature param that determines how many times a user has to return to a given
+// SRP before we automatically trigger the side search side panel for that SRP
+// on a subsequent navigation.
+const base::FeatureParam<int> kSideSearchAutoTriggeringReturnCount{
+    &kSideSearchAutoTriggering, "SideSearchAutoTriggeringReturnCount", 2};
+
 // Adds improved support for handling multiple contextual and global RHS browser
 // side panels. Designed specifically to handle the interim state before the v2
 // side panel project launches.
@@ -136,7 +163,6 @@ const base::Feature kSidePanelImprovedClobbering{
 
 const base::Feature kSidePanelJourneys{"SidePanelJourneys",
                                        base::FEATURE_ENABLED_BY_DEFAULT};
-
 // If enabled, and the main flag is also enabled, the Journeys omnibox
 // entrypoints open Journeys in Side Panel rather than the History WebUI.
 const base::FeatureParam<bool> kSidePanelJourneysOpensFromOmnibox{
@@ -161,8 +187,15 @@ const base::Feature kTabGroupsSave{"TabGroupsSave",
 
 // Enables preview images in tab-hover cards.
 // https://crbug.com/928954
-const base::Feature kTabHoverCardImages{"TabHoverCardImages",
-                                        base::FEATURE_ENABLED_BY_DEFAULT};
+const base::Feature kTabHoverCardImages {
+  "TabHoverCardImages",
+#if BUILDFLAG(IS_MAC)
+      base::FEATURE_DISABLED_BY_DEFAULT
+#else
+      base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+};
+
 const char kTabHoverCardImagesNotReadyDelayParameterName[] =
     "page_not_ready_delay";
 const char kTabHoverCardImagesLoadingDelayParameterName[] =
@@ -193,9 +226,6 @@ const char kTabSearchSearchThresholdName[] = "TabSearchSearchThreshold";
 
 const base::FeatureParam<bool> kTabSearchSearchIgnoreLocation{
     &kTabSearchFuzzySearch, "TabSearchSearchIgnoreLocation", false};
-
-const base::Feature kTabSearchMediaTabs{"TabSearchMediaTabs",
-                                        base::FEATURE_ENABLED_BY_DEFAULT};
 
 // If this feature parameter is enabled, show media tabs in both "Audio & Video"
 // section and "Open Tabs" section.
@@ -238,7 +268,7 @@ const base::Feature kToolbarUseHardwareBitmapDraw{
     "ToolbarUseHardwareBitmapDraw", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kUnifiedSidePanel{"UnifiedSidePanel",
-                                      base::FEATURE_DISABLED_BY_DEFAULT};
+                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
 // This enables enables persistence of a WebContents in a 1-to-1 association
 // with the current Profile for WebUI bubbles. See https://crbug.com/1177048.
