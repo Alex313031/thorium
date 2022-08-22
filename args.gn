@@ -1,7 +1,7 @@
 google_api_key = ""
 google_default_client_id = ""
 google_default_client_secret = ""
-is_chancie_wancie_build = true
+# is_chancie_wancie_build = true
 target_os = "linux"
 target_cpu = "x64"
 enable_linux_installer = true
@@ -35,7 +35,7 @@ enable_ink = false
 enable_discovery = false
 enable_cros_media_app = false
 proprietary_codecs = true
-# ffmpeg_branding = "Chrome"
+ffmpeg_branding = "Chrome"
 clang_use_chrome_plugins = true
 enable_ffmpeg_video_decoders = true
 is_component_ffmpeg = true
