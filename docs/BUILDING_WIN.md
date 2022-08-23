@@ -1,6 +1,6 @@
 # Checking out and Building Thorium for Windows &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
-## System requirements
+## System Requirements
 
 * A 64-bit machine with at least 8GB of RAM. More than 16GB is highly
   recommended.
@@ -114,7 +114,7 @@ these for 'python.exe' and 'python3.exe' by opening 'App execution aliases'
 section of Control Panel and unticking the boxes next to both of these
 that point to 'App Installer'.
 
-## Download the Chromium code
+## Downloading the Chromium code
 
 First, configure Git:
 
@@ -153,9 +153,11 @@ assume you have switched to this directory (i.e. *C:\src\chromium\src*):
 cd src
 ```
 
-*Optional*: You can also build with [API
-keys](https://www.chromium.org/developers/how-tos/api-keys) if you want features like Google Sync, Translate, Gelocation API, etc.
-Thorium release builds use a private API Keys repo. If you would like access, contact me. Otherwise you can follow the above link to learn how to make your own private developer keys.
+*Optional*: You can also [build with API
+keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
+build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
+you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
+to enable Sync.
 
 ##  Downloading the Thorium code
 
