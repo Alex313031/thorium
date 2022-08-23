@@ -43,6 +43,8 @@ sudo chmod -v +x thordeb.sh &&
 
 sudo chmod -v +x trunk.sh &&
 
+sudo chmod -v +x reset_depot_tools.sh &&
+
 sudo chmod -v +x infra/install_deps.sh &&
 
 sudo chmod -v +x infra/build_polly.sh &&
@@ -65,7 +67,7 @@ sudo chmod -v +x portable/THORIUM-PORTABLE &&
 
 sudo chmod -v +x portable/THORIUM-SHELL &&
 
-sudo chmod -v +x portable/thorium-browser.desktop &&
+sudo chmod -v +x portable/thorium-portable.desktop &&
 
 sudo chmod -v +x portable/thorium-shell.desktop &&
 
