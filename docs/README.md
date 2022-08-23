@@ -1,4 +1,4 @@
-## Thorium Docs
+## Thorium Docs &nbsp;<img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/patches.png" width="32">
 
 Simply a place to hold documentation and resources for people building or contributing to Thorium.
 
