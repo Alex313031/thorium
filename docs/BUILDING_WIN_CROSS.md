@@ -5,7 +5,7 @@ Windows targets facilitates development for Windows targets on non-Windows
 machines.
 
 It's possible to build most parts of the codebase on a Linux or Mac host while
-targeting Windows.  It's also possible to run the locally-built binaries on
+targeting Windows. It's also possible to run the locally-built binaries on
 swarming.  This document describes how to set that up, and current restrictions.
 
 ## Limitations
@@ -26,7 +26,7 @@ builds ([.asm bug](https://crbug.com/762167)).
 First make sure you've followed the instructions for getting the Chromium and Thorium code from [HERE](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING.md#get-the-code). \
 Also make sure you have run `setup.sh` to copy the Thorium code over the Chromium tree.
 
-## .gclient setup
+## *.gclient* setup
 
 1. Tell gclient that you need Windows build dependencies by adding
    `target_os = ['win']` to the end of your `.gclient` file present in *~/chromium/*.  (If you already
