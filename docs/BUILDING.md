@@ -5,7 +5,7 @@ You can also read the [old building instructions](https://github.com/Alex313031/
 #### Windows
 For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use [BUILDING_WIN.md](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING_WIN.md) and if you are building for Windows on Linux, use [WIN_CROSS_BUILD_INSTRUCTIONS](https://github.com/Alex313031/Thorium/blob/main/docs/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
 
-## System requirements
+## System Requirements
 
 *   A x64 machine with at least 8GB of RAM. 16GB or more is highly
     recommended.
