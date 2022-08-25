@@ -17,6 +17,7 @@ exclude_unwind_tables = true
 enable_iterator_debugging = false
 disable_fieldtrial_testing_config = true
 enable_reporting = false
+enable_remoting = false
 enable_resource_allowlist_generation = false
 enable_profiling = false
 is_component_build = false
