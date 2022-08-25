@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -47,6 +47,15 @@ if (android_64bit_target_cpu && skip_secondary_abi_for_cq) {
 }
 
 _default_package = "org.chromium.thorium"
+if (android_channel != "default") {
+  # android-binary-size trybot may checks if an internal Chrome variant's
+  # AndroidManifest is as expected by ensuring the differences between its
+  # AndroidManifest and its upstream target's .AndroidManifest.expected file
+  # are as expected. Upstream targets having a "org.chromium.chrome" package
+  # name will cause the comparison to output many unnecessary differences.
+  # See https://source.chromium.org/chromium/chromium/src/+/main:chrome/android/java/README.md
+  _default_package += "." + android_channel
+}
 
 declare_args() {
   # Android package name to use when compiling the public chrome targets
@@ -4267,20 +4276,3 @@ if (_enable_libs_and_assets_verification || _enable_manifest_verification) {
     if (_enable_libs_and_assets_verification) {
       deps += [
         ":chrome_modern_public_bundle_validate_libs_and_assets",
-        ":monochrome_public_bundle_validate_libs_and_assets",
-        ":trichrome_chrome_bundle_validate_libs_and_assets",
-        ":trichrome_library_apk_validate_libs_and_assets",
-      ]
-    }
-    if (_enable_manifest_verification) {
-      deps += [
-        ":monochrome_public_bundle_validate_manifests",
-        ":monochrome_public_bundle_validate_proguard_config",
-        ":trichrome_chrome_bundle__base_bundle_module_validate_android_manifest",
-        ":trichrome_library_apk_validate_android_manifest",
-        "//android_webview:system_webview_base_bundle_module_validate_android_manifest",
-        "//android_webview:trichrome_webview_base_bundle_module_validate_android_manifest",
-      ]
-    }
-  }
-}
