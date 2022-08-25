@@ -6,4 +6,4 @@ For SSE4, do the same except from the SSE4 folder.
 
 For Polly, run `build_polly.sh` first, and then use the appropriate *BUILD.gn* for your build type from the Polly folder.
 
-For Android arm64 builds, use the Android folder, including its `android_args.gn` for your args.gn
+For Android arm64 builds, use the Android folder, including its *android_args.gn* for your args.gn, and the `build_android.sh` for building the main apk and system webview apk.
