@@ -74,7 +74,7 @@ chmod -v +x $HOME/chromium/src/chrome/installer/linux/debian/build.sh &&
 copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying cdm_registration.cc for MacOS...${c0}\n" &&
-	cp -r -v infra/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
+	cp -r -v other/Mac/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
 	printf "\n"
 }
 
