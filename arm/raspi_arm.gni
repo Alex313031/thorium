@@ -130,7 +130,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 } else if (current_cpu == "arm64" || v8_current_cpu == "arm64") {
   # arm64 supports only "hard".
   arm_float_abi = "hard"
-  arm_use_neon = true
+  arm_use_neon = "true"
   declare_args() {
     # Enables the new Armv8 branch protection features. Valid strings are:
     # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
