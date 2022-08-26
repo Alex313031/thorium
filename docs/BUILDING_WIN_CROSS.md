@@ -46,7 +46,9 @@ Also make sure you have run `setup.sh` to copy the Thorium code over the Chromiu
 Download the latest MSVS Artifacts Archive from [HERE](https://github.com/Alex313031/Snippets/releases/latest). \
 Then, make a subdir in *chromium* called win, i.e. `mkdir ~/chromium/win`, and then place the .zip file in there.
 
-Then add these lines to your `.bashrc` or `.zshrc`.
+Then, to use the
+generated file on a Linux or Mac host, the following environment variables
+need to be set, so add these lines to your `.bashrc` or `.zshrc`.
 
     export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=<base url>
     export GYP_MSVS_HASH_<toolchain hash>=<hash value>
@@ -65,6 +67,30 @@ setting `DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL` and running `gclient runhooks`:
     desired_hash: <toolchain hash>
 
 `<hash value>` is the name of the .zip, without .zip at the end, i.e. `80909eccbb`
+
+### Generating a MSVS Artifacts Archive yourself
+
+After installing [Microsoft's development tools](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING_WIN.md#visual-studio),
+you can package your Windows SDK installation into a zip file by running the following on a Windows machine in cmd.exe:
+
+```shell
+    cd path/to/depot_tools/win_toolchain
+    python3 package_from_installed.py <vs version> -w <win version>
+```
+
+Where "path/to/depot_tools/win_toolchain" would usually be *C:\src\depot_tools\win_toolchain* and
+where `<vs version>` and `<win version>` correspond respectively to the
+versions of Visual Studio (e.g. 2019) and of the Windows SDK (e.g.
+10.0.20348.0) installed on the Windows machine. Note that if you didn't
+install the ARM64 components of the SDK as noted in the link above, you
+should add `--noarm` to the parameter list.
+
+__NOTE__: The -w flag takes the raw internal version of the SDK, not the actual patch version. This caused me and I'm sure
+other people some confusion. So for example, the latest version of the Win 10 SDK is 10.1.20348.1, but its internal version doesn't change from
+when it was released, and this is what you would use, e.g. 10.0.20348.0
+
+These commands create a zip file named `<hash value>.zip`, which can be used with the instructions above ^.
+
 ## Building
 Follow [Setting up the build](https://github.com/Alex313031/Thorium/blob/main/docs/BUILDING.md#setting-up-the-build), except instead of using the `args.gn` from the
 root of the Thorium repo, use the [`win_args.gn`](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.gn), from *~/Thorium/infra/*
