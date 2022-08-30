@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) 2022 Alex313031. -->
-
 <!--
 This file contains definitions of resources that will be translated for each
 locale.  The variables is_win, is_macosx, is_linux, and is_posix are available
@@ -3458,7 +3457,10 @@ are declared in tools/grit/grit_rule.gni.
           Certificate Signature Value
         </message>
         <message name="IDS_CERT_DETAILS_EXPORT_CERTIFICATE" desc="The label of the button to export the selected certificate">
-          E&amp;xport selected certificate...
+          E&amp;xport...
+        </message>
+        <message name="IDS_CERT_DETAILS_EXPORT_CERTIFICATE_A11Y_LABEL" desc="The accessibility label of the button to export the selected certificate. This message is spoken by screen readers when the IDS_CERT_DETAILS_EXPORT_CERTIFICATE control gets focus, but is not visually rendered.">
+          Export selected certificate
         </message>
 
         <message translateable="false" name="IDS_CERT_OID_AVA_COMMON_NAME" desc="">
@@ -4289,19 +4291,19 @@ are declared in tools/grit/grit_rule.gni.
 
       <if expr="enable_extensions">
         <!-- Extension blocked action bubble -->
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_HEADING" desc="Heading of the bubble to tell users that in order to run an extension, they'll need to refresh the page.">
+        <message name="IDS_EXTENSION_RELOAD_PAGE_BUBBLE_HEADING" desc="Heading of the bubble to tell users that in order to run an extension, they'll need to refresh the page.">
           Reload page to use this extension
         </message>
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_OK_BUTTON" desc="The text of the button to proceed with the page refresh for running an extension.">
+        <message name="IDS_EXTENSION_RELOAD_PAGE_BUBBLE_OK_BUTTON" desc="The text of the button to proceed with the page refresh for running an extension.">
           Reload
         </message>
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_SINGLE_EXTENSION_TITLE" desc="Title of the bubble to tell users that in order to run or block an extension, they'll need to refresh the page.">
+        <message name="IDS_EXTENSION_RELOAD_PAGE_BUBBLE_ALLOW_SINGLE_EXTENSION_TITLE" desc="Title of the bubble to tell users that in order to run or block an extension, they'll need to refresh the page.">
           Reload the page to use "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>"
         </message>
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_MULTIPLE_EXTENSIONS_TITLE" desc="Title of the bubble to tell users that in order to run or block an extension, they'll need to refresh the page.">
+        <message name="IDS_EXTENSION_RELOAD_PAGE_BUBBLE_ALLOW_MULTIPLE_EXTENSIONS_TITLE" desc="Title of the bubble to tell users that in order to run or block an extension, they'll need to refresh the page.">
           Reload the page to use these extensions
         </message>
-        <message name="IDS_EXTENSION_BLOCKED_ACTION_BUBBLE_UPDATE_PERMISSIONS_TITLE" desc="Title of the bubble to tell users that in order to apply the changes selected, they'll need to refresh the page.">
+        <message name="IDS_EXTENSION_RELOAD_PAGE_BUBBLE_UPDATE_PERMISSIONS_TITLE" desc="Title of the bubble to tell users that in order to apply the changes selected, they'll need to refresh the page.">
           Reload the page to apply your changes
         </message>
       </if>
@@ -4499,9 +4501,6 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_ALL_HOSTS" desc="Permission string for access to data on all websites.">
           Read and change all your data on all websites
-        </message>
-        <message name="IDS_EXTENSION_PROMPT_WARNING_CURRENT_HOST" desc="Permission string for access to data on current website.">
-          Read and change all your data on the current website when invoked
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_ALL_HOSTS_READ_ONLY" desc="Permission string for read-only access to data on all websites.">
           Read all your data on all websites
@@ -4997,10 +4996,10 @@ are declared in tools/grit/grit_rule.gni.
           Allow <ph name="EXTENSIONS_REQUESTING_ACCESS_COUNT">$1<ex>3</ex></ph>?
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUTTON_TOOLTIP_SINGLE_EXTENSION" desc="The tooltip text of the request access button that appears on the toolbar when an extension requests access to the site">
-          <ph name="EXTENSIONS_REQUESTING_ACCESS">$1<ex>Extension A</ex></ph> is requesting to read and change <ph name="ORIGIN">$2<ex>google.com</ex></ph>
+          Click to allow <ph name="EXTENSIONS_REQUESTING_ACCESS">$1<ex>Extension A</ex></ph> to read and change <ph name="ORIGIN">$2<ex>google.com</ex></ph>:
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUTTON_TOOLTIP_MULTIPLE_EXTENSIONS" desc="The tooltip text of the request access button that appears on the toolbar when an extension requests access to the site">
-          Requesting to read and change <ph name="ORIGIN">$1<ex>google.com</ex></ph>:
+          Click to allow these extensions to read and change <ph name="ORIGIN">$1<ex>google.com</ex></ph>:
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_SINGLE_EXTENSION_TITLE" desc="The title of the request access bubble to tell the user to accept the bubble to always run the extension on the site.">
           Always allow "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" to run on <ph name="ORIGIN">$2<ex>google.com</ex></ph>?
@@ -5427,9 +5426,26 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <!-- End Extension Settings Overridden Dialog strings. -->
       <!-- Force Installed Deprecated Apps Deletion Dialog strings. -->
-      <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
-        Old versions of Thorium Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
-      </message>
+      <if expr="is_macosx">
+        <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
+          Old versions of Thorium Apps won't open on Mac devices after December 2022. Contact your administrator to update to a new version or remove this app.
+        </message>
+      </if>
+      <if expr="is_win">
+        <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
+          Old versions of Thorium Apps won't open on Windows devices after December 2022. Contact your administrator to update to a new version or remove this app.
+        </message>
+      </if>
+      <if expr="is_linux">
+        <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
+          Old versions of Thorium Apps won't open on Linux devices after December 2022. Contact your administrator to update to a new version or remove this app.
+        </message>
+      </if>
+      <if expr="is_fuchsia">
+        <message name="IDS_FORCE_INSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed deprecated app dialog">
+          Old versions of Thorium Apps won't open after December 2022. Contact your administrator to update to a new version or remove this app.
+        </message>
+      </if>
       <!-- End Force Installed Deprecated Apps Deletion Dialog strings. -->
       <!-- Deprecated Apps Deletion Dialog strings. -->
       <message name="IDS_DEPRECATED_APPS_RENDERER_TITLE_PLURAL" desc="The title of the deprecated app dialog">
@@ -5438,9 +5454,26 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_DEPRECATED_APPS_RENDERER_TITLE_WITH_APP_NAME" desc="The title of the deprecated app dialog with the app name">
         "<ph name="EXTENSION_NAME">$1<ex>Google Docs</ex></ph>" is no longer supported
       </message>
-      <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
-        Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
-      </message>
+      <if expr="is_macosx">
+        <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
+          Old versions of Thorium apps won't open on Mac devices after December 2022. You can check if there's a new version available.
+        </message>
+      </if>
+      <if expr="is_win">
+        <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
+          Old versions of Thorium apps won't open on Windows devices after December 2022. You can check if there's a new version available.
+        </message>
+      </if>
+      <if expr="is_linux">
+        <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
+          Old versions of Thorium apps won't open on Linux devices after December 2022. You can check if there's a new version available.
+        </message>
+      </if>
+      <if expr="is_fuchsia">
+        <message name="IDS_DEPRECATED_APPS_MONITOR_RENDERER" desc="Dialog content that educates users that Thorium Apps will soon no longer launch.">
+          Old versions of Thorium apps won't open after December 2022. You can check if there's a new version available.
+        </message>
+      </if>
       <message name="IDS_DEPRECATED_APPS_LEARN_MORE" desc="Redirects to a link with more information on chrome apps deprecation">
         Learn more
       </message>
@@ -5634,6 +5667,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
 
+      <if expr="not is_android">
+        <message name="IDS_WEB_APP_DETAILED_INSTALL_DIALOG_DESCRIPTION_TITLE" desc="Title above app description to explain the content below is from this app">
+          From the app
+        </message>
+      </if>
+
       <message name="IDS_WEB_APP_MENU_BUTTON_TOOLTIP">
         Customize and control <ph name="APP_NAME">$1<ex>GMail</ex></ph>
       </message>
@@ -5789,6 +5828,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PASSWORD_MANAGER_CONFIRM_SAVED_TITLE" desc="The title text used in the passwords bubble after the user has saved a password.">
         Password saved
       </message>
+      <!-- TODO(crbug.com/1345766): Add final string and make it translateable. -->
+      <message name="IDS_PASSWORD_WEAKNESS_INDICATOR" translateable="false" desc="Autofill dropdown text describing password strength.">
+        Weak password entered
+      </message>
 
       <if expr="not use_titlecase">
         <message name="IDS_PASSWORD_GENERATION_SUGGESTION_GPM" desc="Text shown next to a generated password describing it as a suggestion.">
@@ -5812,6 +5855,18 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_UPDATE_PASSWORD" desc="The title of the save password bubble when a password can be updated.">
         Update password?
+      </message>
+      <message name="IDS_SIGN_IN_TO_SAVE_PASSWORDS" desc="The title of the password manager error message when the user needs to sign in to save a password.">
+        Sign in to save passwords
+      </message>
+      <message name="IDS_SIGN_IN_TO_USE_PASSWORDS" desc="The title of the password manager error message when the user needs to sign in to use a password.">
+        Sign in to use passwords
+      </message>
+      <message name="IDS_PASSWORD_ERROR_DESCRIPTION" desc="The description of the password manager error message.">
+        Sign back in to Google Password Manager
+      </message>
+      <message name="IDS_PASSWORD_ERROR_SIGN_IN_BUTTON_TITLE" desc="The title of the sign in button in the password manager error message.">
+        Sign in
       </message>
       <message name="IDS_SAVE_PASSWORD_DIFFERENT_DOMAINS_TITLE" desc="The title of the save password bubble when the submitted form origin isn't equal to the page origin.">
         Save password for <ph name="ORIGIN">$1<ex>example.com</ex></ph>?
@@ -7519,14 +7574,8 @@ Keep your key file in a safe place. You will need it to create new versions of y
         =1 {You can wait for it to become responsive or exit the page.}
         other {You can wait for them to become responsive or exit the pages.}}
       </message>
-      <message name="IDS_BROWSER_HANGMONITOR_RENDERER_INFOBAR" desc="The text of the infobar notifying the user that the renderer is unresponsive.">
-        The page has become unresponsive. You can wait for it to become responsive or close it.
-      </message>
       <message name="IDS_BROWSER_HANGMONITOR_IFRAME_TITLE" desc="The text of a row of the 'Hung Page' dialog when a page is not hung but contains an iframe that is hung.">
         <ph name="HUNG_IFRAME_URL">$1<ex>google.com</ex></ph>, in <ph name="PAGE_TITLE">$2<ex>YouTube</ex></ph>.
-      </message>
-      <message name="IDS_BROWSER_HANGMONITOR_RENDERER_INFOBAR_END" desc="The label of the 'close' button for the hung renderer infobar">
-        Close
       </message>
       <message name="IDS_BROWSER_HANGMONITOR_RENDERER_WAIT" desc="The label of the 'wait' button, which exits the dialog without doing anything and continues to wait for the page to become responsive.">
         Wait
@@ -8795,7 +8844,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <!-- Extension install location strings -->
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_UNKNOWN" desc="The text explaining the the installation location is unknown.">
-          Not from Thorium Web Store.
+          Not from the Thorium Web Store.
         </message>
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_3RD_PARTY" desc="The text explaining the the installation came from a 3rd party app.">
           Installed by a third party.
@@ -10297,11 +10346,17 @@ Please help our engineers fix this problem. Tell us what happened right before y
 
       <!-- Translate Bubble -->
       <if expr="toolkit_views">
+      <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_WAITING_TITLE" desc="Title text for the partial translate bubble when waiting for translation to be completed.">
+          Waiting for translation
+        </message>
         <message name="IDS_TRANSLATE_BUBBLE_BEFORE_TRANSLATE_TITLE" desc="Title text for the translate bubble when asking to translate a page.">
           Translate this page?
         </message>
         <message name="IDS_TRANSLATE_BUBBLE_TRANSLATED_TITLE" desc="Title text for the translate bubble label when the page has been translated from one language to another">
           Translated
+        </message>
+        <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_COULD_NOT_TRANSLATE_TITLE" desc="Title text for the partial translate bubble label when the text selection could not be translated. This is also announced to the screenreader.">
+          The selection could not be translated at this time
         </message>
         <message name="IDS_TRANSLATE_BUBBLE_COULD_NOT_TRANSLATE_TITLE" desc="Title text for the translate bubble label when the page could not be translated. This is also announced to the screenreader.">
           This page could not be translated
@@ -10327,6 +10382,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           </message>
           <message name="IDS_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="Text for the menu item that lets the user open a dialog to choose another source language for translation, from a list of available languages.">
             Page is not in <ph name="language">$1<ex>French</ex></ph>
+          </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="Text for the partial translate bubble menu item that lets the user open a dialog to choose another source language for translation, from a list of available languages.">
+            Selection is not in <ph name="language">$1<ex>French</ex></ph>
           </message>
           <message name="IDS_TRANSLATE_BUBBLE_ACCEPT" desc="Text to show for the translate bubble button to accept translation.">
             Translate
@@ -10370,6 +10428,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="Text to show as the title in the advanced source language view for TAB UI">
             Page language to translate
           </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="Text to show as the title in the advanced source language view for TAB UI in the partial translate bubble">
+            Language to translate from
+          </message>
           <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_TRANSLATE_FULL_PAGE" desc="Text to show for the partial translate bubble button to start a full page translation">
             Translate full page
           </message>
@@ -10381,11 +10442,14 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_MENU_BUTTON" desc="In Title Case: Text to show for the translate bubble menu item to jump to the advanced panel, specifically to change which languages are translated between.">
             Change Languages...
           </message>
-          <message name="IDS_TRANSLATE_BUBBLE_CHANGE_TARGET_LANGUAGE" desc="Text to show for the translate bubble menu item which invokes the target language menu.">
+          <message name="IDS_TRANSLATE_BUBBLE_CHANGE_TARGET_LANGUAGE" desc="In Title Case: Text to show for the translate bubble menu item which invokes the target language menu.">
             Choose Another Language...
           </message>
-          <message name="IDS_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="Text to show for the translate bubble menu item which invokes the source language menu.">
+          <message name="IDS_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="In Title Case: Text to show for the translate bubble menu item which invokes the source language menu.">
             Page Is Not in <ph name="language">$1<ex>French</ex></ph>
+          </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_CHANGE_SOURCE_LANGUAGE" desc="In Title Case: Text to show for the partial translate bubble menu item which invokes the source language menu.">
+            Selection Is Not in <ph name="language">$1<ex>French</ex></ph>
           </message>
           <message name="IDS_TRANSLATE_BUBBLE_ACCEPT" desc="In Title Case: Text to show for the translate bubble button to accept translation.">
             Translate
@@ -10429,7 +10493,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <message name="IDS_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="In Title Case: Text to show as the title in the advanced source language view for TAB UI">
             Page Language to Translate
           </message>
-          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_TRANSLATE_FULL_PAGE" desc="Text to show for the partial translate bubble button to start a full page translation">
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_ADVANCED_SOURCE" desc="In Title Case: Text to show as the title in the advanced source language view for TAB UI in the partial translate bubble">
+            Language to Translate from
+          </message>
+          <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_TRANSLATE_FULL_PAGE" desc="In Title Case: Text to show for the partial translate bubble button to start a full page translation">
             Translate Full Page
           </message>
         </if>
@@ -12182,7 +12249,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Switch to a smart and secure browser
       </message>
       <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Google recommends Thorium.">
-        Alex313031 recommends Thorium
+        Google recommends Thorium
       </message>
       <message name="IDS_WIN10_TOAST_OPEN_CHROME" desc="The label on the button to dismiss the toast and launch Thorium.">
         Open Thorium
@@ -13279,7 +13346,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </if>
 
     <!-- FedCM Account Selection strings -->
-    <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet. Sheet is shown to promp user for sign in consent.">
+    <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet. Sheet is shown to prompt user for sign in consent.">
       Sign in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$2<ex>idp.example</ex></ph>
     </message>
     <message name="IDS_ACCOUNT_SELECTION_CONTINUE" desc="Title of the button that continues filling with the only available set of credentials.">
@@ -13296,6 +13363,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <message name="IDS_ACCOUNT_SELECTION_DATA_SHARING_CONSENT" desc="The consent text shown to the user before sign up.">
       To continue, <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$1<ex>idp.com</ex></ph> will share your name, email address, and profile picture with this site. See this site's <ph name="BEGIN_LINK1">$2</ph>privacy policy<ph name="END_LINK1">$3</ph> and <ph name="BEGIN_LINK2">$4</ph>terms of service<ph name="END_LINK2">$5</ph>.
+    </message>
+    <message name="IDS_MULTI_IDP_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet when there are multiple identity providers. Sheet is shown to prompt user for sign in consent." translateable="false">
+      Sign in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph>
     </message>
     <message name="IDS_VERIFY_SHEET_TITLE" desc="Header shown to the user while signing in happens.">
       Verifying…
