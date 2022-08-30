@@ -79,8 +79,8 @@
 #include "chrome/browser/net/profile_network_context_service_factory.h"
 #include "chrome/browser/net/system_network_context_manager.h"
 #include "chrome/browser/payments/payment_request_display_manager_factory.h"
-#include "chrome/browser/performance_manager/chrome_browser_main_extra_parts_performance_manager.h"
-#include "chrome/browser/performance_manager/chrome_content_browser_client_performance_manager_part.h"
+#include "chrome/browser/performance_manager/public/chrome_browser_main_extra_parts_performance_manager.h"
+#include "chrome/browser/performance_manager/public/chrome_content_browser_client_performance_manager_part.h"
 #include "chrome/browser/performance_monitor/chrome_browser_main_extra_parts_performance_monitor.h"
 #include "chrome/browser/plugins/pdf_iframe_navigation_throttle.h"
 #include "chrome/browser/plugins/plugin_utils.h"
@@ -454,6 +454,7 @@
 #include "chrome/browser/ui/browser_dialogs.h"
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/search/new_tab_page_navigation_throttle.h"
+#include "chrome/browser/ui/web_applications/tabbed_web_app_navigation_throttle.h"
 #include "chrome/browser/web_applications/policy/web_app_policy_manager.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
 #include "chrome/browser/web_applications/web_app_provider.h"
@@ -486,6 +487,7 @@
 #endif
 
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+#include "chrome/browser/enterprise/chrome_browser_main_extra_parts_enterprise.h"
 #include "chrome/browser/ui/webui/app_settings/web_app_settings_navigation_throttle.h"
 #endif
 
@@ -1557,6 +1559,12 @@ ChromeContentBrowserClient::CreateBrowserMainParts(bool is_integration_test) {
   main_parts->AddParts(std::make_unique<ChromeBrowserMainExtraPartsMemory>());
 
   chrome::AddMetricsExtraParts(main_parts.get());
+
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+  main_parts->AddParts(
+      std::make_unique<
+          chrome::enterprise_util::ChromeBrowserMainExtraPartsEnterprise>());
+#endif
 
   // Always add ChromeBrowserMainExtraPartsGpu last to make sure
   // GpuDataManager initialization could pick up about:flags settings.
@@ -2990,11 +2998,11 @@ bool ChromeContentBrowserClient::IsInterestGroupAPIAllowed(
   return allowed;
 }
 
-bool ChromeContentBrowserClient::IsConversionMeasurementOperationAllowed(
+bool ChromeContentBrowserClient::IsAttributionReportingOperationAllowed(
     content::BrowserContext* browser_context,
-    ConversionMeasurementOperation operation,
-    const url::Origin* impression_origin,
-    const url::Origin* conversion_origin,
+    AttributionReportingOperation operation,
+    const url::Origin* source_origin,
+    const url::Origin* destination_origin,
     const url::Origin* reporting_origin) {
   Profile* profile = Profile::FromBrowserContext(browser_context);
 
@@ -3004,23 +3012,23 @@ bool ChromeContentBrowserClient::IsConversionMeasurementOperationAllowed(
     return false;
 
   switch (operation) {
-    case ConversionMeasurementOperation::kImpression:
-      DCHECK(impression_origin);
+    case AttributionReportingOperation::kSource:
+      DCHECK(source_origin);
       DCHECK(reporting_origin);
-      return privacy_sandbox_settings->IsConversionMeasurementAllowed(
-          *impression_origin, *reporting_origin);
-    case ConversionMeasurementOperation::kConversion:
-      DCHECK(conversion_origin);
+      return privacy_sandbox_settings->IsAttributionReportingAllowed(
+          *source_origin, *reporting_origin);
+    case AttributionReportingOperation::kTrigger:
+      DCHECK(destination_origin);
       DCHECK(reporting_origin);
-      return privacy_sandbox_settings->IsConversionMeasurementAllowed(
-          *conversion_origin, *reporting_origin);
-    case ConversionMeasurementOperation::kReport:
-      DCHECK(impression_origin);
-      DCHECK(conversion_origin);
+      return privacy_sandbox_settings->IsAttributionReportingAllowed(
+          *destination_origin, *reporting_origin);
+    case AttributionReportingOperation::kReport:
+      DCHECK(source_origin);
+      DCHECK(destination_origin);
       DCHECK(reporting_origin);
-      return privacy_sandbox_settings->ShouldSendConversionReport(
-          *impression_origin, *conversion_origin, *reporting_origin);
-    case ConversionMeasurementOperation::kAny:
+      return privacy_sandbox_settings->MaySendAttributionReport(
+          *source_origin, *destination_origin, *reporting_origin);
+    case AttributionReportingOperation::kAny:
       return privacy_sandbox_settings->IsPrivacySandboxEnabled();
   }
 }
@@ -4152,7 +4160,7 @@ std::wstring ChromeContentBrowserClient::GetAppContainerSidForSandboxType(
       return std::wstring();
     case sandbox::mojom::Sandbox::kGpu:
       return std::wstring();
-#if BUILDFLAG(ENABLE_PLUGINS)
+#if BUILDFLAG(ENABLE_PPAPI)
     case sandbox::mojom::Sandbox::kPpapi:
 #endif
     case sandbox::mojom::Sandbox::kNoSandbox:
@@ -4239,7 +4247,7 @@ bool ChromeContentBrowserClient::PreSpawnChild(
       break;
     case sandbox::mojom::Sandbox::kUtility:
     case sandbox::mojom::Sandbox::kGpu:
-#if BUILDFLAG(ENABLE_PLUGINS)
+#if BUILDFLAG(ENABLE_PPAPI)
     case sandbox::mojom::Sandbox::kPpapi:
 #endif
     case sandbox::mojom::Sandbox::kNoSandbox:
@@ -4566,6 +4574,10 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
 
   MaybeAddThrottle(NewTabPageNavigationThrottle::MaybeCreateThrottleFor(handle),
                    &throttles);
+
+  MaybeAddThrottle(
+      web_app::TabbedWebAppNavigationThrottle::MaybeCreateThrottleFor(handle),
+      &throttles);
 #endif
 
   // g_browser_process->safe_browsing_service() may be null in unittests.
@@ -6440,6 +6452,18 @@ void ChromeContentBrowserClient::BindBrowserControlInterface(
 
 bool ChromeContentBrowserClient::
     ShouldInheritCrossOriginEmbedderPolicyImplicitly(const GURL& url) {
+#if BUILDFLAG(ENABLE_EXTENSIONS)
+  return url.SchemeIs(extensions::kExtensionScheme);
+#else
+  return false;
+#endif
+}
+
+bool ChromeContentBrowserClient::
+    ShouldServiceWorkerInheritPolicyContainerFromCreator(const GURL& url) {
+  if (url.SchemeIsLocal()) {
+    return true;
+  }
 #if BUILDFLAG(ENABLE_EXTENSIONS)
   return url.SchemeIs(extensions::kExtensionScheme);
 #else
