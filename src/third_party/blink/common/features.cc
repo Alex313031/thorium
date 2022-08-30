@@ -15,6 +15,14 @@
 namespace blink {
 namespace features {
 
+// Gate access to the AnonymousIframe origin trial. This is useful on its own,
+// because the OT infrastructure doesn't check Chrome's version. It means token
+// generated for the OT applies immediately to every Chrome versions. The
+// feature flag allows Chrome developers to restrict the access to the first
+// fully supported version.
+const base::Feature kAnonymousIframeOriginTrial{
+    "AnonymousIframeOriginTrial", base::FEATURE_ENABLED_BY_DEFAULT};
+
 // Apply lazy-loading to ad frames which have embeds likely impacting Core Web
 // Vitals.
 const base::Feature kAutomaticLazyFrameLoadingToAds{
@@ -82,6 +90,10 @@ const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>
 // cache.
 const base::Feature kBackForwardCacheDedicatedWorker{
     "BackForwardCacheDedicatedWorker", base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kBackForwardCacheSendNotRestoredReasons{
+    "BackForwardCacheSendNotRestoredReasons",
+    base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Accumulates the fetch requests for resources while parsing chunks of HTML so
 // they can be evaluated, prioritized and processed as a group rather than as
@@ -184,9 +196,6 @@ const base::Feature kFrequencyCappingForLargeStickyAdDetection{
 // Enable Display Locking JavaScript APIs.
 const base::Feature kDisplayLocking{"DisplayLocking",
                                     base::FEATURE_DISABLED_BY_DEFAULT};
-
-const base::Feature kJSONModules{"JSONModules",
-                                 base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kDeferredFontShaping{"DeferredShaping",
                                          base::FEATURE_DISABLED_BY_DEFAULT};
@@ -333,6 +342,11 @@ const base::Feature kPrerender2 {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 };
+
+const base::Feature kSameSiteCrossOriginForSpeculationRulesPrerender{
+    "SameSiteCrossOriginForSpeculationRulesPrerender",
+    base::FEATURE_DISABLED_BY_DEFAULT};
+
 const char kPrerender2MaxNumOfRunningSpeculationRules[] =
     "max_num_of_running_speculation_rules";
 
@@ -344,6 +358,11 @@ const char kPrerender2MemoryAcceptablePercentOfSystemMemoryParamName[] =
 
 bool IsPrerender2Enabled() {
   return base::FeatureList::IsEnabled(blink::features::kPrerender2);
+}
+
+bool IsSameSiteCrossOriginForSpeculationRulesPrerender2Enabled() {
+  return base::FeatureList::IsEnabled(
+      blink::features::kSameSiteCrossOriginForSpeculationRulesPrerender);
 }
 
 bool IsFencedFramesEnabled() {
@@ -506,7 +525,7 @@ const base::Feature kStopInBackground {
 // Enable an experimental extension to the StorageAccessAPI.
 // https://crbug.com/1351540
 const base::Feature kStorageAccessAPIForSiteExtension{
-    "StorageAccessAPIForSiteExtension", base::FEATURE_DISABLED_BY_DEFAULT};
+    "StorageAccessAPIForSiteExtension", base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enable text snippets in URL fragments. https://crbug.com/919204.
 const base::Feature kTextFragmentAnchor{"TextFragmentAnchor",
@@ -717,14 +736,6 @@ const base::Feature kLowLatencyCanvas2dImageChromium {
       base::FEATURE_DISABLED_BY_DEFAULT
 #endif  // BUILDFLAG(IS_CHROMEOS)
 };
-
-// Enables the use of shared image swap chains for low latency 2d canvas.
-const base::Feature kLowLatencyCanvas2dSwapChain{
-    "LowLatencyCanvas2dSwapChain", base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Enables the use of shared image swap chains for low latency webgl canvas.
-const base::Feature kLowLatencyWebGLSwapChain{"LowLatencyWebGLSwapChain",
-                                              base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Enables Dawn-accelerated 2D canvas.
 const base::Feature kDawn2dCanvas{"Dawn2dCanvas",
@@ -1511,7 +1522,10 @@ const base::FeatureParam<DelayAsyncScriptDelayType>::Option
     delay_async_script_execution_delay_types[] = {
         {DelayAsyncScriptDelayType::kFinishedParsing, "finished_parsing"},
         {DelayAsyncScriptDelayType::kFirstPaintOrFinishedParsing,
-         "first_paint_or_finished_parsing"}};
+         "first_paint_or_finished_parsing"},
+        {DelayAsyncScriptDelayType::kEachLcpCandidate, "each_lcp_candidate"},
+        {DelayAsyncScriptDelayType::kEachPaint, "each_paint"},
+};
 
 const base::FeatureParam<DelayAsyncScriptDelayType>
     kDelayAsyncScriptExecutionDelayParam{
@@ -1521,6 +1535,9 @@ const base::FeatureParam<DelayAsyncScriptDelayType>
 
 const base::FeatureParam<bool> kDelayAsyncScriptExecutionCrossSiteOnlyParam{
     &kDelayAsyncScriptExecution, "cross_site_only", false};
+
+const base::FeatureParam<base::TimeDelta> kDelayAsyncScriptExecutionLimitParam{
+    &kDelayAsyncScriptExecution, "limit", base::Seconds(1)};
 
 const base::Feature kLowPriorityAsyncScriptExecution{
     "LowPriorityAsyncScriptExecution", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1534,6 +1551,11 @@ const base::Feature kForceDeferScriptIntervention{
 
 const base::Feature kForceInOrderScript{"ForceInOrderScript",
                                         base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kSelectiveInOrderScript{"SelectiveInOrderScript",
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<std::string> kSelectiveInOrderScriptAllowList{
+    &kSelectiveInOrderScript, "allow_list", ""};
 
 const base::Feature kAllowSourceSwitchOnPausedVideoMediaStream{
     "AllowSourceSwitchOnPausedVideoMediaStream",
@@ -1615,8 +1637,17 @@ const base::FeatureParam<int> kThreadedHtmlTokenizerTokenMaxCount{
 const base::Feature kWebRtcThreadsUseResourceEfficientType{
     "WebRtcThreadsUseResourceEfficientType", base::FEATURE_DISABLED_BY_DEFAULT};
 
+// TODO(wangxianzhu): We plan to enable this feature for several canary builds,
+// to see if the simulation is accurate. Then we'll disable it by default and
+// finch, and eventually remove this feature.
+const base::Feature kOldCullRectUpdater{"OldCullRectUpdater",
+                                        base::FEATURE_ENABLED_BY_DEFAULT};
+
 const base::Feature kThrottleIntersectionObserverUMA{
     "ThrottleIntersectionObserverUMA", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kWebRtcMetronome{"WebRtcMetronome",
+                                     base::FEATURE_ENABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
