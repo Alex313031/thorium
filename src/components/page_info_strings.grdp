@@ -39,10 +39,10 @@
     You're viewing a developer tools page
   </message>
   <message name="IDS_PAGE_INFO_READER_MODE_PAGE_SECURE" desc="Message to display in the page info bubble when the page you are viewing is the reader mode version of an article which was retrieved over a secure connection.">
-    Chrome simplified this page to make it easier to read. Chrome retrieved the original page over a secure connection.
+    Thorium simplified this page to make it easier to read. Thorium retrieved the original page over a secure connection.
   </message>
   <message name="IDS_PAGE_INFO_READER_MODE_PAGE" desc="Message to display in the page info bubble when the page you are viewing is the reader mode version of an article which was retrieved over an insecure connection.">
-    Chrome simplified this page to make it easier to read. Chrome retrieved the original page over an insecure connection.
+    Thorium simplified this page to make it easier to read. Thorium retrieved the original page over an insecure connection.
   </message>
 
   <!-- Safety Tip summary strings -->
@@ -98,7 +98,7 @@
     Your information (for example, passwords or credit card numbers) is private when it is sent to this site.
   </message>
   <message name="IDS_PAGE_INFO_SECURE_DETAILS_V2" desc="A short paragraph explaining a secure site to the user.">
-    The site's connection is secure unless Chrome tells you otherwise.
+    The site's connection is secure unless Thorium tells you otherwise.
   </message>
   <message name="IDS_PAGE_INFO_ADMIN_PROVIDED_CERT_DETAILS" desc="A short paragraph explaining a site using an administrator-provided certificate to the user.">
     You have accessed content using an administrator-provided certificate. Data you provide to <ph name="DOMAIN">$1<ex>www.google.com</ex></ph> can be intercepted by your administrator.
@@ -710,7 +710,10 @@
   </message>
 
   <!-- Cookies subpage -->
-  <message name="IDS_PAGE_INFO_COOKIES_DESCRIPTION" desc="The descritpion of cookies in Cookies Subpage with place holder for link to settings." translateable="false">
+  <message name="IDS_PAGE_INFO_COOKIES_HEADER" desc="The header label of cookies subpage in Page Info bubble." translateable="false">
+  Cookies and site data
+  </message>
+  <message name="IDS_PAGE_INFO_COOKIES_DESCRIPTION" desc="The descritpion of cookies in Cookies Subpage with placeholder for link to settings." translateable="false">
     Cookies and other site data are used to remember you, for example to sign you in or to personalize ads. To manage cookies for all sites, see <ph name="SETTINGS">$1<ex>Settings</ex></ph>.
   </message>
   <message name="IDS_PAGE_INFO_COOKIES_SETTINGS_LINK" desc="The text of the link to cookies settings." translateable="false">
@@ -723,15 +726,27 @@
     Block third-party cookies
   </message>
   <message name="IDS_PAGE_INFO_COOKIES_BLOCKED_SITES_COUNT" desc="The label of the count for sites that have blocked access to cookies on the page. This text will be shown on the blocking third-party cookies toggle." translateable="false">
-        {NUM_COOKIES, plural, =1 {1 site blocked} other {# sites blocked}}
+        {NUM_COOKIES, plural, =0 {No sites} =1 {1 site} other {# sites}} blocked
+  </message>
+  <message name="IDS_PAGE_INFO_COOKIES_BLOCKED_SITES_COUNT_WHEN_FPS_BLOCKED" desc="The label of the count for sites that have blocked access to cookies on the page when fps is blocked. This text will be shown on the blocking third-party cookies toggle." translateable="false">
+        {NUM_COOKIES, plural, =0 {No sites} =1 {1 site} other {# sites}} blocked, including related sites
   </message>
   <message name="IDS_PAGE_INFO_COOKIES_ALLOWED_SITES_COUNT" desc="The label of the count for sites with allowed cookies on the page. This text will be shown on the cookies dialog button." translateable="false">
-        {NUM_COOKIES, plural, =1 {1 site allowed} other {# sites allowed}}
+        {NUM_COOKIES, plural,=0 {No sites} =1 {1 site} other {# sites}} allowed
   </message>
-  <message name="IDS_PAGE_FPS_BUTTON_TITLE" desc="The title of first-party sets button in Cookies Subpage with place holder for name of the owner of this set." translateable="false">
+   <message name="IDS_PAGE_INFO_COOKIES_DIALOG_BUTTON_TITLE" desc="The title on the button opening cookies in use dialog in cookies subpage." translateable="false">
+    Manage cookies and site data
+  </message>
+  <message name="IDS_PAGE_INFO_COOKIES_DIALOG_BUTTON_TOOLTIP" desc="The text of the tooltip on the button opening cookies in use dialog in cookies subpage." translateable="false">
+    Show cookies
+  </message>
+  <message name="IDS_PAGE_INFO_FPS_BUTTON_TOOLTIP" desc="The tooltip of first-party sets button in cookies subpage, which opens 'All Sites' settings page with a filter for this sets' pages." translateable="false">
+    Show sites
+  </message>
+  <message name="IDS_PAGE_INFO_FPS_BUTTON_TITLE" desc="The title of first-party sets button in cookies subpage with placeholder for name of the owner of this set." translateable="false">
     See sites related to <ph name="SET_OWNER">$1<ex>gannett.com</ex></ph>
   </message>
-  <message name="IDS_PAGE_FPS_BUTTON_SUBTITLE" desc="The subtitle of first-party sets button in Cookies Subpage with place holder for name of the owner of this set." translateable="false">
+  <message name="IDS_PAGE_INFO_FPS_BUTTON_SUBTITLE" desc="The subtitle of first-party sets button in cookies subpage with placeholder for name of the owner of this set." translateable="false">
     <ph name="SET_OWNER">$1<ex>gannett.com</ex></ph> says these sites are related
   </message>
 
@@ -760,10 +775,10 @@
     Show ad personalization details
   </message>
   <message name="IDS_PAGE_INFO_AD_PERSONALIZATION_TOPICS_AND_INTEREST_GROUP_DESCRIPTION" desc="The description label that explains to the user that the current site has accessed the Topics API and joined the user to an interest group. The label is located in 'Ad personalization' subpage in page info bubble.">
-    This site defines interests other sites can use to show you ads. This site also gets your interests from Chrome to show you more relevant ads.
+    This site defines interests other sites can use to show you ads. This site also gets your interests from Thorium to show you more relevant ads.
   </message>
   <message name="IDS_PAGE_INFO_AD_PERSONALIZATION_TOPICS_DESCRIPTION"  desc="The description label that explains to the user that the current site has accessed the Topics API. The label is located in 'Ad personalization' subpage in page info bubble.">
-   This site gets your interests from Chrome to show you more relevant ads
+   This site gets your interests from Thorium to show you more relevant ads
   </message>
   <message name="IDS_PAGE_INFO_AD_PERSONALIZATION_INTEREST_GROUP_DESCRIPTION" desc="The description label that explains to the user that the current site has joined the user to an interest group. The label is located in 'Ad personalization' subpage in page info bubble.">
     This site defines interests other sites can use to show you ads
