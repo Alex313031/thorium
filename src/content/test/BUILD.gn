@@ -1227,6 +1227,7 @@ test("content_browsertests") {
     "../browser/back_forward_cache_internal_browsertest.cc",
     "../browser/back_forward_cache_network_request_browsertest.cc",
     "../browser/back_forward_cache_no_store_browsertest.cc",
+    "../browser/back_forward_cache_not_restored_reasons_browsertest.cc",
     "../browser/background_sync/background_sync_base_browsertest.cc",
     "../browser/background_sync/background_sync_base_browsertest.h",
     "../browser/background_sync/one_shot_background_sync_browsertest.cc",
@@ -1394,6 +1395,7 @@ test("content_browsertests") {
     "../browser/renderer_host/page_impl_browsertest.cc",
     "../browser/renderer_host/page_lifecycle_state_manager_browsertest.cc",
     "../browser/renderer_host/panel_rotation_browsertest.cc",
+    "../browser/renderer_host/pending_beacon_browsertest.cc",
     "../browser/renderer_host/policy_container_host_browsertest.cc",
     "../browser/renderer_host/private_network_access_browsertest.cc",
     "../browser/renderer_host/render_document_host_browsertest.cc",
@@ -2188,6 +2190,7 @@ test("content_unittests") {
     "../browser/first_party_sets/addition_overlaps_union_find_unittest.cc",
     "../browser/first_party_sets/database/first_party_sets_database_unittest.cc",
     "../browser/first_party_sets/first_party_set_parser_unittest.cc",
+    "../browser/first_party_sets/first_party_sets_handler_database_helper_unittest.cc",
     "../browser/first_party_sets/first_party_sets_handler_impl_unittest.cc",
     "../browser/first_party_sets/first_party_sets_loader_unittest.cc",
     "../browser/font_access/font_access_manager_unittest.cc",
@@ -2238,6 +2241,7 @@ test("content_unittests") {
     "../browser/interest_group/auction_worklet_manager_unittest.cc",
     "../browser/interest_group/interest_group_permissions_cache_unittest.cc",
     "../browser/interest_group/interest_group_permissions_checker_unittest.cc",
+    "../browser/interest_group/interest_group_priority_util_unittest.cc",
     "../browser/interest_group/interest_group_storage_unittest.cc",
     "../browser/loader/cors_origin_pattern_setter_unittest.cc",
     "../browser/loader/file_url_loader_factory_unittest.cc",
@@ -2767,6 +2771,7 @@ test("content_unittests") {
     "//ui/gl:test_support",
     "//ui/latency:test_support",
     "//ui/shell_dialogs:shell_dialogs",
+    "//ui/webui:test_support",
   ]
 
   data_deps = [
