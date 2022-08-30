@@ -1215,6 +1215,7 @@ robolectric_binary("chrome_junit_tests") {
     "//third_party/android_support_test_runner:rules_java",
     "//third_party/android_support_test_runner:runner_java",
     "//third_party/androidx:androidx_activity_activity_java",
+    "//third_party/androidx:androidx_appcompat_appcompat_java",
     "//third_party/androidx:androidx_browser_browser_java",
     "//third_party/androidx:androidx_collection_collection_java",
     "//third_party/androidx:androidx_lifecycle_lifecycle_runtime_java",
@@ -4276,3 +4277,20 @@ if (_enable_libs_and_assets_verification || _enable_manifest_verification) {
     if (_enable_libs_and_assets_verification) {
       deps += [
         ":chrome_modern_public_bundle_validate_libs_and_assets",
+        ":monochrome_public_bundle_validate_libs_and_assets",
+        ":trichrome_chrome_bundle_validate_libs_and_assets",
+        ":trichrome_library_apk_validate_libs_and_assets",
+      ]
+    }
+    if (_enable_manifest_verification) {
+      deps += [
+        ":monochrome_public_bundle_validate_manifests",
+        ":monochrome_public_bundle_validate_proguard_config",
+        ":trichrome_chrome_bundle__base_bundle_module_validate_android_manifest",
+        ":trichrome_library_apk_validate_android_manifest",
+        "//android_webview:system_webview_base_bundle_module_validate_android_manifest",
+        "//android_webview:trichrome_webview_base_bundle_module_validate_android_manifest",
+      ]
+    }
+  }
+}
