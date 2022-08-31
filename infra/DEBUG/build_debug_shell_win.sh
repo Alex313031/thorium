@@ -36,8 +36,8 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ../../depot_tools/autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
 
-mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
-mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
+mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
+mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 
 cp -r -f -v ./icons/icon_16.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_24.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
