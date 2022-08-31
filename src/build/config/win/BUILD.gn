@@ -141,8 +141,9 @@ config("compiler") {
         "/clang:-maes",
         "/clang:-mno-avx2",
         "-Xclang", "-O3",
-        "-Xclang", "-mno-avx2",
+        "-Xclang", "-no-avx2",
         "/arch:AVX",
+        "/arch:AVX2",
         "-Wno-unused-command-line-argument",
       ]
     }
