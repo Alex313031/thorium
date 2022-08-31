@@ -139,8 +139,6 @@ config("compiler") {
         "/clang:-mavx",
         "/clang:-maes",
         "-Xclang", "-O3",
-        "-Xclang", "-mavx",
-        "-Xclang", "-maes",
         "-Wno-unused-command-line-argument",
       ]
     }
