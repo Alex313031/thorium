@@ -66,14 +66,14 @@ printf "${c0}\n" &&
 sleep 2 &&
 
 # Cleanup
-rm -r -v ./opt &&
-rm -r -v ./etc &&
-rm -r -v ./usr &&
-rm -r -v ./control.tar.xz &&
-rm -r -v ./data.tar.xz &&
-rm -r -v ./debian-binary &&
-rm -r -v ./Thorium/ &&
-rm -r -v ./temp/ &&
+rm -r -v -f ./opt &&
+rm -r -v -f ./etc &&
+rm -r -v -f ./usr &&
+rm -r -v -f ./control.tar.xz &&
+rm -r -v -f ./data.tar.xz &&
+rm -r -v -f ./debian-binary &&
+rm -r -v -f ./Thorium/ &&
+rm -r -v -f ./temp/ &&
 
 printf "\n" &&
 printf "${GRE}Done! ${YEL}Appimage at //out/thorium*.Appimage\n" &&
