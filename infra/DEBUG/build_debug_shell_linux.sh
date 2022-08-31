@@ -36,9 +36,9 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ../../depot_tools/autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
 
-mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
-mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
-mkdir -v ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
+mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
+mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
+mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 
 cp -r -f -v ./icons/icon_16.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_24.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
@@ -66,7 +66,6 @@ cp -r -f -v ~/chromium/src/out/thorium/libvk_swiftshader.so ~/chromium/src/out/t
 cp -r -f -v ~/chromium/src/out/thorium/libvulkan.so.1 ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader_icd.json ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot.bin ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot_generator ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
