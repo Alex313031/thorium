@@ -11,12 +11,12 @@
 
 #include "base/bind.h"
 #include "base/containers/contains.h"
-#include "base/feature_list.h"
 #include "base/files/file_path.h"
 #include "base/guid.h"
 #include "base/i18n/case_conversion.h"
 #include "base/i18n/string_search.h"
 #include "base/metrics/user_metrics_action.h"
+#include "base/ranges/algorithm.h"
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
@@ -25,6 +25,7 @@
 #include "components/bookmarks/browser/bookmark_client.h"
 #include "components/bookmarks/browser/bookmark_model.h"
 #include "components/bookmarks/browser/scoped_group_bookmark_actions.h"
+#include "components/bookmarks/common/bookmark_metrics.h"
 #include "components/bookmarks/common/bookmark_pref_names.h"
 #include "components/pref_registry/pref_registry_syncable.h"
 #include "components/prefs/pref_service.h"
@@ -186,9 +187,9 @@ void GetBookmarksMatchingPropertiesImpl(
 bool HasUserCreatedBookmarks(BookmarkModel* model) {
   const BookmarkNode* root_node = model->root_node();
 
-  return std::any_of(
-      root_node->children().cbegin(), root_node->children().cend(),
-      [](const auto& node) { return !node->children().empty(); });
+  return base::ranges::any_of(root_node->children(), [](const auto& node) {
+    return !node->children().empty();
+  });
 }
 #endif
 
@@ -225,6 +226,8 @@ void CloneBookmarkNode(BookmarkModel* model,
     CloneBookmarkNodeImpl(model, elements[i], parent, index_to_add_at + i,
                           reset_node_times);
   }
+
+  metrics::RecordCloneBookmarkNode(elements.size());
 }
 
 void CopyToClipboard(BookmarkModel* model,
