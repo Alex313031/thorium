@@ -329,6 +329,7 @@ test("components_unittests") {
       "//components/captive_portal/content:unit_tests",
       "//components/cast_certificate:unit_tests",
       "//components/cast_channel:unit_tests",
+      "//components/cast_receiver:unit_tests",
       "//components/cast_streaming:unit_tests",
       "//components/certificate_transparency:unit_tests",
       "//components/content_capture/browser:unit_tests",
@@ -528,6 +529,7 @@ test("components_unittests") {
       # See comment in components / guest_view / browser / BUILD.gn for why
       # guest_view is currently non - mobile.
       "//components/guest_view/browser:unit_tests",
+      "//components/password_manager/services/password_strength:unit_tests",
       "//components/soda:unit_tests",
       "//components/storage_monitor:unit_tests",
       "//components/web_modal:unit_tests",
@@ -953,6 +955,7 @@ if (!is_ios) {
         "//base/test:test_support",
         "//components/feedback",
         "//components/feedback/content",
+        "//services/network:test_support",
         "//testing/gmock",
         "//testing/gtest",
       ]
