@@ -1335,6 +1335,7 @@ test("content_browsertests") {
     "../browser/net/sandboxed_nqe_browsertest.cc",
     "../browser/net/sandboxed_socket_broker_browsertest.cc",
     "../browser/net/split_cache_browsertest.cc",
+    "../browser/net/transferable_socket_browsertest.cc",
     "../browser/net/trust_token_browsertest.cc",
     "../browser/net/trust_token_browsertest.h",
     "../browser/net/trust_token_origin_trial_browsertest.cc",
@@ -1398,9 +1399,11 @@ test("content_browsertests") {
     "../browser/renderer_host/pending_beacon_browsertest.cc",
     "../browser/renderer_host/policy_container_host_browsertest.cc",
     "../browser/renderer_host/private_network_access_browsertest.cc",
+    "../browser/renderer_host/proactively_swap_browsing_instances_browsertest.cc",
     "../browser/renderer_host/render_document_host_browsertest.cc",
     "../browser/renderer_host/render_frame_host_impl_browsertest.cc",
     "../browser/renderer_host/render_frame_host_manager_browsertest.cc",
+    "../browser/renderer_host/render_frame_host_manager_browsertest.h",
     "../browser/renderer_host/render_process_host_browsertest.cc",
     "../browser/renderer_host/render_view_host_browsertest.cc",
     "../browser/renderer_host/render_widget_host_browsertest.cc",
@@ -1894,6 +1897,7 @@ test("content_browsertests") {
       "../browser/webauth/webauth_browsertest.cc",
     ]
     deps += [
+      "//components/cbor",
       "//device/base",
       "//device/fido:fido",
       "//device/fido:mocks",
@@ -3115,7 +3119,7 @@ group("gpu_pytype") {
     "//content/test/gpu/validate_tag_consistency.py",
 
     "//content/test/gpu/gold_inexact_matching/",
-    "//content/test/gpu/flake_suppressor/",
+    "//testing/flake_suppressor_common/",
     "//content/test/gpu/unexpected_passes/",
     "//testing/unexpected_passes_common/",
   ]
