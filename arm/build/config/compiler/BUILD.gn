@@ -1551,19 +1551,15 @@ config("default_warnings") {
         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
         "-Wno-ignored-pragma-optimize",
       ]
-      
-      if (llvm_force_head_revision && !is_nacl) {
-        cflags += [
-          # TODO(crbug.com/1352183) Evaluate and possibly enable.
-          "-Wno-bitfield-constant-conversion",
-        ]
-      }
 
       if (!is_nacl) {
         cflags += [
 
           # TODO(crbug.com/1343975) Evaluate and possibly enable.
           "-Wno-deprecated-builtins",
+
+          # TODO(crbug.com/1352183) Evaluate and possibly enable.
+          "-Wno-bitfield-constant-conversion",
         ]
       }
     }
@@ -1687,6 +1683,11 @@ config("chromium_code") {
         # https://clang.llvm.org/docs/ThreadSafetyAnalysis.html
         "-Wthread-safety",
       ]
+    }
+
+    # TODO(https://crbug.com/1355871): Enable on more platforms.
+    if ((is_win || is_mac) && target_cpu == "x64") {
+      cflags += [ "-Wextra-semi" ]
     }
   }
 
