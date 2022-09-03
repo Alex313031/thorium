@@ -773,7 +773,7 @@ config("compiler") {
       (is_win || use_custom_libcxx)) {
     cflags += [ "-fcomplete-member-pointers" ]
   }
-  
+
   # MLGO specific flags. These flags enable an ML-based inliner trained on
   # Chrome on Android (arm32) with ThinLTO enabled, optimizing for size.
   # The "release" ML model is embedded into clang as part of its build.
