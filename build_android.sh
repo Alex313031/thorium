@@ -35,7 +35,6 @@ printf "${CYA}\n" &&
 # Workaround for branding dir
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_base/values/ic_launcher_round_alias.xml &&
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon.png &&
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xhdpi/layered_app_icon_background.png &&
