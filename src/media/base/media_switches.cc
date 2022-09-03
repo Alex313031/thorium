@@ -197,9 +197,11 @@ const char kOverrideEnabledCdmInterfaceVersion[] =
 // Overrides hardware secure codecs support for testing. If specified, real
 // platform hardware secure codecs check will be skipped. Valid codecs are:
 // - video: "vp8", "vp9", "avc1", "hevc", "dolbyvision"
+// - video that does not support clear lead: `<video>-no-clearlead`, where
+//   <video> is from the list above.
 // - audio: "mp4a", "vorbis"
 // Codecs are separated by comma. For example:
-//  --override-hardware-secure-codecs-for-testing=vp8,vp9,vorbis
+//  --override-hardware-secure-codecs-for-testing=vp8,vp9-no-clearlead,vorbis
 //  --override-hardware-secure-codecs-for-testing=avc1,mp4a
 // CENC encryption scheme is assumed to be supported for the specified codecs.
 // If no valid codecs specified, no hardware secure codecs are supported. This
@@ -540,7 +542,7 @@ const base::Feature kVaapiVideoEncodeLinux{"VaapiVideoEncoder",
 // Intended for manual usage only in order to gague the status of newer driver
 // implementations.
 const base::Feature kVaapiIgnoreDriverChecks{"VaapiIgnoreDriverChecks",
-                                             base::FEATURE_ENABLED_BY_DEFAULT};
+                                             base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_LINUX)
 
 // Enable VA-API hardware decode acceleration for AV1.
@@ -627,7 +629,7 @@ const base::Feature kLiveCaption{"LiveCaption",
 // tab instead" button is shown for chrome.desktopCapture captures.
 const base::Feature kShareThisTabInsteadButtonGetDisplayMedia{
     "ShareThisTabInsteadButtonGetDisplayMedia",
-    base::FEATURE_DISABLED_BY_DEFAULT};
+    base::FEATURE_ENABLED_BY_DEFAULT};
 
 // If kShareThisTabInsteadButtonGetDisplayMedia is ENABLED, this flag controls
 // whether a "Share this tab instead" button should be enabled for
@@ -958,7 +960,7 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
     return switches::autoplay::kDocumentUserActivationRequiredPolicy;
   
   if (base::CommandLine::ForCurrentProcess()->HasSwitch("no-autoplay"))
-    return switches::autoplay::kUserGestureRequiredPolicy;  
+    return switches::autoplay::kUserGestureRequiredPolicy;
 
 // The default value is platform dependent.
 #if BUILDFLAG(IS_ANDROID)
