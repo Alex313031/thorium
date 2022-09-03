@@ -5013,6 +5013,27 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_CANCEL_BUTTON_LABEL" desc="The label of the button to don't allow the extension(s) to run on the site.">
           No thanks
         </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_HAS_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when extension has access to the current site.">
+          Allowed to read &amp; change
+        </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_BLOCKED_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when the extension cannot access the current site.">
+          Not allowed to read &amp; change
+        </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_REQUESTS_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
+          Requested to read &amp; change
+        </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_ALL_EXTENSIONS_ALLOWED_ACCESS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when all extensions have access to the current site.">
+          All extensions can read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
+        </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_ALL_EXTENSIONS_BLOCKED_ACCESS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when all extensions cannot access the current site.">
+          You blocked all extensions from <ph name="HOST">$1<ex>google.com</ex></ph>
+        </message>
+         <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_EXTENSION_HAS_ACESSS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when the extension has access to the current site.">
+          This extension can read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
+        </message>
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_EXTENSION_REQUESTS_ACESSS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
+          Click this extension's icon to read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
+        </message>
 
         <if expr="not use_titlecase">
           <message name="IDS_EXTENSIONS_CONTEXT_MENU_CANT_ACCESS_PAGE" desc="The label in an extension's context menu indicating the extension cannot access the current page. (sentence case)">
@@ -7084,6 +7105,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_READ_LATER_CANT_ADD_CURRENT_TAB" desc="Label for button when the current tab cannot be added to read later">
         Can't add current tab
+      </message>
+      <message name="IDS_READ_LATER_MARK_CURRENT_TAB_READ" desc="Label for button to mark the current tab as read in Read Later">
+        Mark current tab as read
       </message>
       <message name="IDS_READ_LATER_REMOVE_CURRENT_TAB" desc="Label for button to remove the current tab from read later">
         Remove current tab
@@ -9833,9 +9857,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_SYNC_CONFIRMATION_SYNC_INFO_SIGNIN_INTERCEPT" desc="Information about sync on the sync confirmation dialog in the Signin Intercept flow">
         Turn on sync to get your bookmarks, passwords, history, and more on this device and anywhere else you're syncing.
       </message>
-      <message name="IDS_SYNC_CONFIRMATION_MANAGE_SYNC_BUTTON_LABEL" desc="Label of the button in the sync confirmation dialog of the Signin Intercept flow to open settings">
-        Manage sync
-      </message>
       <message name="IDS_SYNC_CONFIRMATION_TURN_ON_SYNC_BUTTON_LABEL" desc="Label of the confirmation button in the sync confirmation dialog of the Signin Intercept flow">
         Turn on sync
       </message>
@@ -10356,10 +10377,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Translated
         </message>
         <message name="IDS_PARTIAL_TRANSLATE_BUBBLE_COULD_NOT_TRANSLATE_TITLE" desc="Title text for the partial translate bubble label when the text selection could not be translated. This is also announced to the screenreader.">
-          The selection could not be translated at this time
+          This selection couldn't be translated
         </message>
         <message name="IDS_TRANSLATE_BUBBLE_COULD_NOT_TRANSLATE_TITLE" desc="Title text for the translate bubble label when the page could not be translated. This is also announced to the screenreader.">
-          This page could not be translated
+          This page couldn't be translated
         </message>
         <message name="IDS_TRANSLATE_BUBBLE_SOURCE_LANG_COMBOBOX_ACCNAME" desc="Accessible name for the source language selection combobox.">
           Choose the page language to translate from
@@ -11811,8 +11832,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_A11Y_ALERT_WINDOW_OVERVIEW_MODE_ENTERED" desc="The accessible text read when the user enters window overview mode in Ash.">
           Entered window overview mode. Swipe to navigate, or press tab if using a keyboard.
         </message>
-        <message name="IDS_A11Y_ALERT_DESK_TEMPLATES_MODE_ENTERED" desc="The accessible text read when the user enters desk templates mode in Ash.">
-          Viewing templates. Press tab to navigate.
+        <message name="IDS_A11Y_ALERT_SAVED_DESKS_LIBRARY_MODE_ENTERED" desc="The accessible text read when the user enters saved desks mode in Ash when both Save &amp; Recall and Desk Templates are enabled.">
+          Viewing saved desks and templates. Press tab to navigate.
+        </message>
+        <message name="IDS_A11Y_ALERT_SAVED_DESKS_SAVED_FOR_LATER_MODE_ENTERED" desc="The accessible text read when the user enters saved desks mode in Ash when only Save &amp; Recall is enabled.">
+          Viewing saved desks. Press tab to navigate.
         </message>
         <message name="IDS_A11Y_ALERT_WORKSPACE_FULLSCREEN_STATE_ENTERED" desc="The accessible text read when the current workspace state changes to fullscreen, which means the window in current workspace is fullcreen.">
           Entered full screen
@@ -13364,6 +13388,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_ACCOUNT_SELECTION_DATA_SHARING_CONSENT" desc="The consent text shown to the user before sign up.">
       To continue, <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$1<ex>idp.com</ex></ph> will share your name, email address, and profile picture with this site. See this site's <ph name="BEGIN_LINK1">$2</ph>privacy policy<ph name="END_LINK1">$3</ph> and <ph name="BEGIN_LINK2">$4</ph>terms of service<ph name="END_LINK2">$5</ph>.
     </message>
+    <message name="IDS_FAILURE_DIALOG_TITLE" desc="Header for failure dialog." translateable="false">
+      Failed signing in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$2<ex>idp.example</ex></ph>
+    </message>
     <message name="IDS_MULTI_IDP_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet when there are multiple identity providers. Sheet is shown to prompt user for sign in consent." translateable="false">
       Sign in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph>
     </message>
@@ -13561,6 +13588,31 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_DESCRIPTION" desc="The description shown in the side panel when an error with the script execution occurred." translateable="false">
         Check the site and try changing your password.
+      </message>
+    </if>
+
+    <!-- Battery Saver Toolbar strings  -->
+    <if expr="not is_android">
+      <message name="IDS_BATTERY_SAVER_BUTTON_TOOLTIP" desc="The tooltip for the battery saver toolbar button">
+        Battery Saver is on
+      </message>
+      <message name="IDS_BATTERY_SAVER_BUTTON_ACCNAME" desc="The accessibility text for the battery saver toolbar button">
+        Battery Saver is on
+      </message>
+      <message name="IDS_BATTERY_SAVER_BUBBLE_TITLE" desc="The title of the battery saver bubble dialog">
+        Battery Saver is on
+      </message>
+      <message name="IDS_BATTERY_SAVER_BUBBLE_DESCRIPTION" desc="The description text of the battery saver bubble dialog">
+        Background activity and some visual effects, like smooth scrolling, may be limited.
+      </message>
+      <message name="IDS_BATTERY_SAVER_SESSION_TURN_OFF" desc="The label for the turn off battery saver for current session button in battery saver bubble dialog">
+        Turn off now
+      </message>
+    </if>
+    <!-- High Efficiency Chip strings -->
+    <if expr="not is_android">
+      <message name="IDS_HIGH_EFFICIENCY_CHIP_ACCNAME" desc="Tooltip text for a page action chip that highlights that the Memory Saver setting is enabled">
+        Memory Saver is on
       </message>
     </if>
   </messages>
