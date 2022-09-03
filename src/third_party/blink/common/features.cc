@@ -107,10 +107,6 @@ const base::Feature kBlockingDownloadsInAdFrameWithoutUserActivation{
     "BlockingDownloadsInAdFrameWithoutUserActivation",
     base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Enable CSS Container Queries. Also implies LayoutNGGrid and CSSContainSize1D.
-const base::Feature kCSSContainerQueries{"CSSContainerQueries",
-                                         base::FEATURE_DISABLED_BY_DEFAULT};
-
 // Controls whether the Conversion Measurement API infrastructure is enabled.
 const base::Feature kConversionMeasurement{"ConversionMeasurement",
                                            base::FEATURE_ENABLED_BY_DEFAULT};
@@ -1568,6 +1564,9 @@ const base::Feature kWebRtcExposeNonStandardStats{
 const base::Feature kSubstringSetTreeForAttributeBuckets{
     "SubstringSetTreeForAttributeBuckets", base::FEATURE_DISABLED_BY_DEFAULT};
 
+const base::Feature kCSSParserSelectorArena{"CSSParserSelectorArena",
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
+
 const base::Feature kPendingBeaconAPI{"PendingBeaconAPI",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1637,17 +1636,14 @@ const base::FeatureParam<int> kThreadedHtmlTokenizerTokenMaxCount{
 const base::Feature kWebRtcThreadsUseResourceEfficientType{
     "WebRtcThreadsUseResourceEfficientType", base::FEATURE_DISABLED_BY_DEFAULT};
 
-// TODO(wangxianzhu): We plan to enable this feature for several canary builds,
-// to see if the simulation is accurate. Then we'll disable it by default and
-// finch, and eventually remove this feature.
-const base::Feature kOldCullRectUpdater{"OldCullRectUpdater",
-                                        base::FEATURE_ENABLED_BY_DEFAULT};
-
 const base::Feature kThrottleIntersectionObserverUMA{
     "ThrottleIntersectionObserverUMA", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kWebRtcMetronome{"WebRtcMetronome",
                                      base::FEATURE_ENABLED_BY_DEFAULT};
+
+const base::Feature kSyncAccessHandleAllSyncSurface{
+    "SyncAccessHandleAllSyncSurface", base::FEATURE_DISABLED_BY_DEFAULT};
 
 }  // namespace features
 }  // namespace blink
