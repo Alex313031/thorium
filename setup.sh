@@ -75,7 +75,6 @@ copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
 	cp -r -v other/Mac/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
-	cp -r -v other/Mac/arm.gni $HOME/chromium/src/build/config/ &&
 	printf "\n"
 }
 
@@ -88,7 +87,6 @@ copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
 	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v arm/arm.gni $HOME/chromium/src/build/config/ &&
 	printf "\n"
 }
 
