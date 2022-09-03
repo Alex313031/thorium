@@ -1386,7 +1386,6 @@ android_library("chrome_unit_test_java") {
     "javatests/src/org/chromium/chrome/browser/feature_engagement/ScreenshotMonitorTest.java",
     "javatests/src/org/chromium/chrome/browser/firstrun/FirstRunUtilsTest.java",
     "javatests/src/org/chromium/chrome/browser/init/ChainedTasksTest.java",
-    "javatests/src/org/chromium/chrome/browser/init/FirstDrawDetectorTest.java",
     "javatests/src/org/chromium/chrome/browser/notifications/NotificationPlatformBridgeUnitTest.java",
     "javatests/src/org/chromium/chrome/browser/ntp/IncognitoDescriptionViewRenderTest.java",
     "javatests/src/org/chromium/chrome/browser/ntp/TitleUtilTest.java",
@@ -3285,6 +3284,7 @@ chrome_test_apk_tmpl("chrome_public_unit_test_apk") {
     "//components/browser_ui/modaldialog/android:unit_device_javatests",
     "//components/browser_ui/photo_picker/android:unit_device_javatests",
     "//components/browser_ui/settings/android:unit_device_javatests",
+    "//components/browser_ui/util/android:unit_device_javatests",
     "//components/browser_ui/widget/android:unit_device_javatests",
     "//components/embedder_support/android:embedder_support_javatests",
     "//components/external_intents/android:unit_device_javatests",
@@ -3638,12 +3638,12 @@ script_test("monochrome_webview_finch_smoke_tests") {
   data_deps = [
     "//android_webview/tools/system_webview_shell:system_webview_shell_apk",
     "//chrome/android:monochrome_public_apk",
-    "//testing:run_wpt_tests",
+    "//third_party/blink/tools:run_wpt_tests",
   ]
 }
 
 script_test("chrome_public_wpt") {
-  script = "//testing/scripts/run_wpt_tests.py"
+  script = "//third_party/blink/tools/run_wpt_tests.py"
   args = [
     "--product",
     "chrome_android",
@@ -4209,6 +4209,7 @@ generate_jni("chrome_jni_headers") {
     "java/src/org/chromium/chrome/browser/permissions/PermissionSettingsBridge.java",
     "java/src/org/chromium/chrome/browser/permissions/PermissionUpdateRequester.java",
     "java/src/org/chromium/chrome/browser/policy/PolicyAuditor.java",
+    "java/src/org/chromium/chrome/browser/policy/PolicyAuditorBridge.java",
     "java/src/org/chromium/chrome/browser/printing/TabPrinter.java",
     "java/src/org/chromium/chrome/browser/privacy/settings/PrivacyPreferencesManagerImpl.java",
     "java/src/org/chromium/chrome/browser/push_messaging/PushMessagingServiceObserver.java",
