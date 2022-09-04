@@ -199,7 +199,6 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:/O3",
       "-mllvm:-march=sandybridge",
     ]
 
