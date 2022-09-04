@@ -200,6 +200,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
+      "-mllvm:-Wl,-O3",
     ]
 
     if (use_lld) {
