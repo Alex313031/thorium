@@ -21,6 +21,7 @@ displayHelp () {
 	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
 	printf "${bold}${YEL}Use the --mac flag for MacOS builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --raspi flag for Raspberry Pi builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
 	printf "\n"
 }
 
@@ -92,6 +93,19 @@ copyRaspi () {
 
 case $1 in
 	--raspi) copyRaspi;
+esac
+
+# Windows on ARM workaround
+copyWOA () {
+	printf "\n" &&
+	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
+	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -f -v arm/arm.gni $HOME/chromium/src/build/config/ &&
+	printf "\n"
+}
+
+case $1 in
+	--woa) copyWOA;
 esac
 
 printf "${GRE}Done!\n" &&
