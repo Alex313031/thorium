@@ -702,7 +702,6 @@ config("compiler") {
     
     if (is_win && target_cpu == "arm64") {
       cflags += [ "-O3", "-Wno-error", "-Wno-unreachable-code", "-Wno-unused-command-line-argument", ]
-      ldflags += [ "-Wl,-O3", ]
     }
     
     if (is_linux && target_cpu == "arm64") {
