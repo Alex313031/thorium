@@ -12,7 +12,6 @@ import("//build/config/win/visual_studio_version.gni")
 import("//build/timestamp.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/toolchain.gni")
-import("//build/config/arm.gni")
 
 assert(is_win)
 
