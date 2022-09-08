@@ -43,7 +43,7 @@ Title Bar Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/mast
 VDPAU Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/vdpau-support.patch
   - Modified by me.
 
-Audio Sandbox Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-sandbox-for-audio.patch
+Audio Sandbox Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-audio-sandbox.patch
 
 DoH Secure Mode Patch > https://github.com/bromite/bromite/blob/master/build/patches/DoH-improvements.patch
 
