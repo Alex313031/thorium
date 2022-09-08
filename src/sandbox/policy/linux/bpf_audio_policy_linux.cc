@@ -75,6 +75,9 @@ ResultExpr AudioProcessPolicy::EvaluateSyscall(int system_call_number) const {
 #if defined(__NR_uname)
     case __NR_uname:
 #endif
+#if defined(__NR_sched_getaffinity)
+    case __NR_sched_getaffinity:
+#endif
       return Allow();
 #if defined(__NR_futex)
     case __NR_futex:
