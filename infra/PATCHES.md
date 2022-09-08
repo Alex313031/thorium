@@ -142,7 +142,7 @@ Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Se
 Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/add-hevc-ffmpeg-decoder-parser.patch
   - Modified by me.
 
-Always show the Apps button in Bookmarks Bar Patch - Made by me.
+Show the Apps button in Bookmarks Bar by Default Patch - Made by me.
 
 Add autocomplete for chrome://flags > https://github.com/bromite/bromite/blob/master/build/patches/Offer-builtin-autocomplete-for-chrome-flags.patch
 
