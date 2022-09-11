@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -361,6 +361,7 @@ android_library("chrome_java") {
     "//chrome/browser/android/webapps/launchpad:java",
     "//chrome/browser/back_press/android:java",
     "//chrome/browser/banners/android:java",
+    "//chrome/browser/battery/android:java",
     "//chrome/browser/bluetooth/android:java",
     "//chrome/browser/browser_controls/android:java",
     "//chrome/browser/commerce/android:java",
@@ -487,6 +488,7 @@ android_library("chrome_java") {
     "//components/browser_ui/photo_picker/android:java",
     "//components/browser_ui/settings/android:java",
     "//components/browser_ui/share/android:java",
+    "//components/browser_ui/site_settings/android:constants_java",
     "//components/browser_ui/site_settings/android:java",
     "//components/browser_ui/sms/android:java",
     "//components/browser_ui/styles/android:java",
@@ -841,6 +843,7 @@ group("jni_headers") {
     "//chrome/android/features/start_surface:jni_headers",
     "//chrome/browser/android/browserservices/metrics:jni_headers",
     "//chrome/browser/android/browserservices/verification:jni_headers",
+    "//chrome/browser/battery/android:jni_headers",
     "//chrome/browser/commerce/merchant_viewer/android:jni_headers",
     "//chrome/browser/commerce/price_tracking/android:jni_headers",
     "//chrome/browser/commerce/subscriptions/android:jni_headers",
@@ -1131,6 +1134,7 @@ robolectric_binary("chrome_junit_tests") {
     "//components/browser_ui/notifications/android:java",
     "//components/browser_ui/settings/android:java",
     "//components/browser_ui/share/android:java",
+    "//components/browser_ui/site_settings/android:constants_java",
     "//components/browser_ui/site_settings/android:java",
     "//components/browser_ui/site_settings/android:junit",
     "//components/browser_ui/styles/android:java",
@@ -1670,6 +1674,7 @@ android_library("chrome_test_java") {
     "//components/browser_ui/settings/android:test_support_java",
     "//components/browser_ui/share/android:java",
     "//components/browser_ui/share/android:javatests",
+    "//components/browser_ui/site_settings/android:constants_java",
     "//components/browser_ui/site_settings/android:java",
     "//components/browser_ui/site_settings/android:javatests",
     "//components/browser_ui/sms/android:java",
@@ -3320,6 +3325,7 @@ chrome_test_apk_tmpl("chrome_public_test_apk") {
     "//chrome/browser/password_check/android:test_java",
     "//chrome/browser/subresource_filter:subresource_filter_javatests",
     "//chrome/browser/touch_to_fill/android:test_java",
+    "//chrome/browser/ui/android/fast_checkout/internal:javatests",
     "//chrome/browser/ui/android/omnibox:javatests",
     "//chrome/browser/ui/android/webid/internal:javatests",
   ]
@@ -3627,7 +3633,7 @@ script_test("monochrome_webview_finch_smoke_tests") {
   data_deps = [
     "//android_webview/tools/system_webview_shell:system_webview_shell_apk",
     "//chrome/android:monochrome_public_apk",
-    "//third_party/blink/tools:run_wpt_tests",
+    "//third_party/blink/tools:wpt_tests_android_isolate",
   ]
 }
 
