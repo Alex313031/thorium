@@ -139,11 +139,17 @@
     </message>
   </if>
   <if expr="is_linux">
-    <message name="IDS_SETTINGS_SYSTEM_THEME" desc="Text of the label describing the system (GTK+) browser theme on Linux">
-      GTK+
+    <message name="IDS_SETTINGS_GTK_THEME" desc="Text of the label describing the system (GTK) browser theme on Linux">
+      GTK
     </message>
-    <message name="IDS_SETTINGS_USE_SYSTEM_THEME" desc="Text of the button that switches the browser theme to the system (GTK+) theme on Linux">
-      Use GTK+
+    <message name="IDS_SETTINGS_USE_GTK_THEME" desc="Text of the button that switches the browser theme to the system (GTK) theme on Linux">
+      Use GTK
+    </message>
+    <message name="IDS_SETTINGS_QT_THEME" desc="Text of the label describing the system (QT) browser theme on Linux">
+      QT
+    </message>
+    <message name="IDS_SETTINGS_USE_QT_THEME" desc="Text of the button that switches the browser theme to the system (QT) theme on Linux">
+      Use QT
     </message>
     <message name="IDS_SETTINGS_CLASSIC_THEME" desc="Text of the label describing the classic browser theme on Linux">
       Classic
@@ -676,6 +682,9 @@
   <message name="IDS_SETTINGS_PASSWORDS_NONE" desc="Placeholder that is shown when there are no passwords in the list of saved passwords.">
     Saved passwords will appear here
   </message>
+  <message name="IDS_SETTINGS_PASSWORDS_NONE_WITH_IMPORT" desc="Placeholder that is shown when there are no passwords in the list of saved passwords with an additional link to the import passwords flow.">
+    Saved passwords will appear here. <ph name="BEGIN_LINK">&lt;a href="#" &gt;</ph> Import passwords<ph name="END_LINK">&lt;/a&gt;</ph>
+  </message>
   <message name="IDS_SETTINGS_PASSWORDS_EXCEPTIONS_NONE" desc="Placeholder text that is shown when there are no sites in the list of sites for which to never save passwords.">
     Sites which never save passwords will appear here
   </message>
@@ -790,7 +799,7 @@
     Import passwords
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_CHOOSE_FILE" desc="A button in the dialog for importing passwords from Chrome. Passwords will be imported from the file, which the user will be asked to choose after initiating this action.">
-    Choose file
+    Select file
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_DESCRIPTION_ACCOUNT_STORE_USERS" desc="Text shown to the account store users (who has the option to store passwords localy or in Google Password manager) on the dialog for importing passwords, before the user has chosen the file to import passwords from.">
     To import passwords, select a CSV file
@@ -1365,6 +1374,11 @@
   </message>
   <message name="IDS_SETTINGS_URL_TOOL_LONG" desc="Error message asking that the user enter a shorter URL.">
     Please enter a shorter URL
+  </message>
+
+  <!-- Performance Page -->
+  <message name="IDS_SETTINGS_PERFORMANCE_PAGE_TITLE" desc="Title of the performance page">
+    Performance
   </message>
 
   <!-- Languages Page -->
