@@ -298,4 +298,3 @@ printf "\n"
 printf "${c7}            Long Live Chromium\041\n${c0}\n" &&
 
 exit 0
-
