@@ -5,6 +5,7 @@
 #include "components/bookmarks/browser/bookmark_utils.h"
 
 #include <stdint.h>
+
 #include <memory>
 #include <unordered_set>
 #include <utility>
