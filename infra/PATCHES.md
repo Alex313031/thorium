@@ -83,7 +83,7 @@ Prefetch Privacy enabled by Default Patch > https://github.com/Eloston/ungoogled
 GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/gn/parallel.patch
   - Useful when building.
 
-V8 SEGV Patch > https://github.com/FydeOS/chromium_os-raspberry_pi/blob/master/project-cros-pi/chromeos-base/chromeos-chrome/files/patches/001-workaround-for-v8-SEGV-issue.patch
+V8 SEGV Patch > https://github.com/FydeOS/chromium_os-raspberry_pi/blob/84ad1a83388bd57a9f1bc318c3057b10eb3101d2/project-cros-pi/chromeos-base/chromeos-chrome/files/patches/001-workaround-for-v8-SEGV-issue.patch
   - Modified by me.
 
 Widevine CDM CU Patch > https://launchpad.net/ubuntu/bionic/+source/chromium-browser
