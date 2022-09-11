@@ -352,6 +352,9 @@ const char kPrerender2MemoryThresholdParamName[] = "memory_threshold_in_mb";
 const char kPrerender2MemoryAcceptablePercentOfSystemMemoryParamName[] =
     "acceptable_percent_of_system_memory";
 
+const base::Feature kPrerender2InBackground{"Prerender2InBackground",
+                                            base::FEATURE_DISABLED_BY_DEFAULT};
+
 bool IsPrerender2Enabled() {
   return base::FeatureList::IsEnabled(blink::features::kPrerender2);
 }
@@ -1542,6 +1545,9 @@ const base::FeatureParam<base::TimeDelta>
     kTimeoutForLowPriorityAsyncScriptExecution{
         &kLowPriorityAsyncScriptExecution, "timeout", base::Milliseconds(0)};
 
+const base::Feature kDOMContentLoadedWaitForAsyncScript{
+    "DOMContentLoadedWaitForAsyncScript", base::FEATURE_DISABLED_BY_DEFAULT};
+
 const base::Feature kForceDeferScriptIntervention{
     "ForceDeferScriptIntervention", base::FEATURE_DISABLED_BY_DEFAULT};
 
@@ -1550,8 +1556,10 @@ const base::Feature kForceInOrderScript{"ForceInOrderScript",
 
 const base::Feature kSelectiveInOrderScript{"SelectiveInOrderScript",
                                             base::FEATURE_DISABLED_BY_DEFAULT};
+const base::Feature kSelectiveInOrderScriptTarget{
+    "SelectiveInOrderScriptTarget", base::FEATURE_DISABLED_BY_DEFAULT};
 const base::FeatureParam<std::string> kSelectiveInOrderScriptAllowList{
-    &kSelectiveInOrderScript, "allow_list", ""};
+    &kSelectiveInOrderScriptTarget, "allow_list", ""};
 
 const base::Feature kAllowSourceSwitchOnPausedVideoMediaStream{
     "AllowSourceSwitchOnPausedVideoMediaStream",
@@ -1569,6 +1577,8 @@ const base::Feature kCSSParserSelectorArena{"CSSParserSelectorArena",
 
 const base::Feature kPendingBeaconAPI{"PendingBeaconAPI",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
+const base::FeatureParam<bool> kPendingBeaconAPIRequiresOriginTrial = {
+    &kPendingBeaconAPI, "requires_origin_trial", false};
 
 #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
 const base::Feature kPrefetchFontLookupTables{
