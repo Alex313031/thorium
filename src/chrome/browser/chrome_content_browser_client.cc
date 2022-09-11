@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -74,6 +74,7 @@
 #include "chrome/browser/memory/chrome_browser_main_extra_parts_memory.h"
 #include "chrome/browser/metrics/chrome_browser_main_extra_parts_metrics.h"
 #include "chrome/browser/metrics/chrome_feature_list_creator.h"
+#include "chrome/browser/net/cert_verifier_configuration.h"
 #include "chrome/browser/net/chrome_network_delegate.h"
 #include "chrome/browser/net/profile_network_context_service.h"
 #include "chrome/browser/net/profile_network_context_service_factory.h"
@@ -456,6 +457,7 @@
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/search/new_tab_page_navigation_throttle.h"
 #include "chrome/browser/ui/web_applications/tabbed_web_app_navigation_throttle.h"
+#include "chrome/browser/web_applications/isolated_web_apps/isolated_web_app_url_loader_factory.h"
 #include "chrome/browser/web_applications/policy/web_app_policy_manager.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
 #include "chrome/browser/web_applications/web_app_provider.h"
@@ -3160,6 +3162,11 @@ ChromeContentBrowserClient::GetGeneratedCodeCacheSettings(
   return content::GeneratedCodeCacheSettings(true, size_in_bytes, cache_path);
 }
 
+cert_verifier::mojom::CertVerifierServiceParamsPtr
+ChromeContentBrowserClient::GetCertVerifierServiceParams() {
+  return GetChromeCertVerifierServiceParams();
+}
+
 void ChromeContentBrowserClient::AllowCertificateError(
     content::WebContents* web_contents,
     int cert_error,
@@ -5039,24 +5046,37 @@ void ChromeContentBrowserClient::RegisterNonNetworkNavigationURLLoaderFactories(
     int frame_tree_node_id,
     ukm::SourceIdObj ukm_source_id,
     NonNetworkURLLoaderFactoryMap* factories) {
-#if BUILDFLAG(ENABLE_EXTENSIONS) || BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(ENABLE_EXTENSIONS) || BUILDFLAG(IS_CHROMEOS_ASH) || \
+    !BUILDFLAG(IS_ANDROID)
   content::WebContents* web_contents =
       content::WebContents::FromFrameTreeNodeId(frame_tree_node_id);
+  content::BrowserContext* browser_context = web_contents->GetBrowserContext();
+
 #if BUILDFLAG(ENABLE_EXTENSIONS)
   factories->emplace(
       extensions::kExtensionScheme,
       extensions::CreateExtensionNavigationURLLoaderFactory(
-          web_contents->GetBrowserContext(), ukm_source_id,
+          browser_context, ukm_source_id,
           !!extensions::WebViewGuest::FromWebContents(web_contents)));
 #endif  // BUILDFLAG(ENABLE_EXTENSIONS)
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  Profile* profile =
-      Profile::FromBrowserContext(web_contents->GetBrowserContext());
+  Profile* profile = Profile::FromBrowserContext(browser_context);
   factories->emplace(content::kExternalFileScheme,
                      chromeos::ExternalFileURLLoaderFactory::Create(
                          profile, content::ChildProcessHost::kInvalidUniqueID));
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-#endif  // BUILDFLAG(ENABLE_EXTENSIONS) || BUILDFLAG(IS_CHROMEOS_ASH)
+#if !BUILDFLAG(IS_ANDROID)
+  if (base::FeatureList::IsEnabled(features::kIsolatedWebApps) &&
+      !browser_context->ShutdownStarted()) {
+    // TODO(crbug.com/1334594): Only register the factory if we are already in
+    // an isolated storage partition.
+    factories->emplace(chrome::kIsolatedAppScheme,
+                       web_app::IsolatedWebAppURLLoaderFactory::Create(
+                           frame_tree_node_id, browser_context));
+  }
+#endif  // !BUILDFLAG(IS_ANDROID)
+#endif  // BUILDFLAG(ENABLE_EXTENSIONS) || BUILDFLAG(IS_CHROMEOS_ASH) ||
+        // !BUILDFLAG(IS_ANDROID)
 }
 
 void ChromeContentBrowserClient::
@@ -6598,6 +6618,9 @@ bool ChromeContentBrowserClient::SetupEmbedderSandboxParameters(
 
     CHECK(client->SetParameter(sandbox::policy::kParamScreenAiComponentPath,
                                screen_ai_component_dir.value()));
+    CHECK(client->SetBooleanParameter(sandbox::policy::kParamScreenAiDebugMode,
+                                      features::IsScreenAIDebugModeEnabled()));
+
     return true;
 #endif
   }
@@ -6750,11 +6773,7 @@ ChromeContentBrowserClient::GetAlternativeErrorPageOverrideInfo(
   if (error_code != net::ERR_INTERNET_DISCONNECTED)
     return nullptr;
 
-#if BUILDFLAG(IS_ANDROID)
-  if (!base::FeatureList::IsEnabled(features::kAndroidPWAsDefaultOfflinePage)) {
-#else
-  if (!base::FeatureList::IsEnabled(features::kDesktopPWAsDefaultOfflinePage)) {
-#endif  //  BUILDFLAG(IS_ANDROID)
+  if (!base::FeatureList::IsEnabled(features::kPWAsDefaultOfflinePage)) {
     return nullptr;
   }
 
