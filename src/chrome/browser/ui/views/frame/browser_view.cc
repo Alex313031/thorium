@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -125,7 +125,6 @@
 #include "chrome/browser/ui/views/omnibox/omnibox_view_views.h"
 #include "chrome/browser/ui/views/page_action/page_action_icon_controller.h"
 #include "chrome/browser/ui/views/page_action/page_action_icon_view.h"
-#include "chrome/browser/ui/views/permissions/permission_chip.h"
 #include "chrome/browser/ui/views/profiles/avatar_toolbar_button.h"
 #include "chrome/browser/ui/views/profiles/profile_indicator_icon.h"
 #include "chrome/browser/ui/views/profiles/profile_menu_coordinator.h"
@@ -920,7 +919,7 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
         AddChildView(std::make_unique<ContentsSeparator>());
     side_panel_coordinator_ = std::make_unique<SidePanelCoordinator>(this);
   } else {
-  if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
+    if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     unified_side_panel_ = AddChildView(std::make_unique<SidePanel>(this));
   }
 
@@ -3146,7 +3145,10 @@ std::u16string BrowserView::GetAccessibleTabLabel(bool include_app_name,
 
   // Tab has a pending permission request.
   if (toolbar_ && toolbar_->location_bar() &&
-      toolbar_->location_bar()->IsChipActive()) {
+      toolbar_->location_bar()->chip_controller() &&
+      toolbar_->location_bar()
+          ->chip_controller()
+          ->IsPermissionPromptChipVisible()) {
     return l10n_util::GetStringFUTF16(
         IDS_TAB_AX_LABEL_PERMISSION_REQUESTED_FORMAT, title);
   }
@@ -3648,8 +3650,11 @@ void BrowserView::GetAccessiblePanes(std::vector<views::View*>* panes) {
   // When permission is requested, permission chip must be first pane in the
   // pane traversal order to be easily accessible for keyboard users.
   if (toolbar_ && toolbar_->location_bar() &&
-      toolbar_->location_bar()->IsChipActive()) {
-    panes->push_back(toolbar_->location_bar()->chip());
+      toolbar_->location_bar()->chip_controller() &&
+      toolbar_->location_bar()
+          ->chip_controller()
+          ->IsPermissionPromptChipVisible()) {
+    panes->push_back(toolbar_->location_bar()->chip_controller()->chip());
   }
   panes->push_back(toolbar_button_provider_->GetAsAccessiblePaneView());
   if (tab_strip_region_view_)
