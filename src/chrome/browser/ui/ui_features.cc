@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -114,29 +114,10 @@ const base::Feature kSideSearchFeedback{"SideSearchFeedback",
 const base::Feature kSideSearchDSESupport{"SideSearchDSESupport",
                                           base::FEATURE_ENABLED_BY_DEFAULT};
 
-// Controls whether the side search icon animates-in its label when the side
-// panel is made available for the active tab.
-const base::Feature kSideSearchPageActionLabelAnimation{
-    "SideSearchPageActionLabelAnimation", base::FEATURE_ENABLED_BY_DEFAULT};
-
-// Controls the frequency that the Side Search page action's label is shown. If
-// enabled the label text is shown one per window.
-const base::FeatureParam<kSideSearchLabelAnimationTypeOption>::Option
-    kSideSearchPageActionLabelAnimationTypeParamOptions[] = {
-        {kSideSearchLabelAnimationTypeOption::kProfile, "Profile"},
-        {kSideSearchLabelAnimationTypeOption::kWindow, "Window"},
-        {kSideSearchLabelAnimationTypeOption::kTab, "Tab"}};
-
-const base::FeatureParam<kSideSearchLabelAnimationTypeOption>
-    kSideSearchPageActionLabelAnimationType{
-        &kSideSearchPageActionLabelAnimation,
-        "SideSearchPageActionLabelAnimationType",
-        kSideSearchLabelAnimationTypeOption::kWindow,
-        &kSideSearchPageActionLabelAnimationTypeParamOptions};
-
-const base::FeatureParam<int> kSideSearchPageActionLabelAnimationMaxCount{
-    &kSideSearchPageActionLabelAnimation,
-    "SideSearchPageActionLabelAnimationMaxCount", 1};
+// Displays right-click search results of a highlighted text in side panel,
+// So users are not forced to switch to a new tab to view the search results
+const base::Feature kSearchWebInSidePanel{"SearchWebInSidePanel",
+                                          base::FEATURE_ENABLED_BY_DEFAULT};
 
 // Whether to clobber all side search side panels in the current browser window
 // or only the side search in the current tab before read later or lens side
@@ -160,6 +141,9 @@ const base::FeatureParam<int> kSideSearchAutoTriggeringReturnCount{
 // side panel project launches.
 const base::Feature kSidePanelImprovedClobbering{
     "SidePanelImprovedClobbering", base::FEATURE_DISABLED_BY_DEFAULT};
+
+const base::Feature kSidePanelWebView{"SidePanelWebView",
+                                      base::FEATURE_ENABLED_BY_DEFAULT};
 
 const base::Feature kSidePanelJourneys{"SidePanelJourneys",
                                        base::FEATURE_ENABLED_BY_DEFAULT};
@@ -273,7 +257,7 @@ const base::Feature kToolbarUseHardwareBitmapDraw{
     "ToolbarUseHardwareBitmapDraw", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kUnifiedSidePanel{"UnifiedSidePanel",
-                                      base::FEATURE_ENABLED_BY_DEFAULT};
+                                      base::FEATURE_DISABLED_BY_DEFAULT};
 
 // This enables enables persistence of a WebContents in a 1-to-1 association
 // with the current Profile for WebUI bubbles. See https://crbug.com/1177048.
