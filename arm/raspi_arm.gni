@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -72,7 +72,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
   if (arm_version == 6) {
     if (arm_arch == "") {
-    # v8 can still with version 6 but only with the armv6k extension.
+      # v8 can still with version 6 but only with the armv6k extension.
       arm_arch = "armv6k"
     }
     if (arm_tune != "") {
@@ -112,7 +112,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
       arm_arch = "armv8-a"
     }
     if (arm_tune == "") {
-      arm_tune = "generic-armv8-a"
+      arm_tune = "cortex-a72"
     }
 
     if (arm_float_abi == "") {
@@ -121,16 +121,22 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     if (arm_fpu == "") {
       if (arm_use_neon) {
-        arm_fpu = "neon"
+        arm_fpu = "neon-vfpv4"
       } else {
-        arm_fpu = "vfpv3-d16"
+        arm_fpu = "neon-vfpv4"
       }
     }
   }
 } else if (current_cpu == "arm64" || v8_current_cpu == "arm64") {
   # arm64 supports only "hard".
+  arm_version = 8
   arm_float_abi = "hard"
+  arm_arch = "armv8-a"
+  arm_fpu = "neon-vfpv4"
+  arm_tune = "cortex-a72"
   arm_use_neon = true
+  arm_optionally_use_neon = true
+  arm_use_thumb = true
   declare_args() {
     # Enables the new Armv8 branch protection features. Valid strings are:
     # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
