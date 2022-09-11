@@ -26,7 +26,7 @@ import("//tools/ipc_fuzzer/ipc_fuzzer.gni")
 buildflag_header("buildflags") {
   header = "buildflags.h"
 
-  use_socket_broker = is_android
+  use_socket_broker = is_android || is_win
 
   flags = [ "USE_SOCKET_BROKER=$use_socket_broker" ]
 }
@@ -378,6 +378,7 @@ source_set("browser") {
     "aggregation_service/aggregatable_report.h",
     "aggregation_service/aggregatable_report_assembler.cc",
     "aggregation_service/aggregatable_report_assembler.h",
+    "aggregation_service/aggregatable_report_request_storage_id.h",
     "aggregation_service/aggregatable_report_scheduler.cc",
     "aggregation_service/aggregatable_report_scheduler.h",
     "aggregation_service/aggregatable_report_sender.cc",
@@ -929,6 +930,8 @@ source_set("browser") {
     "file_system_access/file_system_access_handle_base.h",
     "file_system_access/file_system_access_manager_impl.cc",
     "file_system_access/file_system_access_manager_impl.h",
+    "file_system_access/file_system_access_safe_move_helper.cc",
+    "file_system_access/file_system_access_safe_move_helper.h",
     "file_system_access/file_system_access_transfer_token_impl.cc",
     "file_system_access/file_system_access_transfer_token_impl.h",
     "file_system_access/file_system_access_write_lock_manager.cc",
@@ -937,8 +940,6 @@ source_set("browser") {
     "file_system_access/file_system_chooser.h",
     "file_system_access/fixed_file_system_access_permission_grant.cc",
     "file_system_access/fixed_file_system_access_permission_grant.h",
-    "file_system_access/safe_move_helper.cc",
-    "file_system_access/safe_move_helper.h",
     "find_in_page_client.cc",
     "find_in_page_client.h",
     "find_request_manager.cc",
@@ -957,6 +958,8 @@ source_set("browser") {
     "first_party_sets/first_party_sets_loader.h",
     "first_party_sets/first_party_sets_site_data_remover.cc",
     "first_party_sets/first_party_sets_site_data_remover.h",
+    "first_party_sets/local_set_declaration.cc",
+    "first_party_sets/local_set_declaration.h",
     "font_access/font_access_manager.cc",
     "font_access/font_access_manager.h",
     "font_access/font_enumeration_cache.cc",
@@ -1197,8 +1200,8 @@ source_set("browser") {
     "media/audio_muting_session.h",
     "media/audio_output_stream_broker.cc",
     "media/audio_output_stream_broker.h",
-    "media/audio_stream_broker.cc",
-    "media/audio_stream_broker.h",
+    "media/audio_stream_broker_impl.cc",
+    "media/audio_stream_broker_impl.h",
     "media/audio_stream_monitor.cc",
     "media/audio_stream_monitor.h",
     "media/browser_feature_provider.cc",
@@ -1416,6 +1419,7 @@ source_set("browser") {
     "preloading/prefetch/prefetch_features.h",
     "preloading/prefetch/prefetch_from_string_url_loader.cc",
     "preloading/prefetch/prefetch_from_string_url_loader.h",
+    "preloading/prefetch/prefetch_metrics.cc",
     "preloading/prefetch/prefetch_network_context.cc",
     "preloading/prefetch/prefetch_network_context.h",
     "preloading/prefetch/prefetch_network_context_client.cc",
@@ -1430,6 +1434,8 @@ source_set("browser") {
     "preloading/prefetch/prefetch_proxy_configurator.h",
     "preloading/prefetch/prefetch_service.cc",
     "preloading/prefetch/prefetch_service.h",
+    "preloading/prefetch/prefetch_serving_page_metrics_container.cc",
+    "preloading/prefetch/prefetch_serving_page_metrics_container.h",
     "preloading/prefetch/prefetch_status.h",
     "preloading/prefetch/prefetch_type.cc",
     "preloading/prefetch/prefetch_type.h",
@@ -2197,8 +2203,6 @@ source_set("browser") {
     "webid/flags.h",
     "webid/idp_network_request_manager.cc",
     "webid/idp_network_request_manager.h",
-    "webid/redirect_uri_data.cc",
-    "webid/redirect_uri_data.h",
     "webid/webid_utils.cc",
     "webid/webid_utils.h",
     "webrtc/webrtc_connections_observer.cc",
@@ -2403,6 +2407,8 @@ source_set("browser") {
       "media/key_system_support_win.cc",
       "media/key_system_support_win.h",
       "memory/swap_metrics_driver_impl_win.cc",
+      "net/network_service_process_tracker_win.cc",
+      "net/network_service_process_tracker_win.h",
       "renderer_host/direct_manipulation_event_handler_win.cc",
       "renderer_host/direct_manipulation_event_handler_win.h",
       "renderer_host/direct_manipulation_helper_win.cc",
