@@ -550,6 +550,14 @@ config("compiler") {
     } else {
       cflags += [ "-ffp-contract=off" ]
     }
+
+    if (default_toolchain != "//build/toolchain/cros:target") {
+      # TODO(crbug.com/1361629): Fix the compiler so this is not needed.
+      cflags += [
+        "-mllvm",
+        "-simplifycfg-hoist-common-skip-limit=0",
+      ]
+    }
   }
 
   # Rust compiler setup (for either clang or rustc).
@@ -644,8 +652,8 @@ config("compiler") {
       ldflags += [
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
-        "-mllvm:-import-hot-multiplier=30",
-        "-mllvm:-import-cold-multiplier=8",
+        "-mllvm:-import-hot-multiplier=15",
+        "-mllvm:-import-cold-multiplier=4",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
         # "/lldltocachepolicy:$cache_policy",
@@ -900,7 +908,7 @@ config("compiler_cpu_abi") {
         "-O3",
         "-msse4",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse4", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=30", "-Wl,-mllvm,-import-cold-multiplier=8", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse4", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
@@ -1683,7 +1691,7 @@ config("chromium_code") {
     }
 
     # TODO(https://crbug.com/1355871): Enable on more platforms.
-    if ((is_win || is_mac) && target_cpu == "x64") {
+    if (is_win || is_mac || is_linux || is_chromeos) {
       cflags += [ "-Wextra-semi" ]
     }
   }
