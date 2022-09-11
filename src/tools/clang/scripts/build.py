@@ -534,10 +534,12 @@ def main():
   parser.add_argument('--tf-path',
                       help='Path to python tensorflow pip package. '
                       'Used for embedding an MLGO model.')
-  parser.add_argument('--with-ml-inliner-model',
-                      help='Path to MLGO inliner model to embed. Setting to '
-                      '\'default\', will download an official model which was '
-                      'trained for Chrome on Android')
+  parser.add_argument(
+      '--with-ml-inliner-model',
+      help='Path to MLGO inliner model to embed. Setting to '
+      '\'default\', will download an official model which was '
+      'trained for Chrome on Android',
+      default='default' if sys.platform.startswith('linux') else '')
   parser.add_argument('--with-android', type=gn_arg, nargs='?', const=True,
                       help='Build the Android ASan runtime. (Linux only)',
                       default=sys.platform.startswith('linux'))
