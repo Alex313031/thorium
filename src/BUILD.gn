@@ -310,6 +310,7 @@ group("gn_all") {
     deps += [
       "//ui/aura:aura_demo",
       "//ui/aura:aura_unittests",
+      "//ui/webui/examples:webui_examples",
       "//ui/wm:wm_unittests",
     ]
   }
@@ -1148,7 +1149,6 @@ if (!is_ios) {
         "//chrome:chrome",
         "//chrome/test/chromedriver",
         "//third_party/blink/tools:wpt_tests_isolate",
-        "//tools/imagediff",
       ]
     }
     script_test("wpt_tests_isolate_content_shell") {
@@ -1325,9 +1325,6 @@ if (!is_ios) {
       "//third_party/blink/web_tests/WebDriverExpectations",
       "//third_party/blink/web_tests/WebGPUExpectations",
 
-      # Generic baselines
-      "//third_party/blink/web_tests/platform/generic/",
-
       # === List Test Cases folders here ===
       "//third_party/blink/web_tests/accessibility/",
       "//third_party/blink/web_tests/android/",
@@ -1475,9 +1472,6 @@ if (!is_ios) {
       "//third_party/blink/web_tests/TestExpectations",
       "//third_party/blink/web_tests/WebDriverExpectations",
       "//third_party/blink/web_tests/WebGPUExpectations",
-
-      # Generic baselines
-      "//third_party/blink/web_tests/platform/generic/",
 
       # === List Test Cases folders here ===
       "//third_party/blink/web_tests/external/",
