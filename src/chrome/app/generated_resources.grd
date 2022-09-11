@@ -4996,10 +4996,10 @@ are declared in tools/grit/grit_rule.gni.
           Allow <ph name="EXTENSIONS_REQUESTING_ACCESS_COUNT">$1<ex>3</ex></ph>?
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUTTON_TOOLTIP_SINGLE_EXTENSION" desc="The tooltip text of the request access button that appears on the toolbar when an extension requests access to the site">
-          Click to allow <ph name="EXTENSIONS_REQUESTING_ACCESS">$1<ex>Extension A</ex></ph> to read and change <ph name="ORIGIN">$2<ex>google.com</ex></ph>:
+          Click to allow "<ph name="EXTENSIONS_REQUESTING_ACCESS">$1<ex>Extension A</ex></ph>"" on <ph name="ORIGIN">$2<ex>google.com</ex></ph>:
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUTTON_TOOLTIP_MULTIPLE_EXTENSIONS" desc="The tooltip text of the request access button that appears on the toolbar when an extension requests access to the site">
-          Click to allow these extensions to read and change <ph name="ORIGIN">$1<ex>google.com</ex></ph>:
+          Click to allow on <ph name="ORIGIN">$1<ex>google.com</ex></ph>:
         </message>
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_SINGLE_EXTENSION_TITLE" desc="The title of the request access bubble to tell the user to accept the bubble to always run the extension on the site.">
           Always allow "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" to run on <ph name="ORIGIN">$2<ex>google.com</ex></ph>?
@@ -6032,9 +6032,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PLUGIN_HIDE" desc="The tooltip for hiding a blocked plugin, displayed in the click to play UI.">
         Hide this plugin
       </message>
-      <message name="IDS_PLUGIN_UPDATE" desc="The link for updating an outdated plugin.">
-        Update plugin
-      </message>
       <if expr="is_macosx">
         <message name="IDS_PLUGIN_BLOCKED" desc="The placeholder text for a blocked plugin.">
           Control-click to run <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph>
@@ -6048,31 +6045,13 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PLUGIN_BLOCKED_BY_POLICY" desc="The placeholder text for a plugin blocked by enterprise policy.">
         <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> is blocked by enterprise policy
       </message>
-      <message name="IDS_PLUGIN_BLOCKED_NO_LOADING" desc="The placeholder text for a blocked plugin that cannot be manually loaded by the user.">
-        <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> is blocked
-      </message>
       <if expr="chromeos_ash">
         <message name="IDS_NACL_PLUGIN_BLOCKED" desc="The placeholder text for a blocked plugin.">
           This plugin is not supported on this device
         </message>
       </if>
-      <message name="IDS_PLUGIN_OUTDATED" desc="The placeholder text for an outdated plugin.">
-        <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> is out of date
-      </message>
       <message name="IDS_PLUGIN_NOT_AUTHORIZED" desc="The placeholder text for a plugin that requires user permission to run.">
         <ph name="PLUGIN_NAME">$1<ex>Java</ex></ph> needs your permission to run
-      </message>
-      <message name="IDS_PLUGIN_DOWNLOADING" desc="The placeholder text when downloading a missing plugin.">
-        Downloading <ph name="PLUGIN_NAME">$1<ex>Realplayer</ex></ph>...
-      </message>
-      <message name="IDS_PLUGIN_DOWNLOAD_ERROR" desc="The placeholder text when there was an error download a missing plugin.">
-        There was an error (<ph name="ERROR">$1<ex>net::ERR_TOO_MANY_GOATS</ex></ph>) while downloading the plugin
-      </message>
-      <message name="IDS_PLUGIN_DOWNLOAD_ERROR_SHORT" desc="The placeholder text when there was an error download a missing plugin.">
-        <ph name="PLUGIN_NAME">$1<ex>Realplayer</ex></ph> download failed
-      </message>
-      <message name="IDS_PLUGIN_UPDATING" desc="The placeholder text when updating an out-of-date plugin.">
-        When <ph name="PLUGIN_NAME">$1<ex>Realplayer</ex></ph> finishes updating, reload the page to activate it
       </message>
       <message name="IDS_PLUGIN_DISABLED" desc="The placeholder text for a disabled plugin.">
         <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> disabled.
@@ -7541,6 +7520,15 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_SHARED_HIGHLIGHTING_PROMO" desc="The title of in-product-help message encouraging users to interact with the highlight">
         To create a highlight like this one, select any text and right-click.
+      </message>
+      <message name="IDS_BATTERY_SAVER_MODE_PROMO_TITLE" desc="The title for the battery saver mode in-product promo bubble.">
+        Battery Saver is on
+      </message>
+      <message name="IDS_BATTERY_SAVER_MODE_PROMO_TEXT" desc="The text shown for the battery saver mode in-product promo bubble.">
+        You can control when Battery Saver turns on in settings
+      </message>
+      <message name="IDS_BATTERY_SAVER_MODE_PROMO_ACTION_TEXT" desc="The custom action button text for the battery saver mode in-product promo bubble.">
+        Settings
       </message>
 
       <!-- User Education Tutorial Strings -->
@@ -9994,12 +9982,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         No, this device only
       </message>
 
-      <message name="IDS_PLUGIN_OUTDATED_PROMPT" desc="Infobar message when an outdated plugin was disabled">
-        <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> was blocked because it is out of date
-      </message>
-      <message name="IDS_PLUGIN_ENABLE_TEMPORARILY" desc="Infobar button to run a blocked outdated plugin">
-        Run this time
-      </message>
       <message name="IDS_PLUGIN_CRASHED_PROMPT" desc="Infobar message to notify about a crashed plugin">
        <ph name="PLUGIN_NAME">$1<ex>Flash</ex></ph> has crashed
       </message>
@@ -11523,7 +11505,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_APP_ACTION_SHORTCUT_ACCESSIBILITY_NAME" desc="Hint text for the search result that performs a specific action with an app.">
           <ph name="ACTION_NAME">$1<ex>Compose</ex></ph> with <ph name="APP_NAME">$2<ex>GMail</ex></ph> App
         </message>
-        <message name="IDS_APP_LIST_QUERY_SEARCH_ACCESSIBILITY_NAME" desc="Hint text for the search result that will invoke a query search poweredy by the default search engine.">
+        <message name="IDS_APP_LIST_QUERY_SEARCH_DESCRIPTION" desc="Description text for the search result that will invoke a query search powered by the default search engine.">
+          <ph name="QUERY_NAME">$1<ex>Harry Potter</ex></ph> - <ph name="DEFAULT_SEARCH_ENGINE_NAME">$2<ex>Google</ex></ph> Search
+        </message>
+        <message name="IDS_APP_LIST_QUERY_SEARCH_ACCESSIBILITY_NAME" desc="Hint text for the search result that will invoke a query search powered by the default search engine.">
           <ph name="QUERY_NAME">$1<ex>Harry Potter</ex></ph>, <ph name="DEFAULT_SEARCH_ENGINE_NAME">$2<ex>Google</ex></ph> Search
         </message>
         <message name="IDS_APP_LIST_REMOVE_SUGGESTION_ACCESSIBILITY_NAME" desc="The spoken feedback for removing suggestion button">
@@ -11613,6 +11598,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_DESKTOP_MEDIA_PICKER_AUDIO_SHARE_TAB" desc="Text for the checkbox on the window picker dialog which is displayed when attempting to share a tab. In that case, when checked, tab audio will be shared; otherwise only video.">
         Share tab audio
+      </message>
+      <message name="IDS_DESKTOP_MEDIA_PICKER_AUDIO_SHARE_SCREEN_WITH_MUTE_WARNING" desc="Text for the checkbox on the window picker dialog which is displayed when attempting to share a screen, if local audio playback will be suppressed while capturing audio. In that case, when checked, system audio will be shared, and the local audio playback suppressed; otherwise only video will be shared, and local audio playback will not be suppressed.">
+        Also share system audio. This device will be muted to prevent feedback.
       </message>
       <message name="IDS_DESKTOP_MEDIA_PICKER_SOURCE_TYPE_SCREEN" desc="Text for the button on the window picker dialog, clicking which takes one to full screen sharing" meaning="Refers to the device's entire screen. Short for 'share the entire screen'.">
         Entire Screen
@@ -13589,8 +13577,16 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_DESCRIPTION" desc="The description shown in the side panel when an error with the script execution occurred." translateable="false">
         Check the site and try changing your password.
       </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_TRY_AGAIN" desc="The reset link label shown in the assistant stopped bubble." translateable="false">
+       Try again
+      </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_DESCRIPTION" desc="The description shown in the assistant stopped bubble." translateable="false">
+        Your password didn't change. To change it, try again and leave this tab and side panel open. <ph name="LINK_TEXT">$1<ex>Try again</ex></ph>
+      </message>
+      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_TITLE" desc="The title shown in the assistant stopped bubble." translateable="false">
+        Google Assistant stopped
+      </message>
     </if>
-
     <!-- Battery Saver Toolbar strings  -->
     <if expr="not is_android">
       <message name="IDS_BATTERY_SAVER_BUTTON_TOOLTIP" desc="The tooltip for the battery saver toolbar button">
@@ -13611,10 +13607,19 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </if>
     <!-- High Efficiency Chip strings -->
     <if expr="not is_android">
+      <message name="IDS_HIGH_EFFICIENCY_CHIP_LABEL" desc="Label for a page action chip that highlights that the Memory Saver setting is enabled">
+        Memory Saver is on
+      </message>
       <message name="IDS_HIGH_EFFICIENCY_CHIP_ACCNAME" desc="Tooltip text for a page action chip that highlights that the Memory Saver setting is enabled">
         Memory Saver is on
       </message>
     </if>
+    <message name="IDS_ACCNAME_SIDEBAR_WEBVIEW_LOCATION_BAR" desc="The accessible name of the sidebar webview's location bar.">
+      Location
+    </message>
+    <message name="IDS_SIDEBAR_WEBVIEW_TITLE" desc="The menu entry name for the sidebar webview.">
+      Webview
+    </message>
   </messages>
 </release>
 </grit>
