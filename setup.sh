@@ -76,6 +76,7 @@ copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
 	cp -r -v other/Mac/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
+	cp -r -v arm/mac_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
 
@@ -88,6 +89,7 @@ copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
 	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v arm/raspi_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
 
@@ -100,7 +102,7 @@ copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
 	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -f -v arm/arm.gni $HOME/chromium/src/build/config/ &&
+	cp -r -v arm/woa_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
 
