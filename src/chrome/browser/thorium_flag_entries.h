@@ -33,7 +33,7 @@
      kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
     {"autoplay-policy",
      "Disable/Enable AutoPlay",
-     "Disables or Enables AutoPlay for all Thorium instances.",
+     "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio via Tone.js) to continue.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
     {"show-avatar-button",
      "Show/Hide the Avatar Button",
