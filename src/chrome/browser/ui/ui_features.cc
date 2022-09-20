@@ -21,17 +21,6 @@ const base::Feature kDesktopPWAsAppHomePage{"DesktopPWAsAppHomePage",
                                             base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
 
-// Enables showing the email of the flex org admin that setup CBCM in the
-// management disclosures.
-
-#if BUILDFLAG(IS_CHROMEOS)
-extern const base::Feature kFlexOrgManagementDisclosure{
-    "FlexOrgManagementDisclosure", base::FEATURE_DISABLED_BY_DEFAULT};
-#else
-extern const base::Feature kFlexOrgManagementDisclosure{
-    "FlexOrgManagementDisclosure", base::FEATURE_ENABLED_BY_DEFAULT};
-#endif  // BUILDFLAG(IS_CHROMEOS)
-
 // Enables Chrome Labs menu in the toolbar. See https://crbug.com/1145666
 const base::Feature kChromeLabs{"ChromeLabs",
                                 base::FEATURE_ENABLED_BY_DEFAULT};
@@ -77,6 +66,14 @@ const base::Feature kDisplayOpenLinkAsProfile{
 // Enables showing the EV certificate details in the Page Info bubble.
 const base::Feature kEvDetailsInPageInfo{"EvDetailsInPageInfo",
                                          base::FEATURE_ENABLED_BY_DEFAULT};
+
+#if BUILDFLAG(ENABLE_EXTENSIONS)
+// Controls whether we use a different UX for simple extensions overriding
+// settings.
+const base::Feature kLightweightExtensionOverrideConfirmations{
+    "LightweightExtensionOverrideConfirmations",
+    base::FEATURE_ENABLED_BY_DEFAULT};
+#endif
 
 // Enables the reauth flow for authenticated profiles with invalid credentials
 // when the force sign-in policy is enabled.
@@ -255,6 +252,11 @@ const base::Feature kTabSearchUseMetricsReporter{
 
 const base::Feature kToolbarUseHardwareBitmapDraw{
     "ToolbarUseHardwareBitmapDraw", base::FEATURE_DISABLED_BY_DEFAULT};
+
+// Controls whether top chrome pages will use the spare renderer if no top
+// chrome renderers are present.
+const base::Feature kTopChromeWebUIUsesSpareRenderer{
+    "TopChromeWebUIUsesSpareRenderer", base::FEATURE_DISABLED_BY_DEFAULT};
 
 const base::Feature kUnifiedSidePanel{"UnifiedSidePanel",
                                       base::FEATURE_DISABLED_BY_DEFAULT};
