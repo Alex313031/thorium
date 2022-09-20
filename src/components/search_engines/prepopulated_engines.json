@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031 and tomByrer. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031 and tomByrer.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -132,6 +132,7 @@
       "contextual_search_url": "{google:baseURL}_/contextualsearch?{google:contextualSearchVersion}{google:contextualSearchContextData}",
       "image_url_post_params": "encoded_image={google:imageThumbnail},image_url={google:imageURL},sbisrc={google:imageSearchSource},original_width={google:imageOriginalWidth},original_height={google:imageOriginalHeight}",
       "side_search_param": "sidesearch",
+      "side_image_search_param": "sideimagesearch",
       "alternate_urls": [
         "{google:baseURL}#q={searchTerms}",
         "{google:baseURL}search#q={searchTerms}",
