@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1354,7 +1354,7 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedTemplateURLData(
     return t_urls;
 
   const base::Value::List& list =
-      prefs->GetValueList(prefs::kSearchProviderOverrides);
+      prefs->GetList(prefs::kSearchProviderOverrides);
 
   for (const base::Value& engine : list) {
     if (engine.is_dict()) {
