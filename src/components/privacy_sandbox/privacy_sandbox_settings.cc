@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -115,7 +115,7 @@ bool PrivacySandboxSettings::IsTopicsAllowedForContext(
 
 bool PrivacySandboxSettings::IsTopicAllowed(const CanonicalTopic& topic) {
   const auto& blocked_topics =
-      pref_service_->GetValueList(prefs::kPrivacySandboxBlockedTopics);
+      pref_service_->GetList(prefs::kPrivacySandboxBlockedTopics);
 
   for (const auto& item : blocked_topics) {
     auto blocked_topic =
