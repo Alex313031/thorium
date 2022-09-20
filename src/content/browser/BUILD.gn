@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -36,7 +36,6 @@ source_set("browser") {
   # internal content ones) should depend on the public one.
   visibility = [
     ":for_content_tests",  # See top of //content/BUILD.gn for why.
-    ":for_internal_webauthn",
     "//content/app:*",
     "//content/public/browser:browser_sources",
     "//content/test/fuzzer:browser_accessibility_fuzzer",
@@ -648,7 +647,6 @@ source_set("browser") {
     "browsing_topics/browsing_topics_site_data_manager_impl.h",
     "browsing_topics/browsing_topics_site_data_storage.cc",
     "browsing_topics/browsing_topics_site_data_storage.h",
-    "buckets/bucket_context.cc",
     "buckets/bucket_context.h",
     "buckets/bucket_host.cc",
     "buckets/bucket_host.h",
@@ -944,8 +942,6 @@ source_set("browser") {
     "find_in_page_client.h",
     "find_request_manager.cc",
     "find_request_manager.h",
-    "first_party_sets/addition_overlaps_union_find.cc",
-    "first_party_sets/addition_overlaps_union_find.h",
     "first_party_sets/database/first_party_sets_database.cc",
     "first_party_sets/database/first_party_sets_database.h",
     "first_party_sets/first_party_set_parser.cc",
@@ -1120,6 +1116,8 @@ source_set("browser") {
     "interest_group/debuggable_auction_worklet_tracker.h",
     "interest_group/interest_group_auction.cc",
     "interest_group/interest_group_auction.h",
+    "interest_group/interest_group_k_anonymity_manager.cc",
+    "interest_group/interest_group_k_anonymity_manager.h",
     "interest_group/interest_group_manager_impl.cc",
     "interest_group/interest_group_manager_impl.h",
     "interest_group/interest_group_permissions_cache.cc",
@@ -1443,6 +1441,8 @@ source_set("browser") {
     "preloading/prefetch/prefetch_url_loader_interceptor.h",
     "preloading/prefetch/prefetched_mainframe_response_container.cc",
     "preloading/prefetch/prefetched_mainframe_response_container.h",
+    "preloading/prefetch/proxy_lookup_client_impl.cc",
+    "preloading/prefetch/proxy_lookup_client_impl.h",
     "preloading/preloading.cc",
     "preloading/preloading.h",
     "preloading/preloading_attempt_impl.cc",
@@ -2148,8 +2148,6 @@ source_set("browser") {
     "web_package/signed_exchange_signature_verifier.h",
     "web_package/signed_exchange_utils.cc",
     "web_package/signed_exchange_utils.h",
-    "web_package/signed_exchange_validity_pinger.cc",
-    "web_package/signed_exchange_validity_pinger.h",
     "web_package/subresource_web_bundle_navigation_info.cc",
     "web_package/subresource_web_bundle_navigation_info.h",
     "web_package/web_bundle_blob_data_source.cc",
@@ -3075,8 +3073,8 @@ source_set("browser") {
       "tracing/tracing_ui.h",
 
       # Most webauth code is non-Android
-      "webauth/authenticator_common.cc",
-      "webauth/authenticator_common.h",
+      "webauth/authenticator_common_impl.cc",
+      "webauth/authenticator_common_impl.h",
       "webauth/authenticator_environment_impl.cc",
       "webauth/authenticator_environment_impl.h",
       "webauth/authenticator_impl.cc",
@@ -3304,14 +3302,6 @@ group("for_content_tests") {
     public_deps = [ ":browser" ]
   } else {
     public_deps = [ "//third_party/leveldatabase" ]
-  }
-}
-
-# Meant for internal components to facilitate WebAuthn.
-group("for_internal_webauthn") {
-  visibility = [ "//components/webauthn/content/browser" ]
-  if (!is_component_build) {
-    public_deps = [ ":browser" ]
   }
 }
 
