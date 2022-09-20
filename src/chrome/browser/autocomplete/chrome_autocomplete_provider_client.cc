@@ -18,6 +18,7 @@
 #include "chrome/browser/autocomplete/in_memory_url_index_factory.h"
 #include "chrome/browser/autocomplete/remote_suggestions_service_factory.h"
 #include "chrome/browser/autocomplete/shortcuts_backend_factory.h"
+#include "chrome/browser/autocomplete/zero_suggest_cache_service_factory.h"
 #include "chrome/browser/bitmap_fetcher/bitmap_fetcher_service.h"
 #include "chrome/browser/bitmap_fetcher/bitmap_fetcher_service_factory.h"
 #include "chrome/browser/bookmarks/bookmark_model_factory.h"
@@ -81,9 +82,7 @@
 #include "chrome/browser/ui/browser_list.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
 #include "chrome/browser/ui/ui_features.h"
-#include "chrome/browser/ui/views/frame/browser_view.h"
-#include "chrome/browser/ui/views/side_panel/side_panel_coordinator.h"
-#include "chrome/browser/ui/views/side_panel/side_panel_entry.h"
+#include "chrome/browser/ui/views/side_panel/history_clusters/history_clusters_side_panel_coordinator.h"
 #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #endif
 
@@ -204,6 +203,16 @@ ChromeAutocompleteProviderClient::GetDocumentSuggestionsService(
     bool create_if_necessary) const {
   return DocumentSuggestionsServiceFactory::GetForProfile(profile_,
                                                           create_if_necessary);
+}
+
+ZeroSuggestCacheService*
+ChromeAutocompleteProviderClient::GetZeroSuggestCacheService() {
+  return ZeroSuggestCacheServiceFactory::GetForProfile(profile_);
+}
+
+const ZeroSuggestCacheService*
+ChromeAutocompleteProviderClient::GetZeroSuggestCacheService() const {
+  return ZeroSuggestCacheServiceFactory::GetForProfile(profile_);
 }
 
 OmniboxPedalProvider* ChromeAutocompleteProviderClient::GetPedalProvider()
@@ -468,16 +477,13 @@ bool ChromeAutocompleteProviderClient::OpenJourneys(const std::string& query) {
   if (!browser)
     return false;
 
-  BrowserView* const browser_view =
-      BrowserView::GetBrowserViewForBrowser(browser);
-  if (!browser_view)
-    return false;
-
-  if (browser_view->side_panel_coordinator()) {
-    browser_view->side_panel_coordinator()->Show(
-        SidePanelEntry::Id::kHistoryClusters);
+  if (auto* history_clusters_side_panel_coordinator =
+          HistoryClustersSidePanelCoordinator::BrowserUserData::FromBrowser(
+              browser)) {
+    history_clusters_side_panel_coordinator->Show(query);
     return true;
   }
+
 #endif  // !BUILDFLAG(IS_ANDROID)
 
   return false;
