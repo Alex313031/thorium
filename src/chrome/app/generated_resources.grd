@@ -1470,6 +1470,9 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_SHOW_EXTENSIONS" desc="The show extensions menu in the app menu">
           &amp;Extensions
         </message>
+        <message name="IDS_SHOW_PERFORMANCE" desc="The text label of the Performance menu item">
+          Performance
+        </message>
         <message name="IDS_SETTINGS" desc="The text label of the Settings menu item">
           &amp;Settings
         </message>
@@ -1507,6 +1510,9 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <message name="IDS_SHOW_EXTENSIONS" desc="In Title Case: The show extensions menu in the app menu">
           &amp;Extensions
+        </message>
+        <message name="IDS_SHOW_PERFORMANCE" desc="In Title Case: The text label of the Performance menu item">
+          Performance
         </message>
         <message name="IDS_SETTINGS" desc="In Title Case: The text label of the Settings menu item">
           &amp;Settings
@@ -2788,6 +2794,12 @@ are declared in tools/grit/grit_rule.gni.
             </message>
           </if>
       </if>
+
+      <!-- Tailored Warning in Download Bubble -->
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_COOKIE_THEFT"
+               desc="Subpage summary for cookie theft warning.">
+        This file contains malware that can compromise your personal or social network accounts
+      </message>
 
       <!-- Desktop omnibox PWA install icon -->
       <if expr="not is_android">
@@ -7147,6 +7159,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_READ_ANYTHING_COLORS_COMBOBOX_LABEL" desc="Accessibility label for the colors combobox of the Read Anything feature." translateable="false">
         Theme
       </message>
+      <message name="IDS_READ_ANYTHING_LETTER_SPACING_COMBOBOX_LABEL" desc="Accessibility label for the letter spacing combobox of the Read Anything feature." translateable="false">
+        Letter spacing
+      </message>
 
       <!-- User note strings -->
       <message name="IDS_USER_NOTE_TITLE" desc="Title of the User note feature, which gives users access to private user notes.">
@@ -7528,6 +7543,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
         You can control when Battery Saver turns on in settings
       </message>
       <message name="IDS_BATTERY_SAVER_MODE_PROMO_ACTION_TEXT" desc="The custom action button text for the battery saver mode in-product promo bubble.">
+        Settings
+      </message>
+      <message name="IDS_HIGH_EFFICIENCY_INFO_MODE_PROMO_ACTION_TEXT" desc="The custom action button text for the high efficiency info mode in-product promo bubble.">
         Settings
       </message>
 
@@ -13611,6 +13629,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Memory Saver is on
       </message>
       <message name="IDS_HIGH_EFFICIENCY_CHIP_ACCNAME" desc="Tooltip text for a page action chip that highlights that the Memory Saver setting is enabled">
+        Memory Saver is on
+      </message>
+      <message name="IDS_HIGH_EFFICIENCY_DIALOG_TITLE" desc="Title text for a dialog describing that the Memory Saver setting is enabled">
         Memory Saver is on
       </message>
     </if>
