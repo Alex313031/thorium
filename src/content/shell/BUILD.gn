@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2022 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -26,6 +26,10 @@ if (is_android) {
   import("//third_party/icu/config.gni")
   import("//ui/gl/features.gni")
   import("//v8/gni/v8.gni")
+} else if (is_fuchsia) {
+  import("//build/config/fuchsia/generate_runner_scripts.gni")
+  import("//third_party/fuchsia-sdk/sdk/build/component.gni")
+  import("//third_party/fuchsia-sdk/sdk/build/package.gni")
 }
 
 # TODO(crbug.com/1336055, spang): Investigate using shell_views with cast builds as
