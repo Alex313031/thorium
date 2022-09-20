@@ -835,7 +835,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
 }
 
@@ -1668,6 +1668,9 @@ config("chromium_code") {
       # Warn on missing break statements at the end of switch cases.
       # For intentional fallthrough, use [[fallthrough]].
       "-Wimplicit-fallthrough",
+
+      # Warn on unnecessary extra semicolons outside of function definitions.
+      "-Wextra-semi",
     ]
 
     # TODO(thakis): Enable this more often, https://crbug.com/346399
@@ -1683,11 +1686,6 @@ config("chromium_code") {
         # https://clang.llvm.org/docs/ThreadSafetyAnalysis.html
         "-Wthread-safety",
       ]
-    }
-
-    # TODO(https://crbug.com/1355871): Enable on more platforms.
-    if (is_win || is_mac || is_linux || is_chromeos) {
-      cflags += [ "-Wextra-semi" ]
     }
   }
 
@@ -2181,9 +2179,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2251,7 +2249,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
 }
 
@@ -2284,7 +2282,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
 }
 
@@ -2331,8 +2329,9 @@ if (is_clang && is_a_target_toolchain) {
       _clang_sample_profile = "//chrome/android/profiles/afdo.prof"
     } else {
       assert(chromeos_afdo_platform == "atom" ||
-                 chromeos_afdo_platform == "bigcore",
-             "Only atom and bigcore are valid Chrome OS profiles.")
+                 chromeos_afdo_platform == "bigcore" ||
+                 chromeos_afdo_platform == "arm",
+             "Only atom, bigcore and arm are valid Chrome OS profiles.")
       _clang_sample_profile =
           "//chromeos/profiles/${chromeos_afdo_platform}.afdo.prof"
     }
@@ -2509,6 +2508,14 @@ config("symbols") {
     }
   }
 
+  configs = []
+  # Compress debug on 32-bit ARM to stay under 4GB for ChromeOS
+  # https://b/243982712.
+  if (symbol_level == 2 && is_chromeos_device && !use_debug_fission &&
+        !is_nacl && current_cpu == "arm") {
+    configs += [ "//build/config:compress_debug_sections" ]
+  }
+
   if (is_clang && (!is_nacl || is_nacl_saigo) && current_os != "zos") {
     if (is_apple) {
       # TODO(https://crbug.com/1050118): Investigate missing debug info on mac.
@@ -2526,7 +2533,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
 }
 
 # Minimal symbols.
@@ -2598,7 +2605,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4,+aes,+avx,+avx2", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
