@@ -2154,7 +2154,7 @@ config("optimize") {
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O3" ] + common_optimize_on_cflags + [ "/Oi" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
