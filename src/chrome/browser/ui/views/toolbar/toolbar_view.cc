@@ -302,12 +302,6 @@ void ToolbarView::Init() {
 
   location_bar_ = AddChildView(std::move(location_bar));
 
-  if (base::FeatureList::IsEnabled(
-          performance_manager::features::kBatterySaverModeAvailable)) {
-    battery_saver_button_ =
-        AddChildView(std::make_unique<BatterySaverButton>(browser_view_));
-  }
-
   if (extensions_container)
     extensions_container_ = AddChildView(std::move(extensions_container));
 
@@ -329,6 +323,12 @@ void ToolbarView::Init() {
       // initial value.
       chrome_labs_button_->SetVisible(show_chrome_labs_button_.GetValue());
     }
+  }
+
+  if (base::FeatureList::IsEnabled(
+          performance_manager::features::kBatterySaverModeAvailable)) {
+    battery_saver_button_ =
+        AddChildView(std::make_unique<BatterySaverButton>(browser_view_));
   }
 
   if (cast)
@@ -892,6 +892,10 @@ ReloadButton* ToolbarView::GetReloadButton() {
 
 IntentChipButton* ToolbarView::GetIntentChipButton() {
   return location_bar()->intent_chip();
+}
+
+DownloadToolbarButtonView* ToolbarView::GetDownloadButton() {
+  return download_button();
 }
 
 BrowserRootView::DropIndex ToolbarView::GetDropIndex(
