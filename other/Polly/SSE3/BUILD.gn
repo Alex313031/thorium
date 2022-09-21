@@ -842,7 +842,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse3", ]
   }
 }
 
@@ -906,9 +906,9 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
-        "-msse4",
+        "-msse3",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse4", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
@@ -1962,7 +1962,7 @@ config("no_incompatible_pointer_warnings") {
     "-mllvm", "-polly",
     "/O3",
     "/clang:-O3",
-    "/clang:-msse4",
+    "/clang:-msse3",
     "-Xclang", "-O3",
   ]
 
@@ -2013,7 +2013,7 @@ if (is_win) {
     "-mllvm", "-polly",
     "/O3",
     "/clang:-O3",
-    "/clang:-msse4",
+    "/clang:-msse3",
     "-Xclang", "-O3",
   ]
 
@@ -2185,9 +2185,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
   } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2255,7 +2255,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
   }
 }
 
@@ -2288,7 +2288,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
   }
 }
 
@@ -2539,7 +2539,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+  rustflags = [ "-g0", "-Copt-level=3", "-Ctarget-feature=+sse3", ]
 }
 
 # Minimal symbols.
@@ -2611,7 +2611,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse3", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
