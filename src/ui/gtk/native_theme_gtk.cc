@@ -209,7 +209,8 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
   SetPreferredContrast(
       high_contrast ? ui::NativeThemeBase::PreferredContrast::kMore
                     : ui::NativeThemeBase::PreferredContrast::kNoPreference);
-
+  
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("auto-dark-mode")) {
   // Brute force NativeUI to update
   ui::NativeTheme::GetInstanceForNativeUi()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
   ui::NativeTheme::GetInstanceForNativeUi()->set_preferred_color_scheme(CalculatePreferredColorScheme());
@@ -219,6 +220,7 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
   ui::NativeTheme::GetInstanceForWeb()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
   ui::NativeTheme::GetInstanceForWeb()->set_preferred_color_scheme(CalculatePreferredColorScheme());
   ui::NativeTheme::GetInstanceForWeb()->NotifyOnNativeThemeUpdated();
+  }
   
   NotifyOnNativeThemeUpdated();
 }
