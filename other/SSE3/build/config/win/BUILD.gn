@@ -202,7 +202,7 @@ config("compiler") {
     if (use_lld) {
       # String tail merging leads to smaller binaries, but they don't compress
       # as well, leading to increased mini_installer size (crbug.com/838449).
-      ldflags += [ "/OPT:NOLLDTAILMERGE" ]
+      # ldflags += [ "/OPT:NOLLDTAILMERGE" ]
     }
 
     # TODO(siggi): Is this of any use anymore?
@@ -210,7 +210,7 @@ config("compiler") {
     # PDB file by about 5%) but does not otherwise alter the output binary. It
     # is enabled opportunistically for builds where it is not prohibited (not
     # supported when incrementally linking, or using /debug:fastlink).
-    ldflags += [ "/PROFILE" ]
+    # ldflags += [ "/PROFILE" ]
   }
 
   # arflags apply only to static_libraries. The normal linker configs are only
