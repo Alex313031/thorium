@@ -38,7 +38,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
 
-cat $HOME/thorium/logos/thorium_logo_ascii_art.txt &&
+cat logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}Installer at //out/thorium/thorium_mini_installer.exe\n" &&
 tput sgr0 &&
