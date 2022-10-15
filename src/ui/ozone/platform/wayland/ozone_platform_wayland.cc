@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031.
+// Copyright 2022 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,6 +8,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <components/exo/wayland/protocol/aura-shell-client-protocol.h>
 
 #include "base/bind.h"
 #include "base/command_line.h"
@@ -46,6 +48,7 @@
 #include "ui/ozone/platform/wayland/host/wayland_menu_utils.h"
 #include "ui/ozone/platform/wayland/host/wayland_output_manager.h"
 #include "ui/ozone/platform/wayland/host/wayland_window.h"
+#include "ui/ozone/platform/wayland/host/wayland_zaura_shell.h"
 #include "ui/ozone/platform/wayland/wayland_utils.h"
 #include "ui/ozone/public/gpu_platform_support_host.h"
 #include "ui/ozone/public/ozone_platform.h"
@@ -274,8 +277,6 @@ class OzonePlatformWayland : public OzonePlatform,
       // be able to enable the system frame.
       properties->custom_frame_pref_default = true;
 
-      properties->uses_external_vulkan_image_factory = true;
-
       // Wayland uses sub-surfaces to show tooltips, and sub-surfaces must be
       // bound to their root surfaces always, but finding the correct root
       // surface at the moment of creating the tooltip is not always possible
@@ -294,7 +295,7 @@ class OzonePlatformWayland : public OzonePlatform,
       // arbitrary position.
       properties->supports_global_screen_coordinates =
           features::IsWaylandScreenCoordinatesEnabled();
-          
+
       // Let the media know this platform supports va-api.
       properties->supports_vaapi = true;
 
@@ -316,11 +317,9 @@ class OzonePlatformWayland : public OzonePlatform,
       // These properties are set when GetPlatformRuntimeProperties is called on
       // the browser process side.
       properties.supports_server_side_window_decorations =
-          override_supports_ssd_for_test == SupportsSsdForTest::kNotSet
-              ? (connection_->xdg_decoration_manager_v1() != nullptr)
-              : (override_supports_ssd_for_test == SupportsSsdForTest::kNo
-                     ? false
-                     : true);
+          (connection_->xdg_decoration_manager_v1() != nullptr &&
+          override_supports_ssd_for_test == SupportsSsdForTest::kNotSet) ||
+          override_supports_ssd_for_test == SupportsSsdForTest::kYes;
       properties.supports_overlays =
           ui::IsWaylandOverlayDelegationEnabled() && connection_->viewporter();
       properties.supports_non_backed_solid_color_buffers =
@@ -333,6 +332,11 @@ class OzonePlatformWayland : public OzonePlatform,
       // accelerated widget to occlude contents below.
       properties.needs_background_image =
           ui::IsWaylandOverlayDelegationEnabled() && connection_->viewporter();
+      if (connection_->zaura_shell()) {
+        properties.supports_activation =
+            zaura_shell_get_version(connection_->zaura_shell()->wl_object()) >=
+            ZAURA_TOPLEVEL_ACTIVATE_SINCE_VERSION;
+      }
 
       if (surface_factory_) {
         DCHECK(has_initialized_gpu());
