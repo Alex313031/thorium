@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) 2022 Alex313031. -->
-<!-- Settings-specific strings shared by Browser and ChromeOS settings -->
+<!-- Settings-specific strings shared by Browser and ThoriumOS settings -->
 <grit-part>
   <!-- All subpages -->
-  <message name="IDS_SETTINGS_SUBPAGE_BACK_BUTTON_ARIA_LABEL" desc="Text read by screen readers when focusing on the back button. If the back button is activated, it will navigate to the previous page. This text will only be announced by ChromeVox and will not be visible in the UI.">
+  <message name="IDS_SETTINGS_SUBPAGE_BACK_BUTTON_ARIA_LABEL" desc="Text read by screen readers when focusing on the back button. If the back button is activated, it will navigate to the previous page. This text will only be announced by ThoriumVox and will not be visible in the UI.">
     <ph name="SUBPAGE_TITLE">$1<ex>Bluetooth</ex></ph> subpage back button
   </message>
-  <message name="IDS_SETTINGS_SUBPAGE_BACK_BUTTON_ARIA_ROLE_DESCRIPTION" desc="Description read by screen readers when focusing on the back button. Indicates to the user that activating the back button will cause the settings page to navigate away from the currently displaying subpage to the previous visited page. This text will only be announced by ChromeVox and will not be visible in the UI.">
+  <message name="IDS_SETTINGS_SUBPAGE_BACK_BUTTON_ARIA_ROLE_DESCRIPTION" desc="Description read by screen readers when focusing on the back button. Indicates to the user that activating the back button will cause the settings page to navigate away from the currently displaying subpage to the previous visited page. This text will only be announced by ThoriumVox and will not be visible in the UI.">
     Click to navigate away from <ph name="SUBPAGE_TITLE">$1<ex>Bluetooth</ex> subpage</ph>.
   </message>
 
@@ -122,7 +122,7 @@
     Show notification when devices are sharing nearby
   </message>
   <message name="IDS_SETTINGS_NEARBY_SHARE_DEVICE_NAME_ARIA_DESCRIPTION" desc="Description for screen readers, not displayed in UI, specifying the current device name which is shown to other devices for the Nearby Share feature." is_accessibility_with_no_ui="true">
-    Current device name is <ph name="DEVICE_NAME">$1<ex>Michael's Chromebook</ex></ph>
+    Current device name is <ph name="DEVICE_NAME">$1<ex>Michael's Thoriumbook</ex></ph>
   </message>
   <message name="IDS_SETTINGS_NEARBY_SHARE_CONFIRM_DEVICE_NAME" desc="Label for the button that allows a user to confirm their device name which is shown to other devices for the Nearby Share feature.">
     Rename
@@ -155,7 +155,7 @@
     May incur mobile data charges
   </message>
   <message name="IDS_SETTINGS_NEARBY_SHARE_DATA_USAGE_MOBILE_DATA_TOOLTIP" desc="Explanation of when the mobile data usage setting applies. When selected, Mobile data means that Wi-Fi or cell data may be used for transfers for the Nearby Share feature.">
-    This option applies to Chromebooks with a data plan or mobile network dongle, or when tethering to a portable hotspot
+    This option applies to Thoriumbooks with a data plan or mobile network dongle, or when tethering to a portable hotspot
   </message>
   <message name="IDS_SETTINGS_NEARBY_SHARE_DATA_USAGE_OFFLINE_LABEL" desc="Label for the data usage setting where transfers will only take place offline for the Nearby Share feature.">
     Without internet
@@ -213,7 +213,7 @@
   <message name="IDS_SETTINGS_SUGGEST_PREF_DESC" desc="The description of the 'Use Suggest' preference">
     Sends some cookies and searches from the address bar and search box to your default search engine
   </message>
-  <message name="IDS_SETTINGS_ENABLE_LOGGING_PREF" desc="The label of the checkbox to enable/disable crash and user metrics logging. This string does not need a Chromium counter-part because it will only be visible if Google-branded.">
+  <message name="IDS_SETTINGS_ENABLE_LOGGING_PREF" desc="The label of the checkbox to enable/disable crash and user metrics logging. This string does not need a Thorium counter-part because it will only be visible if Google-branded.">
     Help improve Thorium's features and performance
   </message>
   <message name="IDS_SETTINGS_ENABLE_LOGGING_PREF_DESC" desc="The description of the checkbox to enable/disable crash and user metrics logging">
@@ -265,7 +265,7 @@
   <message name="IDS_SETTINGS_SYNC_DISCONNECT_CONFIRM" desc="The text to display on the button to confirm the user wishes to stop syncing.">
     Clear and Sign Out
   </message>
-  <message name="IDS_SETTINGS_PEOPLE_SIGN_OUT" desc="The label of the button that lets user sign-out of Chrome.">
+  <message name="IDS_SETTINGS_PEOPLE_SIGN_OUT" desc="The label of the button that lets user sign-out of Thorium.">
     Sign out
   </message>
   <!-- Sync Control Subpage (strings used by the <settings-sync-controls> element) -->
@@ -334,7 +334,7 @@
   <message name="IDS_SETTINGS_INCORRECT_PASSPHRASE_ERROR" desc="Message when the passphrase is incorrect.">
     The passphrase you entered is incorrect
   </message>
-  <message name="IDS_SETTINGS_NEW_MANAGE_SYNCED_DATA_TITLE_UNIFIED_CONSENT" desc="Title for the link to manage Chrome Sync data via Google Dashboard when unified consent is enabled.">
+  <message name="IDS_SETTINGS_NEW_MANAGE_SYNCED_DATA_TITLE_UNIFIED_CONSENT" desc="Title for the link to manage Thorium Sync data via Google Dashboard when unified consent is enabled.">
     Review your synced data
   </message>
   <message name="IDS_SETTINGS_SYNC_SYNC_AND_NON_PERSONALIZED_SERVICES" desc="The name of the settings page and the label of the button that takes the user to manage their sync and non-personalized services settings.">
@@ -377,7 +377,7 @@
 
   <if expr="is_chromeos">
     <message name="IDS_BROWSER_SETTINGS_SYNC_FEATURE_LABEL" desc="Label describing the browser sync feature.">
-      Your data will be synced across all Chromium browsers where you have turned on sync for this account. For ThoriumOS sync options, go to <ph name="LINK_BEGIN">&lt;a&gt;</ph>ChromeOS settings<ph name="LINK_END">&lt;/a&gt;</ph>.
+      Your data will be synced across all Thorium browsers where you have turned on sync for this account. For ThoriumOS sync options, go to <ph name="LINK_BEGIN">&lt;a&gt;</ph>ThoriumOS settings<ph name="LINK_END">&lt;/a&gt;</ph>.
     </message>
   </if>
 
