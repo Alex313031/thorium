@@ -205,11 +205,11 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 
 printf "${CYA}\n" &&
 
-cat $HOME/thorium/logos/thorium_ascii_art.txt &&
+cat $HOME/Thorium/logos/thorium_ascii_art.txt &&
 
 # Display raspi ascii art
 displayRaspi () {
-	cat $HOME/thorium/logos/raspi_ascii_art.txt
+	cat $HOME/Thorium/logos/raspi_ascii_art.txt
 }
 
 case $1 in
