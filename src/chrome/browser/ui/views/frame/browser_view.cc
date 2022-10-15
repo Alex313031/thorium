@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031.
+// Copyright 2022 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -68,6 +68,7 @@
 #include "chrome/browser/ui/find_bar/find_bar.h"
 #include "chrome/browser/ui/find_bar/find_bar_controller.h"
 #include "chrome/browser/ui/layout_constants.h"
+#include "chrome/browser/ui/performance_controls/high_efficiency_iph_controller.h"
 #include "chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.h"
 #include "chrome/browser/ui/recently_audible_helper.h"
 #include "chrome/browser/ui/sad_tab_helper.h"
@@ -182,6 +183,7 @@
 #include "components/lens/lens_features.h"
 #include "components/omnibox/browser/omnibox_popup_view.h"
 #include "components/omnibox/browser/omnibox_view.h"
+#include "components/performance_manager/public/features.h"
 #include "components/permissions/permission_request_manager.h"
 #include "components/prefs/pref_service.h"
 #include "components/reading_list/core/reading_list_pref_names.h"
@@ -223,6 +225,7 @@
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/base/theme_provider.h"
 #include "ui/base/window_open_disposition.h"
+#include "ui/base/window_open_disposition_utils.h"
 #include "ui/compositor/layer.h"
 #include "ui/compositor/paint_recorder.h"
 #include "ui/content_accelerators/accelerator_util.h"
@@ -913,14 +916,16 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
   if (base::FeatureList::IsEnabled(features::kUnifiedSidePanel)) {
     const bool is_right_aligned = GetProfile()->GetPrefs()->GetBoolean(
         prefs::kSidePanelHorizontalAlignment);
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     unified_side_panel_ = AddChildView(std::make_unique<SidePanel>(
         this,
         is_right_aligned ? SidePanel::kAlignRight : SidePanel::kAlignLeft));
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     left_aligned_side_panel_separator_ =
         AddChildView(std::make_unique<ContentsSeparator>());
     side_panel_coordinator_ = std::make_unique<SidePanelCoordinator>(this);
   } else {
-    if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     unified_side_panel_ = AddChildView(std::make_unique<SidePanel>(this));
   }
 
@@ -934,14 +939,17 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
   }
 #endif
 
-  if (side_search::IsEnabledForBrowser(browser_.get())) {
-    if (!base::FeatureList::IsEnabled(features::kUnifiedSidePanel)) {
-      side_search_side_panel_ = AddChildView(std::make_unique<SidePanel>(this));
-      left_aligned_side_panel_separator_ =
-          AddChildView(std::make_unique<ContentsSeparator>());
-      side_search_controller_ = std::make_unique<SideSearchBrowserController>(
-          side_search_side_panel_, this);
-    }
+  if (side_search::IsEnabledForBrowser(browser_.get()) &&
+      !side_search::ShouldUseUnifiedSidePanel()) {
+    bool dse_support =
+        base::FeatureList::IsEnabled(features::kSideSearchDSESupport);
+    side_search_side_panel_ = AddChildView(std::make_unique<SidePanel>(
+        this, dse_support ? SidePanel::HorizontalAlignment::kAlignRight
+                          : SidePanel::HorizontalAlignment::kAlignLeft));
+    left_aligned_side_panel_separator_ =
+        AddChildView(std::make_unique<ContentsSeparator>());
+    side_search_controller_ = std::make_unique<SideSearchBrowserController>(
+        side_search_side_panel_, this);
   }
 
   // InfoBarContainer needs to be added as a child here for drop-shadow, but
@@ -967,6 +975,14 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
                        weak_ptr_factory_.GetWeakPtr()));
   }
 #endif
+
+  // High Efficiency mode is default off but is available to turn on
+  if (!performance_manager::features::kHighEfficiencyModeDefaultState.Get() &&
+      base::FeatureList::IsEnabled(
+          performance_manager::features::kHighEfficiencyModeAvailable)) {
+    high_efficiency_iph_controller_ =
+        std::make_unique<HighEfficiencyIPHController>(browser_.get());
+  }
 }
 
 BrowserView::~BrowserView() {
@@ -1440,9 +1456,24 @@ void BrowserView::UpdateDevTools() {
   Layout();
 }
 
-void BrowserView::UpdateLoadingAnimations(bool should_animate) {
+void BrowserView::UpdateLoadingAnimations(bool is_visible) {
+  bool should_animate = browser_->tab_strip_model()->TabsAreLoading();
+
+  if (base::FeatureList::IsEnabled(
+          features::kStopLoadingAnimationForHiddenWindow)) {
+    should_animate &= is_visible;
+  }
+
+  if (should_animate == loading_animation_timer_.IsRunning()) {
+    // Early return if the loading animation state doesn't change.
+    return;
+  }
+
+  if (!loading_animation_state_change_closure_.is_null()) {
+    std::move(loading_animation_state_change_closure_).Run();
+  }
+
   if (should_animate) {
-    if (!loading_animation_timer_.IsRunning()) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
       loading_animation_tracker_.emplace(
         GetWidget()->GetCompositor()->RequestNewThroughputTracker());
@@ -1453,17 +1484,23 @@ void BrowserView::UpdateLoadingAnimations(bool should_animate) {
       loading_animation_start_ = base::TimeTicks::Now();
       loading_animation_timer_.Start(FROM_HERE, base::Milliseconds(30), this,
                                      &BrowserView::LoadingAnimationCallback);
-    }
   } else {
-    if (loading_animation_timer_.IsRunning()) {
-      loading_animation_timer_.Stop();
+    loading_animation_timer_.Stop();
 #if BUILDFLAG(IS_CHROMEOS_ASH)
       loading_animation_tracker_->Stop();
 #endif
       // Loads are now complete, update the state if a task was scheduled.
       LoadingAnimationCallback();
-    }
   }
+}
+
+void BrowserView::SetLoadingAnimationStateChangeClosureForTesting(
+    base::OnceClosure closure) {
+  loading_animation_state_change_closure_ = std::move(closure);
+}
+
+bool BrowserView::IsLoadingAnimationRunningForTesting() const {
+  return loading_animation_timer_.IsRunning();
 }
 
 void BrowserView::SetStarredState(bool is_starred) {
@@ -1613,7 +1650,7 @@ void BrowserView::OnActiveTabChanged(content::WebContents* old_contents,
   // This is only done once when the app is first opened so that there is only
   // one subscriber per web contents.
   if (AppUsesBorderlessMode() && !old_contents) {
-    SetWindowPlacementPermissionSubscriptionForBorderlessMode(new_contents);
+    SetWindowManagementPermissionSubscriptionForBorderlessMode(new_contents);
     UpdateIsIsolatedWebApp();
   }
 }
@@ -1625,13 +1662,13 @@ void BrowserView::OnTabDetached(content::WebContents* contents,
     return;
 
   // This is to unsubscribe the window-placement permission subscriber.
-  if (window_placement_subscription_id_) {
+  if (window_management_subscription_id_) {
     contents->GetPrimaryMainFrame()
         ->GetBrowserContext()
         ->GetPermissionController()
         ->UnsubscribePermissionStatusChange(
-            window_placement_subscription_id_.value());
-    window_placement_subscription_id_.reset();
+            window_management_subscription_id_.value());
+    window_management_subscription_id_.reset();
   }
 
   // We need to reset the current tab contents to null before it gets
@@ -2157,13 +2194,13 @@ void BrowserView::UpdateBorderlessModeEnabled() {
                 blink::PermissionType::WINDOW_PLACEMENT, url)
             .status;
 
-    window_placement_permission_granted_ =
+    window_management_permission_granted_ =
         status == blink::mojom::PermissionStatus::GRANTED;
   } else {
     // Defaults to the value of borderless_mode_enabled if web contents are
     // null. These get overridden when the app is launched and its web contents
     // are ready.
-    window_placement_permission_granted_ = borderless_mode_enabled;
+    window_management_permission_granted_ = borderless_mode_enabled;
     is_isolated_web_app_ = borderless_mode_enabled;
   }
 
@@ -2176,16 +2213,16 @@ void BrowserView::UpdateBorderlessModeEnabled() {
   }
 }
 
-void BrowserView::UpdateWindowPlacementPermission(
+void BrowserView::UpdateWindowManagementPermission(
     blink::mojom::PermissionStatus status) {
-  window_placement_permission_granted_ =
+  window_management_permission_granted_ =
       status == blink::mojom::PermissionStatus::GRANTED;
 
   // The layout has to update to reflect the borderless mode view change.
   InvalidateLayout();
 }
 
-void BrowserView::SetWindowPlacementPermissionSubscriptionForBorderlessMode(
+void BrowserView::SetWindowManagementPermissionSubscriptionForBorderlessMode(
     content::WebContents* web_contents) {
   content::RenderFrameHost* rfh = web_contents->GetPrimaryMainFrame();
   auto* controller = rfh->GetBrowserContext()->GetPermissionController();
@@ -2193,7 +2230,7 @@ void BrowserView::SetWindowPlacementPermissionSubscriptionForBorderlessMode(
   // Last committed URL is null when PWA is opened from chrome://apps.
   url::Origin url = url::Origin::Create(web_contents->GetVisibleURL());
 
-  UpdateWindowPlacementPermission(
+  UpdateWindowManagementPermission(
       controller
           ->GetPermissionResultForOriginWithoutContext(
               blink::PermissionType::WINDOW_PLACEMENT, url)
@@ -2201,10 +2238,10 @@ void BrowserView::SetWindowPlacementPermissionSubscriptionForBorderlessMode(
 
   // It is safe to bind base::Unretained(this) because WebContents is
   // owned by BrowserView.
-  window_placement_subscription_id_ =
+  window_management_subscription_id_ =
       controller->SubscribePermissionStatusChange(
           blink::PermissionType::WINDOW_PLACEMENT, rfh->GetProcess(), url,
-          base::BindRepeating(&BrowserView::UpdateWindowPlacementPermission,
+          base::BindRepeating(&BrowserView::UpdateWindowManagementPermission,
                               base::Unretained(this)));
 }
 
@@ -2226,7 +2263,7 @@ void BrowserView::ToggleWindowControlsOverlayEnabled() {
 }
 
 bool BrowserView::IsBorderlessModeEnabled() const {
-  return borderless_mode_enabled_ && window_placement_permission_granted_ &&
+  return borderless_mode_enabled_ && window_management_permission_granted_ &&
          is_isolated_web_app_;
 }
 
@@ -2369,6 +2406,14 @@ void BrowserView::TryNotifyWindowBoundsChanged(const gfx::Rect& widget_bounds) {
 
   last_widget_bounds_ = widget_bounds;
   browser()->extension_window_controller()->NotifyWindowBoundsChanged();
+}
+
+void BrowserView::OnWidgetVisibilityChanged(views::Widget* widget,
+                                            bool visible) {
+  if (base::FeatureList::IsEnabled(
+          features::kStopLoadingAnimationForHiddenWindow)) {
+    UpdateLoadingAnimations(visible);
+  }
 }
 
 void BrowserView::TouchModeChanged() {
@@ -4736,6 +4781,16 @@ void BrowserView::OnImmersiveRevealEnded() {
   ReparentTopContainerForEndOfImmersive();
   InvalidateLayout();
   GetWidget()->GetRootView()->Layout();
+
+#if BUILDFLAG(IS_CHROMEOS)
+  // Ensure that entering/exiting tablet mode on ChromeOS also updates Window
+  // Controls Overlay (WCO). This forces a re-check of the immersive mode flag.
+  // Tablet mode implies immersive mode, so if tablet mode is enabled, this will
+  // automatically disable WCO, and vice versa.
+  if (AppUsesWindowControlsOverlay()) {
+    UpdateWindowControlsOverlayEnabled();
+  }
+#endif  // BUILDFLAG(IS_CHROMEOS)
 }
 
 void BrowserView::OnImmersiveFullscreenExited() {
