@@ -1549,7 +1549,6 @@ config("default_warnings") {
       "-Wno-missing-field-initializers",  # "struct foo f = {0};"
       "-Wno-unused-parameter",  # Unused function parameters.
     ]
-  }
 
     if (!is_nacl || is_nacl_saigo) {
       cflags += [
