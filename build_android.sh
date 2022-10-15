@@ -52,7 +52,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk system_webview_apk -j$@ &&
 
-cat $HOME/thorium/logos/thorium_logo_ascii_art.txt &&
+cat logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apks to your device or use ADB to install.\n" &&
 tput sgr0 &&
