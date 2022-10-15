@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,6 +7,7 @@
 #include "base/command_line.h"
 #include "base/feature_list.h"
 #include "build/build_config.h"
+#include "build/chromecast_buildflags.h"
 #include "build/chromeos_buildflags.h"
 #include "services/network/public/cpp/features.h"
 #include "third_party/blink/public/common/forcedark/forcedark_switches.h"
@@ -95,14 +96,6 @@ const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>
 BASE_FEATURE(kBackForwardCacheDedicatedWorker,
              "BackForwardCacheDedicatedWorker",
              base::FEATURE_ENABLED_BY_DEFAULT);
-
-BASE_FEATURE(kBackForwardCacheSendNotRestoredReasons,
-             "BackForwardCacheSendNotRestoredReasons",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-const base::FeatureParam<bool>
-    kBackForwardCacheSendNotRestoredReasonsRequiresOriginTrial = {
-        &kBackForwardCacheSendNotRestoredReasons, "requires_origin_trial",
-        false};
 
 // Enable intervention for download that was initiated from or occurred in an ad
 // frame without user activation.
@@ -234,6 +227,13 @@ BASE_FEATURE(kAnchorElementInteraction,
              "AnchorElementInteraction",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Enable "interoperable" Android virtual-keyboard. i.e. the keyboard doesn't
+// affect page layout, resizing only the visual viewport. This matches WebKit
+// and ChromeOS behavior.
+BASE_FEATURE(kOSKResizesVisualViewportByDefault,
+             "OSKResizesVisualViewportByDefault",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Enable browser-initiated dedicated worker script loading
 // (PlzDedicatedWorker). https://crbug.com/906991
 BASE_FEATURE(kPlzDedicatedWorker,
@@ -301,6 +301,10 @@ const base::FeatureParam<base::TimeDelta>
     kSharedStorageOriginStalenessThreshold = {
         &kSharedStorageAPI, "SharedStorageOriginStalenessThreshold",
         base::Days(30)};
+const base::FeatureParam<int>
+    kSharedStorageMaxAllowedFencedFrameDepthForSelectURL = {
+        &kSharedStorageAPI,
+        "SharedStorageMaxAllowedFencedFrameDepthForSelectURL", 1};
 
 BASE_FEATURE(kSameSiteCrossOriginForSpeculationRulesPrerender,
              "SameSiteCrossOriginForSpeculationRulesPrerender",
@@ -331,6 +335,11 @@ bool IsPrerender2Enabled() {
 bool IsSameSiteCrossOriginForSpeculationRulesPrerender2Enabled() {
   return base::FeatureList::IsEnabled(
       blink::features::kSameSiteCrossOriginForSpeculationRulesPrerender);
+}
+
+bool OSKResizesVisualViewportByDefault() {
+  return base::FeatureList::IsEnabled(
+      blink::features::kOSKResizesVisualViewportByDefault);
 }
 
 bool IsFencedFramesEnabled() {
@@ -473,7 +482,9 @@ BASE_FEATURE(kServiceWorkerUpdateDelay,
 // "stop" is a legacy name.
 BASE_FEATURE(kStopInBackground,
              "stop-in-background",
-#if BUILDFLAG(IS_ANDROID)
+// b/248036988 - Disable this for Chromecast on Android builds to prevent apps
+// that play audio in the background from stopping.
+#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_CAST_ANDROID)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -665,9 +676,6 @@ BASE_FEATURE(kLowLatencyCanvas2dImageChromium,
 #endif  // BUILDFLAG(IS_CHROMEOS)
 );
 
-// Enables Dawn-accelerated 2D canvas.
-BASE_FEATURE(kDawn2dCanvas, "Dawn2dCanvas", base::FEATURE_DISABLED_BY_DEFAULT);
-
 // Enables small accelerated canvases for webview (crbug.com/1004304)
 BASE_FEATURE(kWebviewAccelerateSmallCanvases,
              "WebviewAccelerateSmallCanvases",
@@ -820,17 +828,6 @@ const base::FeatureParam<CheckOfflineCapabilityMode>
     kCheckOfflineCapabilityParam{&kCheckOfflineCapability, "check_mode",
                                  CheckOfflineCapabilityMode::kWarnOnly,
                                  &check_offline_capability_types};
-
-// The "BackForwardCacheABExperimentControl" feature indicates the state of the
-// same-site BackForwardCache experiment. This information is used when sending
-// the "Sec-bfcache-experiment" HTTP Header on resource requests. The header
-// value is determined by the value of the "experiment_group_for_http_header"
-// feature parameter.
-BASE_FEATURE(kBackForwardCacheABExperimentControl,
-             "BackForwardCacheABExperimentControl",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-const char kBackForwardCacheABExperimentGroup[] =
-    "experiment_group_for_http_header";
 
 // Whether we should composite a PLSA (paint layer scrollable area) even if it
 // means losing lcd text.
@@ -1047,28 +1044,17 @@ BASE_FEATURE(kCORSErrorsIssueOnly,
              "CORSErrorsIssueOnly",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kPersistentQuotaIsTemporaryQuota,
-             "PersistentQuotaIsTemporaryQuota",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-bool IsPersistentQuotaIsTemporaryQuota() {
-  return !base::CommandLine::ForCurrentProcess()->HasSwitch(
-             switches::kPersistentQuotaEnabled) &&
-         base::FeatureList::IsEnabled(
-             features::kPersistentQuotaIsTemporaryQuota);
-}
-
 BASE_FEATURE(kDelayLowPriorityRequestsAccordingToNetworkState,
              "DelayLowPriorityRequestsAccordingToNetworkState",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kIncludeInitiallyInvisibleImagesInLCP,
              "IncludeInitiallyInvisibleImagesInLCP",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kIncludeBackgroundSVGInLCP,
              "IncludeBackgroundSVGInLCP",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 const base::FeatureParam<int> kMaxNumOfThrottleableRequestsInTightMode{
     &kDelayLowPriorityRequestsAccordingToNetworkState,
@@ -1234,7 +1220,7 @@ BASE_FEATURE(kMaxUnthrottledTimeoutNestingLevel,
              "MaxUnthrottledTimeoutNestingLevel",
              base::FEATURE_DISABLED_BY_DEFAULT);
 const base::FeatureParam<int> kMaxUnthrottledTimeoutNestingLevelParam{
-    &kMaxUnthrottledTimeoutNestingLevel, "nesting", 10};
+    &kMaxUnthrottledTimeoutNestingLevel, "nesting", 15};
 bool IsMaxUnthrottledTimeoutNestingLevelEnabled() {
   auto policy = GetUnthrottledNestedTimeoutPolicyOverride();
   if (policy != UnthrottledNestedTimeoutPolicyOverride::kNoOverride)
@@ -1288,10 +1274,6 @@ BASE_FEATURE(kPrefetchAndroidFonts,
 BASE_FEATURE(kBackForwardCacheAppBanner,
              "BackForwardCacheAppBanner",
              base::FEATURE_ENABLED_BY_DEFAULT);
-
-BASE_FEATURE(kBackForwardCacheEnabledForNonPluginEmbed,
-             "BackForwardCacheEnabledForNonPluginEmbed",
-             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Initialize CSSDefaultStyleSheets early in renderer startup.
 BASE_FEATURE(kDefaultStyleSheetsEarlyInit,
@@ -1390,7 +1372,7 @@ const base::FeatureParam<DelayAsyncScriptDelayType>::Option
 
 const base::FeatureParam<DelayAsyncScriptDelayType>
     kDelayAsyncScriptExecutionDelayParam{
-        &kDelayAsyncScriptExecution, "delay_type",
+        &kDelayAsyncScriptExecution, "delay_async_exec_delay_type",
         DelayAsyncScriptDelayType::kFinishedParsing,
         &delay_async_script_execution_delay_types};
 
@@ -1404,26 +1386,31 @@ const base::FeatureParam<DelayAsyncScriptTarget>::Option
          "cross_site_with_allow_list_report_only"},
 };
 const base::FeatureParam<DelayAsyncScriptTarget> kDelayAsyncScriptTargetParam{
-    &kDelayAsyncScriptExecution, "target", DelayAsyncScriptTarget::kAll,
-    &delay_async_script_target_types};
+    &kDelayAsyncScriptExecution, "delay_async_exec_target",
+    DelayAsyncScriptTarget::kAll, &delay_async_script_target_types};
 
 // kDelayAsyncScriptExecution will delay executing async script at max
-// |delay_limit|.
+// |delay_async_exec_delay_limit|.
 const base::FeatureParam<base::TimeDelta>
     kDelayAsyncScriptExecutionDelayLimitParam{&kDelayAsyncScriptExecution,
-                                              "delay_limit", base::Seconds(0)};
+                                              "delay_async_exec_delay_limit",
+                                              base::Seconds(0)};
 
 // kDelayAsyncScriptExecution will be disabled after document elapsed more than
-// |feature_limit|. Zero value means no limit.
+// |delay_async_exec_feature_limit|. Zero value means no limit.
 // This is to avoid unnecessary async script delay after LCP (for
 // kEachLcpCandidate or kEachPaint). Because we can't determine the LCP timing
 // while loading, we use timeout instead.
 const base::FeatureParam<base::TimeDelta>
     kDelayAsyncScriptExecutionFeatureLimitParam{
-        &kDelayAsyncScriptExecution, "feature_limit", base::Seconds(0)};
+        &kDelayAsyncScriptExecution, "delay_async_exec_feature_limit",
+        base::Seconds(0)};
 
 const base::FeatureParam<std::string> kDelayAsyncScriptAllowList{
-    &kDelayAsyncScriptExecution, "allow_list", ""};
+    &kDelayAsyncScriptExecution, "delay_async_exec_allow_list", ""};
+
+const base::FeatureParam<bool> kDelayAsyncScriptExecutionMainFrameOnlyParam{
+    &kDelayAsyncScriptExecution, "delay_async_exec_main_frame_only", false};
 
 BASE_FEATURE(kLowPriorityAsyncScriptExecution,
              "LowPriorityAsyncScriptExecution",
@@ -1431,18 +1418,40 @@ BASE_FEATURE(kLowPriorityAsyncScriptExecution,
 
 const base::FeatureParam<base::TimeDelta>
     kTimeoutForLowPriorityAsyncScriptExecution{
-        &kLowPriorityAsyncScriptExecution, "timeout", base::Milliseconds(0)};
+        &kLowPriorityAsyncScriptExecution, "low_pri_async_exec_timeout",
+        base::Milliseconds(0)};
 
 // kLowPriorityAsyncScriptExecution will be disabled after document elapsed more
-// than |feature_limit|. Zero value means no limit.
+// than |low_pri_async_exec_feature_limit|. Zero value means no limit.
 const base::FeatureParam<base::TimeDelta>
     kLowPriorityAsyncScriptExecutionFeatureLimitParam{
-        &kLowPriorityAsyncScriptExecution, "feature_limit", base::Seconds(0)};
+        &kLowPriorityAsyncScriptExecution, "low_pri_async_exec_feature_limit",
+        base::Seconds(0)};
 
 // kLowPriorityAsyncScriptExecution will be applied only for cross site scripts.
 const base::FeatureParam<bool>
     kLowPriorityAsyncScriptExecutionCrossSiteOnlyParam{
-        &kLowPriorityAsyncScriptExecution, "cross_site_only", false};
+        &kLowPriorityAsyncScriptExecution, "low_pri_async_exec_cross_site_only",
+        false};
+
+const base::FeatureParam<bool>
+    kLowPriorityAsyncScriptExecutionMainFrameOnlyParam{
+        &kLowPriorityAsyncScriptExecution, "low_pri_async_exec_main_frame_only",
+        false};
+
+BASE_FEATURE(kLowPriorityScriptLoading,
+             "LowPriorityScriptLoading",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const base::FeatureParam<bool> kLowPriorityScriptLoadingCrossSiteOnlyParam{
+    &kLowPriorityScriptLoading, "low_pri_async_loading_cross_site_only", false};
+const base::FeatureParam<base::TimeDelta>
+    kLowPriorityScriptLoadingFeatureLimitParam{
+        &kLowPriorityScriptLoading, "low_pri_async_loading_feature_limit",
+        base::Seconds(0)};
+const base::FeatureParam<std::string> kLowPriorityScriptLoadingDenyListParam{
+    &kLowPriorityScriptLoading, "low_pri_async_loading_deny_list", ""};
+const base::FeatureParam<bool> kLowPriorityScriptLoadingMainFrameOnlyParam{
+    &kLowPriorityScriptLoading, "low_pri_async_loading_main_frame_only", false};
 
 BASE_FEATURE(kDOMContentLoadedWaitForAsyncScript,
              "DOMContentLoadedWaitForAsyncScript",
@@ -1478,8 +1487,8 @@ BASE_FEATURE(kSubstringSetTreeForAttributeBuckets,
              "SubstringSetTreeForAttributeBuckets",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kCSSParserSelectorArena,
-             "CSSParserSelectorArena",
+BASE_FEATURE(kInvalidationSetClassBloomFilter,
+             "InvalidationSetClassBloomFilter",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kPendingBeaconAPI,
@@ -1530,6 +1539,10 @@ BASE_FEATURE(kFileSystemUrlNavigation,
              "FileSystemUrlNavigation",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+BASE_FEATURE(kFileSystemUrlNavigationForChromeAppsOnly,
+             "FileSystemUrlNavigationForChromeAppsOnly",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 BASE_FEATURE(kEarlyExitOnNoopClassOrStyleChange,
              "EarlyExitOnNoopClassOrStyleChange",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1568,7 +1581,7 @@ BASE_FEATURE(kThrottleIntersectionObserverUMA,
 
 BASE_FEATURE(kWebRtcMetronome,
              "WebRtcMetronome",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSyncAccessHandleAllSyncSurface,
              "SyncAccessHandleAllSyncSurface",
@@ -1581,6 +1594,57 @@ BASE_FEATURE(kNoCentralWebCacheLimitControl,
 BASE_FEATURE(kRunTextInputUpdatePostLifecycle,
              "RunTextInputUpdatePostLifecycle",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kProcessHtmlDataImmediately,
+             "ProcessHtmlDataImmediately",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+const base::FeatureParam<bool> kProcessHtmlDataImmediatelyFirstChunk{
+    &kProcessHtmlDataImmediately, "first", false};
+
+const base::FeatureParam<bool> kProcessHtmlDataImmediatelySubsequentChunks{
+    &kProcessHtmlDataImmediately, "rest", false};
+
+BASE_FEATURE(kFastPathPaintPropertyUpdates,
+             "FastPathPaintPropertyUpdates",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kThreadedBodyLoader,
+             "ThreadedBodyLoader",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kDocumentEventNodePathCaching,
+             "DocumentEventNodePathCaching",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+const base::FeatureParam<int> kDocumentMaxEventNodePathCachedEntries{
+    &kDocumentEventNodePathCaching, "max-cache-entries", 10};
+
+BASE_FEATURE(kPostMessageDifferentPartitionSameOriginBlocked,
+             "PostMessageDifferentPartitionSameOriginBlocked",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kWebRtcCombinedNetworkAndWorkerThread,
+             "WebRtcCombinedNetworkAndWorkerThread",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Allow process isolation of iframes with the 'sandbox' attribute set. Whether
+// or not such an iframe will be isolated may depend on options specified with
+// the attribute. Note: At present, only iframes with origin-restricted
+// sandboxes are isolated.
+BASE_FEATURE(kIsolateSandboxedIframes,
+             "IsolateSandboxedIframes",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const base::FeatureParam<IsolateSandboxedIframesGrouping>::Option
+    isolated_sandboxed_iframes_grouping_types[] = {
+        {IsolateSandboxedIframesGrouping::kPerSite, "per-site"},
+        {IsolateSandboxedIframesGrouping::kPerOrigin, "per-origin"},
+        {IsolateSandboxedIframesGrouping::kPerDocument, "per-document"}};
+const base::FeatureParam<IsolateSandboxedIframesGrouping>
+    kIsolateSandboxedIframesGroupingParam{
+        &kIsolateSandboxedIframes, "grouping",
+        IsolateSandboxedIframesGrouping::kPerSite,
+        &isolated_sandboxed_iframes_grouping_types};
 
 }  // namespace features
 }  // namespace blink
