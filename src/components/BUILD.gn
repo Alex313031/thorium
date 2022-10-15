@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2022 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -83,8 +83,6 @@ test("components_unittests") {
   }
 
   if (is_fuchsia) {
-    use_cfv1 = false
-
     # TODO(https://crbug.com/1185811): Investigate removing the requirement for
     # job_policy_ambient_mark_vmo_exec for the sake of V8's allocator in tests.
     test_runner_shard = "//build/config/fuchsia/test/elf_test_ambient_exec_runner.shard.test-cml"
@@ -321,13 +319,13 @@ test("components_unittests") {
       "//components/autofill/core/common/mojom:unit_tests",
       "//components/autofill_assistant/browser:unit_tests",
       "//components/autofill_assistant/browser/public:unit_tests",
+      "//components/autofill_assistant/content/browser:unit_tests",
+      "//components/autofill_assistant/content/renderer:unit_tests",
       "//components/background_sync:unit_tests",
       "//components/blocked_content:unit_tests",
       "//components/browsing_data/content:unit_tests",
       "//components/browsing_topics:unit_tests",
       "//components/captive_portal/content:unit_tests",
-      "//components/cast_certificate:unit_tests",
-      "//components/cast_channel:unit_tests",
       "//components/cast_receiver:unit_tests",
       "//components/cast_streaming:unit_tests",
       "//components/certificate_transparency:unit_tests",
@@ -361,6 +359,7 @@ test("components_unittests") {
       "//components/link_header_util:unit_tests",
       "//components/media_router/browser:unit_tests",
       "//components/media_router/common:unit_tests",
+      "//components/media_router/common/providers/cast/channel:unit_tests",
       "//components/navigation_interception:unit_tests",
       "//components/network_hints/renderer:unit_tests",
       "//components/no_state_prefetch/browser:unit_tests",
@@ -465,8 +464,6 @@ test("components_unittests") {
       "//base:base_java_unittest_support",
       "//components/android_autofill/browser:unit_tests",
       "//components/autofill_assistant/browser/android:unit_tests",
-      "//components/autofill_assistant/content/browser:unit_tests",
-      "//components/autofill_assistant/content/renderer:unit_tests",
       "//components/browser_ui/sms/android:unit_tests",
       "//components/cdm/browser:unit_tests",
       "//components/component_updater/android:embedded_component_loader_java",
@@ -526,6 +523,7 @@ test("components_unittests") {
   if (!is_android && !is_ios) {
     deps += [
       "//components/access_code_cast/common:unit_tests",
+
       # See comment in components / guest_view / browser / BUILD.gn for why
       # guest_view is currently non - mobile.
       "//components/guest_view/browser:unit_tests",
@@ -690,7 +688,6 @@ repack("components_tests_pak") {
     "$root_gen_dir/components/autofill/core/browser/autofill_address_rewriter_resources.pak",
     "$root_gen_dir/components/components_resources.pak",
     "$root_gen_dir/components/omnibox/resources/omnibox_pedal_synonyms_en-US.pak",
-    "$root_gen_dir/components/omnibox/resources/omnibox_resources_en-US.pak",
     "$root_gen_dir/components/strings/components_locale_settings_en-US.pak",
     "$root_gen_dir/components/strings/components_strings_en-US.pak",
   ]
@@ -702,7 +699,6 @@ repack("components_tests_pak") {
     "//ash/components/arc/input_overlay/resources:resources_grit",
     "//components/autofill/core/browser:autofill_address_rewriter_resources",
     "//components/omnibox/resources:omnibox_pedal_synonyms",
-    "//components/omnibox/resources:omnibox_resources",
     "//components/resources",
     "//components/strings",
   ]
@@ -780,6 +776,11 @@ if (!is_ios) {
       "autofill/content/renderer/form_cache_browsertest.cc",
       "autofill/content/renderer/html_based_username_detector_browsertest.cc",
       "autofill/content/renderer/password_form_conversion_utils_browsertest.cc",
+      "autofill_assistant/browser/js_flow_executor_impl_browsertest.cc",
+      "autofill_assistant/browser/script_executor_browsertest.cc",
+      "autofill_assistant/browser/web/batch_element_checker_browsertest.cc",
+      "autofill_assistant/browser/web/semantic_element_finder_browsertest.cc",
+      "autofill_assistant/browser/web/web_controller_browsertest.cc",
       "browsing_data/content/browsing_data_helper_browsertest.h",
       "browsing_data/content/cache_storage_helper_browsertest.cc",
       "browsing_data/content/database_helper_browsertest.cc",
@@ -819,6 +820,10 @@ if (!is_ios) {
       "//components/autofill/content/renderer",
       "//components/autofill/content/renderer:test_support",
       "//components/autofill/core/browser",
+      "//components/autofill_assistant/browser",
+      "//components/autofill_assistant/browser:browser_test_support",
+      "//components/autofill_assistant/browser:test_support",
+      "//components/autofill_assistant/content/renderer:browser_tests",
       "//components/browsing_data/content",
       "//components/content_capture/browser:browser_tests",
       "//components/content_settings/core/common",
@@ -887,39 +892,10 @@ if (!is_ios) {
 
     if (is_android) {
       sources += [
-        "autofill_assistant/browser/base_browsertest.cc",
-        "autofill_assistant/browser/base_browsertest.h",
-        "autofill_assistant/browser/fake_script_executor_delegate.cc",
-        "autofill_assistant/browser/fake_script_executor_delegate.h",
-        "autofill_assistant/browser/fake_script_executor_ui_delegate.cc",
-        "autofill_assistant/browser/fake_script_executor_ui_delegate.h",
-        "autofill_assistant/browser/js_flow_executor_impl_browsertest.cc",
-        "autofill_assistant/browser/mock_script_executor_delegate.cc",
-        "autofill_assistant/browser/mock_script_executor_delegate.h",
-        "autofill_assistant/browser/script_executor_browsertest.cc",
-        "autofill_assistant/browser/service/mock_service.cc",
-        "autofill_assistant/browser/service/mock_service.h",
-        "autofill_assistant/browser/web/batch_element_checker_browsertest.cc",
-        "autofill_assistant/browser/web/mock_autofill_assistant_agent.cc",
-        "autofill_assistant/browser/web/mock_autofill_assistant_agent.h",
-        "autofill_assistant/browser/web/mock_web_controller.cc",
-        "autofill_assistant/browser/web/mock_web_controller.h",
-        "autofill_assistant/browser/web/semantic_element_finder_browsertest.cc",
-        "autofill_assistant/browser/web/web_controller_browsertest.cc",
         "browser_ui/client_certificate/android/ssl_client_certificate_request_browsertest.cc",
         "test/android/browsertests_apk/components_browser_tests_jni_onload.cc",
       ]
       deps += [
-        "//components/autofill_assistant/browser",
-        "//components/autofill_assistant/browser:proto",
-        "//components/autofill_assistant/browser/devtools:devtools",
-        "//components/autofill_assistant/browser/devtools:gen_devtools_client_api",
-        "//components/autofill_assistant/browser/public:password_change",
-        "//components/autofill_assistant/browser/public:public",
-        "//components/autofill_assistant/content/common",
-        "//components/autofill_assistant/content/common:mojo_interfaces",
-        "//components/autofill_assistant/content/renderer:browser_tests",
-        "//components/autofill_assistant/core/public:public",
         "//components/browser_ui/client_certificate/android",
         "//components/browser_ui/client_certificate/android:java",
         "//components/download/internal/common:internal_java",
@@ -981,7 +957,6 @@ if (!is_ios) {
     }
 
     if (is_fuchsia) {
-      use_cfv1 = false
       test_runner_shard = "//build/config/fuchsia/test/elf_test_ambient_exec_runner.shard.test-cml"
       additional_manifest_fragments = [
         "//build/config/fuchsia/test/present_view.shard.test-cml",
@@ -1072,6 +1047,7 @@ if (is_android) {
   robolectric_binary("components_junit_tests") {
     deps = [
       "//components/android_autofill/browser/junit:components_autofill_junit_tests",
+      "//components/autofill_assistant/android:junit",
       "//components/background_task_scheduler:components_background_task_scheduler_junit_tests",
       "//components/browser_ui/bottomsheet/android/internal:junit_tests",
       "//components/browser_ui/client_certificate/android:junit",
