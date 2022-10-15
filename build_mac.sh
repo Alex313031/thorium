@@ -35,7 +35,7 @@ buildShell () {
 	
 	./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell -j$@ &&
 	
-	cat $HOME/thorium/logos/thorium_logo_ascii_art.txt &&
+	cat logos/thorium_logo_ascii_art.txt &&
 	
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh, and copy the Thorium Shell.app\n" &&
 	tput sgr0
@@ -58,7 +58,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell -j$@ &&
 
-cat $HOME/thorium/logos/thorium_logo_ascii_art.txt &&
+cat logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh\n" &&
 
