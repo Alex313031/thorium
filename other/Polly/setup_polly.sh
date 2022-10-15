@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # help
 	printf "\n" &&
 	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
-	printf "${bold}${YEL}Use the --regular flag for Regular (AVX) builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --avx flag for Regular (AVX) builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
 	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in Thorium/infra, then use this script.${c0}\n" &&
@@ -31,7 +31,7 @@ tput sgr0 &&
 copyAVX () {
 	printf "\n" &&
 	printf "${YEL}Copying Polly AVX build files...${c0}\n" &&
-	cp -r -v Regular/build.gn $HOME/chromium/src/build/config/compiler/ &&
+	cp -r -v Regular/BUILD.gn $HOME/chromium/src/build/config/compiler/ &&
 	printf "\n"
 }
 
@@ -43,7 +43,7 @@ esac
 copyAVX2 () {
 	printf "\n" &&
 	printf "${YEL}Copying Polly AVX2 build files...${c0}\n" &&
-	cp -r -v AVX2/build.gn $HOME/chromium/src/build/config/compiler/ &&
+	cp -r -v AVX2/BUILD.gn $HOME/chromium/src/build/config/compiler/ &&
 	printf "\n"
 }
 
@@ -55,7 +55,7 @@ esac
 copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying Polly SSE3 build files...${c0}\n" &&
-	cp -r -v SSE3/build.gn $HOME/chromium/src/build/config/compiler/ &&
+	cp -r -v SSE3/BUILD.gn $HOME/chromium/src/build/config/compiler/ &&
 	printf "\n"
 }
 
