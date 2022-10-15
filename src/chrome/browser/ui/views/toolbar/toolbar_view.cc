@@ -95,6 +95,7 @@
 #include "ui/base/metadata/metadata_impl_macros.h"
 #include "ui/base/theme_provider.h"
 #include "ui/base/window_open_disposition.h"
+#include "ui/base/window_open_disposition_utils.h"
 #include "ui/color/color_id.h"
 #include "ui/color/color_provider.h"
 #include "ui/compositor/layer.h"
@@ -530,9 +531,9 @@ void ToolbarView::ShowBookmarkBubble(
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
   delegate = std::make_unique<BookmarkBubbleSignInDelegate>(profile);
 #endif
-  BookmarkBubbleView::ShowBubble(anchor_view, bookmark_star_icon, observer,
-                                 std::move(delegate), profile, url,
-                                 already_bookmarked);
+  BookmarkBubbleView::ShowBubble(
+      anchor_view, GetWebContents(), bookmark_star_icon, observer,
+      std::move(delegate), profile, url, already_bookmarked);
 }
 
 ExtensionsToolbarButton* ToolbarView::GetExtensionsButton() const {
