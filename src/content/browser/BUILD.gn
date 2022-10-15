@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2022 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -38,6 +38,7 @@ source_set("browser") {
     ":for_content_tests",  # See top of //content/BUILD.gn for why.
     "//content/app:*",
     "//content/public/browser:browser_sources",
+    "//content/test/fuzzer:attribution_source_fuzzer",
     "//content/test/fuzzer:browser_accessibility_fuzzer",
     "//content/test/fuzzer:clipboard_host_mojolpm_fuzzer",
     "//content/test/fuzzer:first_party_set_parser_fuzzer_support",
@@ -119,6 +120,7 @@ source_set("browser") {
     "//content/browser/aggregation_service:mojo_bindings",
     "//content/browser/aggregation_service/proto:aggregatable_report_proto",
     "//content/browser/attribution_reporting:attribution_reporting_proto",
+    "//content/browser/attribution_reporting:internals_mojo_bindings",
     "//content/browser/attribution_reporting:mojo_bindings",
     "//content/browser/background_fetch:background_fetch_proto",
     "//content/browser/background_sync:background_sync_proto",
@@ -370,6 +372,7 @@ source_set("browser") {
     "accessibility/render_accessibility_host.h",
     "accessibility/touch_passthrough_manager.cc",
     "accessibility/touch_passthrough_manager.h",
+    "accessibility/web_ax_platform_tree_manager_delegate.h",
     "accessibility/web_contents_accessibility.h",
     "after_startup_task_utils.cc",
     "after_startup_task_utils.h",
@@ -417,6 +420,7 @@ source_set("browser") {
     "attribution_reporting/attribution_aggregatable_values.h",
     "attribution_reporting/attribution_aggregation_keys.cc",
     "attribution_reporting/attribution_aggregation_keys.h",
+    "attribution_reporting/attribution_config.cc",
     "attribution_reporting/attribution_cookie_checker.h",
     "attribution_reporting/attribution_cookie_checker_impl.cc",
     "attribution_reporting/attribution_cookie_checker_impl.h",
@@ -452,12 +456,11 @@ source_set("browser") {
     "attribution_reporting/attribution_report_network_sender.cc",
     "attribution_reporting/attribution_report_network_sender.h",
     "attribution_reporting/attribution_report_sender.h",
-    "attribution_reporting/attribution_reporting.cc",
-    "attribution_reporting/attribution_reporting_constants.h",
     "attribution_reporting/attribution_source_type.cc",
     "attribution_reporting/attribution_source_type.h",
     "attribution_reporting/attribution_storage.cc",
     "attribution_reporting/attribution_storage.h",
+    "attribution_reporting/attribution_storage_delegate.cc",
     "attribution_reporting/attribution_storage_delegate.h",
     "attribution_reporting/attribution_storage_delegate_impl.cc",
     "attribution_reporting/attribution_storage_delegate_impl.h",
@@ -713,8 +716,6 @@ source_set("browser") {
     "code_cache/simple_lru_cache.h",
     "compositor/surface_utils.cc",
     "compositor/surface_utils.h",
-    "compute_pressure/pressure_quantizer.cc",
-    "compute_pressure/pressure_quantizer.h",
     "compute_pressure/pressure_service_impl.cc",
     "compute_pressure/pressure_service_impl.h",
     "contacts/contacts_manager_impl.cc",
@@ -1116,6 +1117,8 @@ source_set("browser") {
     "interest_group/debuggable_auction_worklet_tracker.h",
     "interest_group/interest_group_auction.cc",
     "interest_group/interest_group_auction.h",
+    "interest_group/interest_group_auction_reporter.cc",
+    "interest_group/interest_group_auction_reporter.h",
     "interest_group/interest_group_k_anonymity_manager.cc",
     "interest_group/interest_group_k_anonymity_manager.h",
     "interest_group/interest_group_manager_impl.cc",
@@ -1311,17 +1314,17 @@ source_set("browser") {
     "navigation_or_document_handle.h",
     "navigation_subresource_loader_params.cc",
     "navigation_subresource_loader_params.h",
-    "net/browser_online_state_observer.cc",
-    "net/browser_online_state_observer.h",
-    "net/cookie_store_factory.cc",
-    "net/network_errors_listing_ui.cc",
-    "net/network_errors_listing_ui.h",
-    "net/network_quality_observer_impl.cc",
-    "net/network_quality_observer_impl.h",
-    "net/reporting_service_proxy.cc",
-    "net/reporting_service_proxy.h",
-    "net/socket_broker_impl.cc",
-    "net/socket_broker_impl.h",
+    "network/browser_online_state_observer.cc",
+    "network/browser_online_state_observer.h",
+    "network/cookie_store_factory.cc",
+    "network/network_errors_listing_ui.cc",
+    "network/network_errors_listing_ui.h",
+    "network/network_quality_observer_impl.cc",
+    "network/network_quality_observer_impl.h",
+    "network/reporting_service_proxy.cc",
+    "network/reporting_service_proxy.h",
+    "network/socket_broker_impl.cc",
+    "network/socket_broker_impl.h",
     "network_context_client_base_impl.cc",
     "network_context_client_base_impl.h",
     "network_sandbox_grant_result.h",
@@ -1352,6 +1355,10 @@ source_set("browser") {
     "notifications/platform_notification_service_proxy.h",
     "origin_agent_cluster_isolation_state.cc",
     "origin_agent_cluster_isolation_state.h",
+    "origin_trials/critical_origin_trials_throttle.cc",
+    "origin_trials/critical_origin_trials_throttle.h",
+    "origin_trials/origin_trials_utils.cc",
+    "origin_trials/origin_trials_utils.h",
     "payments/installed_payment_apps_finder_impl.cc",
     "payments/installed_payment_apps_finder_impl.h",
     "payments/payment_app_context_impl.cc",
@@ -1383,12 +1390,12 @@ source_set("browser") {
     "permissions/permission_service_impl.h",
 
     # TODO(crbug.com/1327384): Remove `permission_util.*`.
-    "net/cross_origin_embedder_policy_reporter.cc",
-    "net/cross_origin_embedder_policy_reporter.h",
-    "net/cross_origin_opener_policy_reporter.cc",
-    "net/cross_origin_opener_policy_reporter.h",
-    "net/http_cache_backend_file_operations_factory.cc",
-    "net/http_cache_backend_file_operations_factory.h",
+    "network/cross_origin_embedder_policy_reporter.cc",
+    "network/cross_origin_embedder_policy_reporter.h",
+    "network/cross_origin_opener_policy_reporter.cc",
+    "network/cross_origin_opener_policy_reporter.h",
+    "network/http_cache_backend_file_operations_factory.cc",
+    "network/http_cache_backend_file_operations_factory.h",
     "permissions/permission_util.cc",
     "permissions/permission_util.h",
     "picture_in_picture/document_picture_in_picture_window_controller_impl.cc",
@@ -1738,6 +1745,7 @@ source_set("browser") {
     "renderer_host/navigation_controller_delegate.h",
     "renderer_host/navigation_controller_impl.cc",
     "renderer_host/navigation_controller_impl.h",
+    "renderer_host/navigation_discard_reason.h",
     "renderer_host/navigation_entry_impl.cc",
     "renderer_host/navigation_entry_impl.h",
     "renderer_host/navigation_entry_restore_context_impl.cc",
@@ -2390,10 +2398,6 @@ source_set("browser") {
 
   if (is_win) {
     sources += [
-      "accessibility/accessibility_tree_formatter_uia_win.cc",
-      "accessibility/accessibility_tree_formatter_uia_win.h",
-      "accessibility/accessibility_tree_formatter_win.cc",
-      "accessibility/accessibility_tree_formatter_win.h",
       "accessibility/browser_accessibility_com_win.cc",
       "accessibility/browser_accessibility_com_win.h",
       "accessibility/browser_accessibility_manager_win.cc",
@@ -2405,8 +2409,8 @@ source_set("browser") {
       "media/key_system_support_win.cc",
       "media/key_system_support_win.h",
       "memory/swap_metrics_driver_impl_win.cc",
-      "net/network_service_process_tracker_win.cc",
-      "net/network_service_process_tracker_win.h",
+      "network/network_service_process_tracker_win.cc",
+      "network/network_service_process_tracker_win.h",
       "renderer_host/direct_manipulation_event_handler_win.cc",
       "renderer_host/direct_manipulation_event_handler_win.h",
       "renderer_host/direct_manipulation_helper_win.cc",
@@ -2497,8 +2501,7 @@ source_set("browser") {
   }
 
   if (is_chromeos_ash) {
-    sources +=
-        [ "screenlock_monitor/screenlock_monitor_device_source_chromeos.cc" ]
+    sources += [ "screenlock_monitor/screenlock_monitor_device_source_ash.cc" ]
   }
 
   if (is_linux) {
@@ -3275,6 +3278,7 @@ source_set("browser") {
     sources += [
       "accessibility/browser_accessibility_state_impl_lacros.cc",
       "accessibility/browser_accessibility_state_impl_lacros.h",
+      "screenlock_monitor/screenlock_monitor_device_source_lacros.cc",
     ]
   }
 }
