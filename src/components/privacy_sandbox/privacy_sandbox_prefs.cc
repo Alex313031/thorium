@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031.
+// Copyright 2022 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -57,6 +57,9 @@ extern const char kPrivacySandboxDisabledInsufficientConfirmation[] =
 extern const char kPrivacySandboxFirstPartySetsDataAccessAllowedInitialized[] =
     "privacy_sandbox.first_party_sets_data_access_allowed_initialized";
 
+extern const char kPrivacySandboxFirstPartySetsEnabled[] =
+    "privacy_sandbox.first_party_sets_enabled";
+
 }  // namespace prefs
 
 namespace privacy_sandbox {
@@ -93,6 +96,9 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
       prefs::kPrivacySandboxDisabledInsufficientConfirmation, false);
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxFirstPartySetsDataAccessAllowedInitialized, false);
+  registry->RegisterBooleanPref(
+      prefs::kPrivacySandboxFirstPartySetsEnabled, true,
+      user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
 }
 
 }  // namespace privacy_sandbox
