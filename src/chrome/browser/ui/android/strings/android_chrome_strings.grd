@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Copyright (c) 2022 Alex313031. -->
 <!-- android_chrome_strings.grd contains strings for Thorium for Android.
 
 FAQ:
@@ -746,6 +746,12 @@ CHAR_LIMIT guidelines:
       </message>
       <message name="IDS_UPM_ERROR_NOTIFICATION_CONTENTS" translateable="false" desc="The contents of the UI surface shown when the new password manager backend encounters an error, prompting the user to file a bug.">
         The unified password manager was automatically disabled. Please submit an issue via the bug app!
+      </message>
+      <message name="IDS_PASSWORDS_NOT_SECURE_FILLING" desc="The title of the dialog which is shown when the user attempts to enter obfuscated text to a regular text field.">
+        Not secure
+      </message>
+      <message name="IDS_PASSWORDS_NOT_SECURE_FILLING_DETAILS" desc="The message of the dialog which is shown when the user attempts to enter obfuscated text to a regular text field.">
+        To protect your privacy, Thorium will not autofill your password in this field.
       </message>
 
       <!-- Lock Screen Fragment -->
@@ -1690,14 +1696,6 @@ Your Google account may have other forms of browsing history like searches and a
           Discard
         </message>
 
-      <!-- Download later -->
-      <message name="IDS_DOWNLOAD_DATE_TIME_PICKER_NEXT_TEXT" desc="The text for the positive button of the download date time picker dialog.">
-        Next
-      </message>
-      <message name="IDS_DOWNLOAD_LATER_PROMPT_ENABLED_TITLE" desc="A setting text to ask whether to show a dialog about when to download.">
-        Ask when to save files
-      </message>
-
       <!-- Downloads location -->
       <message name="IDS_DOWNLOADS_LOCATION_SELECTOR_TITLE" desc="Title of the preference that allows the user to select which of the folders they would like to make the default location to save their downloads.">
         Download location
@@ -1840,26 +1838,26 @@ Your Google account may have other forms of browsing history like searches and a
         Allow all sites
       </message>
 
-      <!-- Parent approval widget. TODO(crbug.com/1330900): enable translations once strings are finalized. -->
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_TITLE" desc="The title text displayed in the bottom sheet asking a parent to allow or not allow a website."  translateable="false">
+      <!-- Parent approval widget. -->
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_TITLE" desc="The title text displayed in the bottom sheet asking a parent to allow or not allow a website.">
         <ph name="CHILD_NAME">%1$s<ex>Alice</ex></ph> wants you to approve this website:
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_ALL_OF_DOMAIN" desc="The text which tells the parent that all of a particular domain will be allowed if they approve the request."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_ALL_OF_DOMAIN" desc="The text which tells the parent that all of a particular domain will be allowed if they approve the request.">
         All pages of <ph name="DOMAIN">%1$s<ex>netflix.com</ex></ph>
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_APPROVE_BUTTON" desc="The text displayed on the button to approve a website."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_APPROVE_BUTTON" desc="The text displayed on the button to approve a website.">
         Approve
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_DENY_BUTTON" desc="The text displayed on the button to not approve a website."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_DENY_BUTTON" desc="The text displayed on the button to not approve a website.">
         Don’t approve
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_CONTENT_DESCRIPTION" desc="The content description for the bottom sheet allowing a parent to approve or deny a request to view a website."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_CONTENT_DESCRIPTION" desc="The content description for the bottom sheet allowing a parent to approve or deny a request to view a website.">
         Option to approve or not approve a website
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_FULL_HEIGHT" desc="Accessibility string read when the parent website approval bottom sheet is opened at full height."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_FULL_HEIGHT" desc="Accessibility string read when the parent website approval bottom sheet is opened at full height.">
         Option to approve or not approve a website opened at full height
       </message>
-      <message name="IDS_PARENT_WEBSITE_APPROVAL_CLOSED" desc="Accessibility string read when the parent website approval bottom sheet is closed."  translateable="false">
+      <message name="IDS_PARENT_WEBSITE_APPROVAL_CLOSED" desc="Accessibility string read when the parent website approval bottom sheet is closed.">
         Option to approve or not approve a website closed
       </message>
 
@@ -2103,6 +2101,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_HINT_SYNC_AUTH_ERROR" desc="Hint message to resolve sync auth error.">
         Sign in again to start sync
       </message>
+      <message name="IDS_HINT_SYNC_AUTH_ERROR_MODERN" desc="Hint message to resolve sync auth error updated to align with the UPM error message.">
+        Sign back in to start sync
+      </message>
       <message name="IDS_HINT_SYNC_RECOVERABILITY_DEGRADED_FOR_EVERYTHING" desc="Hint message to resolve sync degraded recoverability, for users that have not chosen to encrypt all sync data">
         Make sure you can always access your sync data
       </message>
@@ -2245,20 +2246,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         {FILE_COUNT, plural,
           =1 {1 download pending}
           other {# downloads pending}}
-      </message>
-      <message name="IDS_DOWNLOAD_MESSAGE_MULTIPLE_DOWNLOAD_SCHEDULED" desc="Download message label describing that one or more downloads are scheduled">
-        {FILE_COUNT, plural,
-          =1 {1 download scheduled}
-          other {# downloads scheduled}}
-      </message>
-      <message name="IDS_DOWNLOAD_MESSAGE_DOWNLOAD_SCHEDULED_DESCRIPTION_ON_WIFI" desc="Download message text describing that user can find about their download status from notifications.">
-        Download will start when on Wi-Fi
-      </message>
-      <message name="IDS_DOWNLOAD_MESSAGE_DOWNLOAD_SCHEDULED_DESCRIPTION_ON_DATE" desc="Download message text describing that the download was scheduled to start at a later date.">
-        Download will start on <ph name="date">%1$s<ex>Feb 28 2020</ex></ph>.
-      </message>
-      <message name="IDS_DOWNLOAD_MESSAGE_DOWNLOAD_SCHEDULED_DESCRIPTION_ON_TIME" desc="Download message text describing that the download was scheduled to start at a later time.">
-        Download will start at <ph name="time">%1$s<ex>8:30PM</ex></ph>.
       </message>
 
       <message name="IDS_INCOGNITO_DOWNLOAD_MESSAGE_TITLE" desc="Download title displayed in a prompt message when the user downloads a file in Incognito mode.">
@@ -2419,9 +2406,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_CONTEXTMENU_READ_LATER" desc="Context sensitive menu item for marking a link to be read later. We're also labeling it *New* to draw attention to it when first released. [CHAR_LIMIT=30]">
         Add to reading list <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
       </message>
-      <message name="IDS_CONTEXTMENU_PERFORMANCE_INFO_FAST" desc="This string is shown in the context sensitive menu for links and is shown underneath the link URL. It indicates to the user that the link's target page is fast-loading and responsive. [CHAR_LIMIT=30]">
-        Fast page
-      </message>
       <message name="IDS_CONTEXTMENU_SHARE_HIGHLIGHT" desc="This string is shown in the context menu for resharing the link-to-text.">
         Share highlight
       </message>
@@ -2470,11 +2454,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_APP_BANNER_ADD" desc="A button in an app banner to confirm adding a site to homescreen">
         Add
       </message>
-      <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_IN_PROGRESS" desc="Indicates that the adding of a WebAPK is in progress.">
-        Adding <ph name="WEBAPK_NAME">%1$s<ex>Progressive Web Apps</ex></ph>...
+      <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_IN_PROGRESS" desc="Indicates that the installation of a WebAPK is in progress.">
+        Installing <ph name="WEBAPK_NAME">%1$s<ex>Web App Name</ex></ph>...
       </message>
       <message name="IDS_NOTIFICATION_WEBAPK_INSTALLED" desc="Indicates that a WebAPK has been successfully added to Home screen.">
-        Added to Home screen
+        App installed
       </message>
       <message name="IDS_IPH_PWA_INSTALL_AVAILABLE_TEXT" desc="The in-product-help message for PWAs that can be installed to the device.">
         Install this app
@@ -2739,9 +2723,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_DOWNLOAD_MANAGER_JUST_NOW" desc="Text on a label describing that the associated download event happened just now.">
         Just now
       </message>
-      <message name="IDS_DOWNLOAD_MANAGER_SCHEDULED_LATER" desc="Text on a label describing that the associated download is scheduled to start later.">
-        Scheduled for later
-      </message>
       <message name="IDS_DOWNLOAD_MANAGER_OFFLINE_HOME" desc="The title text on download home indicating that we are in offline mode.">
         Offline Home
       </message>
@@ -2975,7 +2956,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Personalized Signin Promos Strings -->
-      <message name="IDS_SIGNIN_PROMO_CONTINUE_AS" desc="Button to sign into Thorium with the displayed account and without having to reenter a password. ‘John’ is replaced with the user’s given name, or the user’s full name if the given name is not available. Ensure consistency with related OneGoogle sign-in buttons (see e.g. TC ID 5569230012177947065).">
+      <message name="IDS_SYNC_PROMO_CONTINUE_AS" desc="Button to sign into Thorium with the displayed account and without having to reenter a password. ‘John’ is replaced with the user’s given name, or the user’s full name if the given name is not available. Ensure consistency with related OneGoogle sign-in buttons (see e.g. TC ID 5569230012177947065).">
         Continue as <ph name="USER_FULL_NAME">%1$s<ex>John</ex></ph>
       </message>
       <message name="IDS_SIGNIN_PROMO_CHOOSE_ACCOUNT" desc="Button that the user can press if they are not the profile that Thorium found (opposite of 'Continue as Joe Doe').">
@@ -3126,6 +3107,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NTP_MANAGE_FEED" desc="Menu item to manage feed settings from the feed header overflow menu.">
         Manage
       </message>
+      <message name="IDS_CORMORANT_CREATOR_ACTIVITY" desc="Menu item to launch the Cormorant creator activity. This is used only for testing." translateable="false">
+        Creator Profile
+      </message>
       <message name="IDS_FEED_MANAGE_ACTIVITY" desc="Menu item to manage my activity from the feed header overflow menu.">
         Activity
       </message>
@@ -3196,6 +3180,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NTP_FEED_MENU_IPH" desc="In-product help that points at the menu icon for the news feed on Thorium's new tab page. This string instructs the user to open the menu for settings that let them control the content that appears on the feed.">
         Control your stories and activity here
       </message>
+      <message name="IDS_NTP_NEW" desc="Text in a badge indicating a section is new, thereby drawing attention to a new feature. [CHAR_LIMIT=6]">New</message>
       <message name="IDS_ACCESSIBILITY_NTP_FEED_MENU_BUTTON" desc="Content description for the feed header menu button. Please use the branded term for Discover, as listed under Product Names in the Google Glossary Manager (TC ID 1799975766543019278).">
         Options for Discover
       </message>
@@ -3256,9 +3241,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <!-- Explore sites strings -->
       <message name="IDS_EXPLORE_SITES_TITLE" desc="Title of a section showing different categories, each with a number of popular websites">
         Explore
-      </message>
-      <message name="IDS_NTP_EXPLORE_SITES_MORE" desc="Text on a button leading to a complete view of all categories for all popular websites">
-        More categories
       </message>
       <message name="IDS_EXPLORE_SITES_LOADING_FROM_NET" desc="Caption for an indeterminate loading spinner indicating that we are loading the data from the internet">
         Finding the best from the web…
@@ -3552,6 +3534,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_MENU_GROUP_TABS" desc="Menu item for grouping tabs. [CHAR_LIMIT=27]">
         Group tabs
+      </message>
+      <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
+        Select tabs
       </message>
       <message name="IDS_MENU_TRACK_PRICES" desc="Menu item for tracking prices on tabs. [CHAR_LIMIT=27]">
         Track prices
@@ -4069,6 +4054,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_UNDO_BAR_CLOSE_ALL_MESSAGE" desc="Message shown when you can undo a close all tabs action.">
         <ph name="TAB_COUNT">%1$s<ex>3</ex></ph> tabs closed
       </message>
+      <message name="IDS_CONFIRM_DELETE_MESSAGE" desc="Message shown or announced to get confirmation on whether a file should be deleted.">
+        Do you want to delete <ph name="ITEM_TITLE">%1$s<ex>example.pdf</ex></ph>?
+      </message>
       <message name="IDS_DELETE_MESSAGE" desc="Message shown or announced when an item has been deleted. This message is short for a sentence &quot;ITEM_TITLE has been deleted&quot;, not a noun &quot;ITEM_TITLE, which is a deleted item&quot;.">
         Deleted <ph name="ITEM_TITLE">%1$s<ex>YouTube</ex></ph>
       </message>
@@ -4549,18 +4537,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_IPH_IDENTITY_DISC_ACCESSIBILITY_TEXT" desc="The in-product-help accessibility text prompting the user that tapping identity disc will navigate to 'Sync and Google services' settings page.">
         To manage your Google account, tap the "Manage account" button
-      </message>
-      <message name="IDS_IPH_MIC_TOOLBAR_GENERIC_MESSAGE_TEXT" desc="The in-product-help message encouraging to execute a voice search.">
-        Search with your voice
-      </message>
-      <message name="IDS_IPH_MIC_TOOLBAR_GENERIC_MESSAGE_ACCESSIBILITY_TEXT" desc="The in-product-help message encouraging to execute a voice search.">
-        Tap the mic to search with your voice
-      </message>
-      <message name="IDS_IPH_MIC_TOOLBAR_EXAMPLE_QUERY_TEXT" desc="The in-product-help message encouraging to execute a voice search by giving an example command to try.">
-        Try “What’s the weather today?”
-      </message>
-      <message name="IDS_IPH_MIC_TOOLBAR_EXAMPLE_QUERY_ACCESSIBILITY_TEXT" desc="The in-product-help message encouraging to execute a voice search by giving an example command to try.">
-        To check the weather, tap the mic and say “What’s the weather today?”
       </message>
       <message name="IDS_IPH_NTP_WITHOUT_FEED_TEXT" desc="The in-product-help message to open the new tab page with personalized top sites.">
         See your top sites
