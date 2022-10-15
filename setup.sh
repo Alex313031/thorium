@@ -142,7 +142,7 @@ esac
 printf "${GRE}Done!\n" &&
 printf "\n" &&
 
-printf "${YEL}Exporting variables and setting handy aliases.\n" &&
+printf "${YEL}Exporting variables and setting handy aliases...\n" &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
 
