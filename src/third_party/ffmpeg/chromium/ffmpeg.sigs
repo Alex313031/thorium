@@ -1,0 +1,73 @@
+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+//------------------------------------------------
+// Functions from avcodec used in chromium code.
+//------------------------------------------------
+AVCodecContext *avcodec_alloc_context3(const AVCodec *codec);
+void avcodec_free_context(AVCodecContext **avctx);
+AVCodec *avcodec_find_decoder(enum AVCodecID id);
+int av_new_packet(AVPacket *pkt, int size);
+int avcodec_open2(AVCodecContext *avctx, const AVCodec *codec, AVDictionary **options);
+const char *avcodec_get_name(enum AVCodecID id);
+void av_packet_unref(AVPacket *pkt);
+void av_init_packet(AVPacket *pkt);
+void avcodec_flush_buffers(AVCodecContext *avctx);
+void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height);
+uint8_t *av_packet_get_side_data(AVPacket *pkt, enum AVPacketSideDataType type, int *size);
+int av_packet_copy_props(AVPacket *dst, const AVPacket *src);
+const AVCodecDescriptor *avcodec_descriptor_next(const AVCodecDescriptor *prev);
+const AVCodecDescriptor *avcodec_descriptor_get(enum AVCodecID id);
+int avcodec_parameters_to_context(AVCodecContext *codec, const AVCodecParameters *par);
+int avcodec_send_packet(AVCodecContext *avctx, const AVPacket *avpkt);
+int avcodec_receive_frame(AVCodecContext *avctx, AVFrame *frame);
+AVPacket *av_packet_alloc(void);
+void av_packet_free(AVPacket **pkt);
+
+// RDFT functions.
+RDFTContext *av_rdft_init(int nbits, enum RDFTransformType trans);
+void av_rdft_calc(RDFTContext *s, FFTSample *data);
+void av_rdft_end(RDFTContext *s);
+
+
+//------------------------------------------------
+// Functions from avformat used in chromium code.
+//------------------------------------------------
+void avformat_close_input(AVFormatContext **s);
+int avformat_find_stream_info(AVFormatContext *ic, AVDictionary **options);
+int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options);
+int av_read_frame(AVFormatContext *s, AVPacket *pkt);
+int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags);
+AVFormatContext *avformat_alloc_context(void);
+void avformat_free_context(AVFormatContext *s);
+AVIOContext *avio_alloc_context(unsigned char *buffer, int buffer_size, int write_flag, void *opaque, AVIOReadWriteOperation read_packet, AVIOReadWriteOperation write_packet, AVIOSeekOperation seek);
+int avio_close(AVIOContext *s);
+int64_t av_stream_get_first_dts(const AVStream *st);
+uint8_t *av_stream_get_side_data(const AVStream *stream, enum AVPacketSideDataType type, size_t *size);
+
+
+//------------------------------------------------
+// Functions from avutil used in chromium code.
+//------------------------------------------------
+int av_get_bytes_per_sample(enum AVSampleFormat sample_fmt);
+int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq);
+void *av_malloc(size_t size);
+void av_free(void *ptr);
+void av_log_set_level(int level);
+int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags);
+void av_dict_free(AVDictionary **m);
+int av_dict_count(const AVDictionary *m);
+AVDictionaryEntry *av_dict_get(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
+int av_samples_get_buffer_size(int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align);
+int av_image_check_size(unsigned int w, unsigned int h, int log_offset, void *log_ctx);
+AVBufferRef *av_buffer_create(uint8_t *data, int size, AVFreeOperation free, void *opaque, int flags);
+void *av_buffer_get_opaque(const AVBufferRef *buf);
+int av_get_cpu_flags(void);
+void av_force_cpu_flags(int flags);
+void av_max_alloc(size_t max);
+int av_strerror(int errnum, char *errbuf, size_t errbuf_size);
+AVFrame *av_frame_clone(const AVFrame *src);
+void av_frame_unref(AVFrame *frame);
+void av_frame_free(AVFrame **frame);
+AVFrame* av_frame_alloc();

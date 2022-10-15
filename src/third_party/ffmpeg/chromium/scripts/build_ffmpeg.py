@@ -739,9 +739,20 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
         configure_flags['Common'].extend([
             '--arch=x86_64',
         ])
-      if target_os != 'android':
-        configure_flags['Common'].extend(['--enable-lto'])
-      pass
+      else:
+        configure_flags['Common'].extend([
+          '--enable-lto',
+          '--arch=x86_64',
+          '--target-os=linux',
+        ])
+
+        if host_arch != 'x64':
+          configure_flags['Common'].extend([
+            '--enable-cross-compile',
+            '--cross-prefix=/usr/bin/x86_64-linux-gnu-',
+            '--extra-cflags=--target=x86_64-linux-gnu',
+            '--extra-ldflags=--target=x86_64-linux-gnu',
+          ])
     elif target_arch == 'ia32':
       configure_flags['Common'].extend([
           '--arch=i686',
@@ -824,12 +835,16 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
           ])
     elif target_arch == 'arm64':
       if target_os != 'android':
-        configure_flags['Common'].extend([
+        if host_arch != 'arm64':
+          configure_flags['Common'].extend([
             '--enable-cross-compile',
             '--cross-prefix=/usr/bin/aarch64-linux-gnu-',
-            '--target-os=linux',
             '--extra-cflags=--target=aarch64-linux-gnu',
             '--extra-ldflags=--target=aarch64-linux-gnu',
+          ])
+
+        configure_flags['Common'].extend([
+            '--target-os=linux',
             '--sysroot=' + os.path.join(CHROMIUM_ROOT_DIR,
                                         'build/linux/debian_bullseye_arm64-sysroot'),
         ])
