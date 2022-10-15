@@ -6,6 +6,7 @@
 
 #include "base/no_destructor.h"
 #include "base/strings/strcat.h"
+#include "base/command_line.h"
 #include "cc/paint/paint_canvas.h"
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "ui/color/color_id.h"
