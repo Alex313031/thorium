@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2022 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -166,6 +166,8 @@ static_library("content_shell_lib") {
     "common/shell_switches.h",
     "gpu/shell_content_gpu_client.cc",
     "gpu/shell_content_gpu_client.h",
+    "renderer/render_frame_test_helper.cc",
+    "renderer/render_frame_test_helper.h",
     "renderer/shell_content_renderer_client.cc",
     "renderer/shell_content_renderer_client.h",
     "renderer/shell_render_frame_observer.cc",
@@ -490,7 +492,7 @@ repack("pak") {
 if (is_android) {
   group("thorium_shell") {
     testonly = true
-    deps = [ "//content/shell/android:content_shell_apk" ]
+    deps = [ "//content/shell/android:thorium_shell_apk" ]
   }
 } else if (is_mac) {
   tweak_info_plist("content_shell_plist") {
@@ -582,7 +584,7 @@ if (is_android) {
   if (is_fuchsia) {
     fuchsia_component("content_shell_component") {
       testonly = true
-      manifest = "fuchsia/content_shell.cmx"
+      manifest = "fuchsia/content_shell.cml"
       data_deps = [ ":thorium_shell" ]
       visibility = [ ":*" ]
     }
@@ -862,8 +864,12 @@ mojom("content_browsertests_mojom") {
   sources = [
     "common/main_frame_counter_test.mojom",
     "common/power_monitor_test.mojom",
+    "common/render_frame_test_helper.mojom",
   ]
-  public_deps = [ "//sandbox/policy/mojom" ]
+  public_deps = [
+    "//sandbox/policy/mojom",
+    "//third_party/blink/public/mojom/tokens",
+  ]
 }
 
 group("content_shell_crash_test") {
