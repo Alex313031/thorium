@@ -87,5 +87,7 @@ sudo chmod -v +x src/tools/gn/bootstrap/bootstrap.py &&
 
 sudo chmod -v +x src/tools/clang/scripts/build.py &&
 
+sudo chmod -v +x other/Polly/setup_polly.sh &&
+
 printf "${GRE}${bold}Scripts are ready!\n" &&
 tput sgr0
