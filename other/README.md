@@ -1,8 +1,8 @@
-## Compiler configs for AVX2 and SSE4
+## Compiler configs for AVX2 and SSE3
 
 To build for AVX2, copy the `build` directory in the AVX2 folder over `//chromium/src/build`.
 
-For SSE4, do the same except from the SSE4 folder.
+For SSE3, do the same except from the SSE3 folder.
 
 For Polly, run `build_polly.sh` first, and then use the appropriate *BUILD.gn* for your build type from the Polly folder.
 
