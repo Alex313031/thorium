@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2022 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -218,20 +218,6 @@ group("gn_all") {
     ]
   }
 
-  if (is_win || is_linux || is_android) {
-    deps += [
-      "//weblayer/shell:weblayer_shell",
-      "//weblayer/test:weblayer_browsertests",
-      "//weblayer/test:weblayer_unittests",
-    ]
-    if (is_android) {
-      deps += [
-        "//weblayer/browser/android/javatests:weblayer_instrumentation_test_apk",
-        "//weblayer/browser/java:weblayer_junit_tests",
-      ]
-    }
-  }
-
   if (!is_ios && !is_android) {
     deps += [
       "//components/cronet:cronet_tests",
@@ -388,9 +374,6 @@ group("gn_all") {
       "//tools/android/customtabs_benchmark:customtabs_benchmark_apk",
       "//tools/android/kerberos/SpnegoAuthenticator:spnego_authenticator_apk",
       "//ui/android:ui_junit_tests",
-      "//weblayer/public/java:client_aar",
-      "//weblayer/shell/android:weblayer_shell_apk",
-      "//weblayer/shell/android:weblayer_support_apk",
     ]
     deps -= [
       "//net:net_perftests",
@@ -465,13 +448,13 @@ group("gn_all") {
     deps += [
       "//ash:ash_unittests",
       "//ash/components:ash_components_unittests",
-      "//ash/components/proximity_auth:proximity_auth_unittests",
       "//ash/keyboard/ui:keyboard_unittests",
       "//ash/webui:ash_webui_unittests",
       "//chrome/browser/metrics/perf:profile_provider_unittest",
       "//chrome/test:ash_crosapi_browsertests",
       "//chrome/test:ash_crosapi_tests",
       "//chrome/test:usage_time_limit_unittests",
+      "//chromeos/ash/components/proximity_auth:proximity_auth_unittests",
       "//chromeos/components:chromeos_components_unittests",
       "//components/exo/wayland:wayland_client_compatibility_tests",
       "//components/session_manager/core",
@@ -906,7 +889,7 @@ if (enable_remoting && ((is_linux && ozone_platform_x11) ||
       "//chrome:chrome",
       "//remoting/client",
       "//remoting/host:host",
-      "//tools/traffic_annotation/summary:annotations_xml",
+      "//tools/traffic_annotation:annotations_xml",
     ]
 
     if (is_win) {
@@ -920,7 +903,7 @@ if (is_chromeos_ash) {
     deps = [
       "//chrome",
       "//chromeos",
-      "//tools/traffic_annotation/summary:annotations_xml",
+      "//tools/traffic_annotation:annotations_xml",
     ]
   }
 }
@@ -931,7 +914,7 @@ if (is_android) {
   group("traffic_annotation_auditor_dependencies") {
     deps = [
       "//chrome/android:chrome_public_apk",
-      "//tools/traffic_annotation/summary:annotations_xml",
+      "//tools/traffic_annotation:annotations_xml",
     ]
   }
 }
@@ -1157,6 +1140,7 @@ if (!is_ios) {
     }
     script_test("wpt_tests_isolate") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
+      args = [ "--product=chrome" ]
       data_deps = [
         "//chrome:chrome",
         "//chrome/test/chromedriver",
@@ -1165,7 +1149,6 @@ if (!is_ios) {
     }
     script_test("wpt_tests_isolate_content_shell") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [ "--product=thorium_shell" ]
       data_deps = [
         ":blink_web_tests_support_data",
         "//third_party/blink/tools:wpt_tests_isolate",
@@ -1456,6 +1439,7 @@ if (!is_ios) {
         "//third_party/blink/web_tests/FlagSpecificConfig",
         "//third_party/blink/web_tests/FlagExpectations/",
         "//third_party/blink/web_tests/flag-specific/",
+        "//third_party/blink/web_tests/SmokeTests/",
       ]
     }
   }
@@ -1521,6 +1505,7 @@ if (!is_ios) {
         "//third_party/blink/web_tests/FlagSpecificConfig",
         "//third_party/blink/web_tests/FlagExpectations/",
         "//third_party/blink/web_tests/flag-specific/",
+        "//third_party/blink/web_tests/SmokeTests/",
       ]
     }
   }
@@ -1613,6 +1598,7 @@ if (!is_ios) {
       "//build/skia_gold_common/",
       "//components/crash/content/tools/generate_breakpad_symbols.py",
       "//testing/unexpected_passes_common/",
+      "//testing/flake_suppressor_common/",
       "//third_party/blink/renderer/bindings/scripts/",
       "//third_party/blink/renderer/build/scripts/",
       "//third_party/blink/tools/",
