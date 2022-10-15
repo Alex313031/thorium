@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2022 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -301,6 +301,30 @@ void URLRequestHttpJob::Start() {
 void URLRequestHttpJob::OnGotFirstPartySetMetadata(
     FirstPartySetMetadata first_party_set_metadata) {
   first_party_set_metadata_ = std::move(first_party_set_metadata);
+
+  if (!request()->network_delegate()) {
+    OnGotFirstPartySetCacheFilterMatchInfo(
+        net::FirstPartySetsCacheFilter::MatchInfo());
+    return;
+  }
+  absl::optional<FirstPartySetsCacheFilter::MatchInfo> match_info =
+      request()
+          ->network_delegate()
+          ->GetFirstPartySetsCacheFilterMatchInfoMaybeAsync(
+              SchemefulSite(request()->url()),
+              base::BindOnce(
+                  &URLRequestHttpJob::OnGotFirstPartySetCacheFilterMatchInfo,
+                  weak_factory_.GetWeakPtr()));
+
+  if (match_info.has_value())
+    OnGotFirstPartySetCacheFilterMatchInfo(std::move(match_info.value()));
+}
+
+void URLRequestHttpJob::OnGotFirstPartySetCacheFilterMatchInfo(
+    FirstPartySetsCacheFilter::MatchInfo match_info) {
+  request_info_.fps_cache_filter = match_info.clear_at_run_id;
+  request_info_.browser_run_id = match_info.browser_run_id;
+
   // Privacy mode could still be disabled in SetCookieHeaderAndStart if we are
   // going to send previously saved cookies.
   request_info_.privacy_mode = DeterminePrivacyMode();
@@ -316,6 +340,7 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
   // URLRequest::SetReferrer ensures that we do not send username and password
   // fields in the referrer.
   GURL referrer(request_->referrer());
+
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   // Our consumer should have made sure that this is a safe referrer (e.g. via
   // URLRequestJob::ComputeReferrerForPolicy).
@@ -323,9 +348,9 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
     std::string referer_value = referrer.spec();
     request_info_.extra_headers.SetHeader(HttpRequestHeaders::kReferer,
                                           referer_value);
-    }
   }
-  
+  }
+
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
   request_info_.extra_headers.SetHeaderIfMissing(
       HttpRequestHeaders::kUserAgent,
@@ -461,8 +486,8 @@ void URLRequestHttpJob::DestroyTransaction() {
       transaction_->GetTotalReceivedBytes();
   total_sent_bytes_from_previous_transactions_ +=
       transaction_->GetTotalSentBytes();
-  transaction_.reset();
   response_info_ = nullptr;
+  transaction_.reset();
   override_response_headers_ = nullptr;
   receive_headers_end_ = base::TimeTicks();
 }
@@ -551,6 +576,12 @@ void URLRequestHttpJob::StartTransactionInternal() {
       }
     }
 
+    if (rv == OK && request_info_.method == "CONNECT") {
+      // CONNECT has different kinds of targets than other methods (RFC 9110,
+      // section 9.3.6), which are incompatible with URLRequest.
+      rv = ERR_METHOD_NOT_SUPPORTED;
+    }
+
     if (rv == OK) {
       transaction_->SetConnectedCallback(base::BindRepeating(
           &URLRequestHttpJob::NotifyConnectedCallback, base::Unretained(this)));
@@ -587,7 +618,7 @@ void URLRequestHttpJob::StartTransactionInternal() {
 void URLRequestHttpJob::AddExtraHeaders() {
   request_info_.extra_headers.SetAcceptEncodingIfMissing(
       request()->url(), request()->accepted_stream_types(),
-      request()->context()->enable_brotli());
+      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli());
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
     // Only add default Accept-Language if the request didn't have it
@@ -805,7 +836,8 @@ void URLRequestHttpJob::AnnotateAndMoveUserBlockedCookies(
   if (request()->network_delegate()) {
     can_get_cookies =
         request()->network_delegate()->AnnotateAndMoveUserBlockedCookies(
-            *request(), maybe_included_cookies, excluded_cookies);
+            *request(), first_party_set_metadata_, maybe_included_cookies,
+            excluded_cookies);
   }
 
   if (!can_get_cookies) {
@@ -885,7 +917,7 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
     CookieInclusionStatus returned_status;
 
     num_cookie_lines_left_++;
-    
+
     // `cookie_partition_key_` is only non-null when partitioned cookie are
     // enabled.
     if (cookie_partition_key_ && ParsedCookie(cookie_string).IsPartitioned()) {
@@ -1005,7 +1037,7 @@ void URLRequestHttpJob::ProcessExpectCTHeader() {
   if (has_expect_ct_header) {
     security_state->ProcessExpectCTHeader(
         value, HostPortPair::FromURL(request_info_.url), ssl_info,
-        request_->isolation_info().network_isolation_key());
+        request_->isolation_info().network_anonymization_key());
   }
 }
 
@@ -1084,7 +1116,6 @@ void URLRequestHttpJob::OnStartCompleted(int result) {
   } else if (result == ERR_DNS_NAME_HTTPS_ONLY) {
     // If DNS indicated the name is HTTPS-only, synthesize a redirect to either
     // HTTPS or WSS.
-    DCHECK(features::kUseDnsHttpsSvcbHttpUpgrade.Get());
     DCHECK(!request_->url().SchemeIsCryptographic());
 
     base::Time request_time =
