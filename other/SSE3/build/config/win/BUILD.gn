@@ -133,8 +133,8 @@ config("compiler") {
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
         "/O3",
-        "-msse4",
-        "/clang:-msse4",
+        "-msse3",
+        "/clang:-msse3",
         "/clang:-O3",
         "-Xclang", "-O3",
         "-Wno-unused-command-line-argument",
