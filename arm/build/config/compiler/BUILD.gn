@@ -106,7 +106,8 @@ declare_args() {
   chromeos_afdo_platform = "atom"
 
   # Emit debug information for profiling wile building with clang.
-  clang_emit_debug_info_for_profiling = false
+  # Only enable this for ChromeOS official builds for AFDO.
+  clang_emit_debug_info_for_profiling = is_chromeos_device && is_official_build
 
   # Turn this on to have the compiler output extra timing information.
   compiler_timing = false
@@ -163,6 +164,10 @@ declare_args() {
   # Enable -H, which prints the include tree during compilation.
   # For use by tools/clang/scripts/analyze_includes.py
   show_includes = false
+
+  # If true, linker crashes will be rerun with `--reproduce` which causes
+  # a reproducer file to be saved.
+  save_reproducers_on_lld_crash = false
 }
 
 declare_args() {
@@ -526,6 +531,12 @@ config("compiler") {
 
   if (is_clang && !is_nacl && current_os != "zos") {
     cflags += [ "-fcrash-diagnostics-dir=" + clang_diagnostic_dir ]
+    if (save_reproducers_on_lld_crash && use_lld) {
+      ldflags += [
+        "-fcrash-diagnostics=all",
+        "-fcrash-diagnostics-dir=" + clang_diagnostic_dir,
+      ]
+    }
 
     # TODO(hans): Remove this once Clang generates better optimized debug info
     # by default. https://crbug.com/765793
@@ -597,21 +608,25 @@ config("compiler") {
       if (is_clang) {
         cflags_cc += [ "-fno-trigraphs" ]
       }
-    } else if (is_linux) {
-      # TODO(crbug.com/1284275): Switch to C++20 on all platforms.
-      if (is_clang) {
-        cflags_cc += [ "-std=${standard_prefix}++20" ]
+    } else if (is_clang) {
+      if (is_chromeos_device) {
+        # TODO(crbug.com/1392471): Support C++20 in CrOS toolchain.
+        cflags_cc += [ "-std=${standard_prefix}++17" ]
       } else {
-        # The gcc bots are currently using GCC 9, which is not new enough to
-        # support "c++20"/"gnu++20".
-        cflags_cc += [ "-std=${standard_prefix}++2a" ]
+        cflags_cc += [ "-std=${standard_prefix}++20" ]
       }
     } else {
-      cflags_cc += [ "-std=${standard_prefix}++17" ]
+      # The gcc bots are currently using GCC 9, which is not new enough to
+      # support "c++20"/"gnu++20".
+      cflags_cc += [ "-std=${standard_prefix}++2a" ]
     }
   } else if (is_win) {
     cflags_c += [ "/std:c11" ]
-    cflags_cc += [ "/std:c++17" ]
+    if (!is_clang && defined(msvc_use_cxx17) && msvc_use_cxx17) {
+      cflags_cc += [ "/std:c++17" ]
+    } else {
+      cflags_cc += [ "/std:c++20" ]
+    }
   } else if (!is_nacl) {
     # TODO(mcgrathr) - the NaCl GCC toolchain doesn't support either
     # gnu11/gnu++11 or c11/c++11; we technically don't need this toolchain any
@@ -619,11 +634,13 @@ config("compiler") {
     # turned off we need the !is_nacl clause and the (is_nacl && is_clang)
     # clause, above.
     cflags_c += [ "-std=c11" ]
-    if (is_apple) {
-      # TODO(crbug.com/1284275): Switch to C++20 on all platforms.
-      cflags_cc += [ "-std=c++20" ]
-    } else {
+
+    if (is_fuchsia) {
+      # TODO(crbug.com/fuchsia/108751): The FIDL compiler generates code that
+      # will not compile in C++20 mode. Switch to C++20 when this is resolved.
       cflags_cc += [ "-std=c++17" ]
+    } else {
+      cflags_cc += [ "-std=c++20" ]
     }
   }
 
@@ -682,10 +699,14 @@ config("compiler") {
       # of "all" which means number of hardware threads) is faster.
       ldflags += [ "-Wl,--thinlto-jobs=all" ]
       if (is_apple) {
+        _object_path_suffix = ""
+        if (is_ios) {
+          _object_path_suffix = ",persist"
+        }
         ldflags += [
           "-Wl,-cache_path_lto," +
               rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
-          "-Wcrl,object_path_lto",
+          "-Wcrl,object_path_lto" + _object_path_suffix,
         ]
       } else {
         ldflags +=
@@ -756,7 +777,7 @@ config("compiler") {
     ldflags += [ "-Wl,--no-rosegment" ]
   }
 
-  # TODO(crbug.com/1374347): Cleanup undefined symbol errors caught by 
+  # TODO(crbug.com/1374347): Cleanup undefined symbol errors caught by
   # --no-undefined-version.
   if (use_lld && !is_win && !is_mac && !is_ios) {
     ldflags += [ "-Wl,--undefined-version" ]
@@ -796,6 +817,17 @@ config("compiler") {
   if (is_clang && !is_nacl && target_os != "chromeos" &&
       (is_win || use_custom_libcxx)) {
     cflags += [ "-fcomplete-member-pointers" ]
+  }
+
+  # Use DWARF simple template names, with the following exceptions:
+  #
+  # * Windows is not supported as it doesn't use DWARF.
+  # * Apple platforms (e.g. MacOS, iPhone, iPad) aren't supported because xcode
+  #   lldb doesn't have the needed changes yet.
+  # * Fuchsia isn't supported as zxdb doesn't support simple template names yet.
+  # TODO(crbug.com/1379070): Remove if the upstream default ever changes.
+  if (is_clang && !is_nacl && !is_win && !is_apple && !is_fuchsia) {
+    cflags_cc += [ "-gsimple-template-names" ]
   }
 
   # MLGO specific flags. These flags enable an ML-based inliner trained on
@@ -916,7 +948,7 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = []
+  cflags = [ "-O3", ]
   ldflags = []
   defines = []
 
@@ -943,6 +975,11 @@ config("compiler_cpu_abi") {
           "-msse3",
         ]
       }
+    } else if (target_cpu == "arm64") {
+      if (!is_android && !is_nacl) {
+        cflags += [ "-O3", "-Wno-unused-command-line-argument", ]
+        ldflags += [ "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+      }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
           !(is_chromeos_lacros && is_chromeos_device)) {
@@ -965,8 +1002,7 @@ config("compiler_cpu_abi") {
         ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
       }
       if (is_android) {
-        # Outline atomics crash on Exynos 9810. http://crbug.com/1272795
-        cflags += [ "-mno-outline-atomics", "-O3", ]
+        cflags += [ "-O3", ]
         ldflags += [ "-Wl,-O3", ]
       }
     } else if (current_cpu == "mipsel" && !is_nacl) {
@@ -2008,11 +2044,12 @@ if (is_win) {
   if (is_official_build) {
     common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
+    common_optimize_on_cflags += []
   }
 } else {
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
-  
+
   common_optimize_on_cflags += [
     "-O3",
   ]
@@ -2382,7 +2419,8 @@ config("symbols") {
       cflags += [ "-fno-standalone-debug" ]
     }
 
-    if (!is_nacl) {
+    # On aix -gdwarf causes linker failures due to thread_local variables.
+    if (!is_nacl && current_os != "aix") {
       if (use_dwarf5) {
         cflags += [ "-gdwarf-5" ]
       } else if (!is_apple) {
@@ -2410,9 +2448,6 @@ config("symbols") {
       # It is skipped in tsan and asan because enabling it causes some
       # formatting changes in the output which would require fixing bunches
       # of expectation regexps.
-      #
-      # It is skipped when generating bitcode is enabled as -gdwars-aranges
-      # is incompatible with -fembed-bitcode/-fembed-bitcode-marker.
       cflags += [ "-gdwarf-aranges" ]
     }
 
@@ -2515,7 +2550,8 @@ config("minimal_symbols") {
       # at least 10.11.
       # TODO(thakis): Remove this once mac_deployment_target is 10.11.
       cflags += [ "-gdwarf-4" ]
-    } else if (!use_dwarf5 && !is_nacl) {
+    } else if (!use_dwarf5 && !is_nacl && current_os != "aix") {
+      # On aix -gdwarf causes linker failures due to thread_local variables.
       # Recent clang versions default to DWARF5 on Linux, and Android is about
       # to switch. TODO: Adopt that in controlled way.
       cflags += [ "-gdwarf-4" ]
