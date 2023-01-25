@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -25,6 +25,7 @@
 #include "base/metrics/user_metrics.h"
 #include "base/ranges/algorithm.h"
 #include "base/strings/string_number_conversions.h"
+#include "base/task/sequenced_task_runner.h"
 #include "base/task/single_thread_task_runner.h"
 #include "base/threading/thread_task_runner_handle.h"
 #include "base/trace_event/trace_event.h"
@@ -154,7 +155,6 @@
 #include "chrome/browser/ui/views/theme_copying_widget.h"
 #include "chrome/browser/ui/views/toolbar/browser_app_menu_button.h"
 #include "chrome/browser/ui/views/toolbar/reload_button.h"
-#include "chrome/browser/ui/views/toolbar/toolbar_account_icon_container_view.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_view.h"
 #include "chrome/browser/ui/views/translate/translate_bubble_controller.h"
 #include "chrome/browser/ui/views/translate/translate_bubble_view.h"
@@ -500,6 +500,34 @@ void GetAnyTabAudioStates(const Browser* browser,
     }
   }
 }
+#endif  // BUILDFLAG(IS_MAC)
+
+#if BUILDFLAG(IS_MAC)
+// OverlayWidget is a child Widget of BrowserFrame used during immersive
+// fullscreen on macOS that hosts the top container. Its native Window and View
+// interface with macOS fullscreen APIs allowing separation of the top container
+// and web contents.
+// Currently the only explicit reason for OverlayWidget to be its own subclass
+// is to support GetAccelerator() forwarding.
+class OverlayWidget : public ThemeCopyingWidget {
+ public:
+  explicit OverlayWidget(views::Widget* role_model)
+      : ThemeCopyingWidget(role_model) {}
+
+  OverlayWidget(const OverlayWidget&) = delete;
+  OverlayWidget& operator=(const OverlayWidget&) = delete;
+
+  ~OverlayWidget() override = default;
+
+  // OverlayWidget hosts the top container. Views within the top container look
+  // up accelerators by asking their hosting Widget. In non-immersive fullscreen
+  // that would be the BrowserFrame. Give top chrome what it expects and forward
+  // GetAccelerator() calls to OverlayWidget's parent (BrowserFrame).
+  bool GetAccelerator(int cmd_id, ui::Accelerator* accelerator) const override {
+    DCHECK(parent());
+    return parent()->GetAccelerator(cmd_id, accelerator);
+  }
+};
 #endif  // BUILDFLAG(IS_MAC)
 
 }  // namespace
@@ -1020,6 +1048,12 @@ BrowserView::~BrowserView() {
   // this observer before those children are removed.
   side_panel_button_highlighter_.reset();
   side_panel_visibility_controller_.reset();
+
+// Delete lens side panel controller before deleting the child views.
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+  if (lens_side_panel_controller_)
+    lens_side_panel_controller_.reset();
+#endif
 
   // Child views maintain PrefMember attributes that point to
   // OffTheRecordProfile's PrefService which gets deleted by ~Browser.
@@ -1659,7 +1693,7 @@ void BrowserView::OnTabDetached(content::WebContents* contents,
   if (!was_active)
     return;
 
-  // This is to unsubscribe the window-placement permission subscriber.
+  // This is to unsubscribe the Window Management permission subscriber.
   if (window_management_subscription_id_) {
     contents->GetPrimaryMainFrame()
         ->GetBrowserContext()
@@ -2189,7 +2223,7 @@ void BrowserView::UpdateBorderlessModeEnabled() {
             ->GetBrowserContext()
             ->GetPermissionController()
             ->GetPermissionResultForOriginWithoutContext(
-                blink::PermissionType::WINDOW_PLACEMENT, url)
+                blink::PermissionType::WINDOW_MANAGEMENT, url)
             .status;
 
     window_management_permission_granted_ =
@@ -2231,14 +2265,14 @@ void BrowserView::SetWindowManagementPermissionSubscriptionForBorderlessMode(
   UpdateWindowManagementPermission(
       controller
           ->GetPermissionResultForOriginWithoutContext(
-              blink::PermissionType::WINDOW_PLACEMENT, url)
+              blink::PermissionType::WINDOW_MANAGEMENT, url)
           .status);
 
   // It is safe to bind base::Unretained(this) because WebContents is
   // owned by BrowserView.
   window_management_subscription_id_ =
       controller->SubscribePermissionStatusChange(
-          blink::PermissionType::WINDOW_PLACEMENT, rfh->GetProcess(), url,
+          blink::PermissionType::WINDOW_MANAGEMENT, rfh->GetProcess(), url,
           base::BindRepeating(&BrowserView::UpdateWindowManagementPermission,
                               base::Unretained(this)));
 }
@@ -2386,13 +2420,6 @@ bool BrowserView::ActivateFirstInactiveBubbleForAccessibility() {
         return true;
       }
     }
-  }
-
-  if (toolbar_ && toolbar_->toolbar_account_icon_container() &&
-      toolbar_->toolbar_account_icon_container()
-          ->page_action_icon_controller()
-          ->ActivateFirstInactiveBubbleForAccessibility()) {
-    return true;
   }
 
   return false;
@@ -3469,12 +3496,19 @@ views::View* BrowserView::CreateMacOverlayView() {
   params.type = views::Widget::InitParams::TYPE_POPUP;
   params.child = true;
   params.parent = GetWidget()->GetNativeView();
-  overlay_widget_ = new ThemeCopyingWidget(GetWidget());
+  overlay_widget_ = new OverlayWidget(GetWidget());
   overlay_widget_->Init(std::move(params));
   overlay_widget_->SetNativeWindowProperty(kBrowserViewKey, this);
 
+  // Create a new TopContainerOverlayView. The tab strip, omnibox, bookmarks
+  // etc. will be contained within this view. Right clicking on the blank space
+  // that is not taken up by the child views should show the context menu. Set
+  // the BrowserFrame as the context menu controller to handle displaying the
+  // top container context menu.
   std::unique_ptr<TopContainerOverlayView> overlay_view =
       std::make_unique<TopContainerOverlayView>(weak_ptr_factory_.GetWeakPtr());
+  overlay_view->set_context_menu_controller(frame());
+
   overlay_view_targeter_ = std::make_unique<OverlayViewTargeterDelegate>();
   overlay_view->SetEventTargeter(
       std::make_unique<views::ViewTargeter>(overlay_view_targeter_.get()));
@@ -3763,6 +3797,15 @@ views::CloseRequestResult BrowserView::OnWindowCloseRequested() {
 }
 
 int BrowserView::NonClientHitTest(const gfx::Point& point) {
+#if BUILDFLAG(IS_MAC)
+  // The top container while in immersive fullscreen on macOS lives in another
+  // Widget (OverlayWidget). This means that BrowserView does not need to
+  // consult BrowserViewLayout::NonClientHitTest() to calculate the hit test.
+  if (IsImmersiveModeEnabled()) {
+    return views::ClientView::NonClientHitTest(point);
+  }
+#endif  // BUILDFLAG(IS_MAC)
+
   return GetBrowserViewLayout()->NonClientHitTest(point);
 }
 
@@ -3933,7 +3976,7 @@ void BrowserView::AddedToWidget() {
   MaybeShowWebUITabStripIPH();
 
   // Want to show this promo, but not right at startup.
-  base::SequencedTaskRunnerHandle::Get()->PostDelayedTask(
+  base::SequencedTaskRunner::GetCurrentDefault()->PostDelayedTask(
       FROM_HERE,
       base::BindOnce(&BrowserView::MaybeShowReadingListInSidePanelIPH,
                      GetAsWeakPtr()),
@@ -4331,13 +4374,6 @@ void BrowserView::ProcessFullscreen(bool fullscreen,
   // asynchronous transition so we synchronously invoke the function.
   FullscreenStateChanged();
 #endif
-
-  if (fullscreen && !chrome::IsRunningInAppMode()) {
-    UpdateExclusiveAccessExitBubbleContent(
-        url, bubble_type, ExclusiveAccessBubbleHideCallback(),
-        /*notify_download=*/false,
-        /*force_update=*/display_id != display::kInvalidDisplayId);
-  }
 
   // Undo our anti-jankiness hacks and force a re-layout.
   in_process_fullscreen_ = false;
