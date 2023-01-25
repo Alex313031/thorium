@@ -173,6 +173,8 @@ stage_install_common() {
     install -m 755 "${OUTPUTDIR}/thorium_shell" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/lib"
+    install -m 644 "${OUTPUTDIR}/libblink_test_plugin.so" "${STAGEDIR}/${INSTALLDIR}/lib"
+    install -m 644 "${OUTPUTDIR}/ClearKeyCdm/_platform_specific/linux_x64/libclearkeycdm.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 644 "${OUTPUTDIR}/thorium_shell.png" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
     install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
@@ -231,6 +233,16 @@ stage_install_common() {
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -type d -exec chmod 755 '{}' \;
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -type f -exec chmod 644 '{}' \;
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -name libwidevinecdm.so \
+      -exec chmod ${SHLIB_PERMS} '{}' \;
+  fi
+  
+  # ClearKey CDM.
+  if [ -d "${OUTPUTDIR}/ClearKeyCdm" ]; then
+    # No need to strip; libclearkeycdm.so starts out stripped.
+    cp -a "${OUTPUTDIR}/ClearKeyCdm" "${STAGEDIR}/${INSTALLDIR}/"
+    find "${STAGEDIR}/${INSTALLDIR}/ClearKeyCdm" -type d -exec chmod 755 '{}' \;
+    find "${STAGEDIR}/${INSTALLDIR}/ClearKeyCdm" -type f -exec chmod 644 '{}' \;
+    find "${STAGEDIR}/${INSTALLDIR}/ClearKeyCdm" -name libclearkeycdm.so \
       -exec chmod ${SHLIB_PERMS} '{}' \;
   fi
 
