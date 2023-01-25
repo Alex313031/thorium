@@ -198,7 +198,7 @@ bool GetTLSServerEndPointChannelBinding(const X509Certificate& certificate,
     return false;
   }
   absl::optional<SignatureAlgorithm> signature_algorithm =
-      ParseSignatureAlgorithm(signature_algorithm_tlv, nullptr);
+      ParseSignatureAlgorithm(signature_algorithm_tlv);
   if (!signature_algorithm) {
     return false;
   }
@@ -385,8 +385,7 @@ bssl::UniquePtr<CRYPTO_BUFFER> CreateCryptoBuffer(
       CRYPTO_BUFFER_new(data.data(), data.size(), GetBufferPool()));
 }
 
-bssl::UniquePtr<CRYPTO_BUFFER> CreateCryptoBuffer(
-    const base::StringPiece& data) {
+bssl::UniquePtr<CRYPTO_BUFFER> CreateCryptoBuffer(base::StringPiece data) {
   return bssl::UniquePtr<CRYPTO_BUFFER>(
       CRYPTO_BUFFER_new(reinterpret_cast<const uint8_t*>(data.data()),
                         data.size(), GetBufferPool()));
@@ -528,8 +527,7 @@ bool HasRsaPkcs1Sha1Signature(const CRYPTO_BUFFER* cert_buffer) {
   }
 
   absl::optional<SignatureAlgorithm> signature_algorithm =
-      ParseSignatureAlgorithm(signature_algorithm_tlv,
-                              /*errors=*/nullptr);
+      ParseSignatureAlgorithm(signature_algorithm_tlv);
 
   return signature_algorithm &&
          *signature_algorithm == SignatureAlgorithm::kRsaPkcs1Sha1;
