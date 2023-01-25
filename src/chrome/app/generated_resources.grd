@@ -337,7 +337,7 @@ are declared in tools/grit/grit_rule.gni.
       </if>
 
       <!-- Printing specific strings -->
-      <if expr="enable_basic_printing">
+      <if expr="enable_printing">
         <part file="printing_strings.grdp" />
       </if>
 
@@ -1957,11 +1957,11 @@ are declared in tools/grit/grit_rule.gni.
       </message>
       <message name="IDS_PROMPT_DOWNLOAD_SENSITIVE_CONTENT_WARNING"
         desc="Message shown in the download shelf when a download contains sensitive content, and the admin has chosen to warn the user">
-        <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> has sensitive content
+        Your organization's policies aren't met
       </message>
       <message name="IDS_PROMPT_DOWNLOAD_SENSITIVE_CONTENT_BLOCKED"
         desc="Message shown in the download shelf when a download contains sensitive content, and the admin has chosen to block the file">
-        <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> has sensitive or dangerous content. Ask its owner to fix.
+        Your organization's policies aren't met
       </message>
       <message name="IDS_PROMPT_DOWNLOAD_DEEP_SCANNED_OPENED_DANGEROUS"
         desc="Message shown in the download shelf when a download is finished being scanned, and issues were found">
@@ -2016,10 +2016,10 @@ are declared in tools/grit/grit_rule.gni.
         This file is dangerous
       </message>
       <message name="IDS_BLOCK_REASON_SENSITIVE_CONTENT_WARNING" desc="Message shown to the user on chrome://downloads page to explain this download is showing a warning because it contains sensitive content">
-        This file has sensitive content
+        Your organization's policies aren't met
       </message>
       <message name="IDS_SENSITIVE_CONTENT_BLOCKED_DESCRIPTION" desc="Message shown to the user on chrome://downloads page to explain this download is blocked because it contains sensitive content">
-        This file has sensitive or dangerous content. Ask its owner to fix.
+        Your organization's policies aren't met
       </message>
       <message name="IDS_BLOCKED_TOO_LARGE_DESCRIPTION" desc="Message shown to the user on chrome://downloads page to explain this download is blocked because it is too large for deep scanning">
         This file is too big for a security check. You can open files up to 50 MB.
@@ -4477,8 +4477,8 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_EXTENSION_NO_SPECIAL_PERMISSIONS" desc="Shown when the app/extension requires no special permission">
         Has no special permissions.
       </message>
-      <message name="IDS_EXTENSION_WITHHOLD_PERMISSIONS" desc="Label next to the checkbox in the extension or app installation prompt, which indicates if a user wants to manually control which sites the extension can access.">
-        Manually control site permissions.
+    <message name="IDS_EXTENSION_PROMPT_GRANT_PERMISSIONS_CHECKBOX" desc="Label next to the checkbox in the extension or app installation prompt, which indicates if a user wants to grant access to all requested sites.">
+        Grant access to all requested sites.
       </message>
       <message name="IDS_EXTENSION_PROMPT_MESSAGE_FROM_ADMIN" desc="Second line in the content area of the extension of app blocked prompt. It gives user the additional message which comes from their administrator.">
         From your administrator: <ph name="ADMIN_MESSAGE">$1<ex>Please visit www.example.com/extension for more information.</ex></ph>
@@ -4833,30 +4833,30 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <if expr="reven">
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
-            Run ThoriumOS Flex diagnostic tests.
+            Run ThoriumOS Flex diagnostic tests
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY" desc="Permission string for chrome.os.telemetry API.">
-            Read ThoriumOS Flex device information and device data.
+            Read ThoriumOS Flex device information and device data
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
-            Read ThoriumOS Flex device and component serial numbers.
+            Read ThoriumOS Flex device and component serial numbers
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_NETWORK_INFORMATION" desc="Permission string for accessing network information.">
-            Read ThoriumOS Flex network information.
+            Read ThoriumOS Flex network information
           </message>
         </if>
         <if expr="not reven">
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_DIAGNOSTICS" desc="Permission string for chrome.os.diagnostcs API.">
-            Run ThoriumOS diagnostic tests.
+            Run ThoriumOS diagnostic tests
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY" desc="Permission string for chrome.os.telemetry API.">
-            Read ThoriumOS device information and device data.
+            Read ThoriumOS device information and device data
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_SERIAL_NUMBER" desc="Permission string for serial number permission.">
-            Read ThoriumOS device and component serial numbers.
+            Read ThoriumOS device and component serial numbers
           </message>
           <message name="IDS_EXTENSION_PROMPT_WARNING_CHROMEOS_TELEMETRY_NETWORK_INFORMATION" desc="Permission string for accessing network information.">
-            Read ThoriumOS network information.
+            Read ThoriumOS network information
           </message>
         </if>
       </if>
@@ -5040,31 +5040,31 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_CANCEL_BUTTON_LABEL" desc="The label of the button to don't allow the extension(s) to run on the site.">
           No thanks
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_HAS_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when extension has access to the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_TITLE_HAS_ACCESS" desc="The title in the card that shows up on mouse hover of a toolbar action when extension has access to the current site.">
           Allowed to read &amp; change
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_BLOCKED_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when the extension cannot access the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_TITLE_BLOCKED_ACCESS" desc="The title in the card that shows up on mouse hover of a toolbar action when the extension cannot access the current site.">
           Not allowed to read &amp; change
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_TITLE_REQUESTS_ACCESS" desc="The title in the footer of the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_TITLE_REQUESTS_ACCESS" desc="The title in the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
           Requested to read &amp; change
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_ALL_EXTENSIONS_ALLOWED_ACCESS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when all extensions have access to the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_DESCRIPTION_ALL_EXTENSIONS_ALLOWED_ACCESS" desc="The description in the card that shows up on mouse hover of a toolbar action when all extensions have access to the current site.">
           All extensions can read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_ALL_EXTENSIONS_BLOCKED_ACCESS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when all extensions cannot access the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_DESCRIPTION_ALL_EXTENSIONS_BLOCKED_ACCESS" desc="The description in the card that shows up on mouse hover of a toolbar action when all extensions cannot access the current site.">
           You blocked all extensions from <ph name="HOST">$1<ex>google.com</ex></ph>
         </message>
-         <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_EXTENSION_HAS_ACESSS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when the extension has access to the current site.">
+         <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_DESCRIPTION_EXTENSION_HAS_ACCESS" desc="The description in the card that shows up on mouse hover of a toolbar action when the extension has access to the current site.">
           This extension can read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_DESCRIPTION_EXTENSION_REQUESTS_ACESSS" desc="The description in the footer of the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_DESCRIPTION_EXTENSION_REQUESTS_ACCESS" desc="The description in the card that shows up on mouse hover of a toolbar action when the extension requests access to the current site.">
           Click this extension's icon to read &amp; change <ph name="HOST">$1<ex>google.com</ex></ph>
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_POLICY_LABEL_PINNED_TEXT" desc="The text in the footer of the card that shows up on mouse hover of a toolbar action when extension was pinned by the administrator.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_POLICY_LABEL_PINNED_TEXT" desc="The text in the card that shows up on mouse hover of a toolbar action when extension was pinned by the administrator.">
           Pinned by your administrator
         </message>
-        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_FOOTER_POLICY_LABEL_INSTALLED_TEXT" desc="The text in the footer of the card that shows up on mouse hover of a toolbar action when extension was installed by the administrator.">
+        <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_POLICY_LABEL_INSTALLED_TEXT" desc="The text in the card that shows up on mouse hover of a toolbar action when extension was installed by the administrator.">
           Installed by your administrator
         </message>
 
@@ -5442,6 +5442,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_EXTENSIONS_ADDED_WITHOUT_KNOWLEDGE" desc="Text shown in the extensions settings for items that might have been forcefully added to Thorium without the user's knowledge">
         This extension is not listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph> and may have been added without your knowledge.
+      </message>
+      <message name="IDS_EXTENSIONS_ADDED_WITHOUT_KNOWLEDGE_LEARN_MORE" desc="Text read by screen readers for a link labeled 'Learn more' that links to a Help article about disabled extensions.">
+        Learn more about disabled extensions.
       </message>
       <message name="IDS_EXTENSIONS_DISABLE_DEVELOPER_MODE_TITLE" desc="Title of a dialog warning users they have development mode extensions running">
         Disable developer mode extensions
@@ -7167,6 +7170,35 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Customize Thorium
       </message>
 
+      <!-- Bookmarks strings -->
+      <message name="IDS_BOOKMARKS_FOLDER_SORT" desc="Label for the active folder and sort type in the side panel.">
+        <ph name="FOLDER_TITLE">$1<ex>All Bookmarks</ex></ph> (<ph name="SORT_TYPE">$2<ex>Newest</ex>)</ph>
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_BY_TYPE" desc="Menu item label for selecting the bookmarks sort type.">
+        Sort by <ph name="SORT_TYPE">$1<ex>Newest</ex></ph>
+      </message>
+      <message name="IDS_BOOKMARKS_ALL_BOOKMARKS" desc="The name of the root bookmarks folder as displayed to the user">
+        All Bookmarks
+      </message>
+      <message name="IDS_BOOKMARKS_LABEL_TRACKED_PRODUCTS" desc="Label on a button within the bookmarks side panel for filtering bookmarks by price tracking data.">
+        Products
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_NEWEST" desc="Label for the newest-first bookmarks sort type">
+        Newest
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_OLDEST" desc="Label for the oldest-first bookmarks sort type">
+        Oldest
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_ALPHABETICALLY" desc="Label for the alphabetical bookmarks sort type">
+        A to Z
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_REVERSE_ALPHABETICALLY" desc="Label for the reverse alphabetical bookmarks sort type">
+        Z to A
+      </message>
+      <message name="IDS_BOOKMARKS_SORT_MENU_A11Y_LABEL" is_accessibility_with_no_ui="true" desc="Screen reader label for the button which opens the sort menu in the bookmarks side panel.">
+        Sort Options
+      </message>
+
       <!-- Read Anything strings -->
       <!-- TODO(crbug.com/1266555): Add final strings and make them translateable. -->
       <message name="IDS_READ_ANYTHING_TITLE" desc="Title of the Read Anything feature, which gives users an accessible reading experience." translateable="false">
@@ -7230,7 +7262,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Press to go back, context menu to see history
       </message>
       <message name="IDS_TOOLTIP_CHROMELABS_BUTTON" desc="The tooltip for the Thorium Labs button in the toolbar">
-        Enable featured Thorium experiments
+        Enable featured experiments
       </message>
       <message name="IDS_TOOLTIP_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The tooltip for the left aligned side panel toggle button">
         Toggle left aligned side panel
@@ -7305,7 +7337,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         upload a file
       </message>
       <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_OR_TEXT" desc="Message to user on drop zone where they can select a file to search.">
-        or
+        OR
       </message>
       <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_TEXT_PLACEHOLDER" desc="Label on the input box for Lens search URL upload.">
         Paste image link
@@ -7323,10 +7355,28 @@ Keep your key file in a safe place. You will need it to create new versions of y
         No network connection
       </message>
       <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_OFFLINE_SUBTITLE_TEXT" desc="Instructions to user when they are offline.">
-        please check your internet connection and try again
+        Check your internet connection and try again
       </message>
       <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_OFFLINE_BUTTON_LABEL" desc="Label for button which allows the user to retry connection.">
         Try again
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_ERROR_FILE_TYPE" desc="Error message displayed to user when they provided an invalid file format.">
+        Can't upload. Use an image in one of these formats: .jpg, .gif, .png, .bmp, .tif, or .webp
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_ERROR_FILE_SIZE" desc="Error message displayed to user when they provided a file that is too large to handle.">
+        Can't upload. Use an image smaller than 20MB.
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_ERROR_MULTIPLE_FILES" desc="Error message displayed to user when they provided multiple files.">
+        Can't search multiple images. Add one image at a time.
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_VALIDATION_ERROR_SCHEME" desc="Error message displayed when user provides URL with improper scheme">
+        Can't use this link. Check that your link starts with 'http://' or 'https://' to try again.
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_VALIDATION_ERROR_CONFORMANCE" desc="Error message displayed when user provides invalid URL">
+        Can't use this link. Check for typos or use another link to try again.
+      </message>
+      <message name="IDS_LENS_SEARCH_UPLOAD_DIALOG_ERROR_MULTIPLE_URLS" desc="Error message displayed to user when they provided multiple URLs.">
+        Can't search multiple images. Add one image at a time.
       </message>
       <message name="IDS_TOOLTIP_SAVE_CREDIT_CARD" desc="The tooltip for the icon that shows the save credit card bubble">
         Save card
@@ -7462,10 +7512,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Left aligned side panel
       </message>
       <message name="IDS_ACCESSIBLE_TEXT_CHROMELABS_BUTTON_ADDED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is added to the toolbar by an enterprise policy change.">
-        Enterprise policy changed. Thorium Experiments button added to toolbar. Click the button to open a dialog to enable experiments.
+        Enterprise policy changed. Experiments button added to toolbar. Click the button to open a dialog to enable experiments.
       </message>
       <message name="IDS_ACCESSIBLE_TEXT_CHROMELABS_BUTTON_REMOVED_BY_ENTERPRISE_POLICY" desc="The text read out by the screen reader when the Thorium Labs experiments button is removed from the toolbar by an enterprise policy change.">
-        Enterprise policy changed. Thorium Experiments button removed from toolbar.
+        Enterprise policy changed. Experiments button removed from toolbar.
       </message>
       <message name="IDS_ACCNAME_CHROMELABS_COMBOBOX" desc="The accessible name for the experiment's combobox to select between experiment states. ">
         Select experiment state for the <ph name="EXPERIMENT_NAME">$1<ex>Tab Scrolling</ex></ph> experiment.
@@ -8009,6 +8059,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_PASSWORD_MESSAGE_NEVER_SAVE_MENU_ITEM" desc="Mobile: Label for 'Save Password' prompt cogwheel menu button via which users can tell the password manager to never offer to save passwords for the current site[CHAR_LIMIT=32]">
           Never for this site
+        </message>
+        <message name="IDS_PASSWORD_MESSAGE_NEVER_SAVE_MENU_ITEM_DESC" desc="Mobile: The description to be announced by TalkBack for the 'Never save' button via which the users can tell the password manager to never ask to save passwords for this site again. This button is displayed as a secondary action in the 'Save password' prompt.">
+          Never save passwords for this site
         </message>
         <message name="IDS_PASSWORD_MESSAGE_EDIT_PASSWORD_MENU_ITEM" desc="Mobile: Label for 'Save Password' prompt cogwheel menu button via which users can tell the password manager to show the password edit dialog.">
           Edit password
@@ -9029,6 +9082,12 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_EXTENSIONS_SAFE_BROWSING_CRX_ALLOWLIST_WARNING" desc="A warning shown in 'chrome://extensions' when the extension is not included in the Enhanced Safe Browsing CRX allowlist.">
            This extension is not trusted by Enhanced Safe Browsing.
         </message>
+        <message name="IDS_EXTENSIONS_SAFE_BROWSING_CRX_ALLOWLIST_WARNING_LEARN_MORE" desc="Text read by screen readers for a link labeled 'Learn more' that links to a Help article about Enhanced Safe Browsing.">
+          Learn more about Enhanced Safe Browsing.
+        </message>
+        <message name="IDS_EXTENSIONS_ACCESS_REQUESTS_LEARN_MORE" desc="Text read by screen readers for a link labeled 'Learn more' that links to a Help article about Extensions' access requests.">
+          Learn more about access requests.
+        </message>
 
         <!-- Reset Profile Settings strings -->
         <message name="IDS_RESET_PROFILE_SETTINGS_EXPLANATION" desc="A label describing the consequences of the 'reset profile settings' feature">
@@ -9821,6 +9880,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
             Pages you view in this window won't appear in the browser history and they won't leave other traces, like cookies, on the computer after you close all open Guest windows. Any files you download will be preserved, however.
           </message>
         </if>
+        <message name="IDS_NEW_TAB_GUEST_SESSION_LEARN_MORE_ACCESSIBILITY_TEXT"
+            desc="Accessibility label for a link labeled 'Learn more' that links to a help article about browsing as a guest.">
+          Learn more about browsing as a guest
+        </message>
         <message name="IDS_NEW_TAB_TILE_GRID_ACCESSIBLE_DESCRIPTION"
                  desc="Help message for screenreader users, spoken when navigating to a tile grid for the first time.">
           Use left and right arrow keys to navigate.
@@ -9898,6 +9961,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_NEW_TAB_VOICE_PERMISSION_ERROR"
         desc="Used to indicate that the speech recognition service did not get permission to use the microphone.">
         Voice search has been turned off.
+      </message>
+      <message name="IDS_NEW_TAB_VOICE_LEARN_MORE_ACCESSIBILITY_LABEL"
+        desc="Text read by screen readers for a link that links to a Help article about using a microphone.">
+        Learn more about using a microphone
       </message>
       <message name="IDS_NEW_TAB_VOICE_READY"
         desc="Used to indicate that the speech recognition service has started and is waiting for user input.">
@@ -10089,6 +10156,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Sync settings
       </message>
       <if expr="chromeos_lacros">
+        <!--  TODO(crbug.com/1383167): Move to Thorium-specific resource file -->
         <message name="IDS_SYNC_CONFIRMATION_TITLE_LACROS_NON_FORCED" desc="Title of the sync confirmation dialog/screen on lacros when sync is not forced.">
           Turn on Thorium browser sync?
         </message>
@@ -10096,6 +10164,32 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
           Your bookmarks, passwords, history, and more are synced on all your devices
         </message>
       </if>
+
+      <!--  Tangible Sync version of the Sync Confirmation page -->
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_TITLE" desc="Title of the tangible sync confirmation page">
+        Turn on sync
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_INFO_TITLE" desc="Title in the information about sync on the tangible sync confirmation page">
+        Back up your stuff and use it on any device
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_INFO_TITLE_SIGNIN_INTERCEPT" desc="Title in the information about sync on the tangible sync confirmation page during the Sign-in Intercept flow">
+        Turn on sync to back up your stuff and use it on any device
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_BOOKMARKS" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'bookmarks' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c31bb. Used in the tangible sync confirmation page.">
+        Bookmarks
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_AUTOFILL" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'autofill' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3626. Used in the tangible sync confirmation page.">
+        Autofill
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_HISTORY" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. Used in the tangible sync confirmation page.">
+        History
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_EXTENSIONS_AND_MORE" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'extensions' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=62f9351. Translate 'and more' so that it conveys that there are additional similar items that are not listed. Used in the tangible sync confirmation page.">
+        Extensions and more
+      </message>
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_INFO_DESC" desc="Description in the information about sync and information about customizing Sync settings on the tangible sync confirmation page">
+        You can always choose what to sync in settings. Google may personalize Search and other services based on your history.
+      </message>
 
       <!--  Sync Confirmation section of the Signin Intercept first run experience flow -->
       <message name="IDS_SYNC_CONFIRMATION_WELCOME_TITLE_SIGNIN_INTERCEPT" desc="Title of the sync confirmation dialog in the Signin Intercept flow, after the user creates a new profile through this flow.">
@@ -12768,6 +12862,15 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
     </if>
 
+    <!-- Idle timeout dialog. -->
+    <if expr="not is_android and not is_chromeos">
+      <message name="IDS_IDLE_TIMEOUT_INCOGNITO" desc="The text in the Idle Timeout dialog when there are Incognito windows open. This warns the user that Incognito windows will close automatically, and their content will be lost.">
+        {COUNT, plural,
+          =1 {Your Incognito window won't reopen.}
+          other {Your # Incognito windows won't reopen.}}
+      </message>
+    </if>
+
     <!-- Web-modal dialog shown during Web Authenticaton API requests. -->
     <if expr="toolkit_views">
       <message name="IDS_WEBAUTHN_GENERIC_TITLE" desc="Title of most dialogs shown while the user is authenticating on a web site using a security key.">
@@ -13263,18 +13366,18 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <message name="IDS_DEEP_SCANNING_DIALOG_UPLOAD_FAILURE_MESSAGE" desc="Message shown in tab modal dialog after performing a deep scan of uploaded data when it doesn't comply with enterprise security policies">
       {NUM_FILES, plural,
-        =0 {This data has sensitive or dangerous content. Remove this content and try again.}
-        =1 {This file has sensitive or dangerous content. Remove this content and try again.}
-       other {These files have sensitive or dangerous content. Remove this content and try again.}}
+        =0 {This data or your device doesn’t meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}
+        =1 {This file or your device doesn’t meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}
+      other {These files don't meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}}
     </message>
     <message name="IDS_DEEP_SCANNING_DIALOG_UPLOAD_WARNING_MESSAGE" desc="Message shown in tab modal dialog after performing a deep scan of uploaded data when it doesn't comply with enterprise security policies to warn the user and allow them to proceed or not">
       {NUM_FILES, plural,
-        =0 {This data has sensitive or dangerous content}
-        =1 {This file has sensitive or dangerous content}
-      other {These files have sensitive or dangerous content}}
+        =0 {This data or your device doesn’t meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}
+        =1 {This file or your device doesn’t meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}
+      other {These files don't meet some of your organization’s security policies. Check with your admin on what needs to be fixed.}}
     </message>
     <message name="IDS_DEEP_SCANNING_DIALOG_PRINT_WARNING_MESSAGE" desc="Message shown in tab modal dialog after performing a deep scan of a printed document when it doesn't comply with enterprise security policies">
-        This document has sensitive content.
+        This document or your device doesn’t meet some of your organization’s security policies. Check with your admin on what needs to be fixed.
     </message>
     <message name="IDS_DEEP_SCANNING_DIALOG_TIMEOUT_MESSAGE" desc="Message shown in tab modal dialog after a deep scan times out.">
       Something went wrong. Scanning could not be completed. Please try again.
@@ -13699,9 +13802,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet. Sheet is shown to prompt user for sign in consent.">
       Sign in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$2<ex>idp.example</ex></ph>
     </message>
-    <message name="IDS_ACCOUNT_SELECTION_SHEET_SUBTITLE" desc="Message shown when the user is shown the federated identity login prompt. This message is the subtitle for the sign in sheet, which contains the top-level domain of the page the user is signing on to when the user is receiving a prompt from an iframe of such page.">
-      on <ph name="RP_MAIN_ETLD_PLUS_ONE">$1<ex>rp-main.example</ex></ph>
-    </message>
     <message name="IDS_ACCOUNT_SELECTION_CONTINUE" desc="Title of the button that continues filling with the only available set of credentials.">
       Continue as <ph name="NAME">$1<ex>Albus (or Albus Dumbledore)</ex></ph>
     </message>
@@ -13954,9 +14054,16 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_BATTERY_SAVER_BUBBLE_TITLE" desc="The title of the battery saver bubble dialog">
         Energy Saver is on
       </message>
-      <message name="IDS_BATTERY_SAVER_BUBBLE_DESCRIPTION" desc="The description text of the battery saver bubble dialog">
-        Background activity and some visual effects, like smooth scrolling, may be limited.
-      </message>
+      <if expr="use_titlecase">
+        <message name="IDS_BATTERY_SAVER_BUBBLE_DESCRIPTION" desc="The description text of the battery saver bubble dialog">
+          Background activity and some visual effects, like smooth scrolling, may be limited.
+        </message>
+      </if>
+      <if expr="not use_titlecase">
+        <message name="IDS_BATTERY_SAVER_BUBBLE_DESCRIPTION" desc="The description text of the battery saver bubble dialog">
+          Background activity and some visual effects, like smooth scrolling, may be limited
+        </message>
+      </if>
       <if expr="use_titlecase">
         <message name="IDS_BATTERY_SAVER_SESSION_TURN_OFF" desc="In Title Case: The label for the turn off battery saver for current session button in battery saver bubble dialog">
           Turn Off Now
