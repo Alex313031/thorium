@@ -240,11 +240,11 @@ rm -r -f -v	chrome/browser/safe_browsing/safe_browsing_dummy.cc &&
 
 git checkout -f origin/main &&
 
+git clean -ffd &&
+
 git rebase-update &&
 
 git fetch --tags &&
-
-git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
