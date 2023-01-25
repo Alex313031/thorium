@@ -16,7 +16,6 @@
 #include <va/va_version.h>
 #include <xf86drm.h>
 
-#include <algorithm>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -35,6 +34,7 @@
 #include "base/numerics/checked_math.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/posix/eintr_wrapper.h"
+#include "base/ranges/algorithm.h"
 #include "base/strings/pattern.h"
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
@@ -72,7 +72,7 @@ extern "C" {
 #include "ui/gfx/x/connection.h"  // nogncheck
 #endif                            // BUILDFLAG(USE_VAAPI_X11)
 
-#if defined(USE_OZONE)
+#if BUILDFLAG(IS_OZONE)
 #include "ui/ozone/public/ozone_platform.h"
 #include "ui/ozone/public/surface_factory_ozone.h"
 #endif
@@ -625,16 +625,14 @@ bool IsVAProfileSupported(VAProfile va_profile) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
          va_profile == VAProfileProtected ||
 #endif
-         std::find_if(profiles.begin(), profiles.end(),
-                      [va_profile](const auto& entry) {
-                        return entry.second == va_profile;
-                      }) != profiles.end();
+         base::Contains(profiles, va_profile,
+                        &ProfileCodecMap::value_type::second);
 }
 
 bool IsBlockedDriver(VaapiWrapper::CodecMode mode, VAProfile va_profile) {
   if (!IsModeEncoding(mode)) {
     return va_profile == VAProfileAV1Profile0 &&
-           !base::FeatureList::IsEnabled(kVaapiAV1Decoder);
+           !base::FeatureList::IsEnabled(kChromeOSHWAV1Decoder);
   }
 
   // TODO(posciak): Remove once VP8 encoding is to be enabled by default.
@@ -752,7 +750,7 @@ VADisplayState::VADisplayState()
 bool VADisplayState::Initialize() {
   base::AutoLock auto_lock(va_lock_);
 
-#if defined(USE_OZONE) && BUILDFLAG(IS_LINUX)
+#if BUILDFLAG(IS_OZONE) && BUILDFLAG(IS_LINUX)
   // TODO(crbug.com/1116701): add vaapi support for other Ozone platforms on
   // Linux. See comment in OzonePlatform::PlatformProperties::supports_vaapi
   // for more details. This will also require revisiting everything that's
@@ -981,11 +979,11 @@ std::vector<VAEntrypoint> GetEntryPointsForProfile(const base::Lock* va_lock,
                 "");
 
   std::vector<VAEntrypoint> entrypoints;
-  std::copy_if(va_entrypoints.begin(), va_entrypoints.end(),
-               std::back_inserter(entrypoints),
-               [&kAllowedEntryPoints, mode](VAEntrypoint entry_point) {
-                 return base::Contains(kAllowedEntryPoints[mode], entry_point);
-               });
+  base::ranges::copy_if(va_entrypoints, std::back_inserter(entrypoints),
+                        [&kAllowedEntryPoints, mode](VAEntrypoint entry_point) {
+                          return base::Contains(kAllowedEntryPoints[mode],
+                                                entry_point);
+                        });
   return entrypoints;
 }
 
@@ -1170,8 +1168,8 @@ const VASupportedProfiles::ProfileInfo* VASupportedProfiles::IsProfileSupported(
     VaapiWrapper::CodecMode mode,
     VAProfile va_profile,
     VAEntrypoint va_entrypoint) const {
-  auto iter = std::find_if(
-      supported_profiles_[mode].begin(), supported_profiles_[mode].end(),
+  auto iter = base::ranges::find_if(
+      supported_profiles_[mode],
       [va_profile, va_entrypoint](const ProfileInfo& profile) {
         return profile.va_profile == va_profile &&
                (va_entrypoint == kVAEntrypointInvalid ||
@@ -1476,11 +1474,8 @@ const VASupportedImageFormats& VASupportedImageFormats::Get() {
 
 bool VASupportedImageFormats::IsImageFormatSupported(
     const VAImageFormat& va_image_format) const {
-  auto it = std::find_if(supported_formats_.begin(), supported_formats_.end(),
-                         [&va_image_format](const VAImageFormat& format) {
-                           return format.fourcc == va_image_format.fourcc;
-                         });
-  return it != supported_formats_.end();
+  return base::Contains(supported_formats_, va_image_format.fourcc,
+                        &VAImageFormat::fourcc);
 }
 
 const std::vector<VAImageFormat>&
