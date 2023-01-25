@@ -699,7 +699,7 @@ void NewWindow(Browser* browser) {
         apps::LaunchSource::kFromKeyboard);
     apps::AppServiceProxyFactory::GetForProfile(profile)
         ->BrowserAppLauncher()
-        ->LaunchAppWithParams(std::move(params));
+        ->LaunchAppWithParams(std::move(params), base::DoNothing());
     return;
   }
 
