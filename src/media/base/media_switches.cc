@@ -5,6 +5,8 @@
 #include "media/base/media_switches.h"
 
 #include "base/command_line.h"
+#include "base/feature_list.h"
+#include "base/strings/string_number_conversions.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "components/system_media_controls/linux/buildflags/buildflags.h"
@@ -19,13 +21,13 @@ namespace switches {
 // Allow users to specify a custom buffer size for debugging purpose.
 const char kAudioBufferSize[] = "audio-buffer-size";
 
-#if BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO) && BUILDFLAG(IS_WIN)
+#if BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
 // Audio codecs supported by the HDMI sink is retrieved from the audio
 // service process. EDID contains the Short Audio Descriptors, which list
 // the audio decoders supported, and the information is presented as a
 // bitmask of supported audio codecs.
 const char kAudioCodecsFromEDID[] = "audio-codecs-from-edid";
-#endif  // BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO) && BUILDFLAG(IS_WIN)
+#endif  // BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
 
 // Set a timeout (in milliseconds) for the audio service to quit if there are no
 // client connections to it. If the value is negative the service never quits.
@@ -276,6 +278,11 @@ BASE_FEATURE(kOverlayFullscreenVideo,
              "overlay-fullscreen-video",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Pauses muted (and uncaptured) playbacks in the background.
+BASE_FEATURE(kPauseBackgroundMutedAudio,
+             "PauseBackgroundMutedAudio",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Enables user control over muting tab audio from the tab strip.
 BASE_FEATURE(kEnableTabMuting,
              "EnableTabMuting",
@@ -291,6 +298,13 @@ BASE_FEATURE(kPictureInPicture,
 BASE_FEATURE(kPlatformHEVCDecoderSupport,
              "PlatformHEVCDecoderSupport",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
+// Enables HEVC hardware accelerated encoding for Windows and Mac.
+BASE_FEATURE(kPlatformHEVCEncoderSupport,
+             "PlatformHEVCEncoderSupport",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
 #endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
 
 // Only decode preload=metadata elements upon visibility.
@@ -363,11 +377,6 @@ BASE_FEATURE(kUseDecoderStreamForWebRTC,
 BASE_FEATURE(kExposeSwDecodersToWebRTC,
              "ExposeSwDecodersToWebRTC",
              base::FEATURE_DISABLED_BY_DEFAULT);
-
-// Let video without audio be paused when it is playing in the background.
-BASE_FEATURE(kBackgroundVideoPauseOptimization,
-             "BackgroundVideoPauseOptimization",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // CDM host verification is enabled by default. Can be disabled for testing.
 // Has no effect if ENABLE_CDM_HOST_VERIFICATION buildflag is false.
@@ -501,7 +510,7 @@ BASE_FEATURE(kGlobalMediaControlsAutoDismiss,
 // Show Cast sessions in Global Media Controls.
 BASE_FEATURE(kGlobalMediaControlsForCast,
              "GlobalMediaControlsForCast",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
 // Allow Global Media Controls in system tray of CrOS.
@@ -575,6 +584,10 @@ BASE_FEATURE(kUnifiedAutoplay,
 // chromeos, but needs an experiment on linux.
 BASE_FEATURE(kVaapiVideoDecodeLinux,
              "VaapiVideoDecoder",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kVaapiVideoDecodeLinuxGL,
+             "VaapiVideoDecodeLinuxGL",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kVaapiVideoEncodeLinux,
@@ -900,6 +913,11 @@ BASE_FEATURE(kUseRealColorSpaceForAndroidVideo,
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(USE_CHROMEOS_MEDIA_ACCELERATION)
+// Enable hardware AV1 decoder on ChromeOS.
+BASE_FEATURE(kChromeOSHWAV1Decoder,
+             "ChromeOSHWAV1Decoder",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Enable Variable Bitrate encoding with hardware accelerated encoders on
 // ChromeOS.
 BASE_FEATURE(kChromeOSHWVBREncoding,
@@ -1056,6 +1074,16 @@ const base::FeatureParam<MediaFoundationClearRenderingStrategy>
         &kMediaFoundationClearRenderingStrategyOptions};
 #endif  // BUILDFLAG(IS_WIN)
 
+#if BUILDFLAG(ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION)
+// When ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION is true, encrypted Dolby Vision
+// is allowed in Media Source while clear Dolby Vision is not allowed. This
+// feature allows the support of clear Dolby Vision in Media Source, which is
+// useful to work around some JavaScript player limitations.
+BASE_FEATURE(kAllowClearDolbyVisionInMseWhenPlatformEncryptedDvEnabled,
+             "AllowClearDolbyVisionInMseWhenPlatformEncryptedDvEnabled",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
+
 #if BUILDFLAG(IS_CHROMEOS)
 const base::Feature MEDIA_EXPORT kDeprecateLowUsageCodecs{
     "DeprecateLowUsageCodecs", base::FEATURE_DISABLED_BY_DEFAULT};
@@ -1074,6 +1102,13 @@ const base::Feature MEDIA_EXPORT kUseOutOfProcessVideoDecoding{
 const base::Feature MEDIA_EXPORT kUseOutOfProcessVideoEncoding{
     "UseOutOfProcessVideoEncoding", base::FEATURE_DISABLED_BY_DEFAULT};
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+
+// Make the PepperVideoDecoderHost use the MojoVideoDecoder to talk to hardware
+// decoders instead of using the GpuVideoDecodeAcceleratorHost. Note: this
+// doesn't affect the PPB_VideoDecoder_Impl which will continue to use the
+// GpuVideoDecodeAcceleratorHost for the PPB_VideoDecoder_Dev interface.
+const base::Feature MEDIA_EXPORT kUseMojoVideoDecoderForPepper{
+    "UseMojoVideoDecoderForPepper", base::FEATURE_DISABLED_BY_DEFAULT};
 
 std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   // Return the autoplay policy set in the command line, if any.
@@ -1251,5 +1286,25 @@ bool IsMediaFoundationD3D11VideoCaptureEnabled() {
   return base::FeatureList::IsEnabled(kMediaFoundationD3D11VideoCapture);
 }
 #endif
+
+// Return bitmask of audio formats supported by EDID.
+uint32_t GetPassthroughAudioFormats() {
+#if BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
+  // Return existing value if codec_bitmask has previously been retrieved,
+  static const uint32_t codec_bitmask = []() {
+    auto* command_line = base::CommandLine::ForCurrentProcess();
+    uint32_t value = 0;
+    if (command_line->HasSwitch(switches::kAudioCodecsFromEDID)) {
+      base::StringToUint(
+          command_line->GetSwitchValueASCII(switches::kAudioCodecsFromEDID),
+          &value);
+    }
+    return value;
+  }();
+  return codec_bitmask;
+#else
+  return 0;
+#endif  // BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
+}
 
 }  // namespace media
