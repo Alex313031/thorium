@@ -94,7 +94,7 @@ config("mac_dynamic_flags") {
       # Binary.app/Contents/MacOS.
       "-Wl,-rpath,@loader_path/../../..",
     ]
-    
+
     # Path for loading shared libraries for unbundled binaries for
     # the host toolchain (see https://crbug.com/1315433). Only used
     # for when building for iOS.
