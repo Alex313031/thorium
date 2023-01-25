@@ -7,7 +7,6 @@
 #include <shlobj.h>  // For SHChangeNotify().
 #include <stddef.h>
 
-#include <algorithm>
 #include <memory>
 #include <set>
 #include <string>
@@ -20,6 +19,7 @@
 #include "base/files/file_util.h"
 #include "base/logging.h"
 #include "base/path_service.h"
+#include "base/ranges/algorithm.h"
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
@@ -76,7 +76,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
 // Incrementing this number will cause profile icons to be regenerated on
 // profile startup (it should be incremented whenever the product/avatar icons
 // change, etc).
-const int kCurrentProfileIconVersion = 11;
+const int kCurrentProfileIconVersion = 12;
 
 bool disabled_for_unit_tests = false;
 bool disable_unpinning_for_unit_tests = false;
@@ -261,18 +261,15 @@ struct ChromeCommandLineFilter {
   }
 };
 
-// Get the file paths of desktop files and folders optionally filtered
-// by |filter|.
-std::set<base::FilePath> ListUserDesktopContents(
+// Get the file paths of files optionally filtered by `filter`.
+std::set<base::FilePath> ListDirContents(
+    const base::FilePath& start_dir,
+    bool recursive,
     const ChromeCommandLineFilter* filter) {
   std::set<base::FilePath> result;
 
-  base::FilePath user_shortcuts_directory;
-  if (!GetDesktopShortcutsDirectories(&user_shortcuts_directory, nullptr))
-    return result;
-
   base::FileEnumerator enumerator(
-      user_shortcuts_directory, false,
+      start_dir, recursive,
       base::FileEnumerator::FILES | base::FileEnumerator::DIRECTORIES);
   for (base::FilePath path = enumerator.Next(); !path.empty();
        path = enumerator.Next()) {
@@ -280,6 +277,25 @@ std::set<base::FilePath> ListUserDesktopContents(
       result.insert(path);
   }
   return result;
+}
+
+std::set<base::FilePath> ListUserDesktopContents(
+    const ChromeCommandLineFilter* filter) {
+  base::FilePath desktop_directory;
+  if (!GetDesktopShortcutsDirectories(&desktop_directory, nullptr))
+    return std::set<base::FilePath>();
+  return ListDirContents(desktop_directory, /*recursive=*/false, filter);
+}
+
+// Get the file paths of implicit apps sub-dirs filtered by `filter`.
+std::set<base::FilePath> ListImplicitAppContents(
+    const ChromeCommandLineFilter* filter) {
+  base::FilePath implicit_apps_path;
+  if (!base::PathService::Get(base::DIR_IMPLICIT_APP_SHORTCUTS,
+                              &implicit_apps_path)) {
+    return std::set<base::FilePath>();
+  }
+  return ListDirContents(implicit_apps_path, /*recursive=*/true, filter);
 }
 
 // Renames the given desktop shortcut and informs the shell of this change.
@@ -332,10 +348,10 @@ void RenameChromeDesktopShortcutForProfile(
   if (!profile_shortcuts->empty()) {
     // From all profile_shortcuts choose the one with a known (canonical) name.
     profiles::internal::ShortcutFilenameMatcher matcher(old_profile_name);
-    auto it = std::find_if(profile_shortcuts->begin(), profile_shortcuts->end(),
-                           [&matcher](const base::FilePath& p) {
-                             return matcher.IsCanonical(p.BaseName().value());
-                           });
+    auto it = base::ranges::find_if(
+        *profile_shortcuts, [&matcher](const base::FilePath& p) {
+          return matcher.IsCanonical(p.BaseName().value());
+        });
     // If all profile_shortcuts were renamed by user, respect it and do not
     // rename.
     if (it == profile_shortcuts->end())
@@ -445,7 +461,8 @@ void CreateOrUpdateDesktopShortcutsAndIconForProfile(
     return;
   }
 
-  std::set<base::FilePath> desktop_contents = ListUserDesktopContents(nullptr);
+  std::set<base::FilePath> desktop_contents =
+      ListUserDesktopContents(/*filter=*/nullptr);
 
   const std::wstring command_line =
       profiles::internal::CreateProfileShortcutFlags(params.profile_path,
@@ -458,8 +475,8 @@ void CreateOrUpdateDesktopShortcutsAndIconForProfile(
   // Do not call ListUserDesktopContents again (but with filter) to avoid
   // excess work inside it. Just reuse non-filtered desktop_contents.
   // We need both of them (desktop_contents and shortcuts) later.
-  std::copy_if(desktop_contents.begin(), desktop_contents.end(),
-               std::inserter(shortcuts, shortcuts.begin()), filter);
+  base::ranges::copy_if(desktop_contents,
+                        std::inserter(shortcuts, shortcuts.begin()), filter);
 
   if (params.old_profile_name != params.profile_name || params.single_profile) {
     RenameChromeDesktopShortcutForProfile(
@@ -609,10 +626,12 @@ void UnpinAndDeleteDesktopShortcuts(
   const std::wstring command_line =
       profiles::internal::CreateProfileShortcutFlags(profile_path);
   ChromeCommandLineFilter filter(chrome_exe, command_line, false);
-  const std::set<base::FilePath> shortcuts = ListUserDesktopContents(&filter);
-  if (shortcuts.empty())
-    return;
-
+  std::set<base::FilePath> shortcuts = ListUserDesktopContents(&filter);
+  if (shortcuts.empty()) {
+    shortcuts = ListImplicitAppContents(&filter);
+    if (shortcuts.empty())
+      return;
+  }
   std::vector<base::FilePath> shortcuts_vector(shortcuts.begin(),
                                                shortcuts.end());
   // Unpinning is done out-of-process, which isn't allowed in unit tests.
@@ -905,10 +924,10 @@ void ProfileShortcutManagerWin::RemoveProfileShortcuts(
 void ProfileShortcutManagerWin::HasProfileShortcuts(
     const base::FilePath& profile_path,
     base::OnceCallback<void(bool)> callback) {
-  base::PostTaskAndReplyWithResult(
-      base::ThreadPool::CreateCOMSTATaskRunner({base::MayBlock()}).get(),
-      FROM_HERE, base::BindOnce(&HasAnyProfileShortcuts, profile_path),
-      std::move(callback));
+  base::ThreadPool::CreateCOMSTATaskRunner({base::MayBlock()})
+      ->PostTaskAndReplyWithResult(
+          FROM_HERE, base::BindOnce(&HasAnyProfileShortcuts, profile_path),
+          std::move(callback));
 }
 
 void ProfileShortcutManagerWin::GetShortcutProperties(
