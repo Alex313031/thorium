@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031.
+// Copyright 2023 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -29,7 +29,6 @@
 #include "media/audio/audio_features.h"
 #include "media/audio/win/avrt_wrapper_win.h"
 #include "media/audio/win/core_audio_util_win.h"
-#include "media/audio/win/volume_range_util.h"
 #include "media/base/audio_block_fifo.h"
 #include "media/base/audio_bus.h"
 #include "media/base/audio_timestamp_helper.h"
@@ -193,8 +192,11 @@ const char* EffectTypeToString(
       return "DynamicRangeCompression";
     case ABI::Windows::Media::Effects::AudioEffectType_FarFieldBeamForming:
       return "FarFieldBeamForming";
+#if WINDOWS_FOUNDATION_UNIVERSALAPICONTRACT_VERSION >= 0xd0000
+    // This enum appears when upgrading to the Windows 11 10.0.22621.0 SDK.
     case ABI::Windows::Media::Effects::AudioEffectType_DeepNoiseSuppression:
       return "DeepNoiseSuppression";
+#endif
   }
   return "Unknown";
 }
@@ -580,23 +582,6 @@ void WASAPIAudioInputStream::Stop() {
     }
   }
 
-  absl::optional<VolumeRange> volume_range;
-  if (add_uma_histogram && system_audio_volume_ &&
-      !AudioDeviceDescription::IsLoopbackDevice(device_id_)) {
-    VolumeRange range;
-    HRESULT hr = system_audio_volume_->GetVolumeRange(
-        &range.min_volume_db, &range.max_volume_db, &range.volume_step_db);
-    if (FAILED(hr)) {
-      SendLogMessage("%s => (ERROR: IAudioEndpointVolume::GetVolumeRange=[%s])",
-                     __func__, ErrorToString(hr).c_str());
-    } else {
-      SendLogMessage("%s => (IAudioEndpointVolume::GetVolumeRange) %f %f %f",
-                     __func__, range.min_volume_db, range.max_volume_db,
-                     range.volume_step_db);
-      volume_range = range;
-    }
-  }
-
   // Stops periodic AGC microphone measurements.
   StopAgc();
 
@@ -625,7 +610,6 @@ void WASAPIAudioInputStream::Stop() {
     base::UmaHistogramBoolean("Media.Audio.InputVolumeStartsAtZeroWin",
                               audio_session_starts_at_zero_volume_);
     audio_session_starts_at_zero_volume_ = false;
-    LogVolumeRangeUmaHistograms(volume_range);
   }
 
   SendLogMessage(
