@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2009 The Chromium Authors
+# Copyright 2023 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 #
@@ -27,3 +27,5 @@ if [ -r "$DEFAULTS_FILE" ]; then
 fi
 
 install_key
+
+## Removed repo cron job since this is Thorium.
