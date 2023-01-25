@@ -89,7 +89,7 @@ config("compiler") {
 
   cflags += [
     # Work around crbug.com/526851, bug in VS 2015 RTM compiler.
-    "/Zc:sizedDealloc-",
+    # "/Zc:sizedDealloc-",
   ]
 
   if (is_clang) {
