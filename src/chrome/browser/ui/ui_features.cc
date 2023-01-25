@@ -100,15 +100,7 @@ BASE_FEATURE(kQuickCommands,
 
 // Enables the side search feature for Google Search. Presents recent Google
 // search results in a browser side panel.
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-// Enable by default as the ChromeOS iteration of Side Search has launched (See
-// crbug.com/1242730).
 BASE_FEATURE(kSideSearch, "SideSearch", base::FEATURE_ENABLED_BY_DEFAULT);
-#else
-// Disable by default on remaining desktop platforms until desktop UX has
-// launched (See crbug.com/1279696).
-BASE_FEATURE(kSideSearch, "SideSearch", base::FEATURE_ENABLED_BY_DEFAULT);
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 BASE_FEATURE(kSideSearchFeedback,
              "SideSearchFeedback",
@@ -174,6 +166,19 @@ BASE_FEATURE(kScrollableTabStrip,
              "ScrollableTabStrip",
              base::FEATURE_DISABLED_BY_DEFAULT);
 const char kMinimumTabWidthFeatureParameterName[] = "minTabWidth";
+
+// Enables buttons when scrolling the tabstrip https://crbug.com/951078
+BASE_FEATURE(kTabScrollingButtonPosition,
+             "TabScrollingButtonPosition",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const char kTabScrollingButtonPositionParameterName[] = "buttonPosition";
+
+// Enables tab scrolling while dragging tabs in tabstrip
+// https://crbug.com/1145747
+BASE_FEATURE(kScrollableTabStripWithDragging,
+             "kScrollableTabStripWithDragging",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const char kTabScrollingWithDraggingModeName[] = "tabScrollWithDragMode";
 
 // Splits pinned and unpinned tabs into separate TabStrips.
 // https://crbug.com/1346019
