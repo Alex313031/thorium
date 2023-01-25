@@ -57,6 +57,7 @@ gsyncShallow () {
 	rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_choices.h &&
 	
 	rm -v -r -f $HOME/chromium/src/third_party/pak &&
+	rm -v -r -f $HOME/chromium/src/third_party/widevine/CREDITS.chromium &&
 	
 	rm -r -f -v	chrome/browser/bromite_flag_choices.h &&
 	rm -r -f -v	chrome/browser/bromite_flag_entries.h &&
@@ -194,6 +195,7 @@ rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_entries.h &&
 rm -v -f $HOME/chromium/src/chrome/browser/thorium_flag_choices.h &&
 
 rm -v -r -f $HOME/chromium/src/third_party/pak &&
+rm -v -r -f $HOME/chromium/src/third_party/widevine/CREDITS.chromium &&
 
 rm -r -f -v	chrome/browser/bromite_flag_choices.h &&
 rm -r -f -v	chrome/browser/bromite_flag_entries.h &&
