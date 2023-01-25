@@ -133,7 +133,9 @@ class LanguageNames : public LocaleDisplayNamesCommon {
     // 1.b If IsStructurallyValidLanguageTag(code) is false, throw a RangeError
     // exception.
     icu::Locale l =
-        icu::Locale::createCanonical(icu::Locale::forLanguageTag(code, status).getBaseName());
+        icu::Locale(icu::Locale::forLanguageTag(code, status).getBaseName());
+    // 1.c Set code to CanonicalizeUnicodeLocaleId(code).
+    l.canonicalize(status);
     std::string checked = l.toLanguageTag<std::string>(status);
 
     if (U_FAILURE(status)) {
