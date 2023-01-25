@@ -94,21 +94,6 @@
     <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_CONFIRM" desc="Text to show for the Autofill upload save credit card prompt accept button when more information (e.g., CVC) was needed in order to save the card and was entered." formatter_data="android_java">
       Confirm
     </message>
-    <message name="IDS_AUTOFILL_MOBILE_SAVE_CARD_TO_CLOUD_CONFIRMATION_DIALOG_TITLE" desc="This message appears as the title of a confirmation dialog in which the user can view/edit the information that will be saved to Google Payments, and only appears after the user has expressed interest in uploading the card.">
-      Save to Google Account
-    </message>
-    <message name="IDS_AUTOFILL_MOBILE_SAVE_CARD_TO_CLOUD_CONFIRMATION_DIALOG_TITLE_V2" desc="This message appears as the title of a confirmation dialog in which the user can view/edit the information that will be saved to Google Payments, and only appears after the user has expressed interest in uploading the card. This version of the title emphasizes on the advantage of the subsequent action.">
-      Pay faster next time
-    </message>
-    <message name="IDS_AUTOFILL_MOBILE_SAVE_CARD_TO_CLOUD_PROMPT_SAVE_FOLLOW_UP" desc="Button label for a prompt to ask if user agrees to save the card to the server. This prompt will be followed by confirmation dialogs to confirm the card details, such as card label.">
-      Save…
-    </message>
-    <message name="IDS_AUTOFILL_MOBILE_SAVE_CARD_TO_CLOUD_CONFIRMATION_DIALOG_EXPLANATION" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments." formatter_data="android_java">
-      Save your card and billing info to your Google Account for secure and faster checkouts
-    </message>
-    <message name="IDS_AUTOFILL_MOBILE_SAVE_CARD_TO_CLOUD_CONFIRMATION_DIALOG_EXPLANATION_WITH_ACCOUNT_NAME" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments. Includes Google account reference." formatter_data="android_java">
-      Save your card and billing info to your Google Account <ph name="USER_EMAIL">^1<ex>user@gmail.com</ex></ph> for secure and faster checkouts
-    </message>
   </if>
   <if expr="is_ios">
     <then>
@@ -287,7 +272,7 @@
     <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_LABEL_INVALID_CARDS" desc="The label text shown when a card is invalid and could not be migrated.">
       Invalid
     </message>
-    <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_TRASH_CAN_BUTTON_TOOLTIP" desc="The tooltip for the trash can button in the card list that allows user to delete this particular credit card from Chrome.">
+    <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_TRASH_CAN_BUTTON_TOOLTIP" desc="The tooltip for the trash can button in the card list that allows user to delete this particular credit card from Thorium.">
       Remove card
     </message>
   </if>
@@ -298,6 +283,21 @@
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_TRY_AGAIN_CVC_AND_EXPIRATION_V2" desc="Error message that encourages the user to try to re-enter their credit card CVC or update the expiration dates after a previous failed attempt, according to August 2019 UI guidelines.">
     Check your CVC and try again or update the expiration date
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_TRY_AGAIN_SECURITY_CODE" desc="Text providing context to the user during virtual card security code authentication when they have entered an incorrect security code, such as CVC. It lets the user know that they need to look at the security code on their card again to make sure the one they entered into the form is correct, and that they need to try again.">
+    Check the code on the <ph name="SIDE_OF_CARD">$1<ex>back of your card</ex></ph> and try again
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_PERMANENT" desc="Error message to show when a credit card cannot be verified and the user isn't allowed to retry.">
+    This card can't be verified right now
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_NETWORK" desc="Error message to show when a credit card cannot be verified because Wallet servers can't be reached.">
+    There was a problem confirming your card. Check your internet connection and try again.
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_SECURITY_CODE_POSITION_BACK_OF_CARD" desc="Text explaining that the security code is located in the back of your card, specifically for the virtual card unmasking case.">
+    back of your card
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_SECURITY_CODE_POSITION_FRONT_OF_CARD" desc="Text explaining that the security code is located in the front of your card, specifically for the virtual card unmasking case.">
+    front of your card
   </message>
   <if expr="is_android">
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_TRY_AGAIN_EXPIRATION_DATE" desc="Error message that encourages the user to try to re-enter their credit card expiration date after a previous failed attempt." formatter_data="android_java">
@@ -313,15 +313,12 @@
       Check your expiration year and try again
     </message>
   </if>
-  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_PERMANENT" desc="Error message to show when a credit card cannot be verified and the user isn't allowed to retry.">
-    This card can't be verified right now
-  </message>
-  <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_ERROR_NETWORK" desc="Error message to show when a credit card cannot be verified because Wallet servers can't be reached.">
-    There was a problem confirming your card. Check your internet connection and try again.
-  </message>
   <if expr="not is_ios">
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_TITLE" desc="Title for the credit card unmasking dialog.">
       Enter the CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>
+    </message>
+    <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_TITLE_SECURITY_CODE" desc="Title for the credit card unmasking dialog, specifically for the virtual card unmasking case.">
+      Enter your security code for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_TITLE_V2" desc="Title for the credit card unmasking dialog, according to August 2019 UI guidelines.">
       Verify your card
@@ -334,6 +331,9 @@
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_LOCAL_CARD" desc="Text explaining what the user should do in the card unmasking dialog.  Appears specifically for local cards already stored on the device.">
       Once you confirm, your card details will be shared with this site.
+    </message>
+    <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_VIRTUAL_CARD" desc="Text providing instructions on how to unmask virtual card.">
+      Enter the <ph name="NUMBER_OF_DIGITS">$1<ex>3</ex></ph>-digit security code on the <ph name="SIDE_OF_CARD">$2<ex>back of your card</ex></ph> so your bank can verify it's you
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_V2" desc="Text explaining what the user should do in the card unmasking dialog, according to August 2019 UI guidelines.">
       Confirm the security code to share your card details with this site
@@ -418,6 +418,9 @@
   <message name="IDS_AUTOFILL_DIALOG_PLACEHOLDER_CVC" desc="The placeholder/label text for credit card verification code in the requestAutocomplete dialog. The text field where this is presented can be very narrow, so please prefer to translate this to the most common abbreviated form. [CHAR_LIMIT=4]" meaning="Placeholder label for a very narrow CVC field that should preferably be translated to an abbreviated form.">
     CVC
   </message>
+  <message name="IDS_AUTOFILL_DIALOG_ACCESSIBLE_NAME_SECURITY_CODE" desc = "The accessible name used for credit card security codes.">
+    Security code
+ </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_PROGRESS_BAR_MESSAGE" desc="Message displayed after tapping a Virtual Card, and before any other verification steps.">
     Contacting your bank...
   </message>
@@ -533,16 +536,16 @@
       Cancel
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_TITLE" desc="The title shown in the Autofill virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
-      Virtual card for <ph name="CARD_IDENTIFIER">$1<ex>Visa - 1234</ex></ph>
+      Virtual card details
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_EDUCATIONAL_BODY_LABEL" desc="The label shown in body of the Autofill virtual card manual fallback bubble on Desktop. The label serves as a educational message to explain to users how to use the bubble to fill card information to the form. This bubble shows the complete information for the virtual card selected to fill the form.">
-      Virtual card number not filled in? Click card details to copy. <ph name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_LEARN_MORE_LINK_LABEL">$1<ex>Learn about virtual cards</ex></ph>
+      Virtual card not filled in? Click virtual card details to copy to clipboard. <ph name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_LEARN_MORE_LINK_LABEL">$1<ex>Learn about virtual cards</ex></ph>
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_LEARN_MORE_LINK_LABEL" desc="Link text to learn more about virtual cards. Added to the end of the explanatory message of the virtual card manual fallback bubble in IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_EDUCATIONAL_BODY_LABEL">
       Learn about virtual cards
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_CARD_NUMBER_LABEL" desc="Text shown next to the virtual card number in the virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
-      Virtual number:
+      Virtual card number:
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_EXP_DATE_LABEL" desc="Text shown next to the virtual card expiration date in the virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
       Expiration date:
@@ -552,6 +555,9 @@
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_CVC_LABEL" desc="Text shown next to the virtual card CVC code in the virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
       CVC:
+    </message>
+    <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_VIRTUAL_CARD_LABEL" desc="The text shown in the virtual card manual fallback bubble to explain the card entity is a virtual card.">
+      Virtual card
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_ICON_TOOLTIP" desc="The tooltip message for the omnibox icon for the virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
       View your virtual card number
@@ -584,7 +590,7 @@
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_LEARN_MORE_LINK_LABEL" desc="Link text to learn more about virtual cards. Added to the end of the explanatory message of the virtual card enrollment dialog in IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_DIALOG_CONTENT_LABEL.">
     Learn about virtual cards
   </message>
-    <message name="IDS_AUTOFILL_VIRTUAL_CARD_SUGGESTION_OPTION_VALUE" desc="The text shown in the virtual card option in the credit card suggestion list. It is shown as the value of the suggestion.">
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_SUGGESTION_OPTION_VALUE" desc="The text shown in the virtual card option in the credit card suggestion list. It is shown as the value of the suggestion.">
     Virtual card
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_TEMPORARY_ERROR_TITLE" desc="Text to be displayed as the title of the error dialog for virtual card temporary error.">
@@ -626,19 +632,33 @@
     </message>
   </if>
   <!-- virtual cards related strings - end -->
-
+  <message name="IDS_AUTOFILL_CARD_AUTH_SELECTION_DIALOG_TITLE_MULTIPLE_OPTIONS" desc="Title for the credit card unmasking dialog for multiple challenge options. Used in VCN authentication, and once a challenge option is selected a new dialog is rendered where the user authenticates with the selected challenge option." formatter_data="android_java">
+      Choose how you'll verify it's you
+  </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_ISSUER_CONFIRMATION_TEXT" desc="The issuer confirmation text shown in the Autofill card unmask authentication selection dialog on Desktop. This is the header text of the dialog, and it is the text stating that the issuer wants additional authentication. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
       Your bank wants to confirm it's you.
   </message>
-  <message name="IDS_AUTOFILL_AUTHENTICATION_MODE_TEXT_MESSAGE_LABEL" desc="The label for the text message authentication mode text shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
+  <message name="IDS_AUTOFILL_AUTHENTICATION_MODE_SECURITY_CODE" desc="The label for the 3 digit security code authentication option shown in the Autofill card unmask authentication selection dialog on Desktop. Only shown when there are multiple unmask options presented to the user. If selected, the user will be prompted to enter their security code.">
+    Enter your security code
+  </message>
+  <message name="IDS_AUTOFILL_AUTHENTICATION_MODE_GET_TEXT_MESSAGE" desc="The label for the text message authentication mode option shown in the Autofill card unmask authentication selection dialog on Desktop. Only shown when there are multiple unmask options presented to the user. If selected, the user will be prompted to enter the text message they received on their phone.">
+    Get a text message
+  </message>
+  <message name="IDS_AUTOFILL_AUTHENTICATION_MODE_TEXT_MESSAGE" desc="The label for the text message authentication mode text shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
     Text message
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_CURRENT_INFO_NOT_SEEN_TEXT" desc="The current info not seen text shown in the Autofill card unmask authentication selection dialog on Desktop. It is the footer text on the dialog, and it instructs the user on what to do if they can not see their most up to date authentication information. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
-    Not seeing your current info? Please contact your bank to update it.
+    Not seeing your current info? Contact your bank to update it.
   </message>
-  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL" desc="The ok button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
+  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_CONTINUE" desc="The continue button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card. This label is used when there is more than one challenge option presented.">
+    Continue
+  </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_SEND" desc="The ok button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
     Send
   </message>
+  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_CVC_CHALLENGE_INFO" desc="Text that is shown for the security code challenge option in the Card Unmask Authentication Selection Dialog. This text lets the user know where the location of the security code is on their card. If the user selects this challenge option and then accepts the dialog, the user will be prompted to enter this security code. An example of a security code is the CVC on the back of the user's credit card.">
+      This is the <ph name="NUMBER_OF_DIGITS">$1<ex>3</ex></ph>-digit code on the <ph name="SIDE_OF_CARD">$2<ex>back of your card</ex></ph>
+    </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_TITLE" desc="The title for the dialog that lets the user type in the OTP they received on Desktop. This message is shown right next to the logo for the dialog, and it lets the users know the action that is required in this dialog, which is to enter their verification code (OTP).">
     Enter verification code
   </message>
