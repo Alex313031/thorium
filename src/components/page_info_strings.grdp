@@ -750,7 +750,7 @@
     See related sites
   </message>
   <message name="IDS_PAGE_INFO_FPS_BUTTON_SUBTITLE" desc="The subtitle of first-party sets button in cookies subpage with placeholder for name of the owner of this set.">
-    This site is in a group, defined by <ph name="SET_OWNER">$1<ex>gannett.com</ex></ph>,  that can see your activity
+    This site is in a group, defined by <ph name="SET_OWNER">$1<ex>gannett.com</ex></ph>, that can see your activity
   </message>
 
   <!-- History strings -->
@@ -789,4 +789,13 @@
   <message name="IDS_PAGE_INFO_AD_PERSONALIZATION_SUBPAGE_MANAGE_BUTTON" desc="The text on the button, that opens privacy sandbox settings page, in 'Ad personalization' subpage in page info bubble. ">
     Manage interests
   </message>
+
+  <!-- Enterprise interstitial strings -->
+  <message name="IDS_PAGE_INFO_ENTERPRISE_WARN_SUMMARY" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the website has been flagged by your admin to show a warning">
+    This site is flagged by your organization
+  </message>
+  <message name="IDS_PAGE_INFO_ENTERPRISE_WARN_DETAILS" desc="A more detailed summary at the top of the Page Info bubble (which shows when you click the security indicator) if the website has been flagged by your admin to show a warning">
+    Your organization has blocked this site because it violates a policy.
+  </message>
+
 </grit-part>
