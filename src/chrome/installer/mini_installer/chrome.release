@@ -34,6 +34,7 @@ content_resources.pak: %(VersionDir)s\
 content_shell.pak: %(VersionDir)s\
 d3dcompiler_47.dll: %(VersionDir)s\
 eventlog_provider.dll: %(VersionDir)s\
+ffmpeg.dll: %(VersionDir)s\
 icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
@@ -63,6 +64,14 @@ pak_mingw64.exe: %(VersionDir)s\
 #
 Extensions\*.*: %(VersionDir)s\Extensions\
 locales\*.pak: %(VersionDir)s\Locales
+default_apps\*.crx: %(VersionDir)s\default_apps\
+default_apps\external_extensions.json: %(VersionDir)s\default_apps\
+
+#
+# ClearKey CDM sub-dir
+#
+ClearKeyCdm\_platform_specific\win_x64\clearkeycdm.dll: %(VersionDir)s\ClearKeyCdm\_platform_specific\win_x64\
+ClearKeyCdm\_platform_specific\win_x86\clearkeycdm.dll: %(VersionDir)s\ClearKeyCdm\_platform_specific\win_x86\
 
 #
 # VisualElements sub-dir.
