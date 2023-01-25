@@ -34,7 +34,7 @@ printf "${GRE}\n" &&
 # Build Thorium and mini_installer
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver thorium_shell setup mini_installer -j$@ &&
+./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver clear_key_cdm thorium_shell setup mini_installer -j$@ &&
 
 mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thorium/thorium_mini_installer.exe &&
 
