@@ -551,14 +551,6 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
-
-    if (default_toolchain != "//build/toolchain/cros:target") {
-      # TODO(crbug.com/1361629): Fix the compiler so this is not needed.
-      cflags += [
-        "-mllvm",
-        "-simplifycfg-hoist-common-skip-limit=0",
-      ]
-    }
   }
 
   # Rust compiler setup (for either clang or rustc).
@@ -1617,7 +1609,6 @@ config("default_warnings") {
 
       if (!is_nacl) {
         cflags += [
-
           # TODO(crbug.com/1343975) Evaluate and possibly enable.
           "-Wno-deprecated-builtins",
 
@@ -2569,6 +2560,7 @@ config("symbols") {
   }
 
   configs = []
+
   # Compress debug on 32-bit ARM to stay under 4GB for ChromeOS
   # https://b/243982712.
   if (symbol_level == 2 && is_chromeos_device && !use_debug_fission &&
