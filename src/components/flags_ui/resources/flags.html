@@ -79,22 +79,20 @@
         <a href="https://chrome.com/dev">dev channel</a>
       </span>
     </p>
-    <ul class="tabs" role="tablist">
-      <li class="selected" role="tab">
-        <a href="#tab-content-available" id="tab-available" class="tab" role="tab"
-            aria-selected="true"
-            aria-controls="panel1"
-            tabindex="5">$i18n{available}</a>
-      </li>
+    <div class="tabs" role="tablist">
+      <a href="#tab-content-available" id="tab-available" class="tab selected"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel1"
+          tabindex="5">$i18n{available}</a>
 <!-- Unsupported experiments are not shown on iOS -->
 <if expr="not is_ios">
-      <li role="tab">
-        <a href="#tab-content-unavailable" id="tab-unavailable" class="tab" role="tab"
-           aria-selected="false" aria-controls="panel2"
-           tabindex="6">$i18n{unavailable}</a>
-      </li>
+      <a href="#tab-content-unavailable" id="tab-unavailable" class="tab"
+          role="tab"
+          aria-selected="false" aria-controls="panel2"
+          tabindex="6">$i18n{unavailable}</a>
 </if>
-    </ul>
+    </div>
     <div id="tabpanels">
       <div id="tab-content-available" class="tab-content selected"
           role="tabpanel" aria-labelledby="tab-available" aria-hidden="false">
@@ -108,9 +106,9 @@
               jsvalues="class: is_default ? 'experiment-default flex-container'
                   : 'experiment-switched flex-container'">
             <div class="flex">
-              <h3 class="experiment-name" jscontent="name"
+              <h2 class="experiment-name" jscontent="name"
                   jsvalues="title: is_default ? '' : '$i18n{experiment-enabled}';
-                      id:internal_name + '_name'"></h3>
+                      id:internal_name + '_name'"></h2>
               <p>
                 <span jsvalues=".textContent:description"></span> –
                 <span class="platforms" jscontent="supported_platforms.join(', ')"></span>
@@ -155,9 +153,9 @@
               jsvalues="class: is_default ? 'experiment-default flex-container'
                   : 'experiment-switched flex-container'">
             <div class="flex">
-              <h3 class="experiment-name" jscontent="name"
+              <h2 class="experiment-name" jscontent="name"
                   jsvalues="title: is_default ? '' : '$i18n{experiment-enabled}';
-                      id:internal_name + '_name'"></h3>
+                      id:internal_name + '_name'"></h2>
               <p>
                 <span jsvalues=".textContent:description"></span> –
                 <span class="platforms" jscontent="supported_platforms.join(', ')"></span>
@@ -207,8 +205,8 @@
               jsvalues="class: is_default ? 'experiment-default flex-container'
                   : 'experiment-switched flex-container'">
             <div class="flex">
-              <h3 class="experiment-name"
-                  jscontent="name"></h3>
+              <h2 class="experiment-name"
+                  jscontent="name"></h2>
               <p>
                 <span jsvalues=".textContent:description"></span>
                 <span class="platforms" jscontent="supported_platforms.join(', ')"></span>
