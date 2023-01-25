@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors, Hibiki Tachibana, and Alex313031. All rights reserved.
+// Copyright 2012 The Chromium Authors, Hibiki Tachibana, and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -86,11 +86,11 @@ void AddInstallerCopyTasks(const InstallParams& install_params,
                            WorkItemList* install_list) {
   DCHECK(install_list);
 
-  const InstallerState& installer_state = install_params.installer_state;
-  const base::FilePath& setup_path = install_params.setup_path;
-  const base::FilePath& archive_path = install_params.archive_path;
-  const base::FilePath& temp_path = install_params.temp_path;
-  const base::Version& new_version = install_params.new_version;
+  const InstallerState& installer_state = *install_params.installer_state;
+  const base::FilePath& setup_path = *install_params.setup_path;
+  const base::FilePath& archive_path = *install_params.archive_path;
+  const base::FilePath& temp_path = *install_params.temp_path;
+  const base::Version& new_version = *install_params.new_version;
 
   base::FilePath installer_dir(
       installer_state.GetInstallerDirectory(new_version));
@@ -264,12 +264,12 @@ void ClosePreviousChromeProcess(const base::FilePath& target_path) {
 // Adds Chrome specific install work items to |install_list|.
 void AddChromeWorkItems(const InstallParams& install_params,
                         WorkItemList* install_list) {
-  const InstallerState& installer_state = install_params.installer_state;
-  const base::FilePath& archive_path = install_params.archive_path;
-  const base::FilePath& src_path = install_params.src_path;
-  const base::FilePath& temp_path = install_params.temp_path;
-  const base::Version& current_version = install_params.current_version;
-  const base::Version& new_version = install_params.new_version;
+  const InstallerState& installer_state = *install_params.installer_state;
+  const base::FilePath& archive_path = *install_params.archive_path;
+  const base::FilePath& src_path = *install_params.src_path;
+  const base::FilePath& temp_path = *install_params.temp_path;
+  const base::Version& current_version = *install_params.current_version;
+  const base::Version& new_version = *install_params.new_version;
 
   const base::FilePath& target_path = installer_state.target_path();
 
@@ -485,9 +485,9 @@ void AddEnterpriseDeviceTrustWorkItems(const InstallerState& installer_state,
 // state key if running under an MSI installer.
 void AddUninstallShortcutWorkItems(const InstallParams& install_params,
                                    WorkItemList* install_list) {
-  const InstallerState& installer_state = install_params.installer_state;
-  const base::FilePath& setup_path = install_params.setup_path;
-  const base::Version& new_version = install_params.new_version;
+  const InstallerState& installer_state = *install_params.installer_state;
+  const base::FilePath& setup_path = *install_params.setup_path;
+  const base::Version& new_version = *install_params.new_version;
 
   HKEY reg_root = installer_state.root_key();
 
@@ -585,7 +585,7 @@ void AddUninstallShortcutWorkItems(const InstallParams& install_params,
 // product version as the last step.
 void AddVersionKeyWorkItems(const InstallParams& install_params,
                             WorkItemList* list) {
-  const InstallerState& installer_state = install_params.installer_state;
+  const InstallerState& installer_state = *install_params.installer_state;
   const HKEY root = installer_state.root_key();
 
   // Only set "lang" for user-level installs since for system-level, the install
@@ -619,7 +619,7 @@ void AddVersionKeyWorkItems(const InstallParams& install_params,
   }
   list->AddSetRegValueWorkItem(
       root, clients_key, KEY_WOW64_32KEY, google_update::kRegVersionField,
-      ASCIIToWide(install_params.new_version.GetString()),
+      ASCIIToWide(install_params.new_version->GetString()),
       true);  // overwrite version
 }
 
@@ -665,12 +665,12 @@ bool AppendPostInstallTasks(const InstallParams& install_params,
                             WorkItemList* post_install_task_list) {
   DCHECK(post_install_task_list);
 
-  const InstallerState& installer_state = install_params.installer_state;
-  const base::FilePath& setup_path = install_params.setup_path;
-  const base::FilePath& src_path = install_params.src_path;
-  const base::FilePath& temp_path = install_params.temp_path;
-  const base::Version& current_version = install_params.current_version;
-  const base::Version& new_version = install_params.new_version;
+  const InstallerState& installer_state = *install_params.installer_state;
+  const base::FilePath& setup_path = *install_params.setup_path;
+  const base::FilePath& src_path = *install_params.src_path;
+  const base::FilePath& temp_path = *install_params.temp_path;
+  const base::Version& current_version = *install_params.current_version;
+  const base::Version& new_version = *install_params.new_version;
 
   HKEY root = installer_state.root_key();
   const base::FilePath& target_path = installer_state.target_path();
@@ -802,11 +802,11 @@ void AddInstallWorkItems(const InstallParams& install_params,
                          WorkItemList* install_list) {
   DCHECK(install_list);
 
-  const InstallerState& installer_state = install_params.installer_state;
-  const base::FilePath& setup_path = install_params.setup_path;
-  const base::FilePath& temp_path = install_params.temp_path;
-  const base::Version& current_version = install_params.current_version;
-  const base::Version& new_version = install_params.new_version;
+  const InstallerState& installer_state = *install_params.installer_state;
+  const base::FilePath& setup_path = *install_params.setup_path;
+  const base::FilePath& temp_path = *install_params.temp_path;
+  const base::Version& current_version = *install_params.current_version;
+  const base::Version& new_version = *install_params.new_version;
 
   const base::FilePath& target_path = installer_state.target_path();
 
@@ -966,6 +966,37 @@ void AddNativeNotificationWorkItems(
   list->AddSetRegValueWorkItem(root, toast_activator_server_path,
                                WorkItem::kWow64Default, L"ServerExecutable",
                                notification_helper_path.value(), true);
+}
+
+void AddOldWerHelperRegistrationCleanupItems(HKEY root,
+                                             const base::FilePath& target_path,
+                                             WorkItemList* list) {
+  std::wstring value_prefix(target_path.value());
+  DCHECK(!value_prefix.empty());
+  if (value_prefix.back() != L'\\')
+    value_prefix.push_back(L'\\');
+  const std::wstring value_postfix(std::wstring(L"\\") + kWerDll);
+  const std::wstring wer_registry_path = GetWerHelperRegistryPath();
+  for (base::win::RegistryValueIterator value_iter(
+           root, wer_registry_path.c_str(), WorkItem::kWow64Default);
+       value_iter.Valid(); ++value_iter) {
+    const std::wstring value_name(value_iter.Name());
+    if (value_name.size() <= value_prefix.size() + value_postfix.size())
+      continue;
+
+    if (base::StartsWith(value_name, value_prefix,
+                         base::CompareCase::INSENSITIVE_ASCII) &&
+        base::EndsWith(value_name, value_postfix,
+                       base::CompareCase::INSENSITIVE_ASCII)) {
+      std::wstring value_version = value_name.substr(
+          value_prefix.size(),
+          value_name.size() - value_prefix.size() - value_postfix.size());
+      if (base::Version(base::WideToASCII(value_version)).IsValid()) {
+        list->AddDeleteRegValueWorkItem(root, wer_registry_path,
+                                        WorkItem::kWow64Default, value_name);
+      }
+    }
+  }
 }
 
 void AddWerHelperRegistration(HKEY root,
@@ -1142,6 +1173,8 @@ void AddFinalizeUpdateWorkItems(const base::Version& new_version,
   // overwriting any of the following post-install tasks.
   AddDowngradeCleanupItems(new_version, list);
 
+  AddOldWerHelperRegistrationCleanupItems(installer_state.root_key(),
+                                          installer_state.target_path(), list);
   AddWerHelperRegistration(
       installer_state.root_key(),
       GetWerHelperPath(installer_state.target_path(), new_version), list);
