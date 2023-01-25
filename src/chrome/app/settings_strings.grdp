@@ -24,6 +24,12 @@
   <message name="IDS_SETTINGS_ABOUT_PAGE_BROWSER_VERSION" desc="The text label describing the version of the browser, example: Version 57.0.2937.0 (Developer Build) unknown (64-bit)">
     Version <ph name="PRODUCT_VERSION">$1<ex>15.0.865.0</ex></ph> (<ph name="PRODUCT_CHANNEL">$2<ex>Developer Build</ex></ph>) <ph name="PRODUCT_MODIFIER">$3</ph> <ph name="PRODUCT_VERSION_BITS">$4</ph>
   </message>
+  <message name="IDS_SETTINGS_ABOUT_PAGE_LEARN_MORE_UPDATE_ERRORS" desc="The accessibility label for a 'Learn more' link next to an error message about how an update has failed.">
+    Learn more about fixing update errors
+  </message>
+  <message name="IDS_SETTINGS_ABOUT_PAGE_LEARN_MORE_SYSTEM_REQUIREMENTS" desc="The accessibility label for a 'Learn more' link next to an error message about how the user's operating system is not supported.">
+    Learn more about system requirements
+  </message>
   <if expr="not chromeos_ash">
     <message name="IDS_SETTINGS_ABOUT_PAGE_RELAUNCH" desc="The label for the relaunch button that relaunches the browser once update is complete">
       Relaunch
@@ -42,7 +48,10 @@
       Automatically update Thorium for all users
     </message>
     <message name="IDS_ABOUT_CHROME_AUTOUPDATE_ALL_IS_ON" desc="The text in About Page to indicate automatic update is turned on.  Mac-only.">
-      Automatic updates are turned on
+      Automatic updates are turned on.
+    </message>
+    <message name="IDS_SETTINGS_ABOUT_PAGE_LEARN_MORE_UPDATING" desc="The accessibility label for a 'Learn more' link next to a message saying automatic updates are turned on.  Mac-only">
+      Learn more about updating
     </message>
   </if>
 
@@ -373,6 +382,9 @@
   <message name="IDS_SETTINGS_ADDRESS_REMOVE_CONFIRMATION_TITLE" desc="Address remove dialog confirmation title.">
     Remove address
   </message>
+  <message name="IDS_SETTINGS_ADDRESS_REMOVED_MESSAGE" desc="Hidden text that is read to screen readers to confirm that an address was removed.">
+    Address removed
+  </message>
   <message name="IDS_SETTINGS_CREDIT_CARD_REMOVE" desc="Label for a context menu item that removes the selected credit card." meaning="Remove selected credit card.">
     Remove
   </message>
@@ -572,7 +584,7 @@
     Auto Sign-in
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_AUTOSIGNIN_CHECKBOX_DESC" desc="Text that describes the 'Auto Sign-in' functionality to users.">
-    Automatically sign in to sites and apps using stored credentials. If turned off, you'll be asked for confirmation every time before signing in to a site or app.
+    Automatically sign in to sites and apps using saved credentials. If turned off, you'll be asked for confirmation every time before signing in to a site or app.
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_LEAK_DETECTION_LABEL" desc="Label for a checkbox that allows users to choose whether chrome should check that credentials have been part of a leak.">
     Warn you if passwords are exposed in a data breach
@@ -740,8 +752,8 @@
   </message>
    <message name="IDS_SETTINGS_PASSWORD_MOVE_PASSWORDS_TO_ACCOUNT_COUNT" desc="Label shown in the link that open moving multiple password dialog.">
     {COUNT, plural,
-      =1 {{COUNT} password is stored on this device}
-      other {{COUNT} passwords are stored on this device}}
+      =1 {{COUNT} password is saved on this device}
+      other {{COUNT} passwords are saved on this device}}
   </message>
   <message name="IDS_SETTINGS_PASSWORD_MOVE_PASSWORDS_TO_ACCOUNT_DIALOG_BODY_TEXT" desc="Text displayed in the dialog that asks the user to select which passwords to move to their Google Account.">
     Choose which passwords to move. You can access them whenever you're signed in.
@@ -777,7 +789,7 @@
     Delete password?
   </message>
   <message name="IDS_SETTINGS_PASSWORD_REMOVE_DIALOG_BODY" desc="Description message for the dialog that asks the user which versions of a password to remove (device, Google Account or both).">
-    Your password for <ph name="WEBSITE">&lt;b&gt;$1&lt;/b&gt;</ph> is stored on this device and in your Google Account. Which one do you want to delete?
+    Your password for <ph name="WEBSITE">&lt;b&gt;$1&lt;/b&gt;</ph> is saved on this device and to your Google Account. Which one do you want to delete?
   </message>
   <message name="IDS_SETTINGS_PASSWORD_REMOVE_DIALOG_REMOVE_BUTTON_TEXT" desc="Text for the button that confirms the action in the dialog that asks the user which versions of a password to remove (device, Google Account or both).">
     Delete
@@ -882,10 +894,10 @@
     Password is more than 1000 characters
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_CONFLICT_ACCOUNT" desc="An error message for a row that wasn't imported, because the provided credential is already stored in their Google Password Manager. It is shown on the dialog for importing passwords if some passwords weren't imported.">
-    A password for this account is already stored in your Google Password Manager (<ph name="USER_EMAIL"><ex>elisa.g.becket@gmail.com</ex>$1</ph>)
+    A password for this account is already saved to your Google Password Manager (<ph name="USER_EMAIL"><ex>elisa.g.becket@gmail.com</ex>$1</ph>)
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_CONFLICT_DEVICE" desc="An error message for a row that wasn't imported, because the provided credential is already stored on their device. It is shown on the dialog for importing passwords if some passwords weren't imported.">
-    A password for this account is already stored on this device
+    A password for this account is already saved on this device
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_FAILURES_SUMMARY" desc="Message is shown on the dialog for importing passwords if some passwords weren't imported.">
     Passwords not imported (<ph name="COUNT"><ex>42</ex>$1</ph>)
@@ -1430,6 +1442,18 @@
   <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_SETTING" desc="Memory saver mode setting label. This mode allows the browser to save memory from background tabs">
     Memory Saver
   </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_LEARN_MORE_ARIA_LABEL" desc="Accessibility label for the learn more link that allows the user to learn about memory saver mode.">
+    Learn more about memory saver
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_SEND_FEEDBACK_ARIA_LABEL" desc="Accessibility label for the send feedback link that allows the user to send feedback about memory saver mode.">
+    Send feedback about memory saver
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADD_BUTTON_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focusing the tab discarding exceptions list add button. Sites added to the list will not be discarded by memory saver.">
+    Add to the "always keep these sites active" list
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_SAVE_BUTTON_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focusing the tab discarding exceptions list edit dialog save button. Sites added to the list will not be discarded by memory saver.">
+    Save to the "always keep these sites active" list
+  </message>
   <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_HEADER" desc="Heading for the exceptions list for tab discarding in the performance settings. Tabs will not be discarded by memory saver mode if on a site matching a rule in this list.">
     Always keep these sites active
   </message>
@@ -1444,6 +1468,15 @@
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_BELOW_THRESHOLD_LABEL" desc="Label for the energy saver mode enabled only when battery is low option">
     Turn on only when my battery is at <ph name="PERCENT">$1<ex>20</ex></ph>% or lower
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_RADIO_GROUP_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focus enters the energy saver mode radio group. When energy saver mode is enabled, this radio group will be expanded and allow the user to choose between different triggering options.">
+    Energy saver options
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_LEARN_MORE_ARIA_LABEL" desc="Accessibility label for the learn more link that allows the user to learn about energy saver mode.">
+    Learn more about energy saver
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_SEND_FEEDBACK_ARIA_LABEL" desc="Accessibility label for the send feedback link that allows the user to send feedback about energy saver mode.">
+    Send feedback about energy saver
   </message>
 
   <!-- Languages Page -->
@@ -2375,7 +2408,10 @@
     Search engine
   </message>
   <message name="IDS_SETTINGS_SEARCH_EXPLANATION" desc="Explanation for the search engine dropdown setting.">
-    Search engine used in the address bar
+    Search engine used in the address bar.
+  </message>
+  <message name="IDS_SETTINGS_SEARCH_EXPLANATION_ACCESSIBILITY_LABEL" desc="Accessibility label for a 'learn more' link which links to an article about setting a default search engine.">
+    Learn more about default search engines
   </message>
   <message name="IDS_SETTINGS_SEARCH_MANAGE_SEARCH_ENGINES" desc="Label for the Manage Search Engines button.">
     Manage search engines
@@ -3395,7 +3431,11 @@
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_LABEL" desc="Label for button to clear displayed site data">
     Clear displayed data
-  </message>  <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_MEMBERSHIP_LABEL" desc="Label displaying how many members are in a first-party set for a specific site. This is displayed on site entries in all sites page and site details page.">
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_DETAILS_SUBPAGE_ACCESSIBILITY_LABEL" desc="The (accessibility) label for subpage button that navigates to site details from all sites page.">
+    Show site details for <ph name="SITE_GROUP">$1<ex>google.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_MEMBERSHIP_LABEL" desc="Label displaying how many members are in a first-party set for a specific site. This is displayed on site entries in all sites page and site details page.">
     {MEMBERS, plural,
         =1 {1 site in <ph name="FPS_OWNER">{FPS_OWNER}<ex>google.com</ex></ph>'s group}
         other {{MEMBERS} sites in <ph name="FPS_OWNER">{FPS_OWNER}<ex>google.com</ex></ph>'s group}}
