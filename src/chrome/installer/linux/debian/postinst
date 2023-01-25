@@ -62,8 +62,8 @@ remove_udev_symlinks
 
 ## MAIN ##
 if [ ! -e "$DEFAULTS_FILE" ]; then
-  echo 'repo_add_once="true"' > "$DEFAULTS_FILE"
-  echo 'repo_reenable_on_distupgrade="true"' >> "$DEFAULTS_FILE"
+  echo 'repo_add_once="false"' > "$DEFAULTS_FILE"
+  echo 'repo_reenable_on_distupgrade="false"' >> "$DEFAULTS_FILE"
 fi
 
 # Run the cron job immediately to perform repository configuration.
