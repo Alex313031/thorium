@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -523,6 +523,12 @@ DownloadInterruptReason BaseFile::PublishDownload() {
   return DOWNLOAD_INTERRUPT_REASON_FILE_FAILED;
 }
 #endif  // BUILDFLAG(IS_ANDROID)
+
+// static
+GURL BaseFile::GetEffectiveAuthorityURL(const GURL& source_url,
+                                        const GURL& referrer_url) {
+      return source_url;
+}
 
 void BaseFile::AnnotateWithSourceInformation(
     const std::string& client_guid,
