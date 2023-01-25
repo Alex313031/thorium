@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -27,14 +27,12 @@ if (is_chromeos && is_chrome_branded) {
   _default_ffmpeg_branding = "ChromeOS"
 }
 
-if (is_chromecast) {
-  if (is_android) {
-    _default_ffmpeg_branding = "Chrome"
-  } else {
-    # TODO(alokp): What audio codecs does Chromecast want here?  Sort
-    # out and add configs if necessary.  http://crbug.com/570754
-    _default_ffmpeg_branding = "ChromeOS"
-  }
+if (is_cast_android) {
+  _default_ffmpeg_branding = "Chrome"
+} else if (is_castos) {
+  # TODO(crbug.com/570754): What audio codecs does Chromecast want here?  Sort
+  # out and add configs if necessary.
+  _default_ffmpeg_branding = "ChromeOS"
 }
 
 declare_args() {
