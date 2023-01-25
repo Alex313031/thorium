@@ -888,6 +888,7 @@ config("thinlto_optimize_default") {
 
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
@@ -912,6 +913,7 @@ config("thinlto_optimize_max") {
 
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
@@ -2151,6 +2153,7 @@ if (is_win) {
       # can be removed at link time with --gc-sections.
       "-fdata-sections",
       "-ffunction-sections",
+      "-funique-section-names",
     ]
     if ((!is_nacl || is_nacl_saigo) && is_clang) {
       # We don't care about unique section names, this makes object files a bit
