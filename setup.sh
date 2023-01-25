@@ -62,6 +62,10 @@ cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
+# Add default_apps dir for Google Docs Offline extension.
+mkdir -v -p $HOME/chromium/src/out/thorium/default_apps &&
+cp -r -v infra/default_apps/. $HOME/chromium/src/out/thorium/default_apps/ &&
+
 echo " # Workaround for DevTools" &&
 mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
