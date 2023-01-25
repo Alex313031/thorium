@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors, Alex313031, and Midzer. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -491,10 +491,13 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
   # isn't actually used, so it's safe to set HAVE_SYSCTL to 0. Linux is also
   # removing <sys/sysctl.h> soon, so this is needed to silence a deprecation
   # #warning which will be converted to an error via -Werror.
+  # There is also no prctl.h
   if target_os in ['linux', 'linux-noasm']:
     pre_make_rewrites += [
         (r'(#define HAVE_SYSCTL [01])',
-         r'#define HAVE_SYSCTL 0 /* \1 -- forced to 0 for Fuchsia */')
+         r'#define HAVE_SYSCTL 0 /* \1 -- forced to 0 for Fuchsia */'),
+        (r'(#define HAVE_PRCTL [01])',
+         r'#define HAVE_PRCTL 0 /* \1 -- forced to 0 for Fuchsia */')
     ]
 
   # Turn off bcrypt, since we don't have it on Windows builders, but it does
@@ -1001,9 +1004,9 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
 
   # Google Chrome & ChromeOS specific configuration.
   configure_flags['Chrome'].extend([
-      '--enable-decoder=aac,h264,mp3,eac3,ac3,hevc,mpeg4,mpegvideo,mp2,mp1,flac',
-      '--enable-demuxer=aac,mp3,mov,dtshd,dts,avi,mpegvideo,m4v,h264,vc1,flac',
-      '--enable-parser=aac,h264,mpegaudio,mpeg4video,mpegvideo,ac3,h261,vc1,h263,flac',
+      '--enable-decoder=aac,h264,mp3,hevc',
+      '--enable-demuxer=aac,mp3',
+      '--enable-parser=aac,h264,hevc',
   ])
 
   # Google ChromeOS specific configuration.
