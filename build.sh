@@ -34,7 +34,7 @@ printf "${CYA}\n" &&
 # Build Thorium
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver thorium_shell -j$@ &&
+./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chrome_sandbox chromedriver clear_key_cdm thorium_shell -j$@ &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
