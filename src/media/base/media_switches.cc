@@ -602,11 +602,6 @@ BASE_FEATURE(kVaapiIgnoreDriverChecks,
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_LINUX)
 
-// Enable VA-API hardware decode acceleration for AV1.
-BASE_FEATURE(kVaapiAV1Decoder,
-             "VaapiAV1Decoder",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enable VA-API hardware low power encoder for all codecs on intel Gen9x gpu.
 BASE_FEATURE(kVaapiLowPowerEncoderGen9x,
              "VaapiLowPowerEncoderGen9x",
