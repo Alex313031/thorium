@@ -25,6 +25,12 @@ BASE_FEATURE(kAnonymousIframeOriginTrial,
              "AnonymousIframeOriginTrial",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Gate access to Attribution Reporting cross app and web APIs that allow
+// registering with a native attribution API.
+BASE_FEATURE(kAttributionReportingCrossAppWeb,
+             "AttributionReportingCrossAppWeb",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // Apply lazy-loading to ad frames which have embeds likely impacting Core Web
 // Vitals.
 BASE_FEATURE(kAutomaticLazyFrameLoadingToAds,
@@ -95,6 +101,16 @@ const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>
 // cache.
 BASE_FEATURE(kBackForwardCacheDedicatedWorker,
              "BackForwardCacheDedicatedWorker",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kBackForwardCacheNotReachedOnJavaScriptExecution,
+             "BackForwardCacheNotReachedOnJavaScriptExecution",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Allows pages with keepalive requests to stay eligible for the back/forward
+// cache. See https://crbug.com/1347101 for more details.
+BASE_FEATURE(kBackForwardCacheWithKeepaliveRequest,
+             "BackForwardCacheWithKeepaliveRequest",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enable intervention for download that was initiated from or occurred in an ad
@@ -309,6 +325,10 @@ const base::FeatureParam<int>
 BASE_FEATURE(kSameSiteCrossOriginForSpeculationRulesPrerender,
              "SameSiteCrossOriginForSpeculationRulesPrerender",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSameSiteRedirectionForEmbedderTriggeredPrerender,
+             "SameSiteRedirectionForEmbedderTriggeredPrerender",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kPrerender2SequentialPrerendering,
              "Prerender2SequentialPrerendering",
@@ -544,6 +564,12 @@ BASE_FEATURE(kAudioWorkletThreadRealtimePriority,
              "AudioWorkletThreadRealtimePriority",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// A server-side switch for the output device (sink) selection in Web Audio API.
+// This enables the selection via the AudioContext constructor and also via
+// AudioContext.setSinkId() method.
+BASE_FEATURE(kWebAudioSinkSelection, "kWebAudioSinkSelection",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // A feature to reduce the set of resources fetched by No-State Prefetch.
 BASE_FEATURE(kLightweightNoStatePrefetch,
              "LightweightNoStatePrefetch",
@@ -605,11 +631,27 @@ const base::FeatureParam<int> kForceDarkForegroundLightnessThresholdParam{
 const base::FeatureParam<int> kForceDarkBackgroundLightnessThresholdParam{
     &kForceWebContentsDarkMode, "background_lightness_threshold", -1};
 
+const base::FeatureParam<ForceDarkImageClassifier>::Option
+    forcedark_image_classifier_policy_options[] = {
+        {ForceDarkImageClassifier::kUseBlinkSettings,
+         "use_blink_settings_for_image_policy"},
+        {ForceDarkImageClassifier::kNumColorsWithMlFallback,
+         "num_colors_with_ml_fallback"},
+        {ForceDarkImageClassifier::kTransparencyAndNumColors,
+         "transparency_and_num_colors"},
+};
+
+const base::FeatureParam<ForceDarkImageClassifier>
+    kForceDarkImageClassifierParam{&kForceWebContentsDarkMode,
+                                   "classifier_policy",
+                                   ForceDarkImageClassifier::kUseBlinkSettings,
+                                   &forcedark_image_classifier_policy_options};
+
 // Instructs WebRTC to honor the Min/Max Video Encode Accelerator dimensions.
 BASE_FEATURE(kWebRtcUseMinMaxVEADimensions,
              "WebRtcUseMinMaxVEADimensions",
 // TODO(crbug.com/1008491): enable other platforms.
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -679,12 +721,6 @@ BASE_FEATURE(kLowLatencyCanvas2dImageChromium,
 // Enables small accelerated canvases for webview (crbug.com/1004304)
 BASE_FEATURE(kWebviewAccelerateSmallCanvases,
              "WebviewAccelerateSmallCanvases",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
-// Let accelerated canvases remain accelerated after readback
-// (crbug.com/1288118)
-BASE_FEATURE(kCanvas2dStaysGPUOnReadback,
-             "Canvas2dStaysGPUOnReadback",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // When enabled, frees up CachedMetadata after consumption by script resources
@@ -983,6 +1019,13 @@ const base::FeatureParam<int> kBrowsingTopicsNumberOfTopTopicsPerEpoch{
 // topic instead of one of the top topics.
 const base::FeatureParam<int> kBrowsingTopicsUseRandomTopicProbabilityPercent{
     &kBrowsingTopics, "use_random_topic_probability_percent", 5};
+// Maximum duration between when a epoch is calculated and when a site starts
+// using that new epoch's topics. The time chosen is a per-site random point in
+// time between [calculation time, calculation time + max duration).
+const base::FeatureParam<base::TimeDelta>
+    kBrowsingTopicsMaxEpochIntroductionDelay{
+        &kBrowsingTopics, "browsing_topics_max_epoch_introduction_delay",
+        base::Days(2)};
 // How many epochs (weeks) of API usage data (i.e. topics observations) will be
 // based off for the filtering of topics for a calling context.
 const base::FeatureParam<int>
@@ -1009,9 +1052,10 @@ const base::FeatureParam<int>
     kBrowsingTopicsMaxNumberOfApiUsageContextDomainsToStorePerPageLoad{
         &kBrowsingTopics,
         "max_number_of_api_usage_context_domains_to_store_per_page_load", 30};
-// Encodes the configuration parameters above. Each version number should only
-// be mapped to one configuration set. In practice, this can be guaranteed by
-// always bumping up the version number whenever parameters are updated.
+// Encodes the configuration parameters above. A version number can be used for
+// multiple configurations as long as they are compatible (from both Chrome's
+// and users/websites' perspective). For a configuration that's incompatible
+// with previous ones, a new dedicated version number should be used.
 const base::FeatureParam<int> kBrowsingTopicsConfigVersion{&kBrowsingTopics,
                                                            "config_version", 1};
 // The taxonomy version. This only affects the topics classification that occurs
@@ -1292,11 +1336,6 @@ BASE_FEATURE(kDurableClientHintsCache,
              "DurableClientHintsCache",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Allows sites to request fullscreen and open a popup from a single gesture.
-BASE_FEATURE(kWindowPlacementFullscreenCompanionWindow,
-             "WindowPlacementFullscreenCompanionWindow",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 const base::FeatureParam<std::string> kUserAgentFrozenBuildVersion{
     &kReduceUserAgentMinorVersion, "build_version", "0"};
 
@@ -1309,9 +1348,10 @@ BASE_FEATURE(kReportFCPOnlyOnSuccessfulCommit,
              "ReportFCPOnlyOnSuccessfulCommit",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// TODO(crbug.com/1382005): Deprecate this flag.
 BASE_FEATURE(kRegionCaptureExperimentalSubtypes,
              "RegionCaptureExperimentalSubtypes",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kUserAgentOverrideExperiment,
              "UserAgentOverrideExperiment",
@@ -1474,6 +1514,10 @@ BASE_FEATURE(kSelectiveInOrderScriptTarget,
 const base::FeatureParam<std::string> kSelectiveInOrderScriptAllowList{
     &kSelectiveInOrderScriptTarget, "allow_list", ""};
 
+BASE_FEATURE(kImageLoadingPrioritizationFix,
+             "ImageLoadingPrioritizationFix",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 BASE_FEATURE(kAllowSourceSwitchOnPausedVideoMediaStream,
              "AllowSourceSwitchOnPausedVideoMediaStream",
              base::FEATURE_ENABLED_BY_DEFAULT);
@@ -1481,10 +1525,6 @@ BASE_FEATURE(kAllowSourceSwitchOnPausedVideoMediaStream,
 // Exposes non-standard stats in the WebRTC getStats() API.
 BASE_FEATURE(kWebRtcExposeNonStandardStats,
              "WebRtc-ExposeNonStandardStats",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
-BASE_FEATURE(kSubstringSetTreeForAttributeBuckets,
-             "SubstringSetTreeForAttributeBuckets",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kInvalidationSetClassBloomFilter,
@@ -1575,17 +1615,13 @@ BASE_FEATURE(kWebRtcThreadsUseResourceEfficientType,
              "WebRtcThreadsUseResourceEfficientType",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kThrottleIntersectionObserverUMA,
-             "ThrottleIntersectionObserverUMA",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 BASE_FEATURE(kWebRtcMetronome,
              "WebRtcMetronome",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSyncAccessHandleAllSyncSurface,
              "SyncAccessHandleAllSyncSurface",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kNoCentralWebCacheLimitControl,
              "NoCentralWebCacheLimitControl",
@@ -1599,8 +1635,14 @@ BASE_FEATURE(kProcessHtmlDataImmediately,
              "ProcessHtmlDataImmediately",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+const base::FeatureParam<bool> kProcessHtmlDataImmediatelyChildFrame{
+    &kProcessHtmlDataImmediately, "child", false};
+
 const base::FeatureParam<bool> kProcessHtmlDataImmediatelyFirstChunk{
     &kProcessHtmlDataImmediately, "first", false};
+
+const base::FeatureParam<bool> kProcessHtmlDataImmediatelyMainFrame{
+    &kProcessHtmlDataImmediately, "main", false};
 
 const base::FeatureParam<bool> kProcessHtmlDataImmediatelySubsequentChunks{
     &kProcessHtmlDataImmediately, "rest", false};
@@ -1617,12 +1659,57 @@ BASE_FEATURE(kDocumentEventNodePathCaching,
              "DocumentEventNodePathCaching",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+BASE_FEATURE(kNewBaseUrlInheritanceBehavior,
+             "NewBaseUrlInheritanceBehavior",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kNewGetDisplayMediaPickerOrder,
+             "NewGetDisplayMediaPickerOrder",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+bool IsNewBaseUrlInheritanceBehaviorEnabled() {
+  // The kIsolateSandboxedIframes feature depends on the new base URL behavior,
+  // so it enables the new behavior even if kNewBaseUrlInheritanceBehavior
+  // isn't enabled.
+  return base::FeatureList::IsEnabled(kNewBaseUrlInheritanceBehavior) ||
+         base::FeatureList::IsEnabled(kIsolateSandboxedIframes);
+}
+
 const base::FeatureParam<int> kDocumentMaxEventNodePathCachedEntries{
     &kDocumentEventNodePathCaching, "max-cache-entries", 10};
 
-BASE_FEATURE(kPostMessageDifferentPartitionSameOriginBlocked,
-             "PostMessageDifferentPartitionSameOriginBlocked",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+BASE_FEATURE(
+    kPostMessageFirstPartyToThirdPartyDifferentBucketSameOriginBlocked,
+    "PostMessageFirstPartyToThirdPartyDifferentBucketSameOriginBlocked",
+    base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(
+    kPostMessageFirstPartyToThirdPartyDifferentBucketSameOriginBlockedIfStorageIsPartitioned,
+    "PostMessageFirstPartyToThirdPartyDifferentBucketSameOriginBlockedIfStorage"
+    "IsPartitioned",
+    base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(
+    kPostMessageThirdPartyToFirstPartyDifferentBucketSameOriginBlocked,
+    "PostMessageThirdPartyToFirstPartyDifferentBucketSameOriginBlocked",
+    base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(
+    kPostMessageThirdPartyToFirstPartyDifferentBucketSameOriginBlockedIfStorageIsPartitioned,
+    "PostMessageThirdPartyToFirstPartyDifferentBucketSameOriginBlockedIfStorage"
+    "IsPartitioned",
+    base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(
+    kPostMessageThirdPartyToThirdPartyDifferentBucketSameOriginBlocked,
+    "PostMessageThirdPartyToThirdPartyDifferentBucketSameOriginBlocked",
+    base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(
+    kPostMessageThirdPartyToThirdPartyDifferentBucketSameOriginBlockedIfStorageIsPartitioned,
+    "PostMessageThirdPartyToThirdPartyDifferentBucketSameOriginBlockedIfStorage"
+    "IsPartitioned",
+    base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kWebRtcCombinedNetworkAndWorkerThread,
              "WebRtcCombinedNetworkAndWorkerThread",
@@ -1645,6 +1732,34 @@ const base::FeatureParam<IsolateSandboxedIframesGrouping>
         &kIsolateSandboxedIframes, "grouping",
         IsolateSandboxedIframesGrouping::kPerSite,
         &isolated_sandboxed_iframes_grouping_types};
+
+BASE_FEATURE(kSSVTrailerWriteNewVersion,
+             "SSVTrailerWriteNewVersion",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSSVTrailerWriteExposureAssertion,
+             "SSVTrailerWriteExposureAssertion",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSSVTrailerEnforceExposureAssertion,
+             "SSVTrailerEnforceExposureAssertion",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kAbortSignalHandleBasedRemoval,
+             "AbortSignalHandleBasedRemoval",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kForceHighPerformanceGPUForWebGL,
+             "ForceHighPerformanceGPUForWebGL",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSplitUserMediaQueues,
+             "SplitUserMediaQueues",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kTextCodecCJKEnabled,
+             "TextCodecCJKEnabled",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 }  // namespace features
 }  // namespace blink
