@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -24,7 +24,6 @@
 #include "base/strings/escape.h"
 #include "base/strings/string_split.h"
 #include "base/strings/string_util.h"
-#include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/thread_pool.h"
 #include "base/threading/scoped_blocking_call.h"
@@ -264,7 +263,7 @@ class ChromeOSTermsHandler
               IDS_TERMS_HTML);
     }
     std::move(callback_).Run(
-        base::RefCountedString::TakeString(std::move(contents_)));
+        base::MakeRefCounted<base::RefCountedString>(std::move(contents_)));
   }
 
   // Path in the URL.
@@ -336,7 +335,7 @@ class ChromeOSCreditsHandler
               IDR_OS_CREDITS_HTML);
     }
     std::move(callback_).Run(
-        base::RefCountedString::TakeString(std::move(contents_)));
+        base::MakeRefCounted<base::RefCountedString>(std::move(contents_)));
   }
 
   // Path in the URL.
@@ -355,7 +354,7 @@ void OnBorealisCreditsLoaded(content::URLDataSource::GotDataCallback callback,
     credits_html = l10n_util::GetStringUTF8(IDS_BOREALIS_CREDITS_PLACEHOLDER);
   }
   std::move(callback).Run(
-      base::RefCountedString::TakeString(std::move(credits_html)));
+      base::MakeRefCounted<base::RefCountedString>(std::move(credits_html)));
 }
 
 void HandleBorealisCredits(Profile* profile,
@@ -440,7 +439,7 @@ class CrostiniCreditsHandler
       contents_ = l10n_util::GetStringUTF8(IDS_CROSTINI_CREDITS_PLACEHOLDER);
     }
     std::move(callback_).Run(
-        base::RefCountedString::TakeString(std::move(contents_)));
+        base::MakeRefCounted<base::RefCountedString>(std::move(contents_)));
   }
 
   // Path in the URL.
@@ -724,9 +723,7 @@ void AboutUIHTMLSource::StartDataRequest(
 void AboutUIHTMLSource::FinishDataRequest(
     const std::string& html,
     content::URLDataSource::GotDataCallback callback) {
-  std::string html_copy(html);
-  std::move(callback).Run(
-      base::RefCountedString::TakeString(std::move(html_copy)));
+  std::move(callback).Run(base::MakeRefCounted<base::RefCountedString>(html));
 }
 
 std::string AboutUIHTMLSource::GetMimeType(const GURL& url) {
