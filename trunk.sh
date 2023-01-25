@@ -244,6 +244,8 @@ git rebase-update &&
 
 git fetch --tags &&
 
+git clean -ffd &&
+
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
 gclient runhooks &&
