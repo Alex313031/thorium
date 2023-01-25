@@ -22,3 +22,6 @@ unrar
 
 # For the VDPAU patch.
 vdpau-driver-all
+
+# Better XDG support.
+exo | exo-utils
