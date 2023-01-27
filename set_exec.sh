@@ -45,6 +45,8 @@ sudo chmod -v +x trunk.sh &&
 
 sudo chmod -v +x reset_depot_tools.sh &&
 
+sudo chmod -v +x VERSION.sh &&
+
 sudo chmod -v +x infra/install_deps.sh &&
 
 sudo chmod -v +x infra/build_polly.sh &&
