@@ -112,12 +112,6 @@ void AddInfoBarsIfNecessary(Browser* browser,
 
     infobars::ContentInfoBarManager* infobar_manager =
         infobars::ContentInfoBarManager::FromWebContents(web_contents);
-
-    if (ObsoleteSystem::IsObsoleteNowOrSoon()) {
-      PrefService* local_state = g_browser_process->local_state();
-      if (!local_state ||
-          !local_state->GetBoolean(prefs::kSuppressUnsupportedOSWarning))
-        ObsoleteSystemInfoBarDelegate::Create(infobar_manager);
     }
 
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
