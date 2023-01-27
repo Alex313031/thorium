@@ -860,6 +860,9 @@ config("compiler") {
     # For deterministic builds, keep the local machine's current working
     # directory from appearing in build outputs.
     "-Zremap-cwd-prefix=.",
+    
+    # Full RUSTC optimizations.
+    "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul",
   ]
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
@@ -876,7 +879,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   }
 }
 
@@ -2033,17 +2036,7 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
-    "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-gvn-hoist-max-bbs=-1",
-    "-mllvm", "-gvn-hoist-max-depth=-1",
-    "-mllvm", "-gvn-hoist-max-chain-length=-1",
     "/O3",
     "/clang:-O3",
     "/clang:-mavx",
@@ -2064,17 +2057,7 @@ if (is_win) {
     "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-adce-remove-loops",
-    "-mllvm:-enable-cse-in-irtranslator",
-    "-mllvm:-enable-cse-in-legalizer",
-    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm:-loop-rotate-multi",
     "-mllvm:-enable-interleaved-mem-accesses",
-    "-mllvm:-enable-masked-interleaved-mem-accesses",
-    "-mllvm:-enable-gvn-hoist",
-    "-mllvm:-gvn-hoist-max-bbs=-1",
-    "-mllvm:-gvn-hoist-max-depth=-1",
-    "-mllvm:-gvn-hoist-max-chain-length=-1",
   ]
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
@@ -2104,17 +2087,7 @@ if (is_win) {
     "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
-    "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-gvn-hoist-max-bbs=-1",
-    "-mllvm", "-gvn-hoist-max-depth=-1",
-    "-mllvm", "-gvn-hoist-max-chain-length=-1",
     "-O3",
   ]
 
@@ -2129,17 +2102,7 @@ if (is_win) {
     "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
     "-Wl,-mllvm,-unroll-runtime-multi-exit",
     "-Wl,-mllvm,-aggressive-ext-opt",
-    "-Wl,-mllvm,-adce-remove-loops",
-    "-Wl,-mllvm,-enable-cse-in-irtranslator",
-    "-Wl,-mllvm,-enable-cse-in-legalizer",
-    "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
-    "-Wl,-mllvm,-loop-rotate-multi",
     "-Wl,-mllvm,-enable-interleaved-mem-accesses",
-    "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
-    "-Wl,-mllvm,-enable-gvn-hoist",
-    "-Wl,-mllvm,-gvn-hoist-max-bbs=-1",
-    "-Wl,-mllvm,-gvn-hoist-max-depth=-1",
-    "-Wl,-mllvm,-gvn-hoist-max-chain-length=-1",
     "-Wl,-O3",
   ]
 
@@ -2254,9 +2217,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2324,7 +2287,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   }
 }
 
@@ -2357,7 +2320,7 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   }
 }
 
@@ -2607,7 +2570,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
 }
 
 # Minimal symbols.
@@ -2680,7 +2643,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
