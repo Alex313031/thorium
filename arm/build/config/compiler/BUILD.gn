@@ -1,4 +1,4 @@
-# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright (c) 2023 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -551,20 +551,12 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
-
+    
     # TODO(crbug.com/1235145): Investigate why/if this should be needed.
     if (is_win) {
       cflags += [ "/clang:-ffp-contract=off" ]
     } else {
       cflags += [ "-ffp-contract=off" ]
-    }
-
-    if (default_toolchain != "//build/toolchain/cros:target") {
-      # TODO(crbug.com/1361629): Fix the compiler so this is not needed.
-      cflags += [
-        "-mllvm",
-        "-simplifycfg-hoist-common-skip-limit=0",
-      ]
     }
   }
 
@@ -739,7 +731,7 @@ config("compiler") {
         ldflags += [ "-fwhole-program-vtables" ]
       }
     }
-    
+
     if (is_win && target_cpu == "arm64") {
       cflags += [ "-O3", "-Wno-error", "-Wno-unreachable-code", "-Wno-unused-command-line-argument", ]
     }
@@ -884,6 +876,9 @@ config("compiler") {
     # For deterministic builds, keep the local machine's current working
     # directory from appearing in build outputs.
     "-Zremap-cwd-prefix=.",
+    
+    # Full RUSTC optimizations.
+    "-Copt-level=3",
   ]
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
@@ -912,6 +907,7 @@ config("thinlto_optimize_default") {
 
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
@@ -936,6 +932,7 @@ config("thinlto_optimize_max") {
 
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
@@ -963,15 +960,20 @@ config("compiler_cpu_abi") {
     if (current_cpu == "x64") {
       cflags += [
         "-m64",
-        "-msse3",
+        "-O3",
+        "-mavx",
+        "-maes",
+        "-mvaes",
+        "-mpclmul",
       ]
-      ldflags += [ "-m64" ]
+      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mvaes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
-      ldflags += [ "-m32" ]
+      ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
+          "-O3",
           "-msse3",
         ]
       }
@@ -983,7 +985,7 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-error", "-Wno-unused-command-line-argument", ]
         ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
       }
       if (!is_nacl) {
@@ -998,7 +1000,7 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=aarch64-linux-gnu", "-O3", "-Wno-error", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=aarch64-linux-gnu", "-O3", "-Wno-unused-command-line-argument", ]
         ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
       }
       if (is_android) {
@@ -1629,7 +1631,6 @@ config("default_warnings") {
 
       if (!is_nacl) {
         cflags += [
-
           # TODO(crbug.com/1343975) Evaluate and possibly enable.
           "-Wno-deprecated-builtins",
 
@@ -2014,15 +2015,21 @@ config("no_incompatible_pointer_warnings") {
 
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
+
+  common_optimize_on_cflags = [ "-O3", ]
+  common_optimize_on_ldflags = [ "-Wl,-O3", ]
+
 if (is_win) {
-  common_optimize_on_cflags = [
+
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
+
+  common_optimize_on_cflags += [
     "/Ob2",  # Both explicit and auto inlining.
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
     "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
-    "/O3",
-    "/clang:-O3",
-    "-Xclang", "-O3",
   ]
+  common_optimize_on_ldflags += []
   if (!is_asan) {
     common_optimize_on_cflags += [
       # Put data in separate COMDATs. This allows the linker
@@ -2033,8 +2040,42 @@ if (is_win) {
       "/Gw",
     ]
   }
-  common_optimize_on_ldflags = []
 
+  common_optimize_on_cflags += [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-enable-interleaved-mem-accesses",
+    "/O3",
+    "/clang:-O3",
+    "/clang:-mavx",
+    "/clang:-maes",
+    "/clang:-mvaes",
+    "/clang:-mpclmul",
+    "-Xclang", "-O3",
+  ]
+
+  common_optimize_on_ldflags += [
+    "-mllvm:-extra-vectorizer-passes",
+    "-mllvm:-enable-cond-stores-vec",
+    "-mllvm:-slp-vectorize-hor-store",
+    "-mllvm:-enable-loopinterchange",
+    "-mllvm:-enable-loop-distribute",
+    "-mllvm:-enable-unroll-and-jam",
+    "-mllvm:-enable-loop-flatten",
+    "-mllvm:-interleave-small-loop-scalar-reduction",
+    "-mllvm:-unroll-runtime-multi-exit",
+    "-mllvm:-aggressive-ext-opt",
+    "-mllvm:-enable-interleaved-mem-accesses",
+  ]
+  
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
@@ -2047,11 +2088,38 @@ if (is_win) {
     common_optimize_on_cflags += []
   }
 } else {
+
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-enable-interleaved-mem-accesses",
     "-O3",
+  ]
+
+  common_optimize_on_ldflags += [
+    "-Wl,-mllvm,-extra-vectorizer-passes",
+    "-Wl,-mllvm,-enable-cond-stores-vec",
+    "-Wl,-mllvm,-slp-vectorize-hor-store",
+    "-Wl,-mllvm,-enable-loopinterchange",
+    "-Wl,-mllvm,-enable-loop-distribute",
+    "-Wl,-mllvm,-enable-unroll-and-jam",
+    "-Wl,-mllvm,-enable-loop-flatten",
+    "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
+    "-Wl,-mllvm,-unroll-runtime-multi-exit",
+    "-Wl,-mllvm,-aggressive-ext-opt",
+    "-Wl,-mllvm,-enable-interleaved-mem-accesses",
+    "-Wl,-O3",
   ]
 
   if (is_android) {
@@ -2083,11 +2151,12 @@ if (is_win) {
       # can be removed at link time with --gc-sections.
       "-fdata-sections",
       "-ffunction-sections",
+      "-funique-section-names",
     ]
     if ((!is_nacl || is_nacl_saigo) && is_clang) {
       # We don't care about unique section names, this makes object files a bit
       # smaller.
-      common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+      # common_optimize_on_cflags += [ "-fno-unique-section-names" ]
     }
 
     common_optimize_on_ldflags += [
@@ -2132,11 +2201,11 @@ config("optimize") {
     if (chrome_pgo_phase != 2) {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
-      cflags = [ "/O1" ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O3" ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2164,9 +2233,9 @@ config("optimize") {
     cflags = [ "-O3" ] + common_optimize_on_cflags
   }
   if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   } else {
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2228,13 +2297,13 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   }
 }
 
@@ -2261,19 +2330,19 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   }
 }
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3" ]
+  rustflags = [ "-Copt-level=3", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2492,6 +2561,7 @@ config("symbols") {
   }
 
   configs = []
+
   # Compress debug on 32-bit ARM to stay under 4GB for ChromeOS
   # https://b/243982712.
   if (symbol_level == 2 && is_chromeos_device && !use_debug_fission &&
@@ -2516,7 +2586,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g", "-Copt-level=3" ]
+  rustflags = [ "-g", "-Copt-level=3", ]
 }
 
 # Minimal symbols.
@@ -2589,7 +2659,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3" ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
