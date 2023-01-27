@@ -200,6 +200,10 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
 }
 #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
 
+bool IsHevcProfileSupported(const VideoType& type) {
+   return true;
+ }
+
 bool IsVp9ProfileSupported(const VideoType& type) {
 #if BUILDFLAG(ENABLE_LIBVPX)
   // High bit depth capabilities may be toggled via LibVPX config flags.
