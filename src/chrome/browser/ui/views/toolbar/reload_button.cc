@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -77,6 +77,10 @@ void ReloadButton::ChangeMode(Mode mode, bool force) {
                                &ReloadButton::OnStopToReloadTimer);
     }
   }
+}
+
+bool menu_enabled_() const {
+  return true;
 }
 
 bool ReloadButton::GetMenuEnabled() const {
