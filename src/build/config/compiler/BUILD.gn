@@ -1997,65 +1997,14 @@ config("no_incompatible_pointer_warnings") {
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
 
+  common_optimize_on_cflags = [ "-O3", ]
+  common_optimize_on_ldflags = [ "-Wl,-O3", ]
+
+if (is_win) {
+
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
 
-  common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
-    "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-gvn-hoist-max-bbs=-1",
-    "-mllvm", "-gvn-hoist-max-depth=-1",
-    "-mllvm", "-gvn-hoist-max-chain-length=-1",
-    "/O3",
-    "/clang:-O3",
-    "/clang:-mavx",
-    "/clang:-maes",
-    "/clang:-mvaes",
-    "/clang:-mpclmul",
-    "-Xclang", "-O3",
-  ]
-
-  common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-enable-loopinterchange",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-adce-remove-loops",
-    "-mllvm:-enable-cse-in-irtranslator",
-    "-mllvm:-enable-cse-in-legalizer",
-    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm:-loop-rotate-multi",
-    "-mllvm:-enable-interleaved-mem-accesses",
-    "-mllvm:-enable-masked-interleaved-mem-accesses",
-    "-mllvm:-enable-gvn-hoist",
-    "-mllvm:-gvn-hoist-max-bbs=-1",
-    "-mllvm:-gvn-hoist-max-depth=-1",
-    "-mllvm:-gvn-hoist-max-chain-length=-1",
-  ]
-
-if (is_win) {
   common_optimize_on_cflags += [
     "/Ob2",  # Both explicit and auto inlining.
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
@@ -2072,8 +2021,6 @@ if (is_win) {
       "/Gw",
     ]
   }
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
     "-mllvm", "-extra-vectorizer-passes",
@@ -2193,6 +2140,7 @@ if (is_win) {
     "-Wl,-mllvm,-gvn-hoist-max-bbs=-1",
     "-Wl,-mllvm,-gvn-hoist-max-depth=-1",
     "-Wl,-mllvm,-gvn-hoist-max-chain-length=-1",
+    "-Wl,-O3",
   ]
 
   if (is_android) {
