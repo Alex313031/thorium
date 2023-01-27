@@ -2229,7 +2229,7 @@ if (is_win) {
     if ((!is_nacl || is_nacl_saigo) && is_clang) {
       # We don't care about unique section names, this makes object files a bit
       # smaller.
-      common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+      # common_optimize_on_cflags += [ "-fno-unique-section-names" ]
     }
 
     common_optimize_on_ldflags += [
