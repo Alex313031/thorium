@@ -67,7 +67,6 @@ enable_platform_dolby_vision = true
 enable_platform_encrypted_dolby_vision = true
 enable_platform_mpeg_h_audio = true
 enable_platform_dts_audio = true
-enable_passthrough_audio_codecs = true
 enable_mse_mpeg2ts_stream_parser = true
 use_text_section_splitting = true
 use_thin_lto = true
