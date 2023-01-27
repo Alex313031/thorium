@@ -53,6 +53,33 @@ static const uint8_t center_levels[4] = { 4, 5, 6, 5 };
  */
 static const uint8_t surround_levels[4] = { 4, 6, 7, 6 };
 
+/*** Chromium: vvv end #if CONFIG_AC3_PARSER */
+#endif
+/*** Chromium: ^^^ end #if CONFIG_AC3_PARSER */
+
+int ff_ac3_find_syncword(const uint8_t *buf, int buf_size)
+{
+    int i;
+
+    for (i = 1; i < buf_size; i += 2) {
+        if (buf[i] == 0x77 || buf[i] == 0x0B) {
+            if ((buf[i] ^ buf[i-1]) == (0x77 ^ 0x0B)) {
+                i--;
+                break;
+            } else if ((buf[i] ^ buf[i+1]) == (0x77 ^ 0x0B)) {
+                break;
+            }
+        }
+    }
+    if (i >= buf_size)
+        return AVERROR_INVALIDDATA;
+
+    return i;
+}
+
+/*** Chromium: vvv restart #if CONFIG_AC3_PARSER */
+#if CONFIG_AC3_PARSER
+/*** Chromium: ^^^ restart #if CONFIG_AC3_PARSER */
 
 int ff_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo *hdr)
 {
@@ -196,8 +223,7 @@ int av_ac3_parse_header(const uint8_t *buf, size_t size,
     return 0;
 }
 
-static int ac3_sync(uint64_t state, AACAC3ParseContext *hdr_info,
-        int *need_next_header, int *new_frame_start)
+static int ac3_sync(uint64_t state, int *need_next_header, int *new_frame_start)
 {
     int err;
     union {
@@ -219,19 +245,6 @@ static int ac3_sync(uint64_t state, AACAC3ParseContext *hdr_info,
     if(err < 0)
         return 0;
 
-    hdr_info->sample_rate = hdr.sample_rate;
-    hdr_info->bit_rate = hdr.bit_rate;
-    hdr_info->channels = hdr.channels;
-    hdr_info->channel_layout = hdr.channel_layout;
-    hdr_info->samples = hdr.num_blocks * 256;
-    hdr_info->service_type = hdr.bitstream_mode;
-    if (hdr.bitstream_mode == 0x7 && hdr.channels > 1)
-        hdr_info->service_type = AV_AUDIO_SERVICE_TYPE_KARAOKE;
-    if(hdr.bitstream_id>10)
-        hdr_info->codec_id = AV_CODEC_ID_EAC3;
-    else if (hdr_info->codec_id == AV_CODEC_ID_NONE)
-        hdr_info->codec_id = AV_CODEC_ID_AC3;
-
     *new_frame_start  = (hdr.frame_type != EAC3_FRAME_TYPE_DEPENDENT);
     *need_next_header = *new_frame_start || (hdr.frame_type != EAC3_FRAME_TYPE_AC3_CONVERT);
     return hdr.frame_size;
@@ -241,6 +254,7 @@ static av_cold int ac3_parse_init(AVCodecParserContext *s1)
 {
     AACAC3ParseContext *s = s1->priv_data;
     s->header_size = AC3_HEADER_SIZE;
+    s->crc_ctx = av_crc_get_table(AV_CRC_16_ANSI);
     s->sync = ac3_sync;
     return 0;
 }

@@ -30,5 +30,6 @@ void ff_opus_dsp_init(OpusDSP *ctx);
 
 void ff_opus_dsp_init_x86(OpusDSP *ctx);
 void ff_opus_dsp_init_aarch64(OpusDSP *ctx);
+void ff_opus_dsp_init_riscv(OpusDSP *ctx);
 
 #endif /* AVCODEC_OPUSDSP_H */

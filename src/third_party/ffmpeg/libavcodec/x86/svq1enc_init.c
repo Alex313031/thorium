@@ -22,12 +22,12 @@
 #include "libavutil/attributes.h"
 #include "libavutil/cpu.h"
 #include "libavutil/x86/cpu.h"
-#include "libavcodec/svq1enc.h"
+#include "libavcodec/svq1encdsp.h"
 
 int ff_ssd_int8_vs_int16_sse2(const int8_t *pix1, const int16_t *pix2,
                               intptr_t size);
 
-av_cold void ff_svq1enc_init_x86(SVQ1EncContext *c)
+av_cold void ff_svq1enc_init_x86(SVQ1EncDSPContext *c)
 {
     int cpu_flags = av_get_cpu_flags();
 

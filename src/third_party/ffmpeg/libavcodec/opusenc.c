@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <float.h>
+
 #include "encode.h"
 #include "opusenc.h"
 #include "opus_pvq.h"
@@ -40,7 +42,8 @@ typedef struct OpusEncContext {
     AVCodecContext *avctx;
     AudioFrameQueue afq;
     AVFloatDSPContext *dsp;
-    MDCT15Context *mdct[CELT_BLOCK_NB];
+    AVTXContext *tx[CELT_BLOCK_NB];
+    av_tx_fn tx_fn[CELT_BLOCK_NB];
     CeltPVQ *pvq;
     struct FFBufQueue bufqueue;
 
@@ -202,9 +205,9 @@ static void celt_frame_mdct(OpusEncContext *s, CeltFrame *f)
                 float *src2 = &b->samples[CELT_OVERLAP*t];
                 s->dsp->vector_fmul(win, src1, ff_celt_window, 128);
                 s->dsp->vector_fmul_reverse(&win[CELT_OVERLAP], src2,
-                                            ff_celt_window - 8, 128);
+                                            ff_celt_window_padded, 128);
                 src1 = src2;
-                s->mdct[0]->mdct(s->mdct[0], b->coeffs + t, win, f->blocks);
+                s->tx_fn[0](s->tx[0], b->coeffs + t, win, sizeof(float)*f->blocks);
             }
         }
     } else {
@@ -223,10 +226,10 @@ static void celt_frame_mdct(OpusEncContext *s, CeltFrame *f)
 
             /* Samples, windowed */
             s->dsp->vector_fmul_reverse(temp, b->samples + rwin,
-                                        ff_celt_window - 8, 128);
+                                        ff_celt_window_padded, 128);
             memcpy(win + lap_dst + blk_len, temp, CELT_OVERLAP*sizeof(float));
 
-            s->mdct[f->size]->mdct(s->mdct[f->size], b->coeffs, win, 1);
+            s->tx_fn[f->size](s->tx[f->size], b->coeffs, win, sizeof(float));
         }
     }
 
@@ -591,7 +594,7 @@ static int opus_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     opus_packet_assembler(s, avpkt);
 
     /* Update the psychoacoustic system */
-    ff_opus_psy_postencode_update(&s->psyctx, s->frame, s->rc);
+    ff_opus_psy_postencode_update(&s->psyctx, s->frame);
 
     /* Remove samples from queue and skip if needed */
     ff_af_queue_remove(&s->afq, s->packet.frames*frame_size, &avpkt->pts, &avpkt->duration);
@@ -612,7 +615,7 @@ static av_cold int opus_encode_end(AVCodecContext *avctx)
     OpusEncContext *s = avctx->priv_data;
 
     for (int i = 0; i < CELT_BLOCK_NB; i++)
-        ff_mdct15_uninit(&s->mdct[i]);
+        av_tx_uninit(&s->tx[i]);
 
     ff_celt_pvq_uninit(&s->pvq);
     av_freep(&s->dsp);
@@ -668,9 +671,11 @@ static av_cold int opus_encode_init(AVCodecContext *avctx)
         return AVERROR(ENOMEM);
 
     /* I have no idea why a base scaling factor of 68 works, could be the twiddles */
-    for (int i = 0; i < CELT_BLOCK_NB; i++)
-        if ((ret = ff_mdct15_init(&s->mdct[i], 0, i + 3, 68 << (CELT_BLOCK_NB - 1 - i))))
+    for (int i = 0; i < CELT_BLOCK_NB; i++) {
+        const float scale = 68 << (CELT_BLOCK_NB - 1 - i);
+        if ((ret = av_tx_init(&s->tx[i], &s->tx_fn[i], AV_TX_FLOAT_MDCT, 0, 15 << (i + 3), &scale, 0)))
             return AVERROR(ENOMEM);
+    }
 
     /* Zero out previous energy (matters for inter first frame) */
     for (int ch = 0; ch < s->channels; ch++)
@@ -740,10 +745,7 @@ const FFCodec ff_opus_encoder = {
     .close          = opus_encode_end,
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .p.supported_samplerates = (const int []){ 48000, 0 },
-#if FF_API_OLD_CHANNEL_LAYOUT
-    .p.channel_layouts = (const uint64_t []){ AV_CH_LAYOUT_MONO,
-                                            AV_CH_LAYOUT_STEREO, 0 },
-#endif
+    CODEC_OLD_CHANNEL_LAYOUTS(AV_CH_LAYOUT_MONO, AV_CH_LAYOUT_STEREO)
     .p.ch_layouts    = (const AVChannelLayout []){ AV_CHANNEL_LAYOUT_MONO,
                                                    AV_CHANNEL_LAYOUT_STEREO, { 0 } },
     .p.sample_fmts  = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_FLTP,

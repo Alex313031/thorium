@@ -33,22 +33,16 @@
 #include "libavutil/frame.h"
 #include "libavutil/mem.h"
 #include "libavutil/opt.h"
-#include "libavutil/pixdesc.h"
 
 #include "avcodec.h"
 #include "codec_internal.h"
 #include "encode.h"
-#include "idctdsp.h"
 #include "jpegtables.h"
-#include "mathops.h"
 #include "mjpegenc_common.h"
 #include "mjpeg.h"
 
 typedef struct LJpegEncContext {
     AVClass *class;
-    IDCTDSPContext idsp;
-    ScanTable scantable;
-    uint16_t matrix[64];
 
     int vsample[4];
     int hsample[4];
@@ -240,8 +234,8 @@ static int ljpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     init_put_bits(&pb, pkt->data, pkt->size);
 
-    ff_mjpeg_encode_picture_header(avctx, &pb, pict, NULL, &s->scantable,
-                                   s->pred, s->matrix, s->matrix, 0);
+    ff_mjpeg_encode_picture_header(avctx, &pb, pict, NULL, NULL,
+                                   s->pred, NULL, NULL, 0);
 
     header_bits = put_bits_count(&pb);
 
@@ -253,8 +247,6 @@ static int ljpeg_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         ret = ljpeg_encode_yuv(avctx, &pb, pict);
     if (ret < 0)
         return ret;
-
-    emms_c();
 
     ff_mjpeg_escape_FF(&pb, header_bits >> 3);
     ff_mjpeg_encode_picture_trailer(&pb, header_bits);
@@ -286,10 +278,6 @@ static av_cold int ljpeg_encode_init(AVCodecContext *avctx)
     s->scratch = av_malloc_array(avctx->width + 1, sizeof(*s->scratch));
     if (!s->scratch)
         return AVERROR(ENOMEM);
-
-    ff_idctdsp_init(&s->idsp, avctx);
-    ff_init_scantable(s->idsp.idct_permutation, &s->scantable,
-                      ff_zigzag_direct);
 
     ff_mjpeg_init_hvsample(avctx, s->hsample, s->vsample);
 

@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 /* these coefficients dequantize intraframe Y plane coefficients
- * (note: same as JPEG) */
+ * (note: almost the same as JPEG) */
 static const uint8_t vp31_intra_y_dequant[64] = {
     16, 11, 10, 16,  24,  40,  51,  61,
     12, 12, 14, 19,  26,  58,  60,  55,
@@ -35,19 +35,6 @@ static const uint8_t vp31_intra_y_dequant[64] = {
     24, 35, 55, 64,  81, 104, 113,  92,
     49, 64, 78, 87, 103, 121, 120, 101,
     72, 92, 95, 98, 112, 100, 103,  99
-};
-
-/* these coefficients dequantize intraframe C plane coefficients
- * (note: same as JPEG) */
-static const uint8_t vp31_intra_c_dequant[64] = {
-    17, 18, 24, 47, 99, 99, 99, 99,
-    18, 21, 26, 66, 99, 99, 99, 99,
-    24, 26, 56, 99, 99, 99, 99, 99,
-    47, 66, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99
 };
 
 /* these coefficients dequantize interframe coefficients (all planes) */

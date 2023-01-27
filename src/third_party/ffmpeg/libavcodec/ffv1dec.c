@@ -303,8 +303,11 @@ static int decode_slice(AVCodecContext *c, void *arg)
     }
     if ((ret = ff_ffv1_init_slice_state(f, fs)) < 0)
         return ret;
-    if (f->cur->key_frame || fs->slice_reset_contexts)
+    if (f->cur->key_frame || fs->slice_reset_contexts) {
         ff_ffv1_clear_slice_state(f, fs);
+    } else if (fs->slice_damaged) {
+        return AVERROR_INVALIDDATA;
+    }
 
     width  = fs->slice_width;
     height = fs->slice_height;
@@ -1099,7 +1102,7 @@ const FFCodec ff_ffv1_decoder = {
     .close          = ffv1_decode_close,
     FF_CODEC_DECODE_CB(decode_frame),
     UPDATE_THREAD_CONTEXT(update_thread_context),
-    .p.capabilities = AV_CODEC_CAP_DR1 /*| AV_CODEC_CAP_DRAW_HORIZ_BAND*/ |
+    .p.capabilities = AV_CODEC_CAP_DR1 |
                       AV_CODEC_CAP_FRAME_THREADS | AV_CODEC_CAP_SLICE_THREADS,
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP |
                       FF_CODEC_CAP_ALLOCATE_PROGRESS,

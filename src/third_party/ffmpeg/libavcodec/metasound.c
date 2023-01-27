@@ -26,15 +26,11 @@
 #include <stdint.h>
 
 #include "libavutil/channel_layout.h"
-#include "libavutil/float_dsp.h"
 
 #define BITSTREAM_READER_LE
 #include "avcodec.h"
 #include "codec_internal.h"
-#include "fft.h"
 #include "get_bits.h"
-#include "lsp.h"
-#include "sinewin.h"
 
 #include "twinvq.h"
 #include "metasound_data.h"
@@ -302,11 +298,6 @@ static av_cold int metasound_decode_init(AVCodecContext *avctx)
         props++;
     }
 
-    if (channels <= 0 || channels > TWINVQ_CHANNELS_MAX) {
-        av_log(avctx, AV_LOG_ERROR, "Unsupported number of channels: %i\n",
-               channels);
-        return AVERROR_INVALIDDATA;
-    }
     av_channel_layout_uninit(&avctx->ch_layout);
     av_channel_layout_default(&avctx->ch_layout, channels);
 

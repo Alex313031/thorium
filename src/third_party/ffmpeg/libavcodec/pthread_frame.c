@@ -179,6 +179,17 @@ static void async_unlock(FrameThreadContext *fctx)
     pthread_mutex_unlock(&fctx->async_mutex);
 }
 
+static void thread_set_name(PerThreadContext *p)
+{
+    AVCodecContext *avctx = p->avctx;
+    int idx = p - p->parent->threads;
+    char name[16];
+
+    snprintf(name, sizeof(name), "av:%.7s:df%d", avctx->codec->name, idx);
+
+    ff_thread_setname(name);
+}
+
 /**
  * Codec worker thread.
  *
@@ -191,6 +202,8 @@ static attribute_align_arg void *frame_worker_thread(void *arg)
     PerThreadContext *p = arg;
     AVCodecContext *avctx = p->avctx;
     const FFCodec *codec = ffcodec(avctx->codec);
+
+    thread_set_name(p);
 
     pthread_mutex_lock(&p->mutex);
     while (1) {
@@ -459,13 +472,13 @@ static int submit_packet(PerThreadContext *p, AVCodecContext *user_avctx,
             pthread_mutex_unlock(&p->mutex);
             return err;
         }
-
-        /* transfer hwaccel state stashed from previous thread, if any */
-        av_assert0(!p->avctx->hwaccel);
-        FFSWAP(const AVHWAccel*, p->avctx->hwaccel,                     fctx->stash_hwaccel);
-        FFSWAP(void*,            p->avctx->hwaccel_context,             fctx->stash_hwaccel_context);
-        FFSWAP(void*,            p->avctx->internal->hwaccel_priv_data, fctx->stash_hwaccel_priv);
     }
+
+    /* transfer the stashed hwaccel state, if any */
+    av_assert0(!p->avctx->hwaccel);
+    FFSWAP(const AVHWAccel*, p->avctx->hwaccel,                     fctx->stash_hwaccel);
+    FFSWAP(void*,            p->avctx->hwaccel_context,             fctx->stash_hwaccel_context);
+    FFSWAP(void*,            p->avctx->internal->hwaccel_priv_data, fctx->stash_hwaccel_priv);
 
     av_packet_unref(p->avpkt);
     ret = av_packet_ref(p->avpkt, avpkt);

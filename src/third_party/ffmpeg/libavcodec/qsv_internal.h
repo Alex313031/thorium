@@ -51,7 +51,7 @@
 #define ASYNC_DEPTH_DEFAULT 4       // internal parallelism
 
 #define QSV_MAX_ENC_PAYLOAD 2       // # of mfxEncodeCtrl payloads supported
-#define QSV_MAX_ENC_EXTPARAM 2
+#define QSV_MAX_ENC_EXTPARAM 8      // # of mfxEncodeCtrl extparam supported
 
 #define QSV_MAX_ROI_NUM 256
 
@@ -132,7 +132,7 @@ int ff_qsv_codec_id_to_mfx(enum AVCodecID codec_id);
 
 enum AVPixelFormat ff_qsv_map_fourcc(uint32_t fourcc);
 
-int ff_qsv_map_pixfmt(enum AVPixelFormat format, uint32_t *fourcc);
+int ff_qsv_map_pixfmt(enum AVPixelFormat format, uint32_t *fourcc, uint16_t *shift);
 enum AVPictureType ff_qsv_map_pictype(int mfx_pic_type);
 
 enum AVFieldOrder ff_qsv_map_picstruct(int mfx_pic_struct);

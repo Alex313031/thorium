@@ -1909,6 +1909,20 @@ static const AVCodecDescriptor codec_descriptors[] = {
         .long_name = NULL_IF_CONFIG_SMALL("WBMP (Wireless Application Protocol Bitmap) image"),
         .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSLESS,
     },
+    {
+        .id        = AV_CODEC_ID_MEDIA100,
+        .type      = AVMEDIA_TYPE_VIDEO,
+        .name      = "media100",
+        .long_name = NULL_IF_CONFIG_SMALL("Media 100i"),
+        .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSY,
+    },
+    {
+        .id        = AV_CODEC_ID_VQC,
+        .type      = AVMEDIA_TYPE_VIDEO,
+        .name      = "vqc",
+        .long_name = NULL_IF_CONFIG_SMALL("ViewQuest VQC"),
+        .props     = AV_CODEC_PROP_LOSSY,
+    },
 
     /* various PCM "codecs" */
     {
@@ -3303,6 +3317,20 @@ static const AVCodecDescriptor codec_descriptors[] = {
         .name      = "misc4",
         .long_name = NULL_IF_CONFIG_SMALL("Micronas SC-4 Audio"),
         .props     = AV_CODEC_PROP_LOSSY | AV_CODEC_PROP_INTRA_ONLY,
+    },
+    {
+        .id        = AV_CODEC_ID_APAC,
+        .type      = AVMEDIA_TYPE_AUDIO,
+        .name      = "apac",
+        .long_name = NULL_IF_CONFIG_SMALL("Marian's A-pac audio"),
+        .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSLESS,
+    },
+    {
+        .id        = AV_CODEC_ID_FTR,
+        .type      = AVMEDIA_TYPE_AUDIO,
+        .name      = "ftr",
+        .long_name = NULL_IF_CONFIG_SMALL("FTR Voice"),
+        .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSY,
     },
 
     /* subtitle codecs */

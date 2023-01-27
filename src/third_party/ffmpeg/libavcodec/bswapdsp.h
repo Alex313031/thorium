@@ -27,6 +27,7 @@ typedef struct BswapDSPContext {
 } BswapDSPContext;
 
 void ff_bswapdsp_init(BswapDSPContext *c);
+void ff_bswapdsp_init_riscv(BswapDSPContext *c);
 void ff_bswapdsp_init_x86(BswapDSPContext *c);
 
 #endif /* AVCODEC_BSWAPDSP_H */

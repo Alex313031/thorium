@@ -39,24 +39,18 @@
 #include "decode.h"
 #include "eaidct.h"
 #include "get_bits.h"
-#include "idctdsp.h"
 
 typedef struct TgqContext {
     AVCodecContext *avctx;
     int width, height;
-    ScanTable scantable;
     int qtable[64];
     DECLARE_ALIGNED(16, int16_t, block)[6][64];
-    GetByteContext gb;
 } TgqContext;
 
 static av_cold int tgq_decode_init(AVCodecContext *avctx)
 {
     TgqContext *s = avctx->priv_data;
-    uint8_t idct_permutation[64];
     s->avctx = avctx;
-    ff_init_scantable_permutation(idct_permutation, FF_IDCT_PERM_NONE);
-    ff_init_scantable(idct_permutation, &s->scantable, ff_zigzag_direct);
     avctx->framerate = (AVRational){ 15, 1 };
     avctx->pix_fmt   = AV_PIX_FMT_YUV420P;
     return 0;
@@ -64,15 +58,15 @@ static av_cold int tgq_decode_init(AVCodecContext *avctx)
 
 static void tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb)
 {
-    uint8_t *perm = s->scantable.permutated;
+    const uint8_t *scantable = ff_zigzag_direct;
     int i, j, value;
     block[0] = get_sbits(gb, 8) * s->qtable[0];
     for (i = 1; i < 64;) {
         switch (show_bits(gb, 3)) {
         case 4:
-            block[perm[i++]] = 0;
+            block[scantable[i++]] = 0;
         case 0:
-            block[perm[i++]] = 0;
+            block[scantable[i++]] = 0;
             skip_bits(gb, 3);
             break;
         case 5:
@@ -80,16 +74,16 @@ static void tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb
             skip_bits(gb, 2);
             value = get_bits(gb, 6);
             for (j = 0; j < value; j++)
-                block[perm[i++]] = 0;
+                block[scantable[i++]] = 0;
             break;
         case 6:
             skip_bits(gb, 3);
-            block[perm[i]] = -s->qtable[perm[i]];
+            block[scantable[i]] = -s->qtable[scantable[i]];
             i++;
             break;
         case 2:
             skip_bits(gb, 3);
-            block[perm[i]] = s->qtable[perm[i]];
+            block[scantable[i]] = s->qtable[scantable[i]];
             i++;
             break;
         case 7: // 111b
@@ -97,9 +91,9 @@ static void tgq_decode_block(TgqContext *s, int16_t block[64], GetBitContext *gb
             skip_bits(gb, 2);
             if (show_bits(gb, 6) == 0x3F) {
                 skip_bits(gb, 6);
-                block[perm[i]] = get_sbits(gb, 8) * s->qtable[perm[i]];
+                block[scantable[i]] = get_sbits(gb, 8) * s->qtable[scantable[i]];
             } else {
-                block[perm[i]] = get_sbits(gb, 6) * s->qtable[perm[i]];
+                block[scantable[i]] = get_sbits(gb, 6) * s->qtable[scantable[i]];
             }
             i++;
             break;
@@ -152,34 +146,35 @@ static void tgq_idct_put_mb_dconly(TgqContext *s, AVFrame *frame,
     }
 }
 
-static int tgq_decode_mb(TgqContext *s, AVFrame *frame, int mb_y, int mb_x)
+static int tgq_decode_mb(TgqContext *s, GetByteContext *gbyte,
+                         AVFrame *frame, int mb_y, int mb_x)
 {
     int mode;
     int i;
     int8_t dc[6];
 
-    mode = bytestream2_get_byte(&s->gb);
+    mode = bytestream2_get_byte(gbyte);
     if (mode > 12) {
         GetBitContext gb;
-        int ret = init_get_bits8(&gb, s->gb.buffer, FFMIN(bytestream2_get_bytes_left(&s->gb), mode));
+        int ret = init_get_bits8(&gb, gbyte->buffer, FFMIN(bytestream2_get_bytes_left(gbyte), mode));
         if (ret < 0)
             return ret;
 
         for (i = 0; i < 6; i++)
             tgq_decode_block(s, s->block[i], &gb);
         tgq_idct_put_mb(s, s->block, frame, mb_x, mb_y);
-        bytestream2_skip(&s->gb, mode);
+        bytestream2_skip(gbyte, mode);
     } else {
         if (mode == 3) {
-            memset(dc, bytestream2_get_byte(&s->gb), 4);
-            dc[4] = bytestream2_get_byte(&s->gb);
-            dc[5] = bytestream2_get_byte(&s->gb);
+            memset(dc, bytestream2_get_byte(gbyte), 4);
+            dc[4] = bytestream2_get_byte(gbyte);
+            dc[5] = bytestream2_get_byte(gbyte);
         } else if (mode == 6) {
-            bytestream2_get_buffer(&s->gb, dc, 6);
+            bytestream2_get_buffer(gbyte, dc, 6);
         } else if (mode == 12) {
             for (i = 0; i < 6; i++) {
-                dc[i] = bytestream2_get_byte(&s->gb);
-                bytestream2_skip(&s->gb, 1);
+                dc[i] = bytestream2_get_byte(gbyte);
+                bytestream2_skip(gbyte, 1);
             }
         } else {
             av_log(s->avctx, AV_LOG_ERROR, "unsupported mb mode %i\n", mode);
@@ -207,6 +202,7 @@ static int tgq_decode_frame(AVCodecContext *avctx, AVFrame *frame,
     const uint8_t *buf = avpkt->data;
     int buf_size       = avpkt->size;
     TgqContext *s      = avctx->priv_data;
+    GetByteContext gbyte;
     int x, y, ret;
     int big_endian;
 
@@ -215,21 +211,21 @@ static int tgq_decode_frame(AVCodecContext *avctx, AVFrame *frame,
         return AVERROR_INVALIDDATA;
     }
     big_endian = AV_RL32(&buf[4]) > 0x000FFFFF;
-    bytestream2_init(&s->gb, buf + 8, buf_size - 8);
+    bytestream2_init(&gbyte, buf + 8, buf_size - 8);
     if (big_endian) {
-        s->width  = bytestream2_get_be16u(&s->gb);
-        s->height = bytestream2_get_be16u(&s->gb);
+        s->width  = bytestream2_get_be16u(&gbyte);
+        s->height = bytestream2_get_be16u(&gbyte);
     } else {
-        s->width  = bytestream2_get_le16u(&s->gb);
-        s->height = bytestream2_get_le16u(&s->gb);
+        s->width  = bytestream2_get_le16u(&gbyte);
+        s->height = bytestream2_get_le16u(&gbyte);
     }
 
     ret = ff_set_dimensions(s->avctx, s->width, s->height);
     if (ret < 0)
         return ret;
 
-    tgq_calculate_qtable(s, bytestream2_get_byteu(&s->gb));
-    bytestream2_skip(&s->gb, 3);
+    tgq_calculate_qtable(s, bytestream2_get_byteu(&gbyte));
+    bytestream2_skipu(&gbyte, 3);
 
     if ((ret = ff_get_buffer(avctx, frame, 0)) < 0)
         return ret;
@@ -238,7 +234,7 @@ static int tgq_decode_frame(AVCodecContext *avctx, AVFrame *frame,
 
     for (y = 0; y < FFALIGN(avctx->height, 16) >> 4; y++)
         for (x = 0; x < FFALIGN(avctx->width, 16) >> 4; x++)
-            if (tgq_decode_mb(s, frame, y, x) < 0)
+            if (tgq_decode_mb(s, &gbyte, frame, y, x) < 0)
                 return AVERROR_INVALIDDATA;
 
     *got_frame = 1;

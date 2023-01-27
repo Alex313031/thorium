@@ -27,6 +27,7 @@
 
 #include "get_bits.h"
 #include "mpegvideo.h"
+#include "mpeg4videodsp.h"
 
 
 typedef struct Mpeg4DecContext {
@@ -37,7 +38,11 @@ typedef struct Mpeg4DecContext {
     int shape;
     int vol_sprite_usage;
     int sprite_brightness_change;
+    int sprite_warping_accuracy;
     int num_sprite_warping_points;
+    int real_sprite_warping_points;
+    int sprite_offset[2][2];         ///< sprite offset[isChroma][isMVY]
+    int sprite_delta[2][2];          ///< sprite_delta [isY][isMVY]
     /// sprite trajectory points
     uint16_t sprite_traj[4][2];
     /// sprite shift [isChroma]
@@ -76,6 +81,8 @@ typedef struct Mpeg4DecContext {
 
     int rgb;
 
+    Mpeg4VideoDSPContext mdsp;
+
     int32_t block32[12][64];
     // 0 = DCT, 1 = DPCM top to bottom scan, -1 = DPCM bottom to top scan
     int dpcm_direction;
@@ -87,6 +94,9 @@ int ff_mpeg4_decode_picture_header(Mpeg4DecContext *ctx, GetBitContext *gb,
 void ff_mpeg4_decode_studio(MpegEncContext *s, uint8_t *dest_y, uint8_t *dest_cb,
                             uint8_t *dest_cr, int block_size, int uvlinesize,
                             int dct_linesize, int dct_offset);
+void ff_mpeg4_mcsel_motion(MpegEncContext *s,
+                           uint8_t *dest_y, uint8_t *dest_cb, uint8_t *dest_cr,
+                           uint8_t *const *ref_picture);
 int ff_mpeg4_decode_partitions(Mpeg4DecContext *ctx);
 int ff_mpeg4_decode_video_packet_header(Mpeg4DecContext *ctx);
 int ff_mpeg4_decode_studio_slice_header(Mpeg4DecContext *ctx);

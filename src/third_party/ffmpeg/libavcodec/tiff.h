@@ -66,6 +66,7 @@ enum TiffTags {
     TIFF_PAGE_NAME          = 0x11D,
     TIFF_XPOS               = 0x11E,
     TIFF_YPOS               = 0x11F,
+    TIFF_GRAY_RESPONSE_CURVE= 0x123,
     TIFF_T4OPTIONS          = 0x124,
     TIFF_T6OPTIONS,
     TIFF_RES_UNIT           = 0x128,
@@ -105,6 +106,13 @@ enum DngTags {
     DNG_LINEARIZATION_TABLE = 0xC618,
     DNG_BLACK_LEVEL         = 0xC61A,
     DNG_WHITE_LEVEL         = 0xC61D,
+    DNG_COLOR_MATRIX1       = 0xC621,
+    DNG_COLOR_MATRIX2       = 0xC622,
+    DNG_CAMERA_CALIBRATION1 = 0xC623,
+    DNG_CAMERA_CALIBRATION2 = 0xC624,
+    DNG_ANALOG_BALANCE      = 0xC627,
+    DNG_AS_SHOT_NEUTRAL     = 0xC628,
+    DNG_AS_SHOT_WHITE_XY    = 0xC629,
 };
 
 /** list of CinemaDNG tags */

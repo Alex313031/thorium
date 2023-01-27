@@ -26,6 +26,7 @@
 
 #include "libavutil/common.h"
 #include "libavutil/opt.h"
+#include "libavutil/mastering_display_metadata.h"
 
 #include "avcodec.h"
 #include "bytestream.h"
@@ -160,6 +161,83 @@ static int generate_fake_vps(QSVEncContext *q, AVCodecContext *avctx)
     return 0;
 }
 
+static int qsv_hevc_set_encode_ctrl(AVCodecContext *avctx,
+                                    const AVFrame *frame, mfxEncodeCtrl *enc_ctrl)
+{
+    QSVHEVCEncContext *q = avctx->priv_data;
+    AVFrameSideData *sd;
+
+    if (!frame || !QSV_RUNTIME_VERSION_ATLEAST(q->qsv.ver, 1, 25))
+        return 0;
+
+    sd = av_frame_get_side_data(frame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
+    if (sd) {
+        AVMasteringDisplayMetadata *mdm = (AVMasteringDisplayMetadata *)sd->data;
+
+        // SEI is needed when both the primaries and luminance are set
+        if (mdm->has_primaries && mdm->has_luminance) {
+            const int mapping[3] = {1, 2, 0};
+            const int chroma_den = 50000;
+            const int luma_den   = 10000;
+            int i;
+            mfxExtMasteringDisplayColourVolume *mdcv = av_mallocz(sizeof(mfxExtMasteringDisplayColourVolume));
+
+            if (!mdcv)
+                return AVERROR(ENOMEM);
+
+            mdcv->Header.BufferId = MFX_EXTBUFF_MASTERING_DISPLAY_COLOUR_VOLUME;
+            mdcv->Header.BufferSz = sizeof(*mdcv);
+
+            for (i = 0; i < 3; i++) {
+                const int j = mapping[i];
+
+                mdcv->DisplayPrimariesX[i] =
+                    FFMIN(lrint(chroma_den *
+                                av_q2d(mdm->display_primaries[j][0])),
+                          chroma_den);
+                mdcv->DisplayPrimariesY[i] =
+                    FFMIN(lrint(chroma_den *
+                                av_q2d(mdm->display_primaries[j][1])),
+                          chroma_den);
+            }
+
+            mdcv->WhitePointX =
+                FFMIN(lrint(chroma_den * av_q2d(mdm->white_point[0])),
+                      chroma_den);
+            mdcv->WhitePointY =
+                FFMIN(lrint(chroma_den * av_q2d(mdm->white_point[1])),
+                      chroma_den);
+
+            mdcv->MaxDisplayMasteringLuminance =
+                lrint(luma_den * av_q2d(mdm->max_luminance));
+            mdcv->MinDisplayMasteringLuminance =
+                FFMIN(lrint(luma_den * av_q2d(mdm->min_luminance)),
+                      mdcv->MaxDisplayMasteringLuminance);
+
+            enc_ctrl->ExtParam[enc_ctrl->NumExtParam++] = (mfxExtBuffer *)mdcv;
+        }
+    }
+
+    sd = av_frame_get_side_data(frame, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
+    if (sd) {
+        AVContentLightMetadata *clm = (AVContentLightMetadata *)sd->data;
+        mfxExtContentLightLevelInfo * clli = av_mallocz(sizeof(mfxExtContentLightLevelInfo));
+
+        if (!clli)
+            return AVERROR(ENOMEM);
+
+        clli->Header.BufferId = MFX_EXTBUFF_CONTENT_LIGHT_LEVEL_INFO;
+        clli->Header.BufferSz = sizeof(*clli);
+
+        clli->MaxContentLightLevel          = FFMIN(clm->MaxCLL,  65535);
+        clli->MaxPicAverageLightLevel       = FFMIN(clm->MaxFALL, 65535);
+
+        enc_ctrl->ExtParam[enc_ctrl->NumExtParam++] = (mfxExtBuffer *)clli;
+    }
+
+    return 0;
+}
+
 static av_cold int qsv_enc_init(AVCodecContext *avctx)
 {
     QSVHEVCEncContext *q = avctx->priv_data;
@@ -188,6 +266,8 @@ static av_cold int qsv_enc_init(AVCodecContext *avctx)
 
     // HEVC and H264 meaning of the value is shifted by 1, make it consistent
     q->qsv.idr_interval++;
+
+    q->qsv.set_encode_ctrl_cb = qsv_hevc_set_encode_ctrl;
 
     ret = ff_qsv_enc_init(avctx, &q->qsv);
     if (ret < 0)
@@ -289,13 +369,11 @@ static const AVClass class = {
 static const FFCodecDefault qsv_enc_defaults[] = {
     { "b",         "1M"    },
     { "refs",      "0"     },
-    // same as the x264 default
-    { "g",         "248"   },
+    { "g",         "-1"    },
     { "bf",        "-1"    },
     { "qmin",      "-1"    },
     { "qmax",      "-1"    },
     { "trellis",   "-1"    },
-    { "flags",     "+cgop" },
     { NULL },
 };
 
@@ -311,12 +389,14 @@ const FFCodec ff_hevc_qsv_encoder = {
     .p.capabilities = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_HYBRID,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_NV12,
                                                     AV_PIX_FMT_P010,
+                                                    AV_PIX_FMT_P012,
                                                     AV_PIX_FMT_YUYV422,
                                                     AV_PIX_FMT_Y210,
                                                     AV_PIX_FMT_QSV,
                                                     AV_PIX_FMT_BGRA,
                                                     AV_PIX_FMT_X2RGB10,
                                                     AV_PIX_FMT_VUYX,
+                                                    AV_PIX_FMT_XV30,
                                                     AV_PIX_FMT_NONE },
     .p.priv_class   = &class,
     .defaults       = qsv_enc_defaults,

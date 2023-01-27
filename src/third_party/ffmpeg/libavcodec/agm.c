@@ -33,24 +33,7 @@
 #include "decode.h"
 #include "get_bits.h"
 #include "idctdsp.h"
-
-static const uint8_t unscaled_luma[64] = {
-    16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19,
-    26, 58, 60, 55, 14, 13, 16, 24, 40, 57, 69, 56,
-    14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56,
-    68,109,103, 77, 24, 35, 55, 64, 81,104,113, 92,
-    49, 64, 78, 87,103,121,120,101, 72, 92, 95, 98,
-    112,100,103,99
-};
-
-static const uint8_t unscaled_chroma[64] = {
-    17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66,
-    99, 99, 99, 99, 24, 26, 56, 99, 99, 99, 99, 99,
-    47, 66, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99
-};
+#include "jpegquanttables.h"
 
 typedef struct MotionVector {
     int16_t x, y;
@@ -88,7 +71,7 @@ typedef struct AGMContext {
     int luma_quant_matrix[64];
     int chroma_quant_matrix[64];
 
-    ScanTable scantable;
+    uint8_t permutated_scantable[64];
     DECLARE_ALIGNED(32, int16_t, block)[64];
 
     int16_t *wblocks;
@@ -195,7 +178,7 @@ static int read_code(GetBitContext *gb, int *oskip, int *level, int *map, int mo
 static int decode_intra_blocks(AGMContext *s, GetBitContext *gb,
                                const int *quant_matrix, int *skip, int *dc_level)
 {
-    const uint8_t *scantable = s->scantable.permutated;
+    const uint8_t *scantable = s->permutated_scantable;
     int level, ret, map = 0;
 
     memset(s->wblocks, 0, s->wblocks_size);
@@ -237,7 +220,7 @@ static int decode_inter_blocks(AGMContext *s, GetBitContext *gb,
                                const int *quant_matrix, int *skip,
                                int *map)
 {
-    const uint8_t *scantable = s->scantable.permutated;
+    const uint8_t *scantable = s->permutated_scantable;
     int level, ret;
 
     memset(s->wblocks, 0, s->wblocks_size);
@@ -272,7 +255,7 @@ static int decode_inter_blocks(AGMContext *s, GetBitContext *gb,
 static int decode_intra_block(AGMContext *s, GetBitContext *gb,
                               const int *quant_matrix, int *skip, int *dc_level)
 {
-    const uint8_t *scantable = s->scantable.permutated;
+    const uint8_t *scantable = s->permutated_scantable;
     const int offset = s->plus ? 0 : 1024;
     int16_t *block = s->block;
     int level, ret, map = 0;
@@ -362,7 +345,7 @@ static int decode_inter_block(AGMContext *s, GetBitContext *gb,
                               const int *quant_matrix, int *skip,
                               int *map)
 {
-    const uint8_t *scantable = s->scantable.permutated;
+    const uint8_t *scantable = s->permutated_scantable;
     int16_t *block = s->block;
     int level, ret;
 
@@ -550,13 +533,13 @@ static void compute_quant_matrix(AGMContext *s, double qscale)
     } else {
         if (qscale >= 0.0) {
             for (int i = 0; i < 64; i++) {
-                luma[i]   = FFMAX(1, unscaled_luma  [(i & 7) * 8 + (i >> 3)] * f);
-                chroma[i] = FFMAX(1, unscaled_chroma[(i & 7) * 8 + (i >> 3)] * f);
+                luma[i]   = FFMAX(1, ff_mjpeg_std_luminance_quant_tbl  [(i & 7) * 8 + (i >> 3)] * f);
+                chroma[i] = FFMAX(1, ff_mjpeg_std_chrominance_quant_tbl[(i & 7) * 8 + (i >> 3)] * f);
             }
         } else {
             for (int i = 0; i < 64; i++) {
-                luma[i]   = FFMAX(1, 255.0 - (255 - unscaled_luma  [(i & 7) * 8 + (i >> 3)]) * f);
-                chroma[i] = FFMAX(1, 255.0 - (255 - unscaled_chroma[(i & 7) * 8 + (i >> 3)]) * f);
+                luma[i]   = FFMAX(1, 255.0 - (255 - ff_mjpeg_std_luminance_quant_tbl  [(i & 7) * 8 + (i >> 3)]) * f);
+                chroma[i] = FFMAX(1, 255.0 - (255 - ff_mjpeg_std_chrominance_quant_tbl[(i & 7) * 8 + (i >> 3)]) * f);
             }
         }
     }
@@ -1249,7 +1232,8 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     avctx->idct_algo = FF_IDCT_SIMPLE;
     ff_idctdsp_init(&s->idsp, avctx);
-    ff_init_scantable(s->idsp.idct_permutation, &s->scantable, ff_zigzag_direct);
+    ff_permute_scantable(s->permutated_scantable, ff_zigzag_direct,
+                         s->idsp.idct_permutation);
 
     s->prev_frame = av_frame_alloc();
     if (!s->prev_frame)

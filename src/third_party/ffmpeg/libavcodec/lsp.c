@@ -23,11 +23,15 @@
 
 #include <math.h>
 
+#include "config.h"
+
 #define FRAC_BITS 14
 #include "libavutil/macros.h"
 #include "mathops.h"
 #include "lsp.h"
+#if ARCH_MIPS
 #include "libavcodec/mips/lsp_mips.h"
+#endif /* ARCH_MIPS */
 #include "libavutil/avassert.h"
 
 void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order)
@@ -120,6 +124,32 @@ static void lsp2poly(int* f, const int16_t* lsp, int lp_half_order)
     }
 }
 
+#ifndef lsp2polyf
+/**
+ * Compute the Pa / (1 + z(-1)) or Qa / (1 - z(-1)) coefficients
+ * needed for LSP to LPC conversion.
+ * We only need to calculate the 6 first elements of the polynomial.
+ *
+ * @param lsp line spectral pairs in cosine domain
+ * @param[out] f polynomial input/output as a vector
+ *
+ * TIA/EIA/IS-733 2.4.3.3.5-1/2
+ */
+static void lsp2polyf(const double *lsp, double *f, int lp_half_order)
+{
+    f[0] = 1.0;
+    f[1] = -2 * lsp[0];
+    lsp -= 2;
+    for (int i = 2; i <= lp_half_order; i++) {
+        double val = -2 * lsp[2*i];
+        f[i] = val * f[i-1] + 2*f[i-2];
+        for (int j = i-1; j > 1; j--)
+            f[j] += f[j-1] * val + f[j-2];
+        f[1] += val;
+    }
+}
+#endif /* lsp2polyf */
+
 void ff_acelp_lsp2lpc(int16_t* lp, const int16_t* lsp, int lp_half_order)
 {
     int i;
@@ -152,8 +182,8 @@ void ff_amrwb_lsp2lpc(const double *lsp, float *lp, int lp_order)
 
     qa[-1] = 0.0;
 
-    ff_lsp2polyf(lsp    , pa, lp_half_order    );
-    ff_lsp2polyf(lsp + 1, qa, lp_half_order - 1);
+    lsp2polyf(lsp    , pa, lp_half_order    );
+    lsp2polyf(lsp + 1, qa, lp_half_order - 1);
 
     for (i = 1, j = lp_order - 1; i < lp_half_order; i++, j--) {
         double paf =  pa[i]            * (1 + lsp[lp_order - 1]);
@@ -187,25 +217,6 @@ void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd
     ff_acelp_lsp2lpc(lp_2nd, lsp_2nd, lp_order >> 1);
 }
 
-#ifndef ff_lsp2polyf
-void ff_lsp2polyf(const double *lsp, double *f, int lp_half_order)
-{
-    int i, j;
-
-    f[0] = 1.0;
-    f[1] = -2 * lsp[0];
-    lsp -= 2;
-    for(i=2; i<=lp_half_order; i++)
-    {
-        double val = -2 * lsp[2*i];
-        f[i] = val * f[i-1] + 2*f[i-2];
-        for(j=i-1; j>1; j--)
-            f[j] += f[j-1] * val + f[j-2];
-        f[1] += val;
-    }
-}
-#endif /* ff_lsp2polyf */
-
 void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order)
 {
     double pa[MAX_LP_HALF_ORDER+1], qa[MAX_LP_HALF_ORDER+1];
@@ -213,8 +224,8 @@ void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order)
 
     av_assert2(lp_half_order <= MAX_LP_HALF_ORDER);
 
-    ff_lsp2polyf(lsp,     pa, lp_half_order);
-    ff_lsp2polyf(lsp + 1, qa, lp_half_order);
+    lsp2polyf(lsp,     pa, lp_half_order);
+    lsp2polyf(lsp + 1, qa, lp_half_order);
 
     while (lp_half_order--) {
         double paf = pa[lp_half_order+1] + pa[lp_half_order];
