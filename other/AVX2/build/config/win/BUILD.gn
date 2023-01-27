@@ -1,4 +1,4 @@
-# Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright (c) 2023 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -89,7 +89,7 @@ config("compiler") {
 
   cflags += [
     # Work around crbug.com/526851, bug in VS 2015 RTM compiler.
-    "/Zc:sizedDealloc-",
+    # "/Zc:sizedDealloc-",
   ]
 
   if (is_clang) {
@@ -136,10 +136,12 @@ config("compiler") {
         "-mavx2",
         "-maes",
         "-mvaes",
+        "-mpclmul",
         "/clang:-O3",
         "/clang:-mavx2",
         "/clang:-maes",
         "/clang:-mvaes",
+        "/clang:-mpclmul",
         "-Xclang", "-O3",
         "/clang:-march=haswell",
         "/clang:-mtune=generic",
@@ -552,14 +554,14 @@ config("static_crt") {
 # This is appended to the subsystem to specify a minimum version.
 if (current_cpu == "x64") {
   # The number after the comma is the minimum required OS version.
-  # 5.02 = Windows Server 2003.
-  subsystem_version_suffix = ",5.02"
+  # 5.2 = Windows Server 2003.
+  subsystem_version_suffix = ",5.2"
 } else if (current_cpu == "arm64") {
   # Windows ARM64 requires Windows 10.
   subsystem_version_suffix = ",10.0"
 } else {
-  # 5.01 = Windows XP.
-  subsystem_version_suffix = ",5.01"
+  # 5.1 = Windows XP.
+  subsystem_version_suffix = ",5.1"
 }
 
 config("console") {
