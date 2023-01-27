@@ -950,10 +950,10 @@ config("compiler_cpu_abi") {
         "-mvaes",
         "-mpclmul",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mvaes", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mvaes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
-      ldflags += [ "-m32" ]
+      ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
@@ -2185,11 +2185,11 @@ config("optimize") {
     if (chrome_pgo_phase != 2) {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
-      cflags = [ "/O1" ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O3" ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2281,7 +2281,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
@@ -2314,7 +2314,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
@@ -2326,7 +2326,7 @@ config("optimize_speed") {
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3" ]
+  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
