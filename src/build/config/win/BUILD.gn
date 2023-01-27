@@ -143,6 +143,7 @@ config("compiler") {
         "/clang:-mvaes",
         "/clang:-mpclmul",
         "-Xclang", "-O3",
+        "/arch:AVX",
         "-Wno-unused-command-line-argument",
       ]
     }
@@ -203,7 +204,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:-march=sandybridge",
+      "/arch:AVX",
     ]
 
     if (use_lld) {
