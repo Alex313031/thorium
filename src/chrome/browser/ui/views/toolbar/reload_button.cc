@@ -79,7 +79,7 @@ void ReloadButton::ChangeMode(Mode mode, bool force) {
   }
 }
 
-bool menu_enabled_() const {
+bool menu_enabled_() {
   return true;
 }
 
