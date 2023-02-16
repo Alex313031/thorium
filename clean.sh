@@ -24,20 +24,20 @@ printf "${RED}\n" &&
 
 cd ~/chromium/src/out/thorium &&
 
+rm -r -f -v pyproto &&
+rm -r -f -v obj &&
+rm -r -f -v newlib_pnacl_nonsfi &&
+rm -r -f -v newlib_pnacl &&
+rm -r -f -v nacl_bootstrap_x64 &&
+rm -r -f -v irt_x64 &&
+rm -r -f -v glibc_x64 &&
+rm -r -f -v gen &&
+rm -r -f -v etc &&
+rm -r -f -v clang_newlib_x64 &&
+rm -r -f -v thinlto-cache &&
+rm -r -f -v fontconfig_caches &&
 find . -name "*deps*" -delete &&
 find . -name "*TOC*" -delete &&
-rm -r -v pyproto &&
-rm -r -v obj &&
-rm -r -v newlib_pnacl_nonsfi &&
-rm -r -v newlib_pnacl &&
-rm -r -v nacl_bootstrap_x64 &&
-rm -r -v irt_x64 &&
-rm -r -v glibc_x64 &&
-rm -r -v gen &&
-rm -r -v etc &&
-rm -r -v clang_newlib_x64 &&
-rm -r -v thinlto-cache &&
-rm -r -v fontconfig_caches &&
 
 printf "${GRE}Done cleaning artifacts.\n" &&
 tput sgr0
