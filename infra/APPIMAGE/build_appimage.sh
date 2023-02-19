@@ -40,7 +40,6 @@ mkdir -v ./temp &&
 ar xv *.deb &&
 tar xvf ./data.tar.xz &&
 cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
-cp -r -v ./usr/bin/chromedriver temp/ &&
 cp -r -v ./usr/bin/pak temp/ &&
 cp -r -v ./files/product_logo_512.png ./temp/ &&
 cp -r -v ./files/product_logo_22.png ./temp/ &&
