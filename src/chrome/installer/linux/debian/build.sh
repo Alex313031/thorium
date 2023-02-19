@@ -225,7 +225,7 @@ OUTPUTDIR="${PWD}"
 # call cleanup() on exit
 trap cleanup 0
 process_opts "$@"
-IS_OFFICIAL_BUILD=${IS_OFFICIAL_BUILD:=0}
+IS_OFFICIAL_BUILD=1
 
 STAGEDIR="${OUTPUTDIR}/deb-staging-${CHANNEL}"
 mkdir -p "${STAGEDIR}"
