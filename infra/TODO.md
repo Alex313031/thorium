@@ -1,6 +1,6 @@
 ## TODO document for ideas and patches. Underneath each will be a comment with info or location of patch.
 
-&#45; Add temporary profile optiont to wrapper and .desktop file.
+&#45; Add temporary profile option to wrapper and .desktop file.
 
  - Debian
 
