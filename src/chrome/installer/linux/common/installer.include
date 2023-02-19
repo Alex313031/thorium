@@ -178,7 +178,7 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/thorium_shell.png" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
     install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
-    install -m 755 "${OUTPUTDIR}/chromedriver" "${STAGEDIR}/usr/bin/"
+    install -m 755 "${OUTPUTDIR}/chromedriver" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 755 "${OUTPUTDIR}/pak" "${STAGEDIR}/usr/bin/"
   else
     install -m 644 "${OUTPUTDIR}/theme_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
