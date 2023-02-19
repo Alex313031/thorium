@@ -50,7 +50,6 @@ cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
 rm -r -v ./temp/cron &&
 rm -r -v ./temp/thorium-browser &&
 rm -r -v ./temp/thorium-browser-unstable &&
-cp -r -v ./usr/bin/chromedriver temp/ &&
 cp -r -v ./usr/bin/pak temp/ &&
 cp -r -v ./README.linux temp/README.txt &&
 cp -r -v ./THORIUM-PORTABLE temp/ &&
