@@ -4,6 +4,14 @@
 
  - Debian
 
+&#45; Fix Win AVX2 Build.gn files
+
+ - Model after RobRich999
+
+&#45; Adjust DPI from 300 to 72 for Windows .ico files.
+
+ - Gimp and convert.exe
+
 &#45; Add double click close flag
 
  - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
