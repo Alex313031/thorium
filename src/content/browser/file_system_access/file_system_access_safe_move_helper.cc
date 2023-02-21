@@ -1,9 +1,10 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "content/browser/file_system_access/file_system_access_safe_move_helper.h"
 
+#include "base/feature_list.h"
 #include "base/files/file.h"
 #include "base/memory/ref_counted.h"
 #include "base/memory/weak_ptr.h"
@@ -11,9 +12,9 @@
 #include "base/task/sequenced_task_runner.h"
 #include "base/task/thread_pool.h"
 #include "base/thread_annotations.h"
-#include "base/threading/sequenced_task_runner_handle.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
+#include "content/browser/file_system_access/features.h"
 #include "content/browser/file_system_access/file_system_access_error.h"
 #include "content/public/browser/content_browser_client.h"
 #include "content/public/browser/global_routing_id.h"
@@ -25,6 +26,7 @@
 #include "net/base/net_errors.h"
 #include "storage/browser/file_system/copy_or_move_hook_delegate.h"
 #include "storage/browser/file_system/file_stream_reader.h"
+#include "storage/browser/file_system/file_system_backend.h"
 #include "storage/browser/file_system/file_system_context.h"
 #include "storage/browser/file_system/file_system_operation.h"
 #include "storage/browser/file_system/file_system_operation_runner.h"
@@ -165,7 +167,7 @@ void FileSystemAccessSafeMoveHelper::Start(
     return;
   }
 
-  if (!RequireSecurityChecks() || !manager_->permission_context()) {
+  if (!RequireAfterWriteChecks() || !manager_->permission_context()) {
     DidAfterWriteCheck(
         FileSystemAccessPermissionContext::AfterWriteCheckResult::kAllow);
     return;
@@ -187,11 +189,41 @@ void FileSystemAccessSafeMoveHelper::ComputeHashForSourceFile(
   }
 
   auto wrapped_callback = base::BindPostTask(
-      base::SequencedTaskRunnerHandle::Get(), std::move(callback));
+      base::SequencedTaskRunner::GetCurrentDefault(), std::move(callback));
   manager_->operation_runner().PostTaskWithThisObject(
       base::BindOnce(&HashCalculator::CreateAndStart,
                      base::WrapRefCounted(manager_->context()),
                      std::move(wrapped_callback), source_url()));
+}
+
+bool FileSystemAccessSafeMoveHelper::RequireAfterWriteChecks() const {
+  if (dest_url().type() == storage::kFileSystemTypeTemporary)
+    return false;
+
+  if (!base::FeatureList::IsEnabled(
+          features::
+              kFileSystemAccessSkipAfterWriteChecksIfUnchangingExtension)) {
+    return true;
+  }
+
+  // TODO(https://crbug.com/1396116): Fix FileSystemURL comparison operators
+  // that use a StorageKey.
+  //
+  // This check is held together by a hack in `CreateFileSystemURLFromPath()` in
+  // the FSA manager which ensures all non-sandboxed FileSystemURLs have the
+  // same opaque origin.
+  if (!source_url().IsInSameFileSystem(dest_url()))
+    return true;
+
+  // TODO(crbug.com/1250534): Properly handle directory moves here, for
+  // which extension checks don't make sense.
+  auto source_extension = source_url().path().Extension();
+  auto dest_extension = dest_url().path().Extension();
+  return source_extension.empty() || source_extension != dest_extension;
+}
+
+bool FileSystemAccessSafeMoveHelper::RequireQuarantine() const {
+  return dest_url().type() != storage::kFileSystemTypeTemporary;
 }
 
 void FileSystemAccessSafeMoveHelper::DoAfterWriteCheck(

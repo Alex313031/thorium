@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -274,14 +274,6 @@ bool IsAACSupported(const AudioType& type) {
 #endif
 }
 
-bool HasOldVoiceCodecSupport() {
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-  return true;
-#else
-  return false;
-#endif
-}
-
 }  // namespace
 
 bool IsSupportedAudioType(const AudioType& type) {
@@ -311,13 +303,14 @@ bool IsDefaultSupportedVideoType(const VideoType& type) {
     case VideoCodec::kH264:
     case VideoCodec::kVP8:
     case VideoCodec::kTheora:
-	case VideoCodec::kHEVC:
-	case VideoCodec::kMPEG2:
+    case VideoCodec::kMPEG2:
       return true;
     case VideoCodec::kAV1:
       return IsAV1Supported(type);
     case VideoCodec::kVP9:
       return IsVp9ProfileSupported(type);
+    case VideoCodec::kHEVC:
+      return IsHevcProfileSupported(type);
     case VideoCodec::kMPEG4:
       return IsMPEG4Supported();
     case VideoCodec::kUnknown:
@@ -339,10 +332,6 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
   switch (type.codec) {
     case AudioCodec::kAAC:
       return IsAACSupported(type);
-    case AudioCodec::kAMR_NB:
-    case AudioCodec::kAMR_WB:
-    case AudioCodec::kGSM_MS:
-      return HasOldVoiceCodecSupport();
     case AudioCodec::kFLAC:
     case AudioCodec::kMP3:
     case AudioCodec::kOpus:
@@ -352,9 +341,12 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
     case AudioCodec::kPCM_S24BE:
     case AudioCodec::kPCM_ALAW:
     case AudioCodec::kVorbis:
-	case AudioCodec::kAC3:
-	case AudioCodec::kEAC3:
+    case AudioCodec::kAC3:
+    case AudioCodec::kEAC3:
       return true;
+    case AudioCodec::kAMR_NB:
+    case AudioCodec::kAMR_WB:
+    case AudioCodec::kGSM_MS:
     case AudioCodec::kALAC:
     case AudioCodec::kMpegHAudio:
     case AudioCodec::kUnknown:
