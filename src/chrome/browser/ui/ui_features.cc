@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -48,13 +48,6 @@ BASE_FEATURE(kChromeWhatsNewUI,
              base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 );
-
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-// Enables "new" badge for "Chrome What's New" in Main Chrome Menu | Help.
-BASE_FEATURE(kChromeWhatsNewInMainMenuNewBadge,
-             "ChromeWhatsNewInMainMenuNewBadge",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
 
 #if !defined(ANDROID)
 // Enables "Access Code Cast" UI.
@@ -149,14 +142,6 @@ BASE_FEATURE(kSidePanelWebView,
              "SidePanelWebView",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-BASE_FEATURE(kSidePanelJourneys,
-             "SidePanelJourneys",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-// If enabled, and the main flag is also enabled, the Journeys omnibox
-// entrypoints open Journeys in Side Panel rather than the History WebUI.
-const base::FeatureParam<bool> kSidePanelJourneysOpensFromOmnibox{
-    &kSidePanelJourneys, "SidePanelJourneysOpensFromOmnibox", false};
-
 BASE_FEATURE(kSidePanelJourneysQueryless,
              "SidePanelJourneysQueryless",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -177,8 +162,15 @@ const char kTabScrollingButtonPositionParameterName[] = "buttonPosition";
 // https://crbug.com/1145747
 BASE_FEATURE(kScrollableTabStripWithDragging,
              "kScrollableTabStripWithDragging",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 const char kTabScrollingWithDraggingModeName[] = "tabScrollWithDragMode";
+
+// Enables different methods of overflow when scrolling tabs in tabstrip
+// https://crbug.com/951078
+BASE_FEATURE(kScrollableTabStripOverflow,
+             "kScrollableTabStripOverflow",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const char kScrollableTabStripOverflowModeName[] = "tabScrollOverflow";
 
 // Splits pinned and unpinned tabs into separate TabStrips.
 // https://crbug.com/1346019
@@ -186,19 +178,27 @@ BASE_FEATURE(kSplitTabStrip,
              "SplitTabStrip",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Enables tabs to be frozen when collapsed.
+// https://crbug.com/1110108
+BASE_FEATURE(kTabGroupsCollapseFreezing,
+             "TabGroupsCollapseFreezing",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Directly controls the "new" badge (as opposed to old "master switch"; see
 // https://crbug.com/1169907 for master switch deprecation and
 // https://crbug.com/968587 for the feature itself)
 // https://crbug.com/1173792
 BASE_FEATURE(kTabGroupsNewBadgePromo,
              "TabGroupsNewBadgePromo",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables users to explicitly save and recall tab groups.
 // https://crbug.com/1223929
 BASE_FEATURE(kTabGroupsSave,
              "TabGroupsSave",
              base::FEATURE_ENABLED_BY_DEFAULT);
+const base::FeatureParam<bool> kTabGroupsSaveSyncIntegration{
+    &kTabGroupsSave, "TabGroupsSaveSyncIntegration", false};
 
 // Enables preview images in tab-hover cards.
 // https://crbug.com/928954
@@ -293,11 +293,11 @@ BASE_FEATURE(kToolbarUseHardwareBitmapDraw,
 // chrome renderers are present.
 BASE_FEATURE(kTopChromeWebUIUsesSpareRenderer,
              "TopChromeWebUIUsesSpareRenderer",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kUnifiedSidePanel,
              "UnifiedSidePanel",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // This enables enables persistence of a WebContents in a 1-to-1 association
 // with the current Profile for WebUI bubbles. See https://crbug.com/1177048.

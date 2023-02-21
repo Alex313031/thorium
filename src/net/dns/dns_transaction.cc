@@ -1,9 +1,10 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "net/dns/dns_transaction.h"
 
+#include <cstdint>
 #include <memory>
 #include <set>
 #include <string>
@@ -16,6 +17,7 @@
 #include "base/bind.h"
 #include "base/callback_helpers.h"
 #include "base/containers/circular_deque.h"
+#include "base/containers/span.h"
 #include "base/location.h"
 #include "base/memory/ptr_util.h"
 #include "base/memory/raw_ptr.h"
@@ -28,9 +30,9 @@
 #include "base/ranges/algorithm.h"
 #include "base/strings/string_piece.h"
 #include "base/strings/stringprintf.h"
+#include "base/task/sequenced_task_runner.h"
 #include "base/task/single_thread_task_runner.h"
 #include "base/threading/thread_checker.h"
-#include "base/threading/thread_task_runner_handle.h"
 #include "base/timer/elapsed_timer.h"
 #include "base/timer/timer.h"
 #include "base/values.h"
@@ -46,6 +48,7 @@
 #include "net/base/net_errors.h"
 #include "net/base/upload_bytes_element_reader.h"
 #include "net/dns/dns_config.h"
+#include "net/dns/dns_names_util.h"
 #include "net/dns/dns_query.h"
 #include "net/dns/dns_response.h"
 #include "net/dns/dns_response_result_extractor.h"
@@ -110,7 +113,7 @@ constexpr net::NetworkTrafficAnnotationTag kTrafficAnnotation =
 const char kDnsOverHttpResponseContentType[] = "application/dns-message";
 
 // Count labels in the fully-qualified name in DNS format.
-int CountLabels(const std::string& name) {
+int CountLabels(base::span<const uint8_t> name) {
   size_t count = 0;
   for (size_t i = 0; i < name.size() && name[i]; i += name[i] + 1)
     ++count;
@@ -214,20 +217,15 @@ class DnsUDPAttempt : public DnsAttempt {
     DCHECK_EQ(STATE_NONE, next_state_);
     callback_ = std::move(callback);
     start_time_ = base::TimeTicks::Now();
-    next_state_ = STATE_SEND_QUERY;
+    next_state_ = STATE_CONNECT_COMPLETE;
 
-    int rv = socket_->Connect(server_);
-    if (rv != OK) {
-      DVLOG(1) << "Failed to connect socket: " << rv;
-      udp_tracker_->RecordConnectionError(rv);
-      return ERR_CONNECTION_REFUSED;
+    int rv = socket_->ConnectAsync(
+        server_,
+        base::BindOnce(&DnsUDPAttempt::OnIOComplete, base::Unretained(this)));
+    if (rv == ERR_IO_PENDING) {
+      return rv;
     }
-
-    IPEndPoint local_address;
-    if (socket_->GetLocalAddress(&local_address) == OK)
-      udp_tracker_->RecordQuery(local_address.port(), query_->id());
-
-    return DoLoop(OK);
+    return DoLoop(rv);
   }
 
   const DnsQuery* GetQuery() const override { return query_.get(); }
@@ -251,6 +249,7 @@ class DnsUDPAttempt : public DnsAttempt {
 
  private:
   enum State {
+    STATE_CONNECT_COMPLETE,
     STATE_SEND_QUERY,
     STATE_SEND_QUERY_COMPLETE,
     STATE_READ_RESPONSE,
@@ -265,8 +264,11 @@ class DnsUDPAttempt : public DnsAttempt {
       State state = next_state_;
       next_state_ = STATE_NONE;
       switch (state) {
+        case STATE_CONNECT_COMPLETE:
+          rv = DoConnectComplete(rv);
+          break;
         case STATE_SEND_QUERY:
-          rv = DoSendQuery();
+          rv = DoSendQuery(rv);
           break;
         case STATE_SEND_QUERY_COMPLETE:
           rv = DoSendQueryComplete(rv);
@@ -289,7 +291,23 @@ class DnsUDPAttempt : public DnsAttempt {
     return rv;
   }
 
-  int DoSendQuery() {
+  int DoConnectComplete(int rv) {
+    if (rv != OK) {
+      DVLOG(1) << "Failed to connect socket: " << rv;
+      udp_tracker_->RecordConnectionError(rv);
+      return ERR_CONNECTION_REFUSED;
+    }
+    next_state_ = STATE_SEND_QUERY;
+    IPEndPoint local_address;
+    if (socket_->GetLocalAddress(&local_address) == OK)
+      udp_tracker_->RecordQuery(local_address.port(), query_->id());
+    return OK;
+  }
+
+  int DoSendQuery(int rv) {
+    DCHECK_NE(ERR_IO_PENDING, rv);
+    if (rv < 0)
+      return rv;
     next_state_ = STATE_SEND_QUERY_COMPLETE;
     return socket_->Write(
         query_->io_buffer(), query_->io_buffer()->size(),
@@ -459,7 +477,7 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
     callback_ = std::move(callback);
     // Start the request asynchronously to avoid reentrancy in
     // the network stack.
-    base::SequencedTaskRunnerHandle::Get()->PostTask(
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
         FROM_HERE, base::BindOnce(&DnsHTTPAttempt::StartAsync,
                                   weak_factory_.GetWeakPtr()));
     return ERR_IO_PENDING;
@@ -554,7 +572,7 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
       } else {
         // Else, trigger OnReadCompleted asynchronously to avoid starving the IO
         // thread in case the URLRequest can provide data synchronously.
-        base::SequencedTaskRunnerHandle::Get()->PostTask(
+        base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
             FROM_HERE, base::BindOnce(&DnsHTTPAttempt::OnReadCompleted,
                                       weak_factory_.GetWeakPtr(),
                                       request_.get(), read_result));
@@ -613,7 +631,7 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
 
 void ConstructDnsHTTPAttempt(DnsSession* session,
                              size_t doh_server_index,
-                             std::string hostname,
+                             base::span<const uint8_t> qname,
                              uint16_t qtype,
                              const OptRecordRdata* opt_rdata,
                              std::vector<std::unique_ptr<DnsAttempt>>* attempts,
@@ -625,7 +643,7 @@ void ConstructDnsHTTPAttempt(DnsSession* session,
   std::unique_ptr<DnsQuery> query;
   if (attempts->empty()) {
     query =
-        std::make_unique<DnsQuery>(0 /* id */, hostname, qtype, opt_rdata,
+        std::make_unique<DnsQuery>(/*id=*/0, qname, qtype, opt_rdata,
                                    DnsQuery::PaddingStrategy::BLOCK_LENGTH_128);
   } else {
     query = std::make_unique<DnsQuery>(*attempts->at(0)->GetQuery());
@@ -924,7 +942,10 @@ class DnsOverHttpsProbeRunner : public DnsProbeRunner {
     DCHECK(!session_->config().doh_config.servers().empty());
     DCHECK(context_);
 
-    DNSDomainFromDot(kDohProbeHostname, &formatted_probe_hostname_);
+    absl::optional<std::vector<uint8_t>> qname =
+        dns_names_util::DottedNameToNetwork(kDohProbeHostname);
+    DCHECK(qname.has_value());
+    formatted_probe_qname_ = std::move(qname).value();
 
     for (size_t i = 0; i < session_->config().doh_config.servers().size();
          i++) {
@@ -1001,7 +1022,7 @@ class DnsOverHttpsProbeRunner : public DnsProbeRunner {
     DCHECK(probe_stats);
     DCHECK(probe_stats->backoff_entry);
     probe_stats->backoff_entry->InformOfRequest(false /* success */);
-    base::SequencedTaskRunnerHandle::Get()->PostDelayedTask(
+    base::SequencedTaskRunner::GetCurrentDefault()->PostDelayedTask(
         FROM_HERE,
         base::BindOnce(&DnsOverHttpsProbeRunner::ContinueProbe,
                        weak_ptr_factory_.GetWeakPtr(), doh_server_index,
@@ -1010,8 +1031,8 @@ class DnsOverHttpsProbeRunner : public DnsProbeRunner {
 
     unsigned attempt_number = probe_stats->probe_attempts.size();
     ConstructDnsHTTPAttempt(
-        session_.get(), doh_server_index, formatted_probe_hostname_,
-        dns_protocol::kTypeA, nullptr /* opt_rdata */,
+        session_.get(), doh_server_index, formatted_probe_qname_,
+        dns_protocol::kTypeA, /*opt_rdata=*/nullptr,
         &probe_stats->probe_attempts, context_->url_request_context(),
         context_->isolation_info(), RequestPriority::DEFAULT_PRIORITY);
 
@@ -1077,7 +1098,7 @@ class DnsOverHttpsProbeRunner : public DnsProbeRunner {
 
   base::WeakPtr<DnsSession> session_;
   base::WeakPtr<ResolveContext> context_;
-  std::string formatted_probe_hostname_;
+  std::vector<uint8_t> formatted_probe_qname_;
 
   // List of ProbeStats, one for each DoH server, indexed by the DoH server
   // config index.
@@ -1162,7 +1183,7 @@ class DnsTransactionImpl : public DnsTransaction,
       // Clear all other non-completed attempts. They are no longer needed and
       // they may interfere with this posted result.
       ClearAttempts(result.attempt);
-      base::ThreadTaskRunnerHandle::Get()->PostTask(
+      base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
           FROM_HERE,
           base::BindOnce(&DnsTransactionImpl::DoCallback, AsWeakPtr(), result));
     }
@@ -1180,7 +1201,7 @@ class DnsTransactionImpl : public DnsTransaction,
         : rv(rv), attempt(attempt) {}
 
     int rv;
-    const DnsAttempt* attempt;
+    raw_ptr<const DnsAttempt, DanglingUntriaged> attempt;
   };
 
   // Used in UMA (DNS.AttemptType). Do not renumber or remove values.
@@ -1196,46 +1217,52 @@ class DnsTransactionImpl : public DnsTransaction,
   int PrepareSearch() {
     const DnsConfig& config = session_->config();
 
-    std::string labeled_hostname;
-    if (!DNSDomainFromDot(hostname_, &labeled_hostname))
+    absl::optional<std::vector<uint8_t>> labeled_qname =
+        dns_names_util::DottedNameToNetwork(
+            hostname_,
+            /*require_valid_internet_hostname=*/true);
+    if (!labeled_qname.has_value())
       return ERR_INVALID_ARGUMENT;
 
     if (hostname_.back() == '.') {
       // It's a fully-qualified name, no suffix search.
-      qnames_.push_back(labeled_hostname);
+      qnames_.push_back(std::move(labeled_qname).value());
       return OK;
     }
 
-    int ndots = CountLabels(labeled_hostname) - 1;
+    int ndots = CountLabels(labeled_qname.value()) - 1;
 
     if (ndots > 0 && !config.append_to_multi_label_name) {
-      qnames_.push_back(labeled_hostname);
+      qnames_.push_back(std::move(labeled_qname).value());
       return OK;
     }
 
-    // Set true when |labeled_hostname| is put on the list.
-    bool had_hostname = false;
+    // Set true when `labeled_qname` is put on the list.
+    bool had_qname = false;
 
     if (ndots >= config.ndots) {
-      qnames_.push_back(labeled_hostname);
-      had_hostname = true;
+      qnames_.push_back(labeled_qname.value());
+      had_qname = true;
     }
 
-    std::string qname;
     for (const auto& suffix : config.search) {
+      absl::optional<std::vector<uint8_t>> qname =
+          dns_names_util::DottedNameToNetwork(
+              hostname_ + "." + suffix,
+              /*require_valid_internet_hostname=*/true);
       // Ignore invalid (too long) combinations.
-      if (!DNSDomainFromDot(hostname_ + "." + suffix, &qname))
+      if (!qname.has_value())
         continue;
-      if (qname.size() == labeled_hostname.size()) {
-        if (had_hostname)
+      if (qname.value().size() == labeled_qname.value().size()) {
+        if (had_qname)
           continue;
-        had_hostname = true;
+        had_qname = true;
       }
-      qnames_.push_back(qname);
+      qnames_.push_back(std::move(qname).value());
     }
 
-    if (ndots > 0 && !had_hostname)
-      qnames_.push_back(labeled_hostname);
+    if (ndots > 0 && !had_qname)
+      qnames_.push_back(std::move(labeled_qname).value());
 
     return qnames_.empty() ? ERR_DNS_SEARCH_EMPTY : OK;
   }
@@ -1436,7 +1463,7 @@ class DnsTransactionImpl : public DnsTransaction,
   // Begins query for the current name. Makes the first attempt.
   AttemptResult StartQuery() {
     absl::optional<std::string> dotted_qname =
-        DnsDomainToString(qnames_.front());
+        dns_names_util::NetworkToDottedName(qnames_.front());
     net_log_.BeginEventWithStringParams(
         NetLogEventType::DNS_TRANSACTION_QUERY, "qname",
         dotted_qname.value_or("???MALFORMED_NAME???"));
@@ -1496,8 +1523,6 @@ class DnsTransactionImpl : public DnsTransaction,
   // Resolves the result of a DnsAttempt until a terminal result is reached
   // or it will complete asynchronously (ERR_IO_PENDING).
   AttemptResult ProcessAttemptResult(AttemptResult result) {
-    DCHECK(!callback_.is_null());
-
     while (result.rv != ERR_IO_PENDING) {
       LogResponse(result.attempt);
 
@@ -1653,7 +1678,7 @@ class DnsTransactionImpl : public DnsTransaction,
   scoped_refptr<DnsSession> session_;
   std::string hostname_;
   uint16_t qtype_;
-  raw_ptr<const OptRecordRdata> opt_rdata_;
+  raw_ptr<const OptRecordRdata, DanglingUntriaged> opt_rdata_;
   const bool secure_;
   const SecureDnsMode secure_dns_mode_;
   // Cleared in DoCallback.
@@ -1667,7 +1692,7 @@ class DnsTransactionImpl : public DnsTransaction,
   NetLogWithSource net_log_;
 
   // Search list of fully-qualified DNS names to query next (in DNS format).
-  base::circular_deque<std::string> qnames_;
+  base::circular_deque<std::vector<uint8_t>> qnames_;
   size_t qnames_initial_size_ = 0;
 
   // List of attempts for the current name.

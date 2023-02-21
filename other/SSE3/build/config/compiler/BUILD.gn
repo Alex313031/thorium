@@ -133,9 +133,9 @@ declare_args() {
   # recognizable in the debugger, and crashes on memory accesses through
   # uninitialized pointers.
   #
-  # TODO(crbug.com/1131993): Enabling this when 'is_android' is true breaks
-  # content_shell_test_apk on both ARM and x86.
-  init_stack_vars = !is_android
+  # TODO(crbug.com/1131993): This regresses binary size by ~1MB on Android and
+  # needs to be evaluated before enabling it there as well.
+  init_stack_vars = !(is_android && is_official_build)
 
   # This argument is to control whether enabling text section splitting in the
   # final binary. When enabled, the separated text sections with prefix
@@ -642,6 +642,11 @@ config("compiler") {
     cflags_cc += [ "-Wno-trigraphs" ]
   }
 
+  if (use_relative_vtables_abi) {
+    cflags_cc += [ "-fexperimental-relative-c++-abi-vtables" ]
+    ldflags += [ "-fexperimental-relative-c++-abi-vtables" ]
+  }
+
   # Add flags for link-time optimization. These flags enable
   # optimizations/transformations that require whole-program visibility at link
   # time, so they need to be applied to all translation units, and we may end up
@@ -857,6 +862,10 @@ config("compiler") {
     # we discover a reason to turn them off.
     "-Coverflow-checks=on",
 
+    # Turn warnings into the "deny" lint level, which produce compiler errors.
+    # The equivalent of -Werror for clang/gcc.
+    "-Dwarnings",
+
     # To make Rust .d files compatible with ninja
     "-Zdep-info-omit-d-target",
 
@@ -943,6 +952,12 @@ config("compiler_cpu_abi") {
   configs = []
   if (is_chromeos) {
     configs += [ "//build/config/chromeos:compiler_cpu_abi" ]
+  }
+
+  # TODO(https://crbug.com/1383873): Remove this once figured out.
+  if (is_apple && current_cpu == "arm64") {
+    cflags += [ "-fno-global-isel" ]
+    ldflags += [ "-fno-global-isel" ]
   }
 
   if ((is_posix && !is_apple) || is_fuchsia) {
@@ -1807,37 +1822,9 @@ config("no_chromium_code") {
     }
   }
 
-  # Rust warnings to ignore in third party dependencies. This list is
-  # built from those warnings which are currently in our various Rust
-  # third party dependencies, but aren't serious (they're largely
-  # stylistic).
-  # An alternative policy would be to suppress all warnings in third
-  # party Rust code using "--cap-lints allow". This is what cargo does
-  # for code outside your own crate, so is worth considering if it
-  # turns out that maintaining this list is onerous.
-  # (https://doc.rust-lang.org/rustc/lints/levels.html#capping-lints)
-  rustflags = [
-    "-A",
-    "unused_parens",
-    "-A",
-    "bare_trait_objects",
-    "-A",
-    "non_fmt_panics",
-    "-A",
-    "redundant_semicolons",
-    "-A",
-    "unused_parens",
-    "-A",
-    "anonymous_parameters",
-    "-A",
-    "bare_trait_objects",
-    "-A",
-    "deprecated",
-    "-A",
-    "non_camel_case_types",
-    "-A",
-    "unused_imports",
-  ]
+  # Suppress all warnings in third party, as Cargo does:
+  # https://doc.rust-lang.org/rustc/lints/levels.html#capping-lints
+  rustflags = [ "--cap-lints=allow" ]
 
   configs = [ ":default_warnings" ]
 }
@@ -2041,7 +2028,7 @@ if (is_win) {
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
-    "/O3",
+    "/O2",
     "/clang:-O3",
     "/clang:-msse3",
     "-Xclang", "-O3",
@@ -2187,10 +2174,16 @@ config("optimize") {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
       cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
+      rustflags = [ "-Copt-level=3" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
       cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
+
+      # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
+      # suggests not using an explicit `-Copt-level` at all, and the default is
+      # to optimize for performance like `/O2` for clang.
+      rustflags = [ "-Copt-level=3" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2206,6 +2199,10 @@ config("optimize") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
+
+    # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
+    # vectorization.
+    rustflags = [ "-Copt-level=3" ]
   } else if (is_chromeos) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
     # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
@@ -2214,13 +2211,17 @@ config("optimize") {
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
     cflags = [ "-O3" ] + common_optimize_on_cflags
+
+    # Similar to clang, we optimize with `-Copt-level=s` to keep loop
+    # vectorization while otherwise optimizing for size.
+    rustflags = [ "-Copt-level=3" ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
-  }
-  if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
-  } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3", ]
+
+    # The `-O3` for clang turns on extra optimizations compared to the standard
+    # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+    # to use.
+    rustflags = [ "-Copt-level=3" ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2448,7 +2449,14 @@ config("win_pdbaltpath") {
 config("symbols") {
   if (is_win) {
     if (is_clang) {
-      cflags = [ "/Z7" ]  # Debug information in the .obj files.
+      cflags = [
+        # Debug information in the .obj files.
+        "/Z7",
+
+        # Disable putting the compiler command line into the debug info to
+        # prevent some types of non-determinism.
+        "-gno-codeview-command-line",
+      ]
     } else {
       cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
     }
@@ -2731,7 +2739,16 @@ if (is_android || (is_chromeos_ash && is_chromeos_device)) {
 config("default_init_stack_vars") {
   cflags = []
   if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
-    cflags += [ "-ftrivial-auto-var-init=pattern" ]
+    if (is_chromeos && !chromeos_is_browser_only) {
+      # TODO(adriandole) remove chromeos_is_browser_only condition
+      # once lacros updates toolchain
+
+      # Zero init has favorable performance/size tradeoffs for Chrome OS
+      # but was not evaluated for other platforms.
+      cflags += [ "-ftrivial-auto-var-init=zero" ]
+    } else {
+      cflags += [ "-ftrivial-auto-var-init=pattern" ]
+    }
   }
 }
 

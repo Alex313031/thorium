@@ -372,16 +372,17 @@ static int init_duplicate_context(MpegEncContext *s)
         yc_size += 2*s->b8_stride + 2*s->mb_stride;
 
     if (s->encoding) {
-        if (!FF_ALLOCZ_TYPED_ARRAY(s->me.map,       ME_MAP_SIZE) ||
-            !FF_ALLOCZ_TYPED_ARRAY(s->me.score_map, ME_MAP_SIZE))
+        s->me.map = av_mallocz(2 * ME_MAP_SIZE * sizeof(*s->me.map));
+        if (!s->me.map)
             return AVERROR(ENOMEM);
+        s->me.score_map = s->me.map + ME_MAP_SIZE;
 
         if (s->noise_reduction) {
             if (!FF_ALLOCZ_TYPED_ARRAY(s->dct_error_sum,  2))
                 return AVERROR(ENOMEM);
         }
     }
-    if (!FF_ALLOCZ_TYPED_ARRAY(s->blocks,  2))
+    if (!FF_ALLOCZ_TYPED_ARRAY(s->blocks,  1 + s->encoding))
         return AVERROR(ENOMEM);
     s->block = s->blocks[0];
 
@@ -444,7 +445,7 @@ static void free_duplicate_context(MpegEncContext *s)
 
     av_freep(&s->dct_error_sum);
     av_freep(&s->me.map);
-    av_freep(&s->me.score_map);
+    s->me.score_map = NULL;
     av_freep(&s->blocks);
     av_freep(&s->ac_val_base);
     s->block = NULL;
@@ -784,12 +785,8 @@ void ff_mpv_free_context_frame(MpegEncContext *s)
     s->linesize = s->uvlinesize = 0;
 }
 
-/* init common structure for both encoder and decoder */
 void ff_mpv_common_end(MpegEncContext *s)
 {
-    if (!s)
-        return;
-
     ff_mpv_free_context_frame(s);
     if (s->slice_context_count > 1)
         s->slice_context_count = 1;

@@ -1,4 +1,4 @@
-# Copyright 2017 The Chromium Authors. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -9,6 +9,7 @@
 
 import("//tools/v8_context_snapshot/v8_context_snapshot.gni")
 
+import("//build/buildflag_header.gni")
 import("//build/config/c++/c++.gni")
 import("//build/config/compiler/compiler.gni")
 import("//v8/gni/snapshot_toolchain.gni")
@@ -26,14 +27,12 @@ group("v8_context_snapshot") {
   }
 }
 
-config("use_v8_context_snapshot") {
-  defines = []
-  if (use_v8_context_snapshot) {
-    defines += [
-      "USE_V8_CONTEXT_SNAPSHOT",
-      "V8_CONTEXT_SNAPSHOT_FILENAME=\"$v8_context_snapshot_filename\"",
-    ]
-  }
+buildflag_header("buildflags") {
+  header = "buildflags.h"
+  flags = [
+    "USE_V8_CONTEXT_SNAPSHOT=$use_v8_context_snapshot",
+    "V8_CONTEXT_SNAPSHOT_FILENAME=\"$v8_context_snapshot_filename\"",
+  ]
 }
 
 if (use_v8_context_snapshot) {

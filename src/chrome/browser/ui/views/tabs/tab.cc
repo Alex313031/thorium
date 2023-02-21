@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors, Alex313031 and gz83.
+// Copyright 2023 The Chromium Authors, Alex313031, and gz83
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -545,40 +545,33 @@ void Tab::OnMouseReleased(const ui::MouseEvent& event) {
       if (closest_tab)
         controller_->CloseTab(closest_tab, CLOSE_TAB_FROM_MOUSE);
     }
-  } else if (event.IsOnlyLeftMouseButton() && !event.IsShiftDown() &&
-             !IsSelectionModifierDown(event)) {
-    // If the tab was already selected mouse pressed doesn't change the
-    // selection. Reset it now to handle the case where multiple tabs were
-    // selected.
-    controller_->SelectTab(this, event);
-  }
-  
-  // Close tab on double click, but only if the button is released over the tab
-  // (normal windows behavior is to discard presses of a UI element where the
-  // releases happen off the element).
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab")) {
+    // Close tab on double click, mirror of IsOnlyMiddleMouseButton
+    // Based on gz83's work.
+  } else if (base::CommandLine::ForCurrentProcess()->HasSwitch(
+                 "double-click-close-tab")) {
     if (event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) {
       if (HitTestPoint(event.location())) {
         controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
       } else if (closing_) {
-        // We're animating closed and a middle mouse button was pushed on us but
+        // We're animating closed and the left mouse button was pushed on us but
         // we don't contain the mouse anymore. We assume the user is clicking
-        // quicker than the animation and we should close the tab that falls under
-        // the mouse.
+        // quicker than the animation and we should close the tab that falls
+        // under the mouse.
         gfx::Point location_in_parent = event.location();
         ConvertPointToTarget(this, parent(), &location_in_parent);
         Tab* closest_tab = controller_->GetTabAt(location_in_parent);
-        if (closest_tab)
+        if (closest_tab) {
           controller_->CloseTab(closest_tab, CLOSE_TAB_FROM_MOUSE);
+        }
+      } else if (event.IsOnlyLeftMouseButton() && !event.IsShiftDown() &&
+                 !IsSelectionModifierDown(event)) {
+        // If the tab was already selected mouse pressed doesn't change the
+        // selection. Reset it now to handle the case where multiple tabs were
+        // selected.
+        controller_->SelectTab(this, event);
+      }
     }
-  } else if (event.IsOnlyLeftMouseButton() && !event.IsShiftDown() &&
-             !IsSelectionModifierDown(event)) {
-    // If the tab was already selected mouse pressed doesn't change the
-    // selection. Reset it now to handle the case where multiple tabs were
-    // selected.
-    controller_->SelectTab(this, event);
   }
- }
 }
 
 void Tab::OnMouseCaptureLost() {
@@ -713,7 +706,13 @@ void Tab::OnPaint(gfx::Canvas* canvas) {
 }
 
 void Tab::AddedToWidget() {
-  UpdateForegroundColors();
+  paint_as_active_subscription_ =
+      GetWidget()->RegisterPaintAsActiveChangedCallback(base::BindRepeating(
+          &Tab::UpdateForegroundColors, base::Unretained(this)));
+}
+
+void Tab::RemovedFromWidget() {
+  paint_as_active_subscription_ = {};
 }
 
 void Tab::OnFocus() {
@@ -828,10 +827,6 @@ void Tab::AlertStateChanged() {
     controller_->UpdateHoverCard(
         this, TabSlotController::HoverCardUpdateType::kTabDataChanged);
   Layout();
-}
-
-void Tab::FrameColorsChanged() {
-  UpdateForegroundColors();
 }
 
 void Tab::SelectedStateChanged() {

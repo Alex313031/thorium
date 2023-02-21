@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -695,7 +695,7 @@ std::u16string FormatUrlWithAdjustments(
   } else if ((format_types & kFormatUrlOmitTrailingSlashOnBareHostname) &&
              CanStripTrailingSlash(url)) {
     // Omit the path, which is a single trailing slash. There's no query or ref.
-    if (parsed.path.len > 0) {
+    if (parsed.path.is_nonempty()) {
       adjustments->push_back(base::OffsetAdjuster::Adjustment(
           parsed.path.begin, parsed.path.len, 0));
     }

@@ -317,6 +317,7 @@ static const AVOption options[] = {
     QSV_OPTION_ADAPTIVE_B
     QSV_OPTION_SCENARIO
     QSV_OPTION_AVBR
+    QSV_OPTION_SKIP_FRAME
 
     { "idr_interval", "Distance (in I-frames) between IDR frames", OFFSET(qsv.idr_interval), AV_OPT_TYPE_INT, { .i64 = 0 }, -1, INT_MAX, VE, "idr_interval" },
     { "begin_only", "Output an IDR-frame only at the beginning of the stream", 0, AV_OPT_TYPE_CONST, { .i64 = -1 }, 0, 0, VE, "idr_interval" },
@@ -338,6 +339,9 @@ static const AVOption options[] = {
 #if QSV_VERSION_ATLEAST(1, 32)
     { "scc",     NULL, 0, AV_OPT_TYPE_CONST, { .i64 = MFX_PROFILE_HEVC_SCC     }, INT_MIN, INT_MAX,     VE, "profile" },
 #endif
+    { "tier",    "Set the encoding tier (only level >= 4 can support high tier)", OFFSET(qsv.tier), AV_OPT_TYPE_INT, { .i64 = MFX_TIER_HEVC_HIGH }, MFX_TIER_HEVC_MAIN, MFX_TIER_HEVC_HIGH, VE, "tier" },
+    { "main",    NULL, 0, AV_OPT_TYPE_CONST, { .i64 = MFX_TIER_HEVC_MAIN       }, INT_MIN, INT_MAX,     VE, "tier" },
+    { "high",    NULL, 0, AV_OPT_TYPE_CONST, { .i64 = MFX_TIER_HEVC_HIGH       }, INT_MIN, INT_MAX,     VE, "tier" },
 
     { "gpb", "1: GPB (generalized P/B frame); 0: regular P frame", OFFSET(qsv.gpb), AV_OPT_TYPE_BOOL, { .i64 = 1 }, 0, 1, VE},
 

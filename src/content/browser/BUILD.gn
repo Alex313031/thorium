@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -51,7 +51,6 @@ source_set("browser") {
   configs += [
     "//build/config:precompiled_headers",
     "//content:content_implementation",
-    "//tools/v8_context_snapshot:use_v8_context_snapshot",
     "//v8:external_startup_data",
   ]
   defines = []
@@ -74,7 +73,8 @@ source_set("browser") {
     "//cc/animation",
     "//cc/mojo_embedder",
     "//cc/paint",
-    "//components/attribution_reporting:source_registration_error_mojom",
+    "//components/aggregation_service:mojom",
+    "//components/attribution_reporting:mojom",
     "//components/back_forward_cache:enum",
     "//components/browsing_topics/common:common",
     "//components/cbor",
@@ -94,9 +94,9 @@ source_set("browser") {
     "//components/os_crypt",
     "//components/payments/content/icon",
     "//components/payments/mojom",
+    "//components/power_monitor",
     "//components/power_scheduler",
     "//components/services/filesystem:lib",
-    "//components/services/quarantine:quarantine",
     "//components/services/screen_ai/buildflags",
     "//components/services/storage",
     "//components/services/storage:filesystem_proxy_factory",
@@ -135,7 +135,6 @@ source_set("browser") {
     "//content/browser/indexed_db:mojo_bindings",
     "//content/browser/notifications:notification_proto",
     "//content/browser/payments:payment_app_proto",
-    "//content/browser/preloading/prerender:mojo_bindings",
     "//content/browser/private_aggregation/proto:private_aggregation_budgets_proto",
     "//content/browser/process_internals:mojo_bindings",
     "//content/browser/resources:resources",
@@ -147,7 +146,6 @@ source_set("browser") {
     "//content/public/browser:proto",
     "//content/public/common:common_sources",
     "//content/public/common:content_descriptor_keys",
-    "//content/public/common:trust_tokens_mojo_bindings",
     "//content/public/common/zygote:buildflags",
     "//content/services/auction_worklet/public/mojom",
     "//crypto",
@@ -220,7 +218,6 @@ source_set("browser") {
     "//services/video_capture:lib",
     "//services/video_capture/public/cpp",
     "//services/video_capture/public/mojom:constants",
-    "//services/video_capture/public/uma",
     "//services/viz/privileged/mojom",
     "//services/viz/public/cpp/gpu",
     "//services/viz/public/mojom",
@@ -251,6 +248,7 @@ source_set("browser") {
     "//third_party/webrtc_overrides:webrtc_component",
     "//third_party/zlib",
     "//third_party/zlib/google:zip",
+    "//tools/v8_context_snapshot:buildflags",
     "//ui/accessibility",
     "//ui/accessibility:ax_enums_mojo",
     "//ui/base",
@@ -426,6 +424,8 @@ source_set("browser") {
     "attribution_reporting/attribution_host.h",
     "attribution_reporting/attribution_info.cc",
     "attribution_reporting/attribution_info.h",
+    "attribution_reporting/attribution_input_event.cc",
+    "attribution_reporting/attribution_input_event.h",
     "attribution_reporting/attribution_internals_handler_impl.cc",
     "attribution_reporting/attribution_internals_handler_impl.h",
     "attribution_reporting/attribution_internals_ui.cc",
@@ -465,9 +465,6 @@ source_set("browser") {
     "attribution_reporting/combinatorics.h",
     "attribution_reporting/common_source_info.cc",
     "attribution_reporting/common_source_info.h",
-    "attribution_reporting/os_level_attribution_manager.h",
-    "attribution_reporting/os_level_attribution_manager_impl.cc",
-    "attribution_reporting/os_level_attribution_manager_impl.h",
     "attribution_reporting/rate_limit_result.h",
     "attribution_reporting/rate_limit_table.cc",
     "attribution_reporting/rate_limit_table.h",
@@ -642,6 +639,10 @@ source_set("browser") {
     "browsing_topics/browsing_topics_site_data_manager_impl.h",
     "browsing_topics/browsing_topics_site_data_storage.cc",
     "browsing_topics/browsing_topics_site_data_storage.h",
+    "browsing_topics/browsing_topics_url_loader.cc",
+    "browsing_topics/browsing_topics_url_loader.h",
+    "browsing_topics/browsing_topics_url_loader_service.cc",
+    "browsing_topics/browsing_topics_url_loader_service.h",
     "browsing_topics/header_util.cc",
     "browsing_topics/header_util.h",
     "buckets/bucket_context.h",
@@ -893,6 +894,8 @@ source_set("browser") {
     "feature_observer.h",
     "fenced_frame/fenced_frame.cc",
     "fenced_frame/fenced_frame.h",
+    "fenced_frame/fenced_frame_config.cc",
+    "fenced_frame/fenced_frame_config.h",
     "fenced_frame/fenced_frame_url_mapping.cc",
     "fenced_frame/fenced_frame_url_mapping.h",
     "field_trial_recorder.cc",
@@ -1179,8 +1182,6 @@ source_set("browser") {
     "loader/prefetch_url_loader_service.h",
     "loader/shared_cors_origin_access_list_impl.cc",
     "loader/shared_cors_origin_access_list_impl.h",
-    "loader/single_request_url_loader_factory.cc",
-    "loader/single_request_url_loader_factory.h",
     "loader/url_loader_throttles.cc",
     "locks/lock_manager.cc",
     "locks/lock_manager.h",
@@ -1282,6 +1283,8 @@ source_set("browser") {
     "media_session/media_session_service.cc",
     "memory/swap_metrics_driver_impl.cc",
     "memory/swap_metrics_driver_impl.h",
+    "memory_pressure/user_level_memory_pressure_signal_generator.cc",
+    "memory_pressure/user_level_memory_pressure_signal_generator.h",
     "message_port_provider.cc",
     "metrics/histogram_controller.cc",
     "metrics/histogram_controller.h",
@@ -1396,8 +1399,6 @@ source_set("browser") {
     "permissions/permission_service_context.h",
     "permissions/permission_service_impl.cc",
     "permissions/permission_service_impl.h",
-    "picture_in_picture/document_picture_in_picture_window_controller_impl.cc",
-    "picture_in_picture/document_picture_in_picture_window_controller_impl.h",
     "picture_in_picture/picture_in_picture_service_impl.cc",
     "picture_in_picture/picture_in_picture_service_impl.h",
     "picture_in_picture/picture_in_picture_session.cc",
@@ -1410,6 +1411,10 @@ source_set("browser") {
     "portal/portal_navigation_throttle.h",
     "preloading/anchor_element_interaction_host_impl.cc",
     "preloading/anchor_element_interaction_host_impl.h",
+    "preloading/preconnector.cc",
+    "preloading/preconnector.h",
+    "preloading/prefetch/no_vary_search_helper.cc",
+    "preloading/prefetch/no_vary_search_helper.h",
     "preloading/prefetch/prefetch_canary_checker.cc",
     "preloading/prefetch/prefetch_canary_checker.h",
     "preloading/prefetch/prefetch_container.cc",
@@ -1442,6 +1447,9 @@ source_set("browser") {
     "preloading/prefetch/prefetch_serving_page_metrics_container.cc",
     "preloading/prefetch/prefetch_serving_page_metrics_container.h",
     "preloading/prefetch/prefetch_status.h",
+    "preloading/prefetch/prefetch_streaming_url_loader.cc",
+    "preloading/prefetch/prefetch_streaming_url_loader.h",
+    "preloading/prefetch/prefetch_streaming_url_loader_status.h",
     "preloading/prefetch/prefetch_type.cc",
     "preloading/prefetch/prefetch_type.h",
     "preloading/prefetch/prefetch_url_loader_interceptor.cc",
@@ -1450,6 +1458,8 @@ source_set("browser") {
     "preloading/prefetch/prefetched_mainframe_response_container.h",
     "preloading/prefetch/proxy_lookup_client_impl.cc",
     "preloading/prefetch/proxy_lookup_client_impl.h",
+    "preloading/prefetcher.cc",
+    "preloading/prefetcher.h",
     "preloading/preloading.cc",
     "preloading/preloading.h",
     "preloading/preloading_attempt_impl.cc",
@@ -1471,18 +1481,19 @@ source_set("browser") {
     "preloading/prerender/prerender_host.h",
     "preloading/prerender/prerender_host_registry.cc",
     "preloading/prerender/prerender_host_registry.h",
-    "preloading/prerender/prerender_internals_handler_impl.cc",
-    "preloading/prerender/prerender_internals_handler_impl.h",
-    "preloading/prerender/prerender_internals_ui.cc",
-    "preloading/prerender/prerender_internals_ui.h",
     "preloading/prerender/prerender_metrics.cc",
     "preloading/prerender/prerender_metrics.h",
     "preloading/prerender/prerender_navigation_throttle.cc",
     "preloading/prerender/prerender_navigation_throttle.h",
     "preloading/prerender/prerender_navigation_utils.cc",
     "preloading/prerender/prerender_navigation_utils.h",
+    "preloading/prerender/prerender_new_tab_handle.cc",
+    "preloading/prerender/prerender_new_tab_handle.h",
     "preloading/prerender/prerender_subframe_navigation_throttle.cc",
     "preloading/prerender/prerender_subframe_navigation_throttle.h",
+    "preloading/prerenderer.h",
+    "preloading/prerenderer_impl.cc",
+    "preloading/prerenderer_impl.h",
     "preloading/speculation_rules/speculation_host_impl.cc",
     "preloading/speculation_rules/speculation_host_impl.h",
     "presentation/presentation_service_impl.cc",
@@ -1675,6 +1686,8 @@ source_set("browser") {
     "renderer_host/input/touchscreen_tap_suppression_controller.h",
     "renderer_host/ipc_utils.cc",
     "renderer_host/ipc_utils.h",
+    "renderer_host/isolated_context_util.cc",
+    "renderer_host/isolated_context_util.h",
     "renderer_host/isolated_web_app_throttle.cc",
     "renderer_host/isolated_web_app_throttle.h",
     "renderer_host/keep_alive_handle_factory.cc",
@@ -1761,6 +1774,7 @@ source_set("browser") {
     "renderer_host/navigation_request_info.h",
     "renderer_host/navigation_throttle_runner.cc",
     "renderer_host/navigation_throttle_runner.h",
+    "renderer_host/navigation_type.h",
     "renderer_host/navigator.cc",
     "renderer_host/navigator.h",
     "renderer_host/navigator_delegate.h",
@@ -1860,6 +1874,8 @@ source_set("browser") {
     "resource_context_impl.cc",
     "resource_context_impl.h",
     "resource_coordinator_service.cc",
+    "runtime_feature_state/runtime_feature_state_document_data.cc",
+    "runtime_feature_state/runtime_feature_state_document_data.h",
     "scheduler/browser_io_thread_delegate.cc",
     "scheduler/browser_io_thread_delegate.h",
     "scheduler/browser_task_executor.cc",
@@ -2216,8 +2232,10 @@ source_set("browser") {
     "webid/fedcm_metrics.h",
     "webid/federated_auth_request_impl.cc",
     "webid/federated_auth_request_impl.h",
-    "webid/federated_auth_request_web_contents_data.cc",
-    "webid/federated_auth_request_web_contents_data.h",
+    "webid/federated_auth_request_page_data.cc",
+    "webid/federated_auth_request_page_data.h",
+    "webid/federated_provider_fetcher.cc",
+    "webid/federated_provider_fetcher.h",
     "webid/flags.cc",
     "webid/flags.h",
     "webid/idp_network_request_manager.cc",
@@ -2288,6 +2306,13 @@ source_set("browser") {
     "worker_host/worker_script_loader_factory.h",
   ]
 
+  if (!is_android && !is_fuchsia) {
+    sources += [
+      "smart_card/smart_card_service.cc",
+      "smart_card/smart_card_service.h",
+    ]
+  }
+
   # TODO(crbug.com/1327384): Remove `permissions_common`.
   # DO NOT add unrelated entries to this block.
   deps += [ "//components/permissions:permissions_common" ]
@@ -2319,6 +2344,8 @@ source_set("browser") {
       "font_service.cc",
       "font_service.h",
       "media/stable_video_decoder_factory.cc",
+      "media/video_encode_accelerator_provider_launcher.cc",
+      "media/video_encode_accelerator_provider_launcher.h",
       "memory/swap_metrics_driver_impl_linux.cc",
       "memory/swap_metrics_driver_impl_linux.h",
       "sandbox_host_linux.cc",
@@ -2352,8 +2379,10 @@ source_set("browser") {
       "lock_screen/lock_screen_storage_impl.h",
       "ml/ml_service_impl_cros.cc",
       "ml/ml_service_impl_cros.h",
+      "renderer_host/pepper/firewall_hole_proxy.cc",
     ]
     deps += [
+      "//chromeos/crosapi/mojom",
       "//chromeos/services/machine_learning/public/cpp",
       "//chromeos/services/machine_learning/public/mojom",
       "//components/value_store",
@@ -2385,9 +2414,9 @@ source_set("browser") {
       "//chromeos/ash/components/dbus",
       "//chromeos/ash/components/dbus/debug_daemon",
       "//chromeos/ash/components/network",
+      "//chromeos/ash/components/system",
       "//chromeos/ash/resources",
       "//chromeos/resources",
-      "//chromeos/system",
       "//components/chromeos_camera:mojo_mjpeg_decode_accelerator",
       "//components/session_manager/core",
       "//services/data_decoder/public/cpp",
@@ -2423,13 +2452,15 @@ source_set("browser") {
       "font_access/font_enumeration_data_source_fuchsia.cc",
       "font_access/font_enumeration_data_source_fuchsia.h",
       "memory/swap_metrics_driver_impl_fuchsia.cc",
-      "renderer_host/media/media_resource_provider_fuchsia.cc",
-      "renderer_host/media/media_resource_provider_fuchsia.h",
+      "renderer_host/media/fuchsia_media_cdm_provider_impl.cc",
+      "renderer_host/media/fuchsia_media_cdm_provider_impl.h",
+      "renderer_host/media/fuchsia_media_codec_provider_impl.cc",
+      "renderer_host/media/fuchsia_media_codec_provider_impl.h",
       "speech/tts_fuchsia.cc",
     ]
     deps += [
       "//media/fuchsia/cdm/service",
-      "//media/fuchsia/mojom:fuchsia_media_resource_provider",
+      "//media/fuchsia/mojom:fuchsia_media",
       "//third_party/abseil-cpp:absl",
       "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.accessibility.semantics",
       "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.mediacodec",
@@ -2475,8 +2506,6 @@ source_set("browser") {
       "accessibility/browser_accessibility_manager_mac.h",
       "accessibility/browser_accessibility_manager_mac.mm",
       "accessibility/browser_accessibility_state_impl_mac.mm",
-      "browser_plugin/browser_plugin_popup_menu_helper_mac.h",
-      "browser_plugin/browser_plugin_popup_menu_helper_mac.mm",
       "child_process_launcher_helper_mac.cc",
       "child_process_task_port_provider_mac.cc",
       "child_process_task_port_provider_mac.h",
@@ -2549,6 +2578,9 @@ source_set("browser") {
       "QuartzCore.framework",
       "IOSurface.framework",
     ]
+    weak_frameworks = [
+      "UniformTypeIdentifiers.framework",  # macOS 11
+    ]
   } else {
     # Not Mac.
     deps += [ "//sandbox" ]
@@ -2602,7 +2634,7 @@ source_set("browser") {
         "//sandbox/mac:seatbelt_extension",
       ]
       frameworks += [ "CoreMedia.framework" ]
-      weak_frameworks = [ "ScreenCaptureKit.framework" ]
+      weak_frameworks += [ "ScreenCaptureKit.framework" ]  # macOS 12.3
     }
     if (is_chromeos_lacros) {
       sources += [
@@ -2951,6 +2983,8 @@ source_set("browser") {
       "android/tracing_controller_android.h",
       "android/web_contents_observer_proxy.cc",
       "android/web_contents_observer_proxy.h",
+      "attribution_reporting/attribution_input_event_tracker_android.cc",
+      "attribution_reporting/attribution_input_event_tracker_android.h",
       "child_process_launcher_helper_android.cc",
       "contacts/contacts_provider_android.cc",
       "contacts/contacts_provider_android.h",
@@ -3007,8 +3041,6 @@ source_set("browser") {
       "speech/tts_android.h",
       "speech/tts_environment_android_impl.cc",
       "speech/tts_environment_android_impl.h",
-      "tracing/background_reached_code_tracing_observer_android.cc",
-      "tracing/background_reached_code_tracing_observer_android.h",
       "web_contents/view_structure_builder_android.cc",
       "web_contents/view_structure_builder_android.h",
       "web_contents/web_contents_android.cc",
@@ -3032,6 +3064,7 @@ source_set("browser") {
       "//third_party/blink/public/mojom:mojom_platform_blink",
       "//third_party/icu",
       "//ui/accessibility:ax_assistant",
+      "//ui/accessibility:ax_base_android",
       "//ui/accessibility/mojom",
       "//ui/accessibility/mojom:ax_assistant_mojom",
       "//ui/android",
@@ -3084,10 +3117,6 @@ source_set("browser") {
       "serial/serial_service.h",
 
       # Most speech code is non-Android.
-      "speech/audio_buffer.cc",
-      "speech/audio_buffer.h",
-      "speech/audio_encoder.cc",
-      "speech/audio_encoder.h",
       "speech/endpointer/endpointer.cc",
       "speech/endpointer/endpointer.h",
       "speech/endpointer/energy_endpointer.cc",
@@ -3119,14 +3148,17 @@ source_set("browser") {
       "webauth/virtual_discovery.h",
       "webauth/virtual_fido_discovery_factory.cc",
       "webauth/virtual_fido_discovery_factory.h",
+
+      # The Document Picture-in-Picture API is not implemented on Android.
+      "picture_in_picture/document_picture_in_picture_window_controller_impl.cc",
+      "picture_in_picture/document_picture_in_picture_window_controller_impl.h",
     ]
 
     deps += [
-      "//components/speech",
+      "//components/speech:speech",
       "//components/vector_icons",
       "//content/browser/devtools:devtools_resources_extern",
       "//content/browser/tracing:resources",
-      "//third_party/flac",
     ]
   }
 
@@ -3293,4 +3325,10 @@ fuzzer_test("content_sms_parser_fuzzer") {
     "//base",
     "//content/public/browser:browser_sources",
   ]
+}
+
+fuzzer_test("clear_site_data_handler_fuzzer") {
+  sources = [ "browsing_data/clear_site_data_handler_fuzzer.cc" ]
+  deps = [ "//content/test:test_support" ]
+  seed_corpus = "//content/test/data/fuzzer_corpus/clear_site_data/"
 }

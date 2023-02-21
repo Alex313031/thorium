@@ -28,7 +28,7 @@
 #include "mpegutils.h"
 #include "mpegvideo.h"
 #include "msmpeg4.h"
-#include "msmpeg4data.h"
+#include "msmpeg4_vc1_data.h"
 #include "msmpeg4dec.h"
 #include "simple_idct.h"
 #include "wmv2.h"
@@ -445,7 +445,7 @@ static inline int wmv2_decode_inter_block(WMV2DecContext *w, int16_t *block,
     }
 }
 
-int ff_wmv2_decode_mb(MpegEncContext *s, int16_t block[6][64])
+static int wmv2_decode_mb(MpegEncContext *s, int16_t block[6][64])
 {
     /* The following is only allowed because this encoder
      * does not use slice threading. */
@@ -482,7 +482,8 @@ int ff_wmv2_decode_mb(MpegEncContext *s, int16_t block[6][64])
         s->mb_intra = 1;
         if (get_bits_left(&s->gb) <= 0)
             return AVERROR_INVALIDDATA;
-        code = get_vlc2(&s->gb, ff_msmp4_mb_i_vlc.table, MB_INTRA_VLC_BITS, 2);
+        code = get_vlc2(&s->gb, ff_msmp4_mb_i_vlc.table,
+                        MSMP4_MB_INTRA_VLC_BITS, 2);
         /* predict coded block pattern */
         cbp = 0;
         for (i = 0; i < 6; i++) {
@@ -572,6 +573,8 @@ static av_cold int wmv2_decode_init(AVCodecContext *avctx)
 
     if ((ret = ff_msmpeg4_decode_init(avctx)) < 0)
         return ret;
+
+    s->decode_mb = wmv2_decode_mb;
 
     ff_wmv2_common_init(s);
 

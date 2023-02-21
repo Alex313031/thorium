@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <!--
 This file contains definitions of resources that will be translated for each
 locale.  The variables is_win, is_macosx, is_linux, and is_posix are available
@@ -790,12 +790,6 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="The name of the Lens Region Search command in the content area context menu">
             Search page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT2" desc="The name of the Lens Region Search command in the content area context menu">
-            Search any part of the page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="The name of the Lens Region Search command in the content area context menu">
-            Search inside image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="The name of the Lens Region Search command in the content area context menu">
             Search images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
@@ -1058,12 +1052,6 @@ are declared in tools/grit/grit_rule.gni.
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
-          </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT2" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-            Search Any Part of the Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
-          </message>
-          <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT3" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
-              Search inside Image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Images with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
@@ -1939,8 +1927,8 @@ are declared in tools/grit/grit_rule.gni.
         desc="Message shown in the download shelf when a download is being scanned for an Advanced Protection user">
         <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> is being scanned.
       </message>
-      <message name="IDS_PROMPT_CONFIRM_MIXED_CONTENT_DOWNLOAD"
-        desc="Message shown to the user to validate the download when the download content is a mixed-content download.">
+      <message name="IDS_PROMPT_CONFIRM_INSECURE_DOWNLOAD"
+        desc="Message shown to the user to validate the download when the download content is an insecure download.">
         <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> can't be downloaded securely
       </message>
       <message name="IDS_PROMPT_DOWNLOAD_BLOCKED_TOO_LARGE"
@@ -1967,12 +1955,12 @@ are declared in tools/grit/grit_rule.gni.
         desc="Message shown in the download shelf when a download is finished being scanned, and issues were found">
         This file is dangerous
       </message>
-      <message name="IDS_PROMPT_DOWNLOAD_MIXED_CONTENT_WARNING"
-        desc="Message shown in the download shelf when a download is mixed content, and Thorium needs to show a warning.">
+      <message name="IDS_PROMPT_DOWNLOAD_INSECURE_WARNING"
+        desc="Message shown in the download shelf when a download is insecure, and Thorium needs to show a warning.">
         <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> can't be downloaded securely
       </message>
-      <message name="IDS_PROMPT_DOWNLOAD_MIXED_CONTENT_BLOCKED"
-        desc="Message shown in the download shelf when a download is mixed content, and Thorium has blocked it.">
+      <message name="IDS_PROMPT_DOWNLOAD_INSECURE_BLOCKED"
+        desc="Message shown in the download shelf when a download is insecure, and Thorium has blocked it.">
         <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> can't be downloaded securely
       </message>
       <message name="IDS_PROMPT_APP_DEEP_SCANNING"
@@ -1995,8 +1983,8 @@ are declared in tools/grit/grit_rule.gni.
          desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it may be dangerous.">
         This type of file may harm your computer.
       </message>
-      <message name="IDS_BLOCK_REASON_MIXED_CONTENT"
-         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it is mixed-content.">
+      <message name="IDS_BLOCK_REASON_INSECURE_DOWNLOAD"
+         desc="Message shown to the user on chrome://downloads page to explain that this download is blocked because it was insecurely delivered.">
         This file can't be downloaded securely
       </message>
       <message name="IDS_BLOCK_REASON_DEEP_SCANNING"
@@ -2029,7 +2017,7 @@ are declared in tools/grit/grit_rule.gni.
       </message>
 
       <if expr="is_chromeos">
-        <message name="IDS_PROMPT_BLOCKED_MIXED_DOWNLOAD_TITLE"
+        <message name="IDS_PROMPT_BLOCKED_INSECURE_DOWNLOAD_TITLE"
                  desc="In the download notification, a title of the message shown on a download blocked for being insecure.">
           Insecure download blocked
         </message>
@@ -2232,11 +2220,11 @@ are declared in tools/grit/grit_rule.gni.
       </message>
       <message name="IDS_DOWNLOAD_STATUS_PERCENT_COMPLETE_ACCESSIBLE_ALERT"
                desc="The title of a download notification: the current download status is in progress and time remaining is known. This message is for screen reader users.">
-               Downloading, <ph name="PERCENT_REMAINING">$1<ex>33</ex></ph>% remaining
+               Downloading <ph name="FILE_NAME">$1<ex>somedocument.pdf</ex></ph>, <ph name="PERCENT_REMAINING">$2<ex>33</ex></ph>% remaining
       </message>
       <message name="IDS_DOWNLOAD_STATUS_TIME_REMAINING_ACCESSIBLE_ALERT"
                desc="The title of a download notification: the current download status is in progress and time remaining is known. This message is for screen reader users.">
-               Downloading, <ph name="STATUS">$1<ex>42 mins left</ex></ph>
+               Downloading <ph name="FILE_NAME">$1<ex>somedocument.pdf</ex></ph>, <ph name="STATUS">$2<ex>42 mins left</ex></ph>
       </message>
       <message name="IDS_DOWNLOAD_FAILED_ACCESSIBLE_ALERT"
                desc="The title of a download notification: the current download status is failed. This message is for screen reader users.">
@@ -2289,19 +2277,19 @@ are declared in tools/grit/grit_rule.gni.
         </else>
       </if>
       <message name="IDS_DEEP_SCANNING_ACCESSIBLE_ALERT"
-               desc="The title of a download notification inidcating that the file may be malicious, and the Advanced Protection Program recommends sending the file to Google. This message is for screen reader users">
+               desc="The title of a download notification indicating that the file may be malicious, and the Advanced Protection Program recommends sending the file to Google. This message is for screen reader users">
         <ph name="FILE_NAME">$1<ex>file.exe</ex></ph> is being scanned.
       </message>
       <if expr="is_macosx">
         <then>
-          <message name="IDS_PROMPT_DOWNLOAD_MIXED_CONTENT_BLOCKED_ACCESSIBLE_ALERT"
-                   desc="The title of a download notification inidcating that the download was delivered insecurely. This message is for screen reader users">
+          <message name="IDS_PROMPT_DOWNLOAD_INSECURE_BLOCKED_ACCESSIBLE_ALERT"
+                   desc="The title of a download notification indicating that the download was delivered insecurely. This message is for screen reader users">
             <ph name="FILE_NAME">$1<ex>file.exe</ex></ph> can't be downloaded securely.
           </message>
         </then>
         <else>
-          <message name="IDS_PROMPT_DOWNLOAD_MIXED_CONTENT_BLOCKED_ACCESSIBLE_ALERT"
-                   desc="The title of a download notification inidcating that the download was delivered insecurely. This message is for screen reader users">
+          <message name="IDS_PROMPT_DOWNLOAD_INSECURE_BLOCKED_ACCESSIBLE_ALERT"
+                   desc="The title of a download notification indicating that the download was delivered insecurely. This message is for screen reader users">
             <ph name="FILE_NAME">$1<ex>file.exe</ex></ph> can't be downloaded securely. Press Shift+F6 to cycle to the downloads bar area.
           </message>
         </else>
@@ -2378,8 +2366,8 @@ are declared in tools/grit/grit_rule.gni.
                    desc="Download context menu: Show information about interrupted downloads">
             &amp;More information
           </message>
-          <message name="IDS_DOWNLOAD_MENU_LEARN_MORE_MIXED_CONTENT"
-                   desc="Download context menu: Show information about mixed content downloads">
+          <message name="IDS_DOWNLOAD_MENU_LEARN_MORE_INSECURE"
+                   desc="Download context menu: Show information about insecure downloads">
             &amp;Learn more
           </message>
         </if>
@@ -2446,8 +2434,8 @@ are declared in tools/grit/grit_rule.gni.
                    desc="In Title Case: Download context menu: Show information about interrupted downloads">
             &amp;More Information
           </message>
-          <message name="IDS_DOWNLOAD_MENU_LEARN_MORE_MIXED_CONTENT"
-                   desc="In Title Case: Download context menu: Show information about mixed content downloads">
+          <message name="IDS_DOWNLOAD_MENU_LEARN_MORE_INSECURE"
+                   desc="In Title Case: Download context menu: Show information about insecure downloads">
             &amp;Learn More
           </message>
         </if>  <!-- not use_titlecase -->
@@ -2594,6 +2582,10 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_DOWNLOAD_BUBBLE_DELETE"
                desc="Label for the Delete button on the blocked download bubble subpage.">
         Delete
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_MAIN_BUTTON_SUBPAGE"
+               desc="Accessibility label for the main button on the download bubble main page. It opens the bubble subpage when activated.">
+        <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> <ph name="STATUS">$2<ex>blocked dangerous</ex></ph> more details
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_RESUME"
                desc="Label for the button prompting to resume a paused download">
@@ -2764,41 +2756,81 @@ are declared in tools/grit/grit_rule.gni.
         Anyone using this device can see downloaded files
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_RESUME_QUICK_ACTION"
-            desc="Accessibility/tooltip label for action to resume a download.">
+            desc="Tooltip label for action to resume a download.">
         Resume
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_RESUME_QUICK_ACTION_ACCESSIBILITY"
+            desc="Accessibility label for action to resume a download.">
+        Resume <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph>
+      </message>
       <message name="IDS_DOWNLOAD_BUBBLE_PAUSE_QUICK_ACTION"
-              desc="Accessibility/tooltip label for action to pause a download.">
+              desc="Tooltip label for action to pause a download.">
         Pause
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_PAUSE_QUICK_ACTION_ACCESSIBILITY"
+              desc="Accessibility label for action to pause a download.">
+        Pause <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph>
+      </message>
       <message name="IDS_DOWNLOAD_BUBBLE_CANCEL_QUICK_ACTION"
-              desc="Accessibility/tooltip label for action to cancel a download.">
+              desc="Tooltip label for action to cancel a download.">
         Cancel
       </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_CANCEL_QUICK_ACTION_ACCESSIBILITY"
+              desc="Accessibility label for action to cancel a download.">
+        Cancel <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph>
+      </message>
       <message name="IDS_DOWNLOAD_BUBBLE_OPEN_QUICK_ACTION"
-              desc="Accessibility/tooltip label for action to open a download.">
+              desc="Tooltip label for action to open a download.">
         Open
+      </message>
+      <message name="IDS_DOWNLOAD_BUBBLE_OPEN_QUICK_ACTION_ACCESSIBILITY"
+              desc="Accessibility label for action to open a download.">
+        Open <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph>
       </message>
       <if expr="is_macosx">
             <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION"
-                  desc="Mac: Accessibility/tooltip label for showing the file in the Finder">
+                  desc="Mac: Tooltip label for showing the file in the Finder">
               Show in Finder
+            </message>
+            <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION_ACCESSIBILITY"
+                  desc="Mac: Accessibility label for showing the file in the Finder">
+              Show <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> in Finder
             </message>
       </if>
       <if expr="not is_macosx">
         <if expr="not use_titlecase">
             <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION"
-                     desc="Accessibility/tooltip label for showing the file in file explorer">
+                     desc="Tooltip label for showing the file in file explorer">
               Show in folder
+            </message>
+            <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION_ACCESSIBILITY"
+                     desc="Accessibility label for showing the file in file explorer">
+              Show <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> in folder
             </message>
           </if>
           <if expr="use_titlecase">
             <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION"
-                     desc="In Title Case: Accessibility/tooltip label for showing the file in file explorer">
+                     desc="In Title Case: Tooltip label for showing the file in file explorer">
               Show in Folder
+            </message>
+            <message name="IDS_DOWNLOAD_BUBBLE_SHOW_IN_FOLDER_QUICK_ACTION_ACCESSIBILITY"
+                     desc="In Title Case: Accessibility label for showing the file in file explorer">
+              Show <ph name="FILE_NAME">$1<ex>bla.exe</ex></ph> in Folder
             </message>
           </if>
       </if>
+      <if expr="not use_titlecase">
+          <message name="IDS_DOWNLOAD_BUBBLE_BACK_RECENT_DOWNLOADS"
+            desc="Accessibility/tooltip label for returning to recent downloads">
+            Back to recent downloads
+          </message>
+        </if>
+        <if expr="use_titlecase">
+          <message name="IDS_DOWNLOAD_BUBBLE_BACK_RECENT_DOWNLOADS"
+            desc="In Title Case: Accessibility/tooltip label for returning to recent downloads">
+            Back to Recent Downloads
+          </message>
+        </if>
 
       <!-- Tailored Warning in Download Bubble -->
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_COOKIE_THEFT"
@@ -3938,6 +3970,22 @@ are declared in tools/grit/grit_rule.gni.
        Switch to captured tab
       </message>
 
+      <!-- Tab casting infobar -->
+      <message name="IDS_TAB_CASTING_INFOBAR_CASTING_CURRENT_TAB_LABEL" desc="Text displayed on an infobar when current tab is being casted.">
+       Casting this tab
+      </message>
+      <message name="IDS_TAB_CASTING_INFOBAR_CASTING_ANOTHER_UNTITLED_TAB_LABEL" desc="Text displayed on an infobar when another (non-current) untitled tab is being casted.">
+       Casting a tab
+      </message>
+      <message name="IDS_TAB_CASTING_INFOBAR_CASTING_ANOTHER_TAB_LABEL" desc="Text displayed on an infobar when another (non-current) tab is being shacastedred.">
+       Casting <ph name="TAB_NAME">$1<ex>youtube.com</ex></ph>
+      </message>
+      <message name="IDS_TAB_CASTING_INFOBAR_CAST_BUTTON" desc="Text displayed on the button to cast current tab.">
+       Cast this tab instead
+      </message>
+      <message name="IDS_TAB_CASTING_INFOBAR_STOP_BUTTON" desc="Text displayed on the button to stop casting a tab.">
+       Stop casting
+      </message>
 
       <!-- Task Manager Window -->
       <if expr="not is_android">
@@ -5028,18 +5076,6 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUTTON_TOOLTIP_MULTIPLE_EXTENSIONS" desc="The tooltip text of the request access button that appears on the toolbar when an extension requests access to the site">
           Click to allow on <ph name="ORIGIN">$1<ex>google.com</ex></ph>:
         </message>
-        <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_SINGLE_EXTENSION_TITLE" desc="The title of the request access bubble to tell the user to accept the bubble to always run the extension on the site.">
-          Always allow "<ph name="EXTENSION_NAME">$1<ex>Gmail Checker</ex></ph>" to run on <ph name="ORIGIN">$2<ex>google.com</ex></ph>?
-        </message>
-        <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_MULTIPLE_EXTENSIONS_TITLE" desc="The title of the request access bubble to tell the user to accept the bubble to always run the extensions on the site.">
-          Always allow these extensions to run on <ph name="ORIGIN">$1<ex>google.com</ex></ph>?
-        </message>
-        <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_OK_BUTTON_LABEL" desc="The label of the button to allow the extension(s) to run on the site.">
-          Always allow
-        </message>
-        <message name="IDS_EXTENSIONS_REQUEST_ACCESS_BUBBLE_CANCEL_BUTTON_LABEL" desc="The label of the button to don't allow the extension(s) to run on the site.">
-          No thanks
-        </message>
         <message name="IDS_EXTENSIONS_TOOLBAR_ACTION_HOVER_CARD_TITLE_HAS_ACCESS" desc="The title in the card that shows up on mouse hover of a toolbar action when extension has access to the current site.">
           Allowed to read &amp; change
         </message>
@@ -5504,6 +5540,24 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
       <!-- End Force Installed Deprecated Apps Deletion Dialog strings. -->
+      <!-- Force Installed Preinstalled Deprecated Apps Deletion Dialog strings. -->
+      <message name="IDS_FORCE_INSTALLED_PREINSTALLED_DEPRECATED_APPS_TITLE" desc="Title of the force installed deprecated app dialog, prompting the user to contact their organization's administrator.">
+        Ask your admin to update this app
+      </message>
+      <message name="IDS_FORCE_INSTALLED_PREINSTALLED_DEPRECATED_APPS_CONTENT" desc="Content of the force installed preinstalled deprecated app dialog">
+        Thorium Apps are migrating to Progressive Web Apps. This Thorium App was installed on your browser by your organization. To open the Progressive Web App from the Apps list, first contact your administrator and ask them to uninstall the Thorium App. In the meantime, you can visit <ph name="EXTENSION_LAUNCH_URL">$1<ex>sheets.google.com</ex></ph> to open <ph name="EXTENSION_NAME">$2<ex>Google Sheets</ex></ph> on the web.
+      </message>
+      <if expr="use_titlecase">
+        <message name="IDS_FORCE_INSTALLED_PREINSTALLED_DEPRECATED_APPS_GO_TO_SITE_BUTTON" desc="Label for the button that opens the website for the app">
+          Go To Site
+        </message>
+      </if>
+        <if expr="not use_titlecase">
+        <message name="IDS_FORCE_INSTALLED_PREINSTALLED_DEPRECATED_APPS_GO_TO_SITE_BUTTON" desc="Label for the button that opens the website for the app">
+          Go to site
+        </message>
+      </if>
+      <!-- End Force Installed Preinstalled Deprecated Apps Deletion Dialog strings. -->
       <!-- Deprecated Apps Deletion Dialog strings. -->
       <message name="IDS_DEPRECATED_APPS_RENDERER_TITLE_PLURAL" desc="The title of the deprecated app dialog">
         <ph name="APPS">$1<ex>2</ex></ph> apps are no longer supported
@@ -5636,6 +5690,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_EXTENSIONS_MENU_EXTENSIONS_TAB_DISCOVER_MORE_TITLE" desc="Text of the button in the installed extensions tab used to open the webstore page">
         Discover more extensions
+      </message>
+      <message name="IDS_EXTENSIONS_MENU_REQUESTS_ACCESS_SECTION_TITLE" desc="Title of the requests access section that lists the extensions requesting site access">
+        Requests access
       </message>
 
       <!-- Settings API bubble -->
@@ -5969,6 +6026,20 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_PASSWORD_MANAGER_UPDATE_PASSWORD_SIGNED_IN_MESSAGE_DESCRIPTION" desc="The description of the Google Password Manager's update password message when the user is signed in.">
         In Google Password Manager for <ph name="ACCOUNT">$1<ex>user@gmail.com</ex></ph>
       </message>
+      <if expr="is_android">
+        <message name="IDS_PASSWORD_MANAGER_SAVE_UPDATE_PASSWORD_SIGNED_IN_MESSAGE_DESCRIPTION_V1" desc="The description of the Google Password Manager's save/update password prompt when the user is signed in.">
+          Google Password Manager <ph name="SEPARATOR">•</ph> <ph name="ACCOUNT">$1<ex>user@gmail.com</ex></ph>
+        </message>
+        <message name="IDS_PASSWORD_MANAGER_SAVE_PASSWORD_SIGNED_IN_MESSAGE_DESCRIPTION_V2" desc="The description of the Google Password Manager's save password prompt when the user is signed in.">
+          To your Google Account, for <ph name="ACCOUNT">$1<ex>user@gmail.com</ex></ph>
+        </message>
+        <message name="IDS_PASSWORD_MANAGER_UPDATE_PASSWORD_SIGNED_IN_MESSAGE_DESCRIPTION_V2" desc="The description of the Google Password Manager's save password prompt when the user is signed in.">
+          In your Google Account, for <ph name="ACCOUNT">$1<ex>user@gmail.com</ex></ph>
+        </message>
+        <message name="IDS_PASSWORD_MANAGER_SAVE_UPDATE_PASSWORD_SIGNED_OUT_MESSAGE_DESCRIPTION_V1" desc="The description of the Google Password Manager's save password prompt when the user is signed out and passwords are only stored locally.">
+          Only on this device
+        </message>
+      </if>
       <if expr="use_titlecase">
         <message name="IDS_PASSWORD_MANAGER_ACCOUNT_CHOOSER_SIGN_IN" desc="In Title Case: The title of the Sign in button in the account chooser when there is one account.">
           Sign In
@@ -6596,6 +6667,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_DOODLE_SHARE_DIALOG_LINK_LABEL" desc="The text label for the share link text area on the doodle sharing dialog.">
         Doodle Link
       </message>
+      <message name="IDS_NTP_CUSTOMIZE_APPEARANCE_LABEL" desc="The label for the option to edit appearance in the Customize Thorium side panel.">
+        Appearance
+      </message>
       <message name="IDS_NTP_CUSTOMIZE_MENU_BACKGROUND_LABEL" desc="The label for the backgrounds option in the customization menu on the New Tab Page.">
         Background
       </message>
@@ -6614,6 +6688,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CUSTOMIZE_NO_BACKGROUND_LABEL" desc="The label for the 'Classic Thorium' tile in the customization menu on the New Tab Page">
         Classic Thorium
       </message>
+      <message name="IDS_NTP_CUSTOMIZE_UPLOADED_IMAGE_LABEL" desc="The label for the 'Uploaded image' tile in the customization menu on the New Tab Page side panel.">
+        Uploaded image
+      </message>
       <message name="IDS_NTP_CUSTOMIZE_UPLOAD_FROM_DEVICE_LABEL" desc="The label for the 'Upload from device' tile in the customization menu on the New Tab Page">
         Upload from device
       </message>
@@ -6622,6 +6699,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_NTP_CUSTOMIZE_HIDE_SHORTCUTS_DESC" desc="The description for the option to hide shortcuts in the customization menu on the New Tab Page">
         Don't show shortcuts on this page
+      </message>
+      <message name="IDS_NTP_CUSTOMIZE_SHOW_SHORTCUTS_LABEL" desc="The label for the option to show shortcuts in the customization menu on the New Tab Page">
+        Show shortcuts
       </message>
       <message name="IDS_NTP_CUSTOMIZE_MY_SHORTCUTS_LABEL" desc="The label for the option to show user selected shortcuts in the customization menu on the New Tab Page">
         My shortcuts
@@ -7049,12 +7129,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Got extensions? <ph name="BEGIN_LINK">&lt;a href="chrome://extensions"&gt;</ph>Manage your extensions<ph name="END_LINK">&lt;/a&gt;</ph> in one easy place.
       </message>
 
-      <if expr="is_android">
-        <message name="IDS_NTP_EXPLORE_SITES_TILE_TITLE" desc="A label for a button that when clicked takes the user to a tab that contains categorized links to websites that are popular in their country. [CHAR_LIMIT=12]">
-          Top sites
-        </message>
-      </if>
-
       <!-- Star View menu -->
       <if expr="use_titlecase">
         <message name="IDS_STAR_VIEW_MENU_ADD_BOOKMARK" desc="The item label of the menu triggered from the star icon in the location bar for adding a bookmark.">
@@ -7084,11 +7158,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
           Mark as read
         </message>
       </if>
-
-      <!-- Bookmarks menu -->
-      <message name="IDS_BOOKMARK_FOLDER_CHILD_COUNT" desc="Text description for the number of children of a bookmark folder">
-        {NUM_BOOKMARKS, plural, =1 {1 bookmark} other {# bookmarks}}
-      </message>
 
       <!-- Read Later button and menu -->
       <if expr="use_titlecase">
@@ -7171,9 +7240,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
 
       <!-- Bookmarks strings -->
-      <message name="IDS_BOOKMARKS_FOLDER_SORT" desc="Label for the active folder and sort type in the side panel.">
-        <ph name="FOLDER_TITLE">$1<ex>All Bookmarks</ex></ph> (<ph name="SORT_TYPE">$2<ex>Newest</ex>)</ph>
-      </message>
       <message name="IDS_BOOKMARKS_SORT_BY_TYPE" desc="Menu item label for selecting the bookmarks sort type.">
         Sort by <ph name="SORT_TYPE">$1<ex>Newest</ex></ph>
       </message>
@@ -7195,8 +7261,35 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_BOOKMARKS_SORT_REVERSE_ALPHABETICALLY" desc="Label for the reverse alphabetical bookmarks sort type">
         Z to A
       </message>
+      <message name="IDS_BOOKMARKS_VISUAL_VIEW" desc="Label for the visual view bookmarks menu option">
+        Visual view
+      </message>
+      <message name="IDS_BOOKMARKS_COMPACT_VIEW" desc="Label for the compact view bookmarks menu option">
+        Compact view
+      </message>
       <message name="IDS_BOOKMARKS_SORT_MENU_A11Y_LABEL" is_accessibility_with_no_ui="true" desc="Screen reader label for the button which opens the sort menu in the bookmarks side panel.">
-        Sort Options
+        View List Options
+      </message>
+      <message name="IDS_BOOKMARKS_CREATE_NEW_FOLDER_A11Y_LABEL" is_accessibility_with_no_ui="true" desc="Screen reader label for the button which creates a new folder in the bookmarks side panel.">
+        Create New Folder
+      </message>
+      <message name="IDS_BOOKMARKS_EDIT_BOOKMARK_LIST_A11Y_LABEL" is_accessibility_with_no_ui="true" desc="Screen reader label for the button which toggles the bulk edit state in the bookmarks side panel.">
+        Edit Bookmark List
+      </message>
+      <message name="IDS_BOOKMARKS_EMPTY_STATE_TITLE" desc="Title for the bookmarks side panel empty state">
+        You'll find your bookmarks here
+      </message>
+      <message name="IDS_BOOKMARKS_EMPTY_STATE_BODY" desc="Body text for the bookmarks side panel empty state">
+        Bookmark things you want to come back to later
+      </message>
+      <message name="IDS_BOOKMARKS_EMPTY_STATE_TITLE_GUEST" desc="Title for the bookmarks side panel empty state in guest mode">
+        Sign in to see your bookmarks
+      </message>
+      <message name="IDS_BOOKMARKS_EMPTY_STATE_BODY_GUEST" desc="Body text for the bookmarks side panel empty state in guest mode">
+        Bookmarks are unavailable in guest mode
+      </message>
+      <message name="IDS_BOOKMARK_FOLDER_CHILD_COUNT" desc="Text description for the number of children of a bookmark folder">
+        {NUM_BOOKMARKS, plural, =1 {1 bookmark} other {# bookmarks}}
       </message>
 
       <!-- Read Anything strings -->
@@ -7262,7 +7355,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Press to go back, context menu to see history
       </message>
       <message name="IDS_TOOLTIP_CHROMELABS_BUTTON" desc="The tooltip for the Thorium Labs button in the toolbar">
-        Enable featured experiments
+        Enable featured Thorium experiments
       </message>
       <message name="IDS_TOOLTIP_LEFT_ALIGNED_SIDE_PANEL_BUTTON" desc="The tooltip for the left aligned side panel toggle button">
         Toggle left aligned side panel
@@ -7719,6 +7812,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </if>
 
       <!-- User Education Tutorial Strings -->
+      <message name="IDS_TUTORIAL_GENERIC_SUCCESS_TITLE" desc="The title of the generic success step in the user education tutorials">
+        Nicely Done!
+      </message>
       <if expr="use_titlecase">
         <message name="IDS_TUTORIAL_TAB_GROUP_ADD_TAB_TO_GROUP" desc="The description of the add tab step in the tab group tutorial">
           Right-click on a tab and select "Add Tab To New Group"
@@ -7753,6 +7849,23 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_TUTORIAL_TAB_GROUP_SUCCESS_DESCRIPTION" desc="The description of the success step in the tab group tutorial">
         Try using tab groups to organize tasks, for online shopping, and more
+      </message>
+
+      <!-- Side Panel Tutorial Strings -->
+      <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_OPEN_SIDE_PANEL" desc="The description of the 'open side panel' step in side panel reading list tutorial">
+        Click the side panel icon to open it
+      </message>
+      <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_ADD_TAB" desc="The description of the 'add tab' step in side panel reading list tutorial">
+        Now add the current tab to your list
+      </message>
+      <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_MARK_READ" desc="The description of the 'mark as read' step in side panel reading list tutorial">
+        Select “Mark as read” to move the page to the bottom of your list
+      </message>
+      <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_CLICK_DROPDOWN" desc="The description of the 'click drop down' step in side panel reading list tutorial">
+        Click the drop down to choose another panel
+      </message>
+      <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_SUCCESS_BODY" desc="The description of the body text in the 'success' step in side panel reading list tutorial">
+        Try using the side panel for bookmarks, journeys, and more
       </message>
 
       <!-- Browser Hung Plugin Detector -->
@@ -8020,9 +8133,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_PASSWORD_MANAGER_UPDATE_BUTTON" desc="Label for the 'update' button in the Update Password infobar. This infobar asks if the user wishes to update the saved password for a site to a new password the user has just entered; the button applies the suggested update." formatter_data="android_java">
           Update
-        </message>
-        <message name="IDS_PASSWORD_MANAGER_UPDATE_WITH_FOLLOWUP_BUTTON" desc="Label for the 'update' button in the Update Password prompt that will be followed by username confirmation dialog. This prompt asks if the user wishes to update the saved password for a site to a new password the user has just entered; the button applies the suggested update.">
-          Update...
         </message>
         <message name="IDS_PASSWORD_MANAGER_CONTINUE_BUTTON" desc="Label for the 'continue' button in the Update Password prompt that will be followed by username confirmation dialog. This prompt asks if the user wishes to update the saved password for a site to a new password the user has just entered; the button applies the suggested update.">
           Continue
@@ -8440,6 +8550,12 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_PICTURE_IN_PICTURE_PREVIOUS_TRACK_CONTROL_ACCESSIBLE_TEXT" desc="Accessible text label used for the controls button in the Picture-in-Picture window. The button invokes previous track action.">
         Previous track
       </message>
+      <message name="IDS_PICTURE_IN_PICTURE_PREVIOUS_SLIDE_CONTROL_ACCESSIBLE_TEXT" desc="Accessible text label used for the controls button in the Picture-in-Picture window. The button invokes previous slide action.">
+        Previous slide
+      </message>
+      <message name="IDS_PICTURE_IN_PICTURE_NEXT_SLIDE_CONTROL_ACCESSIBLE_TEXT" desc="Accessible text label used for the controls button in the Picture-in-Picture window. The button invokes next slide action.">
+        Next slide
+      </message>
 
       <!-- Load State -->
       <message name="IDS_LOAD_STATE_WAITING_FOR_SOCKET_SLOT" desc="Status text when Thorium is at its connection limit, and is waiting for a URL request to complete to free up a connection.">
@@ -8781,6 +8897,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </if>
 
       <!-- Tab Group Editor Bubble -->
+      <message name="IDS_TAB_GROUP_HEADER_CXMENU_TAB_GROUP_TITLE_ACCESSIBLE_NAME" desc="The accessible name of the tab-group-title textfield.">
+          Tab-group title
+      </message>
       <if expr="not use_titlecase">
         <message name="IDS_TAB_GROUP_HEADER_CXMENU_SAVE_GROUP" desc="The label of the tab group header context menu item for saving the current group.">
           Save group
@@ -9052,7 +9171,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <!-- Extension install location strings -->
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_UNKNOWN" desc="The text explaining the the installation location is unknown.">
-          Not from the Thorium Web Store.
+          Not from Thorium Web Store.
         </message>
         <message name="IDS_EXTENSIONS_INSTALL_LOCATION_3RD_PARTY" desc="The text explaining the the installation came from a 3rd party app.">
           Installed by a third party.
@@ -10181,11 +10300,11 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_AUTOFILL" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'autofill' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3626. Used in the tangible sync confirmation page.">
         Autofill
       </message>
-      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_HISTORY" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. Used in the tangible sync confirmation page.">
-        History
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_EXTENSIONS" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'extensions' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=62f9351. Used in the tangible sync confirmation page.">
+        Extensions
       </message>
-      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_EXTENSIONS_AND_MORE" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'extensions' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=62f9351. Translate 'and more' so that it conveys that there are additional similar items that are not listed. Used in the tangible sync confirmation page.">
-        Extensions and more
+      <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_HISTORY_AND_MORE" desc="This string appears as an item in a list of sync data types on a page that asks users if they want to turn on sync. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. Translate 'and more' so that it conveys that there are additional similar items that are not listed. Used in the tangible sync confirmation page.">
+        History and more
       </message>
       <message name="IDS_SYNC_CONFIRMATION_TANGIBLE_SYNC_INFO_DESC" desc="Description in the information about sync and information about customizing Sync settings on the tangible sync confirmation page">
         You can always choose what to sync in settings. Google may personalize Search and other services based on your history.
@@ -11507,8 +11626,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_MIC_TURNED_OFF_IN_MACOS" desc="Title for the media status bubble that is used when a site requests microphone access, but microphone is blocked on an OS level in macOS.">
           Microphone is turned off in Mac System Preferences
         </message>
-        <message name="IDS_OPEN_PREFERENCES_LINK" desc="Title for the button that takes the user to the Security and Privacy settings in macOS, in order for the user to be able to modify the ability to access camera and microphone for Thorium.">
+        <message name="IDS_OPEN_PREFERENCES_LINK" desc="Title for the button that takes the user to the Security and Privacy settings in macOS, in order for the user to be able to modify the ability to access camera and microphone for Thorium. System Preferences was renamed to System Settings in macOS 13 so this string shouldn't be used past macOS 12.">
           Open Preferences
+        </message>
+        <message name="IDS_OPEN_SETTINGS_LINK" desc="Title for the button that takes the user to System Settings in macOS >= 13. The translation for this string should match the translation of the System Settings app title in the macOS target locale. You can find this by selecting the locale from https://support.apple.com/guide/mac-help/mh15217/mac/localeselector. The title of the next page after that includes the desired translation. Note that, for size reasons, the English string omits 'System' and the same contraction may be suitable in other languages.">
+          Open Settings
         </message>
         <message name="IDS_CAMERA" desc="Description text for the camera.">
           Camera
@@ -11873,9 +11995,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
         </message>
         <message name="IDS_APP_LIST_REMOVE_SUGGESTION_ACCESSIBILITY_NAME" desc="The spoken feedback for removing suggestion button">
           Remove the suggestion <ph name="SUGGESTION_NAME">$1<ex>Harry Potter</ex></ph>
-        </message>
-        <message name="IDS_APP_LIST_APPEND_SUGGESTION_ACCESSIBILITY_NAME" desc="The spoken feedback for appending suggestion button">
-           Append the suggestion <ph name="SUGGESTION_NAME">$1<ex>Harry Potter</ex></ph> to search box
         </message>
         <message name="IDS_APP_LIST_CONTEXT_MENU_NEW_TAB" desc="Title text for the 'open new' context menu item of an app list item configured to open in a tab">
           New tab
@@ -12284,6 +12403,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_DEVICE_LOG_TYPE_CAMERA" desc="Checkbox to enable showing events of type Camera">
         Camera
       </message>
+      <message name="IDS_DEVICE_LOG_TYPE_GEOLOCATION" desc="Checkbox to enable showing events of type Geolocation">
+        Geolocation
+      </message>
       <message name="IDS_DEVICE_LOG_FILEINFO" desc="File info checkbox in device event log">
         File Info
       </message>
@@ -12303,6 +12425,22 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_WEBUSB_DEVICE_DETECTED_NOTIFICATION_TITLE" desc="Title for notification shown to the user when a USB device gets plugged in.">
       <ph name="USB_DEVICE_NAME">$1<ex>Nexus 5</ex></ph> detected
     </message>
+
+    <if expr="not is_android">
+      <!-- WebHID Notification -->
+      <message name="IDS_WEBHID_DEVICE_CONNECTED_BY_EXTENSION_NOTIFICATION_TITLE" desc="Notification title shown to the user when a HID device is being accessed by an extension.">
+        An extension is using a HID device
+      </message>
+      <message name="IDS_WEBHID_DEVICE_CONNECTED_BY_EXTENSION_NOTIFICATION_MESSAGE" desc="Notification content shown to the user when a HID device is being accessed by an extension.">
+        Click to manage permissions for "<ph name="EXTENSION">$1<ex>Google Translate</ex></ph>"
+      </message>
+      <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_BUTTON_FOR_MANAGE_HID_DEVICE" desc="The text for WebHID system tray icon button for managing HID devices.">
+        Manage HID devices
+      </message>
+      <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_BUTTON_FOR_MANAGE_HID_DEVICE_WITH_PROFILE_NAME" desc="The text with profile name for WebHID system tray icon button for managing HID devices.">
+        Manage HID devices for <ph name="PROFILE_NAME">$1<ex>Nina@gmail.com</ex></ph>
+      </message>
+    </if>
 
     <if expr="chromeos_ash">
       <!-- CrOSUsb Notification -->
@@ -12652,6 +12790,18 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Thorium is being controlled by automated test software.
     </message>
 
+    <!-- Thorium for Testing infobar main text -->
+    <message name="IDS_CHROME_FOR_TESTING_DISCLAIMER" desc="An infobar prompt shown whenever Thorium for Testing is launched.">
+      Thorium for Testing v<ph name="BROWSER_VERSION">
+        $1<ex>109.0.5369.0</ex>
+      </ph> is only for automated testing. For regular browsing, use a standard version of Thorium that updates automatically.
+    </message>
+
+    <!-- Thorium for Testing infobar download chrome hyperlink text -->
+    <message name="IDS_DOWNLOAD_CHROME" desc="Hyperlink call-out to download Thorium">
+      Download Thorium
+    </message>
+
     <!-- Security Key permission -->
     <if expr="is_android">
       <message name="IDS_SECURITY_KEY_ATTESTATION_INFOBAR_QUESTION" desc="An infobar prompt shown to a user when a website wants to see information that identifies the user's Security Key, such as make and model number. The 'make' of a device is the brand name of the manufacturer, e.g. Yubikey is a make of Security Key. The 'model' of a device is the specific product, e.g. Yubikey Neo is a model of Security Key.">
@@ -12935,6 +13085,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_WEBAUTHN_ERROR_NO_TRANSPORTS_DESCRIPTION" desc="Description in the dialog shown when the user could not sign in to a web site, because their computer did not support any of the hardware-based authentication mechanisms desired by the web site.">
         This device doesn't support the type of security key requested by this website
+      </message>
+      <message name="IDS_WEBAUTHN_ERROR_NO_PASSKEYS_TITLE" desc="Title of the dialog shown when the user could not sign in to a web site because their computer did not have any of the passkeys registered with the site.">
+        No passkeys available
+      </message>
+      <message name="IDS_WEBAUTHN_ERROR_NO_PASSKEYS_DESCRIPTION" desc="Description in the dialog shown when the user could not sign in to a web site because their computer did not have any of the passkeys registered with the site.">
+        There aren't any passkeys for <ph name="APP_NAME">$1<ex>google.com</ex></ph> on this device
       </message>
       <message name="IDS_WEBAUTHN_BLUETOOTH_POWER_ON_AUTO_TITLE" desc="Title of the dialog informing the user that Thorium needs to turn on Bluetooth by itself so that security keys can be used over Bluetooth.">
         Turn on Bluetooth?
@@ -13472,6 +13628,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Open now
     </message>
 
+    <!-- In product help bubble dialog for users referred from ESB promotions -->
+    <message name="IDS_SETTINGS_SAFEBROWSING_ENHANCED_IPH_BUBBLE_TEXT" desc="The text on an In-Product-Help bubble that is shown when a user navigates to the security settings page from an ESB promotion">
+      Get more protection against dangerous websites and downloads
+    </message>
+
     <!-- Tailored security dialog for consented primary accounts -->
     <message name="IDS_TAILORED_SECURITY_ENABLED_DIALOG_TITLE" desc="Title shown in the tab dialog when the account tailored security setting changes for a consented primary account">
       Enhanced Safe Browsing is on
@@ -13759,13 +13920,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <!-- Lens Region Search bubble dialog -->
     <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
-      Drag over any image to search
-    </message>
-    <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT_ALT1" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
       Select image area to search
-    </message>
-    <message name="IDS_LENS_REGION_SEARCH_BUBBLE_TEXT_ALT2" desc="Text that is shown in the Lens Region Search education bubble when starting the feature. Informs the user to drag over the screen to select a region to search with Google Lens.">
-     Select any part of the page to search
     </message>
     <!-- ThoriumLabs Thumbnail Tab Strip -->
     <message name="IDS_THUMBNAIL_TAB_STRIP_EXPERIMENT_NAME" desc="Name for Thumbnail Tab Strip experiment">
@@ -13980,69 +14135,157 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Settings
     </message>
 
-    <!-- Automated Password Change on Desktop strings -->
-    <if expr="not is_android">
-      <message name="IDS_AUTOFILL_ASSISTANT" desc="The text rendered on the side panel entry.">
-        Assistant
-      </message>
-      <message name="IDS_ACCESSIBLE_AUTOFILL_ASSISTANT_PASSWORD_CHANGE" desc="The text announced by screenreaders once focus in brought to automatic password change side panel UI.">
-        Automatic password change
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_TITLE" desc="The title for the Automated Password Change on Desktop onboarding dialog. The onboarding dialog is a modal dialog that is shown if a user has not previously consented to using Assistant features.">
-        Let Google Assistant help you change your password
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_DESCRIPTION" desc="The description / sub-title of the Automated Password Change on Desktop onboarding dialog.">
-        Google Assistant in Thorium can complete actions across websites for you
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_CONSENT_TEXT" desc="The description of what kind of data Google will send and process in order to enable Automated Password Change. This is shown at the bottom of the onboarding dialog.">
-        To help you complete tasks, Google will receive the URLs and contents of sites on which you use Assistant, as well as information you submit through Assistant. This information may be stored in your Google Account. You can turn off Assistant in Thorium settings. <ph name="LEARN_MORE">$1<ex>Learn more</ex></ph>
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_LEARN_MORE" desc="The text displayed on a link on the onboarding dialog that a user can click to navigate to a Google website with detailed information on how Automated Password Change on Desktop/ Assistant works and what data is collected.">
-        Learn more
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_LEARN_MORE_ABOUT_AUTOMATIC_PASSWORD_CHANGE" desc="The text displayed on a link on the onboarding dialog that a user can click to navigate to a Google website with detailed information on how Automated Password Change on Desktop/ Assistant works and what data is collected.">
-        Learn more about automatic password change
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_CANCEL_TEXT" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
-        Cancel
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ONBOARDING_BUTTON_ACCEPT_TEXT" desc="The text on the button that declines the onboarding for Automated Password Change on Desktop.">
-        I agree
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_STARTING_SCREEN_TITLE" desc="The title shown on the side panel after an Automated Password Change flow has been started. This message is shown until the first response from a script is received that resets the initial state.">
-        Opening <ph name="URL">$1<ex>example.com</ex></ph>...
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_TITLE" desc="The title shown on the side panel after an Automated Password Change flow has been succeeded." >
-        Successfully changed the compromised password
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_RESET_PASSWORD_TITLE" desc="The title shown on the side panel after an Automated Password Change flow ended in a password reset request.">
-        Check your email to choose a new password
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_DESCRIPTION" desc="The description shown on the side panel after an Automated Password Change flow has been succeeded.">
-        Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google Password Manager</ex></ph>.
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_CHANGED_PASSWORD_CLOSE_SIDE_PANEL" desc="The label of the button shown in the side panel after a sucessful run. Once a user clicks on it, the side panel will close.">
-        Done
-      </message>
-       <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_SUCCESSFULLY_RESET_PASSWORD_CLOSE_SIDE_PANEL" desc="The label of the button shown in the side panel after a run that ended in a password reset request. Once a user clicks on it, the side panel will close.">
-        OK
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_TITLE" desc="The title shown in the side panel when an error with the script execution occurred.">
-        Something went wrong.
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_PASSWORD_CHANGE_ERROR_SCREEN_DESCRIPTION" desc="The description shown in the side panel when an error with the script execution occurred.">
-        Check the site and try changing your password.
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_TRY_AGAIN" desc="The reset link label shown in the assistant stopped bubble.">
-       Try again
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_DESCRIPTION" desc="The description shown in the assistant stopped bubble.">
-        Your password didn't change. To change it, try again and leave this tab and side panel open. <ph name="LINK_TEXT">$1<ex>Try again</ex></ph>
-      </message>
-      <message name="IDS_AUTOFILL_ASSISTANT_ASSISTANT_STOPPED_BUBBLE_TITLE" desc="The title shown in the assistant stopped bubble.">
-        Google Assistant stopped
-      </message>
-    </if>
+    <!-- Privacy Sandbox Dialog M1 strings -->
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_TITLE" translateable="false" desc="Title of privacy sandbox consent dialog">
+      Lorem ipsum Consent
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_DESCRIPTION_1" translateable="false" desc="First part of description in privacy sandbox consent dialog">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_DESCRIPTION_2" translateable="false" desc="Second part of description in privacy sandbox consent dialog">
+      Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_DESCRIPTION_3" translateable="false" desc="Third part of description in privacy sandbox consent dialog">
+      Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Learn more expand label in privacy sandbox consent dialog">
+      Vestibulum orci risus, consectetur
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_DESCRIPTION_4" translateable="false" desc="Forth part of description in privacy sandbox consent dialog">
+      Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_SAVING_LABEL" translateable="false" desc="Saving state label in privacy sandbox consent dialog">
+      Consectetur
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_ACCEPT_BUTTON" translateable="false" desc="Accept button label in privacy sandbox consent dialog">
+      Quisque
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_DECLINE_BUTTON" translateable="false" desc="Decline button label in privacy sandbox consent dialog">
+      Lorem
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_HEADING" translateable="false" desc="Learn more heading in privacy sandbox consent dialog">
+      Esed purus vestibulum velit convalli
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_BULLET_1" translateable="false" desc="Learn more bullet point 1 in privacy sandbox consent dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor: <ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_BULLET_2" translateable="false" desc="Learn more bullet point 2 in privacy sandbox consent dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_BULLET_3" translateable="false" desc="Learn more bullet point 3 in privacy sandbox consent dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum:<ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_LEARN_MORE_LINK" translateable="false" desc="Learn more link in privacy sandbox consent dialog">
+      Esed purus vestibulum velit convalli
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_CONSENT_BANNER_IMAGE_A11Y_DESCRIPTION" translateable="false" desc="A11y description for the banner image in privacy sandbox consent dialog">
+      Sed ullamcorper, ligula ac tempus venenatis
+    </message>
+
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_TITLE" translateable="false" desc="Title of privacy sandbox notice EEA dialog">
+      Lorem ipsum Notice EEA
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_DESCRIPTION_1" translateable="false" desc="First part of description in privacy sandbox notice EEA dialog">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_BULLET_1" translateable="false" desc="First bullet point in the description in privacy sandbox notice EEA dialog">
+      Nulla in tortor: a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_BULLET_2" translateable="false" desc="Second bullet point in the description in privacy sandbox notice EEA dialog">
+      Sed purus vestibulum: velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Learn more expand label in privacy sandbox notice EEA dialog">
+      Vestibulum orci risus, consectetur
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_DESCRIPTION_2" translateable="false" desc="Second part of description in privacy sandbox notice EEA dialog">
+      Consectetur adipiscing elit duis pretium pulvinar metus non mollis
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_ACK_BUTTON" translateable="false" desc="Acknowledge button label in privacy sandbox notice EEA dialog">
+      Sed
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_SETTINGS_BUTTON" translateable="false" desc="Open settings button label in privacy sandbox notice EEA dialog">
+      Cras id
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_HEADING_1" translateable="false" desc="Learn more first heading in privacy sandbox notice EEA dialog">
+      Esed purus vestibulum velit convalli
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION" translateable="false" desc="Learn more description in privacy sandbox notice EEA dialog">
+      Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_HEADING_2" translateable="false" desc="Learn more second heading in privacy sandbox notice EEA dialog">
+      Proin sed purus vestibulum velit velit eget dapibus.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_BULLET_1" translateable="false" desc="Learn more bullet point 1 in privacy sandbox notice EEA dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor:<ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_BULLET_2" translateable="false" desc="Learn more bullet point 2 in privacy sandbox notice EEA dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_EEA_LEARN_MORE_BULLET_3" translateable="false" desc="Learn more bullet point 3 in privacy sandbox notice EEA dialog">
+      <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum:<ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+    </message>
+
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_TITLE" translateable="false" desc="Title of privacy sandbox notice ROW dialog">
+       Lorem ipsum Notice ROW
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_DESCRIPTION_1" translateable="false" desc="First part of description in privacy sandbox notice ROW dialog">
+       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_DESCRIPTION_2" translateable="false" desc="Second part of description in privacy sandbox notice ROW dialog">
+      Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum. Quisque placerat eget nisl sit amet facilisis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_DESCRIPTION_3" translateable="false" desc="Third part of description in privacy sandbox notice ROW dialog">
+      Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_DESCRIPTION_4" translateable="false" desc="Fourth part of description in privacy sandbox notice ROW dialog">
+      Proin sed purus vestibulum velit convallis suscipit eget dapibus.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_ACK_BUTTON" translateable="false" desc="Acknowledge button label in privacy sandbox notice EEA dialog">
+      Sed
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_SETTINGS_BUTTON" translateable="false" desc="Open settings button label in privacy sandbox notice EEA dialog">
+      Cras id
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Learn more expand label in privacy sandbox notice ROW dialog">
+      Vestibulum orci risus consectetur
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_HEADING_1" translateable="false" desc="Learn more first heading in privacy sandbox notice ROW dialog">
+      Esed purus vestibulum velit convalli
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_1" translateable="false" desc="First part of learn more description in privacy sandbox notice ROW dialog">
+      Etiam dictum sem et neque molestie lobortis. Morbi quam tellus, tincidunt eget dapibus ac, lobortis et lacus. Integer nec egestas elit. Nulla venenatis facilisis dui eget suscipit.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_HEADING_2" translateable="false" desc="Learn more second heading in privacy sandbox notice ROW dialog">
+      Class aptent taciti sociosqu ad
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_2" translateable="false" desc="Second part of learn more description in privacy sandbox notice ROW dialog">
+      Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_BULLET_1" translateable="false" desc="Learn more bullet point 1 in privacy sandbox notice ROW dialog">
+      Sed elementum tellus condimentum quam vestibulum lacinia. Ut eu lobortis massa, venenatis sodales lacus. Nulla elementum magna et tortor efficitur, at volutpat metus varius.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_BULLET_2" translateable="false" desc="Learn more bullet point 2 in privacy sandbox notice ROW dialog">
+      Duis tempor nulla nisi, ac bibendum lorem tempus sit amet. Proin non blandit risus. Maecenas facilisis enim nec tristique tristique. Eelementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_3" translateable="false" desc="Third part of learn more description in privacy sandbox notice ROW dialog">
+      Etiam hendrerit turpis nibh, ac maximus lectus placerat at. Vivamus ligula quam, posuere luctus felis eu, dictum egestas arcu. per conubia nostra, per inceptos himenaeos. Cras ut metus vel est molestie finibus nec ut orci.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_4" translateable="false" desc="Fourth part of learn more description in privacy sandbox notice ROW dialog">
+      Aliquam euismod scelerisque metus, in aliquet est vehicula ut. Curabitur sit amet ligula quis ante maximus gravida non id magna. Pellentesque interdum venenatis leo, at ultrices felis mollis nec. Integer vulputate velit eget mauris lacinia, ut ullamcorper mauris vehicula.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_HEADING_3" translateable="false" desc="Learn more third heading in privacy sandbox notice ROW dialog">
+      Orci varius natoque penatibus et
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_5" translateable="false" desc="Fifth part of description in privacy sandbox notice ROW dialog">
+      Suspendisse at dui pulvinar, rhoncus orci at, porttitor nibh. Curabitur lacinia nulla sem, eu euismod dolor vulputate quis. Duis mattis eros et arcu elementum tempor. Duis pharetra eleifend sagittis.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_6" translateable="false" desc="Sixth part of description in privacy sandbox notice ROW dialog">
+      Cras sed lacus suscipit, efficitur erat nec, semper sapien. Fusce at nunc molestie, elementum augue at, auctor nunc. Sed dui nisi, consectetur sit amet urna vitae, facilisis scelerisque justo.
+    </message>
+    <message name="IDS_PRIVACY_SANDBOX_DIALOG_M1_NOTICE_ROW_BANNER_IMAGE_A11Y_DESCRIPTION" translateable="false" desc="A11y description for the banner image in privacy sandbox notice ROW dialog">
+      Ut venenatis magna nec lacus facilisis
+    </message>
+
     <!-- Battery Saver Toolbar strings  -->
     <if expr="not is_android">
       <message name="IDS_BATTERY_SAVER_BUTTON_TOOLTIP" desc="The tooltip for the battery saver toolbar button">

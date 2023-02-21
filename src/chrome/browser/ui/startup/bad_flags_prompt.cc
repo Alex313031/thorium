@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -18,6 +18,7 @@
 #include "chrome/browser/infobars/simple_alert_infobar_creator.h"
 #include "chrome/browser/ui/simple_message_box.h"
 #include "chrome/browser/webauthn/webauthn_switches.h"
+#include "chrome/common/chrome_features.h"
 #include "chrome/common/chrome_paths.h"
 #include "chrome/common/chrome_switches.h"
 #include "chrome/grit/chromium_strings.h"
@@ -62,7 +63,7 @@ static const char* kBadFlags[] = {
     // These flags disable sandbox-related security.
     sandbox::policy::switches::kDisableGpuSandbox,
     sandbox::policy::switches::kDisableSeccompFilterSandbox,
-    // sandbox::policy::switches::kDisableSetuidSandbox,
+    // sandbox::policy::switches::kDisableSetuidSandbox, (Disabled by Alex313031)
     sandbox::policy::switches::kNoSandbox,
 #if BUILDFLAG(IS_WIN)
     sandbox::policy::switches::kAllowThirdPartyModules,
@@ -132,7 +133,7 @@ static const char* kBadFlags[] = {
 
     // GPU sanboxing isn't implemented for the Web GPU API yet meaning it would
     // be possible to read GPU data for other Chromium processes.
-    // switches::kEnableUnsafeWebGPU,
+    // switches::kEnableUnsafeWebGPU, (Disabled by Alex313031)
 
     // A flag to support local file based WebBundle loading, only for testing
     // purpose.
@@ -172,9 +173,10 @@ static const char* kBadFlags[] = {
 // Dangerous feature flags in about:flags for which to display a warning that
 // "stability and security will suffer".
 static const base::Feature* kBadFeatureFlagsInAboutFlags[] = {
-    // This feature enables experimental support for isolated web apps, which
+    // These features enables experimental support for isolated web apps, which
     // unlock capabilities with a high potential for security / privacy abuse.
     &features::kIsolatedWebApps,
+    &features::kIsolatedWebAppDevMode,
 
     &features::kWebBundlesFromNetwork,
 #if BUILDFLAG(IS_ANDROID)

@@ -1028,7 +1028,7 @@ static int read_block(ALSDecContext *ctx, ALSBlockData *bd)
 
     *bd->shift_lsbs = 0;
 
-    if (get_bits_left(gb) < 1)
+    if (get_bits_left(gb) < 7)
         return AVERROR_INVALIDDATA;
 
     // read block type flag and read the samples accordingly
@@ -1660,7 +1660,8 @@ static int read_frame_data(ALSDecContext *ctx, unsigned int ra_frame)
 
     if (!sconf->mc_coding || ctx->js_switch) {
         int independent_bs = !sconf->joint_stereo;
-
+        if (get_bits_left(gb) < 7*channels*ctx->num_blocks)
+            return AVERROR_INVALIDDATA;
         for (c = 0; c < channels; c++) {
             js_blocks[0] = 0;
             js_blocks[1] = 0;

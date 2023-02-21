@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -429,7 +429,7 @@ class MEDIA_GPU_EXPORT VaapiWrapper
   struct VABufferDescriptor {
     VABufferType type;
     size_t size;
-    const void* data;
+    raw_ptr<const void> data;
   };
   [[nodiscard]] bool SubmitBuffers(
       const std::vector<VABufferDescriptor>& va_buffers);

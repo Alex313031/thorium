@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -36,6 +36,8 @@
 #include "chrome/browser/media/router/media_router_feature.h"
 #include "chrome/browser/prefs/incognito_mode_prefs.h"
 #include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/search/search.h"
+#include "chrome/browser/search_engines/template_url_service_factory.h"
 #include "chrome/browser/sessions/session_service.h"
 #include "chrome/browser/sessions/session_service_base.h"
 #include "chrome/browser/sessions/session_service_factory.h"
@@ -98,6 +100,7 @@
 #include "chrome/common/pref_names.h"
 #include "chrome/common/url_constants.h"
 #include "components/bookmarks/browser/bookmark_model.h"
+#include "components/bookmarks/browser/bookmark_node.h"
 #include "components/bookmarks/browser/bookmark_utils.h"
 #include "components/bookmarks/common/bookmark_pref_names.h"
 #include "components/browsing_data/content/browsing_data_helper.h"
@@ -182,6 +185,12 @@
 #include "chrome/browser/apps/intent_helper/supported_links_infobar_delegate.h"
 #endif
 
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+#include "chrome/browser/lens/region_search/lens_region_search_controller.h"
+#include "chrome/browser/lens/region_search/lens_region_search_helper.h"
+#include "components/lens/lens_features.h"
+#endif
+
 namespace {
 
 const char kOsOverrideForTabletSite[] = "Linux; Android 9; Chrome tablet";
@@ -261,6 +270,31 @@ bool CanMoveWebContentsToReadLater(Browser* browser,
                                    std::u16string* title) {
   return model && GetTabURLAndTitleToSave(web_contents, url, title) &&
          model->IsUrlSupported(*url) && !browser->profile()->IsGuestSession();
+}
+
+bool BookmarkCurrentTabHelper(Browser* browser,
+                              bookmarks::BookmarkModel* model,
+                              GURL* url,
+                              std::u16string* title) {
+  if (!model || !model->loaded())
+    return false;  // Ignore requests until bookmarks are loaded.
+
+  content::WebContents* const web_contents =
+      browser->tab_strip_model()->GetActiveWebContents();
+  // |web_contents| can be nullptr if the last tab in the browser was closed
+  // but the browser wasn't closed yet. https://crbug.com/799668
+  if (!web_contents)
+    return false;
+  if (!chrome::GetURLAndTitleToBookmark(web_contents, url, title))
+    return false;
+  bool is_bookmarked_by_any = model->IsBookmarked(*url);
+  if (!is_bookmarked_by_any &&
+      web_contents->GetBrowserContext()->IsOffTheRecord()) {
+    // If we're incognito the favicon may not have been saved. Save it now
+    // so that bookmarks have an icon for the page.
+    favicon::SaveFaviconEvenIfInIncognito(web_contents);
+  }
+  return true;
 }
 
 }  // namespace
@@ -690,8 +724,8 @@ void NewWindow(Browser* browser) {
     auto launch_container = apps::LaunchContainer::kLaunchContainerWindow;
 
     auto* provider = web_app::WebAppProvider::GetForWebApps(profile);
-    if (provider && provider->registrar().GetAppEffectiveDisplayMode(app_id) ==
-                        blink::mojom::DisplayMode::kBrowser) {
+    if (provider && provider->registrar_unsafe().GetAppEffectiveDisplayMode(
+                        app_id) == blink::mojom::DisplayMode::kBrowser) {
       launch_container = apps::LaunchContainer::kLaunchContainerTab;
     }
     apps::AppLaunchParams params = apps::AppLaunchParams(
@@ -960,7 +994,7 @@ WebContents* DuplicateTabAt(Browser* browser, int index) {
 
 bool CanDuplicateTabAt(const Browser* browser, int index) {
   WebContents* contents = browser->tab_strip_model()->GetWebContentsAt(index);
-  return contents && contents->GetController().GetLastCommittedEntry();
+  return contents;
 }
 
 void MoveTabsToExistingWindow(Browser* source,
@@ -1065,29 +1099,13 @@ void Exit() {
 }
 
 void BookmarkCurrentTab(Browser* browser) {
-  base::RecordAction(UserMetricsAction("Star"));
-
+  base::RecordAction(base::UserMetricsAction("Star"));
   BookmarkModel* model =
       BookmarkModelFactory::GetForBrowserContext(browser->profile());
-  if (!model || !model->loaded())
-    return;  // Ignore requests until bookmarks are loaded.
-
   GURL url;
   std::u16string title;
-  WebContents* web_contents =
-      browser->tab_strip_model()->GetActiveWebContents();
-  // |web_contents| can be nullptr if the last tab in the browser was closed
-  // but the browser wasn't closed yet. https://crbug.com/799668
-  if (!web_contents)
+  if (!BookmarkCurrentTabHelper(browser, model, &url, &title)) {
     return;
-  if (!GetURLAndTitleToBookmark(web_contents, &url, &title))
-    return;
-  bool is_bookmarked_by_any = model->IsBookmarked(url);
-  if (!is_bookmarked_by_any &&
-      web_contents->GetBrowserContext()->IsOffTheRecord()) {
-    // If we're incognito the favicon may not have been saved. Save it now
-    // so that bookmarks have an icon for the page.
-    favicon::SaveFaviconEvenIfInIncognito(web_contents);
   }
   bool was_bookmarked_by_user = bookmarks::IsBookmarkedByUser(model, url);
   bookmarks::AddIfNotBookmarked(model, url, title);
@@ -1102,6 +1120,25 @@ void BookmarkCurrentTab(Browser* browser) {
 
   if (!was_bookmarked_by_user && is_bookmarked_by_user)
     RecordBookmarksAdded(browser->profile());
+}
+
+void BookmarkCurrentTabInFolder(Browser* browser, int64_t folder_id) {
+  BookmarkModel* const model =
+      BookmarkModelFactory::GetForBrowserContext(browser->profile());
+  GURL url;
+  std::u16string title;
+  if (!BookmarkCurrentTabHelper(browser, model, &url, &title)) {
+    return;
+  }
+  const bookmarks::BookmarkNode* parent =
+      bookmarks::GetBookmarkNodeByID(model, folder_id);
+  if (parent) {
+    bool was_bookmarked_by_user = bookmarks::IsBookmarkedByUser(model, url);
+    model->AddNewURL(parent, 0, title, url);
+    bool is_bookmarked_by_user = bookmarks::IsBookmarkedByUser(model, url);
+    if (!was_bookmarked_by_user && is_bookmarked_by_user)
+      RecordBookmarksAdded(browser->profile());
+  }
 }
 
 bool CanBookmarkCurrentTab(const Browser* browser) {
@@ -1149,8 +1186,9 @@ bool MoveTabToReadLater(Browser* browser, content::WebContents* web_contents) {
                                      &title)) {
     return false;
   }
-  model->AddEntry(url, base::UTF16ToUTF8(title),
-                  reading_list::EntrySource::ADDED_VIA_CURRENT_APP);
+  model->AddOrReplaceEntry(url, base::UTF16ToUTF8(title),
+                           reading_list::EntrySource::ADDED_VIA_CURRENT_APP,
+                           /*estimated_read_time=*/base::TimeDelta());
   browser->window()->MaybeShowFeaturePromo(
       feature_engagement::kIPHReadingListDiscoveryFeature);
   base::UmaHistogramEnumeration(
@@ -1170,7 +1208,7 @@ bool MarkCurrentTabAsReadInReadLater(Browser* browser) {
   const ReadingListEntry* entry = model->GetEntryByURL(url);
   // Mark current tab as read.
   if (entry && !entry->IsRead())
-    model->SetReadStatus(url, true);
+    model->SetReadStatusIfExists(url, true);
   return entry != nullptr;
 }
 
@@ -1846,5 +1884,27 @@ void RunScreenAIVisualAnnotation(Browser* browser) {
   browser->RunScreenAIAnnotator();
 }
 #endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
+
+void ExecLensRegionSearch(Browser* browser) {
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+  Profile* profile = browser->profile();
+  TemplateURLService* service =
+      TemplateURLServiceFactory::GetForProfile(profile);
+  WebContents* contents = browser->tab_strip_model()->GetActiveWebContents();
+  GURL url = contents->GetController().GetLastCommittedEntry()->GetURL();
+
+  if (lens::IsRegionSearchEnabled(browser, profile, service, url)) {
+    auto lens_region_search_controller_data =
+        std::make_unique<lens::LensRegionSearchControllerData>();
+    lens_region_search_controller_data->lens_region_search_controller =
+        std::make_unique<lens::LensRegionSearchController>(browser);
+    lens_region_search_controller_data->lens_region_search_controller->Start(
+        contents, lens::features::IsLensFullscreenSearchEnabled(),
+        search::DefaultSearchProviderIsGoogle(profile));
+    browser->SetUserData(lens::LensRegionSearchControllerData::kDataKey,
+                         std::move(lens_region_search_controller_data));
+  }
+#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+}
 
 }  // namespace chrome

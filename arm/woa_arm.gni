@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2023 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -29,7 +29,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     arm_tune = "generic-armv8-a"
 
     # Whether to use the neon FPU instruction set or not.
-    arm_use_neon = false
+    arm_use_neon = "false"
 
     # Whether to enable optional NEON code paths.
     arm_optionally_use_neon = false
@@ -52,7 +52,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
       # The ARM floating point mode. This is either the string "hard", "soft",
       # or "softfp". An empty string means to use the default one for the
       # arm_version.
-      arm_float_abi = "hard"
+      arm_float_abi = ""
     }
   }
   assert(arm_float_abi == "" || arm_float_abi == "hard" ||
@@ -125,7 +125,52 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     }
   }
 } else if (current_cpu == "arm64" || v8_current_cpu == "arm64") {
-  # arm64 supports only "hard".
+  declare_args() {
+    # Enables the new Armv8 branch protection features. Valid strings are:
+    # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
+    # - "standard": Enables both PAC and Branch Target Identification (Armv8.5).
+    # - "none": No branch protection.
+    arm_control_flow_integrity = "none"
+    
+    # Version of the ARM processor when compiling on ARM. Ignored on non-ARM
+    # platforms.
+    arm_version = 8
+    
+    # arm64 supports only "hard".
+    arm_float_abi = "hard"
+
+    # The ARM64 architecture. This will be a string like "armv8-a" or "armv8.5-a.
+    # An empty string means to use the default for the arm_version.
+    arm_arch = "armv8-a"
+    
+    # The ARM variant-specific tuning mode. This will be a string like "armv6"
+    # or "cortex-a15". An empty string means to use the default for the
+    # arm_version.
+    arm_tune = "generic-armv8-a"
+
+    # The ARM64 floating point hardware. This will be a string like "neon" or
+    # "vfpv3-d16". An empty string means to use the default for the arm_version.
+    arm_fpu = "vfpv3-d16"
+
+    # Whether to use the neon FPU instruction set or not.
+    arm_use_neon = "false"
+
+    # Whether to enable optional NEON code paths.
+    arm_optionally_use_neon = false
+
+    # Thumb is a reduced instruction set available on some ARM processors that
+    # has increased code density.
+    arm_use_thumb = true
+
+    if ((is_android || is_linux) && target_cpu == "arm64") {
+      # Enable PAC and BTI on AArch64 Linux/Android systems.
+      # target_cpu == "arm64" filters out some cases (e.g. the ChromeOS x64
+      # MSAN build) where the target platform is x64, but V8 is configured to
+      # use the arm64 simulator.
+      arm_control_flow_integrity = "standard"
+    }
+  }
+  # Initial values from upstream.
   arm_version = 8
   arm_float_abi = "hard"
   arm_arch = "armv8-a"
@@ -134,25 +179,9 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
   arm_use_neon = false
   arm_optionally_use_neon = false
   arm_use_thumb = true
-  declare_args() {
-    # Enables the new Armv8 branch protection features. Valid strings are:
-    # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
-    # - "standard": Enables both PAC and Branch Target Identification (Armv8.5).
-    # - "none": No branch protection.
-    arm_control_flow_integrity = "standard"
-
-    # TODO(cavalcantii): enable the feature for the following OSes next.
-    if (is_mac || is_chromeos || is_fuchsia || is_win ||
-        target_cpu != "arm64") {
-      # target_cpu != "arm64" covers some cases (e.g. the ChromeOS x64 MSAN
-      # build) where the target platform is x64, but V8 is configured to use
-      # the arm64 simulator. Pointer authentication doesn't work properly
-      # in this mode (yet).
-      arm_control_flow_integrity = "none"
-    }
-  }
+  
   assert(arm_control_flow_integrity == "none" ||
              arm_control_flow_integrity == "standard" ||
              arm_control_flow_integrity == "pac",
-         "Invalid branch protection option")
+         "Invalid ARM branch protection option.")
 }

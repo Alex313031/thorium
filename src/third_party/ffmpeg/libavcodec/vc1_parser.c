@@ -29,6 +29,7 @@
 #include "parser.h"
 #include "vc1.h"
 #include "get_bits.h"
+#include "vc1dsp.h"
 
 /** The maximum number of bytes of a sequence, entry point or
  *  frame header whose values we pay any attention to */
@@ -65,7 +66,6 @@ static void vc1_extract_header(AVCodecParserContext *s, AVCodecContext *avctx,
     GetBitContext gb;
     int ret;
     vpc->v.s.avctx = avctx;
-    vpc->v.parse_only = 1;
     init_get_bits8(&gb, buf, buf_size);
     switch (vpc->prev_start_code) {
     case VC1_CODE_SEQHDR & 0xFF:
@@ -260,11 +260,12 @@ static av_cold int vc1_parse_init(AVCodecParserContext *s)
     VC1ParseContext *vpc = s->priv_data;
     vpc->v.s.slice_context_count = 1;
     vpc->v.first_pic_header_flag = 1;
+    vpc->v.parse_only = 1;
     vpc->prev_start_code = 0;
     vpc->bytes_to_skip = 0;
     vpc->unesc_index = 0;
     vpc->search_state = NO_MATCH;
-    ff_vc1_init_common(&vpc->v);
+    ff_vc1dsp_init(&vpc->v.vc1dsp); /* startcode_find_candidate */
     return 0;
 }
 

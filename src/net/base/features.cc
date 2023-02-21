@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -105,10 +105,6 @@ BASE_FEATURE(kPartitionSSLSessionsByNetworkIsolationKey,
              "PartitionSSLSessionsByNetworkIsolationKey",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kPartitionExpectCTStateByNetworkIsolationKey,
-             "PartitionExpectCTStateByNetworkIsolationKey",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 BASE_FEATURE(kPartitionNelAndReportingByNetworkIsolationKey,
              "PartitionNelAndReportingByNetworkIsolationKey",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -120,25 +116,6 @@ BASE_FEATURE(kEnableDoubleKeyNetworkAnonymizationKey,
 BASE_FEATURE(kEnableCrossSiteFlagNetworkAnonymizationKey,
              "EnableCrossSiteFlagNetworkAnonymizationKey",
              base::FEATURE_DISABLED_BY_DEFAULT);
-
-BASE_FEATURE(kExpectCTPruning,
-             "ExpectCTPruning",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-NET_EXPORT extern const base::FeatureParam<int>
-    kExpectCTPruneMax(&kExpectCTPruning, "ExpectCTPruneMax", 2000);
-NET_EXPORT extern const base::FeatureParam<int>
-    kExpectCTPruneMin(&kExpectCTPruning, "ExpectCTPruneMin", 1800);
-NET_EXPORT extern const base::FeatureParam<int> kExpectCTSafeFromPruneDays(
-    &kExpectCTPruning,
-    "ExpectCTSafeFromPruneDays",
-    40);
-NET_EXPORT extern const base::FeatureParam<int> kExpectCTMaxEntriesPerNik(
-    &kExpectCTPruning,
-    "ExpectCTMaxEntriesPerNik",
-    20);
-NET_EXPORT extern const base::FeatureParam<int>
-    kExpectCTPruneDelaySecs(&kExpectCTPruning, "ExpectCTPruneDelaySecs", 60);
 
 BASE_FEATURE(kTLS13KeyUpdate,
              "TLS13KeyUpdate",
@@ -187,8 +164,6 @@ BASE_FEATURE(kCertDualVerificationTrialFeature,
 #if BUILDFLAG(IS_MAC)
 const base::FeatureParam<int> kCertDualVerificationTrialImpl{
     &kCertDualVerificationTrialFeature, "impl", 0};
-const base::FeatureParam<int> kCertDualVerificationTrialCacheSize{
-    &kCertDualVerificationTrialFeature, "cachesize", 0};
 #endif /* BUILDFLAG(IS_MAC) */
 #endif
 
@@ -204,8 +179,6 @@ BASE_FEATURE(kChromeRootStoreUsed,
 #if BUILDFLAG(IS_MAC)
 const base::FeatureParam<int> kChromeRootStoreSysImpl{&kChromeRootStoreUsed,
                                                       "sysimpl", 0};
-const base::FeatureParam<int> kChromeRootStoreSysCacheSize{
-    &kChromeRootStoreUsed, "syscachesize", 0};
 #endif /* BUILDFLAG(IS_MAC) */
 #endif /* BUILDFLAG(CHROME_ROOT_STORE_SUPPORTED) */
 
@@ -281,10 +254,6 @@ BASE_FEATURE(kNoncedPartitionedCookies,
              "NoncedPartitionedCookies",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-BASE_FEATURE(kExtraCookieValidityChecks,
-             "ExtraCookieValidityChecks",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kRecordRadioWakeupTrigger,
              "RecordRadioWakeupTrigger",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -314,7 +283,7 @@ BASE_FEATURE(kOptimisticBlockfileWrite,
 // Read as much of the net::URLRequest as there is space in the Mojo data pipe.
 BASE_FEATURE(kOptimizeNetworkBuffers,
              "OptimizeNetworkBuffers2",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 const base::FeatureParam<int> kOptimizeNetworkBuffersBytesReadLimit{
     &kOptimizeNetworkBuffers, "bytes_read_limit", 64 * 1024};
@@ -335,7 +304,7 @@ const base::FeatureParam<int> kOptimizeNetworkBuffersMinInputStreamReadSize{
 const base::FeatureParam<int>
     kOptimizeNetworkBuffersMaxInputStreamBytesToReadWhenAvailableUnknown{
         &kOptimizeNetworkBuffers, "max_input_stream_bytes_available_unknown",
-        32 * 1024};
+        2 * 1024};
 
 const base::FeatureParam<int>
     kOptimizeNetworkBuffersFilterSourceStreamBufferSize{
@@ -400,5 +369,11 @@ BASE_FEATURE(kUseNAT64ForIPv4Literal,
 BASE_FEATURE(kBlockNewForbiddenHeaders,
              "BlockNewForbiddenHeaders",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+#if BUILDFLAG(IS_WIN)
+BASE_FEATURE(kPlatformKeyProbeSHA256,
+             "PlatformKeyProbeSHA256",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
 
 }  // namespace net::features

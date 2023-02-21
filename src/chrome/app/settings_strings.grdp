@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <!-- Settings-specific strings (included from generated_resources.grd). -->
 <grit-part>
   <message name="IDS_SETTINGS_EMPTY_STRING" desc="Empty string, exist only to make code generic. No translation required."></message>
@@ -7,6 +7,9 @@
   <!-- Shared across multiple pages -->
   <message name="IDS_SETTINGS_CONTINUE" desc="Label for 'Continue' buttons.">
     Continue
+  </message>
+  <message name="IDS_SETTINGS_GOT_IT" desc="Label for the button to acknowledge the information in a dialog and dismiss it.">
+    Got it
   </message>
   <message name="IDS_SETTINGS_MORE_ACTIONS" desc="Tooltip text (shows on hover or for screenreaders) for a button that shows a menu with more actions when clicked or tapped">
     More actions
@@ -699,9 +702,6 @@
   <message name="IDS_SETTINGS_PASSKEYS_EDIT_DIALOG_FOOTNOTE" desc="Footnote for the passkey edit dialog.">
     When you edit your passkey, your <ph name="RP_ID">$1<ex>relyingPartyId</ex></ph> account won't change
   </message>
-  <message name="IDS_SETTINGS_GOT_IT" desc="Label for the button to acknowledge the information in a dialog and dismiss it.">
-    Got it
-  </message>
   <message name="IDS_SETTINGS_ADDRESS_NONE" desc="Placeholder that is shown when there are no addresses in the list of saved addresses.">
     Saved addresses will appear here
   </message>
@@ -893,6 +893,9 @@
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_LONG_PASSWORD" desc="An error message for a row that wasn't imported, because the provided password exceeds the length limit. It is shown on the dialog for importing passwords if some passwords weren't imported.">
     Password is more than 1000 characters
   </message>
+  <message name="IDS_SETTINGS_PASSWORDS_IMPORT_LONG_NOTE" desc="An error message for a row that wasn't imported, because the provided note exceeds the length limit. It is shown on the dialog for importing passwords if some passwords weren't imported.">
+    Note is more than 1000 characters
+  </message>
   <message name="IDS_SETTINGS_PASSWORDS_IMPORT_CONFLICT_ACCOUNT" desc="An error message for a row that wasn't imported, because the provided credential is already stored in their Google Password Manager. It is shown on the dialog for importing passwords if some passwords weren't imported.">
     A password for this account is already saved to your Google Password Manager (<ph name="USER_EMAIL"><ex>elisa.g.becket@gmail.com</ex>$1</ph>)
   </message>
@@ -1002,8 +1005,8 @@
   </message>
 
   <if expr="is_macosx">
-  <message name="IDS_SETTINGS_PASSWORDS_BIOMETRIC_AUTHENTICATION_FOR_FILLING_TOGGLE_LABEL_MAC" desc="Label for a toggle that allows users to be authenticate using their TouchID when logging into webpages.">
-    Use TouchID when filling passwords
+  <message name="IDS_SETTINGS_PASSWORDS_BIOMETRIC_AUTHENTICATION_FOR_FILLING_TOGGLE_LABEL_MAC" desc="Label for a toggle that allows users to be authenticate using their TouchID or any other means of authentication when logging into webpages.">
+    Use your screen lock when filling passwords
   </message>
   </if>
 
@@ -1537,6 +1540,9 @@
     <message name="IDS_SETTINGS_LANGUAGES_NO_LANGUAGES_ADDED" desc="Placeholder for language list settings when no languages have been added, on the Manage Languages page.">
       No languages added
     </message>
+    <message name="IDS_SETTINGS_LANGUAGES_REMOVE_ARIA_LABEL" desc="Text read by screen readers when focusing on the trash can icon for removing a language. Activating this button will remove the selected language from its current list. This text only announced by screen readers and is not visible in the UI.">
+      Remove <ph name="LANGUAGE_NAME">$1<ex>Swahili</ex></ph>
+    </message>
     <message name="IDS_SETTINGS_TRANSLATE_PAGE_TITLE" desc="Name of the settings page which displays translate preferences.">
       Google Translate
     </message>
@@ -1546,8 +1552,14 @@
     <message name="IDS_SETTINGS_LANGUAGES_AUTOMATIC_TRANSLATE" desc="Title of Translation settings that lists languages that should be automatically translated.">
       Automatically translate these languages
     </message>
+    <message name="IDS_SETTINGS_LANGUAGES_AUTOMATIC_TRANSLATE_ADD_ARIA_LABEL" desc="Text read by screen readers when focusing on the 'Add Languages' button for the automatically translate language list. When this button is activated a dialog for selecting and adding multiple languages is shown. This text is only announced by screen readers and is not visible in the UI.">
+      Add languages to automatically translate
+    </message>
     <message name="IDS_SETTINGS_LANGUAGES_NEVER_LANGUAGES" desc="Title of Translation settings that lists languages that should never be offered to translate.">
-      Don’t offer to translate these languages
+      Never offer to translate these languages
+    </message>
+    <message name="IDS_SETTINGS_LANGUAGES_NEVER_TRANSLATE_ADD_ARIA_LABEL" desc="Text read by screen readers when focusing on the 'Add Languages' button for the don't offer to translate language list. When this button is activated a dialog for selecting and adding multiple languages is shown. This text is only announced by screen readers and is not visible in the UI.">
+      Add languages to never offer translation
     </message>
     <message name="IDS_SETTINGS_LANGUAGES_SPELL_CHECK_TITLE" desc="Title for the section containing all the options for spell check settings. The options include picking between using the system's spell check or using Google's web service and a list of the enabled languages which support spell checking.">
       Spell check
@@ -1621,6 +1633,50 @@
       Keyboard apps
     </message>
   </if>
+
+  <!-- Preloading Page-->
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_TITLE" desc="Title for a section in Settings that controls pages preloading and informs the user about the data shared by this feature.">
+    Preload pages
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_SUMMARY" desc="Summary for a section in Settings that controls pages preloading and informs the user about the data shared by this feature.">
+    Choose whether to preload pages
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_NO_PRELOADING_TITLE" desc="Name of the no preloading option for the Preload Pages settings page. This option disables preloading pages that Thorium believes the user is likely to navigate to.">
+    No preloading
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_NO_PRELOADING_SUMMARY" desc="Short explanation of what the no preloading mode does in the Preload Pages setting.">
+    Pages load only after you open them.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_STANDARD_PRELOADING_TITLE" desc="Name of the standard preloading option for the Preload Pages settings page. This option enables preloading pages that Thorium believes the user is likely to navigate to.">
+    Standard preloading
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_STANDARD_PRELOADING_SUMMARY" desc="Short explanation of what the standard preloading mode does in the Preload Pages setting.">
+    Some of the pages you visit are preloaded.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_STANDARD_PRELOADING_WHEN_ON_BULLET_ONE" desc="First bullet point in the standard preloading and when on column. Informs the user about what the standard preloading setting does.">
+    Browsing and searching is faster.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_STANDARD_PRELOADING_WHEN_ON_BULLET_TWO" desc="Second bullet point in the standard preloading and when on column. Informs the user about what the standard preloading setting does.">
+    Thorium preloads pages you're likely to visit, so that they load more quickly when you visit them.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_EXTENDED_PRELOADING_TITLE" desc="Name of the extended preloading option for the Preload Pages settings page. This option enables more extensive preloading of pages that Thorium believes the user is likely to navigate to.">
+    Extended preloading
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_EXTENDED_PRELOADING_SUMMARY" desc="Subtitle for Preload Pages extended preloading mode. Informs the user about which preloading setting is being described on this page.">
+    More pages are preloaded. Pages may be preloaded through Google servers when requested by other sites.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_EXTENDED_PRELOADING_WHEN_ON_BULLET_ONE" desc="First bullet point in the extended preloading and when on column. Informs the user about what the extended preloading setting does.">
+    Browsing and searching is faster than standard preloading.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_EXTENDED_PRELOADING_WHEN_ON_BULLET_TWO" desc="Second bullet point in the extended preloading and when on column. Informs the user about what the extended preloading setting does.">
+    Thorium preloads even more pages that you're likely to visit, so that they load more quickly when you visit them.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_EXTENDED_PRELOADING_THINGS_TO_CONSIDER_BULLET_TWO" desc="Second bullet point in the extended preloading and things to consider column. Informs the user about what the extended preloading setting does.">
+    When a site asks to privately preload links on their page, Thorium uses Google servers. This hides your identity from the preloaded site, but Google learns what sites get preloaded.
+  </message>
+  <message name="IDS_SETTINGS_PRELOAD_PAGES_THINGS_TO_CONSIDER_BULLET_ONE" desc="First bullet point in the things to consider column. Informs the user about what the preloading setting does.">
+    If you allow cookies, Thorium may use them when preloading.
+  </message>
 
   <!-- Privacy Page -->
   <message name="IDS_SETTINGS_PRIVACY" desc="Name of the settings page which allows users to modify privacy and security settings.">
@@ -1758,17 +1814,111 @@
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_TITLE" desc="Card title of the Spam &amp; Fraud section of the Privacy Sandbox settings.">
     Spam and fraud reduction
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_1" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “trust tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players.">
-    Spam &#38; fraud reduction relies on trust tokens to help sites fight fraud and distinguish bots from people.
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_1" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “private state tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players.">
+    Spam &#38; fraud reduction relies on private state tokens to help sites fight fraud and distinguish bots from people.
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_1_TRIALS_OFF" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “trust tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players.">
-    When trials are on, Spam &#38; fraud reduction relies on trust tokens to help sites fight fraud and distinguish bots from people.
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_1_TRIALS_OFF" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “private state tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players.">
+    When trials are on, Spam &#38; fraud reduction relies on private state tokens to help sites fight fraud and distinguish bots from people.
   </message>
-  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_2" desc="The second of 3 paragraphs on the spam &amp; fraud card. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A trust token is issued. Sometime in the future, when you visit a different site, that trust token might get used.">
-    Based on your interaction with a site, like regularly signing in to an account, that site can issue a trust token to your browser. Later, if other sites you visit check for and find a valid trust token, they're more likely to treat you like a person and not a bot.
+  <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_2" desc="The second of 3 paragraphs on the spam &amp; fraud card. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A private state token is issued. Sometime in the future, when you visit a different site, that private state token might get used.">
+    Based on your interaction with a site, like regularly signing in to an account, that site can issue a private state token to your browser. Later, if other sites you visit check for and find a valid private state token, they're more likely to treat you like a person and not a bot.
   </message>
   <message name="IDS_SETTINGS_PRIVACY_SANDBOX_SPAM_AND_FRAUD_DIALOG_DESCRIPTION_3" desc="The third of 3 paragraphs on the spam &amp; fraud card.">
-    Trust tokens improve privacy on the web and can't be used to find out who you are.
+    Private state tokens improve privacy on the web and can't be used to find out who you are.
+  </message>
+
+  <!-- Privacy Sandbox Settings 4 - Privacy & Security Page -->
+  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to the Ad Privacy preferences page in the Privacy &amp; Security Page.">
+    Donec semper
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_SUB_LABEL" translateable="false" desc="Sub label for row linking to the Ad Privacy preferences page in the Privacy &amp; Security Page.">
+    Fusce purus nibh, dictum sit amet mi in, fringilla ullamcorper tortor
+  </message>
+
+  <!-- Privacy Sandbox Settings 4 - Ad Privacy Page -->
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TITLE" translateable="false" desc="Title for the Ad Privacy preferences page.">
+    Donec semper
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to Topics page.">
+    Mauris interdum lectus vitae lacinia
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to Topics page when Topics is enabled.">
+    Enabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to Topics page when Topics is disabled.">
+    Disabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to FLEDGE page.">
+    Aenean erat leo
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to FLEDGE page when FLEDGE is enabled.">
+    Enabled Duis scelerisque a mi eget ultricies
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to FLEDGE page when FLEDGE is disabled.">
+    Disabled Duis scelerisque a mi eget ultricies
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to Ad Measurement page.">
+    Vestibulum augue erat
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to Ad Measurement page when Ad Measurement is enabled.">
+    Enabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+  </message>
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to Ad Measurement page when Ad Measurement is disabled.">
+    Disabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+  </message>
+
+  <!-- Privacy Sandbox Settings 4 - Topics Page -->
+  <message name="IDS_SETTINGS_TOPICS_PAGE_TITLE" translateable="false" desc="Title for the Topics preferences page.">
+    Mauris interdum lectus vitae lacinia
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_LABEL" translateable="false" desc="Label for the toggle in the Topics preferences page.">
+    Nunc gravida condimentum consectetur
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Subabel for the toggle in the Topics preferences page.">
+    Vivamus nibh turpis, varius quis nisi vel, porta laoreet tellus. Mauris porta imperdiet venenatis
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_HEADING" translateable="false" desc="Section title for the current Topics list underneath toggle in the Topics preferences page.">
+    Mauris at lectus
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" translateable="false" desc="Section description for the current Topics list in the Topics preferences page.">
+    Nulla tincidunt iaculis nulla, sit amet viverra massa luctus nec. Integer eget pellentesque magna, et venenatis lorem. Integer a porta elit. Eget bibendum neque.
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="Section description for the current Topics list when Topics is disabled in the Topics preferences page.">
+    Sed porta viverra lacus ut euismod. Integer a cursus metus, ac ultricies libero.
+  </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="Section description for the current Topics list when the Topics list is empty in the Topics preferences page.">
+    Curabitur sagittis sapien ut turpis interdum, vitae porttitor sem pretium. Vestibulum sem mauris, ultrices ac massa sit amet, sodales aliquet est.
+  </message>
+
+  <!-- Privacy Sandbox Settings 4 - Fledge Page -->
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" translateable="false" desc="Title for the Fledge preferences page.">
+    Aenean erat leo
+  </message>
+
+  <!-- Privacy Sandbox Settings 4 - Ad Measurement Page -->
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" translateable="false" desc="Title for the Ad Measurement preferences page.">
+    Vestibulum augue
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" translateable="false" desc="Label for the toggle in the Ad Measurement preferences page.">
+    Vestibulum augue erat
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Sublabel for the toggle in the Ad Measurement preferences page.">
+    Vestibulum eleifend nunc a viverra congue. Integer nec mauris rutrum, porta mauris et, pellentesque ligula. Nam et pulvinar eros, in gravida nisl.
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" translateable="false" desc="Heading for the 'When on' section in the Ad Measurement preferences page.">
+    Mauris
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" translateable="false" desc="Heading for the 'Things to consider' section in the Ad Measurement preferences page.">
+    Aenean
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" translateable="false" desc="First bullet point underneath the 'When on' section in the Ad Measurement preferences page.">
+    Praesent sodales, magna eget volutpat iaculis, justo odio viverra justo, id venenatis est est sit amet ex
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" translateable="false" desc="Second bullet point underneath the 'When on' section in the Ad Measurement preferences page.">
+    Nunc metus est, faucibus sit amet lacus sit amet, aliquet rutrum libero. Maecenas vel euismod ante.
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" translateable="false" desc="First bullet point underneath the 'Things to consider' section in the Ad Measurement preferences page.">
+    Mauris mattis urna elit. Phasellus quis erat sapien. Praesent finibus pellentesque iaculis. Mauris hendrerit metus at enim rhoncus bibendum.
   </message>
 
   <!-- Privacy Guide -->
@@ -1972,8 +2122,49 @@
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW" desc="Text for a button that allows users to review safety check findings, such as compromised passwords or blocklisted extensions.">
     Review
   </message>
-  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_PRIMARY_LABEL" translateable="false" desc="The placeholder title for 'Unused Site Permissions' module. It is an element in safety check that shows the revoked permissions of unused websites.">
-    Permissions removed from unused websites
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_ALLOW_AGAIN_ARIA_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This accessibility label describes the action to undo the revokation and grant permissions for the website again. Only visible by screen reader software.">
+    Allow permissions again for <ph name="WEBSITE">$1<ex>website.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_ALLOW_AGAIN_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is for the action to undo the revokation and allow the site permissions again.">
+    Allow again
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_HEADER_ARIA_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This label is the aria label for the review button on the Privacy and Security settings page.">
+    Review removed permissions
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_HEADER_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This label is the header of the module in the site settings page. The number represents the number of sites for which permissions were revoked.">
+    {NUM_SITES, plural,
+     =1 {Permissions removed from <ph name="BEGIN_BOLD">&lt;b&gt;</ph>1 site<ph name="END_BOLD">&lt;/b&gt;</ph> you haven’t visited in a while}
+     other {Permissions removed from <ph name="BEGIN_BOLD">&lt;b&gt;</ph>{NUM_SITES} sites<ph name="END_BOLD">&lt;/b&gt;</ph> you haven’t visited in a while}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_REMOVED_ONE_PERMISSION_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This text describes which permission was removed and is shown if there is exactly one permission.">
+    Removed <ph name="PERMISSION">$1<ex>location</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_REMOVED_TWO_PERMISSIONS_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed and is shown if there are exactly two permissions.">
+    Removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_REMOVED_THREE_PERMISSIONS_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed and is shown if there are exactly three permissions.">
+    Removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>, <ph name="PERMISSION_3">$3<ex>camera</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_REMOVED_FOUR_OR_MORE_PERMISSIONS_LABEL" desc="'Unused Site Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed and is shown if there are four or more permissions. The number indicates the count of permisions that are not shown explicitly. The number is always two or larger.">
+    Removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>, and <ph name="COUNT">$3<ex>2</ex></ph> more
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_PRIMARY_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is the header of the module in the site settings page. The number represents the number of unused sites.">
+    {NUM_SITES, plural,
+     =1 {Permissions removed for 1 site}
+     other {Permissions removed for {NUM_SITES} sites}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_SECONDARY_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is the description of the module in the site settings page.">
+    {NUM_SITES, plural,
+     =1 {To protect your data, permissions were removed from a site you haven't visited in 2 months}
+     other {To protect your data, permissions were removed from sites you haven't visited in 2 months}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_TOAST_BULK_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is shown in a toast popup message after a user has clicked a button to acknowledge all revoked permissions.">
+    {NUM_SITES, plural,
+     =1 {Review complete for 1 site}
+     other {Review complete for {NUM_SITES} sites}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_TOAST_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is shown after a user has taken action to allow some permissions again.">
+    Permissions allowed again for <ph name="WEBSITE">$1<ex>www.example.com</ex></ph>
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_UPDATES_PRIMARY_LABEL" desc="'Updates' is an element in safety check that shows the update status of Thorium.">
     Updates
@@ -2040,11 +2231,16 @@
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW_NOTIFICATION_PERMISSIONS_PRIMARY_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is the header of the module in the site settings notification page. The number represents the number of notification permissions to be reviewed.">
     {NUM_SITES, plural,
-     =1 {Review 1 site that recently sent a lot of notifications}
-     other {Review {NUM_SITES} sites that recently sent a lot of notifications}}
+     =1 {Review 1 site that sent a lot of notifications}
+     other {Review {NUM_SITES} sites that sent a lot of notifications}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_NOTIFICATION_PERMISSIONS_REVIEW_BUTTON_ARIA_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is used for the ARIA label of the button of the module in the site settings notification page.">
+    Review notification permissions
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW_NOTIFICATION_PERMISSIONS_SECONDARY_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is the description of the module in site settings notification page.">
-    These sites sent a lot of notifications recently. You can stop them from sending future notifications.
+    {NUM_SITES, plural,
+     =1 {This site sent a lot of notifications recently. You can stop it from sending future notifications.}
+     other {These sites sent a lot of notifications recently. You can stop them from sending future notifications.}}
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_NOTIFICATION_PERMISSION_REVIEW_IGNORED_TOAST_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is to indicate for which site the user has explicitly allowed permissions.">
     Notifications allowed for <ph name="SITE">$1<ex>www.example.com</ex></ph>
@@ -2059,9 +2255,6 @@
     {NUM_NOTIFICATION, plural,
      =1 {About 1 notification a day}
      other {About {NUM_NOTIFICATION} notifications a day}}
-  </message>
-  <message name="IDS_SETTINGS_SAFETY_CHECK_NOTIFICATION_PERMISSION_REVIEW_DONE_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is to inform users that there are no more permissions left to review.">
-    All done for now
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW_NOTIFICATION_PERMISSIONS_DONT_ALLOW_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is for the action to block notifications from a specific website.">
     Don't allow
@@ -2084,9 +2277,6 @@
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW_NOTIFICATION_PERMISSIONS_MORE_ACTIONS_ARIA_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This ARIA (accessibility) label is to show more actions for a notification permissions item.">
     More actions for <ph name="WEBSITE">$1<ex>website.com</ex></ph>
   </message>
-  <message name="IDS_SETTINGS_SAFETY_CHECK_NOTIFICATION_PERMISSION_REVIEW_UNDO" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is for undoing the current action after blocking permission for a site.">
-    Undo
-  </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_REVIEW_NOTIFICATION_PERMISSIONS_HEADER_LABEL" desc="'Review Notification Permissions' shows the websites that send a lot of notifications. This label is for the header in Privacy and Security Settings page that surface an entry point to the module itself. The integer input represents the number of notification permissions to be reviewed.">
     {NUM_SITES, plural,
      =1 {Review <ph name="BEGIN_BOLD">&lt;b&gt;</ph>1 site<ph name="END_BOLD">&lt;/b&gt;</ph> that recently sent a lot of notifications}
@@ -2099,6 +2289,12 @@
     {NUM_SITES, plural,
     =1 {Notifications not allowed for 1 site}
     other {Notifications not allowed for {NUM_SITES} sites}}
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_SITE_PERMISSIONS_REVIEW_DONE_LABEL" desc="Text indicating that the user has no more actions to perform. This text, together with a checkmark, appear in place of a UI where the user can review permissions for a list of websites. The text is shown after the user has taken action and there are no more websites listed.">
+    All done for now
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_CHECK_TOAST_UNDO_BUTTON_LABEL" desc="After the user has modified permissions for a website, a toast popup message is shown with this text next to a description of the action taken. The user can click this text to undo the action. For example, this text would be next to a descriptiton that says 'Allowed notification permissions for example.com'.">
+    Undo
   </message>
   <if expr="is_win and _google_chrome">
     <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_PRIMARY_LABEL" desc="'Unwanted software protection' is an element in safety check that finds harmful software installed on the computer and allows users to remove it.">
@@ -2232,7 +2428,7 @@
   <message name="IDS_SETTINGS_PERMISSIONS" desc="Name of the settings page which allows users to manage permissions and site content settings">
     Permissions and content settings
   </message>
-  <message name="IDS_SETTINGS_PERMISSIONS_DESCRIPTION" desc="Description of the controls available on the permisisons and site content settings page">
+  <message name="IDS_SETTINGS_PERMISSIONS_DESCRIPTION" desc="Description of the controls available on the permissions and site content settings page">
     Controls what information sites can use and show (location, camera, pop-ups, and more)
   </message>
   <message name="IDS_SETTINGS_SECURITY" desc="Name of the settings page which allows
@@ -2279,6 +2475,11 @@
   <message name="IDS_SETTINGS_SECURE_DNS_DESCRIPTION" desc="Secondary, continued explanation of secure DNS in Privacy options">
     Determines how to connect to websites over a secure connection
   </message>
+  <if expr="chromeos_ash">
+    <message name="IDS_SETTINGS_SECURE_DNS_WITH_IDENTIFIERS_DESCRIPTION" desc="Secondary, continued explanation of secure DNS in Privacy options">
+      Determines how to connect to websites over a secure connection. This uses a managed service provider at <ph name="DNS_SERVER_TEMPLATE_WITH_IDENTIFIER">$1<ex>https://dns.example.net/dns-query{?dns}</ex></ph>
+    </message>
+  </if>
   <message name="IDS_SETTINGS_AUTOMATIC_MODE_DESCRIPTION" desc="Text of the radio button that puts secure DNS in auto-upgrade mode">
     With your current service provider
   </message>
@@ -2391,6 +2592,9 @@
   </message>
   <message name="IDS_SETTINGS_RESET_BANNER_RESET_BUTTON_TEXT" desc="The text on the reset button in the Automatic Settings Reset Banner suggesting to reset ALL settings after an automatic reset of SOME settings.">
     Reset all settings
+  </message>
+  <message name="IDS_SETTINGS_RESET_LEARN_MORE_ACCESSIBILITY_TEXT" desc="Accessibility label for a 'Learn more' link that links out to a help article about resetting settings.">
+    Learn more about resetting settings
   </message>
 
   <!-- Reset card title and Thorium Cleanup item on Windows -->
@@ -3781,6 +3985,9 @@
   <message name="IDS_SETTINGS_ENCRYPT_WITH_SYNC_PASSPHRASE_LABEL" desc="Label for the radio button which, when selected, causes synced settings to be encrypted with a user-provided password.">
     Encrypt synced data with your own <ph name="BEGIN_LINK">&lt;a href="$1" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$1" target=&quot;_blank&quot;&gt;</ex></ph>sync passphrase<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>. This doesn't include payment methods and addresses from Google Pay.
   </message>
+  <message name="IDS_NEW_SETTINGS_ENCRYPT_WITH_SYNC_PASSPHRASE_LABEL" desc="Label for the radio button which, when selected, causes synced settings to be encrypted with a user-provided password.">
+    Encrypt synced data with your own <ph name="BEGIN_LINK">&lt;a href="$1" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$1" target=&quot;_blank&quot;&gt;</ex></ph>sync passphrase<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>. Payment methods and addresses from Google Pay won’t be encrypted. Browsing history from Thorium won’t sync.
+  </message>
   <message name="IDS_SETTINGS_PASSPHRASE_EXPLANATION_TEXT" desc="Message shown when explicit passphrase is selected.">
     Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, you'll need to <ph name="BEGIN_LINK">&lt;a href="$1" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$1" target=&quot;_blank&quot;&gt;</ex></ph>reset sync<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>.
   </message>
@@ -4327,6 +4534,7 @@
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_MANAGE" desc="The title of an option in Thorium's privacy settings for managing phones that can be used to sign into websites.">
     Manage phones
   </message>
+  <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_MANAGE_DESC" desc="The description of an option in Thorium's privacy settings for managing phones that can be used for signing into websites. A 'security key' is typically a USB peripherial used to secure sign-ins. In this case a phone can be used as a security key.">
   <message name="IDS_SETTINGS_SECURITY_KEYS_PHONES_MANAGE_DESC" desc="The description of an option in Thorium's privacy settings for managing phones that can be used for signing into websites. A 'security key' is typically a USB peripherial used to secure sign-ins. In this case a phone can be used as a security key.">
     Control which phones you use as security keys
   </message>

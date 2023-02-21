@@ -66,9 +66,9 @@
      "Don't enforce the same-origin policy; meant for website testing only.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
     {"double-click-close-tab",
-     "Double Click Close Tab",
-     "Double click the left mouse button to close tab.",
-     kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")}, 
+     "Double Click to Close Tab",
+     "Enables double clicking a tab to close it.",
+     kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")},  
      
 #if BUILDFLAG(IS_LINUX)
      {"password-store",
@@ -84,10 +84,6 @@
 #endif // BUILDFLAG(IS_LINUX)
     
 #if BUILDFLAG(IS_WIN)
-    {"enable-win7-webrtc-hw-h264-decoding",
-     "Windows 7 WebRTC H.264 Hardware Decoding",
-     "Enables H.264 hardware decode acceleration for WebRTC on Windows 7.",
-     kOsWin, SINGLE_VALUE_TYPE(switches::kEnableWin7WebRtcHWH264Decoding)},
     {"disable-windows10-custom-titlebar",
      "Disable Custom Windows Titlebar",
      "Disables custom-drawing the window titlebar on Windows 10/11.",

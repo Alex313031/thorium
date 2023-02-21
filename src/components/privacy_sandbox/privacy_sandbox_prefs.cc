@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,6 +9,27 @@
 #include "components/prefs/pref_service.h"
 
 namespace prefs {
+
+const char kPrivacySandboxM1ConsentDecisionMade[] =
+    "privacy_sandbox.m1.consent_decision_made";
+
+const char kPrivacySandboxM1EEANoticeAcknowledged[] =
+    "privacy_sandbox.m1.eea_notice_acknowledged";
+
+const char kPrivacySandboxM1RowNoticeAcknowledged[] =
+    "privacy_sandbox.m1.row_notice_acknowledged";
+
+const char kPrivacySandboxM1PromptSuppressed[] =
+    "privacy_sandbox.m1.prompt_suppressed";
+
+const char kPrivacySandboxM1TopicsEnabled[] =
+    "privacy_sandbox.m1.topics_enabled";
+
+const char kPrivacySandboxM1FledgeEnabled[] =
+    "privacy_sandbox.m1.fledge_enabled";
+
+const char kPrivacySandboxM1AdMeasurementEnabled[] =
+    "privacy_sandbox.m1.ad_measurement_enabled";
 
 const char kPrivacySandboxApisEnabled[] = "privacy_sandbox.apis_enabled";
 
@@ -68,7 +89,19 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxApisEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, true);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxApisEnabledV2, false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1ConsentDecisionMade,
+                                false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1EEANoticeAcknowledged,
+                                false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1RowNoticeAcknowledged,
+                                false);
+  registry->RegisterIntegerPref(prefs::kPrivacySandboxM1PromptSuppressed, 0);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1TopicsEnabled, false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1FledgeEnabled, false);
+  registry->RegisterBooleanPref(prefs::kPrivacySandboxM1AdMeasurementEnabled,
+                                false);
+
   registry->RegisterBooleanPref(
       prefs::kPrivacySandboxManuallyControlled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);

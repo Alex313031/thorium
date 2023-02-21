@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -111,6 +111,7 @@ test("components_unittests") {
 
   deps = [
     "//base",
+    "//components/aggregation_service:unit_tests",
     "//components/apdu:unit_tests",
     "//components/assist_ranker:unit_tests",
     "//components/attribution_reporting:unit_tests",
@@ -136,6 +137,7 @@ test("components_unittests") {
     "//components/content_capture/common:unit_tests",
     "//components/content_settings/core/browser:unit_tests",
     "//components/content_settings/core/common:unit_tests",
+    "//components/country_codes:unit_tests",
     "//components/crash/core/common:unit_tests",
     "//components/crx_file:unit_tests",
     "//components/device_event_log:unit_tests",
@@ -148,7 +150,6 @@ test("components_unittests") {
     "//components/favicon/core:unit_tests",
     "//components/favicon_base:unit_tests",
     "//components/feature_engagement:unit_tests",
-    "//components/file_access:unit_tests",
     "//components/filename_generation:unit_tests",
     "//components/flags_ui:unit_tests",
     "//components/gcm_driver:unit_tests",
@@ -257,6 +258,10 @@ test("components_unittests") {
     "//components/webdata_services:unit_tests",
   ]
 
+  if (!is_ios) {
+    deps += [ "//components/file_access:unit_tests" ]
+  }
+
   if (enable_screen_ai_service) {
     deps += [ "//components/services/screen_ai:unit_tests" ]
   }
@@ -325,14 +330,9 @@ test("components_unittests") {
     ]
   } else {  #!is_ios
     deps += [
-      "//components/accuracy_tips:unit_tests",
       "//components/autofill/content/browser:unit_tests",
       "//components/autofill/content/renderer:unit_tests",
       "//components/autofill/core/common/mojom:unit_tests",
-      "//components/autofill_assistant/browser:unit_tests",
-      "//components/autofill_assistant/browser/public:unit_tests",
-      "//components/autofill_assistant/content/browser:unit_tests",
-      "//components/autofill_assistant/content/renderer:unit_tests",
       "//components/background_sync:unit_tests",
       "//components/blocked_content:unit_tests",
       "//components/browsing_data/content:unit_tests",
@@ -475,6 +475,7 @@ test("components_unittests") {
     deps += [
       "//base:base_java_unittest_support",
       "//components/android_autofill/browser:unit_tests",
+      "//components/browser_ui/accessibility/android:unit_tests",
       "//components/browser_ui/sms/android:unit_tests",
       "//components/cdm/browser:unit_tests",
       "//components/component_updater/android:embedded_component_loader_java",
@@ -646,6 +647,9 @@ test("components_unittests") {
     ]
   } else if (safe_browsing_mode == 2) {
     deps += [ "//components/safe_browsing/android:unit_tests_mobile" ]
+
+    # Used by real_time_url_checks_allowlist_unittest.cc
+    data += [ "//components/safe_browsing/content/resources/real_time_url_checks_allowlist.pb" ]
   }
 
   if (safe_browsing_mode == 1) {
@@ -791,11 +795,6 @@ if (!is_ios) {
       "autofill/content/renderer/form_cache_browsertest.cc",
       "autofill/content/renderer/html_based_username_detector_browsertest.cc",
       "autofill/content/renderer/password_form_conversion_utils_browsertest.cc",
-      "autofill_assistant/browser/js_flow_executor_impl_browsertest.cc",
-      "autofill_assistant/browser/script_executor_browsertest.cc",
-      "autofill_assistant/browser/web/batch_element_checker_browsertest.cc",
-      "autofill_assistant/browser/web/semantic_element_finder_browsertest.cc",
-      "autofill_assistant/browser/web/web_controller_browsertest.cc",
       "browsing_data/content/browsing_data_helper_browsertest.h",
       "browsing_data/content/cache_storage_helper_browsertest.cc",
       "browsing_data/content/database_helper_browsertest.cc",
@@ -835,10 +834,6 @@ if (!is_ios) {
       "//components/autofill/content/renderer",
       "//components/autofill/content/renderer:test_support",
       "//components/autofill/core/browser",
-      "//components/autofill_assistant/browser",
-      "//components/autofill_assistant/browser:browser_test_support",
-      "//components/autofill_assistant/browser:test_support",
-      "//components/autofill_assistant/content/renderer:browser_tests",
       "//components/browsing_data/content",
       "//components/content_capture/browser:browser_tests",
       "//components/content_settings/core/common",
@@ -1063,7 +1058,6 @@ if (is_android) {
   robolectric_binary("components_junit_tests") {
     deps = [
       "//components/android_autofill/browser/junit:components_autofill_junit_tests",
-      "//components/autofill_assistant/android:junit",
       "//components/background_task_scheduler:components_background_task_scheduler_junit_tests",
       "//components/browser_ui/bottomsheet/android/internal:junit_tests",
       "//components/browser_ui/client_certificate/android:junit",

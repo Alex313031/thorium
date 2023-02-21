@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -284,6 +284,7 @@ void ToolbarView::Init() {
 
   std::unique_ptr<SidePanelToolbarButton> side_panel_button;
   if (browser_view_->unified_side_panel()) {
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     side_panel_button = std::make_unique<SidePanelToolbarButton>(browser_);
   }
 
@@ -348,28 +349,27 @@ void ToolbarView::Init() {
     side_panel_button_ = AddChildView(std::move(side_panel_button));
 
   avatar_ = AddChildView(std::make_unique<AvatarToolbarButton>(browser_view_));
-
-  const base::CommandLine& command_line =
-      *base::CommandLine::ForCurrentProcess();
-  const std::string flag_value =
-      command_line.GetSwitchValueASCII("show-avatar-button");
-
-  bool in_incognito_or_guest_mode = browser_->profile()->IsOffTheRecord() ||
-                                    browser_->profile()->IsGuestSession();
-  
   bool show_avatar_toolbar_button = true;
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  // ChromeOS only badges Incognito and Guest icons in the browser window.
-  show_avatar_toolbar_button = in_incognito_or_guest_mode;
+  // ChromeOS only badges Incognito, Guest, and captive portal signin icons in
+  // the browser window.
+  show_avatar_toolbar_button =
+      browser_->profile()->IsIncognitoProfile() ||
+      browser_->profile()->IsGuestSession() ||
+      (browser_->profile()->IsOffTheRecord() &&
+       browser_->profile()->GetOTRProfileID().IsCaptivePortal());
 #elif BUILDFLAG(IS_CHROMEOS_LACROS)
   show_avatar_toolbar_button = !profiles::IsPublicSession();
 #endif
 
-  if (flag_value == "always")
+  const std::string sab_value = base::CommandLine::ForCurrentProcess()->
+                                GetSwitchValueASCII("show-avatar-button");
+  if (sab_value == "always")
     show_avatar_toolbar_button = true;
-  else if (flag_value == "incognito-and-guest")
-    show_avatar_toolbar_button = in_incognito_or_guest_mode;
-  else if (flag_value == "never")
+  else if (sab_value == "incognito-and-guest")
+    show_avatar_toolbar_button = browser_->profile()->IsIncognitoProfile() ||
+                                 browser_->profile()->IsGuestSession();
+  else if (sab_value == "never")
     show_avatar_toolbar_button = false;
 
   avatar_->SetVisible(show_avatar_toolbar_button);
@@ -803,13 +803,13 @@ SkColor ToolbarView::GetDefaultColorForSeverity(
     case AppMenuIconController::Severity::NONE:
       return GetColorProvider()->GetColor(kColorToolbarButtonIcon);
     case AppMenuIconController::Severity::LOW:
-      color_id = ui::kColorAlertLowSeverity;
+      color_id = kColorAppMenuHighlightSeverityLow;
       break;
     case AppMenuIconController::Severity::MEDIUM:
-      color_id = ui::kColorAlertMediumSeverity;
+      color_id = kColorAppMenuHighlightSeverityMedium;
       break;
     case AppMenuIconController::Severity::HIGH:
-      color_id = ui::kColorAlertHighSeverity;
+      color_id = kColorAppMenuHighlightSeverityHigh;
       break;
   }
   return GetColorProvider()->GetColor(color_id);

@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -249,6 +249,8 @@ static_library("content_shell_lib") {
     "//components/network_hints/browser:browser",
     "//components/network_hints/renderer",
     "//components/network_session_configurator/common",
+    "//components/origin_trials:browser",
+    "//components/origin_trials:common",
     "//components/performance_manager",
     "//components/permissions",
     "//components/prefs",
