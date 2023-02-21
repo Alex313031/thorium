@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2022 Alex313031. -->
-
 <grit base_dir="." latest_public_release="0" current_release="1"
       output_all_resource_defines="false" source_lang_id="en" enc_check="möl">
   <outputs>
@@ -1072,6 +1071,9 @@
       </message>
       <message name="IDS_IME_NAME_KEYBOARD_ENGLISH_SOUTH_AFRICA" desc="Input method name, shown in system tray menu, settings page, etc. following this template: “|language| (|variant|) |IME| with |layout| keyboard” which means “an input method that supports typing in the |variant| of |language|, using |IME| and a keyboard with |layout|. When a part in this template is unambiguous, it’s dropped for brevity. Translations should strive for similar consistency in structure among input method names. Note: On ThoriumOS, an “input method” is a suite of all input functionalities. |IME| in the template refers to an optional aspect of an “input method” on ThoriumOS, i.e. sophisticated transforms into text in |language| when using a keyboard layout not designed for |language|." meaning="Input method name">
         English (South Africa)
+      </message>
+      <message name="IDS_IME_NAME_KEYBOARD_ENGLISH_PAKISTAN" desc="Input method name, shown in system tray menu, settings page, etc. following this template: “|language| (|variant|) |IME| with |layout| keyboard” which means “an input method that supports typing in the |variant| of |language|, using |IME| and a keyboard with |layout|. When a part in this template is unambiguous, it’s dropped for brevity. Translations should strive for similar consistency in structure among input method names. Note: On ThoriumOS, an “input method” is a suite of all input functionalities. |IME| in the template refers to an optional aspect of an “input method” on ThoriumOS, i.e. sophisticated transforms into text in |language| when using a keyboard layout not designed for |language|." meaning="Input method name">
+        English (Pakistan)
       </message>
       <message name="IDS_IME_NAME_KEYBOARD_UKRAINIAN" desc="Input method name, shown in system tray menu, settings page, etc. following this template: “|language| (|variant|) |IME| with |layout| keyboard” which means “an input method that supports typing in the |variant| of |language|, using |IME| and a keyboard with |layout|. When a part in this template is unambiguous, it’s dropped for brevity. Translations should strive for similar consistency in structure among input method names. Note: On ThoriumOS, an “input method” is a suite of all input functionalities. |IME| in the template refers to an optional aspect of an “input method” on ThoriumOS, i.e. sophisticated transforms into text in |language| when using a keyboard layout not designed for |language|." meaning="Input method name">
         Ukrainian

@@ -90,8 +90,11 @@
       <ph name="PLATFORM_TEXT">$1<ex>Goto the wrench menu and choose Fix It.</ex></ph>
     </message>
   </if>
+  <message name="IDS_ERRORPAGES_SUGGESTION_CAPTIVE_PORTAL_SIGNIN" desc="ThoriumOS instructions for signing in to a captive portal.">
+    <ph name="BEGIN_LINK">&lt;a href="#buttons" onclick="javascript:portalSignin()"&gt;</ph>Signing in<ph name="END_LINK">&lt;/a&gt;</ph> to the network.
+  </message>
   <if expr="is_chromeos">
-    <message name="IDS_ERRORPAGES_SUGGESTION_PROXY_DISABLE_PLATFORM" desc="ChromeOS instructions for disabling use of a proxy server.">
+    <message name="IDS_ERRORPAGES_SUGGESTION_PROXY_DISABLE_PLATFORM" desc="ThoriumOS instructions for disabling use of a proxy server.">
       You can disable any proxies configured for a connection from the settings page.
     </message>
   </if>
@@ -330,12 +333,6 @@
   <message name="IDS_ERRORPAGES_SUGGESTION_CHECK_WIFI_SUMMARY" desc="The message displayed in a list of suggestions following a network error suggesting to the user to reconnect to Wi-Fi. The suggestions list is prefixed with 'Try:'.">
     Reconnecting to Wi-Fi
   </message>
-  <message name="IDS_ERRORPAGES_SUGGESTION_DIAGNOSE_CONNECTION_SUMMARY" desc="The message displayed asking the user to check their network connection using the diagnostics tool.">
-    Fix your connection using the <ph name="BEGIN_LINK">&lt;a  href="#buttons" onclick="javascript:diagnoseErrors()"&gt;</ph>diagnostics app<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
-  </message>
-  <message name="IDS_ERRORPAGES_SUGGESTION_COMPLETE_SETUP_SUMMARY" desc="The message displayed asking the user to sign out and complete their device setup.">
-    Sign out and complete setup
-  </message>
   <message name="IDS_ERRORPAGES_SUGGESTION_DISABLE_EXTENSION_SUMMARY" desc="When a page fails to load, we provide a suggestion that the user try disabling the extension that's blocking it.">
     Try disabling your extensions.
   </message>
@@ -386,7 +383,7 @@
   </if>
   <if expr="not is_android and not is_ios">
     <message name="IDS_ERRORPAGES_GAME_INSTRUCTIONS" desc="Instructions on how to start playing the offline game.">
-      Press Space or the Up Arrow to Play
+      Press space to play
     </message>
     <message name="IDS_ERRORPAGE_DINO_GAME_DESCRIPTION" desc="Message to be spoken by a screen reader to give the user context and instructions for playing the net error dino game. Pressing space activates the game and causes the dinosaur to jump. Desktop platforms only.">
       Dino game. A pixelated dinosaur dodges cacti and pterodactyls as it runs across a desolate landscape. When you hear an audio cue, press space to jump over obstacles.
@@ -408,6 +405,6 @@
     Jump!
   </message>
   <message name="IDS_ERRORPAGE_DINO_SLOW_SPEED_TOGGLE" desc="Label for a toggle which allows a user to select a slower speed for the dino game.">
-    Start slower&#63;
+    Start slower
   </message>
 </grit-part>

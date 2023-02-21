@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,6 +6,7 @@
 
 #include "base/test/test_reg_util_win.h"
 #include "build/branding_buildflags.h"
+#include "chrome/browser/chrome_for_testing/buildflags.h"
 #include "chrome/chrome_elf/nt_registry/nt_registry.h"
 #include "chrome/install_static/install_details.h"
 #include "chrome/install_static/user_data_dir.h"
@@ -23,6 +24,11 @@ inline bool EndsWith(const std::wstring& value, const std::wstring& ending) {
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 const wchar_t kPolicyRegistryKey[] = L"SOFTWARE\\Policies\\Google\\Chrome";
 const wchar_t kUserDataDirNameSuffix[] = L"\\Google\\Chrome\\User Data";
+#elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
+const wchar_t kPolicyRegistryKey[] =
+    L"SOFTWARE\\Policies\\Google\\Chrome for Testing";
+const wchar_t kUserDataDirNameSuffix[] =
+    L"\\Google\\Chrome for Testing\\User Data";
 #else
 const wchar_t kPolicyRegistryKey[] = L"SOFTWARE\\Policies\\Chromium";
 const wchar_t kUserDataDirNameSuffix[] = L"\\Thorium\\User Data";

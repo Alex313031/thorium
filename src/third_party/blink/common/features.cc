@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -269,15 +269,6 @@ BASE_FEATURE(kPortalsCrossOrigin,
 // allows the element to be enabled by the runtime enabled feature, for origin
 // trials.
 BASE_FEATURE(kFencedFrames, "FencedFrames", base::FEATURE_DISABLED_BY_DEFAULT);
-const base::FeatureParam<FencedFramesImplementationType>::Option
-    fenced_frame_implementation_types[] = {
-        {FencedFramesImplementationType::kShadowDOM, "shadow_dom"},
-        {FencedFramesImplementationType::kMPArch, "mparch"}};
-const base::FeatureParam<FencedFramesImplementationType>
-    kFencedFramesImplementationTypeParam{
-        &kFencedFrames, "implementation_type",
-        FencedFramesImplementationType::kMPArch,
-        &fenced_frame_implementation_types};
 
 // Enable the shared storage API. Note that enabling this feature does not
 // automatically expose this API to the web, it only allows the element to be
@@ -306,17 +297,15 @@ const base::FeatureParam<int> kSharedStorageBitBudget = {
 const base::FeatureParam<base::TimeDelta> kSharedStorageBudgetInterval = {
     &kSharedStorageAPI, "SharedStorageBudgetInterval", base::Hours(24)};
 const base::FeatureParam<base::TimeDelta>
-    kSharedStorageStaleOriginPurgeInitialInterval = {
-        &kSharedStorageAPI, "SharedStorageStaleOriginPurgeInitialInterval",
-        base::Minutes(15)};
+    kSharedStorageStalePurgeInitialInterval = {
+        &kSharedStorageAPI, "SharedStorageStalePurgeInitialInterval",
+        base::Minutes(2)};
 const base::FeatureParam<base::TimeDelta>
-    kSharedStorageStaleOriginPurgeRecurringInterval = {
-        &kSharedStorageAPI, "SharedStorageStaleOriginPurgeRecurringInterval",
+    kSharedStorageStalePurgeRecurringInterval = {
+        &kSharedStorageAPI, "SharedStorageStalePurgeRecurringInterval",
         base::Hours(2)};
-const base::FeatureParam<base::TimeDelta>
-    kSharedStorageOriginStalenessThreshold = {
-        &kSharedStorageAPI, "SharedStorageOriginStalenessThreshold",
-        base::Days(30)};
+const base::FeatureParam<base::TimeDelta> kSharedStorageStalenessThreshold = {
+    &kSharedStorageAPI, "SharedStorageStalenessThreshold", base::Days(30)};
 const base::FeatureParam<int>
     kSharedStorageMaxAllowedFencedFrameDepthForSelectURL = {
         &kSharedStorageAPI,
@@ -324,7 +313,7 @@ const base::FeatureParam<int>
 
 BASE_FEATURE(kSameSiteCrossOriginForSpeculationRulesPrerender,
              "SameSiteCrossOriginForSpeculationRulesPrerender",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSameSiteRedirectionForEmbedderTriggeredPrerender,
              "SameSiteRedirectionForEmbedderTriggeredPrerender",
@@ -346,11 +335,11 @@ const char kPrerender2MemoryAcceptablePercentOfSystemMemoryParamName[] =
 
 BASE_FEATURE(kPrerender2InBackground,
              "Prerender2InBackground",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
-bool IsPrerender2Enabled() {
-  return base::FeatureList::IsEnabled(blink::features::kPrerender2);
-}
+BASE_FEATURE(kPrerender2InNewTab,
+             "Prerender2InNewTab",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 bool IsSameSiteCrossOriginForSpeculationRulesPrerender2Enabled() {
   return base::FeatureList::IsEnabled(
@@ -364,24 +353,6 @@ bool OSKResizesVisualViewportByDefault() {
 
 bool IsFencedFramesEnabled() {
   return base::FeatureList::IsEnabled(blink::features::kFencedFrames);
-}
-
-bool IsFencedFramesMPArchBased() {
-  return blink::features::kFencedFramesImplementationTypeParam.Get() ==
-         blink::features::FencedFramesImplementationType::kMPArch;
-}
-
-bool IsFencedFramesShadowDOMBased() {
-  return blink::features::kFencedFramesImplementationTypeParam.Get() ==
-         blink::features::FencedFramesImplementationType::kShadowDOM;
-}
-
-BASE_FEATURE(kInitialNavigationEntry,
-             "InitialNavigationEntry",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-bool IsInitialNavigationEntryEnabled() {
-  return base::FeatureList::IsEnabled(blink::features::kInitialNavigationEntry);
 }
 
 // Enable limiting previews loading hints to specific resource types.
@@ -723,6 +694,11 @@ BASE_FEATURE(kWebviewAccelerateSmallCanvases,
              "WebviewAccelerateSmallCanvases",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Whether to aggressively free resources for canvases in background pages.
+BASE_FEATURE(kCanvasFreeMemoryWhenHidden,
+             "CanvasFreeMemoryWhenHidden",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // When enabled, frees up CachedMetadata after consumption by script resources
 // and modules. Needed for the experiment in http://crbug.com/1045052.
 BASE_FEATURE(kDiscardCodeCacheAfterFirstUse,
@@ -734,9 +710,6 @@ BASE_FEATURE(kCacheCodeOnIdle,
              base::FEATURE_DISABLED_BY_DEFAULT);
 const base::FeatureParam<int> kCacheCodeOnIdleDelayParam{&kCacheCodeOnIdle,
                                                          "delay-in-ms", 0};
-
-// Enables the JPEG XL Image File Format (JXL).
-BASE_FEATURE(kJXL, "JXL", base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Make all pending 'display: auto' web fonts enter the swap or failure period
 // immediately before reaching the LCP time limit (~2500ms), so that web fonts
@@ -828,7 +801,7 @@ BASE_FEATURE(kUseSnappyForParkableStrings,
 // the delay.
 BASE_FEATURE(kDelayFirstParkingOfStrings,
              "DelayFirstParkingOfStrings",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 bool ParkableStringsUseSnappy() {
   return base::FeatureList::IsEnabled(kUseSnappyForParkableStrings);
@@ -902,21 +875,11 @@ BASE_FEATURE(kLoadingTasksUnfreezable,
              "LoadingTasksUnfreezable",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Controls how max frame rates are enforced in MediaStreamTracks.
-// TODO(crbug.com/1152307): Remove in M91.
-BASE_FEATURE(kMediaStreamTrackUseConfigMaxFrameRate,
-             "MediaStreamTrackUseConfigMaxFrameRate",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 // When enabled, the SubresourceFilter receives calls from the ResourceLoader
 // to perform additional checks against any aliases found from DNS CNAME records
 // for the requested URL.
 BASE_FEATURE(kSendCnameAliasesToSubresourceFilterFromRenderer,
              "SendCnameAliasesToSubresourceFilterFromRenderer",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
-BASE_FEATURE(kDisableDocumentDomainByDefault,
-             "DisableDocumentDomainByDefault",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Scopes the memory cache to a fetcher i.e. document/frame. Any resource cached
@@ -941,21 +904,6 @@ const base::FeatureParam<std::string>
     kBackgroundTracingPerformanceMark_AllowList{
         &kBackgroundTracingPerformanceMark, "allow_list", ""};
 
-// Controls whether the Sanitizer API allows namespaced content (SVG + MathML).
-//
-// This feature is unlikely to be launched as-is. The primary purpose is to
-// allow testing of different non-standard configurations.
-BASE_FEATURE(kSanitizerAPINamespaces,
-             "SanitizerAPINamespacesForTesting",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
-// Kill switch for the blocking of the navigation of top from a cross origin
-// iframe to a different protocol. TODO(https://crbug.com/1151507): Remove in
-// M92.
-BASE_FEATURE(kBlockCrossOriginTopNavigationToDiffentScheme,
-             "BlockCrossOriginTopNavigationToDiffentScheme",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Kill switch for the Interest Group API, i.e. if disabled, the
 // API exposure will be disabled regardless of the OT config.
 BASE_FEATURE(kInterestGroupStorage,
@@ -972,6 +920,14 @@ const base::FeatureParam<int> kInterestGroupStorageMaxOpsBeforeMaintenance{
 // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md
 // Enables FLEDGE implementation. See https://crbug.com/1186444.
 BASE_FEATURE(kFledge, "Fledge", base::FEATURE_DISABLED_BY_DEFAULT);
+
+// See in the header.
+BASE_FEATURE(kFledgeConsiderKAnonymity,
+             "FledgeConsiderKAnonymity",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+BASE_FEATURE(kFledgeEnforceKAnonymity,
+             "FledgeEnforceKAnonymity",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md
 // Changes default Permissions Policy for features join-ad-interest-group and
@@ -1092,14 +1048,6 @@ BASE_FEATURE(kDelayLowPriorityRequestsAccordingToNetworkState,
              "DelayLowPriorityRequestsAccordingToNetworkState",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kIncludeInitiallyInvisibleImagesInLCP,
-             "IncludeInitiallyInvisibleImagesInLCP",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-BASE_FEATURE(kIncludeBackgroundSVGInLCP,
-             "IncludeBackgroundSVGInLCP",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 const base::FeatureParam<int> kMaxNumOfThrottleableRequestsInTightMode{
     &kDelayLowPriorityRequestsAccordingToNetworkState,
     "MaxNumOfThrottleableRequestsInTightMode", 5};
@@ -1162,42 +1110,11 @@ BASE_FEATURE(kSetTimeoutWithoutClamp,
              "SetTimeoutWithoutClamp",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-namespace {
-
-enum class SetTimeoutWithout1MsClampPolicyOverride {
-  kNoOverride,
-  kForceDisable,
-  kForceEnable
-};
-
-bool g_set_timeout_without_1m_clamp_policy_override_cached = false;
-
-// Returns the SetTimeoutWithout1MsClamp policy settings. This is calculated
-// once on first access and cached.
-SetTimeoutWithout1MsClampPolicyOverride
-GetSetTimeoutWithout1MsClampPolicyOverride() {
-  static SetTimeoutWithout1MsClampPolicyOverride policy =
-      SetTimeoutWithout1MsClampPolicyOverride::kNoOverride;
-  if (g_set_timeout_without_1m_clamp_policy_override_cached)
-    return policy;
-
-  // Otherwise, check the command-line for the renderer. Only values of "0"
-  // and "1" are valid, anything else is ignored (and allows the base::Feature
-  // to control the feature). This slow path will only be hit once per renderer
-  // process.
-  std::string value =
-      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII(
-          switches::kSetTimeoutWithout1MsClampPolicy);
-  if (value == switches::kSetTimeoutWithout1MsClampPolicy_ForceEnable) {
-    policy = SetTimeoutWithout1MsClampPolicyOverride::kForceEnable;
-  } else if (value == switches::kSetTimeoutWithout1MsClampPolicy_ForceDisable) {
-    policy = SetTimeoutWithout1MsClampPolicyOverride::kForceDisable;
-  } else {
-    policy = SetTimeoutWithout1MsClampPolicyOverride::kNoOverride;
-  }
-  g_set_timeout_without_1m_clamp_policy_override_cached = true;
-  return policy;
+bool IsSetTimeoutWithoutClampEnabled() {
+  return base::FeatureList::IsEnabled(features::kSetTimeoutWithoutClamp);
 }
+
+namespace {
 
 enum class UnthrottledNestedTimeoutPolicyOverride {
   kNoOverride,
@@ -1235,21 +1152,6 @@ GetUnthrottledNestedTimeoutPolicyOverride() {
 }
 
 }  // namespace
-
-void ClearSetTimeoutWithout1MsClampPolicyOverrideCacheForTesting() {
-  // Tests may want to force recalculation of the cached policy value when
-  // exercising different configs.
-  g_set_timeout_without_1m_clamp_policy_override_cached = false;
-}
-
-bool IsSetTimeoutWithoutClampEnabled() {
-  // If policy is present then respect it.
-  auto policy = GetSetTimeoutWithout1MsClampPolicyOverride();
-  if (policy != SetTimeoutWithout1MsClampPolicyOverride::kNoOverride)
-    return policy == SetTimeoutWithout1MsClampPolicyOverride::kForceEnable;
-  // Otherwise respect the base::Feature.
-  return base::FeatureList::IsEnabled(features::kSetTimeoutWithoutClamp);
-}
 
 void ClearUnthrottledNestedTimeoutOverrideCacheForTesting() {
   // Tests may want to force recalculation of the cached policy value when
@@ -1291,37 +1193,12 @@ BASE_FEATURE(kLCPAnimatedImagesReporting,
              "LCPAnimatedImagesReporting",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Enables loading the response body earlier in navigation.
-BASE_FEATURE(kEarlyBodyLoad, "EarlyBodyLoad", base::FEATURE_ENABLED_BY_DEFAULT);
-
-// Enables fetching the code cache earlier in navigation.
-BASE_FEATURE(kEarlyCodeCache,
-             "EarlyCodeCache",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kOriginAgentClusterDefaultEnabled,
              "OriginAgentClusterDefaultEnable",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kOriginAgentClusterDefaultWarning,
              "OriginAgentClusterDefaultWarning",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-#if BUILDFLAG(IS_ANDROID)
-// Enables prefetching Android fonts on renderer startup.
-BASE_FEATURE(kPrefetchAndroidFonts,
-             "PrefetchAndroidFonts",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-#endif
-
-// TODO(https://crbug.com/1276864): Delete this flag.
-BASE_FEATURE(kBackForwardCacheAppBanner,
-             "BackForwardCacheAppBanner",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-// Initialize CSSDefaultStyleSheets early in renderer startup.
-BASE_FEATURE(kDefaultStyleSheetsEarlyInit,
-             "DefaultStyleSheetsEarlyInit",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSystemColorChooser,
@@ -1585,11 +1462,15 @@ BASE_FEATURE(kFileSystemUrlNavigationForChromeAppsOnly,
 
 BASE_FEATURE(kEarlyExitOnNoopClassOrStyleChange,
              "EarlyExitOnNoopClassOrStyleChange",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // TODO(mahesh.ma): Enable for supported Android versions once feature is ready.
 BASE_FEATURE(kStylusWritingToInput,
              "StylusWritingToInput",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kStylusPointerAdjustment,
+             "StylusPointerAdjustment",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kDisableArrayBufferSizeLimitsForTesting,
@@ -1671,8 +1552,10 @@ bool IsNewBaseUrlInheritanceBehaviorEnabled() {
   // The kIsolateSandboxedIframes feature depends on the new base URL behavior,
   // so it enables the new behavior even if kNewBaseUrlInheritanceBehavior
   // isn't enabled.
-  return base::FeatureList::IsEnabled(kNewBaseUrlInheritanceBehavior) ||
-         base::FeatureList::IsEnabled(kIsolateSandboxedIframes);
+  return (base::FeatureList::IsEnabled(kNewBaseUrlInheritanceBehavior) ||
+          base::FeatureList::IsEnabled(kIsolateSandboxedIframes)) &&
+         !base::CommandLine::ForCurrentProcess()->HasSwitch(
+             switches::kDisableNewBaseUrlInheritanceBehavior);
 }
 
 const base::FeatureParam<int> kDocumentMaxEventNodePathCachedEntries{
@@ -1759,6 +1642,37 @@ BASE_FEATURE(kSplitUserMediaQueues,
 
 BASE_FEATURE(kTextCodecCJKEnabled,
              "TextCodecCJKEnabled",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kStartMediaStreamCaptureIndicatorInBrowser,
+             "StartMediaStreamCaptureIndicatorInBrowser",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kUseThreadPoolForMediaStreamVideoTaskRunner,
+             "UseThreadPoolForMediaStreamVideoTaskRunner",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes,
+             "ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+bool IsThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframesEnabled() {
+  static bool throttling_disabled =
+      base::CommandLine::ForCurrentProcess()->HasSwitch(
+          switches::kDisableThrottleNonVisibleCrossOriginIframes);
+
+  return !throttling_disabled &&
+         base::FeatureList::IsEnabled(
+             features::
+                 kThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes);
+}
+
+BASE_FEATURE(kSpeculationRulesHeaderEnableThirdPartyOriginTrial,
+             "SpeculationRulesHeaderEnableThirdPartyOriginTrial",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSpeculationRulesPrefetchFuture,
+             "SpeculationRulesPrefetchFuture",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 }  // namespace features

@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -33,7 +33,7 @@ const InstallConstants kInstallModes[] = {
             L"",  // Empty install_suffix for the primary install mode.
         .logo_suffix = L"",  // No logo suffix for the primary install mode.
         .app_guid =
-            L"",  // Empty app_guid since no integraion with Google Update.
+            L"",  // Empty app_guid since no integration with Google Update.
         .base_app_name = L"Thorium",      // A distinct base_app_name.
         .base_app_id = L"Thorium",        // A distinct base_app_id.
         .prog_id_prefix = L"ThoriumHTM",  // ProgID prefix.
