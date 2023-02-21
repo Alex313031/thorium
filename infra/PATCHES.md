@@ -144,11 +144,16 @@ Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hev
 
 Allow all HEVC Video Profiles to Play Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/remove-main-main10-profile-limit.patch
 
+Enable AC3 and EAC3 for HEVC Patch - https://github.com/Muril-o/electron-chromium-codecs
+
 Show the Apps button in Bookmarks Bar by Default Patch - Made by me.
 
 Add autocomplete for chrome://flags > https://github.com/bromite/bromite/blob/master/build/patches/Offer-builtin-autocomplete-for-chrome-flags.patch
 
 Disable fetching Field Trials/Variations Patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/bromite/disable-fetching-field-trials.patch
+
+Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
+  - Found by @gz83, modified by me.
 
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 

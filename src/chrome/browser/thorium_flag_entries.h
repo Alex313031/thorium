@@ -65,6 +65,10 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
+     {"double-click-close-tab",
+     "Double Click to Close Tab",
+     "Enables double clicking a tab to close it.",
+     kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")}, 
      
 #if BUILDFLAG(IS_LINUX)
      {"password-store",
