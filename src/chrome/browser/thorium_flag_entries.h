@@ -80,10 +80,6 @@
 #endif // BUILDFLAG(IS_LINUX)
     
 #if BUILDFLAG(IS_WIN)
-    {"enable-win7-webrtc-hw-h264-decoding",
-     "Windows 7 WebRTC H.264 Hardware Decoding",
-     "Enables H.264 hardware decode acceleration for WebRTC on Windows 7.",
-     kOsWin, SINGLE_VALUE_TYPE(switches::kEnableWin7WebRtcHWH264Decoding)},
     {"disable-windows10-custom-titlebar",
      "Disable Custom Windows Titlebar",
      "Disables custom-drawing the window titlebar on Windows 10/11.",

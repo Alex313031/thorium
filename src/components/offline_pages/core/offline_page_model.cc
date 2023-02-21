@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -12,8 +12,7 @@ const int64_t OfflinePageModel::kInvalidOfflineId;
 
 OfflinePageModel::SavePageParams::SavePageParams()
     : proposed_offline_id(OfflinePageModel::kInvalidOfflineId),
-      is_background(false),
-      use_page_problem_detectors(false) {}
+      is_background(false) {}
 
 OfflinePageModel::SavePageParams::SavePageParams(const SavePageParams& other) =
     default;

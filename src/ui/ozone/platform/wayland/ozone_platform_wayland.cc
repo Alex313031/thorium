@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,7 +16,7 @@
 #include "base/memory/ptr_util.h"
 #include "base/message_loop/message_pump_type.h"
 #include "base/no_destructor.h"
-#include "base/threading/thread_task_runner_handle.h"
+#include "base/task/single_thread_task_runner.h"
 #include "build/build_config.h"
 #include "ui/base/buildflags.h"
 #include "ui/base/cursor/cursor_factory.h"
@@ -33,7 +33,6 @@
 #include "ui/gfx/native_widget_types.h"
 #include "ui/ozone/common/features.h"
 #include "ui/ozone/platform/wayland/common/wayland_util.h"
-#include "ui/ozone/platform/wayland/gpu/drm_render_node_path_finder.h"
 #include "ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h"
 #include "ui/ozone/platform/wayland/gpu/wayland_gl_egl_utility.h"
 #include "ui/ozone/platform/wayland/gpu/wayland_overlay_manager.h"
@@ -63,14 +62,18 @@
 #include "ui/events/ozone/layout/stub/stub_keyboard_layout_engine.h"
 #endif
 
-#if BUILDFLAG(USE_GTK)
-#include "ui/ozone/platform/wayland/host/linux_ui_delegate_wayland.h"  // nogncheck
-#endif
-
 #if BUILDFLAG(IS_CHROMEOS)
 #include "ui/ozone/common/bitmap_cursor_factory.h"
 #else
 #include "ui/ozone/platform/wayland/host/wayland_cursor_factory.h"
+#endif
+
+#if BUILDFLAG(IS_LINUX)
+#include "ui/ozone/platform/wayland/host/linux_ui_delegate_wayland.h"
+#endif
+
+#if defined(WAYLAND_GBM)
+#include "ui/ozone/platform/wayland/gpu/drm_render_node_path_finder.h"
 #endif
 
 namespace ui {
@@ -184,6 +187,7 @@ class OzonePlatformWayland : public OzonePlatform,
 
   bool IsNativePixmapConfigSupported(gfx::BufferFormat format,
                                      gfx::BufferUsage usage) const override {
+#if defined(WAYLAND_GBM)
     // If there is no drm render node device available, native pixmaps are not
     // supported.
     if (path_finder_.GetDrmRenderNodePath().empty())
@@ -196,6 +200,9 @@ class OzonePlatformWayland : public OzonePlatform,
 
     return gfx::ClientNativePixmapDmaBuf::IsConfigurationSupported(format,
                                                                    usage);
+#else
+    return false;
+#endif
   }
 
   bool ShouldUseCustomFrame() override {
@@ -236,8 +243,8 @@ class OzonePlatformWayland : public OzonePlatform,
 
     supported_buffer_formats_ =
         connection_->buffer_manager_host()->GetSupportedBufferFormats();
-#if BUILDFLAG(USE_GTK)
-    gtk_ui_platform_ =
+#if BUILDFLAG(IS_LINUX)
+    linux_ui_delegate_ =
         std::make_unique<LinuxUiDelegateWayland>(connection_.get());
 #endif
 
@@ -259,7 +266,13 @@ class OzonePlatformWayland : public OzonePlatform,
   }
 
   void InitializeGPU(const InitParams& args) override {
-    buffer_manager_ = std::make_unique<WaylandBufferManagerGpu>();
+    base::FilePath drm_node_path;
+#if defined(WAYLAND_GBM)
+    drm_node_path = path_finder_.GetDrmRenderNodePath();
+    if (drm_node_path.empty())
+      LOG(WARNING) << "Failed to find drm render node path.";
+#endif
+    buffer_manager_ = std::make_unique<WaylandBufferManagerGpu>(drm_node_path);
     surface_factory_ = std::make_unique<WaylandSurfaceFactory>(
         connection_.get(), buffer_manager_.get());
     overlay_manager_ =
@@ -295,7 +308,7 @@ class OzonePlatformWayland : public OzonePlatform,
       // arbitrary position.
       properties->supports_global_screen_coordinates =
           features::IsWaylandScreenCoordinatesEnabled();
-
+          
       // Let the media know this platform supports va-api.
       properties->supports_vaapi = true;
 
@@ -336,6 +349,11 @@ class OzonePlatformWayland : public OzonePlatform,
         properties.supports_activation =
             zaura_shell_get_version(connection_->zaura_shell()->wl_object()) >=
             ZAURA_TOPLEVEL_ACTIVATE_SINCE_VERSION;
+        properties.supports_tooltip =
+            (wl::get_version_of_object(
+                 connection_->zaura_shell()->wl_object()) >=
+             ZAURA_SURFACE_SHOW_TOOLTIP_SINCE_VERSION) &&
+            connection_->zaura_shell()->HasBugFix(1400226);
       }
 
       if (surface_factory_) {
@@ -371,7 +389,7 @@ class OzonePlatformWayland : public OzonePlatform,
     // Please note this call happens on the gpu.
     auto gpu_task_runner = buffer_manager_->gpu_thread_runner();
     if (!gpu_task_runner)
-      gpu_task_runner = base::ThreadTaskRunnerHandle::Get();
+      gpu_task_runner = base::SingleThreadTaskRunner::GetCurrentDefault();
 
     binders->Add<ozone::mojom::WaylandBufferManagerGpu>(
         base::BindRepeating(
@@ -425,12 +443,14 @@ class OzonePlatformWayland : public OzonePlatform,
   // framework.
   wl::BufferFormatsWithModifiersMap supported_buffer_formats_;
 
+#if defined(WAYLAND_GBM)
   // This is used both in the gpu and browser processes to find out if a drm
   // render node is available.
   DrmRenderNodePathFinder path_finder_;
+#endif
 
-#if BUILDFLAG(USE_GTK)
-  std::unique_ptr<LinuxUiDelegateWayland> gtk_ui_platform_;
+#if BUILDFLAG(IS_LINUX)
+  std::unique_ptr<LinuxUiDelegateWayland> linux_ui_delegate_;
 #endif
 };
 

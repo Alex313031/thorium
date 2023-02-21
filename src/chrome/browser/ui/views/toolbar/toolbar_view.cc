@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -284,6 +284,7 @@ void ToolbarView::Init() {
 
   std::unique_ptr<SidePanelToolbarButton> side_panel_button;
   if (browser_view_->unified_side_panel()) {
+   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
     side_panel_button = std::make_unique<SidePanelToolbarButton>(browser_);
   }
 
