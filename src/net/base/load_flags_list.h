@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright (c) 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -108,4 +108,4 @@ LOAD_FLAG(CAN_USE_RESTRICTED_PREFETCH, 1 << 16)
 // advertise brotli encoding.
 // Used to comply with IETF (draft) DNS-over-HTTPS:
 // "Implementors SHOULD NOT set non-essential HTTP headers in DoH client requests."
-LOAD_FLAG(MINIMAL_HEADERS, 1 << 17)
+LOAD_FLAG(MINIMAL_HEADERS, 1 << 19)

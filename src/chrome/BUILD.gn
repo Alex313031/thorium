@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -161,7 +161,10 @@ if (!is_android && !is_mac) {
 
     if (is_chromeos_ash) {
       data_deps += [ "//sandbox/linux:chrome_sandbox" ]
-      deps += [ "//components/exo/wayland:weston_test_stub" ]
+      deps += [
+        "//components/exo/wayland:ui_controls_protocol_stub",
+        "//components/exo/wayland:weston_test_stub",
+      ]
     }
 
     if (also_build_lacros_chrome_for_architecture != "") {
@@ -337,7 +340,7 @@ if (!is_android && !is_mac) {
           "//ui/base",
         ]
       }
-      
+
       configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
     }
 
@@ -1298,6 +1301,7 @@ if (is_win) {
                rebase_path(get_label_info(dump_syms, "root_out_dir") + "/" +
                                get_label_info(dump_syms, "name"),
                            root_build_dir),
+               "-m",
                "-g",
                rebase_path(
                    "$root_out_dir/{{source_file_part}}.dSYM/Contents/Resources/DWARF/{{source_file_part}}",
@@ -1391,7 +1395,6 @@ group("dependencies") {
     "//components/about_ui",
     "//components/gwp_asan/buildflags",
     "//components/heap_profiling/in_process",
-    "//components/power_scheduler",
     "//components/services/heap_profiling",
     "//components/startup_metric_utils/browser",
     "//components/sync",

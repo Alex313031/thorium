@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -629,22 +629,33 @@ bool IsVAProfileSupported(VAProfile va_profile) {
                         &ProfileCodecMap::value_type::second);
 }
 
-bool IsBlockedDriver(VaapiWrapper::CodecMode mode, VAProfile va_profile) {
+bool IsBlockedDriver(VaapiWrapper::CodecMode mode,
+                     VAProfile va_profile,
+                     const std::string& va_vendor_string) {
   if (!IsModeEncoding(mode)) {
     return va_profile == VAProfileAV1Profile0 &&
            !base::FeatureList::IsEnabled(kChromeOSHWAV1Decoder);
   }
 
-  // TODO(posciak): Remove once VP8 encoding is to be enabled by default.
   if (va_profile == VAProfileVP8Version0_3 &&
       !base::FeatureList::IsEnabled(kVaapiVP8Encoder)) {
     return true;
   }
 
-  // TODO(crbug.com/811912): Remove once VP9 encoding is enabled by default.
   if (va_profile == VAProfileVP9Profile0 &&
       !base::FeatureList::IsEnabled(kVaapiVP9Encoder)) {
     return true;
+  }
+
+  if (mode == VaapiWrapper::CodecMode::kEncodeVariableBitrate) {
+    // The rate controller on grunt is not good enough to support VBR encoding,
+    // b/253988139.
+    const bool is_amd_stoney_ridge_driver =
+        va_vendor_string.find("STONEY") != std::string::npos;
+    if (!base::FeatureList::IsEnabled(kChromeOSHWVBREncoding) ||
+        is_amd_stoney_ridge_driver) {
+      return true;
+    }
   }
 
   return false;
@@ -668,6 +679,7 @@ class VADisplayState {
   base::Lock* va_lock() { return &va_lock_; }
   VADisplay va_display() const { return va_display_; }
   VAImplementation implementation_type() const { return implementation_type_; }
+  const std::string& vendor_string() const { return va_vendor_string_; }
 
   void SetDrmFd(base::PlatformFile fd) { drm_fd_.reset(HANDLE_EINTR(dup(fd))); }
 
@@ -701,6 +713,9 @@ class VADisplayState {
 
   // Enumerated version of vaQueryVendorString(). Valid after Initialize().
   VAImplementation implementation_type_ = VAImplementation::kInvalid;
+
+  // String representing a driver acquired by vaQueryVendorString().
+  std::string va_vendor_string_;
 };
 
 // static
@@ -712,13 +727,6 @@ VADisplayState* VADisplayState::Get() {
 // static
 void VADisplayState::PreSandboxInitialization() {
   constexpr char kRenderNodeFilePattern[] = "/dev/dri/renderD%d";
-  const char kNvidiaPath[] = "/dev/dri/nvidiactl";
-
-  // TODO: Is this still needed?
-  base::File nvidia_file = base::File(
-      base::FilePath::FromUTF8Unsafe(kNvidiaPath),
-      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
-
   // This loop ends on either the first card that does not exist or the first
   // render node that is not vgem.
   for (int i = 128;; i++) {
@@ -785,9 +793,7 @@ absl::optional<VADisplay> GetVADisplayStateX11(const base::ScopedFD& drm_fd) {
     case gl::kGLImplementationEGLGLES2:
       return vaGetDisplayDRM(drm_fd.get());
 
-    case gl::kGLImplementationNone:
-
-    case gl::kGLImplementationDesktopGL: {
+    case gl::kGLImplementationNone: {
       VADisplay display =
           vaGetDisplay(x11::Connection::Get()->GetXlibDisplay());
       if (vaDisplayIsValid(display))
@@ -852,12 +858,12 @@ bool VADisplayState::InitializeVaDriver_Locked() {
     VLOGF(1) << "vaInitialize failed: " << vaErrorStr(va_res);
     return false;
   }
-  const std::string va_vendor_string = vaQueryVendorString(va_display_);
-  DLOG_IF(WARNING, va_vendor_string.empty())
+  va_vendor_string_ = vaQueryVendorString(va_display_);
+  DLOG_IF(WARNING, va_vendor_string_.empty())
       << "Vendor string empty or error reading.";
   DVLOG(1) << "VAAPI version: " << major_version << "." << minor_version << " "
-           << va_vendor_string;
-  implementation_type_ = VendorStringToImplementationType(va_vendor_string);
+           << va_vendor_string_;
+  implementation_type_ = VendorStringToImplementationType(va_vendor_string_);
 
   va_initialized_ = true;
 
@@ -878,6 +884,10 @@ bool VADisplayState::InitializeVaDriver_Locked() {
 }
 
 bool VADisplayState::InitializeOnce() {
+  static_assert(
+      VA_MAJOR_VERSION >= 2 || (VA_MAJOR_VERSION == 1 && VA_MINOR_VERSION >= 1),
+      "Requires VA-API >= 1.1.0");
+
   // Set VA logging level, unless already set.
   constexpr char libva_log_level_env[] = "LIBVA_MESSAGING_LEVEL";
   std::unique_ptr<base::Environment> env(base::Environment::Create());
@@ -1089,7 +1099,7 @@ bool AreAttribsSupported(const base::Lock* va_lock,
     if (attribs[i].type != required_attribs[i].type ||
         (attribs[i].value & required_attribs[i].value) !=
             required_attribs[i].value) {
-      VLOG(1) << "Unsupported value " << required_attribs[i].value << " for "
+      DVLOG(1) << "Unsupported value " << required_attribs[i].value << " for "
                << vaConfigAttribTypeStr(required_attribs[i].type);
       return false;
     }
@@ -1137,7 +1147,9 @@ class VASupportedProfiles {
   ~VASupportedProfiles() = default;
 
   // Fills in |supported_profiles_|.
-  void FillSupportedProfileInfos(base::Lock* va_lock, VADisplay va_display);
+  void FillSupportedProfileInfos(base::Lock* va_lock,
+                                 VADisplay va_display,
+                                 const std::string& va_vendor_string);
 
   // Fills |profile_info| for |va_profile| and |entrypoint| with
   // |required_attribs|. If the return value is true, the operation was
@@ -1194,14 +1206,17 @@ VASupportedProfiles::VASupportedProfiles()
     va_lock = nullptr;
   }
 
-  FillSupportedProfileInfos(va_lock, va_display);
+  FillSupportedProfileInfos(va_lock, va_display,
+                            display_state->vendor_string());
 
   const VAStatus va_res = display_state->Deinitialize();
   VA_LOG_ON_ERROR(va_res, VaapiFunctions::kVATerminate);
 }
 
-void VASupportedProfiles::FillSupportedProfileInfos(base::Lock* va_lock,
-                                                    VADisplay va_display) {
+void VASupportedProfiles::FillSupportedProfileInfos(
+    base::Lock* va_lock,
+    VADisplay va_display,
+    const std::string& va_vendor_string) {
   base::AutoLockMaybe auto_lock(va_lock);
 
   const std::vector<VAProfile> va_profiles =
@@ -1223,7 +1238,7 @@ void VASupportedProfiles::FillSupportedProfileInfos(base::Lock* va_lock,
     std::vector<ProfileInfo> supported_profile_infos;
 
     for (const auto& va_profile : va_profiles) {
-      if (IsBlockedDriver(mode, va_profile))
+      if (IsBlockedDriver(mode, va_profile, va_vendor_string))
         continue;
 
       if ((mode != VaapiWrapper::kVideoProcess) &&
@@ -1553,10 +1568,9 @@ bool VASupportedImageFormats::InitSupportedImageFormats_Locked(
     // assume that IYUV/I420 is supported. However, it's not currently being
     // reported. See https://gitlab.freedesktop.org/mesa/mesa/commit/b0a44f10.
     // Remove this workaround once b/128340287 is resolved.
-    if (std::find_if(supported_formats_.cbegin(), supported_formats_.cend(),
-                     [](const VAImageFormat& format) {
-                       return format.fourcc == VA_FOURCC_I420;
-                     }) == supported_formats_.cend()) {
+    if (!base::Contains(supported_formats_,
+                        static_cast<unsigned int>(VA_FOURCC_I420),
+                        &VAImageFormat::fourcc)) {
       VAImageFormat i420_format{};
       i420_format.fourcc = VA_FOURCC_I420;
       supported_formats_.push_back(i420_format);
@@ -1589,9 +1603,6 @@ bool IsLowPowerEncSupported(VAProfile va_profile) {
 }
 
 bool IsVBREncodingSupported(VAProfile va_profile) {
-  if (!base::FeatureList::IsEnabled(kChromeOSHWVBREncoding))
-    return false;
-
   auto mode = VaapiWrapper::CodecMode::kCodecModeMax;
   switch (va_profile) {
     case VAProfileH264ConstrainedBaseline:
@@ -1874,12 +1885,6 @@ bool VaapiWrapper::GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
   // After workarounds, assume the conversion is supported.
   *suitable_fourcc = preferred_fourcc;
   return true;
-}
-
-// static
-bool VaapiWrapper::IsVppProfileSupported() {
-  return VASupportedProfiles::Get().IsProfileSupported(kVideoProcess,
-                                                    VAProfileNone);
 }
 
 // static
@@ -3119,7 +3124,13 @@ void VaapiWrapper::PreSandboxInitialization() {
   static bool result = InitializeStubs(paths);
   if (!result) {
     static const char kErrorMsg[] = "Failed to initialize VAAPI libs";
-    LOG(ERROR) << kErrorMsg;
+#if BUILDFLAG(IS_CHROMEOS)
+    // When Chrome runs on Linux with target_os="chromeos", do not log error
+    // message without VAAPI libraries.
+    LOG_IF(ERROR, base::SysInfo::IsRunningOnChromeOS()) << kErrorMsg;
+#else
+    DVLOG(1) << kErrorMsg;
+#endif
   }
 
   // VASupportedProfiles::Get creates VADisplayState and in so doing
@@ -3292,7 +3303,6 @@ bool VaapiWrapper::CreateSurfaces(
   DCHECK(va_surfaces->empty());
 
   va_surfaces->resize(num_surfaces);
-  VASurfaceAttrib attribute;
 
   if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
     // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
@@ -3485,7 +3495,7 @@ bool VaapiWrapper::SubmitBuffer_Locked(const VABufferDescriptor& va_buffer) {
     // mismatch. https://github.com/intel/libva/issues/597
     const VAStatus va_res = vaCreateBuffer(
         va_display_, va_context_id_, va_buffer.type, va_buffer_size, 1,
-        const_cast<void*>(va_buffer.data), &buffer_id);
+        const_cast<void*>(va_buffer.data.get()), &buffer_id);
     VA_SUCCESS_OR_RETURN(va_res, VaapiFunctions::kVACreateBuffer, false);
   }
 

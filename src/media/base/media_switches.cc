@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -264,6 +264,22 @@ const char kHardwareVideoDecodeFrameRate[] = "hardware-video-decode-framerate";
 // Out-of-Process video decoding.
 const char kMaxChromeOSDecoderThreads[] = "max-chromeos-decoder-threads";
 #endif
+
+const char kCastStreamingForceDisableHardwareH264[] =
+    "cast-streaming-force-disable-hardware-h264";
+const char kCastStreamingForceDisableHardwareVp8[] =
+    "cast-streaming-force-disable-hardware-vp8";
+const char kCastStreamingForceEnableHardwareH264[] =
+    "cast-streaming-force-enable-hardware-h264";
+const char kCastStreamingForceEnableHardwareVp8[] =
+    "cast-streaming-force-enable-hardware-vp8";
+
+// Disables the code path that makes Pepper use the MojoVideoDecoder for
+// hardware accelerated video decoding. It overrides the value of the
+// kUseMojoVideoDecoderForPepper feature flag.
+const char kDisableUseMojoVideoDecoderForPepper[] =
+    "disable-use-mojo-video-decoder-for-pepper";
+
 }  // namespace switches
 
 namespace media {
@@ -286,11 +302,6 @@ BASE_FEATURE(kPauseBackgroundMutedAudio,
 // Enables user control over muting tab audio from the tab strip.
 BASE_FEATURE(kEnableTabMuting,
              "EnableTabMuting",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-// Enable Picture-in-Picture.
-BASE_FEATURE(kPictureInPicture,
-             "PictureInPicture",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 #if BUILDFLAG(ENABLE_PLATFORM_HEVC)
@@ -396,14 +407,24 @@ BASE_FEATURE(kCdmProcessSiteIsolation,
 // playback going to a specific output device in the audio service.
 BASE_FEATURE(kChromeWideEchoCancellation,
              "ChromeWideEchoCancellation",
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#else
              base::FEATURE_DISABLED_BY_DEFAULT);
+#endif
 
 // If non-zero, audio processing is done on a dedicated processing thread which
 // receives audio from the audio capture thread via a fifo of a specified size.
 // Zero fifo size means the usage of such processing thread is disabled and
 // processing is done on the audio capture thread itself.
 const base::FeatureParam<int> kChromeWideEchoCancellationProcessingFifoSize{
-    &kChromeWideEchoCancellation, "processing_fifo_size", 0};
+  &kChromeWideEchoCancellation, "processing_fifo_size",
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
+      110  // Default value for the enabled feature.
+#else
+      0
+#endif
+};
 
 // When audio processing is done in the audio process, at the renderer side IPC
 // is set up to receive audio at the processing sample rate. This is a
@@ -486,11 +507,6 @@ BASE_FEATURE(kFallbackAfterDecodeError,
              "FallbackAfterDecodeError",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Use Gav1VideoDecoder to decode AV1 streams.
-BASE_FEATURE(kGav1VideoDecoder,
-             "Gav1VideoDecoder",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 // Show toolbar button that opens dialog for controlling media sessions.
 BASE_FEATURE(kGlobalMediaControls,
              "GlobalMediaControls",
@@ -511,6 +527,13 @@ BASE_FEATURE(kGlobalMediaControlsAutoDismiss,
 BASE_FEATURE(kGlobalMediaControlsForCast,
              "GlobalMediaControlsForCast",
              base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
+
+#if !BUILDFLAG(IS_ANDROID)
+// If enabled, users can request Media Remoting without fullscreen-in-tab.
+BASE_FEATURE(kMediaRemotingWithoutFullscreen,
+             "MediaRemotingWithoutFullscreen",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
 
 // Allow Global Media Controls in system tray of CrOS.
@@ -757,7 +780,7 @@ const base::FeatureParam<bool> kHardwareSecureDecryptionForceSupportClearLead{
 // sub key systems. Which sub key system is experimental is key system specific.
 BASE_FEATURE(kHardwareSecureDecryptionExperiment,
              "HardwareSecureDecryptionExperiment",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Allows automatically disabling hardware secure Content Decryption Module
 // (CDM) after failures or crashes to fallback to software secure CDMs. If this
@@ -866,11 +889,6 @@ BASE_FEATURE(kMediaDrmPreprovisioningAtStartup,
              "MediaDrmPreprovisioningAtStartup",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Enable picture in picture web api for android.
-BASE_FEATURE(kPictureInPictureAPI,
-             "PictureInPictureAPI",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enables CanPlayType() (and other queries) for HLS MIME types. Note that
 // disabling this also causes navigation to .m3u8 files to trigger downloading
 // instead of playback.
@@ -977,19 +995,9 @@ BASE_FEATURE(kIncludeIRCamerasInDeviceEnumeration,
              "IncludeIRCamerasInDeviceEnumeration",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Enables AV1 encode acceleration for Windows.
-const base::Feature MEDIA_EXPORT kMediaFoundationAV1Encoding{
-    "MediaFoundationAV1Encoding", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Enables H.264 CBP encode acceleration for Windows.
-// For feature check of kMediaFoundationH264CbpEncoding at runtime,
-// please use IsMediaFoundationH264CbpEncodingEnabled() instead.
-const base::Feature MEDIA_EXPORT kMediaFoundationH264CbpEncoding{
-    "MediaFoundationH264CbpEncoding", base::FEATURE_DISABLED_BY_DEFAULT};
-
-// Enables VP9 encode acceleration for Windows.
-const base::Feature MEDIA_EXPORT kMediaFoundationVP9Encoding{
-    "MediaFoundationVP9Encoding", base::FEATURE_DISABLED_BY_DEFAULT};
+// Enables software rate controller encoding acceleration for Windows.
+const base::Feature MEDIA_EXPORT kMediaFoundationUseSoftwareRateCtrl{
+    "MediaFoundationUseSoftwareRateCtrl", base::FEATURE_DISABLED_BY_DEFAULT};
 
 // Enables MediaFoundation based video capture
 BASE_FEATURE(kMediaFoundationVideoCapture,
@@ -1070,19 +1078,24 @@ const base::FeatureParam<MediaFoundationClearRenderingStrategy>
 #endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION)
-// When ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION is true, encrypted Dolby Vision
-// is allowed in Media Source while clear Dolby Vision is not allowed. This
-// feature allows the support of clear Dolby Vision in Media Source, which is
-// useful to work around some JavaScript player limitations.
+// When ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION is enabled at build time, allow
+// the support of encrypted Dolby Vision. Have no effect when
+// ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION is disabled.
+BASE_FEATURE(kPlatformEncryptedDolbyVision,
+             "PlatformEncryptedDolbyVision",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+// When ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION is enabled at build time and
+// `kPlatformEncryptedDolbyVision` is enabled at run time, encrypted Dolby
+// Vision is allowed in Media Source while clear Dolby Vision is not allowed.
+// In this case, this feature allows the support of clear Dolby Vision in Media
+// Source, which is useful to work around some JavaScript player limitations.
+// Otherwise, this feature has no effect and neither encrypted nor clear Dolby
+// Vision is allowed.
 BASE_FEATURE(kAllowClearDolbyVisionInMseWhenPlatformEncryptedDvEnabled,
              "AllowClearDolbyVisionInMseWhenPlatformEncryptedDvEnabled",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
-
-#if BUILDFLAG(IS_CHROMEOS)
-const base::Feature MEDIA_EXPORT kDeprecateLowUsageCodecs{
-    "DeprecateLowUsageCodecs", base::FEATURE_DISABLED_BY_DEFAULT};
-#endif  // BUILDFLAG(IS_CHROMEOS)
 
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 // Spawn utility processes to perform hardware decode acceleration instead of
@@ -1191,11 +1204,6 @@ BASE_FEATURE(kMediaPowerExperiment,
              "MediaPowerExperiment",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Enable WebRTC actions for the Media Session API.
-BASE_FEATURE(kMediaSessionWebRTC,
-             "MediaSessionWebRTC",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enables flash to be ducked by audio focus. This is enabled on Chrome OS which
 // has audio focus enabled.
 BASE_FEATURE(kAudioFocusDuckFlash,
@@ -1243,6 +1251,31 @@ BASE_FEATURE(kBresenhamCadence,
              "BresenhamCadence",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Controls whether mirroring negotiations will include the AV1 codec for video
+// encoding.
+//
+// NOTE: currently only software AV1 encoding is supported.
+// TODO(https://crbug.com/1383333): hardware AV1 encoding should be added.
+BASE_FEATURE(kCastStreamingAv1,
+             "CastStreamingAv1",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Controls whether mirroring negotiations will include the VP9 codec for video
+// encoding.
+//
+// NOTE: currently only software VP9 encoding is supported.
+// TODO(https://crbug.com/1311770): hardware VP9 encoding should be added.
+BASE_FEATURE(kCastStreamingVp9,
+             "CastStreamingVp9",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+#if BUILDFLAG(IS_FUCHSIA)
+// Enables use of Fuchsia's Mediacodec service for encoding.
+BASE_FEATURE(kFuchsiaMediacodecVideoEncoder,
+             "FuchsiaMediacodecVideoEncoder",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(IS_FUCHSIA)
+
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
   return base::FeatureList::IsEnabled(kChromeWideEchoCancellation);
@@ -1273,14 +1306,23 @@ bool IsVideoCaptureAcceleratedJpegDecodingEnabled() {
 }
 
 #if BUILDFLAG(IS_WIN)
-bool IsMediaFoundationH264CbpEncodingEnabled() {
-  return base::FeatureList::IsEnabled(kMediaFoundationH264CbpEncoding);
-}
-
 bool IsMediaFoundationD3D11VideoCaptureEnabled() {
   return base::FeatureList::IsEnabled(kMediaFoundationD3D11VideoCapture);
 }
 #endif
+
+bool IsUseMojoVideoDecoderForPepperEnabled() {
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
+          switches::kDisableUseMojoVideoDecoderForPepper)) {
+    LOG(WARNING) << "UseMojoVideoDecoderForPepper: Disabled by policy";
+    return false;
+  }
+
+  auto enabled = base::FeatureList::IsEnabled(kUseMojoVideoDecoderForPepper);
+  LOG(WARNING) << "UseMojoVideoDecoderForPepper: feature controlled: "
+               << enabled;
+  return enabled;
+}
 
 // Return bitmask of audio formats supported by EDID.
 uint32_t GetPassthroughAudioFormats() {
