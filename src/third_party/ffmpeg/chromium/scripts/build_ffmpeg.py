@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2014 The Chromium Authors. All rights reserved.
+# Copyright 2023 The Chromium Authors, Alex313031, and Midzer. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -315,7 +315,7 @@ def SetupWindowsCrossCompileToolchain(target_arch):
       '--ar=llvm-ar',
 
       # Separate from optflags because configure strips it from msvc builds...
-      '--extra-cflags=-O2',
+      '--extra-cflags=-O3',
   ]
 
   if target_arch == 'ia32':
@@ -730,7 +730,12 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
   else:
     configure_flags['Common'].extend([
         # --optflags doesn't append multiple entries, so set all at once.
-        '--optflags="-O2"',
+        '--optflags="-O3"',
+        '--extra-cflags=-O3',
+        '--extra-cflags=-mavx',
+        '--extra-cflags=-maes',
+        '--extra-cflags=-mvaes',
+        '--extra-cflags=-mpclmul',
         '--enable-decoder=theora,vp8',
         '--enable-parser=vp3,vp8',
     ])
@@ -822,7 +827,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
               # NOTE: we don't need softfp for this hardware.
               '--extra-cflags=-mfloat-abi=hard',
               # For some reason configure drops this...
-              '--extra-cflags=-O2',
+              '--extra-cflags=-O3',
           ])
 
         if target_arch == 'arm-neon':
