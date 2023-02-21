@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright 2023 The Chromium Authors, Alex313031, and Midzer
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -47,12 +47,6 @@ VideoDecoderConfig::AlphaMode GetAlphaMode(const AVStream* stream) {
 
 }  // namespace
 
-// Why AV_INPUT_BUFFER_PADDING_SIZE? FFmpeg assumes all input buffers are
-// padded. Check here to ensure FFmpeg only receives data padded to its
-// specifications.
-static_assert(DecoderBuffer::kPaddingSize >= AV_INPUT_BUFFER_PADDING_SIZE,
-              "DecoderBuffer padding size does not fit ffmpeg requirement");
-
 // Alignment requirement by FFmpeg for input and output buffers. This need to
 // be updated to match FFmpeg when it changes.
 #if defined(ARCH_CPU_ARM_FAMILY)
@@ -60,12 +54,6 @@ static const int kFFmpegBufferAddressAlignment = 16;
 #else
 static const int kFFmpegBufferAddressAlignment = 32;
 #endif
-
-// Check here to ensure FFmpeg only receives data aligned to its specifications.
-static_assert(
-    DecoderBuffer::kAlignmentSize >= kFFmpegBufferAddressAlignment &&
-    DecoderBuffer::kAlignmentSize % kFFmpegBufferAddressAlignment == 0,
-    "DecoderBuffer alignment size does not fit ffmpeg requirement");
 
 // Allows faster SIMD YUV convert. Also, FFmpeg overreads/-writes occasionally.
 // See video_get_buffer() in libavcodec/utils.c.
@@ -118,12 +106,6 @@ AudioCodec CodecIDToAudioCodec(AVCodecID codec_id) {
       return AudioCodec::kPCM_S24BE;
     case AV_CODEC_ID_FLAC:
       return AudioCodec::kFLAC;
-    case AV_CODEC_ID_AMR_NB:
-      return AudioCodec::kAMR_NB;
-    case AV_CODEC_ID_AMR_WB:
-      return AudioCodec::kAMR_WB;
-    case AV_CODEC_ID_GSM_MS:
-      return AudioCodec::kGSM_MS;
     case AV_CODEC_ID_PCM_ALAW:
       return AudioCodec::kPCM_ALAW;
     case AV_CODEC_ID_PCM_MULAW:
@@ -179,12 +161,6 @@ AVCodecID AudioCodecToCodecID(AudioCodec audio_codec,
       return AV_CODEC_ID_VORBIS;
     case AudioCodec::kFLAC:
       return AV_CODEC_ID_FLAC;
-    case AudioCodec::kAMR_NB:
-      return AV_CODEC_ID_AMR_NB;
-    case AudioCodec::kAMR_WB:
-      return AV_CODEC_ID_AMR_WB;
-    case AudioCodec::kGSM_MS:
-      return AV_CODEC_ID_GSM_MS;
     case AudioCodec::kPCM_ALAW:
       return AV_CODEC_ID_PCM_ALAW;
     case AudioCodec::kPCM_MULAW:
@@ -749,17 +725,16 @@ bool AVStreamToVideoDecoderConfig(const AVStream* stream,
       AVMasteringDisplayMetadata* metadata =
           reinterpret_cast<AVMasteringDisplayMetadata*>(side_data.data);
       if (metadata->has_primaries) {
-        hdr_metadata.color_volume_metadata.primary_r =
-            gfx::PointF(av_q2d(metadata->display_primaries[0][0]),
-                        av_q2d(metadata->display_primaries[0][1]));
-        hdr_metadata.color_volume_metadata.primary_g =
-            gfx::PointF(av_q2d(metadata->display_primaries[1][0]),
-                        av_q2d(metadata->display_primaries[1][1]));
-        hdr_metadata.color_volume_metadata.primary_b =
-            gfx::PointF(av_q2d(metadata->display_primaries[2][0]),
-                        av_q2d(metadata->display_primaries[2][1]));
-        hdr_metadata.color_volume_metadata.white_point = gfx::PointF(
-            av_q2d(metadata->white_point[0]), av_q2d(metadata->white_point[1]));
+        hdr_metadata.color_volume_metadata.primaries = {
+            static_cast<float>(av_q2d(metadata->display_primaries[0][0])),
+            static_cast<float>(av_q2d(metadata->display_primaries[0][1])),
+            static_cast<float>(av_q2d(metadata->display_primaries[1][0])),
+            static_cast<float>(av_q2d(metadata->display_primaries[1][1])),
+            static_cast<float>(av_q2d(metadata->display_primaries[2][0])),
+            static_cast<float>(av_q2d(metadata->display_primaries[2][1])),
+            static_cast<float>(av_q2d(metadata->white_point[0])),
+            static_cast<float>(av_q2d(metadata->white_point[1])),
+        };
       }
       if (metadata->has_luminance) {
         hdr_metadata.color_volume_metadata.luminance_max =

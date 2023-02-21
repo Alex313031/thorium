@@ -545,13 +545,6 @@ void Tab::OnMouseReleased(const ui::MouseEvent& event) {
       if (closest_tab)
         controller_->CloseTab(closest_tab, CLOSE_TAB_FROM_MOUSE);
     }
-  } else if (event.IsOnlyLeftMouseButton() && !event.IsShiftDown() &&
-             !IsSelectionModifierDown(event)) {
-    // If the tab was already selected mouse pressed doesn't change the
-    // selection. Reset it now to handle the case where multiple tabs were
-    // selected.
-    controller_->SelectTab(this, event);
-    }
     // Close tab on double click, mirror of IsOnlyMiddleMouseButton
     // Based on gz83's work.
   } else if (base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab")) {
@@ -561,13 +554,21 @@ void Tab::OnMouseReleased(const ui::MouseEvent& event) {
       } else if (closing_) {
         // We're animating closed and the left mouse button was pushed on us but
         // we don't contain the mouse anymore. We assume the user is clicking
-        // quicker than the animation and we should close the tab that falls under
-        // the mouse.
+        // quicker than the animation and we should close the tab that falls
+        // under the mouse.
         gfx::Point location_in_parent = event.location();
         ConvertPointToTarget(this, parent(), &location_in_parent);
         Tab* closest_tab = controller_->GetTabAt(location_in_parent);
         if (closest_tab)
           controller_->CloseTab(closest_tab, CLOSE_TAB_FROM_MOUSE);
+      } else if (event.IsOnlyLeftMouseButton() && !event.IsShiftDown() &&
+                 !IsSelectionModifierDown(event)) {
+        // If the tab was already selected mouse pressed doesn't change the
+        // selection. Reset it now to handle the case where multiple tabs were
+        // selected.
+        controller_->SelectTab(this, event);
+      }
+    }
   }
 }
 
