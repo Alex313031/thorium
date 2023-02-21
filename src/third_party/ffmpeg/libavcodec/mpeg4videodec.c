@@ -43,6 +43,7 @@
 #include "h263data.h"
 #include "h263dec.h"
 #include "profiles.h"
+#include "qpeldsp.h"
 #include "threadframe.h"
 #include "xvididct.h"
 #include "unary.h"
@@ -390,7 +391,11 @@ static inline int mpeg4_is_resync(Mpeg4DecContext *ctx)
         if (v == 0x7F)
             return s->mb_num;
     } else {
-        if (v == ff_mpeg4_resync_prefix[bits_count & 7]) {
+        static const uint16_t mpeg4_resync_prefix[8] = {
+            0x7F00, 0x7E00, 0x7C00, 0x7800, 0x7000, 0x6000, 0x4000, 0x0000
+        };
+
+        if (v == mpeg4_resync_prefix[bits_count & 7]) {
             int len, mb_num;
             int mb_num_bits = av_log2(s->mb_num - 1) + 1;
             GetBitContext gb = s->gb;
@@ -3824,6 +3829,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
 
+    ff_qpeldsp_init(&s->qdsp);
     ff_mpeg4videodsp_init(&ctx->mdsp);
 
     ff_thread_once(&init_static_once, mpeg4_init_static);

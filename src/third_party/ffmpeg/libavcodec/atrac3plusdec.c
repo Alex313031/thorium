@@ -48,6 +48,17 @@
 #include "atrac.h"
 #include "atrac3plus.h"
 
+static const uint8_t channel_map[8][8] = {
+    { 0, },
+    { 0, 1, },
+    { 0, 1, 2, },
+    { 0, 1, 2, 3, },
+    { 0, },
+    { 0, 1, 2, 4, 5, 3, },
+    { 0, 1, 2, 4, 5, 6, 3, },
+    { 0, 1, 2, 4, 5, 6, 7, 3, },
+};
+
 typedef struct ATRAC3PContext {
     GetBitContext gb;
     AVFloatDSPContext *fdsp;
@@ -58,13 +69,16 @@ typedef struct ATRAC3PContext {
     DECLARE_ALIGNED(32, float, outp_buf)[2][ATRAC3P_FRAME_SAMPLES];
 
     AtracGCContext gainc_ctx;   ///< gain compensation context
-    FFTContext mdct_ctx;
-    FFTContext ipqf_dct_ctx;    ///< IDCT context used by IPQF
+    AVTXContext *mdct_ctx;
+    av_tx_fn mdct_fn;
+    AVTXContext *ipqf_dct_ctx;  ///< IDCT context used by IPQF
+    av_tx_fn ipqf_dct_fn;
 
     Atrac3pChanUnitCtx *ch_units;   ///< global channel units
 
     int num_channel_blocks;     ///< number of channel blocks
     uint8_t channel_blocks[5];  ///< channel configuration descriptor
+    const uint8_t *channel_map; ///< channel layout map
 } ATRAC3PContext;
 
 static av_cold int atrac3p_decode_close(AVCodecContext *avctx)
@@ -74,8 +88,8 @@ static av_cold int atrac3p_decode_close(AVCodecContext *avctx)
     av_freep(&ctx->ch_units);
     av_freep(&ctx->fdsp);
 
-    ff_mdct_end(&ctx->mdct_ctx);
-    ff_mdct_end(&ctx->ipqf_dct_ctx);
+    av_tx_uninit(&ctx->mdct_ctx);
+    av_tx_uninit(&ctx->ipqf_dct_ctx);
 
     return 0;
 }
@@ -143,6 +157,8 @@ static av_cold int set_channel_params(ATRAC3PContext *ctx,
         return AVERROR_INVALIDDATA;
     }
 
+    ctx->channel_map = channel_map[channels - 1];
+
     return 0;
 }
 
@@ -156,6 +172,7 @@ static av_cold int atrac3p_decode_init(AVCodecContext *avctx)
 {
     static AVOnce init_static_once = AV_ONCE_INIT;
     ATRAC3PContext *ctx = avctx->priv_data;
+    float scale;
     int i, ch, ret;
 
     if (!avctx->block_align) {
@@ -164,9 +181,17 @@ static av_cold int atrac3p_decode_init(AVCodecContext *avctx)
     }
 
     /* initialize IPQF */
-    ff_mdct_init(&ctx->ipqf_dct_ctx, 5, 1, 32.0 / 32768.0);
+    scale = 32.0 / 32768.0;
+    ret = av_tx_init(&ctx->ipqf_dct_ctx, &ctx->ipqf_dct_fn, AV_TX_FLOAT_MDCT,
+                     1, 16, &scale, 0);
+    if (ret < 0)
+        return ret;
 
-    ff_atrac3p_init_imdct(avctx, &ctx->mdct_ctx);
+    scale = -1.0f;
+    ret = av_tx_init(&ctx->mdct_ctx, &ctx->mdct_fn, AV_TX_FLOAT_MDCT,
+                     1, 128, &scale, AV_TX_FULL_IMDCT);
+    if (ret < 0)
+        return ret;
 
     ff_atrac_init_gain_compensation(&ctx->gainc_ctx, 6, 2);
 
@@ -274,7 +299,7 @@ static void reconstruct_frame(ATRAC3PContext *ctx, Atrac3pChanUnitCtx *ch_unit,
     for (ch = 0; ch < num_channels; ch++) {
         for (sb = 0; sb < ch_unit->num_subbands; sb++) {
             /* inverse transform and windowing */
-            ff_atrac3p_imdct(ctx->fdsp, &ctx->mdct_ctx,
+            ff_atrac3p_imdct(ctx->fdsp, ctx->mdct_ctx, ctx->mdct_fn,
                              &ctx->samples[ch][sb * ATRAC3P_SUBBAND_SAMPLES],
                              &ctx->mdct_buf[ch][sb * ATRAC3P_SUBBAND_SAMPLES],
                              (ch_unit->channels[ch].wnd_shape_prev[sb] << 1) +
@@ -314,8 +339,9 @@ static void reconstruct_frame(ATRAC3PContext *ctx, Atrac3pChanUnitCtx *ch_unit,
         }
 
         /* subband synthesis and acoustic signal output */
-        ff_atrac3p_ipqf(&ctx->ipqf_dct_ctx, &ch_unit->ipqf_ctx[ch],
-                        &ctx->time_buf[ch][0], &ctx->outp_buf[ch][0]);
+        ff_atrac3p_ipqf(ctx->ipqf_dct_ctx, ctx->ipqf_dct_fn,
+                        &ch_unit->ipqf_ctx[ch], &ctx->time_buf[ch][0],
+                        &ctx->outp_buf[ch][0]);
     }
 
     /* swap window shape and gain control buffers. */
@@ -378,7 +404,7 @@ static int atrac3p_decode_frame(AVCodecContext *avctx, AVFrame *frame,
                           channels_to_process, avctx);
 
         for (i = 0; i < channels_to_process; i++)
-            memcpy(samples_p[out_ch_index + i], ctx->outp_buf[i],
+            memcpy(samples_p[ctx->channel_map[out_ch_index + i]], ctx->outp_buf[i],
                    ATRAC3P_FRAME_SAMPLES * sizeof(**samples_p));
 
         ch_block++;

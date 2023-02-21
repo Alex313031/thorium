@@ -132,6 +132,8 @@ def CleanObjectFiles(object_files):
       'libavutil/ripemd.o',
       'libavutil/sha512.o',
       'libavutil/tree.o',
+      'libavutil/tx_double.o',
+      'libavutil/tx_int32.o',
       'libavutil/xtea.o',
       'libavutil/xga_font_data.o',
   ]

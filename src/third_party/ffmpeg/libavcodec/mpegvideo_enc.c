@@ -807,7 +807,6 @@ av_cold int ff_mpv_encode_init(AVCodecContext *avctx)
     ff_me_cmp_init(&s->mecc, avctx);
     ff_mpegvideoencdsp_init(&s->mpvencdsp, avctx);
     ff_pixblockdsp_init(&s->pdsp, avctx);
-    ff_qpeldsp_init(&s->qdsp);
 
     if (!(avctx->stats_out = av_mallocz(256))               ||
         !FF_ALLOCZ_TYPED_ARRAY(s->q_intra_matrix,          32) ||
@@ -879,6 +878,17 @@ av_cold int ff_mpv_encode_init(AVCodecContext *avctx)
     }
 
     ff_dct_encode_init(s);
+
+    if (s->mpeg_quant || s->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
+        s->dct_unquantize_intra = s->dct_unquantize_mpeg2_intra;
+        s->dct_unquantize_inter = s->dct_unquantize_mpeg2_inter;
+    } else if (s->out_format == FMT_H263 || s->out_format == FMT_H261) {
+        s->dct_unquantize_intra = s->dct_unquantize_h263_intra;
+        s->dct_unquantize_inter = s->dct_unquantize_h263_inter;
+    } else {
+        s->dct_unquantize_intra = s->dct_unquantize_mpeg1_intra;
+        s->dct_unquantize_inter = s->dct_unquantize_mpeg1_inter;
+    }
 
     if ((CONFIG_H263P_ENCODER || CONFIG_RV20_ENCODER) && s->modified_quant)
         s->chroma_qscale_table = ff_h263_chroma_qscale_table;
@@ -1721,17 +1731,6 @@ static int frame_start(MpegEncContext *s)
             s->last_picture.f->linesize[i]    *= 2;
             s->next_picture.f->linesize[i]    *= 2;
         }
-    }
-
-    if (s->mpeg_quant || s->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
-        s->dct_unquantize_intra = s->dct_unquantize_mpeg2_intra;
-        s->dct_unquantize_inter = s->dct_unquantize_mpeg2_inter;
-    } else if (s->out_format == FMT_H263 || s->out_format == FMT_H261) {
-        s->dct_unquantize_intra = s->dct_unquantize_h263_intra;
-        s->dct_unquantize_inter = s->dct_unquantize_h263_inter;
-    } else {
-        s->dct_unquantize_intra = s->dct_unquantize_mpeg1_intra;
-        s->dct_unquantize_inter = s->dct_unquantize_mpeg1_inter;
     }
 
     if (s->dct_error_sum) {
@@ -3736,9 +3735,9 @@ static int encode_picture(MpegEncContext *s, int picture_number)
             s->       intra_matrix[j] = av_clip_uint8((  luma_matrix[i] * s->qscale) >> 3);
         }
         s->y_dc_scale_table=
-        s->c_dc_scale_table= ff_mpeg2_dc_scale_table[s->intra_dc_precision];
+        s->c_dc_scale_table = ff_mpeg12_dc_scale_table[s->intra_dc_precision];
         s->chroma_intra_matrix[0] =
-        s->intra_matrix[0] = ff_mpeg2_dc_scale_table[s->intra_dc_precision][8];
+        s->intra_matrix[0]  = ff_mpeg12_dc_scale_table[s->intra_dc_precision][8];
         ff_convert_matrix(s, s->q_intra_matrix, s->q_intra_matrix16,
                        s->intra_matrix, s->intra_quant_bias, 8, 8, 1);
         ff_convert_matrix(s, s->q_chroma_intra_matrix, s->q_chroma_intra_matrix16,

@@ -41,6 +41,7 @@
 #include "svq1.h"
 #include "svq1encdsp.h"
 #include "svq1enc_cb.h"
+#include "version.h"
 
 #include "libavutil/avassert.h"
 #include "libavutil/frame.h"
@@ -239,6 +240,11 @@ static int encode_block(SVQ1EncContext *s, uint8_t *src, uint8_t *ref,
             }
         }
     }
+
+    if (best_mean == -128)
+        best_mean = -127;
+    else if (best_mean == 128)
+        best_mean = 127;
 
     split = 0;
     if (best_score > threshold && level) {
@@ -552,7 +558,6 @@ static av_cold int svq1_encode_end(AVCodecContext *avctx)
 
     av_freep(&s->m.me.scratchpad);
     av_freep(&s->m.me.map);
-    av_freep(&s->m.me.score_map);
     av_freep(&s->mb_type);
     av_freep(&s->dummy);
     av_freep(&s->scratchbuf);
@@ -565,6 +570,19 @@ static av_cold int svq1_encode_end(AVCodecContext *avctx)
     av_frame_free(&s->current_picture);
     av_frame_free(&s->last_picture);
 
+    return 0;
+}
+
+static av_cold int write_ident(AVCodecContext *avctx, const char *ident)
+{
+    int size = strlen(ident);
+    avctx->extradata = av_malloc(size + 8);
+    if (!avctx->extradata)
+        return AVERROR(ENOMEM);
+    AV_WB32(avctx->extradata, size + 8);
+    AV_WL32(avctx->extradata + 4, MKTAG('S', 'V', 'Q', '1'));
+    memcpy(avctx->extradata + 8, ident, size);
+    avctx->extradata_size = size + 8;
     return 0;
 }
 
@@ -608,18 +626,17 @@ static av_cold int svq1_encode_init(AVCodecContext *avctx)
     s->m.me.temp           =
     s->m.me.scratchpad     = av_mallocz((avctx->width + 64) *
                                         2 * 16 * 2 * sizeof(uint8_t));
-    s->m.me.map            = av_mallocz(ME_MAP_SIZE * sizeof(uint32_t));
-    s->m.me.score_map      = av_mallocz(ME_MAP_SIZE * sizeof(uint32_t));
     s->mb_type             = av_mallocz((s->y_block_width + 1) *
                                         s->y_block_height * sizeof(int16_t));
     s->dummy               = av_mallocz((s->y_block_width + 1) *
                                         s->y_block_height * sizeof(int32_t));
+    s->m.me.map            = av_mallocz(2 * ME_MAP_SIZE * sizeof(*s->m.me.map));
     s->svq1encdsp.ssd_int8_vs_int16 = ssd_int8_vs_int16_c;
 
     if (!s->m.me.temp || !s->m.me.scratchpad || !s->m.me.map ||
-        !s->m.me.score_map || !s->mb_type || !s->dummy) {
+        !s->mb_type || !s->dummy)
         return AVERROR(ENOMEM);
-    }
+    s->m.me.score_map = s->m.me.map + ME_MAP_SIZE;
 
 #if ARCH_PPC
     ff_svq1enc_init_ppc(&s->svq1encdsp);
@@ -629,7 +646,7 @@ static av_cold int svq1_encode_init(AVCodecContext *avctx)
 
     ff_h263_encode_init(&s->m); // mv_penalty
 
-    return 0;
+    return write_ident(avctx, s->avctx->flags & AV_CODEC_FLAG_BITEXACT ? "Lavc" : LIBAVCODEC_IDENT);
 }
 
 static int svq1_encode_frame(AVCodecContext *avctx, AVPacket *pkt,

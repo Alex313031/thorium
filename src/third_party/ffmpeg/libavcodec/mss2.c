@@ -29,7 +29,6 @@
 #include "error_resilience.h"
 #include "mpeg_er.h"
 #include "mpegvideodec.h"
-#include "msmpeg4dec.h"
 #include "qpeldsp.h"
 #include "vc1.h"
 #include "wmv2data.h"
@@ -519,7 +518,7 @@ static int mss2_decode_frame(AVCodecContext *avctx, AVFrame *frame,
 
     struct Rectangle wmv9rects[MAX_WMV9_RECTANGLES], *r;
     struct Rectangle2 draw;
-    int used_rects = 0, i, implicit_rect = 0, av_uninit(wmv9_mask);
+    int used_rects = 0, i, implicit_rect = 0, wmv9_mask = -1;
 
     if ((ret = init_get_bits8(&gb, buf, buf_size)) < 0)
         return ret;
@@ -852,13 +851,9 @@ static av_cold int wmv9_init(AVCodecContext *avctx)
 
     ff_vc1_init_transposed_scantables(v);
 
-    if ((ret = ff_msmpeg4_decode_init(avctx)) < 0 ||
-        (ret = ff_vc1_decode_init_alloc_tables(v)) < 0)
+    ret = ff_vc1_decode_init(avctx);
+    if (ret < 0)
         return ret;
-
-    /* error concealment */
-    v->s.me.qpel_put = v->s.qdsp.put_qpel_pixels_tab;
-    v->s.me.qpel_avg = v->s.qdsp.avg_qpel_pixels_tab;
 
     return 0;
 }

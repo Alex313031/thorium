@@ -48,7 +48,6 @@
 #include "ac3.h"
 #include "ac3defs.h"
 #include "ac3tab.h"
-#include "fft.h"
 #include "ac3enc.h"
 #include "eac3enc.h"
 
@@ -2203,7 +2202,7 @@ av_cold int ff_ac3_encode_close(AVCodecContext *avctx)
         av_freep(&block->cpl_coord_mant);
     }
 
-    s->mdct_end(s);
+    av_tx_uninit(&s->tx);
 
     return 0;
 }
