@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -219,6 +219,8 @@ class MEDIA_GPU_EXPORT VaapiVideoDecodeAccelerator
     // Using |client_|s provided PictureBuffers and as many internally
     // allocated.
     kNormal,
+    
+    // Wrap VA-API driver for VDPAU backend on NVidi
     kWrapVdpau,
   };
 

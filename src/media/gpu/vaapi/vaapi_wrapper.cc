@@ -727,6 +727,13 @@ VADisplayState* VADisplayState::Get() {
 // static
 void VADisplayState::PreSandboxInitialization() {
   constexpr char kRenderNodeFilePattern[] = "/dev/dri/renderD%d";
+  const char kNvidiaPath[] = "/dev/dri/nvidiactl";
+
+  // TODO: Is this still needed?
+  base::File nvidia_file = base::File(
+      base::FilePath::FromUTF8Unsafe(kNvidiaPath),
+      base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_WRITE);
+
   // This loop ends on either the first card that does not exist or the first
   // render node that is not vgem.
   for (int i = 128;; i++) {
@@ -884,10 +891,6 @@ bool VADisplayState::InitializeVaDriver_Locked() {
 }
 
 bool VADisplayState::InitializeOnce() {
-  static_assert(
-      VA_MAJOR_VERSION >= 2 || (VA_MAJOR_VERSION == 1 && VA_MINOR_VERSION >= 1),
-      "Requires VA-API >= 1.1.0");
-
   // Set VA logging level, unless already set.
   constexpr char libva_log_level_env[] = "LIBVA_MESSAGING_LEVEL";
   std::unique_ptr<base::Environment> env(base::Environment::Create());
@@ -1099,7 +1102,7 @@ bool AreAttribsSupported(const base::Lock* va_lock,
     if (attribs[i].type != required_attribs[i].type ||
         (attribs[i].value & required_attribs[i].value) !=
             required_attribs[i].value) {
-      DVLOG(1) << "Unsupported value " << required_attribs[i].value << " for "
+      VLOG(1) << "Unsupported value " << required_attribs[i].value << " for "
                << vaConfigAttribTypeStr(required_attribs[i].type);
       return false;
     }
@@ -1885,6 +1888,12 @@ bool VaapiWrapper::GetJpegDecodeSuitableImageFourCC(unsigned int rt_format,
   // After workarounds, assume the conversion is supported.
   *suitable_fourcc = preferred_fourcc;
   return true;
+}
+
+// static
+bool VaapiWrapper::IsVppProfileSupported() {
+  return VASupportedProfiles::Get().IsProfileSupported(kVideoProcess,
+                                                    VAProfileNone);
 }
 
 // static
@@ -3124,13 +3133,7 @@ void VaapiWrapper::PreSandboxInitialization() {
   static bool result = InitializeStubs(paths);
   if (!result) {
     static const char kErrorMsg[] = "Failed to initialize VAAPI libs";
-#if BUILDFLAG(IS_CHROMEOS)
-    // When Chrome runs on Linux with target_os="chromeos", do not log error
-    // message without VAAPI libraries.
-    LOG_IF(ERROR, base::SysInfo::IsRunningOnChromeOS()) << kErrorMsg;
-#else
-    DVLOG(1) << kErrorMsg;
-#endif
+    LOG(ERROR) << kErrorMsg;
   }
 
   // VASupportedProfiles::Get creates VADisplayState and in so doing

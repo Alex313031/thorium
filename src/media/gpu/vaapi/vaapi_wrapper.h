@@ -92,8 +92,8 @@ enum class VAImplementation {
   kMesaGallium,
   kIntelI965,
   kIntelIHD,
-  kOther,
   kNVIDIAVDPAU,
+  kOther,
   kInvalid,
 };
 
@@ -220,12 +220,6 @@ class MEDIA_GPU_EXPORT VaapiWrapper
                                       CodecMode codec_mode,
                                       gfx::Size& min_size,
                                       gfx::Size& max_size);
-
-  // Gets the maximum surface size allowed for decoding using |va_profile|.
-  // Returns true if the size can be obtained, false otherwise. Because of the
-  // initialization in VASupportedProfiles::FillProfileInfo_Locked(), the size
-  // is guaranteed to not be empty (as long as this method returns true).
-  static bool GetDecodeMaxResolution(VAProfile va_profile, gfx::Size* max_size);
 
   // Obtains a suitable FOURCC that can be used in vaCreateImage() +
   // vaGetImage(). |rt_format| corresponds to the JPEG's subsampling format.
