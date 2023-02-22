@@ -34,6 +34,11 @@ else
 fi
 export LD_LIBRARY_PATH
 
+# Clean up old crash reports (see https://bugs.debian.org/1015931)
+# after 30 days.
+find "$HOME/.config/thorium/Crash Reports/pending/" -mtime +30 \
+  \( -name "*.meta" -o -name "*.dmp" \) -exec rm \{\} \;
+
 # APPNAME for GTK.
 APPNAME=thorium
 
@@ -47,11 +52,47 @@ TITLE="Thorium Browser"
 export CHROME_DESKTOP="thorium-browser-unstable.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
-DIST=`cat /etc/debian_version`
-export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Ubuntu 22.04, running on $DIST"
+# DIST=`cat /etc/debian_version`
+export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Linux"
 
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM
+
+# Set config home.
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-~/.config}
+
+usage () {
+  echo "thorium-browser [-h|--help] [--temp-profile] [options] [URL]"
+  echo
+  echo "        -h or --help               This help screen"
+  echo "        --temp-profile             Start with a new and temporary profile"
+  echo
+  echo " Other supported options are:"
+  MANWIDTH=80 man thorium-browser-unstable | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
+  echo " See 'man thorium-browser-unstable' for more details"
+}
+
+want_temp_profile=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h | --help | -help )
+      usage
+      exit 0 ;;
+    --temp-profile )
+      want_temp_profile=1
+      shift ;;
+    -- ) # Stop option prcessing
+      shift
+      break ;;
+    * )
+      break ;;
+  esac
+done
+
+# Allow users to override command-line options with a file.
+if [[ -f $XDG_CONFIG_HOME/thorium-flags.conf ]]; then
+   CHROME_USER_FLAGS="$(cat $XDG_CONFIG_HOME/thorium-flags.conf)"
+fi
 
 # Sanitize std{in,out,err} because they'll be shared with untrusted child
 # processes (http://crbug.com/376567).
@@ -59,5 +100,12 @@ exec < /dev/null
 exec > >(exec cat)
 exec 2> >(exec cat >&2)
 
+if [ $want_temp_profile -eq 1 ] ; then
+  TEMP_PROFILE=`mktemp -d`
+  echo "Using temporary profile: $TEMP_PROFILE"
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --user-data-dir=$TEMP_PROFILE"
+fi
+
+# Launch Thorium
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/@@PROGNAME@@" "--enable-experimental-web-platform-features" "--new-canvas-2d-api" "$@"
+exec -a "$0" "$HERE/@@PROGNAME@@" "--enable-experimental-web-platform-features" "--new-canvas-2d-api" "$CHROME_USER_FLAGS" "$@"

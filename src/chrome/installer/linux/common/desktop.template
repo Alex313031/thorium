@@ -115,7 +115,7 @@ Icon=@@PACKAGE@@
 Type=Application
 Categories=Network;WebBrowser;
 MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
-Actions=new-window;new-private-window;content-shell;safe-mode;dark-mode;
+Actions=new-window;new-private-window;temp-profile;content-shell;safe-mode;dark-mode;
 
 [Desktop Action new-window]
 Name=New Window
@@ -171,18 +171,6 @@ Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
 Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@
 
-[Desktop Action content-shell]
-Name=Open Thorium Shell
-Exec=/usr/bin/thorium-shell %U
-
-[Desktop Action safe-mode]
-Name=Open in Safe Mode
-Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --no-experiments %U
-
-[Desktop Action dark-mode]
-Name=Open in Dark Mode
-Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --force-dark-mode %U
-
 [Desktop Action new-private-window]
 Name=New Incognito Window
 Name[ar]=نافذة جديدة للتصفح المتخفي
@@ -234,3 +222,53 @@ Name[vi]=Cửa sổ ẩn danh mới
 Name[zh_CN]=新建隐身窗口
 Name[zh_TW]=新增無痕式視窗
 Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito
+
+[Desktop Action temp-profile]
+Name=Open New Window with a temporary profile
+Name[ast]=Abrir una ventana nueva con perfil temporal
+Name[bg]=Отваряне на Нов прозорец с временен профил
+Name[bn]=সাময়িক প্রোফাইল সহ একটি নতুন উইন্ডো খুলুন
+Name[bs]=Otvori novi prozor pomoću privremenog profila
+Name[ca]=Obre una finestra nova amb un perfil temporal
+Name[ca@valencia]=Obri una finestra nova amb un perfil temporal
+Name[de]=Ein neues Fenster mit einem temporären Profil öffnen
+Name[en_AU]=Open a New Window with a temporary profile
+Name[eo]=Malfermi novan fenestron portempe
+Name[es]=Abrir una ventana nueva con perfil temporal
+Name[et]=Ava uus aken ajutise profiiliga
+Name[eu]=Ireki leiho berria behin-behineko profil batekin
+Name[fi]=Avaa uusi ikkuna käyttäen väliaikaista profiilia
+Name[fr]=Ouvrir une nouvelle fenêtre avec un profil temporaire
+Name[gl]=Abrir unha nova xanela con perfil temporal
+Name[he]=פתיחת חלון חדש עם פרופיל זמני
+Name[hy]=Բացել նոր պատուհան ժամանակավոր հատկագրով
+Name[ia]=Aperi un nove fenestra con un profilo provisori
+Name[it]=Apri una nuova finestra con un profilo temporaneo
+Name[ja]=一時プロファイルで新しいウィンドウを開く
+Name[ka]=ახალი ფანჯრის გახსნა დროებით პროფილში
+Name[kw]=Egery fenester noweth gen profil dres prys
+Name[ms]=Buka Tetingkap Baru dengan profil sementara
+Name[nb]=Åpne et nytt vindu med en midlertidig profil
+Name[nl]=Nieuw venster openen met een tijdelijk profiel
+Name[pt_BR]=Abrir uma nova janela com um perfil temporário
+Name[ro]=Deschide o fereastră nouă cu un profil temporar
+Name[ru]=Открыть новое окно с временным профилем
+Name[sl]=Odpri novo okno z začasnim profilom
+Name[sv]=Öppna ett nytt fönster med temporär profil
+Name[ug]=ۋاقىتلىق سەپلىمە ھۆججەت بىلەن يېڭى كۆزنەك ئاچ
+Name[vi]=Mở cửa sổ mới với hồ sơ tạm
+Name[zh_CN]=以临时配置文件打开新窗口
+Name[zh_TW]=以暫時性個人身分開啟新視窗
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --temp-profile
+
+[Desktop Action content-shell]
+Name=Open Thorium Shell
+Exec=/usr/bin/thorium-shell %U
+
+[Desktop Action safe-mode]
+Name=Open in Safe Mode
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --no-experiments %U
+
+[Desktop Action dark-mode]
+Name=Open in Dark Mode
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --force-dark-mode %U

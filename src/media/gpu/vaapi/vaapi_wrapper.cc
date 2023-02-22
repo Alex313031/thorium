@@ -3303,6 +3303,7 @@ bool VaapiWrapper::CreateSurfaces(
   DCHECK(va_surfaces->empty());
 
   va_surfaces->resize(num_surfaces);
+  VASurfaceAttrib attribute;
 
   if (GetImplementationType() != VAImplementation::kNVIDIAVDPAU) {
     // Nvidia's VAAPI-VDPAU driver doesn't support this attribute
