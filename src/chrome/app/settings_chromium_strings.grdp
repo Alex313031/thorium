@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <!-- Settings-specific Thorium strings (included from chromium_strings.grd). -->
 <grit-part>
   <!-- Shared across multiple page -->
@@ -267,14 +267,6 @@
   </message>
   <message name="IDS_SETTINGS_SYNC_SIGN_IN_PROMPT_WITH_NO_ACCOUNT" desc="The text displayed to prompt users to sign in to Thorium.">
     Sign in to sync and personalize Thorium across your devices
-  </message>
-
-    <!-- Autofill Assistant settings -->
-  <message name="IDS_SETTINGS_AUTOFILL_ASSISTANT_PREF" desc="The documentation string of the 'Use Google Assistant' preference to help with automated flows on the web">
-    Google Assistant in Thorium
-  </message>
-  <message name="IDS_SETTINGS_AUTOFILL_ASSISTANT_PREF_DESC" desc="The description of the 'Use Google Assistant' preference to help with automated flows on the web">
-    Google Assistant in Thorium can complete actions across websites for you
   </message>
 
   <!-- Performance Page -->
