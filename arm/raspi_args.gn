@@ -12,6 +12,7 @@ v8_target_cpu = "arm64"
 #arm_optionally_use_neon = true
 #arm_use_thumb = true
 v8_target_cpu = "arm64"
+use_system_minigbm = false
 use_vc4_minigbm = true
 enable_linux_installer = true
 enable_distro_version_check = false
