@@ -519,7 +519,25 @@ if ((is_mac) || (is_win) || (use_linux_config)) {
     "libavcodec/vp8_parser.c",
     "libavcodec/vp8dsp.c",
     "libavcodec/vpx_rac.c",
-  ]
+    "libavformat/avc.c",
+    "libavcodec/x86/ac3dsp_init.c",
+    "libavcodec/ac3dsp.c",
+    "libavcodec/fmtconvert.c",
+    "libavcodec/ac3tab.c",
+    "libavcodec/ac3dec_float.c",
+    "libavcodec/ac3.c",
+    "libavcodec/x86/fmtconvert_init.c",
+    "libavcodec/ac3dec_data.c",
+    "libavcodec/eac3dec.c",
+    "libavcodec/eac3_data.c",
+    "libavcodec/ac3dec_fixed.c",
+    "libavformat/ac3dec.c",
+   ]
+   ffmpeg_asm_sources += [
+    "libavcodec/x86/ac3dsp.asm",
+    "libavcodec/x86/ac3dsp_downmix.asm",
+    "libavcodec/x86/fmtconvert.asm",
+   ]
 }
 
 if ((is_mac && current_cpu == "arm64") || (is_win && current_cpu == "arm64") || (use_linux_config && current_cpu == "arm64")) {
