@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+
 <!-- android_chrome_strings.grd contains strings for Thorium for Android.
 
 FAQ:
@@ -811,6 +811,18 @@ CHAR_LIMIT guidelines:
       <message name="IDS_PREFS_PRIVACY_SECURITY" desc="Title for the Privacy and Security preferences. [CHAR_LIMIT=32]">
         Privacy and security
       </message>
+      <message name="IDS_PRIVACY_SECTION_TITLE" desc="Title for the Privacy settings section.">
+        Privacy
+      </message>
+      <message name="IDS_SECURITY_SECTION_TITLE" desc="Title for the Security settings section.">
+        Security
+      </message>
+      <message name="IDS_AD_PRIVACY_LINK_ROW_LABEL" translateable="false" desc="Label for the ad privacy row.">
+        Donec semper
+      </message>
+      <message name="IDS_AD_PRIVACY_LINK_ROW_SUB_LABEL" translateable="false" desc="Sublabel for the ad privacy row.">
+        Fusce purus nibh, dictum sit amet mi in, fringilla ullamcorper tortor
+      </message>
       <message name="IDS_CONTEXTUAL_SEARCH_TITLE" desc="Name for the Contextual Search feature, which allows users to search for a term in a web page by tapping on it.">
         Touch to Search
       </message>
@@ -946,19 +958,19 @@ When you delete your browsing history — all or for a specific site — you als
       <message name="IDS_PRIVACY_SANDBOX_SPAM_FRAUD_SUMMARY" desc="The description of card 3 of 3. * “help”: This API is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players." >
         Help sites fight fraud and distinguish bots from people
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_SPAM_FRAUD_DESCRIPTION_TRIALS_ON" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “trust tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A trust token is issued. Sometime in the future, when hyou visit a different site, that trust token might get used. ">
-        Spam &amp; fraud reduction relies on trust tokens to help sites fight fraud and distinguish bots from people.
+      <message name="IDS_PRIVACY_SANDBOX_SPAM_FRAUD_DESCRIPTION_TRIALS_ON" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “private state tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A private state token is issued. Sometime in the future, when hyou visit a different site, that private state token might get used. ">
+        Spam &amp; fraud reduction relies on private state tokens to help sites fight fraud and distinguish bots from people.
 
-Based on your interaction with a site, like regularly signing in to an account, that site can issue a trust token to your browser. Later, if other sites you visit check for and find a valid trust token, they’re more likely to treat you like a person and not a bot.
+Based on your interaction with a site, like regularly signing in to an account, that site can issue a private state token to your browser. Later, if other sites you visit check for and find a valid private state token, they’re more likely to treat you like a person and not a bot.
 
-Trust tokens improve privacy on the web and can’t be used to find out who you are.
+Private state tokens improve privacy on the web and can’t be used to find out who you are.
       </message>
-            <message name="IDS_PRIVACY_SANDBOX_SPAM_FRAUD_DESCRIPTION_TRIALS_OFF" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “trust tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A trust token is issued. Sometime in the future, when hyou visit a different site, that trust token might get used. ">
-        When trials are on, Spam &amp; fraud reduction relies on trust tokens to help sites fight fraud and distinguish bots from people.
+            <message name="IDS_PRIVACY_SANDBOX_SPAM_FRAUD_DESCRIPTION_TRIALS_OFF" desc="The first of 3 paragraphs on the spam &amp; fraud card. This is a behind-the-scenes upgrade to Thorium. There aren’t any user controls or data to interact with, at least not yet. * “private state tokens”: explained in the next paragraph * “help”: This feature is one way that sites can fight fraud. Don’t suggest that sites must use this API to fight fraud. * “distinguish bots from people”: This touches on just one aspect of fraud but we hope it helps the user understand the purpose of this API, and that is to distinguish real users from malicious players. * “interaction”: is broad. It’s not just viewing a site but also how you interact with it, like by signing in * “Later”:  is important to convey the passage of time. We don’t want to convey how much time (it could be tiny). What’s important is that the user understands this is essentially a two-step process. A private state token is issued. Sometime in the future, when hyou visit a different site, that private state token might get used. ">
+        When trials are on, Spam &amp; fraud reduction relies on private state tokens to help sites fight fraud and distinguish bots from people.
 
-Based on your interaction with a site, like regularly signing in to an account, that site can issue a trust token to your browser. Later, if other sites you visit check for and find a valid trust token, they’re more likely to treat you like a person and not a bot.
+Based on your interaction with a site, like regularly signing in to an account, that site can issue a private state token to your browser. Later, if other sites you visit check for and find a valid private state token, they’re more likely to treat you like a person and not a bot.
 
-Trust tokens improve privacy on the web and can’t be used to find out who you are.
+Private state tokens improve privacy on the web and can’t be used to find out who you are.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_TOPICS_1" desc="TOPICS API Bullet 1 of 3 that appear beneath the “Your interests as estimated by Thorium” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “What data is used:” is bold and serves as a label to help people skimming the page. * “Your browsing history”: The user’s browsing history is available beneath the “History” menu at Thorium’s top level. The Topics API estimates topics of interest based on sites in the user’s browsing history that are participating in the trials.">
         <ph name="BEGIN_BOLD">&lt;b&gt;</ph>What data is used:<ph name="END_BOLD">&lt;/b&gt;</ph> Your browsing history, a record of sites you’ve visited using Thorium on this device.
@@ -1099,6 +1111,291 @@ Trust tokens improve privacy on the web and can’t be used to find out who you 
       </message>
       <message name="IDS_PRIVACY_SANDBOX_NOTICE_SHEET_DESCRIPTION" desc="* “Thorium is finding new ways”: “finding” is meant to convey a work in progress, like “build” in the title. The features are live and functional, but still in beta. So we want a verb that’s stronger than “exploring” but weaker than “launching”. * “reduce tracking”: This used to read “reduce cross-site tracking”, but we’ve dropped “cross-site” because it makes the idea unnecessarily complicated. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). * “Then” is an important keyword. It suggests some amount of time later. The first step is that interests are generated. Later (minutes or weeks), a different site might request interests.">
         Thorium is finding new ways to reduce tracking and keep you even safer as you browse. Thorium also <ph name="BEGIN_LINK">&lt;link&gt;</ph>estimates your interests<ph name="END_LINK">&lt;/link&gt;</ph> and enables you to manage them. Then, sites you visit can ask Thorium for your interests to show you ads.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Consent EEA. -->
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_TITLE" translateable="false" desc="Privacy Sandbox dialog consent EEA: title.">
+        Lorem ipsum Consent
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog consent EEA: First section of the body, above the image.">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog consent EEA: Second section of the body, above the image.">
+        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog consent EEA: Third section of the body, below the image, exclues the expand text.">
+        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog consent EEA: Text user clicks to expand the collapsed section.">
+        Vestibulum orci risus, consectetur
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog consent EEA: Fourth section of the body, below the collapsed section.">
+        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_SAVING_LABEL" translateable="false" desc="Privacy Sandbox dialog consent EEA: Saving text.">
+        Consectetur
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_ACCEPT_BUTTON" translateable="false" desc="Privacy Sandbox dialog consent EEA: Consent Yes button.">
+        Quisque
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DECLINE_BUTTON" translateable="false" desc="Privacy Sandbox dialog consent EEA: Consent No button.">
+        Lorem
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_HEADING" translateable="false" desc="Privacy Sandbox dialog consent EEA: Header inside expand in consent.">
+        Esed purus vestibulum velit convalli
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog consent EEA: First bullet point in expand in consent.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor:<ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog consent EEA: Second bullet point in expand in consent.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_3" translateable="false" desc="Privacy Sandbox dialog consent EEA: Third bullet point in expand in consent.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum: <ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_LINK" translateable="false" desc="Privacy Sandbox dialog consent EEA: Non-interactable link out 'Learn more with Google's etc ect'">
+        Esed purus vestibulum velit convalli
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_DIALOG_MORE_BUTTON" translateable="false" desc="Privacy Sandbox dialog more button: Clicking on it makes the dialog scrolling to the bottom to show all the content.">
+        More
+      </message>
+
+      <!-- Privacy Sandbox v4 - Notice EEA. -->
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_TITLE" translateable="false" desc="Privacy Sandbox dialog notice EEA: title.">
+        Lorem ipsum Notice EEA
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First section of the body, above the bullet points.">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First bullet point (outside expand).">
+        Nulla in tortor: a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second bullet point (outside expand).">
+        Sed purus vestibulum: velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog notice EEA: Text user clicks to expand the collapsed section.">
+        Vestibulum orci risus, consectetur
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second section of text, below the expand label.">
+        Consectetur adipiscing elit duis pretium pulvinar metus non mollis
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_ACK_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice EEA: Got it button.">
+        Sed
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_SETTINGS_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice EEA: Settings button.">
+        Cras id
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_HEADING_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First header in learn more expand.">
+        Esed purus vestibulum velit convalli
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION" translateable="false" desc="Privacy Sandbox dialog notice EEA: First description block in expand.">
+        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_HEADING_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second header in learn more expand.">
+        Proin sed purus vestibulum velit velit eget dapibus.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First bullet point in expand.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor:<ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second bullet point in expand.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_3" translateable="false" desc="Privacy Sandbox dialog notice EEA: Third bullet point in expand.">
+        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum: <ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Notice ROW. -->
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_TITLE" translateable="false" desc="Privacy Sandbox dialog notice ROW: title.">
+        Lorem ipsum Notice ROW
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First section of the body, above the image.">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second section of the body, above the image.">
+        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum. Quisque placerat eget nisl sit amet facilisis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third section of the body, below the image.">
+        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fourth section of the body, below the expand label.">
+        Proin sed purus vestibulum velit convallis suscipit eget dapibus.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_ACK_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice ROW: Got it button on notice in eea.">
+        Sed
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_SETTINGS_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice ROW: Settings button in notice.">
+        Cras id
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog notice ROW: Expand text.">
+        Vestibulum orci risus consectetur
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First header inside expand section.">
+        Esed purus vestibulum velit convalli
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First description text in body, underneath first header.">
+        Etiam dictum sem et neque molestie lobortis. Morbi quam tellus, tincidunt eget dapibus ac, lobortis et lacus. Integer nec egestas elit. Nulla venenatis facilisis dui eget suscipit.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second heading inside expand section.">
+        Class aptent taciti sociosqu ad
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second description text in body, underneath second header.">
+        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First bullet point in ROW notice expand.">
+        Sed elementum tellus condimentum quam vestibulum lacinia. Ut eu lobortis massa, venenatis sodales lacus. Nulla elementum magna et tortor efficitur, at volutpat metus varius.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second bullet point in ROW notice expand.">
+        Duis tempor nulla nisi, ac bibendum lorem tempus sit amet. Proin non blandit risus. Maecenas facilisis enim nec tristique tristique. Eelementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third section in body, below bullet points.">
+        Etiam hendrerit turpis nibh, ac maximus lectus placerat at. Vivamus ligula quam, posuere luctus felis eu, dictum egestas arcu. per conubia nostra, per inceptos himenaeos. Cras ut metus vel est molestie finibus nec ut orci.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fourth section in body, immediately below third.">
+        Aliquam euismod scelerisque metus, in aliquet est vehicula ut. Curabitur sit amet ligula quis ante maximus gravida non id magna. Pellentesque interdum venenatis leo, at ultrices felis mollis nec. Integer vulputate velit eget mauris lacinia, ut ullamcorper mauris vehicula.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third header inside learn more expand.">
+        Orci varius natoque penatibus et
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_5" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fifth section in body below header 3.">
+        Suspendisse at dui pulvinar, rhoncus orci at, porttitor nibh. Curabitur lacinia nulla sem, eu euismod dolor vulputate quis. Duis mattis eros et arcu elementum tempor. Duis pharetra eleifend sagittis.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_6" translateable="false" desc="Privacy Sandbox dialog notice ROW: Sixth section in body, immediately below fifth.">
+        Cras sed lacus suscipit, efficitur erat nec, semper sapien. Fusce at nunc molestie, elementum augue at, auctor nunc. Sed dui nisi, consectetur sit amet urna vitae, facilisis scelerisque justo.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Ad Privacy Page -->
+      <message name="IDS_AD_PRIVACY_PAGE_TITLE" translateable="false" desc="Title for the Ad Privacy preferences page.">
+        Donec semper
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" translateable="false" desc="Title for topics preference.">
+        Mauris interdum lectus vitae lacinia
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for topics preference when enabled.">
+        Enabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for topics preference when enabled.">
+        Disabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" translateable="false" desc="Title for the fledge preference.">
+        Aenean erat leo
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for the fledge preference when enabled.">
+        Enabled Duis scelerisque a mi eget ultricies
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for the fledge preference when enabled.">
+        Disabled Duis scelerisque a mi eget ultricies
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" translateable="false" desc="Title for the ad measurement preference.">
+        Vestibulum augue erat
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for the ad measurement preference when enabled.">
+        Enabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+      </message>
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for the ad measurement preference when enabled.">
+        Disabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Topics Page -->
+      <message name="IDS_SETTINGS_TOPICS_PAGE_TITLE" translateable="false" desc="Title for the Topics preferences page.">
+        Mauris interdum lectus vitae lacinia
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Topics toggle.">
+        Nunc gravida condimentum consectetur
+      </message>
+      <!-- TODO(http://b/254412601): Format link.-->
+      <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Topics toggle.">
+        Vivamus nibh turpis, varius quis nisi vel, porta laoreet tellus.  <ph name="BEGIN_LINK">&lt;link&gt;</ph>Mauris porta imperdiet venenatis<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_HEADING" translateable="false" desc="Section title for the current Topics list.">
+        Mauris at lectus
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" translateable="false" desc="Section description for the current Topics list.">
+        Nulla tincidunt iaculis nulla, sit amet viverra massa luctus nec. Integer eget pellentesque magna, et venenatis lorem. Integer a porta elit, eget bibendum neque.
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="Description which appears when Topics are disabled.">
+        Sed porta viverra lacus ut euismod. Integer a cursus metus, ac ultricies libero.
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="Description which appears when the Topics list is empty.">
+        Curabitur sagittis sapien ut turpis interdum, vitae porttitor sem pretium. Vestibulum sem mauris, ultrices ac massa sit amet, sodales aliquet est.
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_HEADING" translateable="false" desc="Title for the blocked Topics preference.">
+        Integer faucibus metus
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION" translateable="false" desc="">
+        Donec fringilla justo vel ligula finibus, ut rutrum lectus vestibulum. Suspendisse vestibulum lorem lacinia nulla consequat auctor.
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="">
+        Donec commodo sem non augue blandit, ullamcorper aliquam enim fermentum
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="">
+        Diam maecenas sed
+      </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_SUB_PAGE_TITLE" translateable="false" desc="">
+        Integer faucibus metus
+      </message>
+      <!-- TODO(http://b/254412601): Format links.-->
+      <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" translateable="false" desc="Footer for the Topics preference page.">
+        Quisque eu auctor purus, id tempus nulla. Pellentesque porta orci purus. Donec dictum, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>justo nec ultricies semper<ph name="END_LINK_1">&lt;/link1&gt;</ph>, <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>eros mauris varius nibh<ph name="END_LINK_2">&lt;/link2&gt;</ph>, sit amet molestie quam arcu id urna. Donec vulputate dui ut lorem egestas, ac sollicitudin metus fermentum.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Fledge Page -->
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" translateable="false" desc="Title for the Fledge preferences page.">
+        Aenean erat leo
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Fledge toggle.">
+        Nunc aliquam consequat felis non tincidunt
+      </message>
+      <!-- TODO(http://b/254412044): Format links.-->
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Fledge toggle.">
+        Donec pretium non elit vitae ornare. Morbi arcu elit, rutrum nec sapien quis, <ph name="BEGIN_LINK">&lt;link&gt;</ph>tristique tristique ante<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_HEADING" translateable="false" desc="Section title for the current Fledge sites list.">
+        Aliquam
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION" translateable="false" desc="Section description for the current Fledge sites list.">
+        Nullam sollicitudin elit vitae hendrerit suscipit. Nunc mi leo, placerat sit amet lorem non, semper convallis sapien.
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_DISABLED" translateable="false" desc="Description which appears when Fledge is disabled.">
+        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_EMPTY" translateable="false" desc="Description which appears when the Fledge sites list is empty.">
+        Morbi quis orci in mauris tempus rutrum. Curabitur blandit orci tortor, pellentesque tempor turpis lacinia ac.
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_SEE_ALL_SITES_LABEL" translateable="false" desc="Title for the all Fledge sites preference.">
+        Donec non mi
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_HEADING" translateable="false" desc="Title for the blocked Fledge sites preference.">
+        Curabitur a pharetra
+      </message>
+      <!-- TODO(http://b/254412044): Format links.-->
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_FOOTER" translateable="false" desc="">
+        Pellentesque sollicitudin purus sit amet felis fringilla blandit. Donec a eleifend ligula, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>et fringilla nunc<ph name="END_LINK_1">&lt;/link1&gt;</ph>. Vivamus sit amet <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>cursus quam<ph name="END_LINK_2">&lt;/link2&gt;</ph>. Etiam ultricies rutrum orci, eget accumsan purus mattis in.
+      </message>
+
+      <!-- Privacy Sandbox v4 - Ad Measurement Page -->
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" translateable="false" desc="Title for the Ad Measurement preferences page.">
+        Vestibulum augue
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Ad Measurement toggle.">
+        Vestibulum augue erat
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Ad Measurement toggle.">
+        Vestibulum eleifend nunc a viverra congue. Integer nec mauris rutrum, porta mauris et, pellentesque ligula. Nam et pulvinar eros, in gravida nisl.
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" translateable="false" desc="When on section header.">
+        Mauris
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" translateable="false" desc="What to consider section header.">
+        Aenean
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" translateable="false" desc="When on first bullet point.">
+        Praesent sodales, magna eget volutpat iaculis, justo odio viverra justo, id venenatis est est sit amet ex
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" translateable="false" desc="When on second bullet point.">
+        Nunc metus est, faucibus sit amet lacus sit amet, aliquet rutrum libero. Maecenas vel euismod ante.
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" translateable="false" desc="What to consider first bullet point.">
+        Mauris mattis urna elit. Phasellus quis erat sapien. Praesent finibus pellentesque iaculis. Mauris hendrerit metus at enim rhoncus bibendum.
       </message>
 
       <!-- Secure DNS Settings.  Used by //chrome/browser/privacy. -->
@@ -1686,13 +1983,13 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
 
         <!-- Mixed content download -->
-        <message name="IDS_MIXED_CONTENT_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm a mixed content download">
+        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm an insecure download">
           File can’t be downloaded securely
         </message>
-        <message name="IDS_MIXED_CONTENT_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the mixed content download dialog for user to confirm the download.">
+        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the insecure download dialog for user to confirm the download.">
           Keep
         </message>
-        <message name="IDS_MIXED_CONTENT_DOWNLOAD_DIALOG_DISCARD_TEXT" desc="Text label for the cancel button on the mixed content download dialog for user to confirm the download.">
+        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_DISCARD_TEXT" desc="Text label for the cancel button on the insecure download dialog for user to confirm the download.">
           Discard
         </message>
 
@@ -1769,6 +2066,9 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_RENAME_EXTENSION_MESSAGE" desc="Message to warn users the danger of changing file extension.">
         If you change the file extension, the file may open in a different application and potentially be a hazard to your device.
       </message>
+      <message name="IDS_RENAME_FILE_ACCESSIBILITY_HINT" desc="Hint displayed on screen and available to assistive tech for the edit text field for new file name.">
+        New file name
+      </message>
 
        <!-- Duplicate download -->
        <message name="IDS_DUPLICATE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the dangerous download dialog for user to confirm the download.">
@@ -1819,6 +2119,7 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_ACCOUNT_MANAGEMENT_NO_PARENTAL_DATA" desc="String saying that we are waiting for family information.">
         Waiting for details of parents.
       </message>
+
       <message name="IDS_ACCOUNT_MANAGEMENT_ONE_PARENT_NAME" desc="String for name of single parent for child account.">
         This browser is managed by <ph name="PARENT_NAME">%1$s<ex>parent1@gmail.com</ex></ph>.
       </message>
@@ -1836,6 +2137,15 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_ACCOUNT_MANAGEMENT_CHILD_CONTENT_ALL" desc="Setting that permits child accounts to visit any websites.">
         Allow all sites
+      </message>
+      <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_NO_PARENTAL_DATA" desc="String saying that child should go to parent for help for child account.">
+        If you need help, ask your parent
+        </message>
+      <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_ONE_PARENT_NAME" desc="String saying that child should go to parent for help with email of single parent for child account.">
+        If you need help, ask your parent (<ph name="PARENT_NAME">%1$s<ex>parent1@gmail.com</ex></ph>)
+      </message>
+      <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_TWO_PARENT_NAMES" desc="String saying that child should go to parent for help with email of two parents for child account.">
+        If you need help, ask your parent (<ph name="PARENT_NAME_1">%1$s<ex>parent1@gmail.com</ex></ph> or <ph name="PARENT_NAME_2">%2$s<ex>parent2@gmail.com</ex></ph>)
       </message>
 
       <!-- Parent approval widget. -->
@@ -2033,6 +2343,10 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_SYNC_CUSTOM_PASSPHRASE" desc="Prompt user to create a custom sync password.">
         Passphrase encryption doesn’t include payment methods and addresses from Google Pay. Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting you'll need to reset sync. <ph name="BEGIN_LINK">&lt;learnmore&gt;</ph>Learn more<ph name="END_LINK">&lt;/learnmore&gt;</ph>
+      </message>
+      <message name="IDS_NEW_SYNC_CUSTOM_PASSPHRASE" desc="Prompt user to create a custom sync password.">
+        Payment methods and addresses from Google Pay won’t be encrypted. Browsing history from Thorium won’t sync.
+Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, you’ll need to reset sync. <ph name="BEGIN_LINK">&lt;learnmore&gt;</ph>Learn more<ph name="END_LINK">&lt;/learnmore&gt;</ph>
       </message>
       <message name="IDS_SYNC_ENTER_CUSTOM_PASSPHRASE_HINT" desc="Hint for the passphrase field when user is to type in a passphrase. [CHAR_LIMIT=30]">
         Passphrase
@@ -3107,8 +3421,17 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NTP_MANAGE_FEED" desc="Menu item to manage feed settings from the feed header overflow menu.">
         Manage
       </message>
-      <message name="IDS_CORMORANT_CREATOR_ACTIVITY" desc="Menu item to launch the Cormorant creator activity. This is used only for testing." translateable="false">
-        Creator Profile
+      <message name="IDS_CORMORANT_CREATOR_CONTENT_UNAVAILABLE_ERROR_TITLE" desc="Creator page error title when the creator has no content available.">
+        Nothing to show yet
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_CONTENT_UNAVAILABLE_ERROR_DESCRIPTION" desc="Creator page error description when the creator has no content available.">
+        You'll see content when it becomes available
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_GENERAL_ERROR_TITLE" desc="Creator page general error title when something goes wrong.">
+        Something went wrong
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_GENERAL_ERROR_DESCRIPTION" desc="Creator page general error description when something goes wrong.">
+        Try again later
       </message>
       <message name="IDS_FEED_MANAGE_ACTIVITY" desc="Menu item to manage my activity from the feed header overflow menu.">
         Activity
@@ -3235,7 +3558,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Restore tab group of <ph name="TAB_COUNT">%1$s<ex>5</ex></ph> tabs as a new background tab group.
       </message>
       <message name="IDS_WEB_FEED_AWARENESS" desc="Educating the user about the web feed.">
-        Follow any sites you want
+        See content you follow here
       </message>
 
       <!-- Explore sites strings -->
@@ -3256,12 +3579,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_EXPLORE_SITES_LOADING_ERROR_NEXT_STEPS_CHECK_CONNECTION" desc="Text on an error screen indicating that checking network connection can fix this error.">
         Checking your internet connection
-      </message>
-      <message name="IDS_EXPLORE_SITES_IPH" desc="An in-product-help message for the explore sites feature on Android. The message encourages users to open a tab that contains categorized links to websites that are popular in their country.">
-        See popular websites
-      </message>
-      <message name="IDS_EXPLORE_SITES_IPH_ACCESSIBILITY" desc="An in-product-help message for the explore sites feature on Android. The message encourages users to open a tab that contains categorized links to websites that are popular in their country. This message specifies which button must be tapped so that screen reader users can find the view this is referring to.">
-        See popular websites by tapping the "Top sites" button
       </message>
 
       <!-- Video tutorials -->
@@ -3538,9 +3855,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
         Select tabs
       </message>
-      <message name="IDS_MENU_TRACK_PRICES" desc="Menu item for tracking prices on tabs. [CHAR_LIMIT=27]">
-        Track prices
-      </message>
       <message name="IDS_MENU_GET_IMAGE_DESCRIPTIONS" desc="Menu item to start getting alt text accessibility image labels/descriptions [CHAR_LIMIT=27]">
         Get image descriptions
       </message>
@@ -3726,6 +4040,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_READING_LIST_MARK_AS_READ" desc="The text for the action to mark the reading list as read.">
         Mark as read
       </message>
+      <message name="IDS_READING_LIST_MARK_AS_UNREAD" desc="The text for the action to mark the reading list as unread.">
+        Mark as unread
+      </message>
       <message name="IDS_READING_LIST_REMINDER_NOTIFICATION_TITLE" desc="The title of the reminder notification for reading list.">
         Catch up on your reading list
       </message>
@@ -3834,6 +4151,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_READER_MODE_MESSAGE_BUTTON" desc="The label for the button to open the current page in reader mode.">
         View
+      </message>
+      <message name="IDS_READER_MODE_ACTION_CHIP_LABEL_SIMPLIFY_PAGE" desc="The label for the action chip shown on the toolbar to open the current page in reader mode. [CHAR_LIMIT=27]">
+        Simplify page
       </message>
       <message name="IDS_CONTENT_PROVIDER_SEARCH_DESCRIPTION" desc="Description for Thorium's entry in QSB's list of search suggestion providers [CHAR_LIMIT=32]">
         Bookmarks and web history
@@ -4163,8 +4483,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_WEB_FEED_FOLLOW_SUCCESS_SNACKBAR_MESSAGE" desc="The snackbar message after a successful Web Feed follow request.">
         Following <ph name="SITE_NAME">%1$s<ex>Reuters</ex></ph>
       </message>
-      <message name="IDS_WEB_FEED_FOLLOW_SUCCESS_SNACKBAR_ACTION" desc="The snackbar action after a successful Web Feed follow request.">
-        Go to feed
+      <message name="IDS_WEB_FEED_FOLLOW_SUCCESS_SNACKBAR_ACTION_GO_TO_FOLLOWING" desc="The snackbar action after a successful Web Feed follow request, that will take the user to the Following feed.">
+        Go to Following
+      </message>
+      <message name="IDS_WEB_FEED_FOLLOW_SUCCESS_SNACKBAR_ACTION_REFRESH" desc="The snackbar action after a successful Web Feed follow request, that will refresh the Following feed contents. [CHAR_LIMIT=20]">
+        Refresh
       </message>
       <message name="IDS_WEB_FEED_FOLLOW_GENERIC_FAILURE_SNACKBAR_MESSAGE" desc="The generic snackbar message after an unsuccessful Web Feed follow request.">
         Can’t follow. Something went wrong.
@@ -4193,8 +4516,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_WEB_FEED_POST_FOLLOW_DIALOG_STORIES_NOT_READY_DESCRIPTION" desc="The body text of the dialog presented a few times after a successful Web Feed follow request, when content from that Web Feed is not readily available. Please use the branded term for Discover, as listed under Product Names in the Google Glossary Manager (TC ID 1799975766543019278).">
         Soon, you’ll see stories from <ph name="SITE_NAME">%1$s<ex>Reuters</ex></ph> when you open a new tab. Sites you follow are saved in your Google account. You can manage them in Discover settings.
       </message>
-      <message name="IDS_WEB_FEED_POST_FOLLOW_DIALOG_OPEN_A_NEW_TAB" desc="The main action of the dialog presented a few times after a successful Web Feed follow request, when content from from that Web Feed is immediately available.">
-        Open a new tab
+      <message name="IDS_WEB_FEED_POST_FOLLOW_DIALOG_GO_TO_FOLLOWING" desc="The main action of the dialog presented a few times after a successful Web Feed follow request, when content from from that Web Feed is immediately available. It will take the user to the Following feed.">
+        Go to Following
+      </message>
+      <message name="IDS_WEB_FEED_POST_FOLLOW_DIALOG_GOT_IT" desc="The main action of the dialog presented a few times after a successful Web Feed follow request, when content from from that Web Feed is immediately available. The user is already at the Following feed so it will do nothing.">
+        Got it
       </message>
 
       <!-- Storage Preference UI strings for clearing storage. -->
@@ -4319,15 +4645,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_WEBAPK_NETWORK_ERROR_MESSAGE_TUNNEL_CONNECTION_FAILED" desc="The error message for ERROR_TUNNEL_CONNECTION_FAILED.">
         Establishing a tunnel via proxy server failed
       </message>
-      <message name="IDS_LAUNCHPAD_TITLE" desc="Title of WebAPKs launchpad page">
-        Apps
-      </message>
-      <message name="IDS_LAUNCHPAD_MENU_UNINSTALL" desc="Text that displays on the Launchpad app management menu that allows user to open the setting to uninstall the app. ">
-        Uninstall
-      </message>
-      <message name="IDS_LAUNCHPAD_MENU_SITE_SETTINGS" desc="Text that displays on the Launchpad app management menu that allows the user to open the site setting page.">
-        Site settings
-      </message>
 
       <!-- Keyboard shortcuts in Android N-->
       <message name="IDS_KEYBOARD_SHORTCUT_OPEN_NEW_TAB" desc="A text label that appears next to the keyboard shortcut to open a new tab in Thorium. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
@@ -4427,14 +4744,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_MODULE_INSTALL_FAILURE_TEXT" desc="Text shown on an infobar when Thorium failed to install a dynamic feature module.">
         Unable to install <ph name="module">%1$s<ex>augmented reality</ex></ph> for Thorium
-      </message>
-
-      <!-- Instant Apps -->
-      <message name="IDS_INSTANT_APPS_MESSAGE_TITLE" desc="Title of the message shown to prompt the user to open an Instant App.">
-        Open app for <ph name="appname">%1$s</ph>?
-      </message>
-      <message name="IDS_ACCESSIBILITY_INSTANT_APPS_MESSAGE_TITLE_CONTENT_DESCRIPTION" desc="Accessibility text for the title of the Instant Apps message.">
-        Open app for <ph name="appname">%1$s</ph> with Google Play?
       </message>
 
       <!-- Custom Context Menu Informations -->
@@ -4812,24 +5121,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_PREFS_AUTOFILL_ASSISTANT_SUMMARY" desc="Summary for the Autofill Assistant preferences screen.">
         Helps you complete tasks, such as checkout, throughout the web
       </message>
-      <message name="IDS_PREFS_WEB_ASSISTANCE_SECTION_TITLE" desc="Title for the web assistance section">
-        Web Assistance
-      </message>
-      <message name="IDS_PREFS_AUTOFILL_ASSISTANT_GET_HELP_TITLE" desc="Title for the switch toggling whether Autofill Assistant is enabled.">
-        Get help with tasks on the web
-      </message>
-      <message name="IDS_PREFS_AUTOFILL_ASSISTANT_GET_HELP_SUMMARY" desc="Description for the Autofill Assistant toggle.">
-        To help you complete tasks, Google will receive the URLs and contents of sites on which you use Assistant, as well as information you submit through Assistant
-      </message>
-      <message name="IDS_PREFS_AUTOFILL_ASSISTANT_PROACTIVE_HELP_TITLE" desc="Title for the switch toggling whether proactive help is enabled. When turned on, the Assistant will be able to proactively show up (without explicit user prompt) and offer to help.">
-        Proactive Help
-      </message>
-      <message name="IDS_PREFS_AUTOFILL_ASSISTANT_PROACTIVE_HELP_SUMMARY" desc="Description for the proactive help toggle. It explains that the Assistant may appear proactively when it detects that it can help the user. ">
-        Assistant will appear when it detects that it can help you on supported websites
-      </message>
-      <message name="IDS_PREFS_PROACTIVE_HELP_SYNC_LINK" desc="Disclaimer that appears after the proactive help toggle, but only if 'make search and browsing better'[MSBB] is switched off. Proactive help is only possible while MSBB is turned on, which is the default for signed-in users. If MSBB is off, the proactive help setting will be grayed out and this disclaimer is shown.">
-        To use this setting <ph name="BEGIN_LINK">&lt;link&gt;</ph>Make searches and browsing better<ph name="END_LINK">&lt;/link&gt;</ph> must be turned on
-      </message>
       <!-- Usage Stats strings -->
       <message name="IDS_USAGE_STATS_CONSENT_TITLE" desc="Title for activity authorizing Digital Wellbeing to access Thorium usage data">
         Show your Thorium activity in Digital Wellbeing?
@@ -4856,13 +5147,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <!-- Tab Group Tab Switcher strings -->
       <message name="IDS_TAB_MANAGEMENT_MODULE_TITLE" desc="Text shown when the Tab Management module is referenced in install start, success, failure UI (e.g. in IDS_MODULE_INSTALL_START_TEXT, which will expand to 'Installing Tab management for Thorium…').">
         Tab management
-      </message>
-
-      <message name="IDS_AUTOFILL_ASSISTANT_MODULE_TITLE"
-  desc="Text shown when the Foo module is referenced in install start, success,
-        failure UI (e.g. in IDS_MODULE_INSTALL_START_TEXT, which will expand to
-        'Installing Assistant for Thorium…').">
-  Google Assistant in Thorium
       </message>
 
       <message name="IDS_DEV_UI_MODULE_TITLE" desc="Text shown when the Developer UI module is referenced in install start, success, failure UI (e.g. in IDS_MODULE_INSTALL_START_TEXT, which will expand to 'Installing Developer UI for Thorium…').">
@@ -5673,10 +5957,23 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_PASSWORD_EDIT_DIALOG_UNSYNCED_FOOTER" desc="Footer for a dialog which allows users to see and edit passwords while saving/updating a new credential. Displayed for users who are not syncing passwords.">
         Passwords are saved to Password Manager on this device
       </message>
-
+      <message name="IDS_PASSWORD_MANAGER_DROPDOWN_BUTTON_DESCRIPTION" desc="This is a description that will be used for the TalkBack to describe the button with the down arrow that opens a dropdown with a list of items.">
+        Select from the dropdown list
+      </message>
       <!-- Price tracking strings -->
       <message name="IDS_PRICE_DROP_SPOTTED_IPH" desc="This text appears in the IPH when a user opens a new tab page and an item in any of their open tabs has a price drop.">
         Price drop spotted
+      </message>
+
+      <!-- Restore Custom Tab strings -->
+      <message name="IDS_RESTORE_CUSTOM_TAB_TITLE" desc="Appears in pop-up message title when the previous Custom Tab session a user engaged with can be restored.">
+        Resume your last task?
+      </message>
+      <message name="IDS_RESTORE_CUSTOM_TAB_DESCRIPTION" desc="Appears in pop-up message description when the previous Custom Tab session a user engaged with can be restored.">
+        Easily continue where you left off
+      </message>
+      <message name="IDS_RESTORE_CUSTOM_TAB_BUTTON_TEXT" desc="Appears as pop-up message button text to direct the user to restore a previously engaged with Custom Tab session.">
+        Restore
       </message>
     </messages>
   </release>
