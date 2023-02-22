@@ -938,7 +938,7 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = [ "-O3", ]
+  cflags = []
   ldflags = []
   defines = []
 
@@ -960,12 +960,12 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
-        "-march=haswell",
+        "-march=x86-64-v3",
         "-mtune=generic",
         "-mvaes",
         "-ffp-contract=fast",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=haswell", "-mvaes", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-mvaes", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -2013,17 +2013,49 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
+    "-mllvm", "-extra-vectorizer-passes",
+    "-mllvm", "-enable-cond-stores-vec",
+    "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-adce-remove-loops",
+    "-mllvm", "-enable-cse-in-irtranslator",
+    "-mllvm", "-enable-cse-in-legalizer",
+    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm", "-loop-rotate-multi",
+    "-mllvm", "-enable-loopinterchange",
+    "-mllvm", "-enable-loop-distribute",
+    "-mllvm", "-enable-unroll-and-jam",
+    "-mllvm", "-enable-loop-flatten",
+    "-mllvm", "-interleave-small-loop-scalar-reduction",
+    "-mllvm", "-unroll-runtime-multi-exit",
+    "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-enable-interleaved-mem-accesses",
+    "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "/O2",
-    "/clang:-O3",
     "/clang:-mavx",
     "/clang:-mavx2",
     "/clang:-maes",
     "/clang:-mvaes",
     "/clang:-mpclmul",
-    "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
+    "-mllvm:-extra-vectorizer-passes",
+    "-mllvm:-enable-cond-stores-vec",
+    "-mllvm:-slp-vectorize-hor-store",
+    "-mllvm:-adce-remove-loops",
+    "-mllvm:-enable-cse-in-irtranslator",
+    "-mllvm:-enable-cse-in-legalizer",
+    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm:-loop-rotate-multi",
+    "-mllvm:-enable-loopinterchange",
+    "-mllvm:-enable-loop-distribute",
+    "-mllvm:-enable-unroll-and-jam",
+    "-mllvm:-enable-loop-flatten",
+    "-mllvm:-interleave-small-loop-scalar-reduction",
+    "-mllvm:-unroll-runtime-multi-exit",
+    "-mllvm:-aggressive-ext-opt",
+    "-mllvm:-enable-interleaved-mem-accesses",
+    "-mllvm:-enable-masked-interleaved-mem-accesses",
   ]
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
@@ -2046,6 +2078,11 @@ if (is_win) {
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-adce-remove-loops",
+    "-mllvm", "-enable-cse-in-irtranslator",
+    "-mllvm", "-enable-cse-in-legalizer",
+    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loopinterchange",
     "-mllvm", "-enable-loop-distribute",
     "-mllvm", "-enable-unroll-and-jam",
@@ -2054,6 +2091,7 @@ if (is_win) {
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
+    "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-O3",
   ]
 
@@ -2061,6 +2099,11 @@ if (is_win) {
     "-Wl,-mllvm,-extra-vectorizer-passes",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
+    "-Wl,-mllvm,-adce-remove-loops",
+    "-Wl,-mllvm,-enable-cse-in-irtranslator",
+    "-Wl,-mllvm,-enable-cse-in-legalizer",
+    "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
+    "-Wl,-mllvm,-loop-rotate-multi",
     "-Wl,-mllvm,-enable-loopinterchange",
     "-Wl,-mllvm,-enable-loop-distribute",
     "-Wl,-mllvm,-enable-unroll-and-jam",
@@ -2069,6 +2112,7 @@ if (is_win) {
     "-Wl,-mllvm,-unroll-runtime-multi-exit",
     "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-interleaved-mem-accesses",
+    "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
     "-Wl,-O3",
   ]
 
@@ -2261,7 +2305,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
@@ -2294,7 +2338,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
+      cflags = [ "/O2", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {

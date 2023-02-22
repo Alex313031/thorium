@@ -112,16 +112,16 @@ config("compiler") {
       if (host_cpu == "x86" || host_cpu == "x64") {
         cflags += [ "-m32" ]
       } else {
-        cflags += [ "--target=i386-windows", "/clang:-O3", "-Xclang", "-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=i386-windows", ]
       }
     } else if (current_cpu == "x64") {
       if (host_cpu == "x86" || host_cpu == "x64") {
         cflags += [ "-m64" ]
       } else {
-        cflags += [ "--target=x86_64-windows", "/clang:-O3", "-Xclang", "-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=x86_64-windows", ]
       }
     } else if (current_cpu == "arm64") {
-      cflags += [ "--target=arm64-windows", "/clang:-O3", "-Xclang", "-O3", "-Wno-unused-command-line-argument", ]
+      cflags += [ "--target=arm64-windows", ]
     } else {
       assert(false, "unknown current_cpu " + current_cpu)
     }
@@ -138,14 +138,12 @@ config("compiler") {
         "-maes",
         "-mvaes",
         "-mpclmul",
-        "/clang:-O3",
         "/clang:-mavx",
         "/clang:-mavx2",
         "/clang:-maes",
         "/clang:-mvaes",
         "/clang:-mpclmul",
-        "-Xclang", "-O3",
-        "/clang:-march=haswell",
+        "/clang:-march=x86-64-v3",
         "/clang:-mtune=generic",
         "/clang:-ffp-contract=fast",
         "/arch:AVX2",
@@ -210,7 +208,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:-march=haswell",
+      "-mllvm:-march=x86-64-v3",
       "-mllvm:-fp-contract=fast",
     ]
 
