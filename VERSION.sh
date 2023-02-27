@@ -44,6 +44,8 @@ git checkout -f tags/$THOR_VER &&
 
 git clean -ffd &&
 
+cp thorium-libjxl/DEPS ~/chromium/src/
+
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
 gclient runhooks &&
