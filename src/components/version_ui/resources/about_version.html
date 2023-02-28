@@ -65,6 +65,16 @@ about:version template page
 </if>
         <div id="company"><a target="_blank" rel="noopener" href="https://github.com/Alex313031/Thorium">$i18n{company}</a></div>
         <div id="copyright">$i18n{copyright}</div>
+        <!-- Thorium Mascot. -->
+        <picture title="Thorium Mascot">
+          <source srcset="chrome://theme/IDR_PRODUCT_MASCOT,
+                          chrome://theme/IDR_PRODUCT_MASCOT@2x 2x"
+                  media="(prefers-color-scheme: dark)">
+          <source srcset="chrome://theme/IDR_PRODUCT_MASCOT,
+                          chrome://theme/IDR_PRODUCT_MASCOT@2x 2x"
+                  media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+          <img alt="Thorium Mascot" src="chrome://theme/IDR_PRODUCT_MASCOT">
+        </picture>
       </div>
       <table id="inner" cellpadding="0" cellspacing="0" border="0">
         <tr><td class="label">$i18n{application_label}</td>
