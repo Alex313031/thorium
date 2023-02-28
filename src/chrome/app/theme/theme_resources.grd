@@ -9,6 +9,7 @@
      currently set to true for all resources, but the default will
      become false in near future.
   -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <grit latest_public_release="0" current_release="1" output_all_resource_defines="false">
   <outputs>
     <output filename="grit/theme_resources.h" type="rc_header" context="default_100_percent">
@@ -188,6 +189,8 @@
           </if> <!-- _google_chrome_for_testing and _use_internal_chrome_for_testing_icons -->
           <structure type="chrome_scaled_image" name="IDR_PRODUCT_LOGO_NAME_22" file="chromium/product_logo_name_22.png" />
           <structure type="chrome_scaled_image" name="IDR_PRODUCT_LOGO_NAME_22_WHITE" file="chromium/product_logo_name_22_white.png" />
+          <structure type="chrome_scaled_image" name="IDR_PRODUCT_MASCOT" file="chromium/thorium_mascot.jpg" />
+          <structure type="chrome_scaled_image" name="IDR_PRODUCT_NETERROR_FAVICON" file="chromium/dino_favicon.png" />
           <structure type="chrome_scaled_image" name="IDR_PRODUCT_YIFF" file="chromium/catgirl_fridge.png" />
         </else>
       </if> <!-- _google_chrome -->
