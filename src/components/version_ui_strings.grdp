@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <grit-part>
   <message name="IDS_VERSION_UI_TITLE" desc="Title on the about:version page">
     About Thorium Version
   </message>
   <message name="IDS_VERSION_UI_OFFICIAL" desc="official build on the about:version page">
-    Official Build, Thorium Browser
+    Official Build
   </message>
   <message name="IDS_VERSION_UI_UNOFFICIAL" desc="unofficial build on the about:version page">
-    Developer Build, Thorium Browser
+    Developer Build
   </message>
   <message name="IDS_VERSION_UI_32BIT" desc="32-bit on the chrome://version page">
     (32-bit)
