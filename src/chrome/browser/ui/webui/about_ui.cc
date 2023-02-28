@@ -464,6 +464,7 @@ namespace about_ui {
 void AppendHeader(std::string* output, const std::string& unescaped_title) {
   output->append("<!DOCTYPE HTML>\n<html>\n<head>\n");
   output->append("<meta charset='utf-8'>\n");
+  output->append("<link rel='icon' type='image/png' sizes='32x32' href='chrome://theme/current-channel-logo'>\n");
   output->append("<meta name='color-scheme' content='light dark'>\n");
   if (!unescaped_title.empty()) {
     output->append("<title>");
