@@ -26,7 +26,6 @@ chrome_child.dll: %(VersionDir)s\
 chrome_elf.dll: %(VersionDir)s\
 chrome_pwa_launcher.exe: %(VersionDir)s\
 chrome_wer.dll: %(VersionDir)s\
-thorium.ico: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
 thorium_shell.ico: %(VersionDir)s\
 thorium_shell.png: %(VersionDir)s\
@@ -90,7 +89,7 @@ MEIPreload\preloaded_data.pb: %(VersionDir)s\MEIPreload\
 
 [HIDPI]
 chrome_200_percent.pak: %(VersionDir)s\
-Logo.png: %(VersionDir)s\
+thorium.ico: %(VersionDir)s\
 
 # Add component ffmpeg to Thorium.
 [FFMPEG]
