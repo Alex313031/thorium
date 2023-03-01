@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Alex313031. All rights reserved.
+// Copyright (c) 2023 Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -81,6 +81,10 @@
      "GTK Auto Dark Mode",
      "Enables Thorium to automatically change to Dark Mode according to the system GTK Theme.",
      kOsLinux, SINGLE_VALUE_TYPE("auto-dark-mode")},
+    {"enable-native-gpu-memory-buffers",
+     "Enable Native GPU Memory Buffers",
+     "Enables native CPU-mappable GPU memory buffer support on Linux.",
+     kOsLinux, SINGLE_VALUE_TYPE("enable-native-gpu-memory-buffers")},
 #endif // BUILDFLAG(IS_LINUX)
     
 #if BUILDFLAG(IS_WIN)

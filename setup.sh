@@ -44,10 +44,15 @@ printf "\n" &&
 printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
+# Copy libjxl src
+cp -r -v thorium-libjxl/src/. $HOME/chromium/src/ &&
+
+# Copy Thorium sources
 cp -r -v src/BUILD.gn $HOME/chromium/src/ &&
 cp -r -v src/ash/. $HOME/chromium/src/ash/ &&
 cp -r -v src/build/. $HOME/chromium/src/build/ &&
 cp -r -v src/chrome/. $HOME/chromium/src/chrome/ &&
+cp -r -v src/chromeos/. $HOME/chromium/src/chromeos/ &&
 cp -r -v src/components/. $HOME/chromium/src/components/ &&
 cp -r -v src/extensions/. $HOME/chromium/src/extensions/ &&
 cp -r -v src/content/. $HOME/chromium/src/content/ &&
@@ -62,9 +67,6 @@ cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
 cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 
-# Copy libjxl src
-cp -r -v thorium-libjxl/src/. $HOME/chromium/src/ &&
-
 # Add default_apps dir for Google Docs Offline extension.
 mkdir -v -p $HOME/chromium/src/out/thorium/default_apps &&
 cp -r -v infra/default_apps/. $HOME/chromium/src/out/thorium/default_apps/ &&
@@ -72,15 +74,6 @@ cp -r -v infra/default_apps/. $HOME/chromium/src/out/thorium/default_apps/ &&
 echo " # Workaround for DevTools" &&
 mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
-
-printf "\n" &&
-printf "${YEL}Making some scripts executable...\n" &&
-tput sgr0 &&
-chmod -v +x $HOME/chromium/src/tools/clang/scripts/build.py &&
-
-chmod -v +x $HOME/chromium/src/tools/gn/bootstrap/bootstrap.py &&
-
-chmod -v +x $HOME/chromium/src/chrome/installer/linux/debian/build.sh &&
 
 # MacOS Widevine Workaround
 copyMacOS () {
