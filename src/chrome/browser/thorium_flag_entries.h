@@ -68,15 +68,11 @@
     {"double-click-close-tab",
      "Double Click to Close Tab",
      "Enables double clicking a tab to close it.",
-     kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")}, 
+     kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")},
     {"show-fps-counter",
      "Show FPS Counter",
      "Draws a heads-up-display showing Frames Per Second as well as GPU memory usage.",
      kOsDesktop, SINGLE_VALUE_TYPE("show-fps-counter")},
-    {"force-gpu-mem-available-mb",
-     "Set GPU Available Memory",
-     "Sets the total amount of memory (in Mb) that may be allocated for GPU resources.",
-     kOsDesktop, MULTI_VALUE_TYPE(switches::kForceGpuMemAvailableMb)}, 
      
 #if BUILDFLAG(IS_LINUX)
     {"password-store",

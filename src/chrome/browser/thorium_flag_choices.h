@@ -78,18 +78,6 @@ const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
      blink::switches::kNumRasterThreads, "4"},
 };
 
-const FeatureEntry::Choice kForceGpuMemAvailableMb[] = {
-    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
-    {"128",
-     switches::kForceGpuMemAvailableMb, "128"},
-    {"256",
-     switches::kForceGpuMemAvailableMb, "256"},
-    {"512",
-     switches::kForceGpuMemAvailableMb, "512"},
-    {"1024",
-     switches::kForceGpuMemAvailableMb, "1024"},
-};
-
 #if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
