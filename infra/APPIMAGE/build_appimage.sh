@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -74,6 +74,6 @@ rm -r -v -f ./Thorium/ &&
 rm -r -v -f ./temp/ &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}AppImage at //out/thorium*.AppImage\n" &&
+printf "${GRE}Done! ${YEL}AppImage at //out/Thorium*.AppImage\n" &&
 printf "\n" &&
 tput sgr0
