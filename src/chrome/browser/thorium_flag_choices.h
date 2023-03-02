@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Alex313031. All rights reserved.
+// Copyright (c) 2023 Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -76,6 +76,18 @@ const FeatureEntry::Choice kNumRasterThreadsChoices[] = {
      blink::switches::kNumRasterThreads, "3"},
     {"4",
      blink::switches::kNumRasterThreads, "4"},
+};
+
+const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"128",
+     "force-gpu-mem-available-mb", "128"},
+    {"256",
+     "force-gpu-mem-available-mb", "256"},
+    {"512",
+     "force-gpu-mem-available-mb", "512"},
+    {"1024",
+     "force-gpu-mem-available-mb", "1024"},
 };
 
 #if BUILDFLAG(IS_LINUX)
