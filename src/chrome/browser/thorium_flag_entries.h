@@ -85,6 +85,14 @@
      "Set GPU Available Memory",
      "Sets the total amount of memory (in MB) that may be allocated for GPU resources.",
      kOsDesktop, MULTI_VALUE_TYPE(kForceGpuMemAvailableMbChoices)},
+    {"disable-encryption",
+     "Disable Encryption",
+     "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. This is used to enable portable user data directories. Enabled for Thorium Portable.",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-encryption")},
+    {"disable-machine-id",
+     "Disable Machine ID",
+     "Disables use of a generated machine-specific ID to lock the user data directory to that machine. This is used to enable portable user data directories. Enabled for Thorium Portable.",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-machine-id")},
      
 #if BUILDFLAG(IS_LINUX)
     {"enable-native-gpu-memory-buffers",

@@ -60,6 +60,7 @@ cp -r -v src/content/. $HOME/chromium/src/content/ &&
 cp -r -v src/media/. $HOME/chromium/src/media/ &&
 cp -r -v src/net/. $HOME/chromium/src/net/ &&
 cp -r -v src/sandbox/. $HOME/chromium/src/sandbox/ &&
+cp -r -v src/services/. $HOME/chromium/src/services/ &&
 cp -r -v src/third_party/. $HOME/chromium/src/third_party/ &&
 cp -r -v src/tools/. $HOME/chromium/src/tools/ &&
 cp -r -v src/ui/. $HOME/chromium/src/ui/ &&
