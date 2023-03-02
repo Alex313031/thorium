@@ -8,4 +8,4 @@ if [[ -f $XDG_CONFIG_HOME/thorium-flags.conf ]]; then
 fi
 
 # Launch
-exec /opt/chromium.org/thorium/thorium-browser-stable $THORIUM_USER_FLAGS "$@"
+exec /opt/chromium.org/thorium/thorium-browser $THORIUM_USER_FLAGS "$@"
