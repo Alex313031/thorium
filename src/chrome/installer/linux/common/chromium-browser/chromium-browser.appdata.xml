@@ -1,7 +1,7 @@
 <!-- Copyright 2023 The Chromium Authors and Alex313031 -->
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>thorium-browser-stable.desktop</id>
+  <id>thorium-browser.desktop</id>
   <update_contact>alex313031@gmail.com</update_contact>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and GPL-3.0 and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>

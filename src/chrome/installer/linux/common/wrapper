@@ -49,7 +49,7 @@ APPNAME=thorium
 TITLE="Thorium Browser"
 
 # Set the correct file name for the desktop file
-export CHROME_DESKTOP="thorium-browser-stable.desktop"
+export CHROME_DESKTOP="thorium-browser.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
 # DIST=`cat /etc/debian_version`
