@@ -1,0 +1,22 @@
+# Colored makepkg-like functions
+msg_blue() {
+    printf "${blue}==>${bold} $1${all_off}\n"
+}
+
+note() {
+    printf "${blue}==>${yellow} NOTE:${bold} $1${all_off}\n"
+}
+
+all_off="$(tput sgr0)"
+bold="${all_off}$(tput bold)"
+blue="${bold}$(tput setaf 4)"
+yellow="${bold}$(tput setaf 3)"
+
+post_install() {
+    note "Custom flags should be put directly in: ~/.config/thorium-flags.conf"
+    note "The launcher is called: 'thorium-browser'"
+}
+
+post_upgrade() {
+    post_install
+}

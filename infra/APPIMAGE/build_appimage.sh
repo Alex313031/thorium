@@ -46,7 +46,7 @@ cp -r -v ./files/product_logo_22.png ./temp/ &&
 cp -r -v ./files/thorium-shell ./temp/ &&
 rm -r -v ./temp/cron &&
 rm -r -v ./temp/thorium-browser &&
-rm -r -v ./temp/thorium-browser-unstable &&
+rm -r -v ./temp/thorium-browser-stable &&
 
 printf "\n" &&
 printf "${YEL}Building .AppImage using Thorium.yml...\n" &&

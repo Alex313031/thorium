@@ -43,13 +43,13 @@ find "$HOME/.config/thorium/Crash Reports/pending/" -mtime +30 \
 APPNAME=thorium
 
 # Set DESKTOP variable
-# DESKTOP="thorium-browser-unstable"
+# DESKTOP="thorium-browser-stable"
 
 # Set XDG Title variable
 TITLE="Thorium Browser"
 
 # Set the correct file name for the desktop file
-export CHROME_DESKTOP="thorium-browser-unstable.desktop"
+export CHROME_DESKTOP="thorium-browser-stable.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
 # DIST=`cat /etc/debian_version`
@@ -68,8 +68,8 @@ usage () {
   echo "        --temp-profile             Start with a new and temporary profile"
   echo
   echo " Other supported options are:"
-  MANWIDTH=80 man thorium-browser-unstable | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
-  echo " See 'man thorium-browser-unstable' for more details"
+  MANWIDTH=80 man thorium-browser-stable | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
+  echo " See 'man thorium-browser-stable' for more details"
 }
 
 want_temp_profile=0
