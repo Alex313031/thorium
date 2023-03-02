@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#include "base/base_paths.h"
+#include "base/command_line.h"
 #include "base/check.h"
 #include "base/system/sys_info.h"
 
