@@ -2037,12 +2037,6 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
     "-mllvm", "-enable-masked-interleaved-mem-accesses",
-    "/O2",
-    "/clang:-mavx",
-    "/clang:-mavx2",
-    "/clang:-maes",
-    "/clang:-mvaes",
-    "/clang:-mpclmul",
   ]
 
   common_optimize_on_ldflags += [
