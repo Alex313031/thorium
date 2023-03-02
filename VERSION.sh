@@ -44,11 +44,22 @@ git checkout -f tags/$THOR_VER &&
 
 git clean -ffd &&
 
+cd ~/thorium &&
+
+# Add //third_party/libjxl to DEPS
 cp -v thorium-libjxl/DEPS ~/chromium/src/
+
+# Use our artifacts hash
+cp -v src/build/vs_toolchain.py ~/chromium/src/build/
+
+cd ~/chromium/src &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
 gclient runhooks &&
+
+# Install all sysroots (i.e. for ARM64)
+build/linux/sysroot_scripts/install-sysroot.py --all &&
 
 cd ~/thorium &&
 

@@ -39,10 +39,6 @@ gsyncShallow () {
 	cd $HOME/chromium/src/third_party/devtools-frontend/src &&
 	
 	git checkout -f origin/main &&
-	
-	cd $HOME/chromium/src/third_party/ffmpeg &&
-	
-	git checkout -f origin/main &&
 
 	cd $HOME/chromium/src &&
 	

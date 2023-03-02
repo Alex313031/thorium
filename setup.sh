@@ -45,6 +45,7 @@ printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
 tput sgr0 &&
 
 # Copy libjxl src
+cd ~/thorium &&
 cp -r -v thorium-libjxl/src/. $HOME/chromium/src/ &&
 
 # Copy Thorium sources
