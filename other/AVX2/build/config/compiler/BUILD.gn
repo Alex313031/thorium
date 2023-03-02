@@ -903,12 +903,13 @@ config("compiler") {
 # building with ThinLTO, no optimization is performed in the link step.
 config("thinlto_optimize_default") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
-    lto_opt_level = 3
 
     if (is_win) {
-      ldflags = [ "/opt:lldlto=2" ]
+      lto_opt_level = 2
+      ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
+      lto_opt_level = 3
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
   }
@@ -924,16 +925,13 @@ config("thinlto_optimize_default") {
 # use it on important targets such as the main browser executable or dll.
 config("thinlto_optimize_max") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
-    if (thin_lto_enable_optimizations) {
-      lto_opt_level = 3
-    } else {
-      lto_opt_level = 3
-    }
 
     if (is_win) {
-      ldflags = [ "/opt:lldlto=2" ]
+      lto_opt_level = 2
+      ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
+      lto_opt_level = 3
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
   }
