@@ -551,6 +551,13 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
+
+    # TODO(crbug.com/1235145): Investigate why/if this should be needed.
+    if (is_win) {
+      cflags += [ "/clang:-ffp-contract=fast" ]
+    } else {
+      cflags += [ "-ffp-contract=fast" ]
+    }
   }
 
   # Rust compiler setup (for either clang or rustc).
@@ -899,7 +906,7 @@ config("thinlto_optimize_default") {
     lto_opt_level = 3
 
     if (is_win) {
-      ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags = [ "/opt:lldlto=2" ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
@@ -924,7 +931,7 @@ config("thinlto_optimize_max") {
     }
 
     if (is_win) {
-      ldflags = [ "/opt:lldlto=" + lto_opt_level ]
+      ldflags = [ "/opt:lldlto=2" ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
@@ -1987,8 +1994,8 @@ config("no_incompatible_pointer_warnings") {
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
 
-  common_optimize_on_cflags = [ "-O3", ]
-  common_optimize_on_ldflags = [ "-Wl,-O3", ]
+  common_optimize_on_cflags = []
+  common_optimize_on_ldflags = []
 
 if (is_win) {
 
@@ -2305,7 +2312,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2", ] + common_optimize_on_cflags
+      cflags = [ "/O2" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
@@ -2338,7 +2345,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2", ] + common_optimize_on_cflags
+      cflags = [ "/O2" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
