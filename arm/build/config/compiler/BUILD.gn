@@ -978,10 +978,9 @@ config("compiler_cpu_abi") {
         "-O3",
         "-mavx",
         "-maes",
-        "-mvaes",
         "-mpclmul",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mvaes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -2029,38 +2028,12 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
-    "-mllvm", "-extra-vectorizer-passes",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-enable-loopinterchange",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime-multi-exit",
-    "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-enable-interleaved-mem-accesses",
     "/O2",
     "/clang:-O3",
-    "/clang:-mavx",
-    "/clang:-maes",
-    "/clang:-mvaes",
-    "/clang:-mpclmul",
     "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-enable-loopinterchange",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime-multi-exit",
-    "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-enable-interleaved-mem-accesses",
   ]
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in

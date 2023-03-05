@@ -903,13 +903,12 @@ config("compiler") {
 # building with ThinLTO, no optimization is performed in the link step.
 config("thinlto_optimize_default") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+    lto_opt_level = 3
 
     if (is_win) {
-      lto_opt_level = 2
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
-      lto_opt_level = 3
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
   }
@@ -925,13 +924,16 @@ config("thinlto_optimize_default") {
 # use it on important targets such as the main browser executable or dll.
 config("thinlto_optimize_max") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+    if (thin_lto_enable_optimizations) {
+      lto_opt_level = 3
+    } else {
+      lto_opt_level = 3
+    }
 
     if (is_win) {
-      lto_opt_level = 2
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
-      lto_opt_level = 3
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
   }
@@ -943,7 +945,7 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = []
+  cflags = [ "-O3", ]
   ldflags = []
   defines = []
 
@@ -967,10 +969,10 @@ config("compiler_cpu_abi") {
         "-O3",
         "-march=x86-64-v3",
         "-mtune=generic",
-        "-mvaes",
+        "-maes",
         "-ffp-contract=fast",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-mvaes", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-maes", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -1992,8 +1994,8 @@ config("no_incompatible_pointer_warnings") {
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
 
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
+  common_optimize_on_cflags = [ "-O3", ]
+  common_optimize_on_ldflags = [ "-Wl,-O3", ]
 
 if (is_win) {
 
@@ -2035,6 +2037,14 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
     "-mllvm", "-enable-masked-interleaved-mem-accesses",
+    "-mllvm", "-enable-gvn-hoist",
+    "/O2",
+    "/clang:-O3",
+    "/clang:-mavx",
+    "/clang:-mavx2",
+    "/clang:-maes",
+    "/clang:-mpclmul",
+    "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
@@ -2055,6 +2065,7 @@ if (is_win) {
     "-mllvm:-aggressive-ext-opt",
     "-mllvm:-enable-interleaved-mem-accesses",
     "-mllvm:-enable-masked-interleaved-mem-accesses",
+    "-mllvm:-enable-gvn-hoist",
   ]
   
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
@@ -2091,6 +2102,7 @@ if (is_win) {
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
     "-mllvm", "-enable-masked-interleaved-mem-accesses",
+    "-mllvm", "-enable-gvn-hoist",
     "-O3",
   ]
 
@@ -2112,6 +2124,7 @@ if (is_win) {
     "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-interleaved-mem-accesses",
     "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
+    "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
 
@@ -2304,7 +2317,7 @@ config("optimize_max") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2" ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
@@ -2337,7 +2350,7 @@ config("optimize_speed") {
     if (is_win) {
       # Favor speed over size, /O2 must be before the common flags.
       # /O2 implies /Ot, /Oi, and /GF.
-      cflags = [ "/O2" ] + common_optimize_on_cflags
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
