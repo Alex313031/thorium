@@ -134,6 +134,7 @@ config("compiler") {
       cflags += [
         "/arch:AVX2",
         "-maes",
+        "-Wno-unused-command-line-argument",
       ]
     }
 
