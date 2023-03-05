@@ -28,7 +28,7 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
-THOR_VER="109.0.5414.128"
+THOR_VER="109.0.5414.131"
 
 export THOR_VER &&
 
