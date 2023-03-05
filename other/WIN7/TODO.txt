@@ -1,4 +1,5 @@
 Backport bookmarks bar, quiet notifications, and all flags patches.
 Add AVX2 fix.
 Use new logo for main and installer.
-Use 
+Use 131 version
+move this to branch.
