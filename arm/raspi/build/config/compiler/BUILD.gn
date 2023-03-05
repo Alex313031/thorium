@@ -963,13 +963,13 @@ config("compiler_cpu_abi") {
   if ((is_posix && !is_apple) || is_fuchsia) {
     # CPU architecture. We may or may not be doing a cross compile now, so for
     # simplicity we always explicitly set the architecture.
-    if (current_cpu == "x64") {
+    if (target_cpu == "x64") {
       cflags += [
         "-m64",
         "-msse3",
       ]
       ldflags += [ "-m64" ]
-    } else if (current_cpu == "x86") {
+    } else if (target_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32" ]
       if (!is_nacl) {
@@ -2105,7 +2105,7 @@ config("optimize") {
   } else if (optimize_for_size) {
     # Favor size over speed.
     if (is_clang) {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
 
       if (use_ml_inliner && is_a_target_toolchain) {
         cflags += [
@@ -2114,7 +2114,7 @@ config("optimize") {
         ]
       }
     } else {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     }
 
     # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
@@ -2127,13 +2127,13 @@ config("optimize") {
     # - Make `optimize_for_size` apply to all platforms where we're optimizing
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
-    cflags = [ "-O3" ] + common_optimize_on_cflags
+    cflags = [ "-O2" ] + common_optimize_on_cflags
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
     rustflags = [ "-Copt-level=3" ]
   } else {
-    cflags = [ "-O3" ] + common_optimize_on_cflags
+    cflags = [ "-O2" ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
@@ -2161,9 +2161,9 @@ config("no_optimize") {
     # On Android we kind of optimize some things that don't affect debugging
     # much even when optimization is disabled to get the binary size down.
     if (is_clang) {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     }
 
     if (!is_component_build) {
@@ -2174,9 +2174,9 @@ config("no_optimize") {
   } else if (is_fuchsia) {
     # On Fuchsia, we optimize for size here to reduce the size of debug build
     # packages so they can be run in a KVM. See crbug.com/910243 for details.
-    cflags = [ "-O3" ]
+    cflags = [ "-O2" ]
   } else {
-    cflags = [ "-O3" ]
+    cflags = [ "-O2" ]
     ldflags = []
   }
 }
@@ -2202,9 +2202,9 @@ config("optimize_max") {
       # /O2 implies /Ot, /Oi, and /GF.
       cflags = [ "/O2" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     }
     rustflags = [ "-Copt-level=3" ]
   }
@@ -2235,16 +2235,16 @@ config("optimize_speed") {
       # /O2 implies /Ot, /Oi, and /GF.
       cflags = [ "/O2" ] + common_optimize_on_cflags
     } else if (optimize_for_fuzzing) {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     } else {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+      cflags = [ "-O2" ] + common_optimize_on_cflags
     }
     rustflags = [ "-Copt-level=3" ]
   }
 }
 
 config("optimize_fuzzing") {
-  cflags = [ "-O3" ] + common_optimize_on_cflags
+  cflags = [ "-O2" ] + common_optimize_on_cflags
   rustflags = [ "-Copt-level=3" ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]

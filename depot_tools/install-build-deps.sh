@@ -107,7 +107,7 @@ fi
 
 distro_codename=$(lsb_release --codename --short)
 distro_id=$(lsb_release --id --short)
-supported_codenames="(bionic|focal|jammy)"
+supported_codenames="(bionic|focal|jammy|kinetic|lunar)"
 supported_ids="(Debian)"
 if [ 0 -eq "${do_unsupported-0}" ] && [ 0 -eq "${do_quick_check-0}" ] ; then
   if [[ ! $distro_codename =~ $supported_codenames &&
@@ -116,6 +116,8 @@ if [ 0 -eq "${do_unsupported-0}" ] && [ 0 -eq "${do_quick_check-0}" ] ; then
       "\tUbuntu 18.04 LTS (bionic with EoL April 2028)\n" \
       "\tUbuntu 20.04 LTS (focal with EoL April 2030)\n" \
       "\tUbuntu 22.04 LTS (jammy with EoL April 2032)\n" \
+      "\tUbuntu 22.10 (kinetic with EoL October 2023)\n" \
+      "\tUbuntu 23.04 (lunar with EoL April 2024)\n" \
       "\tDebian 10 (buster) or later" >&2
     exit 1
   fi
@@ -305,7 +307,7 @@ lib_list="\
 "
 
 # 32-bit libraries needed e.g. to compile V8 snapshot for Android or armhf
-lib32_list="linux-libc-dev:i386 libpci3:i386"
+lib32_list="linux-libc-dev-i386-cross libpci3:i386"
 
 # 32-bit libraries needed for a 32-bit build
 # includes some 32-bit libraries required by the Android SDK
@@ -453,7 +455,9 @@ fi
 
 # arm cross toolchain packages needed to build chrome on armhf
 arm_list="libc6-dev-armhf-cross
+          libc6-dev-arm64-cross
           linux-libc-dev-armhf-cross
+          linux-libc-dev-arm64-cross
           g++-arm-linux-gnueabihf"
 
 # Work around for dependency issue Ubuntu: http://crbug.com/435056
@@ -469,6 +473,16 @@ case $distro_codename in
                 gcc-arm-linux-gnueabihf"
     ;;
   jammy)
+    arm_list+=" gcc-arm-linux-gnueabihf
+                g++-11-arm-linux-gnueabihf
+                gcc-11-arm-linux-gnueabihf"
+    ;;
+  kinetic)
+    arm_list+=" gcc-arm-linux-gnueabihf
+                g++-11-arm-linux-gnueabihf
+                gcc-11-arm-linux-gnueabihf"
+    ;;
+  lunar)
     arm_list+=" gcc-arm-linux-gnueabihf
                 g++-11-arm-linux-gnueabihf
                 gcc-11-arm-linux-gnueabihf"
@@ -577,9 +591,6 @@ if package_exists libinput10; then
 fi
 if package_exists libinput-dev; then
     dev_list="${dev_list} libinput-dev"
-fi
-if package_exists snapcraft; then
-    dev_list="${dev_list} snapcraft"
 fi
 
 # Cross-toolchain strip is needed for building the sysroots.

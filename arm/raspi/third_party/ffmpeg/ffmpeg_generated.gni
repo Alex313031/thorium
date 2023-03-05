@@ -1,4 +1,4 @@
-# Copyright 2022 The Chromium Authors. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -496,6 +496,18 @@ if ((is_android && current_cpu == "arm64") || (is_mac && current_cpu == "arm64")
     "libavutil/aarch64/cpu.c",
     "libavutil/aarch64/float_dsp_init.c",
     "libavutil/aarch64/tx_float_init.c",
+    "libavcodec/ac3dsp.c",
+    "libavcodec/fmtconvert.c",
+    "libavcodec/ac3tab.c",
+    "libavcodec/ac3dec_float.c",
+    "libavcodec/ac3.c",
+    "libavcodec/aarch64/fmtconvert_neon.S",
+    "libavcodec/aarch64/fmtconvert_init.c",
+    "libavcodec/ac3dec_data.c",
+    "libavcodec/eac3dec.c",
+    "libavcodec/eac3_data.c",
+    "libavcodec/ac3dec_fixed.c",
+    "libavformat/ac3dec.c",
   ]
   ffmpeg_gas_sources += [
     "libavcodec/aarch64/autorename_libavcodec_aarch64_fft_neon.S",
@@ -521,18 +533,6 @@ if ((is_mac) || (is_win) || (use_linux_config)) {
     "libavcodec/vpx_rac.c",
     "libavformat/avc.c",
     "libavcodec/x86/ac3dsp_init.c",
-    "libavcodec/ac3dsp.c",
-    "libavcodec/fmtconvert.c",
-    "libavcodec/ac3tab.c",
-    "libavcodec/ac3dec_float.c",
-    "libavcodec/ac3.c",
-    "libavcodec/aarch64/fmtconvert_neon.S",
-    "libavcodec/aarch64/fmtconvert_init.c",
-    "libavcodec/ac3dec_data.c",
-    "libavcodec/eac3dec.c",
-    "libavcodec/eac3_data.c",
-    "libavcodec/ac3dec_fixed.c",
-    "libavformat/ac3dec.c",
    ]
    ffmpeg_asm_sources += [
     "libavcodec/x86/ac3dsp.asm",

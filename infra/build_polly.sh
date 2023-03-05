@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Copyright (c) 2022 Alex313031/
+## Copyright (c) 2023 Alex313031/
 
 ## Clones latest LLVM being used by the Chromium Project, and builds a local LLVM toolchain with Polly to use the Polly optimizations in the main Thorium BUILD.gn
 
