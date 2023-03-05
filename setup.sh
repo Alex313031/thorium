@@ -94,8 +94,7 @@ esac
 copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
-	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v arm/raspi_arm.gni $HOME/chromium/src/build/config/arm.gni &&
+	cp -r -v arm/raspi/* $HOME/chromium/src/&&
 	printf "\n"
 }
 
