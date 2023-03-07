@@ -737,6 +737,11 @@ config("compiler") {
       }
     }
 
+    if (is_linux && current_cpu == "arm64") {
+      cflags += [ "-O3", ]
+      ldflags += [ "-Wl,-O3", ]
+    }
+
     # This flag causes LTO to create an .ARM.attributes section with the correct
     # architecture. This is necessary because LLD will refuse to link a program
     # unless the architecture revision in .ARM.attributes is sufficiently new.
@@ -2008,8 +2013,8 @@ if (is_win) {
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
   }
 } else {
-  common_optimize_on_cflags = []
-  common_optimize_on_ldflags = []
+  common_optimize_on_cflags = [ "-O3", ]
+  common_optimize_on_ldflags = [ "-Wl,-O3", ]
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
