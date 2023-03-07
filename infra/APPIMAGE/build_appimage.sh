@@ -54,7 +54,7 @@ printf "${c0}\n" &&
 sleep 2 &&
 
 # Build appimage
-chmod +x pkg2appimage &&
+# chmod +x pkg2appimage &&
 ./pkg2appimage Thorium.yml &&
 
 printf "\n" &&
