@@ -61,8 +61,6 @@ gclient runhooks &&
 # Install all sysroots (i.e. for ARM64)
 build/linux/sysroot_scripts/install-sysroot.py --all &&
 
-cd ~/thorium &&
-
 printf "\n"
 printf "${GRE}Chromium tree is checked out at tag: ${c0}$THOR_VER\n"
 printf "\n"
@@ -77,6 +75,8 @@ python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromiu
 
 python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 printf "\n" &&
+
+cd ~/thorium &&
 
 printf "${GRE}Done! ${YEL}You can now run ./setup.sh\n"
 tput sgr0 &&
