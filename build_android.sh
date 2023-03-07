@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -20,9 +20,10 @@ displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium for Android.${c0}\n" &&
 	printf "${underline}${YEL}Usage: ${c0}build.sh # (where # is number of jobs)${c0}\n" &&
+	printf "${underline}${YEL}Use the --arm32 flag to make an ARM32 Build.{c0}\n" &&
+	printf "${underline}${YEL}Use the --help flag to show this help.{c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -47,10 +48,25 @@ rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-hdpi
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
 rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
 
-# Build Thorium
+buildARM32 () {
+# Build Thorium for ARM32
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk system_webview_apk -j$@ &&
+./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk thorium_shell_apk system_webview_apk -j$@ &&
+
+cat logos/thorium_logo_ascii_art.txt &&
+
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apks to your device or use ADB to install.\n" &&
+tput sgr0
+}
+case $1 in
+	--arm32) buildARM32; exit 0;;
+esac
+
+# Build Thorium for ARM64
+export NINJA_SUMMARIZE_BUILD=1 &&
+
+./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk thorium_shell_apk -j$@ &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
