@@ -211,7 +211,6 @@ if (current_toolchain == default_toolchain) {
   android_resources("chrome_base_module_resources") {
     sources = [
       "java/res_base/anim/no_anim.xml",
-      "java/res_base/drawable-v26/ic_launcher_round.xml",
       "java/res_base/font/chrome_google_sans.xml",
       "java/res_base/font/chrome_google_sans_bold.xml",
       "java/res_base/font/chrome_google_sans_medium.xml",
