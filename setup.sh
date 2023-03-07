@@ -24,11 +24,11 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --android flag for Android Builds.${c0}\n" &&
 	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in Thorium/infra, then use the setup_polly.sh${c0}\n" &&
 	printf "${bold}${YEL}script in Thorium/other/Polly. Both of these actions should be taken AFTER running this script!${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -85,7 +85,6 @@ copyMacOS () {
 	cp -r -v arm/mac_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
-
 case $1 in
 	--mac) copyMacOS;
 esac
@@ -94,10 +93,9 @@ esac
 copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
-	cp -r -v arm/raspi/* $HOME/chromium/src/&&
+	cp -r -v arm/raspi/* $HOME/chromium/src/ &&
 	printf "\n"
 }
-
 case $1 in
 	--raspi) copyRaspi;
 esac
@@ -110,7 +108,6 @@ copyWOA () {
 	cp -r -v arm/woa_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
-
 case $1 in
 	--woa) copyWOA;
 esac
@@ -123,7 +120,6 @@ copyAVX2 () {
 	cp -r -v other/AVX2/third_party/opus/src/* $HOME/chromium/src/third_party/opus/src/ &&
 	printf "\n"
 }
-
 case $1 in
 	--avx2) copyAVX2;
 esac
@@ -135,9 +131,20 @@ copySSE3 () {
 	cp -r -v other/SSE3/build/config/* $HOME/chromium/src/build/config/ &&
 	printf "\n"
 }
-
 case $1 in
 	--sse3) copySSE3;
+esac
+
+# Copy Android files
+copyAndroid () {
+	printf "\n" &&
+	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
+	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v arm/raspi/third_party/* $HOME/chromium/src/third_party/ &&
+	printf "\n"
+}
+case $1 in
+	--android) copyAndroid;
 esac
 
 printf "${GRE}Done!\n" &&
