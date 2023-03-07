@@ -1010,7 +1010,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
   configure_flags['Chrome'].extend([
       '--enable-decoder=aac,h264,mp3,eac3,ac3,hevc,mpeg4,mpegvideo,mp2,mp1,flac',
       '--enable-demuxer=aac,mp3,mov,dtshd,dts,avi,mpegvideo,m4v,h264,vc1,flac',
-      '--enable-parser=aac,h264,mpegaudio,mpeg4video,mpegvideo,ac3,h261,vc1,h263,flac',
+      '--enable-parser=aac,h264,hevc,mpegaudio,mpeg4video,mpegvideo,ac3,h261,vc1,h263,flac',
   ])
 
   # Google ChromeOS specific configuration.
