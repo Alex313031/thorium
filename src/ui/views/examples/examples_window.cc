@@ -37,7 +37,6 @@ namespace views::examples {
 
 const char kExamplesWidgetName[] = "ExamplesWidget";
 static const char kEnableExamples[] = "enable-examples";
-static const char kEnableSidePanel[] = "side-panel";
 
 bool CheckCommandLineUsage() {
   base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
