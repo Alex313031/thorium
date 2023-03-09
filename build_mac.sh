@@ -23,6 +23,9 @@ displayHelp () {
 	printf "${c0}Use the --build-shell flag to also build the thorium_shell target.${c0}\n" &&
 	printf "\n"
 }
+case $1 in
+	--help) displayHelp; exit 0;;
+esac
 
 # Build Thorium Shell in addition to the others.
 buildShell () {
@@ -39,12 +42,7 @@ buildShell () {
 	
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh, and copy the Thorium Shell.app\n" &&
 	tput sgr0
-	}
-	
-case $1 in
-	--help) displayHelp; exit 0;;
-esac
-
+}
 case $1 in
 	--build-shell) buildShell; exit 0;;
 esac

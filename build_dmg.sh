@@ -16,7 +16,7 @@ die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
-printf "${YEL}Building .dmg of Thorium...\n" &&
+printf "${YEL}Building .dmg package of Thorium...\n" &&
 printf "${CYA}\n" &&
 
 # Fix file attr

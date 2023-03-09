@@ -24,7 +24,6 @@ displayHelp () {
 	printf "${bold}${YEL}from your home directory, and then re-clone depot_tools in \$HOME.${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac

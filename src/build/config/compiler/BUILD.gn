@@ -70,6 +70,9 @@ declare_args() {
   # This is initialized below, after use_gold might have been overridden.
   gold_path = ""
 
+  # Whether to enable LLVM's Polly optimizations. See https://polly.llvm.org/
+  use_polly = false
+
   # Enable fatal linker warnings. Building Chromium with certain versions
   # of binutils can cause linker warning.
   fatal_linker_warnings = true
@@ -2058,7 +2061,16 @@ if (is_win) {
     "-mllvm:-enable-masked-interleaved-mem-accesses",
     "-mllvm:-enable-gvn-hoist",
   ]
-  
+
+  if (use_polly == true) {
+    common_optimize_on_ldflags += [
+    "-mllvm:-polly",
+    "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
+    "-mllvm:-polly-invariant-load-hoisting",
+    "-mllvm:-polly-vectorizer=stripmine",
+    ]
+  }
+
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
@@ -2118,6 +2130,15 @@ if (is_win) {
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
+
+  if (use_polly == true) {
+    common_optimize_on_ldflags += [
+    "-Wl,-mllvm,-polly",
+    "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
+    "-Wl,-mllvm,-polly-invariant-load-hoisting",
+    "-Wl,-mllvm,-polly-vectorizer=stripmine",
+    ]
+  }
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking

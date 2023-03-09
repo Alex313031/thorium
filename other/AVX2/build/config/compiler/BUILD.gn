@@ -970,12 +970,12 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
+        "-maes",
         "-march=x86-64-v3",
         "-mtune=generic",
-        "-maes",
         "-ffp-contract=fast",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-maes", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-maes", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -2043,10 +2043,10 @@ if (is_win) {
     "-mllvm", "-enable-gvn-hoist",
     "/O2",
     "/clang:-O3",
-    "/clang:-mavx",
-    "/clang:-mavx2",
     "/clang:-maes",
     "/clang:-mpclmul",
+    "/clang:-mavx",
+    "/clang:-mavx2",
     "-Xclang", "-O3",
   ]
 
@@ -2070,7 +2070,7 @@ if (is_win) {
     "-mllvm:-enable-masked-interleaved-mem-accesses",
     "-mllvm:-enable-gvn-hoist",
   ]
-  
+
   if (use_polly == true) {
     common_optimize_on_ldflags += [
     "-mllvm:-polly",
@@ -2079,7 +2079,7 @@ if (is_win) {
     "-mllvm:-polly-vectorizer=stripmine",
     ]
   }
-  
+
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
@@ -2139,7 +2139,7 @@ if (is_win) {
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
-  
+
   if (use_polly == true) {
     common_optimize_on_ldflags += [
     "-Wl,-mllvm,-polly",

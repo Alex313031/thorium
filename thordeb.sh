@@ -22,7 +22,6 @@ displayHelp () {
 	printf "${underline}${YEL}Usage: ${c0}thordeb.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
