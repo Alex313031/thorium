@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2022 The Chromium Authors and Alex313031.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -21,7 +21,7 @@ gen_changelog() {
   process_template "${SCRIPTDIR}/changelog.template" "${DEB_CHANGELOG}"
   debchange -a --nomultimaint -m --changelog "${DEB_CHANGELOG}" \
     "Release Notes: ${RELEASENOTES}"
-  GZLOG="${STAGEDIR}/usr/share/doc/${PACKAGE}-${CHANNEL}/changelog.gz"
+  GZLOG="${STAGEDIR}/usr/share/doc/${PACKAGE}/changelog.gz"
   mkdir -p "$(dirname "${GZLOG}")"
   gzip -9 -c "${DEB_CHANGELOG}" > "${GZLOG}"
   chmod 644 "${GZLOG}"
@@ -30,7 +30,7 @@ gen_changelog() {
 # Create the Debian control file needed by dpkg-deb.
 gen_control() {
   dpkg-gencontrol -v"${VERSIONFULL}" -c"${DEB_CONTROL}" -l"${DEB_CHANGELOG}" \
-  -f"${DEB_FILES}" -p"${PACKAGE}-${CHANNEL}" -P"${STAGEDIR}" \
+  -f"${DEB_FILES}" -p"${PACKAGE}" -P"${STAGEDIR}" \
   -O > "${STAGEDIR}/DEBIAN/control"
   rm -f "${DEB_CONTROL}"
 }
@@ -49,18 +49,18 @@ stage_install_debian() {
   # Always use a different name for /usr/bin symlink depending on channel.
   # First, to avoid file collisions. Second, to make it possible to
   # use update-alternatives for /usr/bin/google-chrome.
-  local USR_BIN_SYMLINK_NAME="${PACKAGE}-${CHANNEL}"
+  local USR_BIN_SYMLINK_NAME="${PACKAGE}"
 
   local PACKAGE_ORIG="${PACKAGE}"
   if [ "$CHANNEL" != "stable" ]; then
     # Avoid file collisions between channels.
     local INSTALLDIR="${INSTALLDIR}"
 
-    local PACKAGE="${PACKAGE}-${CHANNEL}"
+    local PACKAGE="${PACKAGE}"
 
     # Make it possible to distinguish between menu entries
     # for different channels.
-    local MENUNAME="${MENUNAME} (${CHANNEL})"
+    local MENUNAME="${MENUNAME}"
   fi
   prep_staging_debian
   SHLIB_PERMS=644
@@ -92,7 +92,7 @@ verify_package() {
   local EXPECTED_DEPENDS="${TMPFILEDIR}/expected_deb_depends"
   local ACTUAL_DEPENDS="${TMPFILEDIR}/actual_deb_depends"
   echo ${DEPENDS} | sed 's/, /\n/g' | LANG=C sort > "${EXPECTED_DEPENDS}"
-  dpkg -I "${PACKAGE}-${CHANNEL}_${VERSIONFULL}_${ARCHITECTURE}.deb" | \
+  dpkg -I "${PACKAGE}_${VERSIONFULL}_${ARCHITECTURE}.deb" | \
       grep '^ Depends: ' | sed 's/^ Depends: //' | sed 's/, /\n/g' | \
       LANG=C sort > "${ACTUAL_DEPENDS}"
   BAD_DIFF=0
@@ -118,12 +118,17 @@ do_package() {
   if [ -f "${DEB_CONTROL}" ]; then
     gen_control
   fi
+  log_cmd fakeroot dpkg-deb -Znone -b "${STAGEDIR}" "${TMPFILEDIR}"
+  local PACKAGEFILE="${PACKAGE}_${VERSIONFULL}_${ARCHITECTURE}.deb"
   if [ ${IS_OFFICIAL_BUILD} -ne 0 ]; then
-    local COMPRESSION_OPTS="-Zxz -z9"
-  else
-    local COMPRESSION_OPTS="-Znone"
+    (cd "${TMPFILEDIR}" && ar -x "${TMPFILEDIR}/${PACKAGEFILE}")
+    xz -z9 -T0 --lzma2='dict=256MiB' "${TMPFILEDIR}/data.tar"
+    xz -z0 "${TMPFILEDIR}/control.tar"
+    ar -d "${TMPFILEDIR}/${PACKAGEFILE}" control.tar data.tar
+    ar -r "${TMPFILEDIR}/${PACKAGEFILE}" "${TMPFILEDIR}/control.tar.xz" \
+      "${TMPFILEDIR}/data.tar.xz"
   fi
-  log_cmd fakeroot dpkg-deb ${COMPRESSION_OPTS} -b "${STAGEDIR}" .
+  mv "${TMPFILEDIR}/${PACKAGEFILE}" .
   verify_package "$DEPENDS"
 }
 

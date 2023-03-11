@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Alex313031
+# Copyright (c) 2023 Alex313031
 # Shows the output of a given command only on failure, or when VERBOSE is set.
 log_cmd() {
   if [ "${VERBOSE:-}" ]; then
@@ -150,7 +150,7 @@ stage_install_common() {
   # crashpad
   strippedfile="${OUTPUTDIR}/chrome_crashpad_handler.stripped"
   install -m 755 "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/chrome_crashpad_handler"
-  
+
   # Final permissions for the chrome-management-service will be set in
   # postinst chrome_management_service_setup().
   strippedfile="${OUTPUTDIR}/chrome_management_service.stripped"
@@ -235,7 +235,7 @@ stage_install_common() {
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -name libwidevinecdm.so \
       -exec chmod ${SHLIB_PERMS} '{}' \;
   fi
-  
+
   # ClearKey CDM.
   if [ -d "${OUTPUTDIR}/ClearKeyCdm" ]; then
     # No need to strip; libclearkeycdm.so starts out stripped.
@@ -450,7 +450,7 @@ stage_install_common() {
     elif [[ "${file_type}" = *"shell script"* ]]; then
       local expected_perms=755
     elif [[ "${file_type}" = ELF* ]]; then
-      if [[ "${base_name}" = *".so" ]]; then
+      if [[ "${base_name}" = *".so" || "${base_name}" = *".so."[[:digit:]]* ]]; then
         local expected_perms=${SHLIB_PERMS}
       else
         local expected_perms=755
