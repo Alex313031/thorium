@@ -53,6 +53,12 @@
      "Number of Raster Threads",
      "Specify the number of worker threads used to rasterize content.",
      kOsDesktop, MULTI_VALUE_TYPE(kNumRasterThreadsChoices)},
+    {"gpu-no-context-lost",
+     "No GPU Context Lost",
+     "Inform Thorium's GPU process that a GPU context will not be lost in power saving mode, screen saving mode, etc. "
+     "Note that this flag does not ensure that a GPU context will never be lost in any situation, like say, a GPU reset. "
+     "Useful for fixing blank or pink screens/videos upon system resume, etc.",
+     kOsDesktop, SINGLE_VALUE_TYPE(switches::kGpuNoContextLost)},
     {"enable-ui-devtools",
      "Enable Native UI Inspection in DevTools",
      "Enables inspection of native UI elements in devtools. Inspect at `chrome://inspect/#native-ui`",
