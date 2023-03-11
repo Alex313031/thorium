@@ -50,7 +50,8 @@ if (current_toolchain == default_toolchain) {
   _default_package = "org.chromium.thorium"
   if (use_stable_package_name_for_trichrome) {
     _default_package += ".stable"
-  } else if (android_channel != "default") {
+    # CHANGED BY ALEX313031 FOR THORIUM
+  } else if (android_channel != "default" && android_channel != "stable") {
     # android-binary-size trybot may checks if an internal Chrome variant's
     # AndroidManifest is as expected by ensuring the differences between its
     # AndroidManifest and its upstream target's .AndroidManifest.expected file

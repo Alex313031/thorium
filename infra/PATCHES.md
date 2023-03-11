@@ -160,6 +160,16 @@ Patches to enable truly Portable usage > Disable Encryption and Machine ID
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-encryption.patch
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-machine-id.patch
 
+Android Patches from Bromite:
+  - https://github.com/bromite/bromite/blob/master/build/patches/do-not-add-suffix-to-package-name.patch
+  - https://github.com/bromite/bromite/blob/master/build/patches/Enable-fwrapv-in-Clang-for-non-UBSan-builds.patch
+ > TODO:
+  - https://github.com/bromite/bromite/blob/master/build/patches/Do-not-link-with-libatomic.patch
+  - https://github.com/bromite/bromite/blob/master/build/patches/Disable-media-router-and-remoting-by-default.patch
+  - https://github.com/bromite/bromite/blob/master/build/patches/Enable-darken-websites-checkbox-in-themes.patch
+  - https://github.com/bromite/bromite/blob/master/build/patches/Disable-feeds-support-by-default.patch
+  - https://github.com/bromite/bromite/blob/master/build/patches/Add-exit-menu-item.patch
+
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999

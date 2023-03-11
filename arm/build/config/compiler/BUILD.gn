@@ -343,6 +343,11 @@ config("compiler") {
         ldflags += [ "-B$lld_path" ]
       }
     }
+    
+    # ADDED BY ALEX313031 FOR THORIUM
+    if (is_clang && is_android && !is_ubsan && !is_ubsan_security) {
+      cflags += [ "-fwrapv" ]
+    }
 
     # Linker warnings.
     if (fatal_linker_warnings && !is_apple && current_os != "aix" &&
