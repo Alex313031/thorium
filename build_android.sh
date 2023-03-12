@@ -34,19 +34,21 @@ printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
 printf "${CYA}\n" &&
 
 # Workaround for branding dir
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xhdpi/layered_app_icon_background.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xhdpi/layered_app_icon.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxxhdpi/layered_app_icon_background.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxxhdpi/layered_app_icon.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-nodpi/layered_app_icon_foreground.xml &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon_background.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
-rm -v -r -f $HOME/chromium/src/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
+cd $HOME/chromium/src &&
+rm -v -r -f chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
+rm -v -r -f chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xhdpi/layered_app_icon_background.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xhdpi/layered_app_icon.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xxxhdpi/layered_app_icon_background.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xxxhdpi/layered_app_icon.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-nodpi/layered_app_icon_foreground.xml &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon_background.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
+rm -v -r -f chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
+cd $HOME/thorium &&
 
 buildARM32 () {
 # Build Thorium for ARM32

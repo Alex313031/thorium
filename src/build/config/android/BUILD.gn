@@ -51,9 +51,9 @@ config("compiler") {
 
   if (current_cpu == "arm64") {
     if (arm_control_flow_integrity == "standard") {
-      cflags += [ "-mbranch-protection=standard", "-mfloat-abi=hard", "-march=armv8-a+simd", "-mtune=generic-armv8-a+simd", "-mfpu=neon", ]
+      cflags += [ "-mbranch-protection=standard", "-mfloat-abi=hard", "-march=armv8-a+simd", "-mfpu=neon", ]
     } else if (arm_control_flow_integrity == "pac") {
-      cflags += [ "-mbranch-protection=pac-ret", "-mfloat-abi=hard", "-march=armv8-a+simd", "-mtune=generic-armv8-a+simd", "-mfpu=neon", ]
+      cflags += [ "-mbranch-protection=pac-ret", "-mfloat-abi=hard", "-march=armv8-a+simd", "-mfpu=neon", ]
     }
   }
 
