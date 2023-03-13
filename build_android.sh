@@ -56,11 +56,12 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk thorium_shell_apk system_webview_apk -j$@ &&
 
-mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public.apk &&
+mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm32.apk &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apks to your device or use ADB to install.\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+printf "${GRE}${bold}They are located in //chromium/src/out/thorium/apks/\n" &&
 tput sgr0
 }
 case $1 in
@@ -72,11 +73,12 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk thorium_shell_apk -j$@ &&
 
-mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public.apk &&
+mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm64.apk &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apks to your device or use ADB to install.\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+printf "${GRE}${bold}They are located in //chromium/src/out/thorium/apks/\n" &&
 tput sgr0 &&
 
 exit 0

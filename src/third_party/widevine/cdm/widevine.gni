@@ -1,4 +1,4 @@
-# Copyright 2015 The Chromium Authors
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -47,15 +47,14 @@ enable_widevine_cdm_component =
 
 # Enable (Windows) Media Foundation Widevine CDM component.
 declare_args() {
-  enable_media_foundation_widevine_cdm =
-      is_win && enable_widevine && is_chrome_branded
+  enable_media_foundation_widevine_cdm = false
 }
 assert(!enable_media_foundation_widevine_cdm || is_win)
 assert(!enable_media_foundation_widevine_cdm || enable_widevine)
 
 declare_args() {
   # Widevine CDM is bundled as part of Google Chrome builds.
-  bundle_widevine_cdm = enable_library_widevine_cdm && is_chrome_branded
+  bundle_widevine_cdm = false
 
   # Relative root directory to //third_party/widevine/cdm for CDM files.
   # Can be overridden if the CDM files are located in other places.
@@ -68,8 +67,7 @@ if (target_os == "win" && target_cpu == "arm64") {
 
 # Enable Widevine CDM host verification, which will sign additional binaries
 # with Widevine certs and copy signature files as needed.
-enable_widevine_cdm_host_verification =
-    enable_library_widevine_cdm && enable_cdm_host_verification
+enable_widevine_cdm_host_verification = false
 
 declare_args() {
   # If set, and Widevine CDM host verification signing failed due to no signing
