@@ -453,8 +453,6 @@ group("installer_deps") {
 # channel:
 #   Name of the channel.
 template("linux_package") {
-  assert(defined(invoker.channel))
-  channel = invoker.channel
 
   if (is_chrome_branded) {
     package = "google-chrome"
