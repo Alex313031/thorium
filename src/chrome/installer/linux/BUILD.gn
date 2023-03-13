@@ -612,9 +612,3 @@ template("linux_package") {
 linux_package("stable") {
   channel = "stable"
 }
-linux_package("beta") {
-  channel = "beta"
-}
-linux_package("unstable") {
-  channel = "unstable"
-}
