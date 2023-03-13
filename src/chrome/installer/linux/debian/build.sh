@@ -52,6 +52,14 @@ stage_install_debian() {
   local USR_BIN_SYMLINK_NAME="${PACKAGE}"
 
   local PACKAGE_ORIG="${PACKAGE}"
+  # Avoid file collisions between channels.
+  local INSTALLDIR="${INSTALLDIR}"
+
+  local PACKAGE="${PACKAGE}"
+
+  # Make it possible to distinguish between menu entries
+  # for different channels.
+  local MENUNAME="${MENUNAME}"
 
   prep_staging_debian
   SHLIB_PERMS=644

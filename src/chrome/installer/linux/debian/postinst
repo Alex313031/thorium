@@ -51,9 +51,6 @@ update-alternatives --install /usr/bin/x-www-browser x-www-browser \
 update-alternatives --install /usr/bin/gnome-www-browser gnome-www-browser \
   /usr/bin/@@USR_BIN_SYMLINK_NAME@@ $PRIORITY
 
-update-alternatives --install /usr/bin/@@PACKAGE_ORIG@@ @@PACKAGE_ORIG@@ \
-  /usr/bin/@@USR_BIN_SYMLINK_NAME@@ $PRIORITY
-
 @@include@@../common/apt.include
 
 @@include@@../common/symlinks.include
