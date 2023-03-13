@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -56,28 +56,26 @@ declare_args() {
 
   # Enables DTS/DTSX audio handling in chromium. This includes demuxing,
   # on-device decoding and bitstream passthrough as supported by device.
-  enable_platform_dts_audio = false
+  enable_platform_dts_audio = true
 
-  # TODO(crbug.com/1329657): Remove the `is_fuchsia` condition once fuchsia
-  # builds set enable_cast_receiver.
   enable_mse_mpeg2ts_stream_parser = true
 
-  # Enable Dolby Vision demuxing. Enable by default for Chromecast. Actual
-  # decoding must be provided by the platform. Note some Dolby Vision profiles
-  # which are encoded using HEVC require `enable_platform_hevc` to be enabled.
+  # Enable Dolby Vision demuxing. Enabled by default for Chromecast and Windows.
+  # Actual decoding must be provided by the platform. Since most Dolby Vision
+  # profiles use HEVC, `enable_platform_hevc` is required to enable this.
   #
   # TODO(crbug.com/1336055): Revisit the default value for this setting as it
   # applies to video-capable devices.
-  enable_platform_dolby_vision = proprietary_codecs && is_cast_media_device
+  enable_platform_dolby_vision = true
 
-  # Enable platform support of encrypted Dolby Vision. Clear Dolby Vision is
-  # still not supported. The actual support depends on platform capability.
-  enable_platform_encrypted_dolby_vision = false
+  # Enable platform support of encrypted Dolby Vision. The actual support
+  # depends on platform capability and is controlled by the run time feature
+  # kPlatformEncryptedDolbyVision. Clear Dolby Vision is not supported by
+  # default, unless overwritten by the run time feature
+  # kAllowClearDolbyVisionInMseWhenPlatformEncryptedDvEnabled.
+  enable_platform_encrypted_dolby_vision = true
 
   # Enable HLS with SAMPLE-AES decryption.
-  #
-  # TODO(crbug.com/1329657): Remove the `is_fuchsia` condition once fuchsia
-  # builds set enable_cast_receiver.
   enable_hls_sample_aes = true
 
   # Enable logging override, e.g. enable DVLOGs through level 2 at build time.
@@ -100,12 +98,11 @@ declare_args() {
   enable_hevc_parser_and_hw_decoder = true
 }
 
-# Use another declare_args() to allow dependence on
-# |enable_hevc_parser_and_hw_decoder|.
+# Use another declare_args() to allow dependence on args defined above.
 declare_args() {
   # If overriding this to false, possibly via its component values,
   # `enable_libaom` should likely also be overriddent to false.
-  enable_av1_decoder = enable_dav1d_decoder || enable_libgav1_decoder
+  enable_av1_decoder = enable_dav1d_decoder
 
   # Enable HEVC/H265 demuxing. Actual decoding must be provided by the
   # platform.
@@ -117,39 +114,47 @@ declare_args() {
 
 assert(
     !enable_platform_ac3_eac3_audio || proprietary_codecs,
-    "proprietary_codecs=true is required for enable_platform_ac3_eac3_audio=true.")
+    "proprietary_codecs required for enable_platform_ac3_eac3_audio")
 assert(
     !enable_platform_mpeg_h_audio || proprietary_codecs,
-    "proprietary_codecs=true is required for enable_platform_mpeg_h_audio=true.")
+    "proprietary_codecs required for enable_platform_mpeg_h_audio")
 assert(
     !enable_mse_mpeg2ts_stream_parser || proprietary_codecs,
-    "proprietary_codecs=true is required for enable_mse_mpeg2ts_stream_parser=true.")
+    "proprietary_codecs required for enable_mse_mpeg2ts_stream_parser")
 assert(
     !enable_platform_dolby_vision || proprietary_codecs,
-    "proprietary_codecs=true is required for enable_platform_dolby_vision=true.")
+    "proprietary_codecs required for enable_platform_dolby_vision")
 assert(
     !enable_platform_encrypted_dolby_vision || enable_platform_dolby_vision,
-    "enable_platform_dolby_vision=true is required for enable_platform_encrypted_dolby_vision=true.")
+    "enable_platform_dolby_vision required for enable_platform_encrypted_dolby_vision")
 assert(!enable_hls_sample_aes || proprietary_codecs,
-       "proprietary_codecs=true is required for enable_hls_sample_aes=true.")
+       "proprietary_codecs required for enable_hls_sample_aes")
 assert(
     !enable_platform_dts_audio || proprietary_codecs,
-    "proprietary_codecs=true is required for enable_platform_dts_audio=true.")
+    "proprietary_codecs required for enable_platform_dts_audio")
 
 assert(
     !enable_hls_sample_aes || enable_mse_mpeg2ts_stream_parser,
-    "enable_mse_mpeg2ts_stream_parser=true is required for enable_hls_sample_aes=true.")
+    "enable_mse_mpeg2ts_stream_parser required for enable_hls_sample_aes")
 
 assert(
     !enable_hls_demuxer || enable_mse_mpeg2ts_stream_parser,
-    "enable_mse_mpeg2ts_stream_parser=true is required for enable_hls_demuxer=true.")
+    "enable_mse_mpeg2ts_stream_parser required for enable_hls_demuxer")
 
 assert(!enable_platform_hevc || proprietary_codecs,
-       "proprietary_codecs=true is required for enable_platform_hevc=true.")
+       "proprietary_codecs required for enable_platform_hevc")
 
 assert(
     !enable_hevc_parser_and_hw_decoder || enable_platform_hevc,
-    "enable_platform_hevc=true is required for enable_hevc_parser_and_hw_decoder=true.")
+    "enable_platform_hevc required for enable_hevc_parser_and_hw_decoder")
+
+# Most DolbyVision profiles (4, 5, 7, 8, not 9) require HEVC support. It's very
+# unlikely that we support DolbyVision on a new platform without requiring HEVC
+# support. See for details:
+# https://professionalsupport.dolby.com/s/article/What-is-Dolby-Vision-Profile
+assert(
+    !enable_platform_dolby_vision || enable_platform_hevc,
+    "enable_platform_hevc required for enable_platform_dolby_vision")
 
 # Use another declare_args() to pick up possible overrides of |use_cras|.
 declare_args() {
@@ -201,6 +206,7 @@ declare_args() {
   enable_library_cdms = toolkit_views && !is_castos
 }
 
+# Use another declare_args() to allow dependence on `enable_library_cdms`.
 declare_args() {
   # Enables host verification for CDMs.
   # Windows and Mac.

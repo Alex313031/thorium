@@ -202,7 +202,7 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
 
 bool IsHevcProfileSupported(const VideoType& type) {
    return true;
- }
+}
 
 bool IsVp9ProfileSupported(const VideoType& type) {
 #if BUILDFLAG(ENABLE_LIBVPX)
