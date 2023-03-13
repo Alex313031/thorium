@@ -232,9 +232,9 @@ trap cleanup 0
 process_opts "$@"
 IS_OFFICIAL_BUILD=1
 
-STAGEDIR="${OUTPUTDIR}/deb-staging-${CHANNEL}"
+STAGEDIR="${OUTPUTDIR}/deb-staging"
 mkdir -p "${STAGEDIR}"
-TMPFILEDIR="${OUTPUTDIR}/deb-tmp-${CHANNEL}"
+TMPFILEDIR="${OUTPUTDIR}/deb-tmp"
 mkdir -p "${TMPFILEDIR}"
 DEB_CHANGELOG="${TMPFILEDIR}/changelog"
 DEB_FILES="${TMPFILEDIR}/files"
