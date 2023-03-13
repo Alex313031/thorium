@@ -252,9 +252,7 @@ if (use_qt) {
 # is_component_build=false before building this target.
 group("linux") {
   deps = [
-    ":beta",
     ":stable",
-    ":unstable",
   ]
 }
 
