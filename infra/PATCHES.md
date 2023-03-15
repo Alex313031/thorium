@@ -156,6 +156,9 @@ Disable fetching Field Trials/Variations Patch - https://github.com/ungoogled-so
 Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
   - Found by @gz83, modified by me.
   
+Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
+  - Modfiied by me.
+  
 Patches to enable truly Portable usage > Disable Encryption and Machine ID
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-encryption.patch
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-machine-id.patch
