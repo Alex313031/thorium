@@ -99,6 +99,10 @@
      "Disable Machine ID",
      "Disables use of a generated machine-specific ID to lock the user data directory to that machine. This is used to enable portable user data directories. Enabled for Thorium Portable.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-machine-id")},
+    {"close-confirmation",
+     "Close Confirmation",
+     "Show a warning prompt when closing browser window(s).",
+     kOsDesktop, MULTI_VALUE_TYPE(kCloseConfirmation)},
      
 #if BUILDFLAG(IS_LINUX)
     {"enable-native-gpu-memory-buffers",

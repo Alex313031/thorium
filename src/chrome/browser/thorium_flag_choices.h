@@ -90,6 +90,16 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
      "force-gpu-mem-available-mb", "1024"},
 };
 
+const FeatureEntry::Choice kCloseConfirmation[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"Show confirmation with last window",
+     "close-confirmation",
+     "last"},
+    {"Show confirmation with multiple windows",
+     "close-confirmation",
+     "multiple"},
+};
+
 #if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
