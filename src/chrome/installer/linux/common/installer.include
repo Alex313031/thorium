@@ -174,7 +174,7 @@ stage_install_common() {
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/libffmpeg.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 644 "${OUTPUTDIR}/libblink_test_plugin.so" "${STAGEDIR}/${INSTALLDIR}/lib"
-    install -m 644 "${OUTPUTDIR}/ClearKeyCdm/_platform_specific/linux_${ARCHITECTURE}/libclearkeycdm.so" "${STAGEDIR}/${INSTALLDIR}/lib"
+    install -m 644 "${OUTPUTDIR}/ClearKeyCdm/_platform_specific/linux_x64/libclearkeycdm.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 644 "${OUTPUTDIR}/thorium_shell.png" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
     install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
@@ -258,7 +258,7 @@ stage_install_common() {
   if [ -f "${OUTPUTDIR}/libvulkan.so.1" ]; then
     file="libvulkan.so.1"
     strippedfile="${OUTPUTDIR}/${file}.stripped"
-    install -m 755 "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
+    install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
   fi
 
   # SwiftShader VK
