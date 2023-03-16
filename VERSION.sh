@@ -29,6 +29,7 @@ case $1 in
 esac
 
 THOR_VER="110.0.5481.179"
+#THOR_VER="111.0.5563.69"
 
 export THOR_VER &&
 
