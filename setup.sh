@@ -129,6 +129,7 @@ copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v other/SSE3/v8/* $HOME/chromium/src/v8/ &&
 	printf "\n"
 }
 case $1 in

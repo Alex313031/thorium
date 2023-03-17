@@ -1274,13 +1274,13 @@ config("toolchain") {
       # Increase the initial stack size. The default is 1MB, this is 2MB. This
       # applies only to executables and shared libraries produced by V8 since
       # ldflags are not pushed to dependants.
-      cflags += [ "/arch:AVX" ]
+      cflags += [ "/arch:SSE3" ]
       ldflags += [ "/STACK:2097152" ]
     }
     if (is_linux) {
       # Full optimization for V8.
-      cflags += [ "-O3", "-mavx", "-maes" ]
-      ldflags += [ "-Wl,-O3", "-mavx", "-maes" ]
+      cflags += [ "-O3", "-msse3" ]
+      ldflags += [ "-Wl,-O3", "-msse3" ]
     }
   }
   if (is_android && v8_android_log_stdout) {
