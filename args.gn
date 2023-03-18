@@ -83,4 +83,4 @@ use_text_section_splitting = true
 use_thin_lto = true
 thin_lto_enable_optimizations = true
 chrome_pgo_phase = 2
-pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-5481-1675874756-8f0cc1ffc14aaa364c4901d505c8293825229435.profdata"
+pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-5563-1678034145-e17d94772da16841795631d49601fa0ba147f5bd.profdata"

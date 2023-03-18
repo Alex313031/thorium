@@ -106,6 +106,11 @@ gsyncShallow () {
 	
 	git rebase-update --current &&
 	
+	# Use our artifacts hash
+	cd $HOME/thorium &&
+	cp -v src/build/vs_toolchain.py $HOME/chromium/src/build/ &&
+	cd $HOME/chromium/src &&
+	
 	gclient sync -R -D --no-history --shallow &&
 	
 	gclient runhooks &&
@@ -237,6 +242,11 @@ git clean -ffd &&
 git rebase-update &&
 
 git fetch --tags &&
+
+# Use our artifacts hash
+cd $HOME/thorium &&
+cp -v src/build/vs_toolchain.py $HOME/chromium/src/build/ &&
+cd $HOME/chromium/src &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 

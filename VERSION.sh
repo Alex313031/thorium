@@ -46,11 +46,11 @@ git clean -ffd &&
 
 cd ~/thorium &&
 
-# Add //third_party/libjxl to DEPS
-cp -v thorium-libjxl/DEPS ~/chromium/src/
-
 # Use our artifacts hash
-cp -v src/build/vs_toolchain.py ~/chromium/src/build/
+cp -v src/build/vs_toolchain.py ~/chromium/src/build/ &&
+
+# Add //third_party/libjxl to DEPS
+cp -v thorium-libjxl/DEPS ~/chromium/src/ &&
 
 cd ~/chromium/src &&
 
