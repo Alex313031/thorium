@@ -11,8 +11,8 @@
 
 #include <components/exo/wayland/protocol/aura-shell-client-protocol.h>
 
-#include "base/bind.h"
 #include "base/command_line.h"
+#include "base/functional/bind.h"
 #include "base/memory/ptr_util.h"
 #include "base/message_loop/message_pump_type.h"
 #include "base/no_destructor.h"
@@ -31,6 +31,7 @@
 #include "ui/gfx/buffer_format_util.h"
 #include "ui/gfx/linux/client_native_pixmap_dmabuf.h"
 #include "ui/gfx/native_widget_types.h"
+#include "ui/ozone/common/base_keyboard_hook.h"
 #include "ui/ozone/common/features.h"
 #include "ui/ozone/platform/wayland/common/wayland_util.h"
 #include "ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h"
@@ -46,7 +47,9 @@
 #include "ui/ozone/platform/wayland/host/wayland_input_method_context.h"
 #include "ui/ozone/platform/wayland/host/wayland_menu_utils.h"
 #include "ui/ozone/platform/wayland/host/wayland_output_manager.h"
+#include "ui/ozone/platform/wayland/host/wayland_seat.h"
 #include "ui/ozone/platform/wayland/host/wayland_window.h"
+#include "ui/ozone/platform/wayland/host/wayland_window_manager.h"
 #include "ui/ozone/platform/wayland/host/wayland_zaura_shell.h"
 #include "ui/ozone/platform/wayland/wayland_utils.h"
 #include "ui/ozone/public/gpu_platform_support_host.h"
@@ -308,7 +311,7 @@ class OzonePlatformWayland : public OzonePlatform,
       // arbitrary position.
       properties->supports_global_screen_coordinates =
           features::IsWaylandScreenCoordinatesEnabled();
-          
+
       // Let the media know this platform supports va-api.
       properties->supports_vaapi = true;
 
@@ -353,7 +356,7 @@ class OzonePlatformWayland : public OzonePlatform,
             (wl::get_version_of_object(
                  connection_->zaura_shell()->wl_object()) >=
              ZAURA_SURFACE_SHOW_TOOLTIP_SINCE_VERSION) &&
-            connection_->zaura_shell()->HasBugFix(1400226);
+            connection_->zaura_shell()->HasBugFix(1402158);
       }
 
       if (surface_factory_) {
@@ -408,6 +411,26 @@ class OzonePlatformWayland : public OzonePlatform,
       scoped_refptr<base::SingleThreadTaskRunner>) override {
     DCHECK(connection_);
     connection_->SetShutdownCb(std::move(shutdown_cb));
+  }
+
+  std::unique_ptr<PlatformKeyboardHook> CreateKeyboardHook(
+      PlatformKeyboardHookTypes type,
+      base::RepeatingCallback<void(KeyEvent* event)> callback,
+      absl::optional<base::flat_set<DomCode>> dom_codes,
+      gfx::AcceleratedWidget accelerated_widget) override {
+    DCHECK(connection_);
+    auto* seat = connection_->seat();
+    auto* window = connection_->window_manager()->GetWindow(accelerated_widget);
+    if (!seat || !seat->keyboard() || !window) {
+      return nullptr;
+    }
+    switch (type) {
+      case PlatformKeyboardHookTypes::kModifier:
+        return seat->keyboard()->CreateKeyboardHook(
+            window, std::move(dom_codes), std::move(callback));
+      case PlatformKeyboardHookTypes::kMedia:
+        return nullptr;
+    }
   }
 
   // OSExchangeDataProviderFactoryOzone:

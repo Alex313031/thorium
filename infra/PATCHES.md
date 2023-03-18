@@ -64,7 +64,7 @@ Disable Default Browser Infobar Patch
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me. Adds DuckDuckGo, Brave Search, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
 
-Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/12.1/patches/0052-always-use-local-new-tab-page.patch
+Always use the local NTP (New Tab Page) Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0052-always-use-local-new-tab-page.patch
 
 Chromium Sandbox Patch (enables PIE) > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0016-chromium-sandbox-pie.patch
   - Increases security for the chrome-sandbox executable.
@@ -110,6 +110,9 @@ Disable the addition of the Google-Chrome sources.list in /etc/apt/sources.list.
 
 Enable Dark Mode flag Patch
   - Made by me.
+  
+Enable GTK Auto Dark Mode Patch - https://github.com/qcasey/chromium-patches/blob/main/patches/gtk-dark-mode-switch-fix.patch
+  - Modified by me. > https://github.com/Alex313031/thorium/issues/74#issuecomment-1270435944
 
 Disable AutoPlay flag Patch
   - Made by me.
@@ -120,12 +123,12 @@ Allow setting a custom NTP flag Patch > https://github.com/ungoogled-software/un
 
 Allow removing the Side Panel button flag Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-hide-side-panel-button.patch
 
+Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-show-avatar-button.patch
+
 Unexpire Flags by Default Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/keep-expired-flags.patch
   - Modified by me.
 
 Disable Download Quarantine Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/disable-download-quarantine.patch
-
-Show/Hide Avatar Button Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-show-avatar-button.patch
 
 Enable Reader Mode Patch - Made by me.
 

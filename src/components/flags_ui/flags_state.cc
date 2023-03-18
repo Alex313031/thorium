@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -8,11 +8,11 @@
 #include <memory>
 #include <utility>
 
-#include "base/callback.h"
 #include "base/containers/contains.h"
 #include "base/containers/span.h"
 #include "base/feature_list.h"
 #include "base/feature_list_buildflags.h"
+#include "base/functional/callback.h"
 #include "base/logging.h"
 #include "base/metrics/field_trial.h"
 #include "base/stl_util.h"
@@ -597,7 +597,7 @@ void FlagsState::GetFlagFeatureEntries(
     std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry))
       if (flags::IsFlagExpired(flags_storage, entry.internal_name))
-        desc.insert(0, "!!! NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON !!! ");
+        desc.insert(0, "!¡ NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON ¡! ");
       else
       continue;
 

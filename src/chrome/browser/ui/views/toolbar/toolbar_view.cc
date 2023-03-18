@@ -7,10 +7,10 @@
 #include <algorithm>
 #include <utility>
 
-#include "base/bind.h"
 #include "base/command_line.h"
 #include "base/containers/fixed_flat_map.h"
 #include "base/feature_list.h"
+#include "base/functional/bind.h"
 #include "base/i18n/number_formatting.h"
 #include "base/metrics/user_metrics.h"
 #include "base/ranges/algorithm.h"
@@ -60,7 +60,6 @@
 #include "chrome/browser/ui/views/page_action/page_action_icon_controller.h"
 #include "chrome/browser/ui/views/performance_controls/battery_saver_button.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_toolbar_icon_view.h"
-#include "chrome/browser/ui/views/side_search/side_search_browser_controller.h"
 #include "chrome/browser/ui/views/tabs/tab_strip.h"
 #include "chrome/browser/ui/views/toolbar/app_menu.h"
 #include "chrome/browser/ui/views/toolbar/back_forward_button.h"
@@ -73,7 +72,6 @@
 #include "chrome/browser/ui/views/toolbar/side_panel_toolbar_button.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_button.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
-#include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #include "chrome/common/chrome_features.h"
 #include "chrome/common/pref_names.h"
 #include "chrome/grit/chromium_strings.h"
@@ -116,13 +114,8 @@
 #include "chrome/browser/recovery/recovery_install_global_error_factory.h"
 #endif
 
-#if BUILDFLAG(IS_WIN)
-#include "chrome/browser/ui/views/critical_notification_bubble_view.h"
-#endif
-
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
 #include "chrome/browser/ui/bookmarks/bookmark_bubble_sign_in_delegate.h"
-#include "chrome/browser/ui/dialogs/outdated_upgrade_bubble.h"
 #endif
 
 #if BUILDFLAG(ENABLE_WEBUI_TAB_STRIP)
@@ -179,8 +172,6 @@ ToolbarView::ToolbarView(Browser* browser, BrowserView* browser_view)
       display_mode_(GetDisplayMode(browser)) {
   SetID(VIEW_ID_TOOLBAR);
 
-  UpgradeDetector::GetInstance()->AddObserver(this);
-
   if (display_mode_ == DisplayMode::NORMAL) {
     SetBackground(std::make_unique<TopContainerBackground>(browser_view));
 
@@ -192,8 +183,6 @@ ToolbarView::ToolbarView(Browser* browser, BrowserView* browser_view)
 }
 
 ToolbarView::~ToolbarView() {
-  UpgradeDetector::GetInstance()->RemoveObserver(this);
-
   if (display_mode_ != DisplayMode::NORMAL)
     return;
 
@@ -293,14 +282,6 @@ void ToolbarView::Init() {
   forward_ = AddChildView(std::move(forward));
   reload_ = AddChildView(std::move(reload));
   home_ = AddChildView(std::move(home));
-
-  // The side search button (if enabled) should sit between the location bar and
-  // the other navigation buttons.
-  if (browser_view_->side_search_controller() &&
-      !side_search::IsDSESupportEnabled(browser_->profile())) {
-    left_side_panel_button_ = AddChildView(
-        browser_view_->side_search_controller()->CreateToolbarButton());
-  }
 
   location_bar_ = AddChildView(std::move(location_bar));
 
@@ -570,20 +551,6 @@ void ToolbarView::EnabledStateChangedForCommand(int id, bool enabled) {
   auto* button = *base::ranges::find(kButtons, id, &views::Button::tag);
   DCHECK(button);
   button->SetEnabled(enabled);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// ToolbarView, UpgradeObserver implementation:
-void ToolbarView::OnOutdatedInstall() {
-  ShowOutdatedInstallNotification(true);
-}
-
-void ToolbarView::OnOutdatedInstallNoAutoUpdate() {
-  ShowOutdatedInstallNotification(false);
-}
-
-void ToolbarView::OnCriticalUpgradeInstalled() {
-  ShowCriticalNotification();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -926,21 +893,6 @@ void ToolbarView::LoadImages() {
 
   if (extensions_container_)
     extensions_container_->UpdateAllIcons();
-}
-
-void ToolbarView::ShowCriticalNotification() {
-#if BUILDFLAG(IS_WIN)
-  views::BubbleDialogDelegateView::CreateBubble(
-      new CriticalNotificationBubbleView(app_menu_button_))
-      ->Show();
-#endif
-}
-
-void ToolbarView::ShowOutdatedInstallNotification(bool auto_update_enabled) {
-#if !BUILDFLAG(IS_CHROMEOS_ASH)
-  // TODO(pbos): Can this move outside ToolbarView completely?
-  ShowOutdatedUpgradeBubble(browser_, auto_update_enabled);
-#endif
 }
 
 void ToolbarView::OnShowHomeButtonChanged() {

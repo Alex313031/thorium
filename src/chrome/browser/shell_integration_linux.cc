@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -111,9 +111,9 @@ const int EXIT_XDG_SETTINGS_SYNTAX_ERROR = 1;
 // system fails, as the system copy may be missing capabilities of the Chrome
 // copy.
 
-// If |protocol| is empty this function sets Chrome as the default browser,
-// otherwise it sets Chrome as the default handler application for |protocol|.
-bool SetDefaultWebClient(const std::string& protocol) {
+// If |scheme| is empty this function sets Chrome as the default browser,
+// otherwise it sets Chrome as the default handler application for |scheme|.
+bool SetDefaultWebClient(const std::string& scheme) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return true;
 #else
@@ -122,11 +122,11 @@ bool SetDefaultWebClient(const std::string& protocol) {
   std::vector<std::string> argv;
   argv.push_back(kXdgSettings);
   argv.push_back("set");
-  if (protocol.empty()) {
+  if (scheme.empty()) {
     argv.push_back(kXdgSettingsDefaultBrowser);
   } else {
     argv.push_back(kXdgSettingsDefaultSchemeHandler);
-    argv.push_back(protocol);
+    argv.push_back(scheme);
   }
   argv.push_back(chrome::GetDesktopName(env.get()));
 
@@ -142,11 +142,11 @@ bool SetDefaultWebClient(const std::string& protocol) {
 #endif
 }
 
-// If |protocol| is empty this function checks if Chrome is the default browser,
+// If |scheme| is empty this function checks if Chrome is the default browser,
 // otherwise it checks if Chrome is the default handler application for
-// |protocol|.
+// |scheme|.
 shell_integration::DefaultWebClientState GetIsDefaultWebClient(
-    const std::string& protocol) {
+    const std::string& scheme) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return shell_integration::UNKNOWN_DEFAULT;
 #else
@@ -158,11 +158,11 @@ shell_integration::DefaultWebClientState GetIsDefaultWebClient(
   std::vector<std::string> argv;
   argv.push_back(kXdgSettings);
   argv.push_back("check");
-  if (protocol.empty()) {
+  if (scheme.empty()) {
     argv.push_back(kXdgSettingsDefaultBrowser);
   } else {
     argv.push_back(kXdgSettingsDefaultSchemeHandler);
-    argv.push_back(protocol);
+    argv.push_back(scheme);
   }
   argv.push_back(chrome::GetDesktopName(env.get()));
 
@@ -802,16 +802,11 @@ bool SetAsDefaultBrowser() {
   return shell_integration_linux::SetDefaultWebClient(std::string());
 }
 
-bool SetAsDefaultProtocolClient(const std::string& protocol) {
-  return shell_integration_linux::SetDefaultWebClient(protocol);
+bool SetAsDefaultClientForScheme(const std::string& scheme) {
+  return shell_integration_linux::SetDefaultWebClient(scheme);
 }
 
-DefaultWebClientSetPermission
-GetPlatformSpecificDefaultWebClientSetPermission() {
-  return SET_DEFAULT_UNATTENDED;
-}
-
-std::u16string GetApplicationNameForProtocol(const GURL& url) {
+std::u16string GetApplicationNameForScheme(const GURL& url) {
   std::unique_ptr<base::Environment> env(base::Environment::Create());
 
   std::string desktop_file_contents;
@@ -846,8 +841,17 @@ bool IsFirefoxDefaultBrowser() {
   return browser.find("irefox") != std::string::npos;
 }
 
-DefaultWebClientState IsDefaultProtocolClient(const std::string& protocol) {
-  return shell_integration_linux::GetIsDefaultWebClient(protocol);
+DefaultWebClientState IsDefaultClientForScheme(const std::string& scheme) {
+  return shell_integration_linux::GetIsDefaultWebClient(scheme);
 }
+
+namespace internal {
+
+DefaultWebClientSetPermission GetPlatformSpecificDefaultWebClientSetPermission(
+    WebClientSetMethod method) {
+  return SET_DEFAULT_UNATTENDED;
+}
+
+}  // namespace internal
 
 }  // namespace shell_integration

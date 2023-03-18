@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <memory>
 
-#include "base/bind.h"
 #include "base/command_line.h"
 #include "base/containers/contains.h"
+#include "base/functional/bind.h"
 #include "base/memory/raw_ptr.h"
 #include "base/strings/utf_string_conversions.h"
 #include "build/build_config.h"
@@ -367,8 +367,8 @@ void ShellPlatformDelegate::CreatePlatformWindow(
   views::Widget::InitParams params;
   params.bounds = gfx::Rect(initial_size);
   params.delegate = delegate.release();
-  params.wm_class_class = "Thorium Shell";
-  params.wm_class_name = params.wm_class_class;
+  params.wm_class_class = "thorium_shell";
+  params.wm_class_name = "Thorium Shell";
   shell_data.window_widget->Init(std::move(params));
 #endif
 

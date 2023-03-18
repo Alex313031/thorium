@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors, Alex313031, qcasey and icepie. All rights reserved.
+// Copyright 2023 The Chromium Authors, Alex313031, qcasey and icepie.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -210,19 +210,19 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
   SetPreferredContrast(
       high_contrast ? ui::NativeThemeBase::PreferredContrast::kMore
                     : ui::NativeThemeBase::PreferredContrast::kNoPreference);
-  
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("auto-dark-mode")) {
-  // Brute force NativeUI to update
-  ui::NativeTheme::GetInstanceForNativeUi()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
-  ui::NativeTheme::GetInstanceForNativeUi()->set_preferred_color_scheme(CalculatePreferredColorScheme());
-  ui::NativeTheme::GetInstanceForNativeUi()->NotifyOnNativeThemeUpdated();
 
-  // Brute force Web to update
-  ui::NativeTheme::GetInstanceForWeb()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
-  ui::NativeTheme::GetInstanceForWeb()->set_preferred_color_scheme(CalculatePreferredColorScheme());
-  ui::NativeTheme::GetInstanceForWeb()->NotifyOnNativeThemeUpdated();
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("auto-dark-mode")) {
+    // Brute force NativeUI to update
+    ui::NativeTheme::GetInstanceForNativeUi()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
+    ui::NativeTheme::GetInstanceForNativeUi()->set_preferred_color_scheme(CalculatePreferredColorScheme());
+    ui::NativeTheme::GetInstanceForNativeUi()->NotifyOnNativeThemeUpdated();
+
+    // Brute force Web to update
+    ui::NativeTheme::GetInstanceForWeb()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
+    ui::NativeTheme::GetInstanceForWeb()->set_preferred_color_scheme(CalculatePreferredColorScheme());
+    ui::NativeTheme::GetInstanceForWeb()->NotifyOnNativeThemeUpdated();
   }
-  
+
   NotifyOnNativeThemeUpdated();
 }
 
@@ -336,8 +336,10 @@ void NativeThemeGtk::PaintFrameTopArea(
                                            ? GTK_STATE_FLAG_NORMAL
                                            : GTK_STATE_FLAG_BACKDROP);
 
-  SkBitmap bitmap =
-      GetWidgetBitmap(rect.size(), context, BG_RENDER_RECURSIVE, false);
+  SkBitmap bitmap = GetWidgetBitmap(
+      rect.size(), context,
+      frame_top_area.use_custom_frame ? BG_RENDER_NORMAL : BG_RENDER_RECURSIVE,
+      false);
   bitmap.setImmutable();
   canvas->drawImage(cc::PaintImage::CreateFromBitmap(std::move(bitmap)),
                     rect.x(), rect.y());

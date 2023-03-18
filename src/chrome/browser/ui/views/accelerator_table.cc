@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,6 +16,7 @@
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "chrome/app/chrome_command_ids.h"
+#include "components/lens/buildflags.h"
 #include "components/lens/lens_features.h"
 #include "components/services/screen_ai/buildflags/buildflags.h"
 #include "printing/buildflags/buildflags.h"
@@ -179,6 +180,7 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_BROWSER_STOP, ui::EF_NONE, IDC_STOP},
     // On Chrome OS, Search + Esc is used to call out task manager.
     {ui::VKEY_ESCAPE, ui::EF_COMMAND_DOWN, IDC_TASK_MANAGER},
+    {ui::VKEY_Z, ui::EF_COMMAND_DOWN, IDC_TOGGLE_MULTITASK_MENU},
 #else   // BUILDFLAG(IS_CHROMEOS)
     {ui::VKEY_ESCAPE, ui::EF_SHIFT_DOWN, IDC_TASK_MANAGER},
     {ui::VKEY_LMENU, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
@@ -264,7 +266,7 @@ const AcceleratorMapping kEnableWithNewMappingAcceleratorMap[] = {
 };
 #endif
 
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+#if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
 // Accelerators to enable if lens::features::kEnableRegionSearchKeyboardShortcut
 // is true.
 constexpr AcceleratorMapping kRegionSearchAcceleratorMap[] = {
@@ -272,7 +274,7 @@ constexpr AcceleratorMapping kRegionSearchAcceleratorMap[] = {
     {ui::VKEY_E, ui::EF_SHIFT_DOWN | ui::EF_PLATFORM_ACCELERATOR,
      IDC_CONTENT_CONTEXT_LENS_REGION_SEARCH},
 };
-#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+#endif  // BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
 
 constexpr int kDebugModifier =
     ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN | ui::EF_SHIFT_DOWN;
@@ -319,14 +321,14 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
     }
 #endif
 
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+#if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
     if (base::FeatureList::IsEnabled(
             lens::features::kEnableRegionSearchKeyboardShortcut)) {
       accelerators->insert(accelerators->begin(),
                            std::begin(kRegionSearchAcceleratorMap),
                            std::end(kRegionSearchAcceleratorMap));
     }
-#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+#endif  // BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
 
     if (base::FeatureList::IsEnabled(features::kUIDebugTools)) {
       accelerators->insert(accelerators->begin(),

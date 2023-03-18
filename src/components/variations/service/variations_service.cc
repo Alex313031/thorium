@@ -11,10 +11,10 @@
 #include <vector>
 
 #include "base/base64.h"
-#include "base/bind.h"
-#include "base/callback.h"
 #include "base/command_line.h"
 #include "base/feature_list.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/observer_list.h"
@@ -935,7 +935,7 @@ bool VariationsService::SetUpFieldTrials(
   return field_trial_creator_.SetUpFieldTrials(
       variation_ids, command_line_variation_ids, extra_overrides,
       std::move(feature_list), state_manager_, platform_field_trials,
-      &safe_seed_manager_, state_manager_->GetLowEntropySource());
+      &safe_seed_manager_, /*add_entropy_source_to_variations_ids=*/true);
 }
 
 void VariationsService::OverrideCachedUIStrings() {

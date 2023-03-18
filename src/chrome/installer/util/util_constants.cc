@@ -180,10 +180,6 @@ const char kSystemLevel[] = "system-level";
 // Signals to setup.exe that it should trigger the active setup command.
 const char kTriggerActiveSetup[] = "trigger-active-setup";
 
-// Use the given uncompressed chrome.7z archive as the source of files to
-// install.
-const char kUncompressedArchive[] = "uncompressed-archive";
-
 // If present, setup will uninstall chrome.
 const char kUninstall[] = "uninstall";
 

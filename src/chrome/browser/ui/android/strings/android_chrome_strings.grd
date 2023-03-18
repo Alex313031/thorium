@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Copyright (c) 2023 Alex313031. -->
 <!-- android_chrome_strings.grd contains strings for Thorium for Android.
 
 FAQ:
@@ -210,9 +210,6 @@ CHAR_LIMIT guidelines:
       </message>
       <message name="IDS_PREFS_SECTION_ADVANCED" desc='Title of "Advanced" section of preferences. [CHAR_LIMIT=32]'>
         Advanced
-      </message>
-      <message name="IDS_ENTER_VR" desc="Menu item for entering VR. [CHAR_LIMIT=27]">
-        Enter VR
       </message>
 
       <!-- Notification channels -->
@@ -533,9 +530,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_AUTOFILL_PAYMENTS_AUTHENTICATOR_SELECTION_DIALOG_PROGRESS_BAR_MESSAGE" desc="Message shown on the progress bar after the user selects an authenticator from a list of options and proceeds.">
         Contacting your bank\u2026
       </message>
-      <message name="IDS_AUTOFILL_PAYMENTS_AUTHENTICATOR_SELECTION_DIALOG_POSITIVE_BUTTON_LABEL" desc="Positive button label for the dialog where the user selects an authenticator from a list of options.">
-        Continue
-      </message>
       <message name="IDS_AUTOFILL_PAYMENTS_AUTHENTICATOR_SELECTION_DIALOG_NEGATIVE_BUTTON_LABEL" desc="Negative button label for the dialog where the user selects an authenticator from a list of options.">
         Cancel
       </message>
@@ -817,11 +811,11 @@ CHAR_LIMIT guidelines:
       <message name="IDS_SECURITY_SECTION_TITLE" desc="Title for the Security settings section.">
         Security
       </message>
-      <message name="IDS_AD_PRIVACY_LINK_ROW_LABEL" translateable="false" desc="Label for the ad privacy row.">
-        Donec semper
+      <message name="IDS_AD_PRIVACY_LINK_ROW_LABEL" desc="A new label that appears on the Privacy and security page (chrome://settings/privacy) between 'Third-party cookies' and 'Security'. This same text is used as a page title for the new Ad privacy section. This same pair of words is used in the Consent and Notice flow and must be consistently translated in both contexts. We mean privacy associated with ads, and not privacy from ads. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Ad privacy
       </message>
-      <message name="IDS_AD_PRIVACY_LINK_ROW_SUB_LABEL" translateable="false" desc="Sublabel for the ad privacy row.">
-        Fusce purus nibh, dictum sit amet mi in, fringilla ullamcorper tortor
+      <message name="IDS_AD_PRIVACY_LINK_ROW_SUB_LABEL" desc="A string that describes 'Ad privacy', the label that appears just above it. For context, this new 'Ad privacy' / 'Customize the info...' pair of strings is similar to the existing 'Clear browsing data' / 'Clear history, cookies...' that you find on chrome://settings/privacy. * 'Customize': From our word list: 'This word describes user agency in refining their personalized recommendations, elements of the experience, or sometimes products'. Please don't confuse with 'personalize', which we reserve to mean: '...when Google provides recommendations and other content for users based on their data'. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Customize the info used by sites to show you ads
       </message>
       <message name="IDS_CONTEXTUAL_SEARCH_TITLE" desc="Name for the Contextual Search feature, which allows users to search for a term in a web page by tapping on it.">
         Touch to Search
@@ -872,44 +866,8 @@ For example, some websites may respond to this request by showing you ads that a
       <message name="IDS_PRIVACY_SANDBOX_STATUS_DISABLED" desc="Status text, displayed when the Privacy sandbox APIs are disabled.">
         Trial features are off
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_DESCRIPTION_TITLE" desc="Title for the description text of 'Privacy Sandbox'.">
-        About Privacy Sandbox
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_DESCRIPTION_TWO" desc="Description of the 'Privacy Sandbox' when phase 2 flag is enabled.">
-        With <ph name="BEGIN_LINK">&lt;link&gt;</ph>Privacy Sandbox<ph name="END_LINK">&lt;/link&gt;</ph>, Thorium is developing new technologies to safeguard you from cross-site tracking while preserving the open web.
-
-Privacy Sandbox trials are still in active development and are available in selected regions. For now, sites may try out Privacy Sandbox while continuing to use current web technologies like third-party cookies.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_TOGGLE" desc="Title for the Privacy Sandbox toggle.">
-        Privacy Sandbox trials
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_TOGGLE_DESCRIPTION_TWO" desc="Description for the Privacy Sandbox toggle when phase 2 flag is enabled.">
-        When on, sites may use the privacy-preserving techniques shown here to provide their content and services. These include alternatives to cross-site tracking. More trials may be added over time.
-
-<ph name="BEGIN_LIST_ITEM1">&lt;li1&gt;</ph>Advertisers and publishers can use FLoC.<ph name="END_LIST_ITEM1">&lt;/li1&gt;</ph>
-
-<ph name="BEGIN_LIST_ITEM2">&lt;li2&gt;</ph>Advertisers and publishers can study the effectiveness of ads in a way that does not track you across sites.<ph name="END_LIST_ITEM2">&lt;/li2&gt;</ph>
-      </message>
       <message name="IDS_PRIVACY_SANDBOX_SNACKBAR_MESSAGE" desc="The text displayed in the snackbar, which gives the user an option to navigate to the Privacy Sandbox settings page. 'Privacy sandbox' has TC ID 5753235213964358658.">
         Learn about and control new technologies that aim to replace third-party cookies
-      </message>
-      <message name="IDS_PREFS_PRIVACY_SANDBOX_FLOC" desc="Title for the FLoC preferences as part of the Privacy Sandbox.">
-        FLoC
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_FLOC_DESCRIPTION" desc="Sentence indicating that FLoC is only available in some regions, including a link to a page that describes exactly what regions it is available. This will only ever appear directly after another sentence.">
-        This trial is active only in <ph name="BEGIN_LINK">&lt;link&gt;</ph>some regions<ph name="END_LINK">&lt;/link&gt;</ph>.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_FLOC_STATUS_TITLE" desc="Title for FLoC experiment status.">
-        Status
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_FLOC_GROUP_TITLE" desc="Title for FLoC group.">
-        Group number
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_FLOC_UPDATE_TITLE" desc="Title for FLoC update.">
-        Next update
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_FLOC_RESET_BUTTON" desc="Button text to reset FLoC group ID.">
-        Reset group
       </message>
 
       <message name="IDS_PRIVACY_SANDBOX_TRIALS_TITLE" desc="The title of the settings page on which the user can find all Privacy Sandbox trials. When launched, this page will appear at chrome://settings/privacySandbox. To get there: 1) go to Thorium settings 2) From the main menu (top left of the page) choose “Security and privacy” 3) At the bottom of the page, choose “Privacy Sandbox” There are 3 cards on this page that are presented as features. Only the first includes controls the user can manage, but we want to convey that Privacy Sandbox includes all of the things on this page.">
@@ -1113,289 +1071,171 @@ Private state tokens improve privacy on the web and can’t be used to find out 
         Thorium is finding new ways to reduce tracking and keep you even safer as you browse. Thorium also <ph name="BEGIN_LINK">&lt;link&gt;</ph>estimates your interests<ph name="END_LINK">&lt;/link&gt;</ph> and enables you to manage them. Then, sites you visit can ask Thorium for your interests to show you ads.
       </message>
 
-      <!-- Privacy Sandbox v4 - Consent EEA. -->
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_TITLE" translateable="false" desc="Privacy Sandbox dialog consent EEA: title.">
-        Lorem ipsum Consent
+      <!-- Privacy Sandbox v4 - Consent & Notice Flow -->
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" desc="* This is 2 of 2 bullets that site beneath the sentence: 'We’re launching new ways to limit what sites can learn about you when they show you personalized ads, for example:' * 'ad measurement' is the name of a new setting we're launching and that appears on the Ad privacy page of Thorium settings.  * 'limited types of data': This setting helps an advertiser associate a user's actions on one site with their actions on another. For example, a user sees an ad on one site and then later buys that product from the company that sells the product. The ad measurement setting allows Thorium to help a company make the association between the two sites so that the first site can be fairly compensated for showing an ad. Compared with third-party cookies, very little info is shared between sites to support this functionality.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT EEA NOTICE **** 1) This screen provides notice to Thorium users in the European Economic Area (EEA). It follows guidelines established by the GDPR.  2) This screen is the second of 2 screens. This second screen describes 2 settings: “Site-suggested ads” and “Ad measurement”. The first screen describes the “Ad topics” setting. " formatter_data="android_java">
+        With ad measurement, limited types of data can be shared among sites and apps to measure the performance of their ads, such as the time of day an ad was shown to you.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog consent EEA: First section of the body, above the image.">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" desc="A paragraph on the 'Enhanced ad privacy in Thorium' page that provides notice to Thorium users outside of the EEA. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT ROW NOTICE **** 1) This screen provides notice to Thorium users outside of the European Economic Area (EEA) (we typically refer to this screen as “Rest of World” or “ROW”). It follows guidelines established by the GDPR.  2) We’re using similar but distinct content for EEA / ROW because legal requirements differ. For ROW, we can provide notice for all 3 settings, and so all 3 settings can appear on a single screen. " formatter_data="android_java">
+        To measure the performance of an ad, limited types of data can be shared among sites, such as the time of day an ad was shown to you.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog consent EEA: Second section of the body, above the image.">
-        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION_ANDROID" desc="As part of Privacy Sandbox (see details below), both Thorium and Android devices will have a new setting called 'Ad measurement'. Some details are different, but these settings essentially do the same thing. The Thorium setting allows sites you visit to ask Thorium for information that helps them measure the performance of their ads, linking 1) an ad for site B the user sees on site A, with 2) a purchase or other action the user might take on site B. On Android, it's essentially the same story only it's between apps and not sites. The challenge is that on Android, Thorium is a browser but it's also an App. This paragraph helps the user understand that, if both settings are on, information about the user's actions on a site might be connected with actions the user takes in an app. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com.">
+        Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog consent EEA: Third section of the body, below the image, exclues the expand text.">
-        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog consent EEA: Text user clicks to expand the collapsed section.">
-        Vestibulum orci risus, consectetur
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog consent EEA: Fourth section of the body, below the collapsed section.">
-        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_SAVING_LABEL" translateable="false" desc="Privacy Sandbox dialog consent EEA: Saving text.">
-        Consectetur
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_ACCEPT_BUTTON" translateable="false" desc="Privacy Sandbox dialog consent EEA: Consent Yes button.">
-        Quisque
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_DECLINE_BUTTON" translateable="false" desc="Privacy Sandbox dialog consent EEA: Consent No button.">
-        Lorem
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_HEADING" translateable="false" desc="Privacy Sandbox dialog consent EEA: Header inside expand in consent.">
-        Esed purus vestibulum velit convalli
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog consent EEA: First bullet point in expand in consent.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor:<ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog consent EEA: Second bullet point in expand in consent.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_BULLET_3" translateable="false" desc="Privacy Sandbox dialog consent EEA: Third bullet point in expand in consent.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum: <ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_CONSENT_LEARN_MORE_LINK" translateable="false" desc="Privacy Sandbox dialog consent EEA: Non-interactable link out 'Learn more with Google's etc ect'">
-        Esed purus vestibulum velit convalli
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_DIALOG_MORE_BUTTON" translateable="false" desc="Privacy Sandbox dialog more button: Clicking on it makes the dialog scrolling to the bottom to show all the content.">
-        More
-      </message>
-
-      <!-- Privacy Sandbox v4 - Notice EEA. -->
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_TITLE" translateable="false" desc="Privacy Sandbox dialog notice EEA: title.">
-        Lorem ipsum Notice EEA
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First section of the body, above the bullet points.">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis. Quisque placerat eget nisl sit amet facilisis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First bullet point (outside expand).">
-        Nulla in tortor: a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second bullet point (outside expand).">
-        Sed purus vestibulum: velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog notice EEA: Text user clicks to expand the collapsed section.">
-        Vestibulum orci risus, consectetur
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second section of text, below the expand label.">
-        Consectetur adipiscing elit duis pretium pulvinar metus non mollis
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_ACK_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice EEA: Got it button.">
-        Sed
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_SETTINGS_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice EEA: Settings button.">
-        Cras id
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_HEADING_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First header in learn more expand.">
-        Esed purus vestibulum velit convalli
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION" translateable="false" desc="Privacy Sandbox dialog notice EEA: First description block in expand.">
-        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_HEADING_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second header in learn more expand.">
-        Proin sed purus vestibulum velit velit eget dapibus.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice EEA: First bullet point in expand.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Nulla in tortor:<ph name="END_BOLD">&lt;/b&gt;</ph> a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice EEA: Second bullet point in expand.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Consectetur adipiscing elit:<ph name="END_BOLD">&lt;/b&gt;</ph> Duis pretium pulvinar metus non mollis
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_BULLET_3" translateable="false" desc="Privacy Sandbox dialog notice EEA: Third bullet point in expand.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>Sed purus vestibulum: <ph name="END_BOLD">&lt;/b&gt;</ph> velit convallis suscipit. Aenean aliquam ut velit eget dapibus. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
-      </message>
-
-      <!-- Privacy Sandbox v4 - Notice ROW. -->
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_TITLE" translateable="false" desc="Privacy Sandbox dialog notice ROW: title.">
-        Lorem ipsum Notice ROW
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First section of the body, above the image.">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pretium pulvinar metus non mollis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second section of the body, above the image.">
-        Nulla in tortor a ligula scelerisque laoreet. Sed sem velit, varius non purus vitae, imperdiet porttitor elit. Integer et libero id metus egestas consequat non a ipsum. Quisque placerat eget nisl sit amet facilisis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third section of the body, below the image.">
-        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu, elementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fourth section of the body, below the expand label.">
-        Proin sed purus vestibulum velit convallis suscipit eget dapibus.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_ACK_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice ROW: Got it button on notice in eea.">
-        Sed
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_SETTINGS_BUTTON" translateable="false" desc="Privacy Sandbox dialog notice ROW: Settings button in notice.">
-        Cras id
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_EXPAND_LABEL" translateable="false" desc="Privacy Sandbox dialog notice ROW: Expand text.">
-        Vestibulum orci risus consectetur
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First header inside expand section.">
-        Esed purus vestibulum velit convalli
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First description text in body, underneath first header.">
-        Etiam dictum sem et neque molestie lobortis. Morbi quam tellus, tincidunt eget dapibus ac, lobortis et lacus. Integer nec egestas elit. Nulla venenatis facilisis dui eget suscipit.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second heading inside expand section.">
-        Class aptent taciti sociosqu ad
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second description text in body, underneath second header.">
-        Vestibulum pretium placerat justo vel suscipit. Quisque urna arcu.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_BULLET_1" translateable="false" desc="Privacy Sandbox dialog notice ROW: First bullet point in ROW notice expand.">
-        Sed elementum tellus condimentum quam vestibulum lacinia. Ut eu lobortis massa, venenatis sodales lacus. Nulla elementum magna et tortor efficitur, at volutpat metus varius.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_BULLET_2" translateable="false" desc="Privacy Sandbox dialog notice ROW: Second bullet point in ROW notice expand.">
-        Duis tempor nulla nisi, ac bibendum lorem tempus sit amet. Proin non blandit risus. Maecenas facilisis enim nec tristique tristique. Eelementum ut venenatis ornare, consequat ac turpis. Vestibulum orci risus, consectetur non odio vulputate, mattis dignissim purus. Cras id tempor mi.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third section in body, below bullet points.">
-        Etiam hendrerit turpis nibh, ac maximus lectus placerat at. Vivamus ligula quam, posuere luctus felis eu, dictum egestas arcu. per conubia nostra, per inceptos himenaeos. Cras ut metus vel est molestie finibus nec ut orci.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_4" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fourth section in body, immediately below third.">
-        Aliquam euismod scelerisque metus, in aliquet est vehicula ut. Curabitur sit amet ligula quis ante maximus gravida non id magna. Pellentesque interdum venenatis leo, at ultrices felis mollis nec. Integer vulputate velit eget mauris lacinia, ut ullamcorper mauris vehicula.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_HEADING_3" translateable="false" desc="Privacy Sandbox dialog notice ROW: Third header inside learn more expand.">
-        Orci varius natoque penatibus et
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_5" translateable="false" desc="Privacy Sandbox dialog notice ROW: Fifth section in body below header 3.">
-        Suspendisse at dui pulvinar, rhoncus orci at, porttitor nibh. Curabitur lacinia nulla sem, eu euismod dolor vulputate quis. Duis mattis eros et arcu elementum tempor. Duis pharetra eleifend sagittis.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_6" translateable="false" desc="Privacy Sandbox dialog notice ROW: Sixth section in body, immediately below fifth.">
-        Cras sed lacus suscipit, efficitur erat nec, semper sapien. Fusce at nunc molestie, elementum augue at, auctor nunc. Sed dui nisi, consectetur sit amet urna vitae, facilisis scelerisque justo.
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_LEARN_MORE_DESCRIPTION_ANDROID" desc="As part of Privacy Sandbox (see details below), both Thorium and Android devices will have a new setting called 'Ad measurement'. Some details are different, but these settings essentially do the same thing. The Thorium setting allows sites you visit to ask Thorium for information that helps them measure the performance of their ads, linking 1) an ad for site B the user sees on site A, with 2) a purchase or other action the user might take on site B. On Android, it's essentially the same story only it's between apps and not sites. The challenge is that on Android, Thorium is a browser but it's also an App. This paragraph helps the user understand that, if both settings are on, information about the user's actions on a site might be connected with actions the user takes in an app. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com.">
+        Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
       </message>
 
       <!-- Privacy Sandbox v4 - Ad Privacy Page -->
-      <message name="IDS_AD_PRIVACY_PAGE_TITLE" translateable="false" desc="Title for the Ad Privacy preferences page.">
-        Donec semper
+      <message name="IDS_AD_PRIVACY_PAGE_TITLE" desc="A new page title for a page that includes 3 settings. This same text appears as a label on chrome://settings/privacy between 'Third-party cookies' and 'Security'. This same pair of words is used in the Consent and Notice flow and must be consistently translated in both contexts. We mean privacy associated with ads, and not privacy from ads. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Ad privacy
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" translateable="false" desc="Title for topics preference.">
-        Mauris interdum lectus vitae lacinia
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Ad topics
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for topics preference when enabled.">
-        Enabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" desc="Ad topics are derived from the user's browsing history. This help-center article explains 'browsing history' to users: https://support.google.com/chrome/answer/95589. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see.">
+        Based on your browsing history. This setting is on.
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for topics preference when enabled.">
-        Disabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+      <message name="IDS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" desc="Ad topics are derived from the user's browsing history. This help-center article explains 'browsing history' to users: https://support.google.com/chrome/answer/95589. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see.">
+        Based on your browsing history. This setting is off.
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" translateable="false" desc="Title for the fledge preference.">
-        Aenean erat leo
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don’t want in settings. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Site-suggested ads
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for the fledge preference when enabled.">
-        Enabled Duis scelerisque a mi eget ultricies
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" desc="A site can suggest ads for a user based on the user's activity on their site. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don’t want in settings.">
+        Based on your activity on a site. This setting is on.
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for the fledge preference when enabled.">
-        Disabled Duis scelerisque a mi eget ultricies
+      <message name="IDS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" desc="A site can suggest ads for a user based on the user's activity on their site. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don’t want in settings.">
+        Based on your activity on a site. This setting is off.
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" translateable="false" desc="Title for the ad measurement preference.">
-        Vestibulum augue erat
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Ad measurement
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Description for the ad measurement preference when enabled.">
-        Enabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you.">
+        Sites and advertisers can understand how ads perform. This setting is on.
       </message>
-      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Description for the ad measurement preference when enabled.">
-        Disabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+      <message name="IDS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you.">
+        Sites and advertisers can understand how ads perform. This setting is off.
       </message>
 
       <!-- Privacy Sandbox v4 - Topics Page -->
-      <message name="IDS_SETTINGS_TOPICS_PAGE_TITLE" translateable="false" desc="Title for the Topics preferences page.">
-        Mauris interdum lectus vitae lacinia
+      <!-- Where possible, these strings have been unified on Desktop & Android in privacy_sandox_strings.grdp. The strings here either only appear on one platform, or have platform specific requirements, e.g. the format of placeholders, and so cannot be unified. For the latter case, they have corresponding _CANONICAL representations used when consent is recorded on either platform, and so they must stay in sync -->
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_SUB_PAGE_TITLE" desc="A page title. Topics that the user blocked appear on this page.">
+        Topics you blocked
       </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Topics toggle.">
-        Nunc gravida condimentum consectetur
+      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" desc="A description that appear beneath the 'Your topics' label. * 'You can block': There is a 'Block' button (or an X on mobile) that appears next to each topic in the list. * 'auto-deletes': this could also read 'Thorium deletes...' We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
+        You can block topics you don't want shared with sites. Thorium also auto-deletes your topics older than 4 weeks. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
-      <!-- TODO(http://b/254412601): Format link.-->
-      <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Topics toggle.">
-        Vivamus nibh turpis, varius quis nisi vel, porta laoreet tellus.  <ph name="BEGIN_LINK">&lt;link&gt;</ph>Mauris porta imperdiet venenatis<ph name="END_LINK">&lt;/link&gt;</ph>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Ad topics' setting. The user is on this page. * 'Site-suggested ads': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
+        As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>Site-suggested ads<ph name="END_LINK_1">&lt;/link1&gt;</ph>, your <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>cookie settings<ph name="END_LINK_2">&lt;/link2&gt;</ph>, and if the site you're viewing personalizes ads.
       </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_HEADING" translateable="false" desc="Section title for the current Topics list.">
-        Mauris at lectus
+      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCK_TOPIC_SNACKBAR" desc="A confirmation that appears after a user blocks a topic. This page is only applicable if the user has the Ad topics setting turned on. If they do, Thorium estimates the user's topics of interests and then sites can ask for topics to help personalize ads. If a user dosn't like a specific topic, they can block it.">
+        Blocked topic
       </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" translateable="false" desc="Section description for the current Topics list.">
-        Nulla tincidunt iaculis nulla, sit amet viverra massa luctus nec. Integer eget pellentesque magna, et venenatis lorem. Integer a porta elit, eget bibendum neque.
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="Description which appears when Topics are disabled.">
-        Sed porta viverra lacus ut euismod. Integer a cursus metus, ac ultricies libero.
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="Description which appears when the Topics list is empty.">
-        Curabitur sagittis sapien ut turpis interdum, vitae porttitor sem pretium. Vestibulum sem mauris, ultrices ac massa sit amet, sodales aliquet est.
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_HEADING" translateable="false" desc="Title for the blocked Topics preference.">
-        Integer faucibus metus
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION" translateable="false" desc="">
-        Donec fringilla justo vel ligula finibus, ut rutrum lectus vestibulum. Suspendisse vestibulum lorem lacinia nulla consequat auctor.
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="">
-        Donec commodo sem non augue blandit, ullamcorper aliquam enim fermentum
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="">
-        Diam maecenas sed
-      </message>
-      <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_SUB_PAGE_TITLE" translateable="false" desc="">
-        Integer faucibus metus
-      </message>
-      <!-- TODO(http://b/254412601): Format links.-->
-      <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" translateable="false" desc="Footer for the Topics preference page.">
-        Quisque eu auctor purus, id tempus nulla. Pellentesque porta orci purus. Donec dictum, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>justo nec ultricies semper<ph name="END_LINK_1">&lt;/link1&gt;</ph>, <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>eros mauris varius nibh<ph name="END_LINK_2">&lt;/link2&gt;</ph>, sit amet molestie quam arcu id urna. Donec vulputate dui ut lorem egestas, ac sollicitudin metus fermentum.
+      <message name="IDS_SETTINGS_TOPICS_PAGE_ADD_TOPIC_SNACKBAR" desc="A confirmation that appears after a user un-blocks a topic. This page is only applicable if the user has the Ad topics setting turned on. If they do, Thorium estimates the user's topics of interests and then sites can ask for topics to help personalize ads. If a user dosn't like a specific topic, they can block it. **** The user can also unblock a topic, the language is important, because 'unblocking' doesn't bring the topic back to the list of active topics. It simply adds a topic back to the list of potential topics that Thorium might estimate at a later time as the user continues browsing.">
+        Added topic back to potential topics
       </message>
 
       <!-- Privacy Sandbox v4 - Fledge Page -->
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" translateable="false" desc="Title for the Fledge preferences page.">
-        Aenean erat leo
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" desc="A page title and the name of a new setting. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Site-suggested ads
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Fledge toggle.">
-        Nunc aliquam consequat felis non tincidunt
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_LABEL" desc="The label for a new setting.">
+        Site-suggested ads
       </message>
-      <!-- TODO(http://b/254412044): Format links.-->
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Fledge toggle.">
-        Donec pretium non elit vitae ornare. Morbi arcu elit, rutrum nec sapien quis, <ph name="BEGIN_LINK">&lt;link&gt;</ph>tristique tristique ante<ph name="END_LINK">&lt;/link&gt;</ph>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_SUB_LABEL" desc="A description of the new Site-suggested ads setting. This text appears beneath the name of the new setting, 'Site-suggested ads', and is associated with the control that a user can turn on or off. * 'determine what you like': Based on your interaction with a site, that site can define your interests any way it wants. For example, if you put a pair of red running shoes in a shopping cart, the site might define an interest as 'red_running_shoes_size_36'. * 'suggest ads as you continue browsing': 1) you interact with a site and if defines an interest for you. That information is saved with Thorium. 2) You continue browsing. 3) a new site you visit checks with Thorium if 'Site-suggested ads' is turned on and then can request information related to that user. 4) The site might end up showing ads related to 'red_running_shoes_size_36'. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Sites you visit can determine what you like and then suggest ads as you continue browsing
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_HEADING" translateable="false" desc="Section title for the current Fledge sites list.">
-        Aliquam
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_HEADING" desc="A label for a list of sites the user has visited. The list of sites looks similar to the user's browsing history, but this is a distinct list. * 'browsing history' is a list of the sites the user has visited. See the Help-center definition here: https://support.google.com/chrome/answer/95589 * This list of 'Sites' is a subset of the user's browsing history. 1) Only sites that use the 'Site-suggested ads' API (https://developer.chrome.com/docs/privacy-sandbox/fledge/) can appear on this list. 2) This list is based on recent sites the user has visited and sites older than 4 weeks are regularly deleted.">
+        Sites
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION" translateable="false" desc="Section description for the current Fledge sites list.">
-        Nullam sollicitudin elit vitae hendrerit suscipit. Nunc mi leo, placerat sit amet lorem non, semper convallis sapien.
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION" desc="A paragraph beneath the 'Sites' label. It explains how users can control the sites that appear in the list. * 'block sites': When a user blocks a site, that site may no longer save info with Thorium about the user's visit. As the user continues to browse, they will not see ads suggested by the blocked site. * 'auto-deletes': We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly. ">
+        You can block sites you don’t want. Thorium also auto-deletes sites from the list that are older than 4 weeks. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_DISABLED" translateable="false" desc="Description which appears when Fledge is disabled.">
-        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_DISABLED" desc="1 of 3 possible descriptions that appear beneath the 'Sites' title. If this setting is off, no sites appear. The link opens a dialog box that provides more information about Site-suggested ads.">
+        When on, a list of sites you visit that guess your interests appears here.
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_EMPTY" translateable="false" desc="Description which appears when the Fledge sites list is empty.">
-        Morbi quis orci in mauris tempus rutrum. Curabitur blandit orci tortor, pellentesque tempor turpis lacinia ac.
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_EMPTY" desc="1 of 3 possible descriptions that appear beneath the 'Sites' title. This setting could be on but no topics appear in the list. This text explains why.">
+        It can take up to a week for a list of sites to appear here based on your browsing history.
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_SEE_ALL_SITES_LABEL" translateable="false" desc="Title for the all Fledge sites preference.">
-        Donec non mi
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_SEE_ALL_SITES_LABEL" desc="Text that serves as a button. Because the list of sites might be long, we only show the most recent sites. This button allows the user to browse all sites (because sites are auto-deleted every 4 weeks, the list is never older than 4 weeks).">
+        See all sites
       </message>
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_HEADING" translateable="false" desc="Title for the blocked Fledge sites preference.">
-        Curabitur a pharetra
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_HEADING" desc="A label that serves as a button to open the 'Sites you blocked' page.">
+        Sites you blocked
       </message>
-      <!-- TODO(http://b/254412044): Format links.-->
-      <message name="IDS_SETTINGS_FLEDGE_PAGE_FOOTER" translateable="false" desc="">
-        Pellentesque sollicitudin purus sit amet felis fringilla blandit. Donec a eleifend ligula, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>et fringilla nunc<ph name="END_LINK_1">&lt;/link1&gt;</ph>. Vivamus sit amet <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>cursus quam<ph name="END_LINK_2">&lt;/link2&gt;</ph>. Etiam ultricies rutrum orci, eget accumsan purus mattis in.
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Site-suggested ads' setting. The user is on this page. * 'Ad topics': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
+        As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>Ad topics<ph name="END_LINK_1">&lt;/link1&gt;</ph>, your <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>cookie settings<ph name="END_LINK_2">&lt;/link2&gt;</ph>, and if the site you’re viewing personalizes ads
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_ALL_SITES_SUB_PAGE_TITLE" desc="The page title that shows all sites. This is a subpage.">
+        All sites
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_SUB_PAGE_TITLE" desc="The page title that shows blocked sites. This is a subpage.">
+        Sites you blocked
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_DESCRIPTION" desc="1 of 2 possible descriptions that appear beneath the 'Sites you blocked' title. In this case, the user has previously blocked sites. * 'pool of sites': We want to express that by clicking 'Add', the user is making a site eligible again for consideration.">
+        Add a site back if you want it in the pool of sites that can guess what you like
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_DESCRIPTION_EMPTY" desc="1 of 2 possible descriptions beneath the 'Sites you blocked' title. In this case, the list is empty (the user hasn't blocked any sites).">
+        Blocked sites appear here
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_HEADING" desc="The title of a dialog box that explains site-suggested ads in more detail.">
+        More about site-suggested ads
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_1" desc="1 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'It's common...' this sentence is intended to be reassuring. Many sites the user visits are retaining some information about the user, such as their preferred language if the site has a language picker. If cookies are allowed, this info might be stored with a first-party cookie on the user's device. Sites can also store limited information with Thorium.">
+        It’s common for sites you visit to remember things you’re interested in, to personalize your experience. Sites can also store information with Thorium about your interests.
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_2" desc="2 of 3 paragraphs on the Learn more page for Site-suggested ads.">
+        For example, if you visit a site that sells long-distance running shoes, the site might decide that you’re interested in running marathons. Later, if you visit a different site, that site can show you an ad for running shoes suggested by the first site.
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_3" desc="3 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'Auto-deletes': This could just read 'Thorium deletes...' but we include the 'auto' to suggest that the deletion happens regularly and as part of the system. * 'A site you visit again...': We want to reassure the user. We just told them sites are automatically deleted. And yet, a user might see the same site in the list month after month if they visit that site regularly.">
+        Thorium auto-deletes sites that are older than 4 weeks. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get blocked. The list is of sites the user has recently visited and that use the Site-suggested ads API to suggest ads to other sites as the user continues browsing.">
+        Block <ph name="DOMAIN">%1$s<ex>example.com</ex></ph>
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_ALLOW_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get added back to the pool of potential sites.">
+        Add <ph name="DOMAIN">%1$s<ex>example.com</ex></ph>
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE_SNACKBAR" desc="A confirmation that appears after a user blocks a site. This page is only applicable if the user has the Site-suggested ads setting turned on. If they do, a site can choose ads that they later suggest to other sites. If a user dosn't want a site to suggest ads for them, they can block a site.">
+        Blocked site
+      </message>
+      <message name="IDS_SETTINGS_FLEDGE_PAGE_ADD_SITE_SNACKBAR" desc="A confirmation that appears after a user unblocks a site. This page is only applicable if the user has the Site-suggested ads setting turned on. If they do, a site can choose ads that they later suggest to other sites. If a user dosn't want a site to suggest ads for them, they can block a site. **** The user can also unblock a site. The language is important, because 'unblocking' doesn't bring the site back to the list of active sites. It simply makes a site eligible again to suggest ads, but the user would need to visit that site to trigger it again and have it appear in the list.">
+        Added site back to potential sites
       </message>
 
       <!-- Privacy Sandbox v4 - Ad Measurement Page -->
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" translateable="false" desc="Title for the Ad Measurement preferences page.">
-        Vestibulum augue
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" desc="A page title and the name of a new setting. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Ad measurement
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" translateable="false" desc="Title for the Ad Measurement toggle.">
-        Vestibulum augue erat
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" desc="The label for a new setting. ">
+        Ad measurement
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Description for the Ad Measurement toggle.">
-        Vestibulum eleifend nunc a viverra congue. Integer nec mauris rutrum, porta mauris et, pellentesque ligula. Nam et pulvinar eros, in gravida nisl.
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" desc="A description of the new Ad measurement setting. This text appears beneath the name of the new setting, 'Ad measurement', and is associated with the control that a user can turn on or off. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an “Ad privacy” page in Thorium settings. For an equivalent structure, see “Security” on chrome://settings/privacy that opens chrome://settings/security. Likewise, “Ad privacy” on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+        Sites and advertisers can measure the performance of their ads
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" translateable="false" desc="When on section header.">
-        Mauris
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" desc="A label above bullet points that explain the functionality of this setting.">
+        When on
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" translateable="false" desc="What to consider section header.">
-        Aenean
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" desc="A label above bullet points that note things the user might want to consider when turning this setting on or off.">
+        Things to consider
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" translateable="false" desc="When on first bullet point.">
-        Praesent sodales, magna eget volutpat iaculis, justo odio viverra justo, id venenatis est est sit amet ex
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" desc="1 of 3 bullets in the 'When on' section that describes the Ad measurement setting. * 'Limited types of data': The Ad measurement API (for developers) and the Ad measurement control (for users) is offered by Thorium. But Thorium is a 'pass through', helping one site communicate information to another about the performance of an ad. That's where this passive construction comes from. Thorium facilitates, but shouldn't be seen as a major actor here. And we don't want to suggest anything like 'Thorium limits the types of data shared between sites,' because Thorium can't do that. Any 2 sites can have a side agreement to share as much info as they like. ">
+        Limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" translateable="false" desc="When on second bullet point.">
-        Nunc metus est, faucibus sit amet lacus sit amet, aliquet rutrum libero. Maecenas vel euismod ante.
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" desc="2 of 3 bullets in the 'When on' section that describes the Ad measurement setting.">
+        Ad-measurement data is deleted regularly from your device
       </message>
-      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" translateable="false" desc="What to consider first bullet point.">
-        Mauris mattis urna elit. Phasellus quis erat sapien. Praesent finibus pellentesque iaculis. Mauris hendrerit metus at enim rhoncus bibendum.
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_3" desc="3 of 3 bullets in the 'When on' section that describes the Ad measurement setting. If reports were instantaneous, a site could receive a report and then consult which visitors most recently visited the site.">
+        Your browsing history is kept private on your device and reports are sent with a delay to protect your identity
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" desc="1 or 3 bullets in the 'Things to consider section that describes the Ad measurement setting.">
+        You can always delete ad-measurement data by deleting your browsing data
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_2" desc="2 or 3 bullets in the 'Things to consider section that describes the Ad measurement setting.">
+        Thorium limits the total amount of data that sites can share through the browser to measure ad performance
+      </message>
+      <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_3" desc="3 or 3 bullets in the 'Things to consider section that describes the Ad measurement setting.">
+        Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
       </message>
 
       <!-- Secure DNS Settings.  Used by //chrome/browser/privacy. -->
@@ -1587,16 +1427,16 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_PRIVACY_GUIDE_MSBB_ITEM_FOUR" desc="Fourth bullet point that describes the details of the MSBB toggle.">
         If you also share Thorium usage reports, those reports include the URLs you visit
       </message>
-      <message name="IDS_PRIVACY_GUIDE_SYNC_TOGGLE" desc="Title for the history sync toggle.">
+      <message name="IDS_PRIVACY_GUIDE_HISTORY_SYNC_TOGGLE" desc="Title for the history sync toggle.">
         History sync
       </message>
-      <message name="IDS_PRIVACY_GUIDE_SYNC_ITEM_ONE" desc="First bullet point that describes the details of the history sync toggle.">
+      <message name="IDS_PRIVACY_GUIDE_HISTORY_SYNC_ITEM_ONE" desc="First bullet point that describes the details of the history sync toggle.">
         You’ll have your history on all your synced devices so you can continue what you were doing
       </message>
-      <message name="IDS_PRIVACY_GUIDE_SYNC_ITEM_TWO" desc="Second bullet point that describes the details of the history sync toggle.">
+      <message name="IDS_PRIVACY_GUIDE_HISTORY_SYNC_ITEM_TWO" desc="Second bullet point that describes the details of the history sync toggle.">
         If Google is also your default search engine, you’ll see better, contextually relevant suggestions
       </message>
-      <message name="IDS_PRIVACY_GUIDE_SYNC_ITEM_THREE" desc="Third bullet point that describes the details of the history sync toggle.">
+      <message name="IDS_PRIVACY_GUIDE_HISTORY_SYNC_ITEM_THREE" desc="Third bullet point that describes the details of the history sync toggle.">
         The URLs you visit are saved to your Google Account
       </message>
       <message name="IDS_PRIVACY_GUIDE_COOKIES_INTRO" desc="Text introducing the cookies control.">
@@ -2119,7 +1959,6 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_ACCOUNT_MANAGEMENT_NO_PARENTAL_DATA" desc="String saying that we are waiting for family information.">
         Waiting for details of parents.
       </message>
-
       <message name="IDS_ACCOUNT_MANAGEMENT_ONE_PARENT_NAME" desc="String for name of single parent for child account.">
         This browser is managed by <ph name="PARENT_NAME">%1$s<ex>parent1@gmail.com</ex></ph>.
       </message>
@@ -2140,12 +1979,15 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_NO_PARENTAL_DATA" desc="String saying that child should go to parent for help for child account.">
         If you need help, ask your parent
-        </message>
+      </message>
       <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_ONE_PARENT_NAME" desc="String saying that child should go to parent for help with email of single parent for child account.">
         If you need help, ask your parent (<ph name="PARENT_NAME">%1$s<ex>parent1@gmail.com</ex></ph>)
       </message>
       <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_TWO_PARENT_NAMES" desc="String saying that child should go to parent for help with email of two parents for child account.">
         If you need help, ask your parent (<ph name="PARENT_NAME_1">%1$s<ex>parent1@gmail.com</ex></ph> or <ph name="PARENT_NAME_2">%2$s<ex>parent2@gmail.com</ex></ph>)
+      </message>
+      <message name="IDS_DEFAULT_GOOGLE_ACCOUNT_USERNAME" desc="Default username for accounts that cannot have the email address displayed.">
+        Google Account user
       </message>
 
       <!-- Parent approval widget. -->
@@ -2518,11 +2360,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Loading…
       </message>
 
-      <!-- InfoBar -->
-      <message name="IDS_TOP_BAR_SCREEN_POSITION" desc="Accessibility label to inform users about the InfoBar location">
-        Options available near top of the screen
-      </message>
-
       <!-- DuplicateDownloadInfoBar -->
       <message name="IDS_DUPLICATE_DOWNLOAD_INFOBAR_TEXT" desc="Prompt text for the confirmation dialog asking whether the user really wants to download a file when there already exists a file with the same name">
         Do you want to download <ph name="FILE_NAME">^1<ex>specialfile.pdf</ex></ph> again?
@@ -2690,6 +2527,12 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_CONTEXTMENU_SEARCH_IMAGE_WITH_GOOGLE_LENS" desc="Context sensitive menu item for deep linking into google lens. [CHAR_LIMIT=30]">
         Search image with Google Lens <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
       </message>
+      <message name="IDS_CONTEXTMENU_SEARCH_IMAGE_WITH_GOOGLE_LENS_ALT_TEXT_1" desc="ALT TXT 1: Context sensitive menu item for deep linking into google lens. [CHAR_LIMIT=44]">
+        Search image with Google <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
+      </message>
+      <message name="IDS_CONTEXTMENU_SEARCH_IMAGE_WITH_GOOGLE_LENS_ALT_TEXT_2" desc="ALT TXT 2: Context sensitive menu item for deep linking into google lens. [CHAR_LIMIT=30]">
+        Search inside image with Google <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
+      </message>
       <message name="IDS_CONTEXTMENU_TRANSLATE_IMAGE_WITH_GOOGLE_LENS" desc="Context sensitive chip for deep linking into google lens for translate results. [CHAR_LIMIT=30]">
           Translate image with Google Lens <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
       </message>
@@ -2774,6 +2617,15 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NOTIFICATION_WEBAPK_INSTALLED" desc="Indicates that a WebAPK has been successfully added to Home screen.">
         App installed
       </message>
+      <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_FAILED" desc="Indicates that the WebAPK install was unsuccessful.">
+        Couldn’t install <ph name="WEBAPK_NAME">%1$s<ex>Progressive Web Apps</ex></ph>.
+      </message>
+      <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_FAILED_CONTENTS_GENERAL" desc="Indicates that the WebAPK install was unsuccessful.">
+        Something went wrong.
+      </message>
+      <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_OPEN" desc="Indicates that the WebAPK install was unsuccessful.">
+        Go back to site
+      </message>
       <message name="IDS_IPH_PWA_INSTALL_AVAILABLE_TEXT" desc="The in-product-help message for PWAs that can be installed to the device.">
         Install this app
       </message>
@@ -2825,9 +2677,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_NOTIFICATION_MANAGE_BUTTON" desc="Text of a button shown on notifications, that opens the Thorium notifications settings page. This allows users to edit notification settings when a site asks them to allow notifications. [CHAR_LIMIT=9]">
         Manage
-      </message>
-      <message name="IDS_NOTIFICATION_WORK_PROFILE_BADGE_CONTENT_DESCRIPTION" desc="Content description of the work profile badge in the notification.">
-        Work profile
       </message>
 
       <!-- Download UI -->
@@ -3133,6 +2982,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_FRE_BROWSER_MANAGED_BY_ORGANIZATION" desc="Text that indicates the browser is managed by policy">
         Your browser is managed by your organization
       </message>
+      <message name="IDS_FRE_BROWSER_MANAGED_BY_PARENTS" desc="Text that indicates the browser is managed by parents">
+        Your browser is managed by your parents
+       </message>
 
       <!-- Signin First Run strings -->
       <message name="IDS_SIGNIN_FRE_DISMISS_BUTTON" desc="Button on the very first screen of Thorium to continue without signing into Thorium. Ensure consistency with OneGoogle strings while still omitting “Thorium” (see e.g. TC ID 5336438894576002929).">
@@ -3273,6 +3125,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_SYNC_PROMO_CONTINUE_AS" desc="Button to sign into Thorium with the displayed account and without having to reenter a password. ‘John’ is replaced with the user’s given name, or the user’s full name if the given name is not available. Ensure consistency with related OneGoogle sign-in buttons (see e.g. TC ID 5569230012177947065).">
         Continue as <ph name="USER_FULL_NAME">%1$s<ex>John</ex></ph>
       </message>
+      <message name="IDS_SYNC_PROMO_CONTINUE" desc="Button to sign into Thorium, similar to IDS_SYNC_PROMO_CONTINUE_AS. Used when the user's display names are not available and the email address cannot be displayed.">
+        Continue
+      </message>
       <message name="IDS_SIGNIN_PROMO_CHOOSE_ACCOUNT" desc="Button that the user can press if they are not the profile that Thorium found (opposite of 'Continue as Joe Doe').">
         Not <ph name="EMAIL">%1$s<ex>john.doe@example.com</ex></ph>?
       </message>
@@ -3283,65 +3138,29 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_SYNC_PROMO_DESCRIPTION_BOOKMARKS" desc="This string is the body of a card that appears when the user opens Thorium's bookmarks; the user may be signed in to Thorium, but isn't syncing their Thorium data. The headline above this string is 'Get all your bookmarks'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your bookmarks from your other devices
       </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_BOOKMARKS" desc="Description string for 'Continue as' signin promo shown in Bookmarks screen.">
-        To get your bookmarks on all your devices, turn on sync
-      </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_BOOKMARKS_NO_ACCOUNT" desc="Description string for 'Continue as' signin promo shown in Bookmarks screen. This version of the string is shown when there are no accounts on the device.">
-        To get your bookmarks on all your devices, sign in and turn on sync
-      </message>
       <message name="IDS_SYNC_PROMO_TITLE_NTP_CONTENT_SUGGESTIONS" desc="This string is the headline of a card that appears when the user visits Thorium's new tab page; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get the most relevant content from Google'. [CHAR_LIMIT=70]" meaning="This headline means that the user is missing out on more interesting and relevant news articles. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
-        See content for you
-      </message>
-      <message name="IDS_SYNC_PROMO_ALTERNATIVE_TITLE_NTP_CONTENT_SUGGESTIONS" desc="This string is the headline of a card that appears when the user visits Thorium's new tab page; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get the most relevant content from Google'. [CHAR_LIMIT=70]" meaning="This headline means that the user is missing out on more interesting and relevant news articles. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Get better suggestions
       </message>
       <message name="IDS_SYNC_PROMO_DESCRIPTION_NTP_CONTENT_SUGGESTIONS" desc="This string is the body of a card that appears when the user visits Thorium's new tab page; the user may be signed in to Thorium, but isn't syncing their Thorium data. The headline above this string is 'See stories for you'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user is missing out on more interesting and relevant news articles. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get the most relevant content from Google
       </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_NTP_CONTENT_SUGGESTIONS" desc="Description string for 'Continue as' signin promo shown in NTP content suggestions screen. This version of the string is shown when there are no accounts on the device.">
-        To get personalized content suggested by Google, turn on sync
-      </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_NTP_CONTENT_SUGGESTIONS_NO_ACCOUNT" desc="Description string for 'Continue as' signin promo shown in NTP content suggestions screen. This version of the string is shown when there are no accounts on the device.">
-        To get personalized content suggested by Google, sign in and turn on sync
-      </message>
       <message name="IDS_SYNC_PROMO_TITLE_RECENT_TABS" desc="This string is the headline of a card that appears when the user opens Thorium's recent tabs. The user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your tabs from your other devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can see some of their recent tabs from their computer on their phone, and their phone's recent tabs on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
-        Continue from another device
-      </message>
-      <message name="IDS_SYNC_PROMO_ALTERNATIVE_TITLE_RECENT_TABS" desc="This string is the headline of a card that appears when the user opens Thorium's recent tabs. The user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your tabs from your other devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can see some of their recent tabs from their computer on their phone, and their phone's recent tabs on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Get all your tabs
       </message>
       <message name="IDS_SYNC_PROMO_DESCRIPTION_RECENT_TABS" desc="This string is the body of a card that appears when the user opens Thorium's recent tabs. The user may be signed in to Thorium, but isn't syncing their Thorium data. There's no character limit but try to keep the translation under 120 characters." meaning="The headline above this string is 'Continue from another device'. This message means that the user can see some of their recent tabs from their computer on their phone, and their phone's recent tabs on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your tabs from your other devices
       </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_RECENT_TABS" desc="Description string for 'Continue as' signin promo shown in Recent Tabs screen.">
-        To get your tabs from your other devices, turn on sync
-      </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_RECENT_TABS_NO_ACCOUNT" desc="Description string for 'Continue as' signin promo shown in Recent Tabs screen. This version of the string is shown when there are no accounts on the device.">
-        To get your tabs from your other devices, sign in and turn on sync
-      </message>
       <message name="IDS_SYNC_PROMO_TITLE_SETTINGS" desc="This string is the headline of a card that appears when the user opens Thorium's settings; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your passwords, bookmarks and more on all your devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can use Thorium more easily by syncing their passwords, bookmarks, settings, and more.. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
-        Browse more easily
-      </message>
-      <message name="IDS_SYNC_PROMO_ALTERNATIVE_TITLE_SETTINGS" desc="This string is the headline of a card that appears when the user opens Thorium's settings; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your passwords, bookmarks and more on all your devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can use Thorium more easily by syncing their passwords, bookmarks, settings, and more.. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Use Thorium your way
       </message>
       <message name="IDS_SYNC_PROMO_DESCRIPTION_SETTINGS" desc="This string is the body of a card that appears when the user opens Thorium's settings; the user may be signed in to Thorium, but isn't syncing their Thorium data. The headline above this string is 'Browse more easily'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can use Thorium more easily by syncing their passwords, bookmarks, settings, and more.. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your passwords, bookmarks and more on your other devices
-      </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_SETTINGS" desc="Description string for 'Continue as' signin promo shown in Settings screen. Turning on sync enables syncing browser settings, autofill data, bookmarks, passwords, history and other data used for browser personalization.">
-        To sync and personalize across devices, turn on sync
-      </message>
-      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_SETTINGS_NO_ACCOUNT" desc="Description string for 'Continue as' signin promo shown in Settings screen. This version of the string is shown when there are no accounts on the device. Turning on sync enables syncing browser settings, autofill data, bookmarks, passwords, history and other data used for browser personalization.">
-        To sync and personalize across devices, sign in and turn on sync
       </message>
       <message name="IDS_SIGNIN_PROMO_CHOOSE_ANOTHER_ACCOUNT" desc="Button that the user can press if they want to select a different account before signing in. This button is shown below 'Continue as Joe Doe' button that signs user in with default account.">
         Choose another account
       </message>
       <message name="IDS_SYNC_PROMO_TURN_ON_SYNC" desc="Button that the user can press if they want to turn on sync with this account.">
         Turn on sync
-      </message>
-      <message name="IDS_SYNC_PROMO_CONTINUE" desc="This string is the button of a card that asks the user to turn on sync; the user may be signed in to Thorium, but isn't syncing their Thorium data. We want users to read this card and consider tapping the 'Continue' button and turn on sync. [CHAR_LIMIT=30] instead." meaning="Open the screen where the user can turn on sync">
-        Continue
       </message>
 
       <message name="IDS_EXTERNAL_APP_RESTRICTED_ACCESS_ERROR" desc="A message shown to the user if Thorium receives a file view request to something Thorium does not have access to view.">
@@ -3432,6 +3251,24 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_CORMORANT_CREATOR_GENERAL_ERROR_DESCRIPTION" desc="Creator page general error description when something goes wrong.">
         Try again later
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_FOLLOW_SUCCESS_SNACKBAR" desc="Creator page snackbar messsage after successfully following a particular site.">
+        Following <ph name="SITE_NAME">%1$s<ex>Reuters</ex></ph>
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_FOLLOW_FAILURE_SNACKBAR" desc="Creator page snackbar messsage after a failing to follow a particular site but the reason for the failure is unknown.">
+        Can’t follow. Something went wrong.
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_UNFOLLOW_SUCCESS_SNACKBAR" desc="Creator page snackbar messsage after successfully unfollowing a particular site.">
+        Unfollowed <ph name="SITE_NAME">%1$s<ex>Reuters</ex></ph>
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_UNFOLLOW_FAILURE_SNACKBAR" desc="Creator page snackbar messsage after a failing to unfollow a particular site but the reason for the failure is unknown.">
+        Can’t unfollow. Something went wrong.
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_OFFLINE_FAILURE_SNACKBAR" desc="Creator page snackbar messsage after a user take a follow/unfollow action while offline.">
+        You’re offline. Check your internet connection and try again.
+      </message>
+      <message name="IDS_CORMORANT_CREATOR_PREVIEW" desc="Accessibility readout for the title of a Creator feed, informing the user that it's the preview of the feed content from a particular website.">
+        <ph name="SITE_NAME">%1$s<ex>Reuters</ex></ph> Preview
       </message>
       <message name="IDS_FEED_MANAGE_ACTIVITY" desc="Menu item to manage my activity from the feed header overflow menu.">
         Activity
@@ -3559,26 +3396,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_WEB_FEED_AWARENESS" desc="Educating the user about the web feed.">
         See content you follow here
-      </message>
-
-      <!-- Explore sites strings -->
-      <message name="IDS_EXPLORE_SITES_TITLE" desc="Title of a section showing different categories, each with a number of popular websites">
-        Explore
-      </message>
-      <message name="IDS_EXPLORE_SITES_LOADING_FROM_NET" desc="Caption for an indeterminate loading spinner indicating that we are loading the data from the internet">
-        Finding the best from the web…
-      </message>
-      <message name="IDS_EXPLORE_SITES_LOADING_ERROR" desc="Caption text indicating that a set of site icons and links failed to load.">
-        Can't load this page
-      </message>
-      <message name="IDS_EXPLORE_SITES_LOADING_ERROR_NEXT_STEPS_TAG" desc="Text on an error screen indicating posible steps to resolve the error.">
-        Try:
-      </message>
-      <message name="IDS_EXPLORE_SITES_LOADING_ERROR_NEXT_STEPS_RELOAD" desc="Text on an error screen indicating that reloading the page can fix this error.">
-        Reloading the page
-      </message>
-      <message name="IDS_EXPLORE_SITES_LOADING_ERROR_NEXT_STEPS_CHECK_CONNECTION" desc="Text on an error screen indicating that checking network connection can fix this error.">
-        Checking your internet connection
       </message>
 
       <!-- Video tutorials -->
@@ -4084,15 +3901,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Page is ready to view
       </message>
 
-      <!-- Offline indicator -->
-      <message name="IDS_OFFLINE_INDICATOR_OFFLINE_TITLE" desc="Text to be displayed in the snackbar that lets the users know they are offline.">
-        No connection
-      </message>
-
-      <message name="IDS_OFFLINE_INDICATOR_VIEW_OFFLINE_CONTENT" desc="A text label on the snackbar widget to bring up the list of offline content.">
-        See downloads
-      </message>
-
       <!-- Offline indicator v2 -->
       <message name="IDS_OFFLINE_INDICATOR_V2_OFFLINE_TEXT" desc="Text to be displayed in the status indicator above the toolbar that lets the users know they are offline.">
         No internet connection
@@ -4160,9 +3968,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Thorium survey -->
-      <message name="IDS_CHROME_SURVEY_PROMPT" desc="Message shown that invites the user to take a survey about Thorium. 'Help' and 'improve' are imperative verbs. 'Take survey' is a tappable link. When tapped, a survey about Thorium opens.">
-        Help improve Thorium. <ph name="BEGIN_LINK">&lt;LINK&gt;</ph>Take survey<ph name="END_LINK">&lt;/LINK&gt;</ph>
-      </message>
       <message name="IDS_CHROME_SURVEY_MESSAGE_TITLE" desc="Message shown that invites the user to take a survey about Thorium. 'Help' and 'improve' are imperative verbs.">
         Help improve Thorium?
       </message>
@@ -4185,6 +3990,15 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_RDS_APP_MENU_USER_EDUCATION_DIALOG_MESSAGE" desc="Message on the dialog shown to educate the user about the desktop site app menu site-level setting.">
         When you select desktop site once, the setting is applied to the site each time you visit
+      </message>
+      <message name="IDS_RDS_SITE_SETTINGS_GENERIC_IPH_TEXT_DESKTOP" desc="Message on the generic text bubble shown to educate the user about using the desktop site site-level setting to switch to desktop mode.">
+        You can request the desktop site for <ph name="HOST_NAME">%1$s<ex>www.example.com</ex></ph>
+      </message>
+      <message name="IDS_RDS_SITE_SETTINGS_GENERIC_IPH_TEXT_MOBILE" desc="Message on the generic text bubble shown to educate the user about using the desktop site site-level setting to switch to mobile mode.">
+        You can request the mobile site for <ph name="HOST_NAME">%1$s<ex>www.example.com</ex></ph>
+      </message>
+      <message name="IDS_RDS_SITE_SETTINGS_SPECIFIC_IPH_TEXT" desc="Message on the text bubble shown on specific websites more functional in desktop mode to educate the user about using the desktop site site-level setting.">
+        Switch to desktop site for a better view of this site
       </message>
 
       <!-- Accessibility -->
@@ -4718,9 +4532,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_VR_MODULE_TITLE" desc="Text shown when the VR module is referenced in install start, success, failure UI (e.g. in IDS_MODULE_INSTALL_START_TEXT, which will expand to 'Installing Virtual Reality for Thorium…').">
         Virtual Reality
       </message>
-      <message name="IDS_VR_PREPARING_VR_TOAST_STANDALONE_TEXT" desc="Text shown on a toast when Thorium's VR browser could not be started due to the VR module missing.">
-        Thorium is still preparing for VR. Restart Thorium later.
-      </message>
       <message name="IDS_VR_PREPARING_VR_NOTIFICATION_TITLE" desc="Title of a notifaction shown in VR if VR browser not ready yet. [CHAR_LIMIT=23]">
         Something went wrong.
       </message>
@@ -5106,12 +4917,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NEAR_OOM_INTERVENTION_DECLINE" desc="The text of the button letting the user decline the browser's intervention, so that the page can resume what it was doing.">
          Resume
       </message>
-      <message name="IDS_NEAR_OOM_REDUCTION_MESSAGE" desc="The message stating that the browser removed some content of the page using too much memory.">
-         This page uses too much memory, so Thorium removed some content.
-      </message>
-      <message name="IDS_NEAR_OOM_REDUCTION_DECLINE" desc="The text of the button letting the user decline the browser's intervention, so that the page can be reloaded.">
-         Show original
-      </message>
 
       <!-- Autofill Assistant preferences -->
       <!-- TODO(b/168178344): Move to Assistant settings strings section below. -->
@@ -5392,10 +5197,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Copy GIF
       </message>
 
-      <message name="IDS_SHARING_LIGHTWEIGHT_REACTIONS" desc="Label for the Add emotion button in sharing hub.">
-        Add emotion
-      </message>
-
       <message name="IDS_SHARING_SCREENSHOT" desc="Label for Screenshot button in the sharing hub.">
         Screenshot
       </message>
@@ -5548,71 +5349,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Share content only
       </message>
 
-      <!-- Lightweight Reactions strings -->
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_CREATING_GIF" desc="Message displayed above the progress bar when the reaction GIF is being generated.">
-        Creating GIF <ph name="PERCENT">%1$d<ex>13</ex></ph>%%
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_CREATING_GIF_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when GIF creation begins.">
-        Creating GIF
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_MOVED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is moved.">
-        Reaction moved
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_DELETED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is deleted.">
-        Reaction deleted
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_DUPLICATED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is duplicated.">
-        Reaction duplicated
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_TOOLBAR_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when the lightweight reactions toolbar is selected. The user can then select a reaction from the toolbar to place on the screen.">
-        Choose an emotion
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_CHANGED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is selected from the toolbar and the active reaction is changed.">
-        Reaction changed
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_ADDED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is added to the scene.">
-        Reaction added
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_RESIZE_AND_ROTATE_BUTTON" is_accessibility_with_no_ui="true" desc="The accessibility text to read when the resize and rotate editing tool is selected. The user can then resize and rotate the reaction on the scene.">
-        Resize and rotate
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_REACTION_ADJUSTED_ANNOUNCEMENT" is_accessibility_with_no_ui="true" desc="The accessibility text to read when a reaction is resized or rotated.">
-        Reaction adjusted
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_DUPLICATE_BUTTON" is_accessibility_with_no_ui="true" desc="The accessibility text to read when the duplicate editing tool is selected. The user can then dupicate the reaction on the scene.">
-        Duplicate
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_TITLE_FOR_SHARE" desc="The title of the shared lightweight reaction.">
-        Emotion GIF <ph name="CURRENT_DATE_ISO">%1$s<ex>2020-09-16</ex></ph>
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_FILENAME_PREFIX" desc="The file name prefix of the shared lightweight reaction. Followed by the timestamp.">
-        chrome_emotion_gif_<ph name="CURRENT_TIMESTAMP_MS">%1$s<ex>1582667748515</ex></ph>
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_ERROR_ASSET_FETCH" desc="Message displayed in a toast when the Lightweight Reactions assets cannot be downloaded from the server.">
-        Can’t download reactions. Try again.
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_ERROR_SCREENSHOT" desc="Message displayed in a toast when taking a screenshot fails during Lightweight Reactions initialization.">
-        Can’t take a screenshot. Try again.
-      </message>
-
-      <message name="IDS_LIGHTWEIGHT_REACTIONS_ERROR_MAX_REACTIONS_REACHED" desc="Message displayed in a toast when the user tries to add more than the maximum allowed reactions to the scene.">
-        You can add up to <ph name="MAX_NUM_REACTIONS">%1$d<ex>10</ex></ph> reactions
-      </message>
-
       <!-- Share Screenshot strings -->
       <message name="IDS_SCREENSHOT_EDIT_TITLE" desc="The text shown on the share option for screenshots.">
         Edit
@@ -5718,17 +5454,20 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_DIALOG_MESSAGE" desc="The body text of a dialog explaining the benefits of enabling Thorium notifications.">
         You’ll be able to easily manage media controls, Incognito sessions, downloads and more
       </message>
-      <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_DIALOG_TITLE_VARIATION_2" desc="The title of a dialog shown to users before asking for notification permission.">
-        Manage media controls, Incognito tabs, and more with notifications
-      </message>
-      <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_DIALOG_MESSAGE_VARIATION_2" desc="The body text of a dialog explaining the benefits of enabling Thorium notifications.">
-        You can disable notifications by visiting settings
-      </message>
       <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_ACCEPT_BUTTON_TEXT" desc="The text of the positive button on the notification permission prompt dialog">
         Continue
       </message>
       <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_REJECT_BUTTON_TEXT" desc="The text of the negative button on the notification permission prompt dialog">
         No thanks
+      </message>
+      <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_CONTENT_DESCRIPTION" desc="The content description for the notification permission rationale bottom sheet. Read as accessibility string when tapping on the bottom sheet.">
+        Notification permission flow
+      </message>
+      <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_OPENED_FULL" desc="The accessibility string read when the notification permission rationale bottom sheet is fully opened.">
+        Notification permission flow opened at full height
+      </message>
+      <message name="IDS_NOTIFICATION_PERMISSION_RATIONALE_CLOSED_DESCRIPTION" desc="The accessibility string read when the notification permission rationale bottom sheet is closed.">
+        Notification permission flow closed
       </message>
 
       <!-- Get Image Descriptions -->
@@ -5969,11 +5708,17 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_RESTORE_CUSTOM_TAB_TITLE" desc="Appears in pop-up message title when the previous Custom Tab session a user engaged with can be restored.">
         Resume your last task?
       </message>
-      <message name="IDS_RESTORE_CUSTOM_TAB_DESCRIPTION" desc="Appears in pop-up message description when the previous Custom Tab session a user engaged with can be restored.">
+      <message name="IDS_RESTORE_CUSTOM_TAB_DESCRIPTION" desc="Appears in pop-up message description when the previous Custom Tab session a user engaged with can be restored and in pop-up which gives the option to undo that restoration.">
         Easily continue where you left off
       </message>
       <message name="IDS_RESTORE_CUSTOM_TAB_BUTTON_TEXT" desc="Appears as pop-up message button text to direct the user to restore a previously engaged with Custom Tab session.">
         Restore
+      </message>
+      <message name="IDS_UNDO_RESTORATION_TITLE" desc="Appears in pop-up message title when a Custom Tab session is restored, giving the user the option to undo the restoration.">
+        Task resumed
+      </message>
+      <message name="IDS_UNDO_RESTORATION_BUTTON_TEXT" desc="Appears in pop-up message button text when a Custom Tab session is restored, giving the user the option to undo the restoration.">
+        Undo
       </message>
     </messages>
   </release>
