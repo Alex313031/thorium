@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -7,7 +7,6 @@
 #include <memory>
 
 #include "base/memory/ptr_util.h"
-#include "base/threading/thread_task_runner_handle.h"
 #include "build/build_config.h"
 #include "gpu/config/gpu_preferences.h"
 #include "media/base/media_switches.h"

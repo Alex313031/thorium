@@ -9,6 +9,7 @@ Package: @@PACKAGE@@
 Provides: @@PROVIDES@@
 Pre-Depends: @@PREDEPENDS@@
 Depends: @@DEPENDS@@
+Recommends: @@RECOMMENDS@@
 Conflicts: thorium-browser-unstable
 Replaces: thorium-browser-unstable
 Architecture: @@ARCHITECTURE@@

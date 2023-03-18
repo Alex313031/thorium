@@ -23,7 +23,7 @@ Enable JPEG XL Image File Format by Default Patch
 Enable Live Caption (SODA) on all builds Patch
   - Made by me.
 
-Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch
+V8 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch
   - Fixes font rendering in certain instances.
 
 VAAPI Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/enable-vaapi-on-linux.diff
@@ -101,7 +101,7 @@ Increase default key length for newly-generated RSA keys from 1024 to 2048 Patch
 Enable UI Features: Side Search, Side Panel Journeys, Chrome Labs, Extensions Access Menu, Tab Hover Cards, Tab Outlines in Low Contrast Themes, More Prominent Active Tab Title in Dark Mode, WebUI Tab Strip, Drag and Drop Tabs on Wayland, Tab Groups Saving > https://github.com/Alex313031/Thorium/blob/main/chrome/browser/ui/ui_features.cc
   - Made by me.
 
-Enable Precompiling of Inline Scripts in HTML
+Enable Precompiling of Inline Scripts in HTML - https://github.com/Alex313031/thorium/commit/8d237b76adff2ab4e89147b18ee1d0ab7bb29fb6
   - Modified by me.
 
 Patch Windows installer to close previous browser instance > https://github.com/Hibbiki/chromium-win64/blob/master/patch/0001-Patch-installer-to-close-previous-browser-instance-o.patch

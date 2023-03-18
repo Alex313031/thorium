@@ -258,11 +258,20 @@ const char kUserGestureRequiredPolicy[] = "user-gesture-required";
 // This provides a mechanism during testing to lock the decoder framerate
 // to a specific value.
 const char kHardwareVideoDecodeFrameRate[] = "hardware-video-decode-framerate";
-// Set the maximum number of decoder threads for hardware video decoders on
-// ChromeOS. This is intended to be used for development only.
+// Set the task runner strategy used for hardware video decoding on ChromeOS.
+// If the option value of --chromeos-decoder-task-runner is
+// * OneThreadPoolSequenceSharedByAllDecoders, then SequencedTaskRunner.
+// * OneThreadPoolThreadSharedByAllDecoders, then SingleThreadTaskRunner
+//   (one of the threads in ThreadPool).
+// * OneDedicatedThreadSharedByAllDecoders, then SingleThreadTaskRunner of
+//   base::Thread("VDdecThread"), which is unique and only used for video
+//   decoders.
+// * OneThreadPoolThreadPerDecoder (default), then SingleThreadTaskRunner
+//   of a dedicated thread newly created in ThreadPool per decoder.
 // TODO(b/195769334): Propagate this to Chrome utility process for
 // Out-of-Process video decoding.
-const char kMaxChromeOSDecoderThreads[] = "max-chromeos-decoder-threads";
+const char kChromeOSVideoDecoderTaskRunner[] =
+    "chromeos-video-decoder-task-runner";
 #endif
 
 const char kCastStreamingForceDisableHardwareH264[] =
@@ -407,23 +416,20 @@ BASE_FEATURE(kCdmProcessSiteIsolation,
 // playback going to a specific output device in the audio service.
 BASE_FEATURE(kChromeWideEchoCancellation,
              "ChromeWideEchoCancellation",
-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
-             base::FEATURE_ENABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_CHROMEOS_DEVICE)
+    base::FEATURE_DISABLED_BY_DEFAULT
 #else
-             base::FEATURE_DISABLED_BY_DEFAULT);
+    base::FEATURE_ENABLED_BY_DEFAULT
 #endif
+             );
 
 // If non-zero, audio processing is done on a dedicated processing thread which
 // receives audio from the audio capture thread via a fifo of a specified size.
 // Zero fifo size means the usage of such processing thread is disabled and
 // processing is done on the audio capture thread itself.
 const base::FeatureParam<int> kChromeWideEchoCancellationProcessingFifoSize{
-  &kChromeWideEchoCancellation, "processing_fifo_size",
-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
-      110  // Default value for the enabled feature.
-#else
-      0
-#endif
+    &kChromeWideEchoCancellation, "processing_fifo_size",
+    110  // Default value for the enabled feature.
 };
 
 // When audio processing is done in the audio process, at the renderer side IPC
@@ -451,6 +457,48 @@ const base::FeatureParam<bool> kChromeWideEchoCancellationAllowAllSampleRates{
     &kChromeWideEchoCancellation, "allow_all_sample_rates", true};
 #endif
 
+#if BUILDFLAG(IS_CHROMEOS)
+// To control running audio communication effect on Chrome OS Audio Server.
+BASE_FEATURE(kCrOSSystemAEC,
+             "CrOSSystemAECWithBoardTuningsAllowed",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSSystemAECDeactivatedGroups,
+             "CrOSSystemAECDeactivatedGroups",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSEnforceSystemAecNsAgc,
+             "CrOSEnforceSystemAecNsAgc",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSEnforceSystemAecNs,
+             "CrOSEnforceSystemAecNs",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSEnforceSystemAecAgc,
+             "CrOSEnforceSystemAecAgc",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSEnforceSystemAec,
+             "CrOSEnforceSystemAec",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kCrOSDspBasedAecDeactivatedGroups,
+             "CrOSDspBasedAecDeactivatedGroups",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSDspBasedNsDeactivatedGroups,
+             "CrOSDspBasedNsDeactivatedGroups",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSDspBasedAgcDeactivatedGroups,
+             "CrOSDspBasedAgcDeactivatedGroups",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kCrOSDspBasedAecAllowed,
+             "CrOSDspBasedAecAllowed",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSDspBasedNsAllowed,
+             "CrOSDspBasedNsAllowed",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kCrOSDspBasedAgcAllowed,
+             "CrOSDspBasedAgcAllowed",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
+
 // Make MSE garbage collection algorithm more aggressive when we are under
 // moderate or critical memory pressure. This will relieve memory pressure by
 // releasing stale data from MSE buffers.
@@ -458,11 +506,21 @@ BASE_FEATURE(kMemoryPressureBasedSourceBufferGC,
              "MemoryPressureBasedSourceBufferGC",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Enables binding software video NV12/P010 GMBs as separate shared images.
+BASE_FEATURE(kMultiPlaneSoftwareVideoSharedImages,
+             "MultiPlaneSoftwareVideoSharedImages",
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
+
 // Enable binding multiple shared images to a single GpuMemoryBuffer for video
 // frames created by video capture.
 BASE_FEATURE(kMultiPlaneVideoCaptureSharedImages,
              "MultiPlaneVideoCaptureSharedImages",
-#if BUILDFLAG(IS_MAC)
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -473,6 +531,12 @@ BASE_FEATURE(kMultiPlaneVideoCaptureSharedImages,
 // initializing and managing streaming sessions, or the legacy implementation.
 BASE_FEATURE(kOpenscreenCastStreamingSession,
              "OpenscreenCastStreamingSession",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Controls whether the Mirroring Service will fetch, analyze, and store
+// information on the quality of the session using RTCP logs.
+BASE_FEATURE(kEnableRtcpReporting,
+             "EnableRtcpReporting",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Approach original pre-REC MSE object URL autorevoking behavior, though await
@@ -497,6 +561,16 @@ BASE_FEATURE(kRevokeMediaSourceObjectURLOnAttach,
 BASE_FEATURE(kD3D11VideoDecoderUseSharedHandle,
              "D3D11VideoDecoderUseSharedHandle",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Runs the media service in the GPU process on a dedicated thread.
+BASE_FEATURE(kDedicatedMediaServiceThread,
+             "DedicatedMediaServiceThread",
+#if BUILDFLAG(IS_WIN)
+             base::FEATURE_DISABLED_BY_DEFAULT
+#else
+             base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+);
 
 // Falls back to other decoders after audio/video decode error happens. The
 // implementation may choose different strategies on when to fallback. See
@@ -523,6 +597,11 @@ BASE_FEATURE(kGlobalMediaControlsAutoDismiss,
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 #if BUILDFLAG(IS_CHROMEOS)
+// Updated global media controls UI for CrOS.
+BASE_FEATURE(kGlobalMediaControlsCrOSUpdatedUI,
+             "GlobalMediaControlsCrOSUpdatedUI",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Show Cast sessions in Global Media Controls.
 BASE_FEATURE(kGlobalMediaControlsForCast,
              "GlobalMediaControlsForCast",
@@ -923,6 +1002,12 @@ BASE_FEATURE(kUseRealColorSpaceForAndroidVideo,
              "UseRealColorSpaceForAndroidVideo",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+#if BUILDFLAG(ENABLE_HLS_DEMUXER)
+BASE_FEATURE(kBuiltInHlsPlayer,
+             "BuiltInHlsPlayer",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(ENABLE_HLS_DEMUXER)
+
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(USE_CHROMEOS_MEDIA_ACCELERATION)
@@ -944,7 +1029,11 @@ BASE_FEATURE(kChromeOSHWVBREncoding,
 // TODO(b/159825227): remove when the direct video decoder is fully launched.
 BASE_FEATURE(kUseChromeOSDirectVideoDecoder,
              "UseChromeOSDirectVideoDecoder",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_CHROMEOS)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
 
 // Limit the number of concurrent hardware decoder instances on ChromeOS.
 BASE_FEATURE(kLimitConcurrentDecoderInstances,
@@ -952,14 +1041,10 @@ BASE_FEATURE(kLimitConcurrentDecoderInstances,
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 #if defined(ARCH_CPU_ARM_FAMILY)
-// Some architectures have separate image processor hardware that
-// can be used by Chromium's ImageProcessor to color convert/crop/etc.
-// video buffers.  Sometimes it is more efficient/performant/correct
-// to use a libYUV or GL based implementation instead of the hardware to
-// do this processing.
-BASE_FEATURE(kPreferLibYuvImageProcessor,
-             "PreferLibYUVImageProcessor",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+// Experimental support for GL based image processing. On some architectures,
+// the hardware accelerated video decoder outputs frames in a format not
+// understood by the display controller. We usually use LibYUV to convert these
+// frames. This flag enables an experimental GL-based conversion method.
 BASE_FEATURE(kPreferGLImageProcessor,
              "PreferGLImageProcessor",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -976,12 +1061,6 @@ BASE_FEATURE(kUseAlternateVideoDecoderImplementation,
 #endif  // BUILDFLAG(USE_CHROMEOS_MEDIA_ACCELERATION)
 
 #if BUILDFLAG(IS_WIN)
-// Does NV12->NV12 video copy on the main thread right before the texture's
-// used by GL.
-BASE_FEATURE(kDelayCopyNV12Textures,
-             "DelayCopyNV12Textures",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enables DirectShow GetPhotoState implementation
 // Created to act as a kill switch by disabling it, in the case of the
 // resurgence of https://crbug.com/722038
@@ -1073,8 +1152,15 @@ constexpr base::FeatureParam<MediaFoundationClearRenderingStrategy>::Option
 const base::FeatureParam<MediaFoundationClearRenderingStrategy>
     kMediaFoundationClearRenderingStrategyParam{
         &kMediaFoundationClearRendering, "strategy",
-        MediaFoundationClearRenderingStrategy::kDynamic,
+        MediaFoundationClearRenderingStrategy::kDirectComposition,
         &kMediaFoundationClearRenderingStrategyOptions};
+
+BASE_FEATURE(kMediaFoundationBatchRead,
+             "MediaFoundationBatchRead",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+const base::FeatureParam<int> kBatchReadCount{&kMediaFoundationBatchRead,
+                                              "batch_read_count", 1};
 #endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(ENABLE_PLATFORM_ENCRYPTED_DOLBY_VISION)
@@ -1147,6 +1233,12 @@ BASE_FEATURE(kRecordMediaEngagementScores,
 BASE_FEATURE(kRecordWebAudioEngagement,
              "RecordWebAudioEngagement",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Enables reporting "smpteSt2086" HDR Metadata as supported in the
+// MediaCapabilities API.
+BASE_FEATURE(kSupportSmpteSt2086HdrMetadata,
+             "SupportSmpteSt2086HdrMetadata",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // The following Media Engagement flags are not enabled on mobile platforms:
 // - MediaEngagementBypassAutoplayPolicies: enables the Media Engagement Index
@@ -1278,6 +1370,14 @@ BASE_FEATURE(kFuchsiaMediacodecVideoEncoder,
 
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
+#if BUILDFLAG(IS_CHROMEOS_DEVICE)
+  if (base::FeatureList::IsEnabled(kCrOSEnforceSystemAecNsAgc) ||
+      base::FeatureList::IsEnabled(kCrOSEnforceSystemAecNs) ||
+      base::FeatureList::IsEnabled(kCrOSEnforceSystemAecAgc) ||
+      base::FeatureList::IsEnabled(kCrOSEnforceSystemAec)) {
+    return false;
+  }
+#endif
   return base::FeatureList::IsEnabled(kChromeWideEchoCancellation);
 #else
   return false;

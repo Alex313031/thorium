@@ -1,9 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright 2023 The Chromium Authors, Alex313031 and gz83
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
-from __future__ import print_function
 
 import collections
 import glob
@@ -19,7 +17,7 @@ import sys
 
 from gn_helpers import ToGNString
 
-# VS 2019 16.61 with 10.0.20348.0 SDK, 10.0.19041 version of Debuggers
+# VS 2019 17.4.5 with 10.0.22621.0 SDK, 10.0.22621 version of Debuggers
 # with ARM64 libraries and UWP support.
 # See go/chromium-msvc-toolchain for instructions about how to update the
 # toolchain.

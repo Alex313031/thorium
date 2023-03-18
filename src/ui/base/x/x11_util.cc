@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -30,7 +30,6 @@
 #include "base/strings/stringprintf.h"
 #include "base/task/single_thread_task_runner.h"
 #include "base/trace_event/trace_event.h"
-#include "base/values.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "third_party/skia/include/core/SkBitmap.h"
@@ -474,8 +473,20 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
-  // Never default to using the custom title bar. Chromium should integrate, not be a special little snowflake.
+  // Never default to using the custom title bar. Thorium should integrate, not be a special little snowflake.
+  return false;
+
+  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
+  if (!WmSupportsHint(x11::GetAtom("_NET_WM_MOVERESIZE")))
     return false;
+
+  ui::WindowManagerName wm = GuessWindowManager();
+  // If we don't know which WM is active, conservatively disable custom frames.
+  if (wm == WM_OTHER || wm == WM_UNNAMED)
+    return false;
+
+  // Stacking WMs should use custom frames.
+  return !IsWmTiling(wm);
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
@@ -683,21 +694,6 @@ bool SuspendX11ScreenSaver(bool suspend) {
 
   x11::Connection::Get()->screensaver().Suspend({suspend});
   return true;
-}
-
-void StoreGpuExtraInfoIntoListValue(x11::VisualId system_visual,
-                                    x11::VisualId rgba_visual,
-                                    base::Value& list_value) {
-  list_value.Append(display::BuildGpuInfoEntry("Window manager",
-                                               ui::GuessWindowManagerName()));
-  list_value.Append(display::BuildGpuInfoEntry(
-      "Compositing manager", ui::IsCompositingManagerPresent() ? "Yes" : "No"));
-  list_value.Append(display::BuildGpuInfoEntry(
-      "System visual ID",
-      base::NumberToString(static_cast<uint32_t>(system_visual))));
-  list_value.Append(display::BuildGpuInfoEntry(
-      "RGBA visual ID",
-      base::NumberToString(static_cast<uint32_t>(rgba_visual))));
 }
 
 bool WmSupportsHint(x11::Atom atom) {

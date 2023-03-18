@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -83,6 +83,7 @@ ResultExpr AudioProcessPolicy::EvaluateSyscall(int system_call_number) const {
     case __NR_futex_time64:
 #endif
     {
+      const Arg<int> op(1);
 #if defined(USE_PULSEAUDIO)
       return Allow();
 #else

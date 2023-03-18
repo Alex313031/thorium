@@ -20,14 +20,14 @@
 #include <type_traits>
 #include <utility>
 
-#include "base/bind.h"
-#include "base/callback_helpers.h"
 #include "base/containers/contains.h"
 #include "base/containers/cxx20_erase.h"
 #include "base/containers/fixed_flat_set.h"
 #include "base/cpu.h"
 #include "base/environment.h"
 #include "base/files/scoped_file.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback_helpers.h"
 #include "base/logging.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/no_destructor.h"
@@ -1682,6 +1682,7 @@ std::vector<SVCScalabilityMode> VaapiWrapper::GetSupportedScalabilityModes(
     VideoCodecProfile media_profile,
     VAProfile va_profile) {
   std::vector<SVCScalabilityMode> scalability_modes;
+  scalability_modes.push_back(SVCScalabilityMode::kL1T1);
 #if BUILDFLAG(IS_CHROMEOS)
   if (media_profile == VP9PROFILE_PROFILE0) {
     scalability_modes.push_back(SVCScalabilityMode::kL1T2);
@@ -2531,6 +2532,9 @@ VaapiWrapper::ExportVASurfaceAsNativePixmapDmaBufUnwrapped(
       break;
     case VA_FOURCC_NV12:
       buffer_format = gfx::BufferFormat::YUV_420_BIPLANAR;
+      break;
+    case VA_FOURCC_ARGB:
+      buffer_format = gfx::BufferFormat::BGRA_8888;
       break;
     default:
       LOG(ERROR) << "Cannot export a surface with FOURCC "

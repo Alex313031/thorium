@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2022 Alex313031. -->
+<!-- Copyright (c) 2023 Alex313031. -->
 <grit-part>
 
   <if expr="not use_titlecase">
@@ -9,12 +9,18 @@
     <message name="IDS_AUTOFILL_NO_THANKS_DESKTOP_UPLOAD_SAVE" desc="The label for cancel button used in autofill credit card upload save bubble on desktop.">
       No thanks
     </message>
+    <message name="IDS_AUTOFILL_SAVE_IBAN_BUBBLE_LOCAL_SAVE_NO_THANKS" desc="The text label for `No thanks` button used in autofill prompt IBAN (International Bank Account Number) local save bubble on desktop.">
+      No thanks
+    </message>
   </if>
   <if expr="use_titlecase">
     <message name="IDS_AUTOFILL_NO_THANKS_DESKTOP_LOCAL_SAVE" desc="In Title Case: The label for cancel button used in autofill credit card local save bubble on desktop.">
       No Thanks
     </message>
     <message name="IDS_AUTOFILL_NO_THANKS_DESKTOP_UPLOAD_SAVE" desc="In Title Case: The label for cancel button used in autofill credit card upload save bubble on desktop.">
+      No Thanks
+    </message>
+    <message name="IDS_AUTOFILL_SAVE_IBAN_BUBBLE_LOCAL_SAVE_NO_THANKS" desc="The text label for `No Thanks` button used in autofill prompt IBAN (International Bank Account Number) local save bubble on desktop.">
       No Thanks
     </message>
   </if>
@@ -329,9 +335,6 @@
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS" desc="Text explaining what the user should do in the card unmasking dialog.">
       After you confirm, card details from your Google Account will be shared with this site.
     </message>
-    <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_LOCAL_CARD" desc="Text explaining what the user should do in the card unmasking dialog.  Appears specifically for local cards already stored on the device.">
-      Once you confirm, your card details will be shared with this site.
-    </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_VIRTUAL_CARD" desc="Text providing instructions on how to unmask virtual card.">
       Enter the <ph name="NUMBER_OF_DIGITS">$1<ex>3</ex></ph>-digit security code on the <ph name="SIDE_OF_CARD">$2<ex>back of your card</ex></ph> so your bank can verify it's you
     </message>
@@ -341,6 +344,9 @@
     <message name="IDS_AUTOFILL_CARD_UNMASK_CVC_IMAGE_DESCRIPTION" desc="Accessible description for the CVC image. It should describe where to find the CVC on a credit card.">
       The CVC is located behind your card.
     </message>
+    <message name="IDS_AUTOFILL_CARD_UNMASK_CVC_IMAGE_DESCRIPTION_FOR_AMEX" desc="Accessible description for the CVC image. It should describe where to find the CVC on an American Express credit card.">
+      The CVC is located on the front of your card.
+    </message>
   </if>
   <if expr="is_ios">
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_TITLE" desc="Title for the credit card unmasking dialog.">
@@ -349,14 +355,8 @@
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS" desc="Text explaining what the user should do in the card unmasking dialog.">
       Enter the CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>. After you confirm, card details from your Google Account will be shared with this site.
     </message>
-    <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_LOCAL_CARD" desc="Text explaining what the user should do in the card unmasking dialog.  Appears specifically for local cards already stored on the device.">
-      Enter the CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>. Once you confirm, your card details will be shared with this site.
-    </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_EXPIRED" desc="Text explaining what the user should do in the card unmasking dialog to update an expired card.">
       Enter the expiration date and CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph> to update your card details. After you confirm, card details from your Google Account will be shared with this site.
-    </message>
-    <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_INSTRUCTIONS_EXPIRED_LOCAL_CARD" desc="Text explaining what the user should do in the card unmasking dialog to update an expired card.  Appears specifically for local cards already stored on the device.">
-      Enter the expiration date and CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph> to update your card details. Once you confirm, your card details will be shared with this site.
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_CVC_FIELD_TITLE" desc="The name of the field for credit card verification code in the card unmasking dialog. The text field where this is presented can be very narrow, so please prefer to translate this to the most common abbreviated form. [CHAR_LIMIT=4]">
       CVC
@@ -508,6 +508,23 @@
     From Google Pay
   </message>
 
+  <!--IBAN (International Bank Account Number) related strings - start -->
+  <message name="IDS_AUTOFILL_SAVE_IBAN_PROMPT_TITLE_LOCAL" desc="Title text for the Autofill save IBAN (International Bank Account Number) prompt when a user submits a form with a valid IBAN.">
+    Save IBAN to this device?
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_LABEL" desc="Text to show for the Autofill prompt IBAN (International Bank Account Number) label where user can see the IBAN to be saved.">
+    IBAN
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_BUBBLE_LOCAL_SAVE_ACCEPT" desc="The text label for `Save` button used in autofill prompt IBAN (International Bank Account Number) save bubble on desktop.">
+    Save
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_PROMPT_NICKNAME" desc="Text to show for the autofill prompt IBAN (International Bank Account Number) save bubble where user can enter nickname optionally.">
+    Nickname
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_PLACEHOLDER" desc="The placeholder/label text to show for the autofill prompt IBAN (International Bank Account Number) save bubble to indicate that user can enter nickname optionally.">
+    Optional
+  </message>
+
   <!-- virtual cards related strings - start -->
   <if expr="not is_ios and not is_android">
     <message name="IDS_AUTOFILL_CLOUD_TOKEN_DROPDOWN_OPTION_LABEL" desc="Text shown in the button in the Autofill dropdown menu when a credit card form field is queried, to offer the option to use a virtual card.">
@@ -653,10 +670,10 @@
   <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_CURRENT_INFO_NOT_SEEN_TEXT" desc="The current info not seen text shown in the Autofill card unmask authentication selection dialog on Desktop. It is the footer text on the dialog, and it instructs the user on what to do if they can not see their most up to date authentication information. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
     Not seeing your current info? Contact your bank to update it.
   </message>
-  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_CONTINUE" desc="The continue button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card. This label is used when there is more than one challenge option presented.">
+  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_CONTINUE" desc="The continue button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card. This label is used when the challenge option just requires the user to continue the flow." formatter_data="android_java">
     Continue
   </message>
-  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_SEND" desc="The ok button label shown in the Autofill card unmask authentication selection dialog on Desktop. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
+  <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_OK_BUTTON_LABEL_SEND" desc="The ok button label shown in the Autofill card unmask authentication selection dialog on Desktop and Android. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card. This is the label used when the challenge option requires a step where something needs to be sent to the user, for example an SMS that contains an OTP." formatter_data="android_java">
     Send
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_CVC_CHALLENGE_INFO" desc="Text that is shown for the security code challenge option in the Card Unmask Authentication Selection Dialog. This text lets the user know where the location of the security code is on their card. If the user selects this challenge option and then accepts the dialog, the user will be prompted to enter this security code. An example of a security code is the CVC on the back of the user's credit card.">
@@ -785,6 +802,18 @@
     </message>
     <message name="IDS_AUTOFILL_CREDIT_CARD_CONTINUE_BUTTON" desc="The label of the button, which would fill in the web form with card credentials." formatter_data="android_java">
       Continue
+    </message>
+    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the bottom sheet is opened. It describes the bottom sheet where a user can pick a payment method to fill into a form." formatter_data="android_java">
+      Payment methods available to be filled on touch. Keyboard hidden.
+    </message>
+    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_HALF_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at half height. The sheet will occupy the bottom half the screen." formatter_data="android_java">
+      Payment methods available to be filled on touch opened at half height.
+    </message>
+    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_FULL_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at full height. The sheet will occupy the entire screen." formatter_data="android_java">
+      Payment methods available to be filled on touch opened at full height.
+    </message>
+    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_CLOSED" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is closed." formatter_data="android_java">
+      List of payment methods is closed.
     </message>
   </if>
 

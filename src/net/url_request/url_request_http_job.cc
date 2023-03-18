@@ -11,13 +11,13 @@
 #include <vector>
 
 #include "base/base_switches.h"
-#include "base/bind.h"
-#include "base/callback_helpers.h"
 #include "base/check_op.h"
 #include "base/command_line.h"
 #include "base/compiler_specific.h"
 #include "base/containers/adapters.h"
 #include "base/file_version_info.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback_helpers.h"
 #include "base/location.h"
 #include "base/memory/ptr_util.h"
 #include "base/metrics/field_trial.h"
@@ -265,6 +265,7 @@ void URLRequestHttpJob::Start() {
       request_->isolation_info().request_type() ==
       net::IsolationInfo::RequestType::kSubFrame;
   request_info_.load_flags = request_->load_flags();
+  request_info_.priority_incremental = request_->priority_incremental();
   request_info_.secure_dns_policy = request_->secure_dns_policy();
   request_info_.traffic_annotation =
       net::MutableNetworkTrafficAnnotationTag(request_->traffic_annotation());
@@ -416,10 +417,8 @@ PrivacyMode URLRequestHttpJob::DeterminePrivacyMode() const {
           ? NetworkDelegate::PrivacySetting::kStateAllowed
           : NetworkDelegate::PrivacySetting::kStateDisallowed;
   if (request_->network_delegate()) {
-    privacy_setting = request()->network_delegate()->ForcePrivacyMode(
-        request_->url(), request_->site_for_cookies(),
-        request_->isolation_info().top_frame_origin(),
-        first_party_set_metadata_.context().context_type());
+    privacy_setting =
+        request()->network_delegate()->ForcePrivacyMode(*request());
   }
   switch (privacy_setting) {
     case NetworkDelegate::PrivacySetting::kStateAllowed:

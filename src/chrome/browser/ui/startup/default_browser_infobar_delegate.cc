@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,8 +6,8 @@
 
 #include <memory>
 
-#include "base/bind.h"
-#include "base/callback_helpers.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback_helpers.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/metrics/user_metrics.h"
 #include "base/task/single_thread_task_runner.h"
@@ -88,13 +88,6 @@ std::u16string DefaultBrowserInfoBarDelegate::GetButtonLabel(
     InfoBarButton button) const {
   DCHECK_EQ(BUTTON_OK, button);
   return l10n_util::GetStringUTF16(IDS_DEFAULT_BROWSER_INFOBAR_OK_BUTTON_LABEL);
-}
-
-// Setting an app as the default browser doesn't require elevation directly, but
-// it does require registering it as the protocol handler for "http", so if
-// protocol registration in general requires elevation, this does as well.
-bool DefaultBrowserInfoBarDelegate::OKButtonTriggersUACPrompt() const {
-  return shell_integration::IsElevationNeededForSettingDefaultProtocolClient();
 }
 
 bool DefaultBrowserInfoBarDelegate::Accept() {

@@ -91,19 +91,8 @@ BASE_FEATURE(kQuickCommands,
              "QuickCommands",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Enables the side search feature for Google Search. Presents recent Google
-// search results in a browser side panel.
-BASE_FEATURE(kSideSearch, "SideSearch", base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kSideSearchFeedback,
              "SideSearchFeedback",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-// Controls whether the Side Search feature is configured to support any
-// participating Chrome search engine. This should always be enabled with
-// kSideSearch on non-ChromeOS platforms.
-BASE_FEATURE(kSideSearchDSESupport,
-             "SideSearchDSESupport",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Displays right-click search results of a highlighted text in side panel,
@@ -111,13 +100,6 @@ BASE_FEATURE(kSideSearchDSESupport,
 BASE_FEATURE(kSearchWebInSidePanel,
              "SearchWebInSidePanel",
              base::FEATURE_DISABLED_BY_DEFAULT);
-
-// Whether to clobber all side search side panels in the current browser window
-// or only the side search in the current tab before read later or lens side
-// panel is open.
-BASE_FEATURE(kClobberAllSideSearchSidePanels,
-             "ClobberAllSideSearchSidePanels",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Feature that controls whether or not feature engagement configurations can be
 // used to control automatic triggering for side search.
@@ -131,13 +113,6 @@ BASE_FEATURE(kSideSearchAutoTriggering,
 const base::FeatureParam<int> kSideSearchAutoTriggeringReturnCount{
     &kSideSearchAutoTriggering, "SideSearchAutoTriggeringReturnCount", 2};
 
-// Adds improved support for handling multiple contextual and global RHS browser
-// side panels. Designed specifically to handle the interim state before the v2
-// side panel project launches.
-BASE_FEATURE(kSidePanelImprovedClobbering,
-             "SidePanelImprovedClobbering",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kSidePanelWebView,
              "SidePanelWebView",
              base::FEATURE_ENABLED_BY_DEFAULT);
@@ -145,6 +120,10 @@ BASE_FEATURE(kSidePanelWebView,
 BASE_FEATURE(kSidePanelJourneysQueryless,
              "SidePanelJourneysQueryless",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSidePanelSearchCompanion,
+             "SidePanelSearchCompanion",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables tabs to scroll in the tabstrip. https://crbug.com/951078
 BASE_FEATURE(kScrollableTabStrip,
@@ -155,7 +134,7 @@ const char kMinimumTabWidthFeatureParameterName[] = "minTabWidth";
 // Enables buttons when scrolling the tabstrip https://crbug.com/951078
 BASE_FEATURE(kTabScrollingButtonPosition,
              "TabScrollingButtonPosition",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 const char kTabScrollingButtonPositionParameterName[] = "buttonPosition";
 
 // Enables tab scrolling while dragging tabs in tabstrip
@@ -293,10 +272,6 @@ BASE_FEATURE(kToolbarUseHardwareBitmapDraw,
 // chrome renderers are present.
 BASE_FEATURE(kTopChromeWebUIUsesSpareRenderer,
              "TopChromeWebUIUsesSpareRenderer",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
-BASE_FEATURE(kUnifiedSidePanel,
-             "UnifiedSidePanel",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // This enables enables persistence of a WebContents in a 1-to-1 association

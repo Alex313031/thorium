@@ -14,6 +14,9 @@
   <message name="IDS_SETTINGS_MORE_ACTIONS" desc="Tooltip text (shows on hover or for screenreaders) for a button that shows a menu with more actions when clicked or tapped">
     More actions
   </message>
+  <message name="IDS_SETTINGS_OPENS_IN_NEW_TAB" desc="ARIA (accessibility) label describing a link which opens in a new tab.">
+    Opens in new tab
+  </message>
 
   <if expr="not chromeos_ash">
     <message name="IDS_RELAUNCH_CONFIRMATION_DIALOG_BODY" desc="The body of the modal dialog that we show when users click on relaunch and they have open Incognito windows. The dialog serves to warn the users about losing their Incognito windows if they proceed with the relaunch.">
@@ -76,6 +79,12 @@
   </message>
   <message name="IDS_SETTINGS_ACCESSIBLE_IMAGE_LABELS_SUBTITLE" desc="Subtitle for screen reader image labels feature.">
     If an image doesn’t have a useful description, Thorium will try to provide one for you. To create descriptions, images are sent to Google.
+  </message>
+  <message name="IDS_SETTINGS_PDF_OCR_TITLE" desc="Description for screen reader pdf ocr feature.">
+    Convert images to text
+  </message>
+  <message name="IDS_SETTINGS_PDF_OCR_SUBTITLE" desc="Subtitle for screen reader pdf ocr feature.">
+    Scan PDF images to convert text for screen reader when necessary
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_TITLE" desc="Name of the setting to enable Live Caption feature.">
     Live Caption
@@ -441,6 +450,36 @@
   </message>
   <message name="IDS_SETTINGS_CREDIT_CARD_NICKNAME_INVALID" desc="The error message that is shown when user uses digit numbers in credit card nickname">
     Nickname can’t include numbers
+  </message>
+  <message name="IDS_SETTINGS_ADD_PAYMENT_METHOD_CREDIT_OR_DEBIT_CARD" desc="The label that appears in the drop-down selector when adding a local payment method, which allows users to add a credit or debit card.">
+    Credit/Debit card
+  </message>
+  <message name="IDS_SETTINGS_ADD_PAYMENT_METHOD_IBAN" desc="The label that appears in the drop-down selector when adding a local payment method, which allows users to add an IBAN (International Bank Account Number).">
+    IBAN
+  </message>
+  <message name="IDS_SETTINGS_IBAN_SAVED_TO_THIS_DEVICE_ONLY" desc="Shown in the payments section of settings. Descriptive text to inform the user that this IBAN (International Bank Account Number) will be saved to local device only.">
+   This IBAN will be saved to this device only
+  </message>
+  <message name="IDS_IBAN_NICKNAME" desc="Label for the field containing the nickname of the IBAN (International Bank Account Number) to be saved.">
+    Nickname
+  </message>
+  <message name="IDS_SETTINGS_AUTOFILL_MORE_ACTIONS_FOR_IBAN" desc="The (accessibility) title of a button, which brings up a menu of actions that can be taken on a stored IBAN (International Bank Account Number). The IBAN is described by its nickname.">
+    More actions for <ph name="IBAN_DESCRIPTION">$1<ex>My Doctor's IBAN</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_AUTOFILL_MORE_ACTIONS_FOR_IBAN_DESCRIPTION" desc="The (accessibility) IBAN (International Bank Account Number) description from the last 4 digits of the IBAN value.">
+   IBAN ending in <ph name="LAST_FOUR_DIGITS">$1<ex>1234</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_ADD_IBAN_TITLE" desc="The title for the dialog that's shown when editing an IBAN (International Bank Account Number).">
+    Add IBAN
+  </message>
+  <message name="IDS_SETTINGS_EDIT_IBAN_TITLE" desc="The title for the dialog that's shown when entering the information for a new IBAN (International Bank Account Number).">
+    Edit IBAN
+  </message>
+  <message name="IDS_SETTINGS_IBAN_EDIT" desc="Label for a context menu item that edits the selected IBAN (International Bank Account Number)." meaning="Edit selected IBAN.">
+    Edit
+  </message>
+  <message name="IDS_SETTINGS_IBAN_REMOVE" desc="Label for a context menu item that removes the selected IBAN (International Bank Account Number)." meaning="Remove selected IBAN.">
+    Remove
   </message>
   <message name="IDS_SETTINGS_UPI_ID_LABEL" desc="A label which appears next to UPI IDs, when they are listed as stored payment info, but it is visually separate from the UPI ID. It lets the user know this is a UPI ID (e.g. as opposed to a credit card number). UPI is a system for payments in India. A UPI ID is an email-like string.">
     UPI ID
@@ -1341,12 +1380,6 @@
   <message name="IDS_SETTINGS_CLEAR_PERIOD_EVERYTHING" desc="The option to delete browsing data from the beginning of time.">
     All time
   </message>
-  <message name="IDS_SETTINGS_CLEAR_INSTALLED_APPS_DATA_TITLE" desc="Text for title of the important sites dialog.">
-    Also clear data from these apps?
-  </message>
-  <message name="IDS_SETTINGS_CLEAR_INSTALLED_APPS_DATA_CONFIRM" desc="Text for confirmation button of the important sites dialog.">
-    Clear
-  </message>
   <message name="IDS_SETTINGS_NOTIFICATION_WARNING" desc="A warning that notifications will be disabled by deleting cookies for this site.">
     Notifications will be disabled
   </message>
@@ -1366,35 +1399,6 @@
   </message>
   <message name="IDS_SETTINGS_OPEN_FILE_TYPES_AUTOMATICALLY" desc="The information label for the 'Clear auto-opening settings' button">
     Open certain file types automatically after downloading
-  </message>
-
-  <!-- Downloads Page: Web Drive Connection -->
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_TITLE" desc="Label for the checkbox which enables a prompt for the user to choose a download location for each download instead of using the default.">
-    <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> Connection
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_LEARN_MORE" desc="Text to be displayed to take user to relevant CBCM article.">
-    Learn more
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_UNLINKED_MESSAGE" desc="Meesage to be displayed when downloads are set to be routed to web drive by CBCM policy but the user has not linked a web drive account yet.">
-    For data safety and security, your organization requries all eligible downloads to be saved to your organization's <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> account.
-  </message>
-<message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_SIGN_IN_BUTTON" desc="Label for the checkbox which enables a prompt for the user to choose a download location for each download instead of using the default.">
-    Sign in to <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph>
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_LINKED_MESSAGE" desc="Meesage to be displayed when downloads are set to be routed to web drive by CBCM policy and the user has linked a web drive account already.">
-    All eligible downloads are routed to your organization's <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> account.
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_SIGN_OUT_BUTTON" desc="Label for the checkbox which enables a prompt for the user to choose a download location for each download instead of using the default.">
-    Unlink Account
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_CONNECTION_ACCOUNT_TITLE" desc="Label for the checkbox which enables a prompt for the user to choose a download location for each download instead of using the default.">
-    Account
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_WEB_DRIVE_LOCATION" desc="Label for the input which allows the user to specify the default download directory, if the file system connector is enabled." meaning="File location">
-    <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> Location
-  </message>
-  <message name="IDS_SETTINGS_DOWNLOAD_LOCAL_LOCATION" desc="Label for the input which allows the user to specify the default download directory, if the file system connector is enabled." meaning="File location">
-    Local Location
   </message>
 
   <!-- On Startup Page -->
@@ -1540,8 +1544,14 @@
     <message name="IDS_SETTINGS_LANGUAGES_NO_LANGUAGES_ADDED" desc="Placeholder for language list settings when no languages have been added, on the Manage Languages page.">
       No languages added
     </message>
-    <message name="IDS_SETTINGS_LANGUAGES_REMOVE_ARIA_LABEL" desc="Text read by screen readers when focusing on the trash can icon for removing a language. Activating this button will remove the selected language from its current list. This text only announced by screen readers and is not visible in the UI.">
-      Remove <ph name="LANGUAGE_NAME">$1<ex>Swahili</ex></ph>
+    <message name="IDS_SETTINGS_LANGUAGES_ADD_ARIA_LABEL" desc="Text read by screen readers when focusing on the checkbox for adding a language. This text is only announced by screen readers and is not visible in the UI.">
+      Add <ph name="LANGUAGE_NAME">$1<ex>Swahili</ex></ph>
+    </message>
+    <message name="IDS_SETTINGS_LANGUAGES_REMOVE_AUTOMATIC_ARIA_LABEL" desc="Text read by screen readers when focusing on the remove icon for automatiaclly translated languages. Activating this button will remove the selected language. This text only announced by screen readers and is not visible in the UI.">
+      Remove <ph name="LANGUAGE_NAME">$1<ex>Swahili</ex></ph> from automatically translated languages
+    </message>
+    <message name="IDS_SETTINGS_LANGUAGES_REMOVE_NEVER_ARIA_LABEL" desc="Text read by screen readers when focusing on the remove icon for never offer translate languages. Activating this button will remove the selected language. This text only announced by screen readers and is not visible in the UI.">
+      Remove <ph name="LANGUAGE_NAME">$1<ex>Swahili</ex></ph> from never offer translation languages
     </message>
     <message name="IDS_SETTINGS_TRANSLATE_PAGE_TITLE" desc="Name of the settings page which displays translate preferences.">
       Google Translate
@@ -1828,97 +1838,173 @@
   </message>
 
   <!-- Privacy Sandbox Settings 4 - Privacy & Security Page -->
-  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to the Ad Privacy preferences page in the Privacy &amp; Security Page.">
-    Donec semper
+  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_LABEL" desc="A new label that appears on the Privacy and security page (chrome://settings/privacy) between 'Third-party cookies' and 'Security'. This same text is used as a page title for the new Ad privacy section. This same pair of words is used in the Consent and Notice flow and must be consistently translated in both contexts. We mean privacy associated with ads, and not privacy from ads. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Ad privacy
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_SUB_LABEL" translateable="false" desc="Sub label for row linking to the Ad Privacy preferences page in the Privacy &amp; Security Page.">
-    Fusce purus nibh, dictum sit amet mi in, fringilla ullamcorper tortor
+  <message name="IDS_SETTINGS_AD_PRIVACY_LINK_ROW_SUB_LABEL" desc="A string that describes 'Ad privacy', the label that appears just above it. For context, this new 'Ad privacy' / 'Customize the info...' pair of strings is similar to the existing 'Clear browsing data' / 'Clear history, cookies...' that you find on chrome://settings/privacy. * 'Customize': From our word list: 'This word describes user agency in refining their personalized recommendations, elements of the experience, or sometimes products'. Please don't confuse with 'personalize', which we reserve to mean: '...when Google provides recommendations and other content for users based on their data'.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Customize the info used by sites to show you ads
   </message>
 
   <!-- Privacy Sandbox Settings 4 - Ad Privacy Page -->
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TITLE" translateable="false" desc="Title for the Ad Privacy preferences page.">
-    Donec semper
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TITLE" desc="A new page title for a page that includes 3 settings. This same text appears as a label on chrome://settings/privacy between 'Third-party cookies' and 'Security'. This same pair of words is used in the Consent and Notice flow and must be consistently translated in both contexts. We mean privacy associated with ads, and not privacy from ads. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Ad privacy
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to Topics page.">
-    Mauris interdum lectus vitae lacinia
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Ad topics
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to Topics page when Topics is enabled.">
-    Enabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_ENABLED" desc="Ad topics are derived from the user's browsing history. This help-center article explains 'browsing history' to users: https://support.google.com/chrome/answer/95589. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see.">
+    Based on your browsing history. This setting is on.
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to Topics page when Topics is disabled.">
-    Disabled Nulla eros tortor, placerat blandit dictum a, interdum id metus
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_SUB_LABEL_DISABLED" desc="Ad topics are derived from the user's browsing history. This help-center article explains 'browsing history' to users: https://support.google.com/chrome/answer/95589. This setting is described to users in the Consent moment as: Ad topics help sites show you relevant ads while protecting your browsing history and identity. Thorium can note topics of interest based on your recent browsing history. Later, a site you visit can ask Thorium for relevant topics to personalize the ads you see.">
+    Based on your browsing history. This setting is off.
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to FLEDGE page.">
-    Aenean erat leo
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don't want in settings. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Site-suggested ads
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to FLEDGE page when FLEDGE is enabled.">
-    Enabled Duis scelerisque a mi eget ultricies
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_ENABLED" desc="A site can suggest ads for a user based on the user's activity on their site. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don't want in settings.">
+    Based on your activity on a site. This setting is on.
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to FLEDGE page when FLEDGE is disabled.">
-    Disabled Duis scelerisque a mi eget ultricies
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_FLEDGE_LINK_ROW_SUB_LABEL_DISABLED" desc="A site can suggest ads for a user based on the user's activity on their site. This setting is described to users in the Notice moment as: Site-suggested ads help protect your browsing history and identity while enabling sites to show you relevant ads. Based on your activity, a site you visited can suggest related ads as you continue browsing. You can see a list of these sites and block the ones you don't want in settings.">
+    Based on your activity on a site. This setting is off.
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" translateable="false" desc="Label for row linking to Ad Measurement page.">
-    Vestibulum augue erat
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_LABEL" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Ad measurement
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" translateable="false" desc="Sub label for row linking to Ad Measurement page when Ad Measurement is enabled.">
-    Enabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_ENABLED" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you.">
+    Sites and advertisers can understand how ads perform. This setting is on.
   </message>
-  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" translateable="false" desc="Sub label for row linking to Ad Measurement page when Ad Measurement is disabled.">
-    Disabled Vivamus id lacus et lacus porttitor vulputate. Sed semper egestas orci vel maximus.
+  <message name="IDS_SETTINGS_AD_PRIVACY_PAGE_AD_MEASUREMENT_LINK_ROW_SUB_LABEL_DISABLED" desc="The name of a new setting. This setting is described to users in the Notice moment as: With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you.">
+    Sites and advertisers can understand how ads perform. This setting is off.
   </message>
 
-  <!-- Privacy Sandbox Settings 4 - Topics Page -->
-  <message name="IDS_SETTINGS_TOPICS_PAGE_TITLE" translateable="false" desc="Title for the Topics preferences page.">
-    Mauris interdum lectus vitae lacinia
+  <!-- Privacy Sandbox v4 - Topics Page -->
+  <!-- Where possible, these strings have been unified on Desktop & Android in privacy_sandox_strings.grdp. The strings here either only appear on one platform, or have platform specific requirements, e.g. the format of placeholders, and so cannot be unified. For the latter case, they have corresponding _CANONICAL representations used when consent is recorded on either platform, and so they must stay in sync -->
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" desc="A description that appear beneath the 'Your topics' label. * 'You can block': There is a 'Block' button (or an X on mobile) that appears next to each topic in the list. * 'auto-deletes': this could also read 'Thorium deletes...' We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
+    You can block topics you don’t want shared with sites. Thorium also auto-deletes your topics older than 4 weeks.
   </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_LABEL" translateable="false" desc="Label for the toggle in the Topics preferences page.">
-    Nunc gravida condimentum consectetur
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_LEARN_MORE_A11Y_LABEL" desc="Read by screen readers and associated with a 'learn more' button.">
+    Learn more about ad topics
   </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Subabel for the toggle in the Topics preferences page.">
-    Vivamus nibh turpis, varius quis nisi vel, porta laoreet tellus. Mauris porta imperdiet venenatis
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_LEARN_MORE_LINK" desc="Text read by screen readers to help users distinguish this 'Learn more' link from others that might get added to this page.">
+    Learn more
   </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_HEADING" translateable="false" desc="Section title for the current Topics list underneath toggle in the Topics preferences page.">
-    Mauris at lectus
+  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_REGION_A11Y_DESCRIPTION" desc="An explanation read by screen readers that describes the list of topics.">
+    List of topics estimated by Thorium based on your recent browsing history
   </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" translateable="false" desc="Section description for the current Topics list in the Topics preferences page.">
-    Nulla tincidunt iaculis nulla, sit amet viverra massa luctus nec. Integer eget pellentesque magna, et venenatis lorem. Integer a porta elit. Eget bibendum neque.
+  <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_REGION_A11Y_DESCRIPTION" desc="Read by screen readers to describe the list of blocked topics.">
+    List of topics you blocked that you don't want shared with sites
   </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_DISABLED" translateable="false" desc="Section description for the current Topics list when Topics is disabled in the Topics preferences page.">
-    Sed porta viverra lacus ut euismod. Integer a cursus metus, ac ultricies libero.
-  </message>
-  <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION_EMPTY" translateable="false" desc="Section description for the current Topics list when the Topics list is empty in the Topics preferences page.">
-    Curabitur sagittis sapien ut turpis interdum, vitae porttitor sem pretium. Vestibulum sem mauris, ultrices ac massa sit amet, sodales aliquet est.
+  <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Ad topics' setting. The user is on this page. * 'Site-suggested ads': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
+    As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK1">&lt;a href="$1" target="_blank"&gt;</ph>Site-suggested ads<ph name="LINK_END1">&lt;/a&gt;</ph>, your <ph name="BEGIN_LINK2">&lt;a href="$2" target="_blank"&gt;</ph>cookie settings<ph name="LINK_END2">&lt;/a&gt;</ph>, and if the site you’re viewing personalizes ads
   </message>
 
   <!-- Privacy Sandbox Settings 4 - Fledge Page -->
-  <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" translateable="false" desc="Title for the Fledge preferences page.">
-    Aenean erat leo
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_TITLE" desc="A page title and the name of a new setting. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Site-suggested ads
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_LABEL" desc="The label for a new setting.">
+    Site-suggested ads
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_TOGGLE_SUB_LABEL" desc="A description of the new Site-suggested ads setting. This text appears beneath the name of the new setting, 'Site-suggested ads', and is associated with the control that a user can turn on or off. * 'determine what you like': Based on your interaction with a site, that site can define your interests any way it wants. For example, if you put a pair of red running shoes in a shopping cart, the site might define an interest as 'red_running_shoes_size_36'. * 'suggest ads as you continue browsing': 1) you interact with a site and if defines an interest for you. That information is saved with Thorium. 2) You continue browsing. 3) a new site you visit checks with Thorium if 'Site-suggested ads' is turned on and then can request information related to that user. 4) The site might end up showing ads related to 'red_running_shoes_size_36'. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Sites you visit can determine what you like and then suggest ads as you continue browsing
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_HEADING" desc="A label for a list of sites the user has visited. The list of sites looks similar to the user's browsing history, but this is a distinct list. * 'browsing history' is a list of the sites the user has visited. To learn more about 'browsing history', search for that term in the Thorium Help Center. * This list of 'Sites' is a subset of the user's browsing history. 1) Only sites that use the 'Site-suggested ads' API (https://developer.chrome.com/docs/privacy-sandbox/fledge/) can appear on this list. 2) This list is based on recent sites the user has visited and sites older than 4 weeks are regularly deleted.">
+    Sites
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION" desc="A paragraph beneath the 'Sites' label. It explains how users can control the sites that appear in the list. * 'block sites': When a user blocks a site, that site may no longer save info with Thorium about the user's visit. As the user continues to browse, they will not see ads suggested by the blocked site. * 'auto-deletes': We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
+    You can block sites you don't want. Thorium also auto-deletes sites from the list that are older than 4 weeks.
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_LEARN_MORE" desc="A button label that opens a dialog box allowing the user to learn more about the Site-suggested ads setting.">
+    Learn more
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_DISABLED" desc="1 of 2 descriptions that appear if there are no sites in the list. This string is for the case that the Site-suggested ads setting isn't on.">
+    When on, a list of sites you visit that guess your interests appears here
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_EMPTY" desc="1 of 2 descriptions that appear if there are no sites in the list. This string is for the case that the Site-suggested ads setting IS on, but the user hasn't browsed any sites that have called the Site-suggested ads API.">
+    It can take up to a week for a list of sites to appear here based on your browsing history
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_REGION_A11Y_DESCRIPTION" desc="Read by screen readers to describe a list of sites that appear on the page.">
+    List of recent sites you visited that can suggest ads to other sites as you keep browsing
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_SEE_ALL_SITES_LABEL" desc="Text that serves as a button. Because the list of sites might be long, we only show the most recent sites. This button allows the user to browse all sites (because sites are auto-deleted every 4 weeks, the list is never older than 4 weeks).">
+    See all sites
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE" desc="A button associated with each of the sites in the user's 'Site-suggested ads' list. If the user clicks 'Block', that site will get moved to the 'Sites you blocked' page.">
+    Block
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get blocked. The list is of sites the user has recently visited and that use the Site-suggested ads API to suggest ads to other sites as the user continues browsing.">
+    Block <ph name="DOMAIN">$1<ex>example.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_HEADING" desc="A label that serves as a button to open the 'Sites you blocked' page.">
+    Sites you blocked
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_DESCRIPTION" desc="1 of 2 possible descriptions that appear beneath the 'Sites' title. In this case, the user has previously blocked sites. * 'pool of sites': We want to express that by clicking 'Add', the user is making a site eligible again for consideration.">
+    Add a site back if you want it in the pool of sites that can guess what you like
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_DESCRIPTION_EMPTY" desc="2 of 2 possible descriptions beneath the 'Sites you blocked' title. In this case, the list is empty (the user hasn't blocked any sites).">
+    Blocked sites appear here
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCKED_SITES_REGION_A11Y_DESCRIPTION" desc="Read by screen readers to describe what this list of sites is.">
+    List of sites you blocked that you don't want suggesting ads to other sites
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_ALLOW_SITE" desc="A button associated with each of the user's blocked sites. When the user clicks 'Add', it makes that site eligible. Clicking 'Add' doesn't automatically put the added site back onto the list of 'Sites'. For that to happen, a user would have to browse to that site again and the site would have to use the Site-suggested ads to save interests for this user.">
+    Add
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_ALLOW_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get added back to the pool of potential sites.">
+    Add <ph name="DOMAIN">$1<ex>example.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Site-suggested ads' setting. The user is on this page. * 'Ad topics': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
+    As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK1">&lt;a href="$1" target="_blank"&gt;</ph>Ad topics<ph name="LINK_END1">&lt;/a&gt;</ph>, your <ph name="BEGIN_LINK2">&lt;a href="$2" target="_blank"&gt;</ph>cookie settings<ph name="LINK_END2">&lt;/a&gt;</ph>, and if the site you're viewing personalizes ads
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_HEADING" desc="The title of a dialog box that explains site-suggested ads in more detail.">
+    More about site-suggested ads
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_1" desc="1 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'It's common...' this sentence is intended to be reassuring. Many sites the user visits are retaining some information about the user, such as their preferred language if the site has a language picker. If cookies are allowed, this info might be stored with a first-party cookie on the user's device. Sites can also store limited information with Thorium.">
+    It's common for sites you visit to remember things you're interested in, to personalize your experience. Sites can also store information with Thorium about your interests.
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_2" desc="2 of 3 paragraphs on the Learn more page for Site-suggested ads.">
+    For example, if you visit a site that sells long-distance running shoes, the site might decide that you're interested in running marathons. Later, if you visit a different site, that site can show you an ad for running shoes suggested by the first site.
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_3" desc="3 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'Auto-deletes': This could just read 'Thorium deletes...' but we include the 'auto' to suggest that the deletion happens regularly and as part of the system. * 'A site you visit again...': We want to reassure the user. We just told them sites are automatically deleted. And yet, a user might see the same site in the list month after month if they visit that site regularly.">
+    Thorium auto-deletes sites that are older than 4 weeks. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
+  </message>
+  <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_LEARN_MORE_A11Y_LABEL" desc="Text read by screen readers to help users distinguish this 'Learn more' link from others that might get added to this page.">
+    Learn more about site-suggested ads
   </message>
 
   <!-- Privacy Sandbox Settings 4 - Ad Measurement Page -->
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" translateable="false" desc="Title for the Ad Measurement preferences page.">
-    Vestibulum augue
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TITLE" desc="A page title and the name of a new setting. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Ad measurement
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" translateable="false" desc="Label for the toggle in the Ad Measurement preferences page.">
-    Vestibulum augue erat
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_LABEL" desc="The label for a new setting.">
+    Ad measurement
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" translateable="false" desc="Sublabel for the toggle in the Ad Measurement preferences page.">
-    Vestibulum eleifend nunc a viverra congue. Integer nec mauris rutrum, porta mauris et, pellentesque ligula. Nam et pulvinar eros, in gravida nisl.
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_TOGGLE_SUB_LABEL" desc="A description of the new Ad measurement setting. This text appears beneath the name of the new setting, 'Ad measurement', and is associated with the control that a user can turn on or off. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** NEW SETTINGS SECTION IN CHROME **** 3 new ad-specific settings appear on an 'Ad privacy' page in Thorium settings. For an equivalent structure, see 'Security' on chrome://settings/privacy that opens chrome://settings/security. Likewise, 'Ad privacy' on chrome://settings/privacy will open chrome://settings/AdPrivacy.">
+    Sites and advertisers can measure the performance of their ads
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" translateable="false" desc="Heading for the 'When on' section in the Ad Measurement preferences page.">
-    Mauris
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_HEADING" desc="A label above bullet points that explain the functionality of this setting.">
+    When on
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" translateable="false" desc="Heading for the 'Things to consider' section in the Ad Measurement preferences page.">
-    Aenean
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_HEADING" desc="A label above bullet points that note things the user might want to consider when turning this setting on or off.">
+    Things to consider
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" translateable="false" desc="First bullet point underneath the 'When on' section in the Ad Measurement preferences page.">
-    Praesent sodales, magna eget volutpat iaculis, justo odio viverra justo, id venenatis est est sit amet ex
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" desc="1 of 3 bullets in the 'When on' section that describes the Ad measurement setting. * 'Limited types of data': The Ad measurement API (for developers) and the Ad measurement control (for users) is offered by Thorium. But Thorium is a 'pass through', helping one site communicate information to another about the performance of an ad. That's where this passive construction comes from. Thorium facilitates, but shouldn't be seen as a major actor here. And we don't want to suggest anything like 'Thorium limits the types of data shared between sites,' because Thorium can't do that. Any 2 sites can have a side agreement to share as much info as they like.">
+    Limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" translateable="false" desc="Second bullet point underneath the 'When on' section in the Ad Measurement preferences page.">
-    Nunc metus est, faucibus sit amet lacus sit amet, aliquet rutrum libero. Maecenas vel euismod ante.
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" desc="2 of 3 bullets in the 'When on' section that describes the Ad measurement setting.">
+    Ad-measurement data is deleted regularly from your device
   </message>
-  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" translateable="false" desc="First bullet point underneath the 'Things to consider' section in the Ad Measurement preferences page.">
-    Mauris mattis urna elit. Phasellus quis erat sapien. Praesent finibus pellentesque iaculis. Mauris hendrerit metus at enim rhoncus bibendum.
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_3" desc="3 of 3 bullets in the 'When on' section that describes the Ad measurement setting. If reports were instantaneous, a site could receive a report and then consult which visitors most recently visited the site.">
+    Your browsing history is kept private on your device and reports are sent with a delay to protect your identity
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_1" desc="1 of 3 bullets in the 'Things to consider' section that describes the Ad measurement setting.">
+    You can always delete ad-measurement data by deleting your browsing data
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_2" desc="2 of 3 bullets in the 'Things to consider' section that describes the Ad measurement setting.">
+    Thorium limits the total amount of data that sites can share through the browser to measure ad performance
+  </message>
+  <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_CONSIDER_BULLET_3" desc="3 of 3 bullets in the 'Things to consider' section that describes the Ad measurement setting.">
+    Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
   </message>
 
   <!-- Privacy Guide -->
@@ -1990,9 +2076,6 @@
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_PRIVACY_DESCRIPTION1" desc="A part of the privacy description of 'make searches and browsing better' in the 'Privacy Guide'.">
     URLs you visit are sent to Google to predict what sites you might visit next
-  </message>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_CLEAR_ON_EXIT_CARD_HEADER" desc="Header of the 'clear cookies on exit' card in the 'Privacy Guide'.">
-    Review automatic data clearing
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_HISTORY_SYNC_CARD_HEADER" desc="Header of the history sync card in the 'Privacy Guide'.">
     Choose whether to sync history
@@ -2296,54 +2379,6 @@
   <message name="IDS_SETTINGS_SAFETY_CHECK_TOAST_UNDO_BUTTON_LABEL" desc="After the user has modified permissions for a website, a toast popup message is shown with this text next to a description of the action taken. The user can click this text to undo the action. For example, this text would be next to a descriptiton that says 'Allowed notification permissions for example.com'.">
     Undo
   </message>
-  <if expr="is_win and _google_chrome">
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_PRIMARY_LABEL" desc="'Unwanted software protection' is an element in safety check that finds harmful software installed on the computer and allows users to remove it.">
-      Device software
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_BUTTON_ARIA_LABEL" desc="Accessiblity text for the button that allows users to review and remove harmful software found on their computer.">
-      Review device software
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITHOUT_TIMESTAMP" desc="This text describes that Thorium can check if any known harmful software is installed on the user's computer.">
-      Thorium can check your computer for harmful software
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_SECONDS" desc="This text describes that Thorium did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      Thorium didn't find harmful software on your computer • Checked just now
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_MINUTES" desc="This text describes that Thorium did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      {NUM_MINS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 minute ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_MINS} minutes ago}}
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_HOURS" desc="This text describes that Thorium did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      {NUM_HOURS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 hour ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_HOURS} hours ago}}
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_YESTERDAY" desc="This text describes that Thorium did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      Thorium didn't find harmful software on your computer • Checked yesterday
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_NO_UWS_WITH_TIMESTAMP_AFTER_DAYS" desc="This text describes that Thorium did not find any known harmful software installed on the user's computer, and that it checked for harmful softwrae the last time a certain time ago.">
-      {NUM_DAYS, plural,
-       =1 {Thorium didn't find harmful software on your computer • Checked 1 day ago}
-       other {Thorium didn't find harmful software on your computer • Checked {NUM_DAYS} days ago}}
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_INFECTED" desc="This text describes that Thorium found harmful software on the computer.">
-      Thorium found harmful software on your computer
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_SCANNING" desc="This text describes that Thorium is currently checking the user's device for unwanted software. This takes a couple of minutes.">
-      Thorium is checking your computer for harmful software...
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_REMOVING" desc="This text describes that Thorium is currently removing unwanted software frrom the user.s device. This takes a couple of minutes.">
-      Thorium is removing harmful software from your computer...
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_DISABLED_BY_ADMIN" desc="This text describes that Thorium can't check for unwanted software because an administrator disabled the feature.">
-      <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1"&gt;</ph>Your administrator<ph name="END_LINK">&lt;/a&gt;</ph> has turned off checking for harmful software
-    </message>
-    <message name="IDS_SETTINGS_SAFETY_CHECK_CHROME_CLEANER_ERROR" desc="This text describes that Thorium can't check for unwanted software due to an error.">
-      Something went wrong. Click for more details.
-    </message>
-  </if>
-
   <message name="IDS_SETTINGS_NETWORK_PREDICTION_ENABLED_LABEL" desc="In the advanced options tab, the text next to the checkbox that enables prediction of network actions.  Actions include browser-initiated DNS prefetching, TCP and SSL preconnection, and prerendering of webpages.">
     Preload pages for faster browsing and searching
   </message>
@@ -2801,11 +2836,11 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_DESCRIPTION" desc="Description of the ads content setting. In order to comply with the ND4C regulations the translations for this message should use one of the legally approved terms as an alternative to 'free'.">
     Sites usually show ads so they can provide content or services free of charge. But, some sites are known to show intrusive or misleading ads.
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_ALLOWED" desc="Label for the enabled option of the ads content setting.">
-    All sites can show any ads to you
+  <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_ALLOWED" desc="1 of 2 states for the 'Intrusive ads' setting.">
+    Any site you visit can show any ad to you
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_BLOCKED" desc="Label for the disabled option of the ads content setting.">
-    Block ads on sites that show intrusive or misleading ads
+  <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_BLOCKED" desc="2 of 2 states for the 'intrusive ads' setting.">
+    Ads are blocked on sites known to show intrusive or misleading ads
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_ADS_ALLOWED_EXCEPTIONS" desc="Label for the allowed exceptions site list of the ads content setting.">
     Allowed to show any ads
@@ -3270,6 +3305,75 @@
   <message name="IDS_SETTINGS_COOKIES_PAGE" desc="Title of the cookies settings page">
     Cookies and other site data
   </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_DESCRIPTION" desc="An explanation of what third-party cookies are that appear beneath the page title: 'Third-party cookies'. * 'embed': A site you visit uses HTML to construct the page. HTML tags include references to images, like img src='filename.jpg', that are used to show an image. 'filename.jpg' can be a local file owned by the site you visit or a site can embed an external file with something like img src='www.third-party-site.com/images/filename.jpg'. This image is embedded into the site you visit and www.third-party-site.com can set a third-party cookie onto your device.">
+    A site you visit can embed content from other sites, for example, images, ads, and text. Cookies set by these other sites are called third-party cookies.
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_DEFAULT_BEHAVIOR_HEADING" desc="A label on a permissions page. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Default behavior
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_DEFAULT_BEHAVIOR_DESCRIPTION" desc="A description of what 'Default behavior' means. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Sites automatically follow this setting when you visit them
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_CUSTOMIZED_BEHAVIOR_HEADING" desc="A label on a permissions page. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Customized behaviors
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_CUSTOMIZED_BEHAVIOR_DESCRIPTION" desc="A description of 'customized behaviors' that appear beneath the 'Customized behaviors' title. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Sites listed below follow a custom setting instead of the default
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_EXCEPTIONS_SUB_HEADING" desc="A description of an exception bucket">
+    Allowed to use third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_TITLE" desc="The title of a new page. Today, Thorium has a 'Cookies and other site data' page at chrome://settings/cookies. As part of the Privacy Sandbox project (see below), Thorium is deprecating third-party cookies but maintaining first-party cookies. As a step towards the ultimate deprecation of third-party cookies, we're first separating them from other forms of 'site data', making it easier to eventually remove this page completely. Cookies are often used for honorable objectives, and the difference between first and third-party cookies is important (see any of the many resources online such as https://termly.io/resources/articles/first-party-cookies-vs-third-party-cookies/.">
+    Third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_LINK_ROW_LABEL" desc="This text is the label of a page. Here, it serves as a button that opens the new page.">
+    Third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_LINK_ROW_SUB_LABEL_ENABLED" desc="1 of 3 possible states for the Third-party cookies setting. This text appears beneath the 'Third-party cookies' button label.">
+    Third-party cookies are allowed
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_LINK_ROW_SUB_LABEL_DISABLED_INCOGNITO" desc="2 of 3 possible states for the Third-party cookies setting. This text appears beneath the 'Third-party cookies' button label.">
+    Third-party cookies are blocked in Incognito mode
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_LINK_ROW_SUB_LABEL_DISABLED" desc="3 of 3 possible states for the Third-party cookies setting. This text appears beneath the 'Third-party cookies' button label.">
+    Third-party cookies are blocked
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_RADIO_LABEL" desc="1 of 3 options the user has to configure cookies. See the cookies page for context: chrome://settings/cookies.">
+    Allow third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_EXPAND_A11Y_LABEL" desc="This text is read by screenreaders and helps users find more info about this choice.">
+    More about allowing third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_BULLET_1" desc="1 of 2 bullets that describes the 'Allow all cookies' option.">
+    Sites can use cookies to improve your browsing experience, for example, to keep you signed in or to remember items in your shopping cart
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_ALLOW_BULLET_2" desc="2 of 2 bullets that describes the 'Allow all cookies' option. Sites use third-party cookies to 'see your browsing activity across different sites'. Third-party cookies aren't necessarily bad. 1) Personalized ads can be useful to the user (though the tracking that generally accompanies the use of third-party cookies for ads isn't). But 2) third-party cookies are also used for spam protection and for anti-tracking efforts.">
+    Sites can use cookies to see your browsing activity across different sites, for example, to personalize ads
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_INCOGNITO_RADIO_LABEL" desc="2 of 3 options the user has to configure cookies. See the cookies page for context: chrome://settings/cookies. For more about Incognito mode, see Google Thorium's Help Center.">
+    Block third-party cookies in Incognito mode
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_INCOGNITO_EXPAND_A11Y_LABEL" desc="This text is read by screenreaders and helps users find more info about this choice.">
+    More about blocking third-party cookies in Incognito mode
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_INCOGNITO_BULLET_1" desc="1 of 2 bullets that describes the 'Block third-party cookies in Incognito mode' option.">
+    Sites can use cookies to improve your browsing experience, for example, to keep you signed in or to remember items in your shopping cart
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_INCOGNITO_BULLET_2" desc="2 of 2 bullets that describes the 'Block third-party cookies in Incognito mode' option.">
+    While in Incognito, sites can't use your cookies to see your browsing activity across sites. Your browsing activity isn't used for things like personalizing ads. Features on some sites may not work.
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_RADIO_LABEL" desc="3 of 3 options the user has to configure cookies. See the cookies page for context: chrome://settings/cookies">
+    Block third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_EXPAND_A11Y_LABEL" desc="This text is read by screenreaders and helps users find more info about this choice.">
+    More about blocking third-party cookies
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_BULLET_1" desc="1 of 2 bullets that describes the 'Block third-party cookies' option.">
+    Sites can use cookies to improve your browsing experience, for example, to keep you signed in or to remember items in your shopping cart
+  </message>
+  <message name="IDS_SETTINGS_THIRD_PARTY_COOKIES_PAGE_BLOCK_BULLET_2" desc="2 of 2 bullets that describe the 'Block third-party cookies' option">
+    Sites can't use your cookies to see your browsing activity across different sites, for example, to personalize ads. Features on some sites may not work
+  </message>
   <message name="IDS_SETTINGS_COOKIES_CONTROLS" desc="Title of the general cookies control section.">
     General settings
   </message>
@@ -3296,6 +3400,9 @@
   </message>
   <message name="IDS_SETTINGS_COOKIES_BLOCK_THIRD_PARTY_INCOGNITO_BULLET_TWO" desc="Description for the first bullet of block third party cookies in Incognito radio toggle">
     While in Incognito, sites can't use your cookies to see your browsing activity across different sites, for example, to personalize ads. Features on some sites may not work.
+  </message>
+  <message name="IDS_SETTINGS_COOKIES_BLOCK_THIRD_PARTY_INCOGNITO_BULLET_TWO_FPS" desc="Description for the first bullet of block third party cookies in Incognito radio toggle">
+    While in Incognito, sites can't use your cookies to see your browsing activity across sites, even related sites. Your browsing activity isn't used for things like personalizing ads. Features on some sites may not work.
   </message>
   <message name="IDS_SETTINGS_COOKIES_BLOCK_THIRD_PARTY" desc="Label for block third party cookies radio toggle">
     Block third-party cookies
@@ -3689,6 +3796,9 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_OFFLINE_DATA" desc="Text for the dialog that warns about loss of offline data when clearing all storage data.">
     Any offline data will be cleared
   </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_AD_PERSONALIZATION" desc="A bullet in a list of data that gets deleted from the user's device when they choose 'Clear data' for a specific site. 1) Go to chrome://settings/content. 2) From the 'Recent activity' list, choose a site. 3) Click the 'Clear data' button. The 'Clear site data?' dialog appears. This string will appear as a new bullet at the bottom of the dialog.">
+    Data that affects ad personalization is deleted
+  </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_APPS" desc="Text for the dialog that warns about loss of offline data for installed app when clearing all storage data for site.">
     Offline data in installed app will also be cleared
   </message>
@@ -3794,14 +3904,85 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_NO_SITES_FOUND" desc="Explanation shown when there are no matching search results on All Sites page.">
     No sites found
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_ASK" desc="The label that is used to show the Bluetooth scanning setting is set to ask in site settings.">
-    Ask when a site wants to discover nearby Bluetooth devices
+  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_DESCRIPTION" desc="Description text on the page controlling whether sites can use Bluetooth scanning.">
+    Sites usually look for Bluetooth devices for features like setting up or syncing a low-energy beacon, a health or fitness tracker, or a smart light bulb
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_ASK_RECOMMENDED" desc="The label that is used to show the Bluetooth scanning setting is set to ask (with the 'recommended' suffix) in site settings.">
-    Ask when a site wants to discover nearby Bluetooth devices (recommended)
+  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_ASK" desc="The label that is used to show the Bluetooth scanning setting is set to ask in site settings.">
+    Sites can ask to look for Bluetooth devices
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_BLOCK" desc="The label that is used to show the Bluetooth scanning setting is set to block in site settings.">
-    Do not allow any site to discover nearby Bluetooth devices
+    Don't allow sites to look for Bluetooth devices
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_ALLOWED_EXCEPTIONS" desc="The label for the section that displayed sites that are always allowed to use bluetooth scanning.">
+    Allowed to look for Bluetooth devices
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_BLUETOOTH_SCANNING_BLOCKED_EXCEPTIONS" desc="The label for the section that displayed sites that are never allowed to use bluetooth scanning.">
+    Not allowed to look for Bluetooth devices
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_EXTENSION_ID_DESCRIPTION" desc="Description for an extension using its extension id.">
+    ID: <ph name="EXTENSION_ID">$1<ex>mhabknllooicelmdboebjilbohdbihln</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_ALLOWED_SUB_LABEL" desc="1 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, sites have the most flexibility.">
+    Sites can save data on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_BLOCKED_SUB_LABEL" desc="2 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, sites have the least flexibility.">
+    Sites aren't allowed to save data on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_CLEAR_ON_EXIT_SUB_LABEL" desc="3 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, data stored on the user's device is deleted each time the user closes all Thorium windows.">
+    Site data is cleared from your device when you close all windows
+  </message>
+
+  <!-- Site Settings - Site Data Page-->
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_TITLE" desc="A page title for a new page. What is 'On-device site data'? When you interact with a site, that site can remember things about what you do. For example, you might place a pair of shoes in a shopping cart, close down your browser, and find those same shoes in your shopping cart when you visit the same site a week later. Sometimes that info is saved in the Cloud. Sometimes that info is saved on the user's device. There are several ways a site can save info to the user's device—for example, with cookies (text files saved to your device), small JavaScript databases, and even Thorium's new ad settings that are part of the Privacy Sandbox project (see details below). This page introduces the concept of on-device site data, allows the user to see which sites are using it, and allows the user to delete all saved data or just data from specific sites.">
+    On-device site data
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_DESCRIPTION" desc="A paragraph that appear beneath the page title: 'On-device site data'. It defines what on-device site data is. What is 'On-device site data'? When you interact with a site, that site can remember things about what you do. For example, you might place a pair of shoes in a shopping cart, close down your browser, and find those same shoes in your shopping cart when you visit the same site a week later. Sometimes that info is saved in the Cloud. Sometimes that info is saved on the user's device. There are several ways a site can save info to the user's device—for example, with cookies (text files saved to your device), small JavaScript databases, and even Thorium's new ad settings that are part of the Privacy Sandbox project (see details below). This page introduces the concept of on-device site data, allows the user to see which sites are using it, and allows the user to delete all saved data or just data from specific sites. **** CONTEXT PRIVACY SANDBOX **** Thorium's Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com.">
+    A site you visit can save info about what you're doing so that it works as you would expect — for example, to keep you signed in to a site or to save items in your shopping cart. Often sites save this info temporarily on your device.
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_DEFAULT_BEHAVIOR_HEADING" desc="A label on a permissions page. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Default behavior
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_DEFAULT_BEHAVIOR_DESCRIPTION" desc="A description of what 'Default behavior' means. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Sites automatically follow this setting when you visit them
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_ALLOW_RADIO_LABEL" desc="1 of 3 choices the user has regarding the 'default behavior' of the 'On-device site data' setting. This offers sites the most flexibility.">
+    Allow sites to save data on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_ALLOW_RADIO_SUB_LABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device'.">
+    Sites are more likely to work as you would expect
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_RADIO_LABEL" desc="2 of 3 choices the user has regarding the 'default behavior' of the 'On-device site data' setting.">
+    Delete data sites have saved to your device when you close all windows
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_RADIO_LABEL" desc="3 of 3 choices the user has regarding the 'default behavior' of the 'On-device site data' setting. We include 'not recommended' because the user could have a poor experience with any given site. Imagine getting prompted to sign in again every time you click a link?">
+    Don't allow sites to save data on your device (not recommended)
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_RADIO_SUB_LABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device. * 'don't want to leave information on your device': We think that most users should allow all on-device site data because sites might break if they don't. But there are cases for which this info could prove harmful. Imagine a case of domestic abuse and a tech-savvy partner who can go into Thorium settings and find saved information about the activity of their partner. Or a journalist working in a sensitive environment. We want to convey the value of this option without alarming users.">
+    Sites may not work as you would expect. Choose this option if you don't want to leave information on your device about sites you visit.
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_CUSTOMIZED_BEHAVIOR_HEADING" desc="A label on a permissions page. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Customized behaviors
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_CUSTOMIZED_BEHAVIOR_DESCRIPTION" desc="A description of 'customized behaviors' that appear beneath the 'Customized behaviors' title. For example, see the Microphone permission at chrome://settings/content/microphone.">
+    Sites listed below follow a custom setting instead of the default
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_ALLOW_EXCEPTIONS_SUB_HEADING" desc="1 of 3. A label within 'Customized behaviors' that allows for exceptions to the 'On-device site data' setting. This label and the list of sites that can appear beneath it is only relevant if the user has chosen to not allow 'on-device site data' as the default value above.">
+    Allowed to save data on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_EXCEPTIONS_SUB_HEADING" desc="3 of 3. A label within 'Customized behaviors' that allows for exceptions to the 'On-device site data' setting. This label and the list of sites that can appear beneath it is only relevant if the user has chosen to allow 'on-device site data' as the default value above.">
+    Not allowed to save data on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_CONFIRM_DIALOG_TITLE" desc="The title of a dialog box that appears if the user chooses 'Don't allow sites to save data on your device (not recommended)'. This dialog essentially serves as a 'are you sure?' reminder.">
+    Sites you visit may stop working as designed
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_CONFIRM_DIALOG_DESCRIPTION" desc="A paragraph beneath the 'Sites you visit may stop working as designed' title on a dialog box that appears when a user chooses 'Don't allow sites to save data on your device (not recommended)'. We want to convey that sites are generally designed to rely on saving some information about the user. Usually this is benign, but sites can abuse this power, and so we qualify the statement with 'often'.">
+    Most sites you visit probably save data to your device, often to improve your experience by saving your preferences or information you share with the site. We recommend keeping this setting on.
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_CONFIRM_DIALOG_CONFIRM_BUTTON" desc="A button label. The user chose 'Don't allow sites to save data on your device (not recommended)'. As an 'are you sure' moment, we show the user a dialog box titled 'Sites you visit may stop working as designed.'. This string allows the user to confirm their intention to turn this setting off.">
+    Turn off
+  </message>
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_BLOCK_CONFIRM_DIALOG_CANCEL_BUTTON" desc="A button label on the 'Sites you visit may stop working as designed' dialog.">
+    Cancel
   </message>
 
   <message name="IDS_SETTINGS_NO_BLUETOOTH_DEVICES_FOUND" desc="Explanation for not showing Bluetooth devices in site settings.">
@@ -3917,6 +4098,9 @@
   </message>
   <message name="IDS_SETTINGS_SYNC_DISCONNECT_MANAGED_PROFILE_EXPLANATION" desc="The text to display in the 'Sign out of Thorium' dialog to stop syncing for managed profiles.">
     Because this account is managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>, your bookmarks, history, passwords, and other settings will be cleared from this device. However, your data will remain stored in your Google Account and can be managed on <ph name="BEGIN_LINK">&lt;a href="$2" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$2" target=&quot;_blank&quot;&gt;</ex></ph>Google Dashboard<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>.
+  </message>
+  <message name="IDS_SETTINGS_TURN_OFF_SYNC_MANAGED_PROFILE_EXPLANATION" desc="The text to display in the 'Turn Sync off' dialog to stop syncing for managed profiles.">
+    Because this account is managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph> you will not be signed out of your Google Account. Your bookmarks, history, passwords, and other settings will no longer be synced. However, your previously synced data will remain stored in your Google Account and can be managed on <ph name="BEGIN_LINK">&lt;a href="$2" target=&quot;_blank&quot;&gt;<ex>&lt;a href="$2" target=&quot;_blank&quot;&gt;</ex></ph>Google Dashboard<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>.
   </message>
   <message name="IDS_SETTINGS_TURN_OFF_SYNC_DIALOG_TITLE" desc="The text to display on the title of the dialog to turn off sync.">
     Turn off sync?

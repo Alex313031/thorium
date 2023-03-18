@@ -25,8 +25,8 @@ inline bool EndsWith(const std::wstring& value, const std::wstring& ending) {
 const wchar_t kPolicyRegistryKey[] = L"SOFTWARE\\Policies\\Google\\Chrome";
 const wchar_t kUserDataDirNameSuffix[] = L"\\Google\\Chrome\\User Data";
 #elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
-const wchar_t kPolicyRegistryKey[] =
-    L"SOFTWARE\\Policies\\Google\\Chrome for Testing";
+// kPolicyRegistryKey: same as Chromium
+const wchar_t kPolicyRegistryKey[] = L"SOFTWARE\\Policies\\Chromium";
 const wchar_t kUserDataDirNameSuffix[] =
     L"\\Google\\Chrome for Testing\\User Data";
 #else

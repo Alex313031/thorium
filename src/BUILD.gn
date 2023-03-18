@@ -115,7 +115,7 @@ group("gn_all") {
     deps += [ "//third_party/abseil-cpp:absl_tests" ]
   }
 
-  if (enable_js_type_check) {
+  if (is_chromeos_ash && enable_js_type_check) {
     deps += [ ":webui_closure_compile" ]
   }
 
@@ -153,10 +153,11 @@ group("gn_all") {
   }
 
   if (!is_castos) {
-    deps += [
-      "//chrome/installer",
-      "//chrome/updater",
-    ]
+    deps += [ "//chrome/installer" ]
+  }
+
+  if (enable_updater) {
+    deps += [ "//chrome/updater" ]
   }
 
   if (enable_ppapi) {
@@ -348,7 +349,6 @@ group("gn_all") {
 
   if (is_android) {
     deps += [
-      "//android_webview/js_sandbox/javatests:webview_js_sandbox_test_app",
       "//base:base_junit_tests",
       "//base/android/jni_generator:jni_generator_tests",
       "//base/android/linker:chromium_android_linker",
@@ -369,6 +369,7 @@ group("gn_all") {
       "//services:services_junit_tests",
       "//testing/android/junit:junit_unit_tests",
       "//third_party/android_build_tools/lint:custom_lint_java",
+      "//third_party/androidx_javascriptengine",
       "//third_party/catapult/devil",
       "//third_party/r8:custom_d8_java",
       "//tools/android:android_tools",
@@ -414,15 +415,6 @@ group("gn_all") {
     if (enable_chrome_android_internal) {
       deps += [ "//clank" ]
     }
-  }
-
-  if (is_linux || is_chromeos) {
-    # This is only used by ChromeOS, but we want maximal fuzzer coverage, so
-    # run it under linux too.
-    deps += [
-      "//third_party/minizip:minizip_compress_fuzzer",
-      "//third_party/minizip:minizip_uncompress_fuzzer",
-    ]
   }
 
   if (is_linux || is_chromeos || is_android) {
@@ -798,7 +790,6 @@ group("gn_all") {
     deps += [
       "//chrome/browser/vr:vr_common_perftests",
       "//chrome/browser/vr:vr_common_unittests",
-      "//chrome/browser/vr:vr_pixeltests",
     ]
     if (!is_android) {
       deps += [ "//tools/perf/contrib/vr_benchmarks:vr_perf_tests" ]
@@ -1022,6 +1013,7 @@ if (is_chromeos_ash) {
         data_deps += [
           "//media/gpu/vaapi:decode_test",
           "//media/gpu/vaapi:vaapi_unittest",
+          "//media/gpu/vaapi/test/fake_libva_driver:fake_libva_driver_unittest",
         ]
       }
       if (use_v4l2_codec) {
@@ -1128,7 +1120,10 @@ if (!is_ios) {
     }
     script_test("wpt_tests_isolate") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [ "--product=chrome" ]
+      args = [
+        "--product=chrome",
+        "--no-show-results",
+      ]
       data_deps = [
         "//chrome:chrome",
         "//chrome/test/chromedriver:chromedriver_server",
@@ -1137,6 +1132,7 @@ if (!is_ios) {
     }
     script_test("wpt_tests_isolate_content_shell") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
+      args = [ "--no-show-results" ]
       data_deps = [
         ":blink_web_tests_support_data",
         "//third_party/blink/tools:wpt_tests_isolate",
@@ -1402,7 +1398,6 @@ if (!is_ios) {
       "//third_party/blink/web_tests/view-transition/",
       "//third_party/blink/web_tests/virtual/",
       "//third_party/blink/web_tests/virtualkeyboard/",
-      "//third_party/blink/web_tests/wake-lock/",
       "//third_party/blink/web_tests/wasm/",
       "//third_party/blink/web_tests/webaudio/",
       "//third_party/blink/web_tests/webexposed/",
@@ -1612,6 +1607,7 @@ if (!is_ios) {
       "//third_party/blink/renderer/build/scripts/",
       "//third_party/blink/tools/",
       "//third_party/blink/web_tests/ASANExpectations",
+      "//third_party/blink/web_tests/FlagExpectations/",
       "//third_party/blink/web_tests/LeakExpectations",
       "//third_party/blink/web_tests/MSANExpectations",
       "//third_party/blink/web_tests/NeverFixTests",
@@ -1619,6 +1615,7 @@ if (!is_ios) {
       "//third_party/blink/web_tests/StaleTestExpectations",
       "//third_party/blink/web_tests/TestExpectations",
       "//third_party/blink/web_tests/VirtualTestSuites",
+      "//third_party/blink/web_tests/W3CImportExpectations",
       "//third_party/catapult/common/py_utils/",
       "//third_party/catapult/devil/",
       "//third_party/catapult/dependency_manager/",
@@ -1752,27 +1749,16 @@ if (is_android) {
   }
 }
 
-if (enable_js_type_check) {
+if (is_chromeos_ash && enable_js_type_check) {
   group("webui_closure_compile") {
     testonly = true
-    if (is_ios) {
-      data_deps = [ "ui/webui/resources/js/ios:closure_compile" ]
-    } else if (is_chromeos_ash) {
-      data_deps = [
-        "ash/webui:closure_compile",
-        "chrome/browser/resources:closure_compile",
-        "chrome/test/data:closure_compile",
-        "mojo/public/tools/bindings/generators/js_templates/lite/test:closure_compile",
-        "ui/file_manager:closure_compile",
-      ]
-    } else if (is_chromeos || is_android) {
-      data_deps = [
-        "chrome/browser/resources:closure_compile",
-        "chrome/test/data:closure_compile",
-      ]
-    } else if (!is_castos) {
-      data_deps = [ "chrome/test/data:closure_compile" ]
-    }
+    data_deps = [
+      "ash/webui:closure_compile",
+      "chrome/browser/resources:closure_compile",
+      "chrome/test/data/webui:closure_compile",
+      "mojo/public/tools/bindings/generators/js_templates/lite/test:closure_compile",
+      "ui/file_manager:closure_compile",
+    ]
   }
 }
 
