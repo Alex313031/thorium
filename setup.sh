@@ -117,6 +117,7 @@ copyAVX2 () {
 	printf "\n" &&
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
 	cp -r -v other/AVX2/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v other/AVX2/v8/* $HOME/chromium/src/v8/ &&
 	cp -r -v other/AVX2/third_party/opus/src/* $HOME/chromium/src/third_party/opus/src/ &&
 	printf "\n"
 }

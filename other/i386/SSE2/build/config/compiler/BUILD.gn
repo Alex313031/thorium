@@ -70,6 +70,9 @@ declare_args() {
   # This is initialized below, after use_gold might have been overridden.
   gold_path = ""
 
+  # Whether to enable LLVM's Polly optimizations. See https://polly.llvm.org/
+  use_polly = false
+
   # Enable fatal linker warnings. Building Chromium with certain versions
   # of binutils can cause linker warning.
   fatal_linker_warnings = true
@@ -133,9 +136,13 @@ declare_args() {
   # recognizable in the debugger, and crashes on memory accesses through
   # uninitialized pointers.
   #
-  # TODO(crbug.com/1131993): Enabling this when 'is_android' is true breaks
-  # content_shell_test_apk on both ARM and x86.
-  init_stack_vars = !is_android
+  # TODO(crbug.com/1131993): This regresses binary size by ~1MB on Android and
+  # needs to be evaluated before enabling it there as well.
+  init_stack_vars = !(is_android && is_official_build)
+
+  # Zero init has favorable performance/size tradeoffs for Chrome OS
+  # but was not evaluated for other platforms.
+  init_stack_vars_zero = is_chromeos
 
   # This argument is to control whether enabling text section splitting in the
   # final binary. When enabled, the separated text sections with prefix
@@ -168,6 +175,10 @@ declare_args() {
   # If true, linker crashes will be rerun with `--reproduce` which causes
   # a reproducer file to be saved.
   save_reproducers_on_lld_crash = false
+
+  # Allow projects that wish to stay on C++17 to override Chromium's default.
+  # TODO(crbug.com/1402249): evaluate removing this end of 2023
+  use_cxx17 = false
 }
 
 declare_args() {
@@ -339,6 +350,11 @@ config("compiler") {
       if (lld_path != "") {
         ldflags += [ "-B$lld_path" ]
       }
+    }
+
+    # ADDED BY ALEX313031 FOR THORIUM
+    if (is_clang && is_android && !is_ubsan && !is_ubsan_security) {
+      cflags += [ "-fwrapv" ]
     }
 
     # Linker warnings.
@@ -551,7 +567,7 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
-    
+
     # TODO(crbug.com/1235145): Investigate why/if this should be needed.
     if (is_win) {
       cflags += [ "/clang:-ffp-contract=off" ]
@@ -601,7 +617,7 @@ config("compiler") {
         cflags_cc += [ "-fno-trigraphs" ]
       }
     } else if (is_clang) {
-      if (is_chromeos_device) {
+      if (is_chromeos_device || use_cxx17) {
         # TODO(crbug.com/1392471): Support C++20 in CrOS toolchain.
         cflags_cc += [ "-std=${standard_prefix}++17" ]
       } else {
@@ -614,7 +630,7 @@ config("compiler") {
     }
   } else if (is_win) {
     cflags_c += [ "/std:c11" ]
-    if (!is_clang && defined(msvc_use_cxx17) && msvc_use_cxx17) {
+    if (use_cxx17 || (!is_clang && defined(msvc_use_cxx17) && msvc_use_cxx17)) {
       cflags_cc += [ "/std:c++17" ]
     } else {
       cflags_cc += [ "/std:c++20" ]
@@ -627,7 +643,7 @@ config("compiler") {
     # clause, above.
     cflags_c += [ "-std=c11" ]
 
-    if (is_fuchsia) {
+    if (is_fuchsia || use_cxx17) {
       # TODO(crbug.com/fuchsia/108751): The FIDL compiler generates code that
       # will not compile in C++20 mode. Switch to C++20 when this is resolved.
       cflags_cc += [ "-std=c++17" ]
@@ -640,6 +656,11 @@ config("compiler") {
     # C++17 removes trigraph support, but clang still warns that it ignores
     # them when seeing them.  Don't.
     cflags_cc += [ "-Wno-trigraphs" ]
+  }
+
+  if (use_relative_vtables_abi) {
+    cflags_cc += [ "-fexperimental-relative-c++-abi-vtables" ]
+    ldflags += [ "-fexperimental-relative-c++-abi-vtables" ]
   }
 
   # Add flags for link-time optimization. These flags enable
@@ -702,7 +723,7 @@ config("compiler") {
         ]
       } else {
         ldflags +=
-            []
+            [ "-Wl,-O3" ]
       }
 
       # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
@@ -764,6 +785,10 @@ config("compiler") {
   # --no-undefined-version.
   if (use_lld && !is_win && !is_mac && !is_ios) {
     ldflags += [ "-Wl,--undefined-version" ]
+  }
+
+  if (use_lld && is_apple) {
+    ldflags += [ "-Wl,--strict-auto-link" ]
   }
 
   # LLD does call-graph-sorted binary layout by default when profile data is
@@ -857,6 +882,10 @@ config("compiler") {
     # we discover a reason to turn them off.
     "-Coverflow-checks=on",
 
+    # Turn warnings into the "deny" lint level, which produce compiler errors.
+    # The equivalent of -Werror for clang/gcc.
+    "-Dwarnings",
+
     # To make Rust .d files compatible with ninja
     "-Zdep-info-omit-d-target",
 
@@ -874,9 +903,6 @@ config("compiler") {
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
   }
-  if (use_lto_in_rustc_linking) {
-    rustflags += [ "-Clinker-plugin-lto" ]
-  }
   if (!use_thin_lto || !use_chromium_rust_toolchain) {
     # Don't include bitcode if it won't be used, or can't be used. When
     # use_thin_lto is true, we will try to apply LTO to any objects that have
@@ -887,6 +913,21 @@ config("compiler") {
   }
   if (is_official_build) {
     rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse2", ]
+  }
+}
+
+# Defers LTO optimization to the linker, for use when:
+# * Having the C++ toolchain do the linking against Rust staticlibs, and it
+#   will be using LTO.
+# * Having Rust toolchain invoke the linker, and you're linking Rust and C++
+#   together, so this defers LTO to the linker.
+#
+# Otherwise, Rust does LTO during compilation.
+#
+# https://doc.rust-lang.org/rustc/linker-plugin-lto.html
+config("rust_defer_lto_to_linker") {
+  if (!is_debug && use_thin_lto && is_a_target_toolchain) {
+    rustflags = [ "-Clinker-plugin-lto", "-Copt-level=3", "-Ctarget-feature=+sse2", ]
   }
 }
 
@@ -902,6 +943,8 @@ config("thinlto_optimize_default") {
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
+
+    rustflags = [ "-Clto=thin" ]
   }
 }
 
@@ -927,6 +970,8 @@ config("thinlto_optimize_max") {
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
     }
+
+    rustflags = [ "-Clto=thin" ]
   }
 }
 
@@ -943,6 +988,12 @@ config("compiler_cpu_abi") {
   configs = []
   if (is_chromeos) {
     configs += [ "//build/config/chromeos:compiler_cpu_abi" ]
+  }
+
+  # TODO(https://crbug.com/1383873): Remove this once figured out.
+  if (is_apple && current_cpu == "arm64") {
+    cflags += [ "-fno-global-isel" ]
+    ldflags += [ "-fno-global-isel" ]
   }
 
   if ((is_posix && !is_apple) || is_fuchsia) {
@@ -1648,7 +1699,7 @@ config("default_warnings") {
 # sizes, allocations, indices, or offsets.In cases where type conversion is not
 # possible or is superfluous, use base::strict_cast<> or base::checked_cast<>
 # to convert to size_t as needed.
-# See also: https://docs.google.com/document/d/14yKUwDaorqqNfgdGqHY_nck2nn02XBQcB5N0ue4fax8
+# See also: https://docs.google.com/document/d/1CTbQ-5cQjnjU8aCOtLiA7G6P0i5C6HpSDNlSNq6nl5E
 #
 # To enable in a GN target, use:
 #   configs += [ "//build/config/compiler:prevent_unsafe_narrowing" ]
@@ -1807,37 +1858,9 @@ config("no_chromium_code") {
     }
   }
 
-  # Rust warnings to ignore in third party dependencies. This list is
-  # built from those warnings which are currently in our various Rust
-  # third party dependencies, but aren't serious (they're largely
-  # stylistic).
-  # An alternative policy would be to suppress all warnings in third
-  # party Rust code using "--cap-lints allow". This is what cargo does
-  # for code outside your own crate, so is worth considering if it
-  # turns out that maintaining this list is onerous.
-  # (https://doc.rust-lang.org/rustc/lints/levels.html#capping-lints)
-  rustflags = [
-    "-A",
-    "unused_parens",
-    "-A",
-    "bare_trait_objects",
-    "-A",
-    "non_fmt_panics",
-    "-A",
-    "redundant_semicolons",
-    "-A",
-    "unused_parens",
-    "-A",
-    "anonymous_parameters",
-    "-A",
-    "bare_trait_objects",
-    "-A",
-    "deprecated",
-    "-A",
-    "non_camel_case_types",
-    "-A",
-    "unused_imports",
-  ]
+  # Suppress all warnings in third party, as Cargo does:
+  # https://doc.rust-lang.org/rustc/lints/levels.html#capping-lints
+  rustflags = [ "--cap-lints=allow" ]
 
   configs = [ ":default_warnings" ]
 }
@@ -2033,6 +2056,11 @@ if (is_win) {
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-adce-remove-loops",
+    "-mllvm", "-enable-cse-in-irtranslator",
+    "-mllvm", "-enable-cse-in-legalizer",
+    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loopinterchange",
     "-mllvm", "-enable-loop-distribute",
     "-mllvm", "-enable-unroll-and-jam",
@@ -2041,7 +2069,9 @@ if (is_win) {
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
-    "/O3",
+    "-mllvm", "-enable-masked-interleaved-mem-accesses",
+    "-mllvm", "-enable-gvn-hoist",
+    "/O2",
     "/clang:-O3",
     "/clang:-msse2",
     "-Xclang", "-O3",
@@ -2051,6 +2081,11 @@ if (is_win) {
     "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
+    "-mllvm:-adce-remove-loops",
+    "-mllvm:-enable-cse-in-irtranslator",
+    "-mllvm:-enable-cse-in-legalizer",
+    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm:-loop-rotate-multi",
     "-mllvm:-enable-loopinterchange",
     "-mllvm:-enable-loop-distribute",
     "-mllvm:-enable-unroll-and-jam",
@@ -2059,8 +2094,19 @@ if (is_win) {
     "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
     "-mllvm:-enable-interleaved-mem-accesses",
+    "-mllvm:-enable-masked-interleaved-mem-accesses",
+    "-mllvm:-enable-gvn-hoist",
   ]
-  
+
+  if (use_polly == true) {
+    common_optimize_on_ldflags += [
+    "-mllvm:-polly",
+    "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
+    "-mllvm:-polly-invariant-load-hoisting",
+    "-mllvm:-polly-vectorizer=stripmine",
+    ]
+  }
+
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
@@ -2081,6 +2127,11 @@ if (is_win) {
     "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
+    "-mllvm", "-adce-remove-loops",
+    "-mllvm", "-enable-cse-in-irtranslator",
+    "-mllvm", "-enable-cse-in-legalizer",
+    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
+    "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loopinterchange",
     "-mllvm", "-enable-loop-distribute",
     "-mllvm", "-enable-unroll-and-jam",
@@ -2089,6 +2140,8 @@ if (is_win) {
     "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
+    "-mllvm", "-enable-masked-interleaved-mem-accesses",
+    "-mllvm", "-enable-gvn-hoist",
     "-O3",
   ]
 
@@ -2096,6 +2149,11 @@ if (is_win) {
     "-Wl,-mllvm,-extra-vectorizer-passes",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
+    "-Wl,-mllvm,-adce-remove-loops",
+    "-Wl,-mllvm,-enable-cse-in-irtranslator",
+    "-Wl,-mllvm,-enable-cse-in-legalizer",
+    "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
+    "-Wl,-mllvm,-loop-rotate-multi",
     "-Wl,-mllvm,-enable-loopinterchange",
     "-Wl,-mllvm,-enable-loop-distribute",
     "-Wl,-mllvm,-enable-unroll-and-jam",
@@ -2104,8 +2162,19 @@ if (is_win) {
     "-Wl,-mllvm,-unroll-runtime-multi-exit",
     "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-interleaved-mem-accesses",
+    "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
+    "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
+
+  if (use_polly == true) {
+    common_optimize_on_ldflags += [
+    "-Wl,-mllvm,-polly",
+    "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
+    "-Wl,-mllvm,-polly-invariant-load-hoisting",
+    "-Wl,-mllvm,-polly-vectorizer=stripmine",
+    ]
+  }
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
@@ -2155,7 +2224,7 @@ if (is_win) {
 }
 
 config("default_stack_frames") {
-  if (is_posix || is_fuchsia) {
+  if (!is_win) {
     if (enable_frame_pointers) {
       cflags = [ "-fno-omit-frame-pointer" ]
 
@@ -2187,10 +2256,16 @@ config("optimize") {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
       cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
+      rustflags = [ "-Copt-level=3" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
       cflags = [ "/O2" ] + common_optimize_on_cflags + [ "/Oi" ]
+
+      # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
+      # suggests not using an explicit `-Copt-level` at all, and the default is
+      # to optimize for performance like `/O2` for clang.
+      rustflags = [ "-Copt-level=3" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2206,6 +2281,10 @@ config("optimize") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
+
+    # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
+    # vectorization.
+    rustflags = [ "-Copt-level=3" ]
   } else if (is_chromeos) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
     # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
@@ -2214,13 +2293,17 @@ config("optimize") {
     #   for size by default (so, also Windows)
     # - Investigate -Oz here, maybe just for ARM?
     cflags = [ "-O3" ] + common_optimize_on_cflags
+
+    # Similar to clang, we optimize with `-Copt-level=s` to keep loop
+    # vectorization while otherwise optimizing for size.
+    rustflags = [ "-Copt-level=3" ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
-  }
-  if (optimize_for_size) {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse2", ]
-  } else {
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse2", ]
+
+    # The `-O3` for clang turns on extra optimizations compared to the standard
+    # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+    # to use.
+    rustflags = [ "-Copt-level=3" ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2448,7 +2531,14 @@ config("win_pdbaltpath") {
 config("symbols") {
   if (is_win) {
     if (is_clang) {
-      cflags = [ "/Z7" ]  # Debug information in the .obj files.
+      cflags = [
+        # Debug information in the .obj files.
+        "/Z7",
+
+        # Disable putting the compiler command line into the debug info to
+        # prevent some types of non-determinism.
+        "-gno-codeview-command-line",
+      ]
     } else {
       cflags = [ "/Zi" ]  # Produce PDB file, no edit and continue.
     }
@@ -2487,11 +2577,12 @@ config("symbols") {
 
     # The gcc-based nacl compilers don't support -fdebug-compilation-dir (see
     # elsewhere in this file), so they can't have build-dir-independent output.
+    # Moreover pnacl does not support newer flags such as -fdebug-prefix-map
     # Disable symbols for nacl object files to get deterministic,
-    # build-directory-independent output. pnacl and nacl-clang do support that
-    # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
-    # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
-    if ((!is_nacl || is_clang) && current_os != "zos") {
+    # build-directory-independent output.
+    # Keeping -g2 for saigo as it's the only toolchain whose artifacts that are
+    # part of chromium release (other nacl toolchains are used only for tests).
+    if ((!is_nacl || is_nacl_saigo) && current_os != "zos") {
       cflags += [ "-g2" ]
     }
 
@@ -2618,11 +2709,12 @@ config("minimal_symbols") {
 
     # The gcc-based nacl compilers don't support -fdebug-compilation-dir (see
     # elsewhere in this file), so they can't have build-dir-independent output.
+    # Moreover pnacl does not support newer flags such as -fdebug-prefix-map
     # Disable symbols for nacl object files to get deterministic,
-    # build-directory-independent output. pnacl and nacl-clang do support that
-    # flag, so we can use use -g1 for pnacl and nacl-clang compiles.
-    # gcc nacl is is_nacl && !is_clang, pnacl and nacl-clang are && is_clang.
-    if (!is_nacl || is_clang) {
+    # build-directory-independent output.
+    # Keeping -g1 for saigo as it's the only toolchain whose artifacts that are
+    # part of chromium release (other nacl toolchains are used only for tests).
+    if (!is_nacl || is_nacl_saigo) {
       cflags += [ "-g1" ]
     }
 
@@ -2731,7 +2823,11 @@ if (is_android || (is_chromeos_ash && is_chromeos_device)) {
 config("default_init_stack_vars") {
   cflags = []
   if (init_stack_vars && is_clang && !is_nacl && !using_sanitizer) {
-    cflags += [ "-ftrivial-auto-var-init=pattern" ]
+    if (init_stack_vars_zero) {
+      cflags += [ "-ftrivial-auto-var-init=zero" ]
+    } else {
+      cflags += [ "-ftrivial-auto-var-init=pattern" ]
+    }
   }
 }
 
