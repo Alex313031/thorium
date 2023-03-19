@@ -89,7 +89,7 @@ if (use_v8_context_snapshot) {
         "//v8",
       ]
 
-      if (is_linux || is_posix) {
+      if (is_linux || is_chromeos) {
         configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
       }
 
