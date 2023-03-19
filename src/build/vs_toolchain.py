@@ -31,7 +31,7 @@ from gn_helpers import ToGNString
 #   Affects the availability of APIs in the toolchain headers.
 # * //docs/windows_build_instructions.md mentions of VS or Windows SDK.
 #   Keeps the document consistent with the toolchain version.
-TOOLCHAIN_HASH = '740cbbb033'
+TOOLCHAIN_HASH = 'b4e14b9d6f'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 json_data_file = os.path.join(script_dir, 'win_toolchain.json')
