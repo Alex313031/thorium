@@ -1022,6 +1022,7 @@ BASE_FEATURE(kChromeOSHWVBREncoding,
              "ChromeOSHWVBREncoding",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+#if BUILDFLAG(IS_CHROMEOS)
 // Enable the hardware-accelerated direct video decoder instead of the one
 // needing the VdaVideoDecoder adapter. This flag is used mainly as a
 // chrome:flag for developers debugging issues as well as to be able to
@@ -1029,11 +1030,12 @@ BASE_FEATURE(kChromeOSHWVBREncoding,
 // TODO(b/159825227): remove when the direct video decoder is fully launched.
 BASE_FEATURE(kUseChromeOSDirectVideoDecoder,
              "UseChromeOSDirectVideoDecoder",
-#if BUILDFLAG(IS_CHROMEOS)
-             base::FEATURE_ENABLED_BY_DEFAULT
+             base::FEATURE_ENABLED_BY_DEFAULT);
 #else
-             base::FEATURE_DISABLED_BY_DEFAULT
-#endif
+BASE_FEATURE(kUseChromeOSDirectVideoDecoder,
+             "UseChromeOSDirectVideoDecoder",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(IS_CHROMEOS)
 
 // Limit the number of concurrent hardware decoder instances on ChromeOS.
 BASE_FEATURE(kLimitConcurrentDecoderInstances,
