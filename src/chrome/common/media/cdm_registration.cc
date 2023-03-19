@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,6 +14,7 @@
 #include "content/public/common/cdm_info.h"
 #include "media/cdm/cdm_capability.h"
 #include "media/cdm/cdm_type.h"
+#include "media/cdm/clear_key_cdm_common.h"
 #include "third_party/widevine/cdm/buildflags.h"
 
 #if BUILDFLAG(ENABLE_LIBRARY_CDMS)
@@ -93,7 +94,7 @@ std::unique_ptr<content::CdmInfo> CreateCdmInfoFromWidevineDirectory(
         // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)) && (BUILDFLAG(IS_LINUX) ||
         // BUILDFLAG(IS_CHROMEOS))
 
-#if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) && \
+#if (BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) || BUILDFLAG(BUNDLE_WIDEVINE_CDM)) && \
     (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
 // On Linux/ChromeOS we have to preload the CDM since it uses the zygote
 // sandbox. On Windows and Mac, the bundled CDM is handled by the component
@@ -114,7 +115,7 @@ content::CdmInfo* GetBundledWidevine() {
       }());
   return s_cdm_info->get();
 }
-#endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) && (BUILDFLAG(IS_LINUX) ||
+#endif  // (BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) || BUILDFLAG(BUNDLE_WIDEVINE_CDM)) && (BUILDFLAG(IS_LINUX) ||
         // BUILDFLAG(IS_CHROMEOS))
 
 #if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) && \
@@ -162,7 +163,7 @@ void AddSoftwareSecureWidevine(std::vector<content::CdmInfo>* cdms) {
   // case both versions will be the same and point to the same directory, so
   // it doesn't matter which one is loaded.
   content::CdmInfo* bundled_widevine = nullptr;
-#if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
+#if (BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) || BUILDFLAG(BUNDLE_WIDEVINE_CDM))
   bundled_widevine = GetBundledWidevine();
 #endif
 
@@ -260,33 +261,26 @@ void AddExternalClearKey(std::vector<content::CdmInfo>* cdms) {
   if (clear_key_cdm_path.empty() || !base::PathExists(clear_key_cdm_path))
     return;
 
-  // TODO(crbug.com/764480): Remove these after we have a central place for
-  // External Clear Key (ECK) related information.
-  // Normal External Clear Key key system.
-  const char kExternalClearKeyKeySystem[] = "org.chromium.externalclearkey";
-  // A variant of ECK key system that has a different CDM type.
-  const char kkExternalClearKeyDifferentCdmTypeTestKeySystem[] =
-      "org.chromium.externalclearkey.differentcdmtype";
-
   // Supported codecs are hard-coded in ExternalClearKeySystemInfo.
   media::CdmCapability capability(
       {}, {}, {media::EncryptionScheme::kCenc, media::EncryptionScheme::kCbcs},
       {media::CdmSessionType::kTemporary,
        media::CdmSessionType::kPersistentLicense});
 
-  // Register kkExternalClearKeyDifferentCdmTypeTestKeySystem first separately.
-  // Otherwise, it'll be treated as a sub-key-system of normal
-  // kExternalClearKeyKeySystem. See MultipleCdmTypes test in
+  // Register media::kExternalClearKeyDifferentCdmTypeTestKeySystem first
+  // separately. Otherwise, it'll be treated as a sub-key-system of normal
+  // media::kExternalClearKeyKeySystem. See MultipleCdmTypes test in
   // ECKEncryptedMediaTest.
   cdms->push_back(content::CdmInfo(
-      kkExternalClearKeyDifferentCdmTypeTestKeySystem,
+      media::kExternalClearKeyDifferentCdmTypeTestKeySystem,
       Robustness::kSoftwareSecure, capability,
       /*supports_sub_key_systems=*/false, media::kClearKeyCdmDisplayName,
       media::kClearKeyCdmDifferentCdmType, base::Version("0.1.0.0"),
       clear_key_cdm_path));
 
   cdms->push_back(content::CdmInfo(
-      kExternalClearKeyKeySystem, Robustness::kSoftwareSecure, capability,
+      media::kExternalClearKeyKeySystem, Robustness::kSoftwareSecure,
+      capability,
       /*supports_sub_key_systems=*/true, media::kClearKeyCdmDisplayName,
       media::kClearKeyCdmType, base::Version("0.1.0.0"), clear_key_cdm_path));
 }

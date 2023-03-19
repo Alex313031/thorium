@@ -91,7 +91,7 @@ Widevine CDM CU Patch > https://launchpad.net/ubuntu/bionic/+source/chromium-bro
 Enable Parallel Downloading by Default Patch
   - Made by me.
 
-RPATH for libffmpeg.so Patch > https://launchpad.net/ubuntu/bionic/+source/chromium-browser
+RPATH for libffmpeg.so Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/set-rpath-on-chromium-executables.patch
 
 Always Show Component Extensions Patch > https://github.com/iridium-browser/iridium-browser/commit/f8e1b5f19862867b2736ca0a25f6979fcc2d7d71
   - Modified by me.

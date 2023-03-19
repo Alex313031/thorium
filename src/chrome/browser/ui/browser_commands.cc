@@ -1400,6 +1400,7 @@ bool CanSavePage(const Browser* browser) {
     return false;
   }
   return true;
+}
 
 void Print(Browser* browser) {
 #if BUILDFLAG(ENABLE_PRINTING)

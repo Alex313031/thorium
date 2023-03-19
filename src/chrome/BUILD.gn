@@ -344,8 +344,6 @@ if (!is_android && !is_mac) {
           "//ui/base",
         ]
       }
-
-      configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
     }
 
     if (is_chromeos_ash || is_win) {
@@ -368,7 +366,7 @@ if (!is_android && !is_mac) {
 
     # ChromeOS by design is safe to have rpath=$ORIGIN. This simplifies shared
     # library usage.
-    if (is_chromeos_ash && !is_component_build) {
+    if (is_chromeos_ash && !is_component_build || is_linux) {
       configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
     }
 
