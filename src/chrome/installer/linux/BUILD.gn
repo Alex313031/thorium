@@ -587,7 +587,6 @@ template("linux_package") {
         args = [
           rebase_path("snap/build.sh", root_build_dir),
           package,
-          channel,
           chrome_version_full,
           snap_arch,
           target_os,
