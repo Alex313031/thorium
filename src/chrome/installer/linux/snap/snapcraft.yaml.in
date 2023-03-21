@@ -5,18 +5,20 @@ name: @@SNAPNAME@@
 adopt-info: chromium
 summary: @@SHORTDESC@@
 description: @@FULLDESC@@
-confinement: strict
+confinement: classic
 grade: stable
 base: core20
 assumes:
-  - snapd2.43 # for 'snapctl is-connected', used in thorium.launcher
+  - snapd2.55 # for 'snapctl is-connected', used in thorium.launcher
 
 apps:
   @@SNAPNAME@@:
-    command: bin/desktop-launch "$SNAP/bin/thorium.launcher"
+    extensions: [gnome-3-38]
+    command: bin/desktop-launch $SNAP/bin/thorium.launcher
     desktop: bin/@@SNAPNAME@@.desktop
     environment:
       DISABLE_WAYLAND: 1
+      GTK_USE_PORTAL: 1
       CHROME_DESKTOP: @@SNAPNAME@@.desktop
       CHROME_CONFIG_HOME: $SNAP_USER_COMMON
     plugs:
@@ -24,6 +26,7 @@ apps:
       - audio-record
       - bluez # for Web Bluetooth (https://launchpad.net/bugs/1887201)
       - camera
+      - cups
       - cups-control
       - desktop
       - gsettings
@@ -46,6 +49,13 @@ apps:
       - mpris
 
 plugs:
+  # This is not used or needed for anything other than to trigger automatic
+  # installation of the cups snap via "default-provider: cups"
+  foo-install-cups:
+    interface: content
+    content: foo
+    default-provider: cups
+    target: $SNAP_DATA/foo
   browser-sandbox:
     interface: browser-support
     allow-sandbox: true
@@ -95,6 +105,10 @@ parts:
 
       # @@SNAPNAME@@ build artifacts (installed by stage_install_common)
       cp -R $SNAPCRAFT_PART_SRC/chrome/* $SNAPCRAFT_PART_INSTALL/
+      
+      # Fix setuid bits on the sandbox executable
+      # (ref: https://forum.snapcraft.io/t/call-for-testing-chromium-snap/1714/16)
+      chmod 4555 $SNAPCRAFT_PART_INSTALL/opt/chromium.org/thorium/chrome-sandbox
 
       # Custom desktop file
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin

@@ -9,7 +9,7 @@
 PACKAGE="thorium-browser"
 
 # Base name of the snap package
-SNAPNAME="thorium"
+SNAPNAME="thorium-browser"
 
 # Filename of the main executable (for generating launcher scripts, etc.)
 PROGNAME=thorium
