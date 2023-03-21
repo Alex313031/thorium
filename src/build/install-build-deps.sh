@@ -819,3 +819,6 @@ else
     sudo locale-gen ${CHROMIUM_LOCALE}
   done
 fi
+
+sudo snap install --classic snapcraft
+sudo snap install --classic multipass

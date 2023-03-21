@@ -567,7 +567,7 @@ template("linux_package") {
         ]
         script = "//build/gn_run_binary.py"
         sources = [
-          "snap/chrome.launcher.in",
+          "snap/thorium.launcher.in",
           "snap/snapcraft.yaml.in",
         ]
         if (!is_chrome_branded) {
