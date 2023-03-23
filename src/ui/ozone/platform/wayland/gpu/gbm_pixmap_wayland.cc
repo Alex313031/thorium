@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -32,7 +32,6 @@ GbmPixmapWayland::GbmPixmapWayland(WaylandBufferManagerGpu* buffer_manager)
       buffer_id_(buffer_manager->AllocateBufferID()) {}
 
 GbmPixmapWayland::~GbmPixmapWayland() {
-  if (created_wl_buffer_)
   // gfx::BufferUsage::SCANOUT_VDA_WRITE doesn't result in creation of
   // wl_buffers.
   if (created_wl_buffer_ && usage_ != gfx::BufferUsage::SCANOUT_VDA_WRITE)
