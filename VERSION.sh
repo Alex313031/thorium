@@ -43,6 +43,7 @@ cd ~/chromium/src &&
 git checkout -f tags/$THOR_VER &&
 
 git clean -ffd &&
+git clean -ffd &&
 
 cd ~/thorium &&
 
