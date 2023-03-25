@@ -49,7 +49,7 @@ DoH Secure Mode Patch > https://github.com/bromite/bromite/blob/master/build/pat
 
 DoH Bare Minimum HTTP Headers Patch > https://github.com/bromite/bromite/blob/master/build/patches/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
-Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/13/patches/0044-enable-dubious-Do-Not-Track-feature-by-default.patch
+Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
 Show full URLs by Default Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/disable-formatting-in-omnibox.patch - Modified by me.
 

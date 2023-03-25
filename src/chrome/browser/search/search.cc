@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -155,11 +155,7 @@ bool IsURLAllowedForSupervisedUser(const GURL& url, Profile* profile) {
 }
 
 bool ShouldShowLocalNewTab(Profile* profile) {
-#if !BUILDFLAG(IS_ANDROID)
-  return DefaultSearchProviderIsGoogle(profile);
-#else
   return true;
-#endif
 }
 
 // Used to look up the URL to use for the New Tab page. Also tracks how we
