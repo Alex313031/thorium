@@ -57,6 +57,14 @@
      "Set GPU Available Memory",
      "Sets the total amount of memory (in MB) that may be allocated for GPU resources.",
      kOsAll, MULTI_VALUE_TYPE(kForceGpuMemAvailableMbChoices)},
+
+#if BUILDFLAG(IS_LINUX)
+    {"enable-native-gpu-memory-buffers",
+     "Enable Native GPU Memory Buffers",
+     "Enables native CPU-mappable GPU memory buffer support on Linux.",
+     kOsLinux, SINGLE_VALUE_TYPE(switches::kEnableNativeGpuMemoryBuffers)},
+#endif // BUILDFLAG(IS_LINUX)
+
     {"gpu-no-context-lost",
      "No GPU Context Lost",
      "Inform Thorium's GPU process that a GPU context will not be lost in power saving mode, screen saving mode, etc. "
@@ -91,6 +99,10 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only. See `https://web.dev/same-origin-policy/`",
      kOsAll, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
+    {"media-router",
+     "Enable/Disable Media Router",
+     "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
+     kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
     {"disable-encryption",
      "Disable Encryption",
      "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. This is used to enable portable user data directories. Enabled for Thorium Portable.",
@@ -103,12 +115,8 @@
      "Close Confirmation",
      "Show a warning prompt when closing browser window(s).",
      kOsDesktop, MULTI_VALUE_TYPE(kCloseConfirmation)},
-     
+
 #if BUILDFLAG(IS_LINUX)
-    {"enable-native-gpu-memory-buffers",
-     "Enable Native GPU Memory Buffers",
-     "Enables native CPU-mappable GPU memory buffer support on Linux.",
-     kOsLinux, SINGLE_VALUE_TYPE(switches::kEnableNativeGpuMemoryBuffers)},
     {"password-store",
      "Password Store Backend",
      "Choose the password store backend, instead of using the automatically detected one. "
@@ -116,7 +124,7 @@
      "instead of the platform provided password stores on Linux. (i.e. for portable usage.)",
      kOsLinux, MULTI_VALUE_TYPE(kPasswordStoreChoices)},
 #endif // BUILDFLAG(IS_LINUX)
-    
+
 #if BUILDFLAG(IS_WIN)
     {"disable-windows10-custom-titlebar",
      "Disable Custom Windows Titlebar",
