@@ -134,6 +134,7 @@ config("compiler") {
       cflags += [
         "/O2",
         "-msse3",
+        "/arch:SSE3",
         "/clang:-O3",
         "/clang:-msse3",
         "-Xclang", "-O3",
