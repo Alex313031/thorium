@@ -98,7 +98,6 @@ void printHelp() {
 
     if (ptr != NULL)
         strcpy(selfName, ptr + 1);
-	
     printf(HELP_TEXT, selfName, selfName);
 }
 
