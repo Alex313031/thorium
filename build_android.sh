@@ -54,7 +54,7 @@ buildARM32 () {
 # Build Thorium for ARM32
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk system_webview_apk -j$@ &&
+./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
 # ADD # thorium_shell_apk
 mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm32.apk &&
 
@@ -71,7 +71,7 @@ esac
 # Build Thorium for ARM64
 export NINJA_SUMMARIZE_BUILD=1 &&
 # ADD # thorium_shell_apk
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk -j$@ &&
+./depot_tools/autoninja -C ~/chromium/src/out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
 mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm64.apk &&
 

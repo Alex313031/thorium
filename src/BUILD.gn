@@ -362,7 +362,7 @@ group("gn_all") {
       "//chrome/test:android_browsertests",
       "//components:components_junit_tests",
       "//content/public/android:content_junit_tests",
-      "//content/shell/android:thorium_shell_apk",
+      "//content/shell/android:content_shell_apk",
       "//device:device_junit_tests",
       "//media/gpu:video_decode_accelerator_unittest",
       "//net/android:net_junit_tests",
@@ -408,7 +408,7 @@ group("gn_all") {
         "//chrome/android:chrome_public_unit_test_apk",
         "//chrome/browser/android/examples/custom_tabs_client:custom_tabs_client_example_apk",
         "//chrome/browser/android/examples/partner_browser_customizations_provider:partner_browser_customizations_example_apk",
-        "//content/shell/android:thorium_shell_test_apk",
+        "//content/shell/android:content_shell_test_apk",
       ]
     }
 

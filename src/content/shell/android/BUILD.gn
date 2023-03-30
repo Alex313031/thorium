@@ -75,7 +75,7 @@ android_resources("content_shell_java_resources") {
 
 android_library("content_shell_java") {
   testonly = true
-  resources_package = "org.chromium.thorium_shell"
+  resources_package = "org.chromium.content_shell"
   deps = [
     ":content_shell_java_resources",
     ":content_shell_manifest",
@@ -108,7 +108,7 @@ jinja_template("content_shell_manifest") {
   testonly = true
   input = "shell_apk/AndroidManifest.xml.jinja2"
   output = content_shell_manifest
-  variables = [ "manifest_package=org.chromium.thorium_shell_apk" ]
+  variables = [ "manifest_package=org.chromium.content_shell_apk" ]
 }
 
 jinja_template("content_shell_test_manifest") {
@@ -133,7 +133,7 @@ android_library("content_shell_apk_java") {
 
   srcjar_deps = [ ":content_javatests_aidl" ]
 
-  resources_package = "org.chromium.thorium_shell_apk"
+  resources_package = "org.chromium.content_shell_apk"
   deps = [
     ":content_shell_apk_resources",
     ":content_shell_java",
@@ -206,7 +206,7 @@ template("content_shell_apk_tmpl") {
   }
 }
 
-content_shell_apk_tmpl("thorium_shell_apk") {
+content_shell_apk_tmpl("content_shell_apk") {
   target_type = "android_apk"
   apk_name = "ThoriumShell"
   android_manifest = content_shell_manifest
@@ -215,7 +215,7 @@ content_shell_apk_tmpl("thorium_shell_apk") {
   command_line_flags_file = "content-shell-command-line"
 }
 
-content_shell_apk_tmpl("thorium_shell_test_apk") {
+content_shell_apk_tmpl("content_shell_test_apk") {
   target_type = "instrumentation_test_apk"
   apk_name = "ThoriumShellTest"
   android_manifest = content_shell_test_manifest

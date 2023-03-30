@@ -494,7 +494,7 @@ repack("pak") {
 if (is_android) {
   group("thorium_shell") {
     testonly = true
-    deps = [ "//content/shell/android:thorium_shell_apk" ]
+    deps = [ "//content/shell/android:content_shell_apk" ]
   }
 } else if (is_mac) {
   tweak_info_plist("content_shell_plist") {
