@@ -905,7 +905,7 @@ config("compiler") {
     # For deterministic builds, keep the local machine's current working
     # directory from appearing in build outputs.
     "-Zremap-cwd-prefix=.",
-    
+
     # Full RUSTC optimizations.
     "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul",
   ]
@@ -2683,7 +2683,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG:NONE" ]
+    ldflags = [ "/DEBUG" ]
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]

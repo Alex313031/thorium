@@ -46,7 +46,7 @@ sleep 2 &&
 mkdir -v -p ./temp &&
 mkdir -v -p ./temp/USER_DATA &&
 mkdir -v -p ./out &&
-7z x thorium_mini_installer.exe &&
+7z x thorium_mini_installer*.exe &&
 7z x chrome.7z &&
 mv -v Chrome-bin ./temp/BIN &&
 cp -r -v ./README.win temp/README.txt &&

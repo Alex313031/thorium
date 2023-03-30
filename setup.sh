@@ -100,12 +100,11 @@ case $1 in
 	--raspi) copyRaspi;
 esac
 
-# Windows on ARM workaround
+# Windows on ARM files
 copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
 	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v arm/woa_arm.gni $HOME/chromium/src/build/config/arm.gni &&
 	printf "\n"
 }
 case $1 in
