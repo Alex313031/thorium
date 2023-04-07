@@ -13,7 +13,7 @@ For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Ext
 *   You must have Git and Python v3.6+ installed already (and `python3` must point
     to a Python v3.6+ binary (i.e. in your path or as default python install).
 
-Most development is done on Ubuntu (currently 18.04, Bionic Beaver). Ubuntu 16.04 no longer works. 20.04 and Debian 11 will work.
+Most development is done on Ubuntu (currently 22.04, Jammy Jellyfish). Ubuntu 16.04 no longer works. 18.04, 20.04 and Debian 10/11 will work.
 There are some instructions for other distros below, but they are mostly unsupported.
 
 __The scripts to build Thorium assume that depot_tools, thorium and chromium are both in $HOME!__
