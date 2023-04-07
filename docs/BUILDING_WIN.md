@@ -32,10 +32,10 @@ full set for that case is:
 VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Component.VC.ATLMFC --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.VC.MFC.ARM64 --includeRecommended
 ```
 
- - You must have the version 10.0.22621.755 [Windows 11 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
+ - You must have the version 10.1.22621.755 [Windows 11 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
 installed. This can be installed separately or by checking the appropriate box
-in the Visual Studio Installer (Note that MSVS 2022 will try to install the 22000 version by default, uncheck this and check the 22621 version).
-There is also experimental support for the Windows 11 10.1.22000.0 version.
+in the Visual Studio Installer __(Note that MSVS 2022 will try to install the 22000 version by default, uncheck this and check the 22621 version)__.
+There is also experimental support for the Windows 11 10.1.22000.755 version.
 
 The SDK Debugging Tools must also be installed. If the Windows 10 SDK was
 installed via the Visual Studio installer, then they can be installed by going
