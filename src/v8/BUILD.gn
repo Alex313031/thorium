@@ -1274,7 +1274,7 @@ config("toolchain") {
       # Increase the initial stack size. The default is 1MB, this is 2MB. This
       # applies only to executables and shared libraries produced by V8 since
       # ldflags are not pushed to dependants.
-      cflags += [ "/arch:AVX" ]
+      cflags += [ "/O2", "/arch:AVX" ]
       ldflags += [ "/STACK:2097152" ]
     }
     if (is_linux) {
