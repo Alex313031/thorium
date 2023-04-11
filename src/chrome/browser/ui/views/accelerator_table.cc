@@ -46,7 +46,8 @@ const AcceleratorMapping kAcceleratorMap[] = {
 #if !BUILDFLAG(IS_MAC)
     {ui::VKEY_D, ui::EF_PLATFORM_ACCELERATOR, IDC_BOOKMARK_THIS_TAB},
     {ui::VKEY_D, ui::EF_SHIFT_DOWN | ui::EF_PLATFORM_ACCELERATOR,
-     IDC_BOOKMARK_ALL_TABS},
+     IDC_DUPLICATE_TAB},
+    {ui::VKEY_P, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN, IDC_MOVE_TAB_TO_NEW_WINDOW},
     {ui::VKEY_W, ui::EF_PLATFORM_ACCELERATOR, IDC_CLOSE_TAB},
     {ui::VKEY_W, ui::EF_SHIFT_DOWN | ui::EF_PLATFORM_ACCELERATOR,
      IDC_CLOSE_WINDOW},
@@ -66,7 +67,6 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_9, ui::EF_PLATFORM_ACCELERATOR, IDC_SELECT_LAST_TAB},
     {ui::VKEY_NUMPAD9, ui::EF_PLATFORM_ACCELERATOR, IDC_SELECT_LAST_TAB},
 #if BUILDFLAG(IS_LINUX)
-    {ui::VKEY_Q, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_EXIT},
     {ui::VKEY_9, ui::EF_ALT_DOWN, IDC_SELECT_LAST_TAB},
     {ui::VKEY_NUMPAD9, ui::EF_ALT_DOWN, IDC_SELECT_LAST_TAB},
 #endif  // BUILDFLAG(IS_LINUX)
@@ -74,6 +74,9 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_NEXT, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN, IDC_MOVE_TAB_NEXT},
     {ui::VKEY_PRIOR, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN,
      IDC_MOVE_TAB_PREVIOUS},
+    // {ui::VKEY_Q, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_EXIT},
+    {ui::VKEY_Q, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN , IDC_EXIT},
+    {ui::VKEY_K, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_NEW_TAB_TO_RIGHT},
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
     // Control modifier is rarely used on Mac, so we allow it only in several
     // specific cases.
@@ -208,7 +211,7 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_LEFT, ui::EF_ALT_DOWN, IDC_BACK},
     {ui::VKEY_LEFT, ui::EF_ALTGR_DOWN, IDC_BACK},
 #if BUILDFLAG(ENABLE_PRINTING)
-    {ui::VKEY_P, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_BASIC_PRINT},
+    {ui::VKEY_P, ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN, IDC_BASIC_PRINT},
 #endif  // ENABLE_PRINTING
     {ui::VKEY_I, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_DEV_TOOLS},
     {ui::VKEY_J, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN,
