@@ -201,7 +201,6 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:-march=sandybridge",
     ]
 
     if (use_lld) {
