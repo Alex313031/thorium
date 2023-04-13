@@ -78,7 +78,7 @@ printf "\n" &&
 
 cd ~/thorium &&
 
-printf "${GRE}Done! ${YEL}You can now run `./setup.sh`\n"
+printf "${GRE}Done! ${YEL}You can now run \'./setup.sh\'\n"
 tput sgr0 &&
 
 exit 0

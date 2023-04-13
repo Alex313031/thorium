@@ -116,7 +116,7 @@ gsyncShallow () {
 	gclient runhooks &&
 	
 	printf "\n" &&
-	printf "${GRE}Done! ${YEL}You can now run `./VERSION.sh`\n"
+	printf "${GRE}Done! ${YEL}You can now run \'./VERSION.sh\'\n"
 	tput sgr0 &&
 
 	c0='\033[0m' # Reset Text
@@ -266,7 +266,7 @@ python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromiu
 python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}You can now run `./VERSION.sh`\n" &&
+printf "${GRE}Done! ${YEL}You can now run \'./VERSION.sh\'\n" &&
 tput sgr0 &&
 
 c0='\033[0m' # Reset Text

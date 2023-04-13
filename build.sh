@@ -37,7 +37,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run `./thordeb.sh` to build an installation package.\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./thordeb.sh\' to build an installation package.\n" &&
 tput sgr0 &&
 
 exit 0
