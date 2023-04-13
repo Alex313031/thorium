@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -39,7 +39,7 @@ mv -v -f ~/chromium/src/out/thorium/mini_installer.exe ~/chromium/src/out/thoriu
 
 cat logos/thorium_logo_ascii_art.txt &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}Installer at //out/thorium/thorium_mini_installer.exe\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}Installer at \'//out/thorium/thorium_mini_installer.exe\'\n" &&
 tput sgr0 &&
 
 exit 0

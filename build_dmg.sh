@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031 and Midzer.
+# Copyright (c) 2023 Alex313031 and Midzer.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -16,8 +16,10 @@ die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
 printf "\n" &&
-printf "${YEL}Building .dmg package of Thorium...\n" &&
+printf "${YEL}Building .dmg of Thorium...\n" &&
 printf "${CYA}\n" &&
+
+cd ~/chromium/src &&
 
 # Fix file attr
 xattr -csr out/thorium/Thorium.app &&
@@ -30,5 +32,5 @@ chrome/installer/mac/pkg-dmg --sourcefile --source out/thorium/Thorium.app --tar
 
 cat logos/apple_ascii_art.txt &&
 
-printf "${GRE}.DMG Build Completed. ${YEL}Installer at //out/thorium/Thorium*_MacOS.dmg\n" &&
+printf "${GRE}.DMG Build Completed. ${YEL}Installer at \'//out/thorium/Thorium*_MacOS.dmg\'\n" &&
 tput sgr0

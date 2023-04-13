@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -35,5 +35,5 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:stable_deb" -j$@ &&
 
-printf "${GRE}Done. ${YEL}Installer at //out/thorium/thorium*.deb\n" &&
+printf "${GRE}Done! ${YEL}Installer at `//out/thorium/thorium*.deb`\n" &&
 tput sgr0

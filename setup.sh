@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -96,8 +96,12 @@ copyRaspi () {
 	cp -r -v arm/raspi/* $HOME/chromium/src/ &&
 	printf "\n"
 }
+# Display raspi ascii art
+displayRaspi () {
+	cat logos/raspi_ascii_art.txt
+}
 case $1 in
-	--raspi) copyRaspi;
+	--raspi) copyRaspi; displayRaspi;
 esac
 
 # Windows on ARM files
@@ -216,15 +220,6 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 printf "${CYA}\n" &&
 
 cat logos/thorium_ascii_art.txt &&
-
-# Display raspi ascii art
-displayRaspi () {
-	cat logos/raspi_ascii_art.txt
-}
-
-case $1 in
-	--raspi) displayRaspi;
-esac
 
 printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&

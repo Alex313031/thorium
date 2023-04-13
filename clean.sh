@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 # Copy and run from within out/thorium or wherever you put your build, or cd there first!
 # i.e. cd /home/alex/bin/thorium/
@@ -17,6 +17,16 @@ underline='\033[4m' # Underline Text
 yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
+
+# --help
+displayHelp () {
+	printf "\n" &&
+	printf "${bold}${GRE}Script to remove unneeded artifacts in your build directory.${c0}\n" &&
+	printf "\n"
+}
+case $1 in
+	--help) displayHelp; exit 0;;
+esac
 
 printf "\n" &&
 printf "${YEL}Cleaning up build artifacts...\n" &&

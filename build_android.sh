@@ -61,7 +61,7 @@ mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/a
 cat logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
-printf "${GRE}${bold}They are located in //chromium/src/out/thorium/apks/\n" &&
+printf "${GRE}${bold}They are located in `//chromium/src/out/thorium/apks/`\n" &&
 tput sgr0
 }
 case $1 in
@@ -78,7 +78,7 @@ mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/a
 cat logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
-printf "${GRE}${bold}They are located in //chromium/src/out/thorium/apks/\n" &&
+printf "${GRE}${bold}They are located in `//chromium/src/out/thorium/apks/`\n" &&
 tput sgr0 &&
 
 exit 0

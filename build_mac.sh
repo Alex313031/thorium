@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -40,7 +40,7 @@ buildShell () {
 	
 	cat logos/thorium_logo_ascii_art.txt &&
 	
-	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh, and copy the Thorium Shell.app\n" &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\', and copy the Thorium Shell.app out.\n" &&
 	tput sgr0
 }
 case $1 in
@@ -58,6 +58,6 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run ./build_dmg.sh\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\'\n" &&
 
 exit 0

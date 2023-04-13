@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -23,7 +23,6 @@ displayHelp () {
 	printf "${RED}NOTE: You may need to run ${c0}${bold}./trunk.sh ${RED}before using this script!${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -79,7 +78,7 @@ printf "\n" &&
 
 cd ~/thorium &&
 
-printf "${GRE}Done! ${YEL}You can now run ./setup.sh\n"
+printf "${GRE}Done! ${YEL}You can now run `./setup.sh`\n"
 tput sgr0 &&
 
 exit 0
