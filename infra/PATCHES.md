@@ -38,6 +38,9 @@ Intel HD Support Patch > https://github.com/saiarcot895/chromium-ubuntu-build/bl
 
 Nicer Native Notifications Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/notifications-nicer
 
+Enable Quiet Notifications Patch > https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/permissions/quiet_notification_permission_ui_state.cc
+  - Made by me.
+
 Title Bar Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/title-bar-default-system.patch-v35
 
 VDPAU Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/vdpau-support.patch
