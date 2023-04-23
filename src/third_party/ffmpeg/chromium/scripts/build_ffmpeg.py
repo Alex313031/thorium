@@ -731,6 +731,9 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
     configure_flags['Common'].extend([
         # --optflags doesn't append multiple entries, so set all at once.
         '--optflags="-O3"',
+        '--extra-cflags=-mavx',
+        '--extra-cflags=-maes',
+        '--extra-cflags=-mpclmul',
         '--extra-cflags=-O3',
         '--enable-decoder=theora,vp8',
         '--enable-parser=vp3,vp8',

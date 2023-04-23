@@ -29,7 +29,7 @@ config("private_libgav1_config") {
   # dsp intrinsics will generate much better code when optimized for speed
   # rather than size.
   if (!is_debug) {
-    #configs += [ "//build/config/compiler:optimize_max" ]
+    # configs += [ "//build/config/compiler:optimize_max" ]
   }
   if (current_cpu == "arm64" ||
       (current_cpu == "arm" && arm_version >= 7 && arm_use_neon)) {

@@ -24,6 +24,7 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --sse2 flag for 32 bit SSE2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --android flag for Android Builds.${c0}\n" &&
 	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in Thorium/infra, then use the setup_polly.sh${c0}\n" &&
 	printf "${bold}${YEL}script in Thorium/other/Polly. Both of these actions should be taken AFTER running this script!${c0}\n" &&
@@ -121,7 +122,7 @@ copyAVX2 () {
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
 	cp -r -v other/AVX2/build/config/* $HOME/chromium/src/build/config/ &&
 	cp -r -v other/AVX2/v8/* $HOME/chromium/src/v8/ &&
-	cp -r -v other/AVX2/third_party/opus/src/* $HOME/chromium/src/third_party/opus/src/ &&
+	cp -r -v other/AVX2/third_party/* $HOME/chromium/src/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -134,10 +135,23 @@ copySSE3 () {
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* $HOME/chromium/src/build/config/ &&
 	cp -r -v other/SSE3/v8/* $HOME/chromium/src/v8/ &&
+	cp -r -v other/SSE3/third_party/* $HOME/chromium/src/third_party/ &&
 	printf "\n"
 }
 case $1 in
 	--sse3) copySSE3;
+esac
+
+# Copy SSE2 files
+copySSE2 () {
+	printf "\n" &&
+	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
+	cp -r -v other/SSE2/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v other/SSE2/third_party/* $HOME/chromium/src/third_party/ &&
+	printf "\n"
+}
+case $1 in
+	--sse2) copySSE2;
 esac
 
 # Copy Android files

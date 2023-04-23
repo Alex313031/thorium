@@ -1265,7 +1265,7 @@ config("toolchain") {
     defines += [ "V8_TARGET_ARCH_IA32" ]
     if (is_win) {
       # Ensure no surprising artifacts from 80bit double math with x86.
-      cflags += [ "/arch:SSE2" ]
+      cflags += [ "/O2", "/arch:SSE2" ]
     }
   }
   if (v8_current_cpu == "x64") {
