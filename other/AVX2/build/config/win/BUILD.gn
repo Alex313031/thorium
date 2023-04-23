@@ -143,6 +143,9 @@ config("compiler") {
         "/clang:-maes",
         "/clang:-mpclmul",
         "-Xclang", "-O3",
+        "/clang:-march=x86-64-v3",
+        "/clang:-mtune=generic",
+        "/clang:-ffp-contract=fast",
         "/arch:AVX2",
         "-Wno-unused-command-line-argument",
       ]
