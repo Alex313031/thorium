@@ -38,6 +38,7 @@
 #include "components/sessions/core/session_id.h"
 #include "components/translate/content/browser/content_translate_driver.h"
 #include "components/zoom/zoom_observer.h"
+#include "content/public/browser/fullscreen_types.h"
 #include "content/public/browser/page_navigator.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
@@ -210,6 +211,9 @@ class Browser : public TabStripModelObserver,
     kDeskTemplate,
   };
 
+  // Represents whether a value was known to be explicitly specified.
+  enum class ValueSpecified { kUnknown, kSpecified, kUnspecified };
+
   // The default value for a browser's `restore_id` param.
   static constexpr int kDefaultRestoreId = 0;
 
@@ -261,6 +265,11 @@ class Browser : public TabStripModelObserver,
 
     // The bounds of the window to open.
     gfx::Rect initial_bounds;
+    // Whether `initial_bounds.origin()` was explicitly specified, if known.
+    // Used to disambiguate coordinate (0,0) from an unspecified location when
+    // parameters originate from the JS Window.open() window features string,
+    // e.g. window.open(... 'left=0,top=0,...') vs window.open(... 'popup,...').
+    ValueSpecified initial_origin_specified = ValueSpecified::kUnknown;
 
     // The workspace the window should open in, if the platform supports it.
     std::string initial_workspace;
@@ -907,8 +916,8 @@ class Browser : public TabStripModelObserver,
   void ExitFullscreenModeForTab(content::WebContents* web_contents) override;
   bool IsFullscreenForTabOrPending(
       const content::WebContents* web_contents) override;
-  bool IsFullscreenForTabOrPending(const content::WebContents* web_contents,
-                                   int64_t* display_id) override;
+  content::FullscreenState GetFullscreenState(
+      const content::WebContents* web_contents) const override;
   blink::mojom::DisplayMode GetDisplayMode(
       const content::WebContents* web_contents) override;
   blink::ProtocolHandlerSecurityLevel GetProtocolHandlerSecurityLevel(
@@ -979,6 +988,8 @@ class Browser : public TabStripModelObserver,
                          bool starred) override;
 
   // Overridden from ZoomObserver:
+  void OnZoomControllerDestroyed(
+      zoom::ZoomController* zoom_controller) override;
   void OnZoomChanged(
       const zoom::ZoomController::ZoomChangedEventData& data) override;
 
@@ -1180,10 +1191,7 @@ class Browser : public TabStripModelObserver,
   std::unique_ptr<ScopedProfileKeepAlive> profile_keep_alive_;
 
   // This Browser's window.
-  //
-  // TODO(crbug.com/1298696): pixel_browser_tests breaks with MTECheckedPtr
-  // enabled. Triage.
-  raw_ptr<BrowserWindow, DegradeToNoOpWhenMTE> window_;
+  raw_ptr<BrowserWindow> window_;
 
   std::unique_ptr<TabStripModelDelegate> const tab_strip_model_delegate_;
   std::unique_ptr<TabStripModel> const tab_strip_model_;

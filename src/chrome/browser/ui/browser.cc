@@ -76,7 +76,6 @@
 #include "chrome/browser/profiles/profile_metrics.h"
 #include "chrome/browser/profiles/profiles_state.h"
 #include "chrome/browser/repost_form_warning_controller.h"
-#include "chrome/browser/resource_coordinator/tab_load_tracker.h"
 #include "chrome/browser/search/search.h"
 #include "chrome/browser/sessions/app_session_service.h"
 #include "chrome/browser/sessions/app_session_service_factory.h"
@@ -1506,11 +1505,6 @@ std::unique_ptr<content::WebContents> Browser::SwapWebContents(
       new_view->TakeFallbackContentFrom(old_view);
   }
 
-  // TODO(crbug.com/836409): TabLoadTracker should not rely on being notified
-  // directly about tab contents swaps.
-  resource_coordinator::TabLoadTracker::Get()->SwapTabContents(
-      old_contents, new_contents.get());
-
   // Clear the task manager tag. The TabStripModel will associate its own task
   // manager tag.
   task_manager::WebContentsTags::ClearTag(new_contents.get());
@@ -1701,9 +1695,11 @@ void Browser::AddNewContents(
   // popups on other screens and retains fullscreen focus for exit accelerators.
   // Popups are activated when the opener exits fullscreen, which happens
   // immediately if the popup would overlap the fullscreen window.
+  // Allow fullscreen-within-tab openers to open popups normally.
   NavigateParams::WindowAction window_action = NavigateParams::SHOW_WINDOW;
   if (disposition == WindowOpenDisposition::NEW_POPUP &&
-      fullscreen_controller->IsFullscreenForTabOrPending(source)) {
+      GetFullscreenState(source).target_mode ==
+          content::FullscreenMode::kContent) {
     window_action = NavigateParams::SHOW_WINDOW_INACTIVE;
     fullscreen_controller->FullscreenTabOpeningPopup(source,
                                                      new_contents.get());
@@ -2003,13 +1999,15 @@ void Browser::ExitFullscreenModeForTab(WebContents* web_contents) {
 }
 
 bool Browser::IsFullscreenForTabOrPending(const WebContents* web_contents) {
-  return IsFullscreenForTabOrPending(web_contents, /*display_id=*/nullptr);
+  const content::FullscreenState state = GetFullscreenState(web_contents);
+  return state.target_mode == content::FullscreenMode::kContent ||
+         state.target_mode == content::FullscreenMode::kPseudoContent;
 }
 
-bool Browser::IsFullscreenForTabOrPending(const WebContents* web_contents,
-                                          int64_t* display_id) {
-  return exclusive_access_manager_->fullscreen_controller()
-      ->IsFullscreenForTabOrPending(web_contents, display_id);
+content::FullscreenState Browser::GetFullscreenState(
+    const WebContents* web_contents) const {
+  return exclusive_access_manager_->fullscreen_controller()->GetFullscreenState(
+      web_contents);
 }
 
 blink::mojom::DisplayMode Browser::GetDisplayMode(
@@ -2115,6 +2113,12 @@ void Browser::RegisterProtocolHandler(
   if (window_) {
     page_content_settings_delegate->ClearPendingProtocolHandler();
     window_->GetLocationBar()->UpdateContentSettingsIcons();
+  }
+
+  if (registry->registration_mode() ==
+      custom_handlers::RphRegistrationMode::kAutoAccept) {
+    registry->OnAcceptRegisterProtocolHandler(handler);
+    return;
   }
 
   permissions::PermissionRequestManager* permission_request_manager =
@@ -2307,6 +2311,10 @@ void Browser::URLStarredChanged(content::WebContents* web_contents,
 
 ///////////////////////////////////////////////////////////////////////////////
 // Browser, ZoomObserver implementation:
+
+void Browser::OnZoomControllerDestroyed(zoom::ZoomController* zoom_controller) {
+  // SetAsDelegate() takes care of removing the observers.
+}
 
 void Browser::OnZoomChanged(
     const zoom::ZoomController::ZoomChangedEventData& data) {
@@ -2928,13 +2936,15 @@ void Browser::SetAsDelegate(WebContents* web_contents, bool set_delegate) {
       ->SetDelegate(delegate);
   translate::ContentTranslateDriver* content_translate_driver =
       ChromeTranslateClient::FromWebContents(web_contents)->translate_driver();
+  zoom::ZoomController* zoom_controller =
+      zoom::ZoomController::FromWebContents(web_contents);
   if (delegate) {
-    zoom::ZoomController::FromWebContents(web_contents)->AddObserver(this);
+    zoom_controller->AddObserver(this);
     content_translate_driver->AddTranslationObserver(this);
     BookmarkTabHelper::FromWebContents(web_contents)->AddObserver(this);
     web_contents_collection_.StartObserving(web_contents);
   } else {
-    zoom::ZoomController::FromWebContents(web_contents)->RemoveObserver(this);
+    zoom_controller->RemoveObserver(this);
     content_translate_driver->RemoveTranslationObserver(this);
     BookmarkTabHelper::FromWebContents(web_contents)->RemoveObserver(this);
     web_contents_collection_.StopObserving(web_contents);

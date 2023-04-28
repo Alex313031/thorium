@@ -71,14 +71,6 @@ if (!is_chromeos_lacros) {
   ]
 }
 
-config("pdb_larger_than_4gb") {
-  if (is_win) {
-    # Increasing the PDB page size to allow PDBs larger than 4GB. Not all
-    # tools can handle such large PDBs yet, so opt-in when needed.
-    ldflags = [ "/pdbpagesize:8192" ]
-  }
-}
-
 # To add a unit test to this target, make a "unit_tests" source_set in your
 # component(it's important to use a source_set instead of a static library or
 # no tests will run) and add a reference here.You can add more than one unit
@@ -99,11 +91,10 @@ test("components_unittests") {
       "//build/config/fuchsia/test/fonts.shard.test-cml",
       "//build/config/fuchsia/test/mark_vmo_executable.shard.test-cml",
       "//build/config/fuchsia/test/network.shard.test-cml",
+      "//build/config/fuchsia/test/present_view.shard.test-cml",
       "//third_party/fuchsia-sdk/sdk/pkg/vulkan/client.shard.cml",
     ]
   }
-
-  configs += [ ":pdb_larger_than_4gb" ]
 
   # Add only ":unit_tests" dependencies here.If your tests have dependencies
   #(this would at least include the component itself), they should be on the
@@ -160,6 +151,7 @@ test("components_unittests") {
     "//components/history/core/browser:unit_tests",
     "//components/history/metrics:unit_tests",
     "//components/image_fetcher/core:unit_tests",
+    "//components/image_service:unit_tests",
     "//components/keyed_service/core:unit_tests",
     "//components/language/core/browser:unit_tests",
     "//components/language/core/common:unit_tests",
@@ -228,14 +220,12 @@ test("components_unittests") {
     "//components/subresource_filter/core/browser:unit_tests",
     "//components/subresource_filter/core/common:unit_tests",
     "//components/subresource_filter/tools:unit_tests",
-    "//components/supervised_user/core/common:unit_tests",
     "//components/sync:unit_tests",
     "//components/sync_bookmarks:unit_tests",
     "//components/sync_device_info:unit_tests",
     "//components/sync_preferences:unit_tests",
     "//components/sync_user_events:unit_tests",
     "//components/system_media_controls:unit_tests",
-    "//components/tab_count_metrics:unit_tests",
     "//components/test:run_all_unittests",
     "//components/translate/core/browser:unit_tests",
     "//components/translate/core/common:unit_tests",
@@ -259,7 +249,10 @@ test("components_unittests") {
   ]
 
   if (enable_supervised_users) {
-    deps += [ "//components/supervised_user/core/browser:unit_tests" ]
+    deps += [
+      "//components/supervised_user/core/browser:unit_tests",
+      "//components/supervised_user/core/common:unit_tests",
+    ]
   }
 
   if (!is_ios) {
@@ -368,6 +361,7 @@ test("components_unittests") {
       "//components/heavy_ad_intervention:unit_tests",
       "//components/history/content/browser:unit_tests",
       "//components/history_clusters/core:unit_tests",
+      "//components/history_clusters/ui:unit_tests",
       "//components/invalidation/impl:unit_tests",
       "//components/javascript_dialogs:unit_tests",
       "//components/js_injection/common:unit_tests",
@@ -554,6 +548,7 @@ test("components_unittests") {
 
   if (!is_android) {
     deps += [ "//components/feedback:unit_tests" ]
+    deps += [ "//components/feedback/redaction_tool:unit_tests" ]
   }
 
   if (!is_android) {
@@ -607,7 +602,6 @@ test("components_unittests") {
 
   if (is_win) {
     deps += [
-      "//components/browser_watcher:unit_tests",
       "//components/stability_report:unit_tests",
       "//components/winhttp:unit_tests",
     ]
@@ -1067,6 +1061,7 @@ if (is_android) {
       "//components/browser_ui/util/android:junit",
       "//components/browser_ui/webshare/android:junit",
       "//components/browser_ui/widget/android:junit",
+      "//components/commerce/core/android:junit_tests",
       "//components/content_capture/android/junit:components_content_capture_junit_tests",
       "//components/crash/android:junit",
       "//components/download/network:junit",

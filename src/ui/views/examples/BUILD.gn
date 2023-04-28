@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -17,6 +17,8 @@ component("views_examples_lib") {
     "animation_example.h",
     "ax_example.cc",
     "ax_example.h",
+    "badge_example.cc",
+    "badge_example.h",
     "box_layout_example.cc",
     "box_layout_example.h",
     "bubble_example.cc",

@@ -74,8 +74,7 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_NEXT, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN, IDC_MOVE_TAB_NEXT},
     {ui::VKEY_PRIOR, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN,
      IDC_MOVE_TAB_PREVIOUS},
-    // {ui::VKEY_Q, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_EXIT},
-    {ui::VKEY_Q, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN , IDC_EXIT},
+    {ui::VKEY_Q, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_EXIT},
     {ui::VKEY_K, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_NEW_TAB_TO_RIGHT},
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
     // Control modifier is rarely used on Mac, so we allow it only in several

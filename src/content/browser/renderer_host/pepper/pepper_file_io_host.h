@@ -92,7 +92,7 @@ class PepperFileIOHost : public ppapi::host::ResourceHost,
   void OnLocalFileOpened(ppapi::host::ReplyMessageContext reply_context,
                          const base::FilePath& path,
                          base::File::Error error_code);
-                         
+
   void SendFileOpenReply(ppapi::host::ReplyMessageContext reply_context,
                          base::File::Error error_code);
 
