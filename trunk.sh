@@ -251,20 +251,6 @@ cd $HOME/chromium/src &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
-gclient runhooks &&
-printf "${YEL}Done!\n" &&
-printf "\n" &&
-
-printf "${YEL}Downloading PGO Profiles for Linux, Windows, and Mac...\n" &&
-printf "\n" &&
-tput sgr0 &&
-
-python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
-
-python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
-
-python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
-
 printf "\n" &&
 printf "${GRE}Done! ${YEL}You can now run \'./VERSION.sh\'\n" &&
 tput sgr0 &&

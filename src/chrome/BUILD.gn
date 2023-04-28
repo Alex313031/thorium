@@ -344,8 +344,6 @@ if (!is_android && !is_mac) {
           "//ui/base",
         ]
       }
-      
-      configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
     }
 
     if (is_chromeos_ash || is_win) {
