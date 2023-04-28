@@ -215,6 +215,7 @@ config("compiler") {
       # String tail merging leads to smaller binaries, but they don't compress
       # as well, leading to increased mini_installer size (crbug.com/838449).
       # ldflags += [ "/OPT:NOLLDTAILMERGE" ]
+      ldflags += [ "/OPT:LLDTAILMERGE" ]
     }
 
     # TODO(siggi): Is this of any use anymore?
