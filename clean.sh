@@ -21,7 +21,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to remove unneeded artifacts in your build directory.${c0}\n" &&
+	printf "${bold}${GRE}Script to remove unneeded artifacts in Thorium's build directory.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -46,8 +46,8 @@ rm -r -f -v etc &&
 rm -r -f -v clang_newlib_x64 &&
 rm -r -f -v thinlto-cache &&
 rm -r -f -v fontconfig_caches &&
-find . -name "*deps*" -delete &&
-find . -name "*TOC*" -delete &&
+find ~/chromium/src/out/thorium -name "*deps*" -delete &&
+find ~/chromium/src/out/thorium -name "*TOC*" -delete &&
 
 printf "${GRE}Done cleaning artifacts.\n" &&
 tput sgr0
