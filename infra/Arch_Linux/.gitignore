@@ -1,4 +1,6 @@
 *.deb
 *.pkg.tar.*
+*.part
+*.kate-swp
 src/
 pkg/

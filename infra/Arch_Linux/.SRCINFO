@@ -1,7 +1,7 @@
 pkgbase = thorium-browser-bin
 	pkgdesc = Chromium fork focused on high performance and security.
-	pkgver = 109.0.5414.120
-	pkgrel = 1
+	pkgver = 111.0.5563.111
+	pkgrel = 2
 	url = https://github.com/Alex313031/Thorium
 	install = thorium-browser.install
 	arch = x86_64
@@ -20,9 +20,9 @@ pkgbase = thorium-browser-bin
 	optdepends = kwallet: for storing passwords in KWallet
 	options = !emptydirs
 	options = !strip
-	source = https://github.com/Alex313031/Thorium/releases/download/M109.0.5414.120/thorium-browser_109.0.5414.120_amd64.deb
+	source = https://github.com/Alex313031/Thorium/releases/download/M111.0.5563.111/thorium-browser_111.0.5563.111-1_amd64.deb
 	source = thorium-browser.sh
-	sha512sums = c935f127abbc8e5dcf362a8f9687b5ea69d415efb256233e499bb273ec053fa2b7522b06ccb80387ed791289cd80dfdac1c36ed8dd3467fe757ce5ade4595891
-	sha512sums = 5e34cfbd67d86b31292a61eb5dcee68aeb2c4818bb557fa9aee458215eef8042c57be43b2250f5d89a66df90e4df6473a85688aa63ba2255e789d0f37ed83d8b
+	sha512sums = b91554cc990241ed632c4a4abb14181b1598018716794ccf251d6baf77bca691722558cdcdbc5f88087ceb356a6cdfbf9095038189ecb7fa0777975a1ae13b4f
+	sha512sums = 91a532fde9e6e87d65b909a170d32808f1c05367104cdaab07043fef0de66bdfc307a4138584cd1eedc169a03207372df39c09268ab1ec741432e79e0dcc2dfb
 
 pkgname = thorium-browser-bin
