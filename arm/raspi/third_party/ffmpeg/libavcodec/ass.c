@@ -41,10 +41,11 @@ int ff_ass_subtitle_header_full(AVCodecContext *avctx,
              "PlayResX: %d\r\n"
              "PlayResY: %d\r\n"
              "ScaledBorderAndShadow: yes\r\n"
+             "YCbCr Matrix: None\r\n"
              "\r\n"
              "[V4+ Styles]\r\n"
 
-             /* ASSv4 header */
+             /* ASS (v4+) header */
              "Format: Name, "
              "Fontname, Fontsize, "
              "PrimaryColour, SecondaryColour, OutlineColour, BackColour, "
@@ -64,7 +65,7 @@ int ff_ass_subtitle_header_full(AVCodecContext *avctx,
              "0,0,"                 /* Spacing, Angle */
              "%d,1,0,"              /* BorderStyle, Outline, Shadow */
              "%d,10,10,10,"         /* Alignment, Margin[LRV] */
-             "0\r\n"                /* Encoding */
+             "1\r\n"                /* Encoding */
 
              "\r\n"
              "[Events]\r\n"

@@ -117,6 +117,9 @@ static const AVOption options[] = {
     QSV_OPTION_SCENARIO
     QSV_OPTION_AVBR
     QSV_OPTION_SKIP_FRAME
+#if QSV_HAVE_HE
+    QSV_HE_OPTIONS
+#endif
 
     { "cavlc",          "Enable CAVLC",                           OFFSET(qsv.cavlc),          AV_OPT_TYPE_BOOL, { .i64 = 0 },   0,          1, VE },
 #if QSV_HAVE_VCM
@@ -197,7 +200,6 @@ const FFCodec ff_h264_qsv_encoder = {
     .close          = qsv_enc_close,
     .p.capabilities = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_HYBRID,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_NV12,
-                                                    AV_PIX_FMT_P010,
                                                     AV_PIX_FMT_QSV,
                                                     AV_PIX_FMT_NONE },
     .p.priv_class   = &class,

@@ -289,7 +289,8 @@ done:
 #if CONFIG_MPEG2_MEDIACODEC_DECODER || \
     CONFIG_MPEG4_MEDIACODEC_DECODER || \
     CONFIG_VP8_MEDIACODEC_DECODER   || \
-    CONFIG_VP9_MEDIACODEC_DECODER
+    CONFIG_VP9_MEDIACODEC_DECODER   || \
+    CONFIG_AV1_MEDIACODEC_DECODER
 static int common_set_extradata(AVCodecContext *avctx, FFAMediaFormat *format)
 {
     int ret = 0;
@@ -323,6 +324,15 @@ static av_cold int mediacodec_decode_init(AVCodecContext *avctx)
     }
 
     switch (avctx->codec_id) {
+#if CONFIG_AV1_MEDIACODEC_DECODER
+    case AV_CODEC_ID_AV1:
+        codec_mime = "video/av01";
+
+        ret = common_set_extradata(avctx, format);
+        if (ret < 0)
+            goto done;
+        break;
+#endif
 #if CONFIG_H264_MEDIACODEC_DECODER
     case AV_CODEC_ID_H264:
         codec_mime = "video/avc";
@@ -405,7 +415,13 @@ static av_cold int mediacodec_decode_init(AVCodecContext *avctx)
            s->ctx->codec_name, ret);
 
     sdk_int = ff_Build_SDK_INT(avctx);
-    if (sdk_int <= 23 &&
+    /* ff_Build_SDK_INT can fail when target API < 24 and JVM isn't available.
+     * If we don't check sdk_int > 0, the workaround might be enabled by
+     * mistake.
+     * JVM is required to make the workaround works reliably. On the other hand,
+     * missing a workaround should not be a serious issue, we do as best we can.
+     */
+    if (sdk_int > 0 && sdk_int <= 23 &&
         strcmp(s->ctx->codec_name, "OMX.amlogic.mpeg2.decoder.awesome") == 0) {
         av_log(avctx, AV_LOG_INFO, "Enabling workaround for %s on API=%d\n",
                s->ctx->codec_name, sdk_int);
@@ -590,4 +606,8 @@ DECLARE_MEDIACODEC_VDEC(vp8, "VP8", AV_CODEC_ID_VP8, NULL)
 
 #if CONFIG_VP9_MEDIACODEC_DECODER
 DECLARE_MEDIACODEC_VDEC(vp9, "VP9", AV_CODEC_ID_VP9, NULL)
+#endif
+
+#if CONFIG_AV1_MEDIACODEC_DECODER
+DECLARE_MEDIACODEC_VDEC(av1, "AV1", AV_CODEC_ID_AV1, NULL)
 #endif

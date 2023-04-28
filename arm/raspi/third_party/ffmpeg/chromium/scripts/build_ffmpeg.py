@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright 2023 The Chromium Authors, Alex313031, and Midzer. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -339,7 +339,7 @@ def SetupWindowsCrossCompileToolchain(target_arch):
   # Use those paths with a second script which will tell us the proper lib paths
   # to specify for ldflags.
   output = subprocess.check_output([
-      'python',
+      'python3',
       os.path.join(CHROMIUM_ROOT_DIR, 'build', 'toolchain', 'win',
                    'setup_toolchain.py'), win_dirs['vs_path'],
       win_dirs['sdk_path'], win_dirs['runtime_dirs'], 'win', target_arch, 'none'
@@ -746,9 +746,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
         configure_flags['Common'].extend([
           '--enable-lto',
           '--extra-cflags=-O3',
-          '--extra-cflags=-mavx',
-          '--extra-cflags=-maes',
-          '--extra-cflags=-mpclmul',
           '--arch=x86_64',
           '--target-os=linux',
         ])
@@ -1008,8 +1005,8 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
 
   # Google Chrome & ChromeOS specific configuration.
   configure_flags['Chrome'].extend([
-      '--enable-decoder=aac,h264,hevc',
-      '--enable-demuxer=aac',
+      '--enable-decoder=aac,h264,mp3,hevc',
+      '--enable-demuxer=aac,mp3',
       '--enable-parser=aac,h264,hevc',
   ])
 

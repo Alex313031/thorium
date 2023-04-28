@@ -90,9 +90,11 @@ static int cmp_insert(const void *key, const void *node)
 
 static int cmp_find(const void *key, const void *node)
 {
-    int ret = ((const DTS2PTSFrame *)key)->poc - ((const DTS2PTSNode *) node)->poc;
+    const DTS2PTSFrame * key1 = key;
+    const DTS2PTSNode  *node1 = node;
+    int ret = FFDIFFSIGN(key1->poc, node1->poc);
     if (!ret)
-        ret = ((const DTS2PTSFrame *)key)->gop - ((const DTS2PTSNode *) node)->gop;
+        ret = key1->gop - node1->gop;
     return ret;
 }
 
@@ -301,15 +303,15 @@ static int h264_filter(AVBSFContext *ctx)
 
             if (output_picture_number != h264->last_poc) {
                 if (h264->last_poc != INT_MIN) {
-                    int diff = FFABS(h264->last_poc - output_picture_number);
+                    int64_t diff = FFABS(h264->last_poc - (int64_t)output_picture_number);
 
                     if ((output_picture_number < 0) && !h264->last_poc)
                         h264->poc_diff = 0;
-                    else if (FFABS(output_picture_number) < h264->poc_diff) {
+                    else if (FFABS((int64_t)output_picture_number) < h264->poc_diff) {
                         diff = FFABS(output_picture_number);
                         h264->poc_diff = 0;
                     }
-                    if (!h264->poc_diff || (h264->poc_diff > diff)) {
+                    if ((!h264->poc_diff || (h264->poc_diff > diff)) && diff <= INT_MAX) {
                         h264->poc_diff = diff;
                         if (h264->poc_diff == 1 && h264->sps.frame_mbs_only_flag) {
                             av_tree_enumerate(s->root, &h264->poc_diff, NULL, dec_poc);
@@ -461,9 +463,10 @@ static int dts2pts_filter(AVBSFContext *ctx, AVPacket *out)
                 poc_node = av_tree_find(s->root, &dup, cmp_find, NULL);
             }
         }
-    } else {
+    } else if (s->eof && frame.poc > INT_MIN) {
         DTS2PTSFrame dup = (DTS2PTSFrame) { NULL, frame.poc - 1, frame.poc_diff, frame.gop };
-        if (s->eof && (poc_node = av_tree_find(s->root, &dup, cmp_find, NULL)) && poc_node->poc == dup.poc) {
+        poc_node = av_tree_find(s->root, &dup, cmp_find, NULL);
+        if (poc_node && poc_node->poc == dup.poc) {
             out->pts = poc_node->dts;
             if (out->pts != AV_NOPTS_VALUE)
                 out->pts += poc_node->duration;
@@ -480,7 +483,8 @@ static int dts2pts_filter(AVBSFContext *ctx, AVPacket *out)
                        poc_node->poc, poc_node->gop, poc_node->dts, poc_node->duration);
         } else
             av_log(ctx, AV_LOG_WARNING, "No timestamp for POC %d in tree\n", frame.poc);
-    }
+    } else
+        av_log(ctx, AV_LOG_WARNING, "No timestamp for POC %d in tree\n", frame.poc);
     av_log(ctx, AV_LOG_DEBUG, "Returning frame for POC %d, GOP %d, dts %"PRId64", pts %"PRId64"\n",
            frame.poc, frame.gop, out->dts, out->pts);
 

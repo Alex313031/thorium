@@ -1056,7 +1056,7 @@ static void mpeg4_encode_vol_header(MpegEncContext *s,
 }
 
 /* write MPEG-4 VOP header */
-int ff_mpeg4_encode_picture_header(MpegEncContext *s, int picture_number)
+int ff_mpeg4_encode_picture_header(MpegEncContext *s)
 {
     uint64_t time_incr;
     int64_t time_div, time_mod;
@@ -1065,7 +1065,7 @@ int ff_mpeg4_encode_picture_header(MpegEncContext *s, int picture_number)
         if (!(s->avctx->flags & AV_CODEC_FLAG_GLOBAL_HEADER)) {
             if (s->avctx->strict_std_compliance < FF_COMPLIANCE_VERY_STRICT)  // HACK, the reference sw is buggy
                 mpeg4_encode_visual_object_header(s);
-            if (s->avctx->strict_std_compliance < FF_COMPLIANCE_VERY_STRICT || picture_number == 0)  // HACK, the reference sw is buggy
+            if (s->avctx->strict_std_compliance < FF_COMPLIANCE_VERY_STRICT || s->picture_number == 0)  // HACK, the reference sw is buggy
                 mpeg4_encode_vol_header(s, 0, 0);
         }
         if (!(s->workaround_bugs & FF_BUG_MS))
@@ -1403,7 +1403,8 @@ const FFCodec ff_mpeg4_encoder = {
     FF_CODEC_ENCODE_CB(ff_mpv_encode_picture),
     .close          = ff_mpv_encode_end,
     .p.pix_fmts     = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
-    .p.capabilities = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS,
+    .p.capabilities = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS |
+                      AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .p.priv_class   = &mpeg4enc_class,
 };

@@ -46,6 +46,7 @@ class RoboConfiguration:
             "llvm-build", "Release+Asserts", "bin")
 
     self.EnsurePathContainsLLVM()
+    self.EnsureNoMakeInfo()
     shell.log("Using chrome src: %s" % self.chrome_src())
     self.EnsureFFmpegHome()
     shell.log("Using ffmpeg home: %s" % self.ffmpeg_home())
@@ -182,8 +183,16 @@ class RoboConfiguration:
             "llvm-build", "Release+Asserts", "bin")
     if self.llvm_path() not in os.environ["PATH"]:
       raise errors.UserInstructions(
-                          "Please add:\n%s\nto the beginning of $PATH" %
-                          self.llvm_path())
+          "Please add:\n%s\nto the beginning of $PATH\nExample: export PATH=%s:$PATH" %
+          (self.llvm_path(), self.llvm_path()))
+
+  def EnsureNoMakeInfo(self):
+    """Ensure that makeinfo is not available."""
+    if os.system("makeinfo --version > /dev/null 2>&1") == 0:
+      raise errors.UserInstructions(
+          "makeinfo is available and we don't need it, so please remove it\nExample: sudo apt-get remove texinfo"
+      )
+
   def llvm_path(self):
     return self._llvm_path
 

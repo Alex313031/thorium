@@ -193,6 +193,12 @@ class SourceSetUnittest(unittest.TestCase):
     e_stanza.index(('use_linux_config && current_cpu == "x64"'
                     ' && ffmpeg_branding == "Chromium"'))
 
+    # mac should imply is_apple.
+    f = SourceSet(
+        set(['a']), set([SourceListCondition('arm64', 'Chromium', 'mac')]))
+    f_stanza = f.GenerateGnStanza()
+    f_stanza.index('is_apple')
+
   def testComplexSourceListConditions(self):
     # Create 2 sets with intersecting source 'a', but setup such that 'a'
     # is only valid for combinations (x86 && windows) || (x64 && linux). The

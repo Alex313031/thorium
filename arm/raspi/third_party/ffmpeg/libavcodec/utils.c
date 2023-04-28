@@ -243,6 +243,8 @@ void avcodec_align_dimensions2(AVCodecContext *s, int *width, int *height,
     case AV_PIX_FMT_GBRAP16BE:
         w_align = 16; //FIXME assume 16 pixel per macroblock
         h_align = 16 * 2; // interlaced needs 2 macroblocks height
+        if (s->codec_id == AV_CODEC_ID_BINKVIDEO)
+            w_align = 16*2;
         break;
     case AV_PIX_FMT_YUV411P:
     case AV_PIX_FMT_YUVJ411P:
@@ -514,7 +516,9 @@ int av_get_exact_bits_per_sample(enum AVCodecID codec_id)
     case AV_CODEC_ID_PCM_SGA:
     case AV_CODEC_ID_PCM_U8:
     case AV_CODEC_ID_SDX2_DPCM:
+    case AV_CODEC_ID_CBD2_DPCM:
     case AV_CODEC_ID_DERF_DPCM:
+    case AV_CODEC_ID_WADY_DPCM:
         return 8;
     case AV_CODEC_ID_PCM_S16BE:
     case AV_CODEC_ID_PCM_S16BE_PLANAR:
@@ -764,6 +768,9 @@ static int get_audio_frame_duration(enum AVCodecID id, int sr, int ch, int ba,
                     break;
                 case AV_CODEC_ID_ADPCM_MTAF:
                     tmp = blocks * (ba - 16LL) * 2 / ch;
+                    break;
+                case AV_CODEC_ID_ADPCM_XMD:
+                    tmp = blocks * 32;
                     break;
                 }
                 if (tmp) {

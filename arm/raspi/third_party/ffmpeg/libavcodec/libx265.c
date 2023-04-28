@@ -27,6 +27,8 @@
 #include <x265.h>
 #include <float.h>
 
+#include "libavutil/avassert.h"
+#include "libavutil/buffer.h"
 #include "libavutil/internal.h"
 #include "libavutil/common.h"
 #include "libavutil/opt.h"
@@ -38,6 +40,16 @@
 #include "packet_internal.h"
 #include "atsc_a53.h"
 #include "sei.h"
+
+typedef struct ReorderedData {
+    int64_t reordered_opaque;
+    int64_t duration;
+
+    void        *frame_opaque;
+    AVBufferRef *frame_opaque_ref;
+
+    int in_use;
+} ReorderedData;
 
 typedef struct libx265Context {
     const AVClass *class;
@@ -58,6 +70,9 @@ typedef struct libx265Context {
     int sei_data_size;
     int udu_sei;
     int a53_cc;
+
+    ReorderedData *rd;
+    int         nb_rd;
 
     /**
      * If the encoder does not support ROI then warn the first time we
@@ -81,12 +96,50 @@ static int is_keyframe(NalUnitType naltype)
     }
 }
 
+static int rd_get(libx265Context *ctx)
+{
+    const int add = 16;
+
+    ReorderedData *tmp;
+    int idx;
+
+    for (int i = 0; i < ctx->nb_rd; i++)
+        if (!ctx->rd[i].in_use) {
+            ctx->rd[i].in_use = 1;
+            return i;
+        }
+
+    tmp = av_realloc_array(ctx->rd, ctx->nb_rd + add, sizeof(*ctx->rd));
+    if (!tmp)
+        return AVERROR(ENOMEM);
+    memset(tmp + ctx->nb_rd, 0, sizeof(*tmp) * add);
+
+    ctx->rd     = tmp;
+    ctx->nb_rd += add;
+
+    idx                 = ctx->nb_rd - add;
+    ctx->rd[idx].in_use = 1;
+
+    return idx;
+}
+
+static void rd_release(libx265Context *ctx, int idx)
+{
+    av_assert0(idx >= 0 && idx < ctx->nb_rd);
+    av_buffer_unref(&ctx->rd[idx].frame_opaque_ref);
+    memset(&ctx->rd[idx], 0, sizeof(ctx->rd[idx]));
+}
+
 static av_cold int libx265_encode_close(AVCodecContext *avctx)
 {
     libx265Context *ctx = avctx->priv_data;
 
     ctx->api->param_free(ctx->params);
     av_freep(&ctx->sei_data);
+
+    for (int i = 0; i < ctx->nb_rd; i++)
+        rd_release(ctx, i);
+    av_freep(&ctx->rd);
 
     if (ctx->encoder)
         ctx->api->encoder_close(ctx->encoder);
@@ -499,12 +552,18 @@ static av_cold int libx265_encode_set_roi(libx265Context *ctx, const AVFrame *fr
     return 0;
 }
 
-static void free_picture(x265_picture *pic)
+static void free_picture(libx265Context *ctx, x265_picture *pic)
 {
     x265_sei *sei = &pic->userSEI;
     for (int i = 0; i < sei->numPayloads; i++)
         av_free(sei->payloads[i].payload);
-    av_freep(&pic->userData);
+
+    if (pic->userData) {
+        int idx = (int)(intptr_t)pic->userData - 1;
+        rd_release(ctx, idx);
+        pic->userData = NULL;
+    }
+
     av_freep(&pic->quantOffsets);
     sei->numPayloads = 0;
 }
@@ -530,6 +589,9 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     sei->numPayloads = 0;
 
     if (pic) {
+        ReorderedData *rd;
+        int rd_idx;
+
         for (i = 0; i < 3; i++) {
            x265pic.planes[i] = pic->data[i];
            x265pic.stride[i] = pic->linesize[i];
@@ -548,15 +610,26 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         if (ret < 0)
             return ret;
 
-        if (pic->reordered_opaque) {
-            x265pic.userData = av_malloc(sizeof(pic->reordered_opaque));
-            if (!x265pic.userData) {
-                free_picture(&x265pic);
-                return AVERROR(ENOMEM);
-            }
-
-            memcpy(x265pic.userData, &pic->reordered_opaque, sizeof(pic->reordered_opaque));
+        rd_idx = rd_get(ctx);
+        if (rd_idx < 0) {
+            free_picture(ctx, &x265pic);
+            return rd_idx;
         }
+        rd = &ctx->rd[rd_idx];
+
+        rd->duration         = pic->duration;
+        rd->reordered_opaque = pic->reordered_opaque;
+        if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+            rd->frame_opaque = pic->opaque;
+            ret = av_buffer_replace(&rd->frame_opaque_ref, pic->opaque_ref);
+            if (ret < 0) {
+                rd_release(ctx, rd_idx);
+                free_picture(ctx, &x265pic);
+                return ret;
+            }
+        }
+
+        x265pic.userData = (void*)(intptr_t)(rd_idx + 1);
 
         if (ctx->a53_cc) {
             void *sei_data;
@@ -574,7 +647,7 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                         (sei->numPayloads + 1) * sizeof(*sei_payload));
                 if (!tmp) {
                     av_free(sei_data);
-                    free_picture(&x265pic);
+                    free_picture(ctx, &x265pic);
                     return AVERROR(ENOMEM);
                 }
                 ctx->sei_data = tmp;
@@ -600,7 +673,7 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                         &ctx->sei_data_size,
                         (sei->numPayloads + 1) * sizeof(*sei_payload));
                 if (!tmp) {
-                    free_picture(&x265pic);
+                    free_picture(ctx, &x265pic);
                     return AVERROR(ENOMEM);
                 }
                 ctx->sei_data = tmp;
@@ -608,7 +681,7 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                 sei_payload = &sei->payloads[sei->numPayloads];
                 sei_payload->payload = av_memdup(side_data->data, side_data->size);
                 if (!sei_payload->payload) {
-                    free_picture(&x265pic);
+                    free_picture(ctx, &x265pic);
                     return AVERROR(ENOMEM);
                 }
                 sei_payload->payloadSize = side_data->size;
@@ -680,8 +753,19 @@ static int libx265_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     ff_side_data_set_encoder_stats(pkt, x265pic_out.frameData.qp * FF_QP2LAMBDA, NULL, 0, pict_type);
 
     if (x265pic_out.userData) {
-        memcpy(&avctx->reordered_opaque, x265pic_out.userData, sizeof(avctx->reordered_opaque));
-        av_freep(&x265pic_out.userData);
+        int idx = (int)(intptr_t)x265pic_out.userData - 1;
+        ReorderedData *rd = &ctx->rd[idx];
+
+        avctx->reordered_opaque = rd->reordered_opaque;
+        pkt->duration           = rd->duration;
+
+        if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+            pkt->opaque          = rd->frame_opaque;
+            pkt->opaque_ref      = rd->frame_opaque_ref;
+            rd->frame_opaque_ref = NULL;
+        }
+
+        rd_release(ctx, idx);
     } else
         avctx->reordered_opaque = 0;
 

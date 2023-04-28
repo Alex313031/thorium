@@ -22,6 +22,7 @@
 
 #include <dlfcn.h>
 #include <jni.h>
+#include <stdbool.h>
 #include <media/NdkMediaFormat.h>
 #include <media/NdkMediaCodec.h>
 #include <android/native_window_jni.h>
@@ -57,19 +58,6 @@ struct JNIAMediaCodecListFields {
     jclass codec_profile_level_class;
     jfieldID profile_id;
     jfieldID level_id;
-
-    jfieldID avc_profile_baseline_id;
-    jfieldID avc_profile_main_id;
-    jfieldID avc_profile_extended_id;
-    jfieldID avc_profile_high_id;
-    jfieldID avc_profile_high10_id;
-    jfieldID avc_profile_high422_id;
-    jfieldID avc_profile_high444_id;
-
-    jfieldID hevc_profile_main_id;
-    jfieldID hevc_profile_main10_id;
-    jfieldID hevc_profile_main10_hdr10_id;
-
 };
 
 static const struct FFJniField jni_amediacodeclist_mapping[] = {
@@ -94,18 +82,6 @@ static const struct FFJniField jni_amediacodeclist_mapping[] = {
     { "android/media/MediaCodecInfo$CodecProfileLevel", NULL, NULL, FF_JNI_CLASS, offsetof(struct JNIAMediaCodecListFields, codec_profile_level_class), 1 },
         { "android/media/MediaCodecInfo$CodecProfileLevel", "profile", "I", FF_JNI_FIELD, offsetof(struct JNIAMediaCodecListFields, profile_id), 1 },
         { "android/media/MediaCodecInfo$CodecProfileLevel", "level", "I", FF_JNI_FIELD, offsetof(struct JNIAMediaCodecListFields, level_id), 1 },
-
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileBaseline", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_baseline_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileMain", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_main_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileExtended", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_extended_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileHigh", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_high_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileHigh10", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_high10_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileHigh422", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_high422_id), 1 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "AVCProfileHigh444", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, avc_profile_high444_id), 1 },
-
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "HEVCProfileMain", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, hevc_profile_main_id), 0 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "HEVCProfileMain10", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, hevc_profile_main10_id), 0 },
-        { "android/media/MediaCodecInfo$CodecProfileLevel", "HEVCProfileMain10HDR10", "I", FF_JNI_STATIC_FIELD, offsetof(struct JNIAMediaCodecListFields, hevc_profile_main10_hdr10_id), 0 },
 
     { NULL }
 };
@@ -326,71 +302,64 @@ static const FFAMediaCodec media_codec_jni;
 
 int ff_AMediaCodecProfile_getProfileFromAVCodecContext(AVCodecContext *avctx)
 {
-    int ret = -1;
+    // Copy and modified from MediaCodecInfo.java
+    static const int AVCProfileBaseline = 0x01;
+    static const int AVCProfileMain     = 0x02;
+    static const int AVCProfileExtended = 0x04;
+    static const int AVCProfileHigh     = 0x08;
+    static const int AVCProfileHigh10   = 0x10;
+    static const int AVCProfileHigh422  = 0x20;
+    static const int AVCProfileHigh444  = 0x40;
+    static const int AVCProfileConstrainedBaseline = 0x10000;
+    static const int AVCProfileConstrainedHigh     = 0x80000;
 
-    JNIEnv *env = NULL;
-    struct JNIAMediaCodecListFields jfields = { 0 };
-    jfieldID field_id = 0;
+    static const int HEVCProfileMain        = 0x01;
+    static const int HEVCProfileMain10      = 0x02;
+    static const int HEVCProfileMainStill   = 0x04;
+    static const int HEVCProfileMain10HDR10 = 0x1000;
+    static const int HEVCProfileMain10HDR10Plus = 0x2000;
 
-    JNI_GET_ENV_OR_RETURN(env, avctx, -1);
-
-    if (ff_jni_init_jfields(env, &jfields, jni_amediacodeclist_mapping, 0, avctx) < 0) {
-        goto done;
-    }
+    // Unused yet.
+    (void)AVCProfileConstrainedHigh;
+    (void)HEVCProfileMain10HDR10;
+    (void)HEVCProfileMain10HDR10Plus;
 
     if (avctx->codec_id == AV_CODEC_ID_H264) {
         switch(avctx->profile) {
         case FF_PROFILE_H264_BASELINE:
+            return AVCProfileBaseline;
         case FF_PROFILE_H264_CONSTRAINED_BASELINE:
-            field_id = jfields.avc_profile_baseline_id;
-            break;
+            return AVCProfileConstrainedBaseline;
         case FF_PROFILE_H264_MAIN:
-            field_id = jfields.avc_profile_main_id;
+            return AVCProfileMain;
             break;
         case FF_PROFILE_H264_EXTENDED:
-            field_id = jfields.avc_profile_extended_id;
-            break;
+            return AVCProfileExtended;
         case FF_PROFILE_H264_HIGH:
-            field_id = jfields.avc_profile_high_id;
-            break;
+            return AVCProfileHigh;
         case FF_PROFILE_H264_HIGH_10:
         case FF_PROFILE_H264_HIGH_10_INTRA:
-            field_id = jfields.avc_profile_high10_id;
-            break;
+            return AVCProfileHigh10;
         case FF_PROFILE_H264_HIGH_422:
         case FF_PROFILE_H264_HIGH_422_INTRA:
-            field_id = jfields.avc_profile_high422_id;
-            break;
+            return AVCProfileHigh422;
         case FF_PROFILE_H264_HIGH_444:
         case FF_PROFILE_H264_HIGH_444_INTRA:
         case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
-            field_id = jfields.avc_profile_high444_id;
-            break;
+            return AVCProfileHigh444;
         }
     } else if (avctx->codec_id == AV_CODEC_ID_HEVC) {
         switch (avctx->profile) {
         case FF_PROFILE_HEVC_MAIN:
+            return HEVCProfileMain;
         case FF_PROFILE_HEVC_MAIN_STILL_PICTURE:
-            field_id = jfields.hevc_profile_main_id;
-            break;
+            return HEVCProfileMainStill;
         case FF_PROFILE_HEVC_MAIN_10:
-            field_id = jfields.hevc_profile_main10_id;
-            break;
+            return HEVCProfileMain10;
         }
     }
 
-        if (field_id) {
-            ret = (*env)->GetStaticIntField(env, jfields.codec_profile_level_class, field_id);
-            if (ff_jni_exception_check(env, 1, avctx) < 0) {
-                ret = -1;
-                goto done;
-            }
-        }
-
-done:
-    ff_jni_reset_jfields(env, &jfields, jni_amediacodeclist_mapping, 0, avctx);
-
-    return ret;
+    return -1;
 }
 
 char *ff_AMediaCodecList_getCodecNameByType(const char *mime, int profile, int encoder, void *log_ctx)
@@ -1861,12 +1830,16 @@ typedef struct FFAMediaFormatNdk {
     bool (*getSize)(AMediaFormat*, const char *name, size_t *out);
     bool (*getBuffer)(AMediaFormat*, const char *name, void** data, size_t *size);
     bool (*getString)(AMediaFormat*, const char *name, const char **out);
+    bool (*getRect)(AMediaFormat *, const char *name,
+                    int32_t *left, int32_t *top, int32_t *right, int32_t *bottom);
 
     void (*setInt32)(AMediaFormat*, const char* name, int32_t value);
     void (*setInt64)(AMediaFormat*, const char* name, int64_t value);
     void (*setFloat)(AMediaFormat*, const char* name, float value);
     void (*setString)(AMediaFormat*, const char* name, const char* value);
     void (*setBuffer)(AMediaFormat*, const char* name, const void* data, size_t size);
+    void (*setRect)(AMediaFormat *, const char *name,
+                    int32_t left, int32_t top, int32_t right, int32_t bottom);
 } FFAMediaFormatNdk;
 
 typedef struct FFAMediaCodecNdk {
@@ -1940,9 +1913,12 @@ static FFAMediaFormat *mediaformat_ndk_create(AMediaFormat *impl)
     if (!format->libmedia)
         goto error;
 
-#define GET_SYMBOL(sym) \
-    format->sym = dlsym(format->libmedia, "AMediaFormat_" #sym);    \
-    if (!format->sym)                                               \
+#define GET_OPTIONAL_SYMBOL(sym) \
+    format->sym = dlsym(format->libmedia, "AMediaFormat_" #sym);
+
+#define GET_SYMBOL(sym)         \
+    GET_OPTIONAL_SYMBOL(sym)    \
+    if (!format->sym)           \
         goto error;
 
     GET_SYMBOL(new)
@@ -1956,14 +1932,17 @@ static FFAMediaFormat *mediaformat_ndk_create(AMediaFormat *impl)
     GET_SYMBOL(getSize)
     GET_SYMBOL(getBuffer)
     GET_SYMBOL(getString)
+    GET_OPTIONAL_SYMBOL(getRect)
 
     GET_SYMBOL(setInt32)
     GET_SYMBOL(setInt64)
     GET_SYMBOL(setFloat)
     GET_SYMBOL(setString)
     GET_SYMBOL(setBuffer)
+    GET_OPTIONAL_SYMBOL(setRect)
 
 #undef GET_SYMBOL
+#undef GET_OPTIONAL_SYMBOL
 
     if (impl) {
         format->impl = impl;
@@ -2047,6 +2026,15 @@ static int mediaformat_ndk_getString(FFAMediaFormat* ctx, const char *name, cons
     return ret;
 }
 
+static int mediaformat_ndk_getRect(FFAMediaFormat *ctx, const char *name,
+                                   int32_t *left, int32_t *top, int32_t *right, int32_t *bottom)
+{
+    FFAMediaFormatNdk *format = (FFAMediaFormatNdk *)ctx;
+    if (!format->getRect)
+        return AVERROR_EXTERNAL;
+    return format->getRect(format->impl, name, left, top, right, bottom);
+}
+
 static void mediaformat_ndk_setInt32(FFAMediaFormat* ctx, const char* name, int32_t value)
 {
     FFAMediaFormatNdk *format = (FFAMediaFormatNdk *)ctx;
@@ -2075,6 +2063,17 @@ static void mediaformat_ndk_setBuffer(FFAMediaFormat* ctx, const char* name, voi
 {
     FFAMediaFormatNdk *format = (FFAMediaFormatNdk *)ctx;
     format->setBuffer(format->impl, name, data, size);
+}
+
+static void mediaformat_ndk_setRect(FFAMediaFormat *ctx, const char *name,
+                                     int32_t left, int32_t top, int32_t right, int32_t bottom)
+{
+    FFAMediaFormatNdk *format = (FFAMediaFormatNdk *)ctx;
+    if (!format->setRect) {
+        av_log(ctx, AV_LOG_WARNING, "Doesn't support setRect\n");
+        return;
+    }
+    format->setRect(format->impl, name, left, top, right, bottom);
 }
 
 static char *mediacodec_ndk_getName(FFAMediaCodec *ctx)
@@ -2433,12 +2432,14 @@ static const FFAMediaFormat media_format_ndk = {
     .getFloat = mediaformat_ndk_getFloat,
     .getBuffer = mediaformat_ndk_getBuffer,
     .getString = mediaformat_ndk_getString,
+    .getRect = mediaformat_ndk_getRect,
 
     .setInt32 = mediaformat_ndk_setInt32,
     .setInt64 = mediaformat_ndk_setInt64,
     .setFloat = mediaformat_ndk_setFloat,
     .setString = mediaformat_ndk_setString,
     .setBuffer = mediaformat_ndk_setBuffer,
+    .setRect = mediaformat_ndk_setRect,
 };
 
 static const FFAMediaCodec media_codec_ndk = {
@@ -2512,6 +2513,21 @@ FFAMediaCodec* ff_AMediaCodec_createEncoderByType(const char *mime_type, int ndk
 int ff_Build_SDK_INT(AVCodecContext *avctx)
 {
     int ret = -1;
+
+#if __ANDROID_API__ >= 24
+    // android_get_device_api_level() is a static inline before API level 29.
+    // dlsym() might doesn't work.
+    //
+    // We can implement android_get_device_api_level() by
+    // __system_property_get(), but __system_property_get() has created a lot of
+    // troubles and is deprecated. So avoid using __system_property_get() for
+    // now.
+    //
+    // Hopy we can remove the conditional compilation finally by bumping the
+    // required API level.
+    //
+    ret = android_get_device_api_level();
+#else
     JNIEnv *env = NULL;
     jclass versionClass;
     jfieldID sdkIntFieldID;
@@ -2521,5 +2537,8 @@ int ff_Build_SDK_INT(AVCodecContext *avctx)
     sdkIntFieldID = (*env)->GetStaticFieldID(env, versionClass, "SDK_INT", "I");
     ret = (*env)->GetStaticIntField(env, versionClass, sdkIntFieldID);
     (*env)->DeleteLocalRef(env, versionClass);
+#endif
+    av_log(avctx, AV_LOG_DEBUG, "device api level %d\n", ret);
+
     return ret;
 }

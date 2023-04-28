@@ -190,6 +190,21 @@ int ff_encode_get_frame(AVCodecContext *avctx, AVFrame *frame)
     return 0;
 }
 
+int ff_encode_reordered_opaque(AVCodecContext *avctx,
+                               AVPacket *pkt, const AVFrame *frame)
+{
+    avctx->reordered_opaque = frame->reordered_opaque;
+
+    if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+        int ret = av_buffer_replace(&pkt->opaque_ref, frame->opaque_ref);
+        if (ret < 0)
+            return ret;
+        pkt->opaque = frame->opaque;
+    }
+
+    return 0;
+}
+
 int ff_encode_encode_cb(AVCodecContext *avctx, AVPacket *avpkt,
                         AVFrame *frame, int *got_packet)
 {
@@ -211,21 +226,30 @@ int ff_encode_encode_cb(AVCodecContext *avctx, AVPacket *avpkt,
 
         // set the timestamps for the simple no-delay case
         // encoders with delay have to set the timestamps themselves
-        if (!(avctx->codec->capabilities & AV_CODEC_CAP_DELAY)) {
+        if (!(avctx->codec->capabilities & AV_CODEC_CAP_DELAY) ||
+            (frame && (codec->caps_internal & FF_CODEC_CAP_EOF_FLUSH))) {
             if (avpkt->pts == AV_NOPTS_VALUE)
                 avpkt->pts = frame->pts;
 
-            if (avctx->codec->type == AVMEDIA_TYPE_AUDIO) {
-                if (!avpkt->duration)
+            if (!avpkt->duration) {
+                if (frame->duration)
+                    avpkt->duration = frame->duration;
+                else if (avctx->codec->type == AVMEDIA_TYPE_AUDIO) {
                     avpkt->duration = ff_samples_to_time_base(avctx,
                                                               frame->nb_samples);
+                }
             }
+
+            ret = ff_encode_reordered_opaque(avctx, avpkt, frame);
+            if (ret < 0)
+                goto unref;
         }
 
         // dts equals pts unless there is reordering
         // there can be no reordering if there is no encoder delay
         if (!(avctx->codec_descriptor->props & AV_CODEC_PROP_REORDER) ||
-            !(avctx->codec->capabilities & AV_CODEC_CAP_DELAY))
+            !(avctx->codec->capabilities & AV_CODEC_CAP_DELAY)        ||
+            (codec->caps_internal & FF_CODEC_CAP_EOF_FLUSH))
             avpkt->dts = avpkt->pts;
     } else {
 unref:
@@ -442,6 +466,13 @@ FF_ENABLE_DEPRECATION_WARNINGS
             return ret;
     }
 
+    // unset frame duration unless AV_CODEC_FLAG_FRAME_DURATION is set,
+    // since otherwise we cannot be sure that whatever value it has is in the
+    // right timebase, so we would produce an incorrect value, which is worse
+    // than none at all
+    if (!(avctx->flags & AV_CODEC_FLAG_FRAME_DURATION))
+        dst->duration = 0;
+
     return 0;
 }
 
@@ -631,6 +662,13 @@ int ff_encode_preinit(AVCodecContext *avctx)
 
     if (avctx->time_base.num <= 0 || avctx->time_base.den <= 0) {
         av_log(avctx, AV_LOG_ERROR, "The encoder timebase is not set.\n");
+        return AVERROR(EINVAL);
+    }
+
+    if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE &&
+        !(avctx->codec->capabilities & AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE)) {
+        av_log(avctx, AV_LOG_ERROR, "The copy_opaque flag is set, but the "
+               "encoder does not support it.\n");
         return AVERROR(EINVAL);
     }
 

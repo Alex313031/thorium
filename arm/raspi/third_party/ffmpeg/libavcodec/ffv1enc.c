@@ -1231,8 +1231,6 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     f->picture_number++;
     pkt->size   = buf_p - pkt->data;
-    pkt->pts    =
-    pkt->dts    = pict->pts;
     pkt->flags |= AV_PKT_FLAG_KEY * f->key_frame;
     *got_packet = 1;
 
@@ -1272,7 +1270,8 @@ const FFCodec ff_ffv1_encoder = {
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_FFV1,
     .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY |
-                      AV_CODEC_CAP_SLICE_THREADS,
+                      AV_CODEC_CAP_SLICE_THREADS |
+                      AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     .priv_data_size = sizeof(FFV1Context),
     .init           = encode_init,
     FF_CODEC_ENCODE_CB(encode_frame),
@@ -1301,5 +1300,5 @@ const FFCodec ff_ffv1_encoder = {
 
     },
     .p.priv_class   = &ffv1_class,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP | FF_CODEC_CAP_EOF_FLUSH,
 };
