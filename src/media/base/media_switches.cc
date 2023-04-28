@@ -116,6 +116,8 @@ const char kAudioCapturerWithEchoCancellation[] =
 #if defined(USE_CRAS)
 // Use CRAS, the ChromeOS audio server.
 const char kUseCras[] = "use-cras";
+// Enforce system audio echo cancellation.
+const char kSystemAecEnabled[] = "system-aec-enabled";
 #endif  // defined(USE_CRAS)
 
 // For automated testing of protected content, this switch allows specific
@@ -601,11 +603,6 @@ BASE_FEATURE(kGlobalMediaControlsAutoDismiss,
 BASE_FEATURE(kGlobalMediaControlsCrOSUpdatedUI,
              "GlobalMediaControlsCrOSUpdatedUI",
              base::FEATURE_ENABLED_BY_DEFAULT);
-
-// Show Cast sessions in Global Media Controls.
-BASE_FEATURE(kGlobalMediaControlsForCast,
-             "GlobalMediaControlsForCast",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -768,7 +765,7 @@ BASE_FEATURE(kVp9kSVCHWDecoding,
 #if BUILDFLAG(IS_CHROMEOS)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
-             base::FEATURE_ENABLED_BY_DEFAULT
+             base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 );
 
@@ -786,6 +783,12 @@ BASE_FEATURE(kKeepRvfcFrameAlive,
 BASE_FEATURE(kExternalClearKeyForTesting,
              "ExternalClearKeyForTesting",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+#if BUILDFLAG(IS_WIN)
+// Specifies the path to the MediaFoundation Clear Key CDM for testing.
+const base::FeatureParam<std::string> kMediaFoundationClearKeyCdmPathForTesting{
+    &kExternalClearKeyForTesting, "media_foundation_cdm_path", ""};
+#endif  // BUILDFLAG(IS_WIN)
 
 // Enables the Live Caption feature on supported devices.
 BASE_FEATURE(kLiveCaption, "LiveCaption", base::FEATURE_ENABLED_BY_DEFAULT);
@@ -859,7 +862,7 @@ const base::FeatureParam<bool> kHardwareSecureDecryptionForceSupportClearLead{
 // sub key systems. Which sub key system is experimental is key system specific.
 BASE_FEATURE(kHardwareSecureDecryptionExperiment,
              "HardwareSecureDecryptionExperiment",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Allows automatically disabling hardware secure Content Decryption Module
 // (CDM) after failures or crashes to fallback to software secure CDMs. If this
@@ -875,6 +878,12 @@ const base::FeatureParam<int> kHardwareSecureDecryptionFallbackMinDisablingDays{
     &kHardwareSecureDecryptionFallback, "min_disabling_days", 30};
 const base::FeatureParam<int> kHardwareSecureDecryptionFallbackMaxDisablingDays{
     &kHardwareSecureDecryptionFallback, "max_disabling_days", 180};
+
+// Whether selected HardwareContextReset events should be considered as failures
+// in the hardware secure decryption fallback logic.
+const base::FeatureParam<bool>
+    kHardwareSecureDecryptionFallbackOnHardwareContextReset{
+        &kHardwareSecureDecryptionFallback, "on_hardware_context_reset", true};
 
 BASE_FEATURE(kWakeLockOptimisationHiddenMuted,
              "kWakeLockOptimisationHiddenMuted",
@@ -1042,6 +1051,11 @@ BASE_FEATURE(kLimitConcurrentDecoderInstances,
              "LimitConcurrentDecoderInstances",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Use SequencedTaskRunner for VideoEncodeAccelerator
+BASE_FEATURE(kUSeSequencedTaskRunnerForVEA,
+             "UseSequencedTaskRunnerForVEA",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 #if defined(ARCH_CPU_ARM_FAMILY)
 // Experimental support for GL based image processing. On some architectures,
 // the hardware accelerated video decoder outputs frames in a format not
@@ -1122,6 +1136,11 @@ BASE_FEATURE(kD3D11Vp9kSVCHWDecoding,
              "D3D11Vp9kSVCHWDecoding",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Controls whether the DXVA video decoder is enabled on Windows.
+BASE_FEATURE(kDXVAVideoDecoding,
+             "DXVAVideoDecoding",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // The Media Foundation Rendering Strategy determines which presentation mode
 // Media Foundation Renderer should use for presenting clear content. This
 // strategy has no impact for protected content, which must always use Direct
@@ -1154,7 +1173,7 @@ constexpr base::FeatureParam<MediaFoundationClearRenderingStrategy>::Option
 const base::FeatureParam<MediaFoundationClearRenderingStrategy>
     kMediaFoundationClearRenderingStrategyParam{
         &kMediaFoundationClearRendering, "strategy",
-        MediaFoundationClearRenderingStrategy::kDirectComposition,
+        MediaFoundationClearRenderingStrategy::kDynamic,
         &kMediaFoundationClearRenderingStrategyOptions};
 
 BASE_FEATURE(kMediaFoundationBatchRead,
@@ -1204,7 +1223,17 @@ const base::Feature MEDIA_EXPORT kUseOutOfProcessVideoEncoding{
 // doesn't affect the PPB_VideoDecoder_Impl which will continue to use the
 // GpuVideoDecodeAcceleratorHost for the PPB_VideoDecoder_Dev interface.
 const base::Feature MEDIA_EXPORT kUseMojoVideoDecoderForPepper{
-    "UseMojoVideoDecoderForPepper", base::FEATURE_DISABLED_BY_DEFAULT};
+    "UseMojoVideoDecoderForPepper", base::FEATURE_ENABLED_BY_DEFAULT};
+
+// Use SequencedTaskRunner for MediaService.
+BASE_FEATURE(kUseSequencedTaskRunnerForMediaService,
+             "UseSequencedTaskRunnerForMediaService",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Use SequencedTaskRunner for MojoVideoEncodeAcceleratorProvider.
+BASE_FEATURE(kUseSequencedTaskRunnerForMojoVEAProvider,
+             "UseSequencedTaskRunnerForMojoVEAProvider",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   // Return the autoplay policy set in the command line, if any.
