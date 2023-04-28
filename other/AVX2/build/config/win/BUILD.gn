@@ -1,4 +1,4 @@
-# Copyright (c) 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -43,9 +43,7 @@ declare_args() {
   use_clang_diagnostics_format = false
 
   # Indicates whether to use /pdbpagesize:8192 to allow PDBs larger than 4 GiB.
-  # This requires updated debugging and profiling tools which are not widely
-  # distributed yet which is why it is currently opt-in.
-  use_large_pdbs = false
+  use_large_pdbs = true
 }
 
 # This is included by reference in the //build/config/compiler config that
@@ -194,7 +192,10 @@ config("compiler") {
   if (use_large_pdbs) {
     # This allows PDBs up to 8 GiB in size. This requires lld-link.exe or
     # link.exe from VS 2022 or later.
-    ldflags += [ "/pdbpagesize:8192" ]
+    if (!defined(configs)) {
+      configs = []
+    }
+    configs += [ ":pdb_larger_than_4gb" ]
   }
 
   if (!is_debug && !is_component_build) {
@@ -314,7 +315,7 @@ config("runtime_library") {
 # manually override this config for their compiles.
 config("winver") {
   defines = [
-    "NTDDI_VERSION=NTDDI_WIN10_FE",
+    "NTDDI_VERSION=NTDDI_WIN10_NI",
 
     # We can't say `=_WIN32_WINNT_WIN10` here because some files do
     # `#if WINVER < 0x0600` without including windows.h before,

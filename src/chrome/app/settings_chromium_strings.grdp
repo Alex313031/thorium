@@ -121,12 +121,12 @@
     </message>
   </if>
 
-  <!-- Site Settings - Site Data Page-->
+    <!-- Site Settings - Site Data Page-->
   <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_RADIO_SUBLABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device. In short, a site will remember your preferences, shopping cart content, etc. during this browser session. But once you close all open windows, and then visit the site again, it's as if you're coming to the site for the first time.">
-    Sites will probably work as you expect but won't remember you after you close all Chromium windows
+    Sites will probably work as you expect but won't remember you after you close all Thorium windows
   </message>
   <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_EXCEPTIONS_SUB_HEADING" desc="2 of 3. A label within 'Customized behaviors' that allows for exceptions to the 'On-device site data' setting. This label and the list of sites that can appear beneath it is only relevant if the user has chosen to allow 'on-device site data' as the default value above.">
-    Always clear site data from your device when you close Chromium
+    Always clear site data from your device when you close Thorium
   </message>
 
   <!-- Privacy Guide -->
@@ -261,8 +261,11 @@
   <message name="IDS_SETTINGS_SYNC_DISCONNECT_TITLE" desc="The title of the dialog to stop syncing and sign out.">
     Sign out of Thorium?
   </message>
-  <message name="IDS_DRIVE_SUGGEST_PREF_DESC" desc="The documentation string of the 'Show Drive Results in Omnibox' - full description sentence">
-    Thorium will access your Drive to make suggestions in the address bar
+  <message name="IDS_SETTINGS_SUGGEST_PREF_DESC" desc="The description of the checkbox to enable/disable sending omnibox input to the user's default search engine to get additional suggestions.">
+    When you type in the address bar or search box, Thorium sends what you type to your default search engine to get better suggestions. This is off in Incognito.
+  </message>
+  <message name="IDS_SETTINGS_DRIVE_SUGGEST_PREF_DESC" desc="The description of the checkbox to enable/disable sending omnibox input to Google Drive to get suggestions for files.">
+    When you type in the address bar or search box, Thorium sends what you type to Google Drive to get item suggestions. This is off in Incognito.
   </message>
   <message name="IDS_SETTINGS_SYNC_SIGN_IN_PROMPT_WITH_NO_ACCOUNT" desc="The text displayed to prompt users to sign in to Thorium.">
     Sign in to sync and personalize Thorium across your devices
@@ -270,10 +273,10 @@
 
   <!-- Performance Page -->
   <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_SETTING_DESCRIPTION" desc="Description for the memory saver mode setting">
-    When on, Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them. <ph name="BEGIN_LINK">&lt;a id="highEfficiencyLearnMore" target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+    When on, Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the energy saver mode setting">
-    When on, Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates. <ph name="BEGIN_LINK">&lt;a id="batterySaverLearnMore" target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+    When on, Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.
   </message>
 
   <!-- Languages Page -->

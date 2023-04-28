@@ -570,8 +570,8 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_INSPECTBACKGROUNDPAGE" desc="The name of the Inspect Background Page command in the packaged app content area context menu">
             Inspect &amp;background page
           </message>
-          <message name="IDS_CONTENT_CONTEXT_READ_ANYTHING" desc="Context menu menuitem to open page in Read Anything view">
-           Open in Reader
+          <message name="IDS_CONTENT_CONTEXT_READING_MODE" desc="Context menu menuitem to open page in reading mode view">
+           Open in reading mode
           </message>
           <message name="IDS_CONTENT_CONTEXT_RELOAD" desc="The name of the Reload command in the content area context menu">
             &amp;Reload
@@ -773,7 +773,7 @@ are declared in tools/grit/grit_rule.gni.
             Select &amp;all
           </message>
           <message name="IDS_CONTENT_CONTEXT_PARTIAL_TRANSLATE" desc="The name of the Partial Translate command in the content area context menu">
-            &amp;Translate to <ph name="LANGUAGE">$1<ex>English</ex></ph>
+            &amp;Translate selection to <ph name="LANGUAGE">$1<ex>English</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHWEBFOR" desc="The name of the Search the Web for “string” command in the content area context menu">
             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for “<ph name="SEARCH_TERMS">$2<ex>flowers</ex></ph>”
@@ -786,6 +786,9 @@ are declared in tools/grit/grit_rule.gni.
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE_ALT_TEXT" desc="The name of the Search Lens for Image command in the content area context menu">
             Search inside image with <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph>
+          </message>
+          <message name="IDS_CONTENT_CONTEXT_TRANSLATEIMAGE" desc="The name of the Translate Image command in the content area context menu">
+            Translate text in image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="The name of the Lens Region Search command in the content area context menu">
             Search page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
@@ -806,7 +809,7 @@ are declared in tools/grit/grit_rule.gni.
             Open with <ph name="APP">$1<ex>Hangouts</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_AUTOFILL_FEEDBACK" desc="The name of the Autofill Feedback command in the content area context menu">
-           Provide Autofill feedback
+           Help improve autofill
           </message>
         </if>
         <if expr="use_titlecase">
@@ -834,8 +837,8 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_INSPECTBACKGROUNDPAGE" desc="In Title Case: The name of the Inspect Background Page command in the packaged app content area context menu">
             Inspect &amp;Background Page
           </message>
-          <message name="IDS_CONTENT_CONTEXT_READ_ANYTHING" desc="Context menu menuitem to open page in Read Anything view">
-           Open in Reader
+          <message name="IDS_CONTENT_CONTEXT_READING_MODE" desc="Context menu menuitem to open page in reading mode view">
+           Open in Reading Mode
           </message>
           <message name="IDS_CONTENT_CONTEXT_RELOAD" desc="In Title Case: The name of the Reload command in the content area context menu">
             &amp;Reload
@@ -1062,6 +1065,9 @@ are declared in tools/grit/grit_rule.gni.
            <message name="IDS_CONTENT_CONTEXT_SEARCHLENSFORIMAGE_ALT_TEXT" desc="In Title Case: The name of the Search Lens for Image command in the content area context menu">
             Search Inside Image with <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph>
           </message>
+          <message name="IDS_CONTENT_CONTEXT_TRANSLATEIMAGE" desc="In Title Case: The name of the Translate Image command in the content area context menu">
+            Translate Text in Image with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
+          </message>
           <message name="IDS_CONTENT_CONTEXT_LENS_REGION_SEARCH_ALT1" desc="In Title Case: The name of the Lens Region Search command in the content area context menu">
             Search Page with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google</ex></ph>
           </message>
@@ -1075,7 +1081,7 @@ are declared in tools/grit/grit_rule.gni.
             Suggest Password...
           </message>
           <message name="IDS_CONTENT_CONTEXT_AUTOFILL_FEEDBACK" desc="The name of the Autofill Feedback command in the content area context menu">
-           Provide Autofill Feedback
+           Help Improve Autofill
           </message>
         </if>
 
@@ -5089,6 +5095,9 @@ are declared in tools/grit/grit_rule.gni.
         <message name="IDS_EXTENSION_INSTALLED_MANAGE_SHORTCUTS" desc="Text for the link in the InfoBubble that opens the chrome://extensions page with the Configure Commands UI visible.">
           Manage shortcuts
         </message>
+        <message name="IDS_EXTENSION_LAUNCH_WEB_AUTH_FLOW_TAB_INFO_BAR_TEXT" desc="Text displayed in an info bar of an auth page generated by chrome.identity.launchWebAuthFlow() API. The extension asks the user to approve an auth request and give the extension permission to access the user account. The goal of this text is to make that the user is aware that the page was opened by an extension and an auth token will be shared with the extension after approving.">
+          The "<ph name="EXTENSION_NAME">$1<ex>Google Docs Offline</ex></ph>" extension wants to access your account
+        </message>
 
         <!-- Begin of Sync Promo strings for Desktop Identity Consistency. -->
         <message name="IDS_EXTENSION_INSTALLED_DICE_PROMO_SYNC_MESSAGE" desc="Text of the sync promo displayed at the bottom of the extension installed bubble asking the user to enable sync.">
@@ -5779,6 +5788,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_EXTENSIONS_MENU_REQUESTS_ACCESS_SECTION_TITLE" desc="Title of the requests access section that lists the extensions requesting site access">
         Requests access
+      </message>
+       <message name="IDS_EXTENSIONS_MENU_SITE_PERMISSIONS_PAGE_SETTINGS_BUTTON" desc="Text of the extension settings button in the site permissions page">
+        Manage this extension
       </message>
 
       <!-- Settings API bubble -->
@@ -7245,6 +7257,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_MODULES_FEED_TITLE" desc="Title shown in the header of the Following feed NTP module on the new tab page showing updates from sites followed by the user.">
         Following
       </message>
+      <message name="IDS_NTP_MODULES_RESUME_YOUR_JOURNEY" desc="A label for the title in NTP Quests Module.">
+        Resume your journey for <ph name="MODULE_TITLE">$1<ex>Office Chairs</ex></ph>
+      </message>
 
       <!-- Extensions NTP Middle Slot Promo -->
       <message name="IDS_EXTENSIONS_PROMO_PERFORMANCE">
@@ -7299,10 +7314,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
         </message>
       </if>
       <message name="IDS_READ_LATER_MENU_UNREAD_HEADER" desc="Header for section of unread Read later items.">
-        UNREAD
+        Unread
       </message>
       <message name="IDS_READ_LATER_MENU_READ_HEADER" desc="Header for section of read Read later items.">
-        PAGES YOU'VE READ
+        Pages you've read
       </message>
       <message name="IDS_READ_LATER_MENU_TOOLTIP_MARK_AS_READ" desc="Tooltip for the button to mark a read later entry as read.">
         Mark as read
@@ -7452,44 +7467,72 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_BOOKMARKS_URL_FOLDER_DESCRIPTION" desc="Description for a bookmark that includes its URL and parent folder">
         <ph name="URL">$1<ex>www.google.com</ex></ph> - <ph name="FOLDER">$2<ex>Bookmarks Bar</ex></ph>
       </message>
-
-      <!-- Read Anything strings -->
-      <!-- TODO(crbug.com/1266555): Add final strings and make them translateable. -->
-      <message name="IDS_READ_ANYTHING_TITLE" desc="Title of the Read Anything feature, which gives users an accessible reading experience." translateable="false">
-        Read anything
+      <message name="IDS_BOOKMARKS_DISABLED_FEATURE" desc="Body text for the dialog displayed when the user attempts to use a feature that is disabled by policy">
+        Your administrator has disabled this feature.
       </message>
-      <message name="IDS_READ_ANYTHING_TOOLBAR_LABEL" desc="Accessibility label for the text formatting toolbar of the Read Anything feature." translateable="false">
+
+      <!-- Reading mode strings -->
+      <!-- TODO(crbug.com/1266555): Add final strings and make them translateable. -->
+      <if expr="use_titlecase">
+        <message name="IDS_READING_MODE_TITLE" desc="Title of the reading mode feature, which gives users an accessible reading experience.">
+          Reading Mode
+        </message>
+      </if>
+      <if expr="not use_titlecase">
+        <message name="IDS_READING_MODE_TITLE" desc="Title of the reading mode feature, which gives users an accessible reading experience.">
+          Reading mode
+        </message>
+      </if>
+      <message name="IDS_READING_MODE_TOOLBAR_LABEL" desc="Accessibility label for the text formatting toolbar of the reading mode feature. Spoken by screen readers.">
         Text formatting
       </message>
-      <message name="IDS_READ_ANYTHING_FONT_NAME_COMBOBOX_LABEL" desc="Accessibility label for the font name combobox of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_FONT_NAME_COMBOBOX_LABEL" desc="Accessibility label for the font name combobox of the reading mode feature.">
         Font
       </message>
-      <message name="IDS_READ_ANYTHING_DECREASE_FONT_SIZE_BUTTON_LABEL" desc="Accessibility label for the decrease font size button of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_DECREASE_FONT_SIZE_BUTTON_LABEL" desc="Accessibility label for the decrease font size button of the reading mode feature.">
         Decrease font-size
       </message>
-      <message name="IDS_READ_ANYTHING_INCREASE_FONT_SIZE_BUTTON_LABEL" desc="Accessibility label for the increase font size button of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_INCREASE_FONT_SIZE_BUTTON_LABEL" desc="Accessibility label for the increase font size button of the reading mode feature.">
         Increase font-size
       </message>
-      <message name="IDS_READ_ANYTHING_COLORS_COMBOBOX_LABEL" desc="Accessibility label for the colors combobox of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_COLORS_COMBOBOX_LABEL" desc="Accessibility label for the colors combobox of the reading mode feature.">
         Theme
       </message>
-      <message name="IDS_READ_ANYTHING_LINE_SPACING_COMBOBOX_LABEL" desc="Accessibility label for the line height combobox of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_LINE_SPACING_COMBOBOX_LABEL" desc="Accessibility label for the line height combobox of the reading mode feature.">
         Line height
       </message>
-      <message name="IDS_READ_ANYTHING_LETTER_SPACING_COMBOBOX_LABEL" desc="Accessibility label for the letter spacing combobox of the Read Anything feature." translateable="false">
+      <message name="IDS_READING_MODE_LETTER_SPACING_COMBOBOX_LABEL" desc="Accessibility label for the letter spacing combobox of the reading mode feature.">
         Letter spacing
       </message>
-      <message name="IDS_READ_ANYTHING_SPACING_COMBOBOX_TIGHT" desc="Combobox option for setting letter and line spacing of text in the Read Anything feature. Tight means that letters/lines are spaced closely together." translateable="false">
-        Tight
+      <message name="IDS_READING_MODE_SPACING_COMBOBOX_STANDARD" desc="Combobox option for setting letter and line spacing of text in the reading mode feature. Standard means that leters/lines are spaced in the browser's default manner.">
+        Standard
       </message>
-      <message name="IDS_READ_ANYTHING_SPACING_COMBOBOX_DEFAULT" desc="Combobox option for setting letter and line spacing of text in the Read Anything feature. Default means that leters/lines are spaced in a standard manner." translateable="false">
-        Default
-      </message>
-      <message name="IDS_READ_ANYTHING_SPACING_COMBOBOX_LOOSE" desc="Combobox option for setting letter and line spacing of text in the Read Anything feature. Loose means that letters/lines are spaced far apart." translateable="false">
+      <message name="IDS_READING_MODE_SPACING_COMBOBOX_LOOSE" desc="Combobox option for setting line spacing of text in the reading mode feature. Loose means that lines are spaced far apart.">
         Loose
       </message>
-      <message name="IDS_READ_ANYTHING_SPACING_COMBOBOX_VERY_LOOSE" desc="Combobox option for setting letter and line spacing of text in the Read Anything feature. Very loose means that letters/lines are spaced very far apart." translateable="false">
+      <message name="IDS_READING_MODE_SPACING_COMBOBOX_VERY_LOOSE" desc="Combobox option for setting line spacing of text in the reading mode feature. Very loose means that lines are spaced very far apart.">
         Very loose
+      </message>
+      <message name="IDS_READING_MODE_SPACING_COMBOBOX_WIDE" desc="Combobox option for setting letter spacing of text in the reading mode feature. Wide means that letters are spaced far apart.">
+        Wide
+      </message>
+      <message name="IDS_READING_MODE_SPACING_COMBOBOX_VERY_WIDE" desc="Combobox option for setting letter spacing of text in the reading mode feature. Very wide means that letters are spaced very far apart.">
+        Very wide
+      </message>
+      <message name="IDS_READING_MODE_DEFAULT_COLOR_LABEL" desc="Combobox option for setting the color theme for the reading mode feature. This option corresponds to either the light or dark theme depending on the user's operating system theme.">
+        Default
+      </message>
+      <message name="IDS_READING_MODE_LIGHT_COLOR_LABEL" desc="Combobox option for setting the color theme for the reading mode feature.">
+        Light
+      </message>
+      <message name="IDS_READING_MODE_DARK_COLOR_LABEL" desc="Combobox option for setting the color theme for the reading mode feature.">
+        Dark
+      </message>
+      <message name="IDS_READING_MODE_YELLOW_COLOR_LABEL" desc="Combobox option for setting the color theme for the reading mode feature.">
+        Yellow
+      </message>
+      <message name="IDS_READING_MODE_BLUE_COLOR_LABEL" desc="Combobox option for setting the color theme for the reading mode feature.">
+        Blue
       </message>
 
       <!-- User note strings -->
@@ -7499,13 +7542,27 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_ADD_NEW_USER_NOTE_PLACEHOLDER_TEXT" desc="Placeholder for textarea, where users can add a new user note.">
         Add note...
       </message>
+      <message name="IDS_USER_NOTES_SORT_MENU_A11Y_LABEL" is_accessibility_with_no_ui="true" desc="Screen reader label for the button which opens the sort menu in the user notes side panel.">
+        Order
+      </message>
       <message name="IDS_LEARN_MORE_USER_NOTE" desc="User note menu label, which allows users to learn more about the user note feature.">
         Learn more
+      </message>
+      <message name="IDS_ALL_NOTES" desc="The text label of a button in the side panel user notes UI, when clicked, takes the user to the notes overviews UI.">
+        All Notes
+      </message>
+      <message name="IDS_NOTES_COUNT" desc="Text description for the number of notes for a note overview item showing the number of notes on a page">
+        {NUM_NOTES, plural, =1 {1 Note} other {# Notes}}
       </message>
 
       <!-- Feed button and menu -->
       <message name="IDS_FEED_TITLE" desc="Title of the feed menu">
         Feed
+      </message>
+
+      <!-- Google Lens side panel -->
+      <message name="IDS_GOOGLE_LENS_TITLE" desc="Title of the Google Lens side panel">
+        Google Lens
       </message>
 
       <!--Tooltip strings -->
@@ -7641,8 +7698,17 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_TOOLTIP_SAVE_CREDIT_CARD_FAILURE" desc="The tooltip for the icon that shows the credit card is not successfully uploaded">
         Can't save card right now
       </message>
+      <message name="IDS_TOOLTIP_SAVE_IBAN" desc="The tooltip for the icon that shows the save IBAN (International Bank Account Number) bubble">
+        Save IBAN
+      </message>
       <message name="IDS_TOOLTIP_MIGRATE_LOCAL_CARD" desc="Tooltip for the credit card icon that appears in the address bar. Icon is shown when a user has a credit card stored locally in Thorium but not in Google Pay.">
         Save payment method
+      </message>
+      <message name="IDS_MANAGE_IBAN_VALUE_SHOW_VALUE" desc="The tooltip of a button that is used in the manage pending IBAN (International Bank Account Number) bubble for revealing the IBAN value.">
+        Show IBAN value
+      </message>
+      <message name="IDS_MANAGE_IBAN_VALUE_HIDE_VALUE" desc="The tooltip of a button that is used in the manage pending IBAN (International Bank Account Number) bubble for masking the IBAN value.">
+        Hide IBAN value
       </message>
       <message name="IDS_TOOLTIP_TRANSLATE" desc="The tooltip for translate">
         Translate this page
@@ -7746,6 +7812,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_ACCNAME_SAVED_TAB_GROUPS" desc="The accessible name for the area in the bookmarks bar for saved tab groups.">
         Saved Tab Groups
+      </message>
+      <message name="IDS_ACCNAME_SAVED_TAB_GROUPS_CHEVRON" desc="The accessible name for the chevron visible there are more than 4 groups saved in the bookmarks bar.">
+        Menu containing hidden saved tab groups
+      </message>
+      <message name="IDS_SAVED_TAB_GROUPS_OVERFLOW_BUTTON_TOOLTIP" desc="Text shown on the overflow chevron, if visible">
+        Hidden saved tab groups
       </message>
       <message name="IDS_ACCNAME_BOOKMARKS_CHEVRON" desc="The accessible name for the chevron visible if not all the bookmark buttons fit.">
         Menu containing hidden bookmarks
@@ -7974,8 +8046,10 @@ Keep your key file in a safe place. You will need it to create new versions of y
 
       <!-- User Education Tutorial Strings -->
       <message name="IDS_TUTORIAL_GENERIC_SUCCESS_TITLE" desc="The title of the generic success step in the user education tutorials">
-        Nicely Done!
+        Nicely done!
       </message>
+
+      <!-- Tab Group Tutorial Strings -->
       <if expr="use_titlecase">
         <message name="IDS_TUTORIAL_TAB_GROUP_ADD_TAB_TO_GROUP" desc="The description of the add tab step in the tab group tutorial">
           Right-click on a tab and select "Add Tab To New Group"
@@ -8005,9 +8079,6 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_TUTORIAL_TAB_GROUP_COLLAPSE" desc="The description of the expand collapse step in the tab group tutorial">
         Click the group name to expand or collapse it
       </message>
-      <message name="IDS_TUTORIAL_TAB_GROUP_SUCCESS_TITLE" desc="The title of the success step in the tab group tutorial">
-        Nicely Done!
-      </message>
       <message name="IDS_TUTORIAL_TAB_GROUP_SUCCESS_DESCRIPTION" desc="The description of the success step in the tab group tutorial">
         Try using tab groups to organize tasks, for online shopping, and more
       </message>
@@ -8027,6 +8098,29 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_TUTORIAL_SIDE_PANEL_READING_LIST_SUCCESS_BODY" desc="The description of the body text in the 'success' step in side panel reading list tutorial">
         Try using the side panel for bookmarks, journeys, and more
+      </message>
+
+      <!-- Customize Thorium Tutorial Strings -->
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_START_TUTORIAL_IPH" desc="The description of the IPH to start the customize chrome tutorial">
+        Customize Thorium to give your browser a new look
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_OPEN_SIDE_PANEL" desc="The description of the 'open side panel' step in customize chrome tutorial">
+        Click “Customize Thorium”
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_CHANGE_THEME" desc="The description of the 'change theme' step in customize chrome tutorial">
+        Click “Change theme” to explore themes inspired by artists, nature and more
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_SELECT_COLLECTION" desc="The description of the 'select collection' step in customize chrome tutorial">
+        Select a collection
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_APPLY_THEME" desc="The description of the 'apply theme' step in customize chrome tutorial">
+        Choose an image to apply the theme instantly
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_CLICK_BACK_ARROW" desc="The description of the 'click back arrow' step in customize chrome tutorial">
+        Click the back arrow to explore other options
+      </message>
+      <message name="IDS_TUTORIAL_CUSTOMIZE_CHROME_SUCCESS_BODY" desc="The description of the body text in the 'success' step in customize chrome tutorial">
+        You can now give your browser a new look at any time.
       </message>
 
       <!-- Browser Hung Plugin Detector -->
@@ -8493,6 +8587,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_FEEDBACK_ATTACH_FILE_TO_BIG" desc="Text to display if the file being attached is too big">
           Selected file is too big (max size: 3mb).
+        </message>
+        <message name="IDS_FEEDBACK_INCLUDE_AUTOFILL_METADATA_CHECKBOX" desc="Checkbox for including autofill metadata on the bug report dialog box">
+          Send <ph name="BEGIN_LINK1">&lt;a href="#" id="autofill-metadata-url"&gt;</ph>autofill metadata<ph name="END_LINK1">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_FEEDBACK_IWLWIFI_DEBUG_DUMP_EXPLAINER" desc="Displayed in the system information dialog instead of the actual contents of Intel WiFi debug logs, which are too large to display and too obscure and proprietary for users to understand.">
           &lt;Four files generated by Intel Wi-Fi firmware: csr.lst, fh_regs.lst, radio_reg.lst, monitor.lst.sysmon.  The first three are binary files containing register dumps, and are asserted by Intel to contain no personal or device-identifying information.  The last file is an execution trace from the Intel firmware; it has been scrubbed of any personal or device-identifying information, but is too large to display here.  These files were generated in response to recent Wi-Fi problems with your device, and will be shared with Intel to help troubleshoot these problems.&gt;
@@ -9074,6 +9171,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_TAB_GROUP_HEADER_CXMENU_CLOSE_GROUP" desc="The label of the tab group header context menu item for closing all tabs in the current group.">
           Close group
         </message>
+        <message name="IDS_TAB_GROUP_HEADER_CXMENU_DELETE_GROUP" desc="The label of the tab group header context menu item for deleting all tabs in the current group.">
+          Delete group
+        </message>
         <message name="IDS_TAB_GROUP_HEADER_CXMENU_MOVE_GROUP_TO_NEW_WINDOW" desc="The label of the tab group header context menu item for moving the entire group to a new window.">
           Move group to new window
         </message>
@@ -9096,6 +9196,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         </message>
         <message name="IDS_TAB_GROUP_HEADER_CXMENU_CLOSE_GROUP" desc="In Title Case: The label of the tab group header context menu item for closing all tabs in the current group.">
           Close Group
+        </message>
+        <message name="IDS_TAB_GROUP_HEADER_CXMENU_DELETE_GROUP" desc="The label of the tab group header context menu item for deleting all tabs in the current group.">
+          Delete Group
         </message>
         <message name="IDS_TAB_GROUP_HEADER_CXMENU_MOVE_GROUP_TO_NEW_WINDOW" desc="In Title Case: The label of the tab group header context menu item for moving the entire group to a new window.">
           Move Group to New Window
@@ -9599,9 +9702,6 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       </message>
       <message name="IDS_SHARING_HUB_SHARE_LABEL" desc="The Label for the Third Party Targets in the Sharing Hub dialog.">
         Share link to
-      </message>
-      <message name="IDS_SHARING_HUB_SHARE_LABEL_ACCESSIBILITY" desc="The acccessibility label spoken by screen readers when the label for a Third Party Sharing Target gets focus but not visually rendered.">
-        Share link to <ph name="SHARE_TARGET">$1<ex>Facebook</ex></ph>
       </message>
       <message name="IDS_SHARING_HUB_FOLLOW_LABEL" desc="The text label for the follow button in the Sharing Hub dialog and app menu.">
         Follow
@@ -10510,6 +10610,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
       <message name="IDS_SYNC_DISABLED_CONFIRMATION_CONFIRM_BUTTON_LABEL" desc="Label of the confirmation button in the sync confirmation dialog of the tab modal signin flow">
         Sign in anyway
       </message>
+      <message name="IDS_SYNC_DISABLED_CONFIRMATION_CONFIRM_BUTTON_MANAGED_ACCOUNT_SIGNOUT_DISALLOWED_LABEL" desc="Label of the confirmation button in the sync confirmation dialog of the tab modal signin flow">
+        Continue
+      </message>
       <message name="IDS_SYNC_DISABLED_CONFIRMATION_UNDO_BUTTON_LABEL" desc="Label of the undo button in the sync confirmation dialog of the tab modal signin flow">
         Cancel sign in
       </message>
@@ -10573,7 +10676,7 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         Can't sign in to <ph name="USERNAME">$1<ex>Jane.Doe@gmail.com</ex></ph>
       </message>
       <message name="IDS_SIGNIN_ERROR_DICE_EMAIL_TITLE" desc="Title of the signin error tab modal dialog when username can be retrieved to display and when Desktop Identity Consistency is enabled.">
-        Can't sync to <ph name="USERNAME">$1<ex>Jane.Doe@gmail.com</ex></ph>
+        Can't sync with <ph name="USERNAME">$1<ex>Jane.Doe@gmail.com</ex></ph>
       </message>
       <message name="IDS_SIGNIN_ERROR_CLOSE_BUTTON_LABEL" desc="Label of the Close button in the signin error dialog.">
         Close
@@ -10940,9 +11043,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Verify it's you
         </message>
 
-        <message name="IDS_SYNC_SERVER_IS_UNREACHABLE" desc="The message to display in the New Tab Page and Settings Page sync section when the server is unreachable.">
-          Couldn't connect to the sync server. Retrying...
-        </message>
         <if expr="not chromeos_ash">
           <message name="IDS_SYNC_RELOGIN_ERROR" desc="The text to display on in the hyperlink when the user needs to sign in again to use sync.">
             Sign in again to resume sync
@@ -13256,7 +13356,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Turn on Bluetooth?
       </message>
       <message name="IDS_WEBAUTHN_BLUETOOTH_POWER_ON_AUTO_DESCRIPTION" desc="Description in the dialog informing the user that Thorium needs to turn on Bluetooth by itself so that security keys (external physical devices for user authentication) can be used over Bluetooth.">
-        Bluetooth will be temporarily turned on to communicate with your security key
+        Bluetooth must be on to use your passkey on a different device. You can always manage this in settings.
       </message>
       <message name="IDS_WEBAUTHN_BLUETOOTH_POWER_ON_AUTO_NEXT" desc="Button text to allow Thorium to turn on Bluetooth so that security keys can be used over Bluetooth.">
         Turn on
@@ -13317,8 +13417,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WEBAUTHN_CABLEV2_AOA_REQUEST_DESCRIPTION" desc="Potentially displayed in a permissions dialog on Android to describe the type of request that a computer, that is connected over USB, is making. In this context the request from the computer is to use the Android device as a security key. A 'security key' is typically a physical USB token used for authentication (e.g. a gNubby) but in this case the phone is acting as one. The translation of 'security key' should match the phrase used in TC IDs such as 1685482178220389035 and 7775033610159191691">
         Security key request
       </message>
-      <message name="IDS_WEBAUTHN_PASSKEY_DIFFERENT_DEVICE_LABEL" desc="The label on a button-like element in a list of options. Clicking this causes Thorium to show a QR code that the user can scan with their phone to use that phone for signing into a website. Here 'phone' is used as a short hand for smartphone.">
-        A different device
+      <message name="IDS_WEBAUTHN_PASSKEY_PHONE_OR_TABLET_LABEL" desc="The label on a button-like element in a list of options. Clicking this causes Thorium to show a QR code that the user can scan with their phone to use that phone for signing into a website. Here 'phone' is used as a short hand for smartphone.">
+        Use a phone or tablet
+      </message>
+      <message name="IDS_WEBAUTHN_PASSKEY_DIFFERENT_PHONE_OR_TABLET_LABEL" desc="The label on a button-like element in a list of options. Clicking this causes Thorium to show a QR code that the user can scan with their phone to use that phone for signing into a website. Here 'phone' is used as a short hand for smartphone. This string is used when a specific phone is also an option in the list, so the word 'different' is intended to communicate that this is the correct option when none of the previously list phones are correct.">
+        Use a different phone or tablet
       </message>
 
       <message name="IDS_WEBAUTHN_CABLE_ACTIVATE_DESCRIPTION_SHORT" desc="Second line of text in an item letting the user know that they can use their phone as a security key. The user needs to check their phone and respond to a notification that will ask them to press a button on the phone's screen to confirm that they're logging in.">
@@ -14087,8 +14190,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_VERIFY_SHEET_TITLE" desc="Header shown to the user while signing in happens.">
       Verifying…
     </message>
-    <message name="IDS_VERIFY_SHEET_TITLE_AUTO_SIGNIN" desc="Header for auto sign-in sheet. Sheet is shown to notify the user that they are signing in to a website using an account from an identity provider." translateable="false">
-      Signing in to <ph name="SITE_ETLD_PLUS_ONE">$1<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$2<ex>idp.example</ex></ph>
+    <message name="IDS_VERIFY_SHEET_TITLE_AUTO_REAUTHN" desc="Header for auto re-authentication sheet. Sheet is shown to notify the user that they are re-authenticating into a website using an account from an identity provider.">
+      Signing you in…
+    </message>
+    <message name="IDS_AUTO_REAUTHN_OPTOUT_CHECKBOX" desc="Allows users to opt out of FedCM auto re-authentication by unchecking the checkbox" translateable="false">
+      Automatically sign me in to this website
     </message>
 
     <!-- Input overlay strings -->
@@ -14313,6 +14419,17 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_SIDEBAR_WEBVIEW_TITLE" desc="The menu entry name for the sidebar webview.">
       Webview
     </message>
+    <if expr="is_android">
+      <message name="IDS_FAST_CHECKOUT_A11Y_ADDRESS_FORM_FILLED" desc="Accessibility string announced when an address form was filled.">
+        <ph name="ADDRESS_LABEL">$1<ex>Work</ex></ph> address form filled.
+      </message>
+      <message name="IDS_FAST_CHECKOUT_A11Y_CREDIT_CARD_FORM_FILLED" desc="Accessibility string announced when a credit card form was filled.">
+        <ph name="CARD_IDENTIFIER">$1<ex>Visa 1111</ex></ph> filled.
+      </message>
+      <message name="IDS_FAST_CHECKOUT_A11Y_EMAIL_FILLED" desc="Accessibility string announced when an email field was filled.">
+        Email filled.
+      </message>
+    </if>
   </messages>
 </release>
 </grit>
