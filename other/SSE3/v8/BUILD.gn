@@ -561,7 +561,8 @@ if (v8_enable_static_roots == "") {
 assert(!v8_enable_static_roots ||
            (v8_enable_pointer_compression && v8_enable_shared_ro_heap &&
                 v8_enable_pointer_compression_shared_cage &&
-                v8_enable_webassembly && v8_enable_i18n_support),
+                v8_enable_external_code_space && v8_enable_webassembly &&
+                v8_enable_i18n_support),
        "Trying to enable static roots in a configuration that is not supported")
 
 if (v8_enable_webassembly && !target_is_simulator && v8_current_cpu == "x64") {
@@ -783,6 +784,7 @@ external_v8_defines = [
   "V8_USE_PERFETTO",
   "V8_MAP_PACKING",
   "V8_IS_TSAN",
+  "V8_ENABLE_CONSERVATIVE_STACK_SCANNING",
 ]
 
 enabled_external_v8_defines = []
@@ -821,6 +823,9 @@ if (v8_enable_map_packing) {
 }
 if (is_tsan) {
   enabled_external_v8_defines += [ "V8_IS_TSAN" ]
+}
+if (v8_enable_conservative_stack_scanning) {
+  enabled_external_v8_defines += [ "V8_ENABLE_CONSERVATIVE_STACK_SCANNING" ]
 }
 
 disabled_external_v8_defines = external_v8_defines - enabled_external_v8_defines
@@ -989,9 +994,6 @@ config("features") {
   }
   if (v8_enable_single_generation) {
     defines += [ "V8_ENABLE_SINGLE_GENERATION" ]
-  }
-  if (v8_enable_conservative_stack_scanning) {
-    defines += [ "V8_ENABLE_CONSERVATIVE_STACK_SCANNING" ]
   }
   if (v8_enable_inner_pointer_resolution_osb) {
     defines += [ "V8_ENABLE_INNER_POINTER_RESOLUTION_OSB" ]
@@ -1310,6 +1312,9 @@ config("toolchain") {
   } else if (target_os == "win") {
     defines += [ "V8_HAVE_TARGET_OS" ]
     defines += [ "V8_TARGET_OS_WIN" ]
+  } else if (target_os == "chromeos") {
+    defines += [ "V8_HAVE_TARGET_OS" ]
+    defines += [ "V8_TARGET_OS_CHROMEOS" ]
   }
 
   # TODO(infra): Support v8_enable_prof on Windows.
@@ -1767,6 +1772,7 @@ torque_files = [
   "src/builtins/internal-coverage.tq",
   "src/builtins/internal.tq",
   "src/builtins/iterator.tq",
+  "src/builtins/iterator-helpers.tq",
   "src/builtins/math.tq",
   "src/builtins/number.tq",
   "src/builtins/object-fromentries.tq",
@@ -1877,6 +1883,7 @@ torque_files = [
   "src/objects/js-collection.tq",
   "src/objects/js-function.tq",
   "src/objects/js-generator.tq",
+  "src/objects/js-iterator-helpers.tq",
   "src/objects/js-objects.tq",
   "src/objects/js-promise.tq",
   "src/objects/js-proxy.tq",
@@ -2457,7 +2464,6 @@ v8_source_set("v8_initializers") {
     "src/builtins/builtins-constructor-gen.h",
     "src/builtins/builtins-constructor.h",
     "src/builtins/builtins-conversion-gen.cc",
-    "src/builtins/builtins-data-view-gen.cc",
     "src/builtins/builtins-data-view-gen.h",
     "src/builtins/builtins-date-gen.cc",
     "src/builtins/builtins-generator-gen.cc",
@@ -2846,6 +2852,7 @@ v8_header_set("v8_internal_headers") {
     "src/codegen/interface-descriptors.h",
     "src/codegen/label.h",
     "src/codegen/machine-type.h",
+    "src/codegen/macro-assembler-base.h",
     "src/codegen/macro-assembler-inl.h",
     "src/codegen/macro-assembler.h",
     "src/codegen/maglev-safepoint-table.h",
@@ -2866,7 +2873,6 @@ v8_header_set("v8_internal_headers") {
     "src/codegen/source-position.h",
     "src/codegen/tick-counter.h",
     "src/codegen/tnode.h",
-    "src/codegen/turbo-assembler.h",
     "src/codegen/unoptimized-compilation-info.h",
     "src/common/assert-scope.h",
     "src/common/checks.h",
@@ -3005,6 +3011,7 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/branch-elimination-reducer.h",
     "src/compiler/turboshaft/dead-code-elimination-reducer.h",
     "src/compiler/turboshaft/decompression-optimization.h",
+    "src/compiler/turboshaft/define-assembler-macros.inc",
     "src/compiler/turboshaft/deopt-data.h",
     "src/compiler/turboshaft/fast-hash.h",
     "src/compiler/turboshaft/graph-builder.h",
@@ -3013,6 +3020,7 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/index.h",
     "src/compiler/turboshaft/late-escape-analysis-reducer.h",
     "src/compiler/turboshaft/layered-hash-map.h",
+    "src/compiler/turboshaft/machine-lowering-reducer.h",
     "src/compiler/turboshaft/machine-optimization-reducer.h",
     "src/compiler/turboshaft/memory-optimization.h",
     "src/compiler/turboshaft/operation-matching.h",
@@ -3025,10 +3033,14 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/sidetable.h",
     "src/compiler/turboshaft/simplify-tf-loops.h",
     "src/compiler/turboshaft/snapshot-table.h",
+    "src/compiler/turboshaft/tag-untag-lowering-reducer.h",
+    "src/compiler/turboshaft/type-inference-analysis.h",
     "src/compiler/turboshaft/type-inference-reducer.h",
     "src/compiler/turboshaft/type-parser.h",
     "src/compiler/turboshaft/typed-optimizations-reducer.h",
+    "src/compiler/turboshaft/typer.h",
     "src/compiler/turboshaft/types.h",
+    "src/compiler/turboshaft/undef-assembler.macros.inc",
     "src/compiler/turboshaft/uniform-reducer-adapater.h",
     "src/compiler/turboshaft/utils.h",
     "src/compiler/turboshaft/value-numbering-reducer.h",
@@ -3368,6 +3380,8 @@ v8_header_set("v8_internal_headers") {
     "src/objects/js-function.h",
     "src/objects/js-generator-inl.h",
     "src/objects/js-generator.h",
+    "src/objects/js-iterator-helpers-inl.h",
+    "src/objects/js-iterator-helpers.h",
     "src/objects/js-objects-inl.h",
     "src/objects/js-objects.h",
     "src/objects/js-promise-inl.h",
@@ -3682,6 +3696,7 @@ v8_header_set("v8_internal_headers") {
       "src/maglev/maglev-interpreter-frame-state.h",
       "src/maglev/maglev-ir-inl.h",
       "src/maglev/maglev-ir.h",
+      "src/maglev/maglev-phi-representation-selector.h",
       "src/maglev/maglev-regalloc-data.h",
       "src/maglev/maglev-regalloc.h",
       "src/maglev/maglev-register-frame-array.h",
@@ -3962,7 +3977,7 @@ v8_header_set("v8_internal_headers") {
     if (v8_enable_webassembly) {
       # Trap handling is enabled on arm64 Mac and in simulators on x64 on Linux
       # and Mac.
-      if ((current_cpu == "arm64" && is_mac) ||
+      if ((current_cpu == "arm64" && (is_mac || is_ios)) ||
           (current_cpu == "x64" && (is_linux || is_chromeos || is_mac))) {
         sources += [ "src/trap-handler/handler-inside-posix.h" ]
       }
@@ -4468,6 +4483,7 @@ v8_source_set("v8_turboshaft") {
     "src/compiler/turboshaft/representations.cc",
     "src/compiler/turboshaft/simplify-tf-loops.cc",
     "src/compiler/turboshaft/type-parser.cc",
+    "src/compiler/turboshaft/typer.cc",
     "src/compiler/turboshaft/types.cc",
     "src/compiler/turboshaft/utils.cc",
   ]
@@ -4574,7 +4590,6 @@ v8_source_set("v8_base_without_compiler") {
     "src/builtins/builtins-trace.cc",
     "src/builtins/builtins-typed-array.cc",
     "src/builtins/builtins-weak-refs.cc",
-    "src/builtins/builtins-web-snapshots.cc",
     "src/builtins/builtins.cc",
     "src/builtins/constants-table-builder.cc",
     "src/codegen/aligned-slot-allocator.cc",
@@ -4594,6 +4609,7 @@ v8_source_set("v8_base_without_compiler") {
     "src/codegen/handler-table.cc",
     "src/codegen/interface-descriptors.cc",
     "src/codegen/machine-type.cc",
+    "src/codegen/macro-assembler-base.cc",
     "src/codegen/maglev-safepoint-table.cc",
     "src/codegen/optimized-compilation-info.cc",
     "src/codegen/pending-optimization-table.cc",
@@ -4604,7 +4620,6 @@ v8_source_set("v8_base_without_compiler") {
     "src/codegen/source-position.cc",
     "src/codegen/tick-counter.cc",
     "src/codegen/tnode.cc",
-    "src/codegen/turbo-assembler.cc",
     "src/codegen/unoptimized-compilation-info.cc",
     "src/common/assert-scope.cc",
     "src/common/code-memory-access.cc",
@@ -4808,6 +4823,7 @@ v8_source_set("v8_base_without_compiler") {
     "src/objects/js-segment-iterator.cc",
     "src/objects/js-segmenter.cc",
     "src/objects/js-segments.cc",
+    "src/objects/js-struct.cc",
     "src/objects/js-temporal-objects.cc",
     "src/objects/keys.cc",
     "src/objects/literal-objects.cc",
@@ -4967,8 +4983,6 @@ v8_source_set("v8_base_without_compiler") {
     "src/utils/sha-256.cc",
     "src/utils/utils.cc",
     "src/utils/version.cc",
-    "src/web-snapshot/web-snapshot.cc",
-    "src/web-snapshot/web-snapshot.h",
     "src/zone/accounting-allocator.cc",
     "src/zone/type-stats.cc",
     "src/zone/zone-segment.cc",
@@ -4991,6 +5005,7 @@ v8_source_set("v8_base_without_compiler") {
       "src/maglev/maglev-graph-printer.cc",
       "src/maglev/maglev-interpreter-frame-state.cc",
       "src/maglev/maglev-ir.cc",
+      "src/maglev/maglev-phi-representation-selector.cc",
       "src/maglev/maglev-regalloc.cc",
       "src/maglev/maglev.cc",
     ]
@@ -5177,7 +5192,7 @@ v8_source_set("v8_base_without_compiler") {
     if (v8_enable_webassembly) {
       # Trap handling is enabled on arm64 Mac and in simulators on x64 on Linux,
       # Mac, and Windows.
-      if ((current_cpu == "arm64" && is_mac) ||
+      if ((current_cpu == "arm64" && is_apple) ||
           (current_cpu == "x64" && (is_linux || is_chromeos || is_mac))) {
         sources += [
           "src/trap-handler/handler-inside-posix.cc",
@@ -5741,7 +5756,6 @@ v8_component("v8_libbase") {
         sources += [
           "src/base/debug/stack_trace_posix.cc",
           "src/base/platform/platform-darwin.cc",
-          "src/base/platform/platform-macos.cc",
         ]
       } else {
         sources += [
@@ -5769,7 +5783,6 @@ v8_component("v8_libbase") {
     sources += [
       "src/base/debug/stack_trace_posix.cc",
       "src/base/platform/platform-darwin.cc",
-      "src/base/platform/platform-macos.cc",
     ]
   } else if (is_ios) {
     sources += [
