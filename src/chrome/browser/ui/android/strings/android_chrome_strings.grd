@@ -321,11 +321,11 @@ CHAR_LIMIT guidelines:
       <message name="IDS_ALLOW_CHROME_SIGNIN_SUMMARY" desc="Summary for a checkbox in Google services that controls sign-in and sync prompts.">
         Shows prompts to sign in to Thorium
       </message>
-      <message name="IDS_AUTOCOMPLETE_SEARCHES_AND_URLS_TITLE" desc="Title for a checkbox in Settings that controls URL and search autocompletion and informs the user about the data shared by this feature.">
-        Autocomplete searches and URLs
+      <message name="IDS_IMPROVE_SEARCH_SUGGESTIONS_TITLE" desc="Title for a checkbox in Settings that controls URL and search autocompletion and informs the user about the data shared by this feature.">
+        Improve search suggestions
       </message>
-      <message name="IDS_AUTOCOMPLETE_SEARCHES_AND_URLS_SUMMARY" desc="Summary for a checkbox in Settings that controls URL and search autocompletion and informs the user about the data shared by this feature.">
-        Sends some cookies and searches from the address bar and search box to your default search engine
+      <message name="IDS_IMPROVE_SEARCH_SUGGESTIONS_SUMMARY" desc="Summary for a checkbox in Settings that controls URL and search autocompletion and informs the user about the data shared by this feature.">
+        When you type in the address bar or search box, Thorium sends what you type to your default search engine to get better suggestions. This is off in Incognito.
       </message>
       <message name ="IDS_SETTINGS_INCOGNITO_TAB_LOCK_TITLE" desc = "Title for a toggle in Settings that allows users to lock their existing Incognito tabs with a device reauthentication mechanism.">
         Lock Incognito tabs when you leave Thorium
@@ -1346,6 +1346,9 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_TITLE" desc="Label of the dropdown that selects the time range for which browsing data will be deleted.">
         Time range
+      </message>
+      <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_15_MINUTES" desc="The option to delete browsing data from the last 15 minutes.">
+        Last 15 minutes
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_HOUR" desc="The option to delete browsing data from the last hour.">
         Last hour
@@ -3048,17 +3051,32 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_SIGNIN_TITLE" desc="Title for the screen that asks users to sign-in and turn on Sync. [CHAR_LIMIT=27]">
         Turn on sync?
       </message>
-      <message name="IDS_SYNC_CONSENT_TITLE" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on sync. 'Sync' is short for 'synchronization'. The tone should be informative and inviting. [CHAR_LIMIT=35]">
-        Turn on sync
+      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_A" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. The value proposition of sync here is to allow a user to proceed their web navigation on a different device. The tone should be informative and inviting. [CHAR_LIMIT=35]">
+        Pick up where you left off
       </message>
-      <message name="IDS_SYNC_CONSENT_TITLE_VARIATION" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on sync. 'Sync' is short for 'synchronization'. [CHAR_LIMIT=20]">
-        Sync
+      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_B" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Devices include phones, tables and computers. The tone should be informative and inviting. [CHAR_LIMIT=35]">
+        Browse across devices
       </message>
-      <message name="IDS_SYNC_CONSENT_SUBTITLE" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on sync. This string explains to users that they can back up their Thorium data and use it on all their computers, phones, and other devices; a user's Thorium data includes their bookmarks, passwords, history, settings, and more. The word 'stuff' can be translated as 'data' or similar if there is no natural translation of 'stuff'. Maintain the level of formality that your language generally uses in the Thorium app. The tone should be informative and inviting. [CHAR_LIMIT=100]">
-        Back up your stuff and use it on any device
+      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_C" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Typing refers to typing urls in the address bar. The tone should be informative and inviting. [CHAR_LIMIT=35]">
+        Save time and type less
       </message>
-      <message name="IDS_SYNC_CONSENT_SUBTITLE_VARIATION" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on sync. This string explains to users that they can get their Thorium data on all their computers, phones, and other devices; a user's Thorium data includes their bookmarks, passwords, history, settings, and more. Maintain the level of formality that your language generally uses in the Thorium app. The tone should be informative and inviting. [CHAR_LIMIT=100]">
-        Sync your data on all devices
+      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_D" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Suggestions refers to suggested entries in the address bar. The tone should be informative and inviting. [CHAR_LIMIT=35]">
+        Get better suggestions
+      </message>
+      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_E" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. The tone should be informative and inviting. [CHAR_LIMIT=35]">
+        Sync your tabs and history
+      </message>
+      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_A" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. Devices include phones, tablets and computers. The tone should be informative and inviting. [CHAR_LIMIT=100]">
+        To continue browsing on another device, sync your tabs and history
+      </message>
+      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_C" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. The tone should be informative and inviting. [CHAR_LIMIT=100]">
+        To quickly get back to sites you’ve visited, sync your tabs and history
+      </message>
+      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_D" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. The tone should be informative and inviting. [CHAR_LIMIT=100]">
+        To see better suggestions in your address bar, sync your tabs and history
+      </message>
+      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_E" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. Devices include phones, tablets and computers. The tone should be informative and inviting. [CHAR_LIMIT=100]">
+        To get back to the sites you’ve visited on other devices, sync your tabs and history
       </message>
       <message name="IDS_SIGNIN_SYNC_TITLE" desc="Title of Sync feature for the screen that asks users to sign-in and turn on Sync.">
         Sync your passwords, history &amp; more on all devices
@@ -3071,15 +3089,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SYNC_CONSENT_DETAILS_DESCRIPTION" desc="This string appears in the footer on a full-page screen that asks users if they want to turn on sync. 'Sync' is short for 'synchronization'. The first sentence informs the user where they can go to change their mind or to customize what Thorium data types they choose to sync (a user's Thorium data includes their bookmarks, passwords, history, settings, and more). The second sentence informs the user that if they choose to sync, then their history may be used to personalize Search and other services. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. [CHAR_LIMIT=200].">
         You can always choose what to sync in <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>settings<ph name="END_LINK1">&lt;/LINK1&gt;</ph>. Google may personalize Search and other services based on your history.
-      </message>
-      <message name="IDS_SYNC_CONSENT_BOOKMARKS_TEXT" desc="This string appears as an item in a list of sync data types on a full-page screen that asks users if they want to turn on sync. Translate 'bookmarks' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c31bb. [CHAR_LIMIT=25]">
-        Bookmarks
-      </message>
-      <message name="IDS_SYNC_CONSENT_AUTOFILL_TEXT" desc="This string appears as an item in a list of sync data types on a full-page screen that asks users if they want to turn on sync. Translate 'autofill' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3626. [CHAR_LIMIT=25]">
-        Autofill
-      </message>
-      <message name="IDS_SYNC_CONSENT_HISTORY_TEXT" desc="This string appears as an item in a list of sync data types on a full-page screen that asks users if they want to turn on sync. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. Translate 'and more' so that it conveys that there are additional similar items that are not listed. [CHAR_LIMIT=30]">
-        History and more
       </message>
       <message name="IDS_SIGNIN_ACCEPT_BUTTON" desc="Text for the confirmation button in the sign-in screen. By clicking this button users signs in and turns on Sync. [CHAR_LIMIT=20]">
         Yes, I'm in
@@ -3395,7 +3404,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Restore tab group of <ph name="TAB_COUNT">%1$s<ex>5</ex></ph> tabs as a new background tab group.
       </message>
       <message name="IDS_WEB_FEED_AWARENESS" desc="Educating the user about the web feed.">
-        See content you follow here
+        Explore content to follow
       </message>
 
       <!-- Video tutorials -->
@@ -3603,6 +3612,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_MENU_HISTORY" desc="Menu item for opening the history page. [CHAR_LIMIT=27]">
         History
       </message>
+      <message name="IDS_MENU_QUICK_DELETE" desc="Menu item for quick delete functionality that allows users to quickly delete their last 15 minutes browsing data. [CHAR_LIMIT=27]">
+        Delete last 15 minutes
+      </message>
       <message name="IDS_MENU_DOWNLOADS" desc="Menu item for opening the downloads page. [CHAR_LIMIT=27]">
         Downloads
       </message>
@@ -3611,12 +3623,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_MENU_EDIT_BOOKMARK" desc="Menu item for editing the content of the bookmark for the current page. [CHAR_LIMIT=27]">
         Edit Bookmark
-      </message>
-      <message name="IDS_MENU_ADD_TO_READING_LIST" desc="Menu item for adding the current page to the reading list. [CHAR_LIMIT=27]">
-        Add to reading list
-      </message>
-      <message name="IDS_MENU_DELETE_FROM_READING_LIST" desc="Menu item for removing the current page from the reading list. [CHAR_LIMIT=27]">
-        Delete from reading list
       </message>
       <message name="IDS_MENU_FIND_IN_PAGE" desc="Menu item allowing users to find text within the current page. [CHAR_LIMIT=27]">
         Find in page
@@ -4032,7 +4038,16 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Switch or close tabs
       </message>
       <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_IDENTITY_DISC" desc="The content description for a toolbar button displaying user profile picture. Tapping on this button navigates to 'Sync and Google services' page in settings">
-        Manage account
+              Manage account
+      </message>
+      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_IDENTITY_DISC_WITH_NAME_AND_EMAIL" desc="The content description for a toolbar button displaying user profile picture. Tapping on this button navigates to 'Sync and Google services' page in settings">
+        Signed in as <ph name="USER_NAME">%1$s<ex>Peter Parker</ex></ph>. <ph name="USER_EMAIL">%2$s<ex>peter.parker@gmail.com</ex></ph>. Button. Opens settings.
+      </message>
+      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_IDENTITY_DISC_WITH_NAME" desc="The content description for a toolbar button displaying user profile picture, for users who don't have a readable email address. Tapping on this button navigates to 'Sync and Google services' page in settings">
+              Signed in as <ph name="USER_NAME">%s<ex>Bruce Wayne</ex></ph>. Button. Opens settings.
+      </message>
+      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_SIGNED_OUT_IDENTITY_DISC" desc="The content description for a toolbar button displaying the signed-out avatar. Tapping on this button navigates to 'Turn on Sync' page in settings">
+        Signed out. Button. Opens dialog to sign in and turn on sync.
       </message>
       <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_HOME" desc="Content description for the home button.">
         Home
@@ -4170,7 +4185,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Send to your devices
       </message>
 
-      <!-- Omnibox Autocomplete -->
+      <!-- Omnibox Suggestions -->
       <message name="IDS_OMNIBOX_CONFIRM_DELETE" desc="A message within a modal dialog that confirms the user wants to delete a suggestion from the list dropdown in the omnibox">
         Remove suggestion from history?
       </message>
@@ -5241,10 +5256,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save to device
       </message>
 
-      <message name="IDS_SHARING_COPIED" desc="Text shown in the toast notification when Copy is selected in the sharing hub.">
-        Copied
-      </message>
-
       <message name="IDS_TEXT_COPIED" desc="Text shown in the toast notification when Copy Text is selected in the sharing hub.">
         Text Copied
       </message>
@@ -5558,9 +5569,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- WebID Account Selection strings -->
-      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_AUTO" desc="Header for sign in sheet. Sheet is shown to inform user of sign in. Sign in occurs automatically. (User can cancel)." translateable="false">
-        Signing in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
-      </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet. Sheet is shown to prompt user for sign in consent.">
         Sign in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
       </message>
@@ -5592,7 +5600,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_ACCOUNT_SELECTION_SHEET_CLOSED" desc="Accessibility string read when the Account Selection bottom sheet showing a list of the user's accounts is closed." is_accessibility_with_no_ui="true">
         Sign in bottom sheet is closed.
       </message>
-      <message name="IDS_VERIFY_SHEET_TITLE" desc="Header for verify sheet.">
+      <message name="IDS_VERIFY_SHEET_TITLE_AUTO_REAUTHN" desc="Header for verify sheet for auto re-authentication.">
+        Signing you in…
+      </message>
+      <message name="IDS_VERIFY_SHEET_TITLE" desc="Header for verify sheet for explicit sign-in.">
         Verifying…
       </message>
 
@@ -5625,6 +5636,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SETTINGS_HTTPS_FIRST_MODE_SUMMARY" desc="Secondary, continued explanation of HTTPS-First Mode in settings.">
         Upgrade navigations to HTTPS and warn you before loading sites that don’t support it
+      </message>
+      <message name="IDS_SETTINGS_HTTPS_FIRST_MODE_WITH_ADVANCED_PROTECTION_SUMMARY" desc="Secondary, continued explanation of HTTPS-Only Mode in Security settings when the user can't change the setting">
+        Upgrade navigations to HTTPS and warn you before loading sites that don’t support it. You can’t change this setting because you have Advanced Protection enabled.
       </message>
 
       <!-- Auto-darken web content -->
