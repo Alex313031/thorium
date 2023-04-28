@@ -135,17 +135,8 @@ static const char* kBadFlags[] = {
     // be possible to read GPU data for other Chromium processes.
     // switches::kEnableUnsafeWebGPU, (Disabled by Alex313031)
 
-    // A flag to support local file based WebBundle loading, only for testing
-    // purpose.
-    switches::kTrustableWebBundleFileUrl,
-
     // A flag to bypass the WebHID blocklist for testing purposes.
     switches::kDisableHidBlocklist,
-
-    // This flag enables restricted APIs (which unlock capabilities
-    // with a high potential for security / privacy abuse) for specified
-    // origins.
-    switches::kIsolatedAppOrigins,
 
     // This flag tells Chrome to automatically install an Isolated Web App in
     // developer mode. The flag should contain the path to an unsigned Web
@@ -178,7 +169,6 @@ static const base::Feature* kBadFeatureFlagsInAboutFlags[] = {
     &features::kIsolatedWebApps,
     &features::kIsolatedWebAppDevMode,
 
-    &features::kWebBundlesFromNetwork,
 #if BUILDFLAG(IS_ANDROID)
     &chrome::android::kCommandLineOnNonRooted,
 #endif
