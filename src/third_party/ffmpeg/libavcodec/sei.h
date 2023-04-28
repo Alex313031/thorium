@@ -26,7 +26,7 @@
 // The content of the payload data depends on the standard, though
 // many generic parts have the same interpretation everywhere (such as
 // mastering-display-colour-volume and user-data-unregistered).
-enum {
+enum SEIType {
     SEI_TYPE_BUFFERING_PERIOD                            = 0,
     SEI_TYPE_PIC_TIMING                                  = 1,
     SEI_TYPE_PAN_SCAN_RECT                               = 2,
@@ -136,5 +136,22 @@ enum {
     SEI_TYPE_SUBPIC_LEVEL_INFO                           = 203,
     SEI_TYPE_SAMPLE_ASPECT_RATIO_INFO                    = 204,
 };
+
+/**
+ * frame_packing_arrangement types. H.265 and H.274 use only 3..5
+ * with all the other values being reserved. H.264 uses a few more values
+ * that are prefixed with SEI_FPA_H264 in the enum below.
+ *
+ * The semantics of the common values are the same for all standards.
+ */
+typedef enum {
+    SEI_FPA_H264_TYPE_CHECKERBOARD        = 0,
+    SEI_FPA_H264_TYPE_INTERLEAVE_COLUMN   = 1,
+    SEI_FPA_H264_TYPE_INTERLEAVE_ROW      = 2,
+    SEI_FPA_TYPE_SIDE_BY_SIDE             = 3,
+    SEI_FPA_TYPE_TOP_BOTTOM               = 4,
+    SEI_FPA_TYPE_INTERLEAVE_TEMPORAL      = 5,
+    SEI_FPA_H264_TYPE_2D                  = 6,
+} SEIFpaType;
 
 #endif /* AVCODEC_SEI_H */

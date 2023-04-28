@@ -336,6 +336,8 @@ class SourceSet(object):
         platform_condition = None
       elif condition.PLATFORM == 'linux':
         platform_condition = 'use_linux_config'
+      elif condition.PLATFORM == 'mac':
+        platform_condition = 'is_apple'
       else:
         platform_condition = 'is_%s' % condition.PLATFORM
 

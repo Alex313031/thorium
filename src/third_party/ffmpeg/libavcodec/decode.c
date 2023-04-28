@@ -132,38 +132,16 @@ fail2:
     return 0;
 }
 
-#define IS_EMPTY(pkt) (!(pkt)->data)
-
-static int copy_packet_props(AVPacket *dst, const AVPacket *src)
-{
-    int ret = av_packet_copy_props(dst, src);
-    if (ret < 0)
-        return ret;
-
-    dst->size = src->size; // HACK: Needed for ff_decode_frame_props().
-    dst->data = (void*)1;  // HACK: Needed for IS_EMPTY().
-
-    return 0;
-}
-
 static int extract_packet_props(AVCodecInternal *avci, const AVPacket *pkt)
 {
-    AVPacket tmp = { 0 };
     int ret = 0;
 
-    if (IS_EMPTY(avci->last_pkt_props)) {
-        if (av_fifo_read(avci->pkt_props, avci->last_pkt_props, 1) < 0)
-            return copy_packet_props(avci->last_pkt_props, pkt);
+    av_packet_unref(avci->last_pkt_props);
+    if (pkt) {
+        ret = av_packet_copy_props(avci->last_pkt_props, pkt);
+        if (!ret)
+            avci->last_pkt_props->opaque = (void *)(intptr_t)pkt->size; // Needed for ff_decode_frame_props().
     }
-
-    ret = copy_packet_props(&tmp, pkt);
-    if (ret < 0)
-        return ret;
-
-    ret = av_fifo_write(avci->pkt_props, &tmp, 1);
-    if (ret < 0)
-        av_packet_unref(&tmp);
-
     return ret;
 }
 
@@ -483,7 +461,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     if (ret >= pkt->size || ret < 0) {
         av_packet_unref(pkt);
-        av_packet_unref(avci->last_pkt_props);
     } else {
         int consumed = ret;
 
@@ -492,7 +469,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
         pkt->pts                  = AV_NOPTS_VALUE;
         pkt->dts                  = AV_NOPTS_VALUE;
         if (!(codec->caps_internal & FF_CODEC_CAP_SETS_FRAME_PROPS)) {
-            avci->last_pkt_props->size -= consumed; // See extract_packet_props() comment.
+            // See extract_packet_props() comment.
+            avci->last_pkt_props->opaque = (void *)((intptr_t)avci->last_pkt_props->opaque - consumed);
             avci->last_pkt_props->pts = AV_NOPTS_VALUE;
             avci->last_pkt_props->dts = AV_NOPTS_VALUE;
         }
@@ -578,8 +556,6 @@ static int decode_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
 
     if (codec->cb_type == FF_CODEC_CB_TYPE_RECEIVE_FRAME) {
         ret = codec->cb.receive_frame(avctx, frame);
-        if (ret != AVERROR(EAGAIN))
-            av_packet_unref(avci->last_pkt_props);
     } else
         ret = decode_simple_receive_frame(avctx, frame);
 
@@ -591,12 +567,6 @@ static int decode_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
     if (ok < 0) {
         av_frame_unref(frame);
         return ok;
-    }
-
-    if (!(codec->caps_internal & FF_CODEC_CAP_SETS_FRAME_PROPS) &&
-        IS_EMPTY(avci->last_pkt_props)) {
-        // May fail if the FIFO is empty.
-        av_fifo_read(avci->pkt_props, avci->last_pkt_props, 1);
     }
 
     if (!ret) {
@@ -697,6 +667,33 @@ static int apply_cropping(AVCodecContext *avctx, AVFrame *frame)
                                           AV_FRAME_CROP_UNALIGNED : 0);
 }
 
+// make sure frames returned to the caller are valid
+static int frame_validate(AVCodecContext *avctx, AVFrame *frame)
+{
+    if (!frame->buf[0] || frame->format < 0)
+        goto fail;
+
+    switch (avctx->codec_type) {
+    case AVMEDIA_TYPE_VIDEO:
+        if (frame->width <= 0 || frame->height <= 0)
+            goto fail;
+        break;
+    case AVMEDIA_TYPE_AUDIO:
+        if (!av_channel_layout_check(&frame->ch_layout) ||
+            frame->sample_rate <= 0)
+            goto fail;
+
+        break;
+    default: av_assert0(0);
+    }
+
+    return 0;
+fail:
+    av_log(avctx, AV_LOG_ERROR, "An invalid frame was output by a decoder. "
+           "This is a bug, please report it.\n");
+    return AVERROR_BUG;
+}
+
 int ff_decode_receive_frame(AVCodecContext *avctx, AVFrame *frame)
 {
     AVCodecInternal *avci = avctx->internal;
@@ -713,12 +710,14 @@ int ff_decode_receive_frame(AVCodecContext *avctx, AVFrame *frame)
             return ret;
     }
 
+    ret = frame_validate(avctx, frame);
+    if (ret < 0)
+        goto fail;
+
     if (avctx->codec_type == AVMEDIA_TYPE_VIDEO) {
         ret = apply_cropping(avctx, frame);
-        if (ret < 0) {
-            av_frame_unref(frame);
-            return ret;
-        }
+        if (ret < 0)
+            goto fail;
     }
 
     avctx->frame_number++;
@@ -736,10 +735,8 @@ int ff_decode_receive_frame(AVCodecContext *avctx, AVFrame *frame)
                 avci->initial_sample_rate = frame->sample_rate ? frame->sample_rate :
                                                                  avctx->sample_rate;
                 ret = av_channel_layout_copy(&avci->initial_ch_layout, &frame->ch_layout);
-                if (ret < 0) {
-                    av_frame_unref(frame);
-                    return ret;
-                }
+                if (ret < 0)
+                    goto fail;
                 break;
             }
         }
@@ -765,12 +762,15 @@ int ff_decode_receive_frame(AVCodecContext *avctx, AVFrame *frame)
                                             " drop count: %d \n",
                                             avctx->frame_number, frame->pts,
                                             avci->changed_frames_dropped);
-                av_frame_unref(frame);
-                return AVERROR_INPUT_CHANGED;
+                ret = AVERROR_INPUT_CHANGED;
+                goto fail;
             }
         }
     }
     return 0;
+fail:
+    av_frame_unref(frame);
+    return ret;
 }
 
 static void get_subtitle_defaults(AVSubtitle *sub)
@@ -1291,9 +1291,8 @@ static int add_metadata_from_side_data(const AVPacket *avpkt, AVFrame *frame)
     return av_packet_unpack_dictionary(side_metadata, size, frame_md);
 }
 
-int ff_decode_frame_props(AVCodecContext *avctx, AVFrame *frame)
+int ff_decode_frame_props_from_pkt(AVFrame *frame, const AVPacket *pkt)
 {
-    AVPacket *pkt = avctx->internal->last_pkt_props;
     static const struct {
         enum AVPacketSideDataType packet;
         enum AVFrameSideDataType frame;
@@ -1311,32 +1310,44 @@ int ff_decode_frame_props(AVCodecContext *avctx, AVFrame *frame)
         { AV_PKT_DATA_DYNAMIC_HDR10_PLUS,         AV_FRAME_DATA_DYNAMIC_HDR_PLUS },
     };
 
+    frame->pts          = pkt->pts;
+    frame->pkt_pos      = pkt->pos;
+    frame->duration     = pkt->duration;
+    frame->pkt_size     = pkt->size;
+
+    for (int i = 0; i < FF_ARRAY_ELEMS(sd); i++) {
+        size_t size;
+        uint8_t *packet_sd = av_packet_get_side_data(pkt, sd[i].packet, &size);
+        if (packet_sd) {
+            AVFrameSideData *frame_sd = av_frame_new_side_data(frame,
+                                                               sd[i].frame,
+                                                               size);
+            if (!frame_sd)
+                return AVERROR(ENOMEM);
+
+            memcpy(frame_sd->data, packet_sd, size);
+        }
+    }
+    add_metadata_from_side_data(pkt, frame);
+
+    if (pkt->flags & AV_PKT_FLAG_DISCARD) {
+        frame->flags |= AV_FRAME_FLAG_DISCARD;
+    } else {
+        frame->flags = (frame->flags & ~AV_FRAME_FLAG_DISCARD);
+    }
+
+    return 0;
+}
+
+int ff_decode_frame_props(AVCodecContext *avctx, AVFrame *frame)
+{
+    const AVPacket *pkt = avctx->internal->last_pkt_props;
+
     if (!(ffcodec(avctx->codec)->caps_internal & FF_CODEC_CAP_SETS_FRAME_PROPS)) {
-        frame->pts = pkt->pts;
-        frame->pkt_pos      = pkt->pos;
-        frame->duration     = pkt->duration;
-        frame->pkt_size     = pkt->size;
-
-        for (int i = 0; i < FF_ARRAY_ELEMS(sd); i++) {
-            size_t size;
-            uint8_t *packet_sd = av_packet_get_side_data(pkt, sd[i].packet, &size);
-            if (packet_sd) {
-                AVFrameSideData *frame_sd = av_frame_new_side_data(frame,
-                                                                   sd[i].frame,
-                                                                   size);
-                if (!frame_sd)
-                    return AVERROR(ENOMEM);
-
-                memcpy(frame_sd->data, packet_sd, size);
-            }
-        }
-        add_metadata_from_side_data(pkt, frame);
-
-        if (pkt->flags & AV_PKT_FLAG_DISCARD) {
-            frame->flags |= AV_FRAME_FLAG_DISCARD;
-        } else {
-            frame->flags = (frame->flags & ~AV_FRAME_FLAG_DISCARD);
-        }
+        int ret = ff_decode_frame_props_from_pkt(frame, pkt);
+        if (ret < 0)
+            return ret;
+        frame->pkt_size     = (int)(intptr_t)pkt->opaque;
     }
     frame->reordered_opaque = avctx->reordered_opaque;
 
@@ -1651,9 +1662,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     avci->in_pkt         = av_packet_alloc();
     avci->last_pkt_props = av_packet_alloc();
-    avci->pkt_props      = av_fifo_alloc2(1, sizeof(*avci->last_pkt_props),
-                                          AV_FIFO_FLAG_AUTO_GROW);
-    if (!avci->in_pkt || !avci->last_pkt_props || !avci->pkt_props)
+    if (!avci->in_pkt || !avci->last_pkt_props)
         return AVERROR(ENOMEM);
 
     ret = decode_bsfs_init(avctx);

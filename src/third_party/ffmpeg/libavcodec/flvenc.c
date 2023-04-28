@@ -25,7 +25,7 @@
 #include "mpegvideodata.h"
 #include "mpegvideoenc.h"
 
-void ff_flv_encode_picture_header(MpegEncContext *s, int picture_number)
+void ff_flv_encode_picture_header(MpegEncContext *s)
 {
     int format;
 
@@ -105,4 +105,5 @@ const FFCodec ff_flv_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .p.pix_fmts     = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P,
                                                      AV_PIX_FMT_NONE},
+    .p.capabilities = AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
 };

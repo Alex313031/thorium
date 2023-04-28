@@ -52,7 +52,7 @@ typedef struct H261EncContext {
     } format;
 } H261EncContext;
 
-void ff_h261_encode_picture_header(MpegEncContext *s, int picture_number)
+void ff_h261_encode_picture_header(MpegEncContext *s)
 {
     H261EncContext *const h = (H261EncContext *)s;
     int temp_ref;
@@ -413,4 +413,5 @@ const FFCodec ff_h261_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .p.pix_fmts     = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P,
                                                      AV_PIX_FMT_NONE },
+    .p.capabilities = AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
 };

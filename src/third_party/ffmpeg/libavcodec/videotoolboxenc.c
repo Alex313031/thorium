@@ -399,6 +399,10 @@ static int count_nalus(size_t length_code_size,
                                             length_code_size,
                                             size_buf);
 
+        if (status != kCMBlockBufferNoErr) {
+            return AVERROR_EXTERNAL;
+        }
+
         for (i = 0; i < length_code_size; i++) {
             box_len <<= 8;
             box_len |= size_buf[i];
@@ -843,13 +847,22 @@ static int get_cv_pixel_format(AVCodecContext* avctx,
                                int* av_pixel_format,
                                int* range_guessed)
 {
+    const char *range_name;
     if (range_guessed) *range_guessed = range != AVCOL_RANGE_MPEG &&
                                         range != AVCOL_RANGE_JPEG;
 
     //MPEG range is used when no range is set
     *av_pixel_format = av_map_videotoolbox_format_from_pixfmt2(fmt, range == AVCOL_RANGE_JPEG);
+    if (*av_pixel_format)
+        return 0;
 
-    return *av_pixel_format ? 0 : AVERROR(EINVAL);
+    range_name = av_color_range_name(range);
+    av_log(avctx, AV_LOG_ERROR,
+        "Could not get pixel format for color format '%s' range '%s'.\n",
+        av_get_pix_fmt_name(fmt),
+        range_name ? range_name : "Unknown");
+
+    return AVERROR(EINVAL);
 }
 
 static void add_color_attr(AVCodecContext *avctx, CFMutableDictionaryRef dict) {
@@ -1637,7 +1650,6 @@ static int find_sei_end(AVCodecContext *avctx,
 {
     int nal_type;
     size_t sei_payload_size = 0;
-    int sei_payload_type = 0;
     *sei_end = NULL;
     uint8_t *nal_start = nal_data;
 
@@ -1656,7 +1668,6 @@ static int find_sei_end(AVCodecContext *avctx,
 
     while (nal_size > 0 && *nal_data > 0) {
         do{
-            sei_payload_type += *nal_data;
             nal_data++;
             nal_size--;
         } while (nal_size > 0 && *nal_data == 0xFF);
@@ -2144,18 +2155,8 @@ static int get_cv_pixel_info(
         return AVERROR(EINVAL);
 
     status = get_cv_pixel_format(avctx, av_format, av_color_range, color, &range_guessed);
-    if (status) {
-        av_log(avctx,
-            AV_LOG_ERROR,
-            "Could not get pixel format for color format '%s' range '%s'.\n",
-            av_get_pix_fmt_name(av_format),
-            av_color_range > AVCOL_RANGE_UNSPECIFIED &&
-            av_color_range < AVCOL_RANGE_NB ?
-               av_color_range_name(av_color_range) :
-               "Unknown");
-
-        return AVERROR(EINVAL);
-    }
+    if (status)
+        return status;
 
     if (range_guessed) {
         if (!vtctx->warned_color_range) {
@@ -2337,7 +2338,7 @@ static int create_cv_pixel_buffer(AVCodecContext   *avctx,
             status
         );
 
-        return AVERROR_EXTERNAL;
+        return status;
     }
 
     pix_buf_pool = VTCompressionSessionGetPixelBufferPool(vtctx->session);
@@ -2554,6 +2555,7 @@ static int vtenc_populate_extradata(AVCodecContext   *avctx,
     pool = VTCompressionSessionGetPixelBufferPool(vtctx->session);
     if(!pool){
         av_log(avctx, AV_LOG_ERROR, "Error getting pixel buffer pool.\n");
+        status = AVERROR_EXTERNAL;
         goto pe_cleanup;
     }
 
@@ -2563,6 +2565,7 @@ static int vtenc_populate_extradata(AVCodecContext   *avctx,
 
     if(status != kCVReturnSuccess){
         av_log(avctx, AV_LOG_ERROR, "Error creating frame from pool: %d\n", status);
+        status = AVERROR_EXTERNAL;
         goto pe_cleanup;
     }
 
@@ -2580,7 +2583,7 @@ static int vtenc_populate_extradata(AVCodecContext   *avctx,
                AV_LOG_ERROR,
                "Error sending frame for extradata: %d\n",
                status);
-
+        status = AVERROR_EXTERNAL;
         goto pe_cleanup;
     }
 
@@ -2588,8 +2591,10 @@ static int vtenc_populate_extradata(AVCodecContext   *avctx,
     status = VTCompressionSessionCompleteFrames(vtctx->session,
                                                 kCMTimeIndefinite);
 
-    if (status)
+    if (status) {
+        status = AVERROR_EXTERNAL;
         goto pe_cleanup;
+    }
 
     status = vtenc_q_pop(vtctx, 0, &buf, NULL);
     if (status) {

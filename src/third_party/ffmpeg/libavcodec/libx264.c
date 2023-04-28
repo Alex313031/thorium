@@ -21,6 +21,7 @@
 
 #include "config_components.h"
 
+#include "libavutil/buffer.h"
 #include "libavutil/eval.h"
 #include "libavutil/internal.h"
 #include "libavutil/opt.h"
@@ -51,6 +52,10 @@
 typedef struct X264Opaque {
     int64_t reordered_opaque;
     int64_t wallclock;
+    int64_t duration;
+
+    void        *frame_opaque;
+    AVBufferRef *frame_opaque_ref;
 } X264Opaque;
 
 typedef struct X264Context {
@@ -133,6 +138,11 @@ static void X264_log(void *p, int level, const char *fmt, va_list args)
     av_vlog(p, level_map[level], fmt, args);
 }
 
+static void opaque_uninit(X264Opaque *o)
+{
+    av_buffer_unref(&o->frame_opaque_ref);
+    memset(o, 0, sizeof(*o));
+}
 
 static int encode_nals(AVCodecContext *ctx, AVPacket *pkt,
                        const x264_nal_t *nals, int nnal)
@@ -333,189 +343,232 @@ static enum AVPixelFormat csp_to_pixfmt(int csp)
     return AV_PIX_FMT_NONE;
 }
 
-static int X264_frame(AVCodecContext *ctx, AVPacket *pkt, const AVFrame *frame,
-                      int *got_packet)
+static int setup_roi(AVCodecContext *ctx, x264_picture_t *pic, int bit_depth,
+                     const AVFrame *frame, const uint8_t *data, size_t size)
 {
     X264Context *x4 = ctx->priv_data;
-    x264_nal_t *nal;
-    int nnal, i, ret;
-    x264_picture_t pic_out = {0};
-    int pict_type;
-    int bit_depth;
+
+    int mbx = (frame->width + MB_SIZE - 1) / MB_SIZE;
+    int mby = (frame->height + MB_SIZE - 1) / MB_SIZE;
+    int qp_range = 51 + 6 * (bit_depth - 8);
+    int nb_rois;
+    const AVRegionOfInterest *roi;
+    uint32_t roi_size;
+    float *qoffsets;
+
+    if (x4->params.rc.i_aq_mode == X264_AQ_NONE) {
+        if (!x4->roi_warned) {
+            x4->roi_warned = 1;
+            av_log(ctx, AV_LOG_WARNING, "Adaptive quantization must be enabled to use ROI encoding, skipping ROI.\n");
+        }
+        return 0;
+    } else if (frame->interlaced_frame) {
+        if (!x4->roi_warned) {
+            x4->roi_warned = 1;
+            av_log(ctx, AV_LOG_WARNING, "interlaced_frame not supported for ROI encoding yet, skipping ROI.\n");
+        }
+        return 0;
+    }
+
+    roi = (const AVRegionOfInterest*)data;
+    roi_size = roi->self_size;
+    if (!roi_size || size % roi_size != 0) {
+        av_log(ctx, AV_LOG_ERROR, "Invalid AVRegionOfInterest.self_size.\n");
+        return AVERROR(EINVAL);
+    }
+    nb_rois = size / roi_size;
+
+    qoffsets = av_calloc(mbx * mby, sizeof(*qoffsets));
+    if (!qoffsets)
+        return AVERROR(ENOMEM);
+
+    // This list must be iterated in reverse because the first
+    // region in the list applies when regions overlap.
+    for (int i = nb_rois - 1; i >= 0; i--) {
+        int startx, endx, starty, endy;
+        float qoffset;
+
+        roi = (const AVRegionOfInterest*)(data + roi_size * i);
+
+        starty = FFMIN(mby, roi->top / MB_SIZE);
+        endy   = FFMIN(mby, (roi->bottom + MB_SIZE - 1)/ MB_SIZE);
+        startx = FFMIN(mbx, roi->left / MB_SIZE);
+        endx   = FFMIN(mbx, (roi->right + MB_SIZE - 1)/ MB_SIZE);
+
+        if (roi->qoffset.den == 0) {
+            av_free(qoffsets);
+            av_log(ctx, AV_LOG_ERROR, "AVRegionOfInterest.qoffset.den must not be zero.\n");
+            return AVERROR(EINVAL);
+        }
+        qoffset = roi->qoffset.num * 1.0f / roi->qoffset.den;
+        qoffset = av_clipf(qoffset * qp_range, -qp_range, +qp_range);
+
+        for (int y = starty; y < endy; y++) {
+            for (int x = startx; x < endx; x++) {
+                qoffsets[x + y*mbx] = qoffset;
+            }
+        }
+    }
+
+    pic->prop.quant_offsets = qoffsets;
+    pic->prop.quant_offsets_free = av_free;
+
+    return 0;
+}
+
+static int setup_frame(AVCodecContext *ctx, const AVFrame *frame,
+                       x264_picture_t **ppic)
+{
+    X264Context *x4 = ctx->priv_data;
+    X264Opaque  *opaque = &x4->reordered_opaque[x4->next_reordered_opaque];
+    x264_picture_t *pic = &x4->pic;
+    x264_sei_t     *sei = &pic->extra_sei;
+    unsigned int sei_data_size = 0;
     int64_t wallclock = 0;
-    X264Opaque *out_opaque;
+    int bit_depth, ret;
     AVFrameSideData *sd;
 
-    x264_picture_init( &x4->pic );
-    x4->pic.img.i_csp   = x4->params.i_csp;
+    *ppic = NULL;
+    if (!frame)
+        return 0;
+
+    x264_picture_init(pic);
+    pic->img.i_csp   = x4->params.i_csp;
 #if X264_BUILD >= 153
     bit_depth = x4->params.i_bitdepth;
 #else
     bit_depth = x264_bit_depth;
 #endif
     if (bit_depth > 8)
-        x4->pic.img.i_csp |= X264_CSP_HIGH_DEPTH;
-    x4->pic.img.i_plane = avfmt2_num_planes(ctx->pix_fmt);
+        pic->img.i_csp |= X264_CSP_HIGH_DEPTH;
+    pic->img.i_plane = avfmt2_num_planes(ctx->pix_fmt);
 
-    if (frame) {
-        x264_sei_t *sei = &x4->pic.extra_sei;
-        unsigned int sei_data_size = 0;
+    for (int i = 0; i < pic->img.i_plane; i++) {
+        pic->img.plane[i]    = frame->data[i];
+        pic->img.i_stride[i] = frame->linesize[i];
+    }
 
-        for (i = 0; i < x4->pic.img.i_plane; i++) {
-            x4->pic.img.plane[i]    = frame->data[i];
-            x4->pic.img.i_stride[i] = frame->linesize[i];
-        }
+    pic->i_pts  = frame->pts;
 
-        x4->pic.i_pts  = frame->pts;
+    opaque_uninit(opaque);
 
-        x4->reordered_opaque[x4->next_reordered_opaque].reordered_opaque = frame->reordered_opaque;
-        x4->reordered_opaque[x4->next_reordered_opaque].wallclock = wallclock;
-        if (ctx->export_side_data & AV_CODEC_EXPORT_DATA_PRFT)
-            x4->reordered_opaque[x4->next_reordered_opaque].wallclock = av_gettime();
-        x4->pic.opaque = &x4->reordered_opaque[x4->next_reordered_opaque];
-        x4->next_reordered_opaque++;
-        x4->next_reordered_opaque %= x4->nb_reordered_opaque;
+    if (ctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+        opaque->frame_opaque = frame->opaque;
+        ret = av_buffer_replace(&opaque->frame_opaque_ref, frame->opaque_ref);
+        if (ret < 0)
+            goto fail;
+    }
 
-        switch (frame->pict_type) {
-        case AV_PICTURE_TYPE_I:
-            x4->pic.i_type = x4->forced_idr > 0 ? X264_TYPE_IDR
-                                                : X264_TYPE_KEYFRAME;
-            break;
-        case AV_PICTURE_TYPE_P:
-            x4->pic.i_type = X264_TYPE_P;
-            break;
-        case AV_PICTURE_TYPE_B:
-            x4->pic.i_type = X264_TYPE_B;
-            break;
-        default:
-            x4->pic.i_type = X264_TYPE_AUTO;
-            break;
-        }
-        reconfig_encoder(ctx, frame);
+    opaque->reordered_opaque = frame->reordered_opaque;
+    opaque->duration         = frame->duration;
+    opaque->wallclock = wallclock;
+    if (ctx->export_side_data & AV_CODEC_EXPORT_DATA_PRFT)
+        opaque->wallclock = av_gettime();
 
-        if (x4->a53_cc) {
-            void *sei_data;
-            size_t sei_size;
+    pic->opaque = opaque;
 
-            ret = ff_alloc_a53_sei(frame, 0, &sei_data, &sei_size);
-            if (ret < 0) {
-                av_log(ctx, AV_LOG_ERROR, "Not enough memory for closed captions, skipping\n");
-            } else if (sei_data) {
-                x4->pic.extra_sei.payloads = av_mallocz(sizeof(x4->pic.extra_sei.payloads[0]));
-                if (x4->pic.extra_sei.payloads == NULL) {
-                    av_log(ctx, AV_LOG_ERROR, "Not enough memory for closed captions, skipping\n");
-                    av_free(sei_data);
-                } else {
-                    x4->pic.extra_sei.sei_free = av_free;
+    x4->next_reordered_opaque++;
+    x4->next_reordered_opaque %= x4->nb_reordered_opaque;
 
-                    x4->pic.extra_sei.payloads[0].payload_size = sei_size;
-                    x4->pic.extra_sei.payloads[0].payload = sei_data;
-                    x4->pic.extra_sei.num_payloads = 1;
-                    x4->pic.extra_sei.payloads[0].payload_type = 4;
-                }
+    switch (frame->pict_type) {
+    case AV_PICTURE_TYPE_I:
+        pic->i_type = x4->forced_idr > 0 ? X264_TYPE_IDR : X264_TYPE_KEYFRAME;
+        break;
+    case AV_PICTURE_TYPE_P:
+        pic->i_type = X264_TYPE_P;
+        break;
+    case AV_PICTURE_TYPE_B:
+        pic->i_type = X264_TYPE_B;
+        break;
+    default:
+        pic->i_type = X264_TYPE_AUTO;
+        break;
+    }
+    reconfig_encoder(ctx, frame);
+
+    if (x4->a53_cc) {
+        void *sei_data;
+        size_t sei_size;
+
+        ret = ff_alloc_a53_sei(frame, 0, &sei_data, &sei_size);
+        if (ret < 0)
+            goto fail;
+
+        if (sei_data) {
+            pic->extra_sei.payloads = av_mallocz(sizeof(pic->extra_sei.payloads[0]));
+            if (pic->extra_sei.payloads == NULL) {
+                ret = AVERROR(ENOMEM);
+                goto fail;
             }
-        }
 
-        sd = av_frame_get_side_data(frame, AV_FRAME_DATA_REGIONS_OF_INTEREST);
-        if (sd) {
-            if (x4->params.rc.i_aq_mode == X264_AQ_NONE) {
-                if (!x4->roi_warned) {
-                    x4->roi_warned = 1;
-                    av_log(ctx, AV_LOG_WARNING, "Adaptive quantization must be enabled to use ROI encoding, skipping ROI.\n");
-                }
-            } else {
-                if (frame->interlaced_frame == 0) {
-                    int mbx = (frame->width + MB_SIZE - 1) / MB_SIZE;
-                    int mby = (frame->height + MB_SIZE - 1) / MB_SIZE;
-                    int qp_range = 51 + 6 * (bit_depth - 8);
-                    int nb_rois;
-                    const AVRegionOfInterest *roi;
-                    uint32_t roi_size;
-                    float *qoffsets;
+            pic->extra_sei.sei_free = av_free;
 
-                    roi = (const AVRegionOfInterest*)sd->data;
-                    roi_size = roi->self_size;
-                    if (!roi_size || sd->size % roi_size != 0) {
-                        free_picture(ctx);
-                        av_log(ctx, AV_LOG_ERROR, "Invalid AVRegionOfInterest.self_size.\n");
-                        return AVERROR(EINVAL);
-                    }
-                    nb_rois = sd->size / roi_size;
-
-                    qoffsets = av_calloc(mbx * mby, sizeof(*qoffsets));
-                    if (!qoffsets) {
-                        free_picture(ctx);
-                        return AVERROR(ENOMEM);
-                    }
-                    // This list must be iterated in reverse because the first
-                    // region in the list applies when regions overlap.
-                    for (int i = nb_rois - 1; i >= 0; i--) {
-                        int startx, endx, starty, endy;
-                        float qoffset;
-
-                        roi = (const AVRegionOfInterest*)(sd->data + roi_size * i);
-
-                        starty = FFMIN(mby, roi->top / MB_SIZE);
-                        endy   = FFMIN(mby, (roi->bottom + MB_SIZE - 1)/ MB_SIZE);
-                        startx = FFMIN(mbx, roi->left / MB_SIZE);
-                        endx   = FFMIN(mbx, (roi->right + MB_SIZE - 1)/ MB_SIZE);
-
-                        if (roi->qoffset.den == 0) {
-                            av_free(qoffsets);
-                            free_picture(ctx);
-                            av_log(ctx, AV_LOG_ERROR, "AVRegionOfInterest.qoffset.den must not be zero.\n");
-                            return AVERROR(EINVAL);
-                        }
-                        qoffset = roi->qoffset.num * 1.0f / roi->qoffset.den;
-                        qoffset = av_clipf(qoffset * qp_range, -qp_range, +qp_range);
-
-                        for (int y = starty; y < endy; y++) {
-                            for (int x = startx; x < endx; x++) {
-                                qoffsets[x + y*mbx] = qoffset;
-                            }
-                        }
-                    }
-
-                    x4->pic.prop.quant_offsets = qoffsets;
-                    x4->pic.prop.quant_offsets_free = av_free;
-                } else {
-                    if (!x4->roi_warned) {
-                        x4->roi_warned = 1;
-                        av_log(ctx, AV_LOG_WARNING, "interlaced_frame not supported for ROI encoding yet, skipping ROI.\n");
-                    }
-                }
-            }
-        }
-
-        if (x4->udu_sei) {
-            for (int j = 0; j < frame->nb_side_data; j++) {
-                AVFrameSideData *side_data = frame->side_data[j];
-                void *tmp;
-                x264_sei_payload_t *sei_payload;
-                if (side_data->type != AV_FRAME_DATA_SEI_UNREGISTERED)
-                    continue;
-                tmp = av_fast_realloc(sei->payloads, &sei_data_size, (sei->num_payloads + 1) * sizeof(*sei_payload));
-                if (!tmp) {
-                    free_picture(ctx);
-                    return AVERROR(ENOMEM);
-                }
-                sei->payloads = tmp;
-                sei->sei_free = av_free;
-                sei_payload = &sei->payloads[sei->num_payloads];
-                sei_payload->payload = av_memdup(side_data->data, side_data->size);
-                if (!sei_payload->payload) {
-                    free_picture(ctx);
-                    return AVERROR(ENOMEM);
-                }
-                sei_payload->payload_size = side_data->size;
-                sei_payload->payload_type = SEI_TYPE_USER_DATA_UNREGISTERED;
-                sei->num_payloads++;
-            }
+            pic->extra_sei.payloads[0].payload_size = sei_size;
+            pic->extra_sei.payloads[0].payload = sei_data;
+            pic->extra_sei.num_payloads = 1;
+            pic->extra_sei.payloads[0].payload_type = 4;
         }
     }
 
+    sd = av_frame_get_side_data(frame, AV_FRAME_DATA_REGIONS_OF_INTEREST);
+    if (sd) {
+        ret = setup_roi(ctx, pic, bit_depth, frame, sd->data, sd->size);
+        if (ret < 0)
+            goto fail;
+    }
+
+    if (x4->udu_sei) {
+        for (int j = 0; j < frame->nb_side_data; j++) {
+            AVFrameSideData *side_data = frame->side_data[j];
+            void *tmp;
+            x264_sei_payload_t *sei_payload;
+            if (side_data->type != AV_FRAME_DATA_SEI_UNREGISTERED)
+                continue;
+            tmp = av_fast_realloc(sei->payloads, &sei_data_size, (sei->num_payloads + 1) * sizeof(*sei_payload));
+            if (!tmp) {
+                ret = AVERROR(ENOMEM);
+                goto fail;
+            }
+            sei->payloads = tmp;
+            sei->sei_free = av_free;
+            sei_payload = &sei->payloads[sei->num_payloads];
+            sei_payload->payload = av_memdup(side_data->data, side_data->size);
+            if (!sei_payload->payload) {
+                ret = AVERROR(ENOMEM);
+                goto fail;
+            }
+            sei_payload->payload_size = side_data->size;
+            sei_payload->payload_type = SEI_TYPE_USER_DATA_UNREGISTERED;
+            sei->num_payloads++;
+        }
+    }
+
+    *ppic = pic;
+    return 0;
+
+fail:
+    free_picture(ctx);
+    *ppic = NULL;
+    return ret;
+}
+
+static int X264_frame(AVCodecContext *ctx, AVPacket *pkt, const AVFrame *frame,
+                      int *got_packet)
+{
+    X264Context *x4 = ctx->priv_data;
+    x264_nal_t *nal;
+    int nnal, ret;
+    x264_picture_t pic_out = {0}, *pic_in;
+    int pict_type;
+    int64_t wallclock = 0;
+    X264Opaque *out_opaque;
+
+    ret = setup_frame(ctx, frame, &pic_in);
+    if (ret < 0)
+        return ret;
+
     do {
-        if (x264_encoder_encode(x4->enc, &nal, &nnal, frame? &x4->pic: NULL, &pic_out) < 0)
+        if (x264_encoder_encode(x4->enc, &nal, &nnal, pic_in, &pic_out) < 0)
             return AVERROR_EXTERNAL;
 
         if (nnal && (ctx->flags & AV_CODEC_FLAG_RECON_FRAME)) {
@@ -561,8 +614,19 @@ static int X264_frame(AVCodecContext *ctx, AVPacket *pkt, const AVFrame *frame,
         out_opaque < &x4->reordered_opaque[x4->nb_reordered_opaque]) {
         ctx->reordered_opaque = out_opaque->reordered_opaque;
         wallclock = out_opaque->wallclock;
+        pkt->duration = out_opaque->duration;
+
+        if (ctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+            pkt->opaque                  = out_opaque->frame_opaque;
+            pkt->opaque_ref              = out_opaque->frame_opaque_ref;
+            out_opaque->frame_opaque_ref = NULL;
+        }
+
+        opaque_uninit(out_opaque);
     } else {
         // Unexpected opaque pointer on picture output
+        av_log(ctx, AV_LOG_ERROR, "Unexpected opaque pointer; "
+               "this is a bug, please report it.\n");
         ctx->reordered_opaque = 0;
     }
 
@@ -599,6 +663,9 @@ static av_cold int X264_close(AVCodecContext *avctx)
     X264Context *x4 = avctx->priv_data;
 
     av_freep(&x4->sei);
+
+    for (int i = 0; i < x4->nb_reordered_opaque; i++)
+        opaque_uninit(&x4->reordered_opaque[i]);
     av_freep(&x4->reordered_opaque);
 
 #if X264_BUILD >= 161
@@ -1070,10 +1137,12 @@ static av_cold int X264_init(AVCodecContext *avctx)
     // Overestimate the reordered opaque buffer size, in case a runtime
     // reconfigure would increase the delay (which it shouldn't).
     x4->nb_reordered_opaque = x264_encoder_maximum_delayed_frames(x4->enc) + 17;
-    x4->reordered_opaque    = av_malloc_array(x4->nb_reordered_opaque,
-                                              sizeof(*x4->reordered_opaque));
-    if (!x4->reordered_opaque)
+    x4->reordered_opaque    = av_calloc(x4->nb_reordered_opaque,
+                                        sizeof(*x4->reordered_opaque));
+    if (!x4->reordered_opaque) {
+        x4->nb_reordered_opaque = 0;
         return AVERROR(ENOMEM);
+    }
 
     return 0;
 }

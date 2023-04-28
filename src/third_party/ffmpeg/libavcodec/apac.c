@@ -75,7 +75,10 @@ static av_cold int apac_init(AVCodecContext *avctx)
         avctx->sample_fmt = AV_SAMPLE_FMT_U8P;
 
     if (avctx->ch_layout.nb_channels < 1 ||
-        avctx->ch_layout.nb_channels > 2)
+        avctx->ch_layout.nb_channels > 2 ||
+        avctx->bits_per_coded_sample < 8 ||
+        avctx->bits_per_coded_sample > 16
+    )
         return AVERROR_INVALIDDATA;
 
     for (int ch = 0; ch < avctx->ch_layout.nb_channels; ch++) {
@@ -196,15 +199,19 @@ static int apac_decode(AVCodecContext *avctx, AVFrame *frame,
                 return AVERROR_INVALIDDATA;
             }
 
-            if (get_bits_left(gb) < c->block_length * c->bit_length && pkt->size) {
-                c->have_code = 1;
-                s->cur_ch = ch;
-                goto end;
+            if (get_bits_left(gb) < c->block_length * c->bit_length) {
+                if (pkt->size) {
+                    c->have_code = 1;
+                    s->cur_ch = ch;
+                    goto end;
+                } else {
+                    break;
+                }
             }
 
             for (int i = 0; i < c->block_length; i++) {
                 int val = get_bits_long(gb, c->bit_length);
-                int delta = (val & 1) ? ~(val >> 1) : (val >> 1);
+                unsigned delta = (val & 1) ? ~(val >> 1) : (val >> 1);
                 int sample;
 
                 delta += c->last_delta;

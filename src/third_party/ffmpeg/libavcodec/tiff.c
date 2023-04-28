@@ -110,7 +110,6 @@ typedef struct TiffContext {
     int is_tiled;
     int tile_byte_counts_offset, tile_offsets_offset;
     int tile_width, tile_length;
-    int tile_count;
 
     int is_jpeg;
 
@@ -327,7 +326,7 @@ static void av_always_inline dng_blit(TiffContext *s, uint8_t *dst, int dst_stri
             scale_factor[i] = s->premultiply[s->pattern[i]] * 65535.f / (s->white_level - s->black_level[i]);
     } else {
         for (int i = 0; i < 4; i++)
-            scale_factor[i] = 65535.f * s->premultiply[i] / (s->white_level - s->black_level[i]);
+            scale_factor[i] = s->premultiply[           i ] * 65535.f / (s->white_level - s->black_level[i]);
     }
 
     if (is_single_comp) {
@@ -994,7 +993,7 @@ static int dng_decode_tiles(AVCodecContext *avctx, AVFrame *frame,
     tile_count_y = (s->height + s->tile_length - 1) / s->tile_length;
 
     /* Iterate over the number of tiles */
-    for (tile_idx = 0; tile_idx < s->tile_count; tile_idx++) {
+    for (tile_idx = 0; tile_idx < tile_count_x * tile_count_y; tile_idx++) {
         tile_x = tile_idx % tile_count_x;
         tile_y = tile_idx / tile_count_x;
 
@@ -1430,7 +1429,6 @@ static int tiff_decode_tag(TiffContext *s, AVFrame *frame)
         break;
     case TIFF_TILE_OFFSETS:
         s->tile_offsets_offset = off;
-        s->tile_count = count;
         s->is_tiled = 1;
         break;
     case TIFF_TILE_BYTE_COUNTS:
@@ -1896,6 +1894,8 @@ static void camera_xyz_coeff(TiffContext *s,
     for (i = 0; i < 3; i++) {
         for (num = j = 0; j < 3; j++)
             num += cam2rgb[i][j];
+        if (!num)
+            num = 1;
         for (j = 0; j < 3; j++)
             cam2rgb[i][j] /= num;
         s->premultiply[i] = 1.f / num;
@@ -2050,8 +2050,10 @@ again:
         }
 
         if (!s->use_color_matrix) {
-            for (i = 0; i < 3; i++)
-                s->premultiply[i] /= s->camera_calibration[i][i];
+            for (i = 0; i < 3; i++) {
+                if (s->camera_calibration[i][i])
+                    s->premultiply[i] /= s->camera_calibration[i][i];
+            }
         } else {
             for (int c = 0; c < 3; c++) {
                 for (i = 0; i < 3; i++) {
@@ -2094,7 +2096,7 @@ again:
         return AVERROR_INVALIDDATA;
     }
 
-    has_tile_bits  = s->is_tiled || s->tile_byte_counts_offset || s->tile_offsets_offset || s->tile_width || s->tile_length || s->tile_count;
+    has_tile_bits  = s->is_tiled || s->tile_byte_counts_offset || s->tile_offsets_offset || s->tile_width || s->tile_length;
     has_strip_bits = s->strippos || s->strips || s->stripoff || s->rps || s->sot || s->sstype || s->stripsize || s->stripsizesoff;
 
     if (has_tile_bits && has_strip_bits) {

@@ -468,7 +468,7 @@ void ff_mpeg1_encode_slice_header(MpegEncContext *s)
     put_bits(&s->pb, 1, 0);
 }
 
-void ff_mpeg1_encode_picture_header(MpegEncContext *s, int picture_number)
+void ff_mpeg1_encode_picture_header(MpegEncContext *s)
 {
     MPEG12EncContext *const mpeg12 = (MPEG12EncContext*)s;
     AVFrameSideData *side_data;
@@ -1246,7 +1246,8 @@ const FFCodec ff_mpeg1video_encoder = {
     .p.supported_framerates = ff_mpeg12_frame_rate_tab + 1,
     .p.pix_fmts           = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P,
                                                            AV_PIX_FMT_NONE },
-    .p.capabilities       = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS,
+    .p.capabilities       = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS |
+                            AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     .caps_internal        = FF_CODEC_CAP_INIT_CLEANUP,
     .p.priv_class         = &mpeg1_class,
 };
@@ -1264,7 +1265,8 @@ const FFCodec ff_mpeg2video_encoder = {
     .p.pix_fmts           = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P,
                                                            AV_PIX_FMT_YUV422P,
                                                            AV_PIX_FMT_NONE },
-    .p.capabilities       = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS,
+    .p.capabilities       = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_SLICE_THREADS |
+                            AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     .caps_internal        = FF_CODEC_CAP_INIT_CLEANUP,
     .p.priv_class         = &mpeg2_class,
 };

@@ -42,7 +42,10 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int size = av_image_get_buffer_size(avctx->pix_fmt,
                                         avctx->width, avctx->height, 1);
 
-    if ((ret = ff_get_encode_buffer(avctx, pkt, size + 200, 0)) < 0)
+    if (size < 0)
+        return size;
+
+    if ((ret = ff_get_encode_buffer(avctx, pkt, size + 200U, 0)) < 0)
         return ret;
 
     bytestream_start =
@@ -133,9 +136,10 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     if ((avctx->pix_fmt == AV_PIX_FMT_GBRPF32LE ||
          avctx->pix_fmt == AV_PIX_FMT_GBRPF32BE) && c == 'F') {
-        const float *r = (const float *)p->data[2];
-        const float *g = (const float *)p->data[0];
-        const float *b = (const float *)p->data[1];
+        /* PFM is encoded from bottom to top */
+        const float *r = (const float *)(p->data[2] + p->linesize[2] * (avctx->height - 1));
+        const float *g = (const float *)(p->data[0] + p->linesize[0] * (avctx->height - 1));
+        const float *b = (const float *)(p->data[1] + p->linesize[1] * (avctx->height - 1));
 
         for (int i = 0; i < avctx->height; i++) {
             for (int j = 0; j < avctx->width; j++) {
@@ -145,13 +149,14 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                 bytestream += 12;
             }
 
-            r += p->linesize[2] / 4;
-            g += p->linesize[0] / 4;
-            b += p->linesize[1] / 4;
+            r -= p->linesize[2] / 4;
+            g -= p->linesize[0] / 4;
+            b -= p->linesize[1] / 4;
         }
     } else if ((avctx->pix_fmt == AV_PIX_FMT_GRAYF32LE ||
                 avctx->pix_fmt == AV_PIX_FMT_GRAYF32BE) && c == 'f') {
-        const float *g = (const float *)p->data[0];
+        /* PFM is encoded from bottom to top */
+        const float *g = (const float *)(p->data[0] + p->linesize[0] * (avctx->height - 1));
 
         for (int i = 0; i < avctx->height; i++) {
             for (int j = 0; j < avctx->width; j++) {
@@ -159,7 +164,7 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                 bytestream += 4;
             }
 
-            g += p->linesize[0] / 4;
+            g -= p->linesize[0] / 4;
         }
     } else if (avctx->pix_fmt == AV_PIX_FMT_GBRPF32 && c == 'H') {
         const float *r = (const float *)p->data[2];
@@ -224,7 +229,7 @@ const FFCodec ff_pgm_encoder = {
     CODEC_LONG_NAME("PGM (Portable GrayMap) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PGM,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_NONE
@@ -238,7 +243,7 @@ const FFCodec ff_pgmyuv_encoder = {
     CODEC_LONG_NAME("PGMYUV (Portable GrayMap YUV) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PGMYUV,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P16BE, AV_PIX_FMT_NONE
@@ -252,7 +257,7 @@ const FFCodec ff_ppm_encoder = {
     CODEC_LONG_NAME("PPM (Portable PixelMap) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PPM,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_NONE
@@ -266,7 +271,7 @@ const FFCodec ff_pbm_encoder = {
     CODEC_LONG_NAME("PBM (Portable BitMap) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PBM,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_MONOWHITE,
                                                   AV_PIX_FMT_NONE },
@@ -279,7 +284,7 @@ const FFCodec ff_pfm_encoder = {
     CODEC_LONG_NAME("PFM (Portable FloatMap) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PFM,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_GBRPF32LE,
                                                     AV_PIX_FMT_GRAYF32LE,
@@ -304,7 +309,7 @@ const FFCodec ff_phm_encoder = {
     CODEC_LONG_NAME("PHM (Portable HalfFloatMap) image"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_PHM,
-    .p.capabilities = AV_CODEC_CAP_DR1,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
     .priv_data_size = sizeof(PHMEncContext),
     .init           = phm_enc_init,
     FF_CODEC_ENCODE_CB(pnm_encode_frame),

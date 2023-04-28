@@ -913,19 +913,22 @@ Affects:
     libavcodec/ac3_parser.c
 
 ------------------------------------------------------------------
-commit 6a1468ead6b2b0c611f16ed6c7609eaa30e13d74
-Author: Thomas Guilbert <tguilbert@chromium.org>
-Date:   Tue Nov 29 14:10:29 2022 -0800
+commit c9b87a3225e1422d281ce4454415e5c96b452aa7
+Merge: a249b21db6 2c3107c3e9
+Author: John Rummell <jrummell@chromium.org>
+Date:   Wed Jan 25 16:02:14 2023 -0800
 
-    Remove tx_double.c and tx_int32.c
+    Merge remote-tracking branch 'upstream/master' into sushi-2023-01-25-15-58-26
 
-    Ffmpeg is in the process of moving their FFT implementation to
-    libavutil/tx.h. This causes a jump in binary size, from including
-    precomputed tables.
+Affects:
+    libavutil/tx.c
 
-    For now, chromium doesn't use the INT32 and DOUBLE variations.
-    This commit removes the references which force the linker to
-    include them.
+------------------------------------------------------------------
+commit cbc47d6b462ccd4f431dacad782ac14faba67ab0
+Author: John Rummell <jrummell@chromium.org>
+Date:   Wed Jan 25 16:20:19 2023 -0800
+
+    Update python scripts
 
 Affects:
     libavutil/tx.c

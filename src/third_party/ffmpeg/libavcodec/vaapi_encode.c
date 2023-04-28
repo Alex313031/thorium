@@ -695,6 +695,7 @@ static int vaapi_encode_output(AVCodecContext *avctx,
         pkt->flags |= AV_PKT_FLAG_KEY;
 
     pkt->pts = pic->pts;
+    pkt->duration = pic->duration;
 
     vas = vaUnmapBuffer(ctx->hwctx->display, pic->output_buffer);
     if (vas != VA_STATUS_SUCCESS) {
@@ -702,6 +703,14 @@ static int vaapi_encode_output(AVCodecContext *avctx,
                "%d (%s).\n", vas, vaErrorStr(vas));
         err = AVERROR(EIO);
         goto fail;
+    }
+
+    // for no-delay encoders this is handled in generic codec
+    if (avctx->codec->capabilities & AV_CODEC_CAP_DELAY &&
+        avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+        pkt->opaque     = pic->opaque;
+        pkt->opaque_ref = pic->opaque_ref;
+        pic->opaque_ref = NULL;
     }
 
     av_buffer_unref(&pic->output_buffer_ref);
@@ -776,6 +785,8 @@ static int vaapi_encode_free(AVCodecContext *avctx,
 
     av_frame_free(&pic->input_image);
     av_frame_free(&pic->recon_image);
+
+    av_buffer_unref(&pic->opaque_ref);
 
     av_freep(&pic->param_buffers);
     av_freep(&pic->slices);
@@ -1144,6 +1155,15 @@ static int vaapi_encode_send_frame(AVCodecContext *avctx, AVFrame *frame)
 
         pic->input_surface = (VASurfaceID)(uintptr_t)frame->data[3];
         pic->pts = frame->pts;
+        pic->duration = frame->duration;
+
+        if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {
+            err = av_buffer_replace(&pic->opaque_ref, frame->opaque_ref);
+            if (err < 0)
+                goto fail;
+
+            pic->opaque = frame->opaque;
+        }
 
         av_frame_move_ref(pic->input_image, frame);
 

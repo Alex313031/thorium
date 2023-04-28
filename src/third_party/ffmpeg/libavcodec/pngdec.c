@@ -26,10 +26,12 @@
 #include "libavutil/avassert.h"
 #include "libavutil/bprint.h"
 #include "libavutil/crc.h"
+#include "libavutil/csp.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/pixfmt.h"
+#include "libavutil/rational.h"
 #include "libavutil/stereo3d.h"
-#include "libavutil/mastering_display_metadata.h"
 
 #include "avcodec.h"
 #include "bytestream.h"
@@ -73,6 +75,11 @@ typedef struct PNGDecContext {
     int have_chrm;
     uint32_t white_point[2];
     uint32_t display_primaries[3][2];
+    int have_srgb;
+    int have_cicp;
+    enum AVColorPrimaries cicp_primaries;
+    enum AVColorTransferCharacteristic cicp_trc;
+    enum AVColorRange cicp_range;
 
     enum PNGHeaderState hdr_state;
     enum PNGImageState pic_state;
@@ -1311,6 +1318,24 @@ static int decode_frame_common(AVCodecContext *avctx, PNGDecContext *s,
             }
             break;
         }
+        case MKTAG('c', 'I', 'C', 'P'):
+            s->cicp_primaries = bytestream2_get_byte(&gb_chunk);
+            s->cicp_trc = bytestream2_get_byte(&gb_chunk);
+            if (bytestream2_get_byte(&gb_chunk) != 0)
+                av_log(avctx, AV_LOG_WARNING, "nonzero cICP matrix\n");
+            s->cicp_range = bytestream2_get_byte(&gb_chunk);
+            if (s->cicp_range != 0 && s->cicp_range != 1) {
+                av_log(avctx, AV_LOG_ERROR, "invalid cICP range: %d\n", s->cicp_range);
+                ret = AVERROR_INVALIDDATA;
+                goto fail;
+            }
+            s->have_cicp = 1;
+            break;
+        case MKTAG('s', 'R', 'G', 'B'):
+            /* skip rendering intent byte */
+            bytestream2_skip(&gb_chunk, 1);
+            s->have_srgb = 1;
+            break;
         case MKTAG('i', 'C', 'C', 'P'): {
             if ((ret = decode_iccp_chunk(s, &gb_chunk, p)) < 0)
                 goto fail;
@@ -1362,8 +1387,10 @@ exit_loop:
         return 0;
     }
 
-    if (percent_missing(s) > avctx->discard_damaged_percentage)
-        return AVERROR_INVALIDDATA;
+    if (percent_missing(s) > avctx->discard_damaged_percentage) {
+        ret = AVERROR_INVALIDDATA;
+        goto fail;
+    }
 
     if (s->bits_per_pixel <= 4)
         handle_small_bpp(s, p);
@@ -1464,15 +1491,29 @@ static void clear_frame_metadata(PNGDecContext *s)
     s->stereo_mode = -1;
 
     s->have_chrm = 0;
+    s->have_srgb = 0;
+    s->have_cicp = 0;
 
     av_dict_free(&s->frame_metadata);
 }
 
 static int output_frame(PNGDecContext *s, AVFrame *f)
 {
+    AVCodecContext *avctx = s->avctx;
     int ret;
 
-    if (s->iccp_data) {
+    if (s->have_cicp) {
+        if (s->cicp_primaries >= AVCOL_PRI_NB)
+            av_log(avctx, AV_LOG_WARNING, "unrecognized cICP primaries\n");
+        else
+            avctx->color_primaries = f->color_primaries = s->cicp_primaries;
+        if (s->cicp_trc >= AVCOL_TRC_NB)
+            av_log(avctx, AV_LOG_WARNING, "unrecognized cICP transfer\n");
+        else
+            avctx->color_trc = f->color_trc = s->cicp_trc;
+        avctx->color_range = f->color_range =
+            s->cicp_range == 0 ? AVCOL_RANGE_MPEG : AVCOL_RANGE_JPEG;
+    } else if (s->iccp_data) {
         AVFrameSideData *sd = av_frame_new_side_data(f, AV_FRAME_DATA_ICC_PROFILE, s->iccp_data_len);
         if (!sd) {
             ret = AVERROR(ENOMEM);
@@ -1481,7 +1522,32 @@ static int output_frame(PNGDecContext *s, AVFrame *f)
         memcpy(sd->data, s->iccp_data, s->iccp_data_len);
 
         av_dict_set(&sd->metadata, "name", s->iccp_name, 0);
+    } else if (s->have_srgb) {
+        avctx->color_primaries = f->color_primaries = AVCOL_PRI_BT709;
+        avctx->color_trc = f->color_trc = AVCOL_TRC_IEC61966_2_1;
+    } else if (s->have_chrm) {
+        AVColorPrimariesDesc desc;
+        enum AVColorPrimaries prim;
+        desc.wp.x = av_make_q(s->white_point[0], 100000);
+        desc.wp.y = av_make_q(s->white_point[1], 100000);
+        desc.prim.r.x = av_make_q(s->display_primaries[0][0], 100000);
+        desc.prim.r.y = av_make_q(s->display_primaries[0][1], 100000);
+        desc.prim.g.x = av_make_q(s->display_primaries[1][0], 100000);
+        desc.prim.g.y = av_make_q(s->display_primaries[1][1], 100000);
+        desc.prim.b.x = av_make_q(s->display_primaries[2][0], 100000);
+        desc.prim.b.y = av_make_q(s->display_primaries[2][1], 100000);
+        prim = av_csp_primaries_id_from_desc(&desc);
+        if (prim != AVCOL_PRI_UNSPECIFIED)
+            avctx->color_primaries = f->color_primaries = prim;
+        else
+            av_log(avctx, AV_LOG_WARNING, "unknown cHRM primaries\n");
     }
+
+    /* these chunks override gAMA */
+    if (s->iccp_data || s->have_srgb || s->have_cicp)
+        av_dict_set(&s->frame_metadata, "gamma", NULL, 0);
+
+    avctx->colorspace = f->colorspace = AVCOL_SPC_RGB;
 
     if (s->stereo_mode >= 0) {
         AVStereo3D *stereo3d = av_stereo3d_create_side_data(f);
@@ -1492,25 +1558,6 @@ static int output_frame(PNGDecContext *s, AVFrame *f)
 
         stereo3d->type  = AV_STEREO3D_SIDEBYSIDE;
         stereo3d->flags = s->stereo_mode ? 0 : AV_STEREO3D_FLAG_INVERT;
-    }
-
-    if (s->have_chrm) {
-        AVMasteringDisplayMetadata *mdm = av_mastering_display_metadata_create_side_data(f);
-        if (!mdm) {
-            ret = AVERROR(ENOMEM);
-            goto fail;
-        }
-
-        mdm->white_point[0] = av_make_q(s->white_point[0], 100000);
-        mdm->white_point[1] = av_make_q(s->white_point[1], 100000);
-
-        /* RGB Primaries */
-        for (int i = 0; i < 3; i++) {
-            mdm->display_primaries[i][0] = av_make_q(s->display_primaries[i][0], 100000);
-            mdm->display_primaries[i][1] = av_make_q(s->display_primaries[i][1], 100000);
-        }
-
-        mdm->has_primaries = 1;
     }
 
     FFSWAP(AVDictionary*, f->metadata, s->frame_metadata);

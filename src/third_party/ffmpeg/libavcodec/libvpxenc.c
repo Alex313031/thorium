@@ -900,7 +900,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
     vpx_codec_caps_t codec_caps = vpx_codec_get_caps(iface);
     vpx_svc_extra_cfg_t svc_params;
 #endif
-    AVDictionaryEntry* en = NULL;
+    const AVDictionaryEntry* en = NULL;
 
     av_log(avctx, AV_LOG_INFO, "%s\n", vpx_codec_version_str());
     av_log(avctx, AV_LOG_VERBOSE, "%s\n", vpx_codec_build_config());
@@ -942,7 +942,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
     enccfg.g_timebase.num = avctx->time_base.num;
     enccfg.g_timebase.den = avctx->time_base.den;
     enccfg.g_threads      =
-        FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), 16);
+        FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), MAX_VPX_THREADS);
     enccfg.g_lag_in_frames= ctx->lag_in_frames;
 
     if (avctx->flags & AV_CODEC_FLAG_PASS1)
@@ -1072,7 +1072,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
 
     enccfg.g_error_resilient = ctx->error_resilient || ctx->flags & VP8F_ERROR_RESILIENT;
 
-    while ((en = av_dict_get(ctx->vpx_ts_parameters, "", en, AV_DICT_IGNORE_SUFFIX))) {
+    while ((en = av_dict_iterate(ctx->vpx_ts_parameters, en))) {
         if (vpx_ts_param_parse(ctx, &enccfg, en->key, en->value, avctx->codec_id) < 0)
             av_log(avctx, AV_LOG_WARNING,
                    "Error parsing option '%s = %s'.\n",
