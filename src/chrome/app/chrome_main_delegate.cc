@@ -70,6 +70,7 @@
 #include "components/crash/core/common/crash_keys.h"
 #include "components/gwp_asan/buildflags/buildflags.h"
 #include "components/heap_profiling/in_process/heap_profiler_controller.h"
+#include "components/metrics/persistent_histograms.h"
 #include "components/nacl/common/buildflags.h"
 #include "components/services/heap_profiling/public/cpp/profiling_client.h"
 #include "components/startup_metric_utils/browser/startup_metric_utils.h"
@@ -109,8 +110,6 @@
 #include "chrome/chrome_elf/chrome_elf_main.h"
 #include "chrome/common/child_process_logging.h"
 #include "chrome/common/win/delay_load_failure_hook.h"
-#include "chrome/install_static/install_util.h"
-#include "components/browser_watcher/extended_crash_reporting.h"
 #include "sandbox/win/src/sandbox.h"
 #include "sandbox/win/src/sandbox_factory.h"
 #include "ui/base/resource/resource_bundle_win.h"
@@ -286,29 +285,6 @@ bool IsSandboxedProcess() {
       reinterpret_cast<IsSandboxedProcessFunc>(
           GetProcAddress(GetModuleHandle(NULL), "IsSandboxedProcess"));
   return is_sandboxed_process_func && is_sandboxed_process_func();
-}
-
-void SetUpExtendedCrashReporting(bool is_browser_process) {
-  browser_watcher::ExtendedCrashReporting* extended_crash_reporting =
-      browser_watcher::ExtendedCrashReporting::SetUpIfEnabled(
-          is_browser_process
-              ? browser_watcher::ExtendedCrashReporting::kBrowserProcess
-              : browser_watcher::ExtendedCrashReporting::kOther);
-
-  if (!extended_crash_reporting)
-    return;
-
-  // Record product, version, channel and special build strings.
-  wchar_t exe_file[MAX_PATH] = {};
-  CHECK(::GetModuleFileName(nullptr, exe_file, std::size(exe_file)));
-
-  std::wstring product_name, version_number, channel_name, special_build;
-  install_static::GetExecutableVersionDetails(
-      exe_file, &product_name, &version_number, &special_build, &channel_name);
-
-  extended_crash_reporting->SetProductStrings(
-      base::WideToUTF16(product_name), base::WideToUTF16(version_number),
-      base::WideToUTF16(channel_name), base::WideToUTF16(special_build));
 }
 
 #endif  // BUILDFLAG(IS_WIN)
@@ -751,6 +727,17 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
     chrome::DisableDelayLoadFailureHooksForCurrentModule();
 #endif
 
+#if !BUILDFLAG(IS_FUCHSIA)
+  // Schedule the cleanup of persistent histogram files. These tasks must only
+  // be scheduled in the main browser after taking the process singleton. They
+  // cannot be scheduled immediately after InstantiatePersistentHistograms()
+  // because ThreadPool is not ready at that time yet.
+  base::FilePath metrics_dir;
+  if (base::PathService::Get(chrome::DIR_USER_DATA, &metrics_dir)) {
+    PersistentHistogramsCleanup(metrics_dir);
+  }
+#endif  // !BUILDFLAG(IS_FUCHSIA)
+
   // Chrome disallows cookies by default. All code paths that want to use
   // cookies need to go through one of Chrome's URLRequestContexts which have
   // a ChromeNetworkDelegate attached that selectively allows cookies again.
@@ -960,7 +947,6 @@ void ChromeMainDelegate::CommonEarlyInitialization() {
   }
 
 #if BUILDFLAG(IS_WIN)
-  SetUpExtendedCrashReporting(is_browser_process);
   base::sequence_manager::internal::ThreadControllerPowerMonitor::
       InitializeOnMainThread();
   base::InitializePlatformThreadFeatures();
@@ -1588,6 +1574,28 @@ void ChromeMainDelegate::SandboxInitialized(const std::string& process_type) {
   InitLogging(process_type);
   SuppressWindowsErrorDialogs();
 #endif
+
+#if !BUILDFLAG(IS_FUCHSIA)
+  // If this is a browser process, initialize the persistent histograms system.
+  // This is done as soon as possible to ensure metrics collection coverage.
+  // For Fuchsia, persistent histogram initialization is done after field trial
+  // initialization (so that it can be controlled from the serverside and
+  // experimented with).
+  // Note: this is done before field trial initialization, so the values of
+  // `kPersistentHistogramsFeature` and `kPersistentHistogramsStorage` will
+  // not be used. Persist histograms to a memory-mapped file.
+  if (process_type.empty()) {
+    base::FilePath metrics_dir;
+    if (base::PathService::Get(chrome::DIR_USER_DATA, &metrics_dir)) {
+      InstantiatePersistentHistograms(
+          metrics_dir,
+          /*persistent_histograms_enabled=*/true,
+          /*storage=*/kPersistentHistogramStorageMappedFile);
+    } else {
+      NOTREACHED();
+    }
+  }
+#endif  // !BUILDFLAG(IS_FUCHSIA)
 
 #if BUILDFLAG(ENABLE_NACL)
   ChromeContentClient::SetNaClEntryFunctions(nacl_plugin::PPP_GetInterface,
