@@ -1775,11 +1775,6 @@ BASE_FEATURE(kQuoteEmptySecChUaStringHeadersConsistently,
              "QuoteEmptySecChUaStringHeadersConsistently",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-BASE_FEATURE(kStorageAccessAPI,
-             "StorageAccessAPI",
-             base::FEATURE_ENABLED_BY_DEFAULT
-);
-
 const base::FeatureParam<int> kStorageAccessAPIImplicitGrantLimit{
     &kStorageAccessAPI, "storage-access-api-implicit-grant-limit", 5};
 const base::FeatureParam<bool> kStorageAccessAPIAutoGrantInFPS{

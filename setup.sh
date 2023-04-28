@@ -74,6 +74,9 @@ cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
 mkdir -v -p $HOME/chromium/src/out/thorium/default_apps &&
 cp -r -v infra/default_apps/. $HOME/chromium/src/out/thorium/default_apps/ &&
 
+# Add initial preferences file to open Thorium welcome page on first run.
+cp -v infra/initial_preferences $HOME/chromium/src/out/thorium/ &&
+
 echo " # Workaround for DevTools" &&
 mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&

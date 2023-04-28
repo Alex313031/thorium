@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031 and gz83
+# Copyright 2023 The Chromium Authors, Alex313031, and gz83
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -8,6 +8,8 @@
 #
 thorium.exe: %(ChromeDir)s\
 chrome_proxy.exe: %(ChromeDir)s\
+# initial_preferences file, to show Thorium welcome page on first start
+initial_preferences %(ChromeDir)s\
 #
 # Chrome version dir assembly manifest.
 # The name of this file must match the name of the version dir, so we cannot

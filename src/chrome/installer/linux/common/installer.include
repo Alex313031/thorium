@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Alex313031
+# Copyright (c) 2023 Alex313031 and Iridium
 # Shows the output of a given command only on failure, or when VERBOSE is set.
 log_cmd() {
   if [ "${VERBOSE:-}" ]; then
@@ -180,6 +180,7 @@ stage_install_common() {
     install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
     install -m 755 "${OUTPUTDIR}/chromedriver" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 755 "${OUTPUTDIR}/pak" "${STAGEDIR}/usr/bin/"
+    install -m 644 "${OUTPUTDIR}/initial_preferences" "${STAGEDIR}/${INSTALLDIR}/"
   else
     install -m 644 "${OUTPUTDIR}/theme_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
