@@ -186,6 +186,7 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
     case AudioCodec::kMpegHAudio:
     case AudioCodec::kDTS:
     case AudioCodec::kDTSXP2:
+    case AudioCodec::kDTSE:
       return true;
 
     case AudioCodec::kFLAC:
@@ -356,6 +357,7 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
       return false;
     case AudioCodec::kDTS:
     case AudioCodec::kDTSXP2:
+    case AudioCodec::kDTSE:
 #if BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO)
       return true;
 #else
