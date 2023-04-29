@@ -2089,7 +2089,6 @@ if (is_win) {
   ]
 
   common_optimize_on_ldflags += [
-    "-mllvm:-freroll-loops",
     "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
