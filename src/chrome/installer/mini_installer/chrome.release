@@ -9,7 +9,7 @@
 thorium.exe: %(ChromeDir)s\
 chrome_proxy.exe: %(ChromeDir)s\
 # initial_preferences file, to show Thorium welcome page on first start
-initial_preferences %(ChromeDir)s\
+initial_preferences: %(ChromeDir)s\
 #
 # Chrome version dir assembly manifest.
 # The name of this file must match the name of the version dir, so we cannot
