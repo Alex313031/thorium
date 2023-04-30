@@ -2044,7 +2044,6 @@ if (is_win) {
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
     "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
   ]
-  common_optimize_on_ldflags += []
   if (!is_asan) {
     common_optimize_on_cflags += [
       # Put data in separate COMDATs. This allows the linker
@@ -2126,7 +2125,6 @@ if (is_win) {
   if (is_official_build) {
     common_optimize_on_ldflags += [ "/OPT:REF" ]  # Remove unreferenced data.
     # TODO(thakis): Add LTO/PGO clang flags eventually, https://crbug.com/598772
-    common_optimize_on_cflags += []
   }
 } else {
 
