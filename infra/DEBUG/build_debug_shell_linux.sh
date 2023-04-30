@@ -34,7 +34,7 @@ printf "${CYA}\n" &&
 # Build Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-../../depot_tools/autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
+autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
 
 mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
