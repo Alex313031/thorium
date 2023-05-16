@@ -99,10 +99,14 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only. See `https://web.dev/same-origin-policy/`",
      kOsAll, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
+
+#if !BUILDFLAG(IS_ANDROID)
     {"media-router",
      "Enable/Disable Media Router",
      "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
      kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
+#endif // BUILDFLAG(IS_ANDROID)
+
     {"disable-encryption",
      "Disable Encryption",
      "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. This is used to enable portable user data directories. Enabled for Thorium Portable.",
