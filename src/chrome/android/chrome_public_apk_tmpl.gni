@@ -300,7 +300,7 @@ template("chrome_public_common_apk_or_module_tmpl") {
     _material_package = "*com_google_android_material*"
 
     if (!_is_monochrome) {
-      product_config_java_packages = [ "org.chromium.thorium.browser" ]
+      product_config_java_packages = [ "org.chromium.chrome.browser" ]
     }
 
     # Android supports webp transparent resources properly since API level 18,
@@ -590,7 +590,7 @@ template("monochrome_public_common_apk_or_module_tmpl") {
       }
       if (is_monochrome) {
         product_config_java_packages = [
-          "org.chromium.thorium.browser",
+          "org.chromium.chrome.browser",
           webview_product_config_java_package,
         ]
 
