@@ -163,7 +163,7 @@ copyAndroid () {
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
 	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
 	cp -r -v arm/android/* $HOME/chromium/src/ &&
-	cp -r -v arm/raspi/third_party/* $HOME/chromium/src/third_party/ &&
+	cp -r -v arm/android/third_party/* $HOME/chromium/src/third_party/ &&
 	printf "\n"
 }
 case $1 in
