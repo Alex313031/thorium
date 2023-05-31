@@ -930,6 +930,7 @@ config("thinlto_optimize_default") {
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     rustflags = [ "-Clto=thin" ]
@@ -957,6 +958,7 @@ config("thinlto_optimize_max") {
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     rustflags = [ "-Clto=thin" ]
@@ -2053,7 +2055,6 @@ if (is_win) {
 
   common_optimize_on_cflags += [
     "-Xclang", "-freroll-loops",
-    "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
     "-mllvm", "-adce-remove-loops",
@@ -2061,17 +2062,14 @@ if (is_win) {
     "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-loopinterchange",
     "-mllvm", "-enable-loop-distribute",
     "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
     "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime",
-    "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
     "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-mllvm", "-enable-gvn-hoist",
+    "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
     "/clang:-mavx",
@@ -2081,7 +2079,6 @@ if (is_win) {
   ]
 
   common_optimize_on_ldflags += [
-    "-mllvm:-extra-vectorizer-passes",
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
     "-mllvm:-adce-remove-loops",
@@ -2089,17 +2086,14 @@ if (is_win) {
     "-mllvm:-enable-cse-in-legalizer",
     "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm:-loop-rotate-multi",
-    "-mllvm:-enable-loopinterchange",
     "-mllvm:-enable-loop-distribute",
     "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-enable-loop-flatten",
     "-mllvm:-interleave-small-loop-scalar-reduction",
-    "-mllvm:-unroll-runtime",
-    "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
     "-mllvm:-enable-interleaved-mem-accesses",
     "-mllvm:-enable-masked-interleaved-mem-accesses",
     "-mllvm:-enable-gvn-hoist",
+    "-mllvm:-enable-dfa-jump-thread",
   ]
 
   if (use_polly == true) {
@@ -2129,7 +2123,6 @@ if (is_win) {
 
   common_optimize_on_cflags += [
     "-freroll-loops",
-    "-mllvm", "-extra-vectorizer-passes",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
     "-mllvm", "-adce-remove-loops",
@@ -2137,23 +2130,19 @@ if (is_win) {
     "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-loopinterchange",
     "-mllvm", "-enable-loop-distribute",
     "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-enable-loop-flatten",
     "-mllvm", "-interleave-small-loop-scalar-reduction",
-    "-mllvm", "-unroll-runtime",
-    "-mllvm", "-unroll-runtime-multi-exit",
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-interleaved-mem-accesses",
     "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-mllvm", "-enable-gvn-hoist",
+    "-mllvm", "-enable-dfa-jump-thread",
     "-O3",
   ]
 
   common_optimize_on_ldflags += [
     "-freroll-loops",
-    "-Wl,-mllvm,-extra-vectorizer-passes",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
     "-Wl,-mllvm,-adce-remove-loops",
@@ -2161,17 +2150,14 @@ if (is_win) {
     "-Wl,-mllvm,-enable-cse-in-legalizer",
     "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
     "-Wl,-mllvm,-loop-rotate-multi",
-    "-Wl,-mllvm,-enable-loopinterchange",
     "-Wl,-mllvm,-enable-loop-distribute",
     "-Wl,-mllvm,-enable-unroll-and-jam",
-    "-Wl,-mllvm,-enable-loop-flatten",
     "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
-    "-Wl,-mllvm,-unroll-runtime",
-    "-Wl,-mllvm,-unroll-runtime-multi-exit",
     "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-interleaved-mem-accesses",
     "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
     "-Wl,-mllvm,-enable-gvn-hoist",
+    "-Wl,-mllvm,-enable-dfa-jump-thread",
     "-Wl,-O3",
   ]
 
