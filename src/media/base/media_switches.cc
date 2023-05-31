@@ -425,15 +425,6 @@ BASE_FEATURE(kChromeWideEchoCancellation,
 #endif
              );
 
-// If non-zero, audio processing is done on a dedicated processing thread which
-// receives audio from the audio capture thread via a fifo of a specified size.
-// Zero fifo size means the usage of such processing thread is disabled and
-// processing is done on the audio capture thread itself.
-const base::FeatureParam<int> kChromeWideEchoCancellationProcessingFifoSize{
-    &kChromeWideEchoCancellation, "processing_fifo_size",
-    110  // Default value for the enabled feature.
-};
-
 // When audio processing is done in the audio process, at the renderer side IPC
 // is set up to receive audio at the processing sample rate. This is a
 // kill-switch to fallback to receiving audio at the default sample rate of the
@@ -457,6 +448,27 @@ const base::FeatureParam<double>
 // https://crbug.com/1332484.
 const base::FeatureParam<bool> kChromeWideEchoCancellationAllowAllSampleRates{
     &kChromeWideEchoCancellation, "allow_all_sample_rates", true};
+
+// https://crbug.com/1420568
+// Applicable only if kChromeWideEchoCancellation is enabled.
+// If disabled, the ProcessingAudioFifo size defaults to 110.
+// If enabled, the ProcessingAudioFifo size is set to the value of the fifo_size
+// parameter.
+//
+// If the ProcessingAudioFifo size is non-zero, audio processing is done on a
+// dedicated processing thread which receives audio from the audio capture
+// thread via a fifo of a specified size.
+// If the ProcessingAudioFifo size is zero, the usage of this processing thread
+// is disabled and processing is done on the audio capture thread itself.
+BASE_FEATURE(kDecreaseProcessingAudioFifoSize,
+             "DecreaseProcessingAudioFifoSize",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+const base::FeatureParam<int> kDecreaseProcessingAudioFifoSizeValue{
+    &kDecreaseProcessingAudioFifoSize, "fifo_size",
+    110  // Default value for the enabled feature.
+};
+
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS)
@@ -508,10 +520,16 @@ BASE_FEATURE(kMemoryPressureBasedSourceBufferGC,
              "MemoryPressureBasedSourceBufferGC",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Enables creating single shared image and mailbox for multi-planar formats for
+// hardware video decoders.
+BASE_FEATURE(kUseMultiPlaneFormatForHardwareVideo,
+             "UseMultiPlaneFormatForHardwareVideo",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // Enables binding software video NV12/P010 GMBs as separate shared images.
 BASE_FEATURE(kMultiPlaneSoftwareVideoSharedImages,
              "MultiPlaneSoftwareVideoSharedImages",
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+#if BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -522,7 +540,7 @@ BASE_FEATURE(kMultiPlaneSoftwareVideoSharedImages,
 // frames created by video capture.
 BASE_FEATURE(kMultiPlaneVideoCaptureSharedImages,
              "MultiPlaneVideoCaptureSharedImages",
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+#if BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_WIN)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -539,7 +557,7 @@ BASE_FEATURE(kOpenscreenCastStreamingSession,
 // information on the quality of the session using RTCP logs.
 BASE_FEATURE(kEnableRtcpReporting,
              "EnableRtcpReporting",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Approach original pre-REC MSE object URL autorevoking behavior, though await
 // actual attempt to use the object URL for attachment to perform revocation.
@@ -885,10 +903,6 @@ const base::FeatureParam<bool>
     kHardwareSecureDecryptionFallbackOnHardwareContextReset{
         &kHardwareSecureDecryptionFallback, "on_hardware_context_reset", true};
 
-BASE_FEATURE(kWakeLockOptimisationHiddenMuted,
-             "kWakeLockOptimisationHiddenMuted",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // If active, enable HiDPI mode that increases the display scale factor
 // while capturing a low-resolution tab.
 BASE_FEATURE(kWebContentsCaptureHiDpi,
@@ -1011,13 +1025,13 @@ BASE_FEATURE(kUseRealColorSpaceForAndroidVideo,
              "UseRealColorSpaceForAndroidVideo",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+#endif  // BUILDFLAG(IS_ANDROID)
+
 #if BUILDFLAG(ENABLE_HLS_DEMUXER)
 BASE_FEATURE(kBuiltInHlsPlayer,
              "BuiltInHlsPlayer",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(ENABLE_HLS_DEMUXER)
-
-#endif  // BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(USE_CHROMEOS_MEDIA_ACCELERATION)
 // Enable hardware AV1 decoder on ChromeOS.
@@ -1233,7 +1247,23 @@ BASE_FEATURE(kUseSequencedTaskRunnerForMediaService,
 // Use SequencedTaskRunner for MojoVideoEncodeAcceleratorProvider.
 BASE_FEATURE(kUseSequencedTaskRunnerForMojoVEAProvider,
              "UseSequencedTaskRunnerForMojoVEAProvider",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_APPLE)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
+
+// Use SequencedTaskRunner for each MojoVideoEncodeAcceleratorService. Replaces
+// per-accelerator encoding task runner.
+BASE_FEATURE(kUseSequencedTaskRunnerForMojoVEAService,
+             "UseSequencedTaskRunnerForMojoVEAService",
+#if BUILDFLAG(IS_APPLE)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
 
 std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   // Return the autoplay policy set in the command line, if any.
@@ -1415,6 +1445,20 @@ bool IsChromeWideEchoCancellationEnabled() {
 #endif
 }
 
+int GetProcessingAudioFifoSize() {
+#if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
+  if (!IsChromeWideEchoCancellationEnabled()) {
+    return 0;
+  }
+  if (base::FeatureList::IsEnabled(media::kDecreaseProcessingAudioFifoSize)) {
+    return media::kDecreaseProcessingAudioFifoSizeValue.Get();
+  }
+  return 110;
+#else
+  return 0;
+#endif
+}
+
 bool IsHardwareSecureDecryptionEnabled() {
   return base::FeatureList::IsEnabled(kHardwareSecureDecryption) ||
          base::FeatureList::IsEnabled(kHardwareSecureDecryptionExperiment);
@@ -1441,19 +1485,6 @@ bool IsMediaFoundationD3D11VideoCaptureEnabled() {
   return base::FeatureList::IsEnabled(kMediaFoundationD3D11VideoCapture);
 }
 #endif
-
-bool IsUseMojoVideoDecoderForPepperEnabled() {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
-          switches::kDisableUseMojoVideoDecoderForPepper)) {
-    LOG(WARNING) << "UseMojoVideoDecoderForPepper: Disabled by policy";
-    return false;
-  }
-
-  auto enabled = base::FeatureList::IsEnabled(kUseMojoVideoDecoderForPepper);
-  LOG(WARNING) << "UseMojoVideoDecoderForPepper: feature controlled: "
-               << enabled;
-  return enabled;
-}
 
 // Return bitmask of audio formats supported by EDID.
 uint32_t GetPassthroughAudioFormats() {
