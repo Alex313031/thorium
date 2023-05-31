@@ -115,7 +115,7 @@
     "ecosia": {
       "name": "Ecosia",
       "keyword": "ecosia.org",
-      "favicon_url": "https://cdn.ecosia.org/assets/images/ico/favicon.ico",
+      "favicon_url": "https://cdn-static.ecosia.org/static/icons/favicon.ico",
       "search_url": "https://www.ecosia.org/search?q={searchTerms}&addon=opensearch",
       "suggest_url": "https://ac.ecosia.org/autocomplete?q={searchTerms}&type=list",
       "new_tab_url": "https://www.ecosia.org/newtab/",
