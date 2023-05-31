@@ -345,8 +345,6 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
     case AudioCodec::kPCM_S24BE:
     case AudioCodec::kPCM_ALAW:
     case AudioCodec::kVorbis:
-    case AudioCodec::kAC3:
-    case AudioCodec::kEAC3:
       return true;
     case AudioCodec::kAMR_NB:
     case AudioCodec::kAMR_WB:
@@ -359,6 +357,13 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
     case AudioCodec::kDTSXP2:
     case AudioCodec::kDTSE:
 #if BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO)
+      return true;
+#else
+      return false;
+#endif
+    case AudioCodec::kAC3:
+    case AudioCodec::kEAC3:
+#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
       return true;
 #else
       return false;
