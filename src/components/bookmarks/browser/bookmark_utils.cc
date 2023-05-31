@@ -26,7 +26,6 @@
 #include "components/bookmarks/browser/bookmark_client.h"
 #include "components/bookmarks/browser/bookmark_model.h"
 #include "components/bookmarks/browser/scoped_group_bookmark_actions.h"
-#include "components/bookmarks/common/bookmark_metrics.h"
 #include "components/bookmarks/common/bookmark_pref_names.h"
 #include "components/pref_registry/pref_registry_syncable.h"
 #include "components/prefs/pref_service.h"
@@ -236,7 +235,8 @@ void CloneBookmarkNode(BookmarkModel* model,
 
 void CopyToClipboard(BookmarkModel* model,
                      const std::vector<const BookmarkNode*>& nodes,
-                     bool remove_nodes) {
+                     bool remove_nodes,
+                     metrics::BookmarkEditSource source) {
   if (nodes.empty())
     return;
 
@@ -252,7 +252,7 @@ void CopyToClipboard(BookmarkModel* model,
   if (remove_nodes) {
     ScopedGroupBookmarkActions group_cut(model);
     for (const auto* node : filtered_nodes)
-      model->Remove(node);
+      model->Remove(node, source);
   }
 }
 
@@ -452,15 +452,12 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterBooleanPref(
       prefs::kShowManagedBookmarksInBookmarkBar, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterBooleanPref(prefs::kAddedBookmarkSincePowerBookmarksLaunch,
+                                false);
   RegisterManagedBookmarksPrefs(registry);
 }
 
 void RegisterManagedBookmarksPrefs(PrefRegistrySimple* registry) {
-  // Don't sync this, as otherwise, due to a limitation in sync, it
-  // will cause a deadlock (see http://crbug.com/97955).  If we truly
-  // want to sync the expanded state of folders, it should be part of
-  // bookmark sync itself (i.e., a property of the sync folder nodes).
-  registry->RegisterListPref(prefs::kBookmarkEditorExpandedNodes);
   registry->RegisterListPref(prefs::kManagedBookmarks);
   registry->RegisterStringPref(
       prefs::kManagedBookmarksFolderName, std::string());
@@ -497,19 +494,22 @@ void DeleteBookmarkFolders(BookmarkModel* model,
     const BookmarkNode* node = GetBookmarkNodeByID(model, *iter);
     if (!node)
       continue;
-    model->Remove(node);
+    model->Remove(node, metrics::BookmarkEditSource::kUser);
   }
 }
 
 const BookmarkNode* AddIfNotBookmarked(BookmarkModel* model,
                                        const GURL& url,
-                                       const std::u16string& title) {
+                                       const std::u16string& title,
+                                       const BookmarkNode* parent) {
   // Nothing to do, a user bookmark with that url already exists.
   if (IsBookmarkedByUser(model, url))
     return nullptr;
   model->client()->RecordAction(base::UserMetricsAction("BookmarkAdded"));
-  const BookmarkNode* parent = GetParentForNewNodes(model);
-  return model->AddNewURL(parent, parent->children().size(), title, url);
+
+  const auto* parent_to_use = parent ? parent : GetParentForNewNodes(model);
+  return model->AddNewURL(parent_to_use, parent_to_use->children().size(),
+                          title, url);
 }
 
 void RemoveAllBookmarks(BookmarkModel* model, const GURL& url) {
@@ -520,7 +520,7 @@ void RemoveAllBookmarks(BookmarkModel* model, const GURL& url) {
   for (size_t i = 0; i < bookmarks.size(); ++i) {
     const BookmarkNode* node = bookmarks[i];
     if (model->client()->CanBeEditedByUser(node))
-      model->Remove(node);
+      model->Remove(node, metrics::BookmarkEditSource::kUser);
   }
 }
 

@@ -82,6 +82,8 @@
 #include "chrome/browser/ui/status_bubble.h"
 #include "chrome/browser/ui/tab_contents/core_tab_helper.h"
 #include "chrome/browser/ui/tab_dialogs.h"
+#include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_keyed_service.h"
+#include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_service_factory.h"
 #include "chrome/browser/ui/tabs/tab_enums.h"
 #include "chrome/browser/ui/tabs/tab_group.h"
 #include "chrome/browser/ui/tabs/tab_group_model.h"
@@ -902,8 +904,7 @@ void DuplicateTab(Browser* browser) {
 }
 
 bool CanDuplicateTab(const Browser* browser) {
-  return !browser->is_type_picture_in_picture() &&
-         CanDuplicateTabAt(browser, browser->tab_strip_model()->active_index());
+  return CanDuplicateTabAt(browser, browser->tab_strip_model()->active_index());
 }
 
 bool CanDuplicateKeyboardFocusedTab(const Browser* browser) {
@@ -941,6 +942,22 @@ void MoveTabsToNewWindow(Browser* browser,
       Browser::Create(Browser::CreateParams(browser->profile(), true));
 
   if (group.has_value()) {
+    SavedTabGroupKeyedService* const service =
+        SavedTabGroupServiceFactory::GetForProfile(browser->profile());
+    if (service && service->model()->Contains(group.value())) {
+      // If the group we are looking to move is saved:
+      // 1) Stop listening to changes on it
+      // 2) Close the group in the browser
+      // 3) Open the group in a new browser and link it to the saved guid.
+      const base::GUID& saved_guid =
+          service->model()->Get(group.value())->saved_guid();
+
+      service->DisconnectLocalTabGroup(group.value());
+      browser->tab_strip_model()->CloseAllTabsInGroup(group.value());
+      service->OpenSavedTabGroupInBrowser(new_browser, saved_guid);
+      return;
+    }
+
     const tab_groups::TabGroupVisualData* old_visual_data =
         browser->tab_strip_model()
             ->group_model()
@@ -1020,6 +1037,9 @@ WebContents* DuplicateTabAt(Browser* browser, int index) {
 }
 
 bool CanDuplicateTabAt(const Browser* browser, int index) {
+  if (browser->is_type_picture_in_picture()) {
+    return false;
+  }
   WebContents* contents = browser->tab_strip_model()->GetWebContentsAt(index);
   return contents;
 }
@@ -1135,6 +1155,16 @@ void BookmarkCurrentTab(Browser* browser) {
     return;
   }
   bool was_bookmarked_by_user = bookmarks::IsBookmarkedByUser(model, url);
+#if !BUILDFLAG(IS_ANDROID)
+  PrefService* prefs = browser->profile()->GetPrefs();
+  if (base::FeatureList::IsEnabled(features::kPowerBookmarksSidePanel) &&
+      !prefs->GetBoolean(
+          bookmarks::prefs::kAddedBookmarkSincePowerBookmarksLaunch)) {
+    bookmarks::AddIfNotBookmarked(model, url, title, model->other_node());
+    prefs->SetBoolean(bookmarks::prefs::kAddedBookmarkSincePowerBookmarksLaunch,
+                      true);
+  }
+#endif
   bookmarks::AddIfNotBookmarked(model, url, title);
   bool is_bookmarked_by_user = bookmarks::IsBookmarkedByUser(model, url);
   // Make sure the model actually added a bookmark before showing the star. A
@@ -1347,6 +1377,10 @@ void Translate(Browser* browser) {
 }
 
 void ManagePasswordsForPage(Browser* browser) {
+  browser->window()->CloseFeaturePromo(
+      feature_engagement::kIPHPasswordsManagementBubbleAfterSaveFeature);
+  browser->window()->CloseFeaturePromo(
+      feature_engagement::kIPHPasswordsManagementBubbleDuringSigninFeature);
   WebContents* web_contents =
       browser->tab_strip_model()->GetActiveWebContents();
   ManagePasswordsUIController* controller =
