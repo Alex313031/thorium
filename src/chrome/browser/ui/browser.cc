@@ -46,7 +46,7 @@
 #include "chrome/browser/defaults.h"
 #include "chrome/browser/devtools/devtools_toggle_action.h"
 #include "chrome/browser/devtools/devtools_window.h"
-#include "chrome/browser/download/bubble/download_bubble_controller.h"
+#include "chrome/browser/download/bubble/download_bubble_ui_controller.h"
 #include "chrome/browser/download/bubble/download_display_controller.h"
 #include "chrome/browser/download/download_core_service.h"
 #include "chrome/browser/download/download_core_service_factory.h"
@@ -390,6 +390,7 @@ Browser::CreateParams Browser::CreateParams::CreateForAppBase(
   params.app_name = app_name;
   params.trusted_source = trusted_source;
   params.initial_bounds = window_bounds;
+  params.are_tab_groups_enabled = false;
 
   return params;
 }
@@ -1738,8 +1739,9 @@ void Browser::CloseContents(WebContents* source) {
 }
 
 void Browser::SetContentsBounds(WebContents* source, const gfx::Rect& bounds) {
-  if (is_type_normal())
+  if (is_type_normal() || is_type_picture_in_picture()) {
     return;
+  }
 
   std::vector<blink::mojom::WebFeature> features = {
       blink::mojom::WebFeature::kMovedOrResizedPopup};

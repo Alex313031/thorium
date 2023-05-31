@@ -60,6 +60,7 @@
 #include "chrome/browser/ui/views/page_action/page_action_icon_controller.h"
 #include "chrome/browser/ui/views/performance_controls/battery_saver_button.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_toolbar_icon_view.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_toolbar_container.h"
 #include "chrome/browser/ui/views/tabs/tab_strip.h"
 #include "chrome/browser/ui/views/toolbar/app_menu.h"
 #include "chrome/browser/ui/views/toolbar/back_forward_button.h"
@@ -92,6 +93,7 @@
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/metadata/metadata_impl_macros.h"
 #include "ui/base/theme_provider.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/base/window_open_disposition.h"
 #include "ui/base/window_open_disposition_utils.h"
 #include "ui/color/color_id.h"
@@ -159,6 +161,9 @@ auto& GetViewCommandMap() {
   return kViewCommandMap;
 }
 
+constexpr int kToolbarDividerWidth = 2;
+constexpr int kToolbarDividerHeight = 16;
+constexpr int kToolbarDividerCornerRadius = 1;
 }  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,12 +245,17 @@ void ToolbarView::Init() {
       base::BindRepeating(callback, browser_, IDC_HOME), prefs);
 
   std::unique_ptr<ExtensionsToolbarContainer> extensions_container;
+  std::unique_ptr<views::View> toolbar_divider;
 
   // Do not create the extensions or browser actions container if it is a guest
   // profile (only regular and incognito profiles host extensions).
   if (!browser_->profile()->IsGuestSession()) {
     extensions_container =
         std::make_unique<ExtensionsToolbarContainer>(browser_);
+
+    if (features::IsChromeRefresh2023()) {
+      toolbar_divider = std::make_unique<views::View>();
+    }
   }
   std::unique_ptr<media_router::CastToolbarButton> cast;
   if (media_router::MediaRouterEnabled(browser_->profile()))
@@ -272,9 +282,15 @@ void ToolbarView::Init() {
   }
 
   std::unique_ptr<SidePanelToolbarButton> side_panel_button;
-  if (browser_view_->unified_side_panel()) {
-   if (!base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button"))
-    side_panel_button = std::make_unique<SidePanelToolbarButton>(browser_);
+  std::unique_ptr<SidePanelToolbarContainer> side_panel_toolbar_container;
+  if (browser_view_->unified_side_panel() &&
+      !base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button")) {
+    if (base::FeatureList::IsEnabled(features::kSidePanelCompanion)) {
+      side_panel_toolbar_container =
+          std::make_unique<SidePanelToolbarContainer>(browser_view_);
+    } else {
+      side_panel_button = std::make_unique<SidePanelToolbarButton>(browser_);
+    }
   }
 
   // Always add children in order from left to right, for accessibility.
@@ -287,6 +303,12 @@ void ToolbarView::Init() {
 
   if (extensions_container)
     extensions_container_ = AddChildView(std::move(extensions_container));
+
+  if (toolbar_divider) {
+    toolbar_divider_ = AddChildView(std::move(toolbar_divider));
+    toolbar_divider_->SetPreferredSize(
+        gfx::Size(kToolbarDividerWidth, kToolbarDividerHeight));
+  }
 
   if (base::FeatureList::IsEnabled(features::kChromeLabs)) {
     chrome_labs_model_ = std::make_unique<ChromeLabsBubbleViewModel>();
@@ -326,8 +348,12 @@ void ToolbarView::Init() {
   if (send_tab_to_self_button)
     send_tab_to_self_button_ = AddChildView(std::move(send_tab_to_self_button));
 
-  if (side_panel_button)
+  if (side_panel_toolbar_container) {
+    side_panel_container_ =
+        AddChildView(std::move(side_panel_toolbar_container));
+  } else if (side_panel_button) {
     side_panel_button_ = AddChildView(std::move(side_panel_button));
+  }
 
   avatar_ = AddChildView(std::make_unique<AvatarToolbarButton>(browser_view_));
   bool show_avatar_toolbar_button = true;
@@ -412,6 +438,10 @@ void ToolbarView::Update(WebContents* tab) {
 
   if (extensions_container_)
     extensions_container_->UpdateAllIcons();
+
+  if (side_panel_container_) {
+    side_panel_container_->UpdateAllIcons();
+  }
 
   if (reload_)
     reload_->SetMenuEnabled(chrome::IsDebuggerAttachedToCurrentTab(browser_));
@@ -505,17 +535,24 @@ void ToolbarView::ShowBookmarkBubble(const GURL& url, bool already_bookmarked) {
       GetPageActionIconView(PageActionIconType::kBookmarkStar);
 
   std::unique_ptr<BubbleSyncPromoDelegate> delegate;
-  Profile* profile = browser_->profile();
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
-  delegate = std::make_unique<BookmarkBubbleSignInDelegate>(profile);
+  delegate =
+      std::make_unique<BookmarkBubbleSignInDelegate>(browser_->profile());
 #endif
   BookmarkBubbleView::ShowBubble(anchor_view, GetWebContents(),
                                  bookmark_star_icon, std::move(delegate),
-                                 profile, url, already_bookmarked);
+                                 browser_, url, already_bookmarked);
 }
 
 ExtensionsToolbarButton* ToolbarView::GetExtensionsButton() const {
   return extensions_container_->GetExtensionsButton();
+}
+
+SidePanelToolbarButton* ToolbarView::GetSidePanelButton() {
+  if (side_panel_container_) {
+    return side_panel_container_->GetSidePanelButton();
+  }
+  return side_panel_button_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -640,6 +677,10 @@ void ToolbarView::Layout() {
 
   LayoutCommon();
 
+  if (features::IsChromeRefresh2023()) {
+    UpdateClipPath();
+  }
+
   // Call super implementation to ensure layout manager and child layouts
   // happen.
   AccessiblePaneView::Layout();
@@ -654,6 +695,22 @@ void ToolbarView::OnThemeChanged() {
     LoadImages();
 
   SchedulePaint();
+}
+
+void ToolbarView::UpdateClipPath() {
+  const int corner_radius = GetLayoutConstant(TOOLBAR_CORNER_RADIUS);
+  SkPath path;
+  const gfx::Rect local_bounds = GetLocalBounds();
+  path.moveTo(0, local_bounds.height());
+  path.lineTo(0, corner_radius);
+  path.arcTo(corner_radius, corner_radius, 0, SkPath::kSmall_ArcSize,
+             SkPathDirection::kCW, corner_radius, 0);
+  path.lineTo(local_bounds.width() - corner_radius, 0);
+  path.arcTo(corner_radius, corner_radius, 0, SkPath::kSmall_ArcSize,
+             SkPathDirection::kCW, local_bounds.width(), corner_radius);
+  path.lineTo(local_bounds.width(), local_bounds.height());
+  path.lineTo(0, local_bounds.height());
+  SetClipPath(path);
 }
 
 bool ToolbarView::AcceleratorPressed(const ui::Accelerator& accelerator) {
@@ -695,7 +752,8 @@ void ToolbarView::InitLayout() {
       views::FlexSpecification(views::MinimumFlexSizeRule::kScaleToMinimum,
                                views::MaximumFlexSizeRule::kUnbounded)
           .WithOrder(2);
-  constexpr int kExtensionsFlexOrder = 3;
+  constexpr int kSidePanelFlexOrder = 3;
+  constexpr int kExtensionsFlexOrder = 4;
 
   layout_manager_ = SetLayoutManager(std::make_unique<views::FlexLayout>());
 
@@ -717,6 +775,23 @@ void ToolbarView::InitLayout() {
 
     extensions_container_->SetProperty(views::kFlexBehaviorKey,
                                        extensions_flex_rule);
+  }
+
+  if (side_panel_container_) {
+    const views::FlexSpecification side_panel_flex_rule =
+        views::FlexSpecification(
+            side_panel_container_->GetAnimatingLayoutManager()
+                ->GetDefaultFlexRule())
+            .WithOrder(kSidePanelFlexOrder);
+
+    side_panel_container_->SetProperty(views::kFlexBehaviorKey,
+                                       side_panel_flex_rule);
+  }
+
+  if (toolbar_divider_) {
+    SkColor color = GetColorProvider()->GetColor(ui::kColorSysOutline);
+    toolbar_divider_->SetBackground(
+        views::CreateRoundedRectBackground(color, kToolbarDividerCornerRadius));
   }
 
   LayoutCommon();
@@ -834,10 +909,6 @@ views::View* ToolbarView::GetAnchorView(PageActionIconType type) {
 void ToolbarView::ZoomChangedForActiveTab(bool can_show_bubble) {
   location_bar_->page_action_icon_controller()->ZoomChangedForActiveTab(
       can_show_bubble);
-}
-
-SidePanelToolbarButton* ToolbarView::GetSidePanelButton() {
-  return side_panel_button_;
 }
 
 AvatarToolbarButton* ToolbarView::GetAvatarToolbarButton() {
