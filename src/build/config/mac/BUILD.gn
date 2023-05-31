@@ -1,4 +1,4 @@
-# Copyright (c) 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -103,18 +103,6 @@ config("mac_dynamic_flags") {
                        get_label_info(":mac_dynamic_flags", "root_out_dir"),
                        root_build_dir) ]
     }
-  }
-}
-
-# The ldflags referenced below are handled by
-# //build/toolchain/apple/linker_driver.py.
-# Remove this config if a target wishes to change the arguments passed to the
-# strip command during linking. This config by default strips all symbols
-# from a binary, but some targets may wish to specify an exports file to
-# preserve specific symbols.
-config("strip_all") {
-  if (enable_stripping) {
-    ldflags = [ "-Wcrl,strip,-x,-S", "-Wl,-O3", ]
   }
 }
 

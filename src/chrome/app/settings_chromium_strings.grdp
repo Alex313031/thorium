@@ -12,6 +12,12 @@
   <message name="IDS_SETTINGS_ABOUT_PROGRAM" desc="Menu title for the About Thorium page.">
     About Thorium
   </message>
+  <message name="IDS_SETTINGS_GET_THE_MOST_OUT_OF_PROGRAM" desc="Section title for the 'Get the most out of Thorium' page.">
+    Get the most ouf of Thorium
+  </message>
+  <message name="IDS_SETTINGS_GET_THE_MOST_OUT_OF_PROGRAM_DESCRIPTION" desc="Explanatory text for the link to the 'Get the most out of Thorium' page.">
+    This guide helps you understand your choices, so that Thorium works the way you want to
+  </message>
   <message name="IDS_SETTINGS_GET_HELP_USING_CHROME" desc="Text of the button which takes the user to the Thorium help page.">
     Get help with Thorium
   </message>
