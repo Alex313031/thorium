@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright 2023 The Chromium Authors, Alex313031, and Midzer. All rights reserved.
+# Copyright 2014 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -315,7 +315,7 @@ def SetupWindowsCrossCompileToolchain(target_arch):
       '--ar=llvm-ar',
 
       # Separate from optflags because configure strips it from msvc builds...
-      '--extra-cflags=-O3',
+      '--extra-cflags=-O2',
   ]
 
   if target_arch == 'ia32':
@@ -730,8 +730,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
   else:
     configure_flags['Common'].extend([
         # --optflags doesn't append multiple entries, so set all at once.
-        '--optflags="-O3"',
-        '--extra-cflags=-O3',
+        '--optflags="-O2"',
         '--enable-decoder=theora,vp8',
         '--enable-parser=vp3,vp8',
     ])
@@ -745,7 +744,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       else:
         configure_flags['Common'].extend([
           '--enable-lto',
-          '--extra-cflags=-O3',
           '--arch=x86_64',
           '--target-os=linux',
         ])
@@ -824,7 +822,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
               # NOTE: we don't need softfp for this hardware.
               '--extra-cflags=-mfloat-abi=hard',
               # For some reason configure drops this...
-              '--extra-cflags=-O3',
+              '--extra-cflags=-O2',
           ])
 
         if target_arch == 'arm-neon':
@@ -1005,9 +1003,9 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
 
   # Google Chrome & ChromeOS specific configuration.
   configure_flags['Chrome'].extend([
-      '--enable-decoder=aac,h264,mp3,hevc',
-      '--enable-demuxer=aac,mp3',
-      '--enable-parser=aac,h264,hevc',
+      '--enable-decoder=aac,h264',
+      '--enable-demuxer=aac',
+      '--enable-parser=aac,h264',
   ])
 
   # Google ChromeOS specific configuration.
@@ -1018,12 +1016,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-decoder=mpeg4',
       '--enable-parser=h263,mpeg4video',
       '--enable-demuxer=avi',
-      # Enable playing Android 3gp files.
-      '--enable-demuxer=amr',
-      '--enable-decoder=amrnb,amrwb',
-      # Wav files for playing phone messages.
-      '--enable-decoder=gsm_ms',
-      '--enable-parser=gsm',
   ])
 
   configure_flags['ChromeAndroid'].extend([
