@@ -5,6 +5,16 @@
 #ifndef CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 
+const FeatureEntry::Choice kScrollEventChangesTab[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"Always",
+     "scroll-tabs",
+     "always"},
+    {"Never",
+     "scroll-tabs",
+     "never"}
+};
+
 const FeatureEntry::Choice kAutoplayPolicyChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"No User Gesture Required",

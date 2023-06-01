@@ -105,10 +105,16 @@ Enable UI Features: Side Search, Side Panel Journeys, Chrome Labs, Extensions Ac
   - Made by me.
 
 Tab Outlines in Low Contrast Themes, More Prominent Active Tab Title in Dark Mode: Restore after they removed it in M113 > 
-https://chromium-review.googlesource.com/c/chromium/src/+/4578380 \
-https://chromium-review.googlesource.com/c/chromium/src/+/4578188 \
-
+https://chromium-review.googlesource.com/c/chromium/src/+/4578380 
+https://chromium-review.googlesource.com/c/chromium/src/+/4578188 
+https://github.com/Alex313031/thorium/commit/17a3074d3f2cd32a05b71cdcb57942d5319845f0
  - Made by me.
+
+Disable History Expiration Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-disable-local-history-expiration.patch
+ - Modified by me.
+
+Toggle Tab Scrolling (for Non-Linux Platforms) Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-scroll-tabs.patch
+ - Modified by me.
 
 Enable Precompiling of Inline Scripts in HTML - https://github.com/Alex313031/thorium/commit/8d237b76adff2ab4e89147b18ee1d0ab7bb29fb6
   - Modified by me.
