@@ -15,5 +15,4 @@ static const AVCodec * const codec_list[] = {
     &ff_pcm_s32le_decoder,
     &ff_pcm_u8_decoder,
     &ff_libopus_decoder,
-    &ff_hevc_decoder,
     NULL };
