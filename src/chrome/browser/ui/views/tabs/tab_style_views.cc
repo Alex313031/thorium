@@ -12,6 +12,7 @@
 #include "base/memory/raw_ptr.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/strings/strcat.h"
+#include "base/command_line.h"
 #include "cc/paint/paint_record.h"
 #include "cc/paint/paint_shader.h"
 #include "chrome/browser/themes/theme_properties.h"
@@ -490,7 +491,7 @@ TabStyle::TabColors GM2TabStyle::CalculateColors() const {
 
 const gfx::FontList& GM2TabStyle::GetFontList() const {
   // Don't want to have to keep re-computing this value.
-  static const bool prominent_dark_mode_title = true;
+  static const bool prominent_dark_mode_title = base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-dark-mode-active-tab-title");
 
   if (prominent_dark_mode_title && tab_->IsActive() &&
       color_utils::IsDark(GetTabBackgroundColor(TabActive::kActive))) {

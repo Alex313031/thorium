@@ -22,6 +22,7 @@
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback.h"
+#include "base/command_line.h"
 #include "base/i18n/rtl.h"
 #include "base/memory/raw_ptr.h"
 #include "base/memory/weak_ptr.h"
@@ -1172,7 +1173,8 @@ bool TabStrip::ShouldDrawStrokes() const {
 
   // Don't want to have to run a full feature query every time this function is
   // called.
-  static const bool tab_outlines_in_low_contrast = true;
+  static const bool tab_outlines_in_low_contrast = base::CommandLine::ForCurrentProcess()->HasSwitch("tab-outlines-in-low-contrast-themes");
+
   if (tab_outlines_in_low_contrast) {
     constexpr float kMinimumAbsoluteContrastForOutlines = 0.2f;
     const float background_luminance =
