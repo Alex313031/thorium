@@ -101,8 +101,14 @@ Always Show Component Extensions Patch > https://github.com/iridium-browser/irid
 
 Increase default key length for newly-generated RSA keys from 1024 to 2048 Patch > https://github.com/iridium-browser/iridium-browser/commit/d016769081706d591188b5b2929c5fc2efd8ef20
 
-Enable UI Features: Side Search, Side Panel Journeys, Chrome Labs, Extensions Access Menu, Tab Hover Cards, Tab Outlines in Low Contrast Themes, More Prominent Active Tab Title in Dark Mode, WebUI Tab Strip, Drag and Drop Tabs on Wayland, Tab Groups Saving > https://github.com/Alex313031/Thorium/blob/main/chrome/browser/ui/ui_features.cc
+Enable UI Features: Side Search, Side Panel Journeys, Chrome Labs, Extensions Access Menu, Tab Hover Cards, WebUI Tab Strip, Drag and Drop Tabs on Wayland, Tab Groups Saving > https://github.com/Alex313031/Thorium/blob/main/chrome/browser/ui/ui_features.cc
   - Made by me.
+
+Tab Outlines in Low Contrast Themes, More Prominent Active Tab Title in Dark Mode: Restore after they removed it in M113 > 
+https://chromium-review.googlesource.com/c/chromium/src/+/4578380 \
+https://chromium-review.googlesource.com/c/chromium/src/+/4578188 \
+
+ - Made by me.
 
 Enable Precompiling of Inline Scripts in HTML - https://github.com/Alex313031/thorium/commit/8d237b76adff2ab4e89147b18ee1d0ab7bb29fb6
   - Modified by me.
