@@ -68,7 +68,7 @@ usage () {
   echo "        --temp-profile             Start with a new and temporary profile"
   echo
   echo " Other supported options are:"
-  MANWIDTH=80 man thorium-browser-stable | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
+  MANWIDTH=80 man thorium-browser | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
   echo " See 'man thorium-browser-stable' for more details"
 }
 

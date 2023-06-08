@@ -4,6 +4,7 @@ API_KEYS.txt
 *.AppImage
 *.zip
 thorium_mini_installer.exe
+thorium_AVX2_mini_installer.exe
 thorium_mini_installer_SSE2.exe
 thorium_mini_installer_SSE3.exe
 thorium_mini_installer_AVX2.exe
