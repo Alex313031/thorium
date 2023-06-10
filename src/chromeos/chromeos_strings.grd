@@ -301,8 +301,13 @@
         Report this query
       </message>
 
+      <!-- Rich Answers -->
+      <message name="IDS_RICH_ANSWERS_VIEW_A11Y_NAME_TEXT" desc="A11y name text for the Rich Answers view.">
+        Additional info related to your selection
+      </message>
+
       <!-- Multitask Menu -->
-      <message name="IDS_MULTITASK_MENU_HALF_BUTTON_NAME" desc="Title and and accessible name of the half button on the multitask menu.">
+      <message name="IDS_MULTITASK_MENU_HALF_BUTTON_NAME" desc="Title of the half button on the multitask menu.">
         Half
       </message>
       <message name="IDS_MULTITASK_MENU_PARTIAL_BUTTON_NAME" desc="Title and and accessible name of the partial button on the multitask menu.">
@@ -319,6 +324,36 @@
       </message>
       <message name="IDS_MULTITASK_MENU_EXIT_FLOAT_BUTTON_NAME" desc="Title and and accessible name of the float button on the multitask menu, when the window is in float state.">
         Exit float
+      </message>
+      <message name="IDS_MULTITASK_MENU_HALF_BUTTON_ACCESSIBLE_NAME" desc="A11y name for the half button on the multitask menu.">
+        Dock window on the <ph name="DIRECTION">$1<ex>left</ex></ph> half of the screen
+      </message>
+      <message name="IDS_MULTITASK_MENU_PARTIAL_BUTTON_LARGE_ACCESSIBLE_NAME" desc="A11y name for the partial button's large side on the multitask menu.">
+        Dock window on the <ph name="DIRECTION">$1<ex>left</ex></ph> larger portion of the screen
+      </message>
+      <message name="IDS_MULTITASK_MENU_PARTIAL_BUTTON_SMALL_ACCESSIBLE_NAME" desc="A11y name for the partial button's small side on the multitask menu.">
+        Dock window on the <ph name="DIRECTION">$1<ex>left</ex></ph> smaller portion of the screen
+      </message>
+      <message name="IDS_MULTITASK_MENU_LEFT" desc="A11y name and tooltip to describe left side of the screen.">
+        left
+      </message>
+      <message name="IDS_MULTITASK_MENU_RIGHT" desc="A11y name and tooltip to describe right side of the screen.">
+        right
+      </message>
+      <message name="IDS_MULTITASK_MENU_TOP" desc="A11y name and tooltip to describe top side of the screen.">
+        top
+      </message>
+      <message name="IDS_MULTITASK_MENU_BOTTOM" desc="A11y name and tooltip to describe bottom side of the screen.">
+        bottom
+      </message>
+      <message name="IDS_MULTITASK_MENU_NUDGE_TEXT" desc="Text that is shown when the clamshell multitask menu nudge is displayed.">
+        Keep hovering for more layout options
+      </message>
+      <message name="IDS_TABLET_MULTITASK_MENU_NUDGE_TEXT" desc="Text that is shown when the tablet multitask menu nudge is displayed.">
+        Swipe down for more layout options
+      </message>
+      <message name="IDS_MULTITASK_MENU_FEEDBACK_BUTTON_NAME" desc="Button text of the dogfood feedback button on the multitask menu.">
+        Send feedback
       </message>
 
       <if expr="chromeos_ash">
@@ -942,7 +977,7 @@
         <message name="IDS_DIAGNOSTICS_PERCENTAGE_LABEL" desc="The label displaying localized percentage.">
           <ph name="PERCENTAGE_VALUE">$1<ex>50</ex></ph>%
         </message>
-        <message name="IDS_DIAGNOSTICS_CURRENT_NOW_LABEL" desc="The label for a battery's current power consumption represented in milliamps.">
+        <message name="IDS_DIAGNOSTICS_CURRENT_NOW_LABEL" desc="Electrical current as label for a battery's power consumption represented in milliamps." meaning="Electrical current">
           Current
         </message>
         <message name="IDS_DIAGNOSTICS_CURRENT_NOW_TEXT" desc="The text for a battery's current power consumption represented in milliamps.">
@@ -2220,6 +2255,12 @@
         <message name="IDS_PERSONALIZATION_APP_CURRENTLY_SET" desc="Label for the currently set user wallpaper section.">
           Currently set
         </message>
+        <message name="IDS_PERSONALIZATION_APP_WALLPAPER_DESCRIPTION_DIALOG_OPEN" desc="Label for the button to open wallpaper description dialog">
+          About the art
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_WALLPAPER_DESCRIPTION_DIALOG_CLOSE" desc="Label for the close button on wallpaper description dialog">
+          Close
+        </message>
         <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS" desc="Label for the Google Photos page in the wallpaper app.">
           Google Photos
         </message>
@@ -2232,6 +2273,18 @@
         <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_ALBUM_SHARED" desc="Secondary text for Google Photos shared albums in the wallpaper app.">
           Shared
         </message>
+        <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_SHARED_ALBUM_DIALOG_TITLE" desc="Title for the dialog warning about daily refresh from shared Google Photos albums.">
+          Shared albums can be updated by other people
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_SHARED_ALBUM_DIALOG_CONTENT" desc="Content for the dialog warning about daily refresh from shared Google Photos albums.">
+          You’ve selected a shared album. Other people can add or change photos. Your wallpaper might use photos that are not currently in this album.
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_SHARED_ALBUM_DIALOG_CLOSE_BUTTON" desc="Label for the button to close the dialog warning about daily refresh from shared Google Photos albums.">
+          Cancel
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_SHARED_ALBUM_DIALOG_ACCEPT_BUTTON" desc="Label for the button to accept the dialog warning about daily refresh from shared Google Photos albums.">
+          Change Daily
+        </message>
         <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_ALBUMS_TAB" desc="Label for the Albums tab in the Google Photos page in the wallpaper app.">
           Albums
         </message>
@@ -2240,6 +2293,9 @@
         </message>
         <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_ZERO_STATE_MESSAGE" desc="Message shown in the Google Photos page in the wallpaper app when the user has no photos.">
           No image available. To add photos, go to <ph name="LINK">$1<ex>photos.google.com</ex></ph>
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_GOOGLE_PHOTOS_ALBUM_ZERO_STATE_MESSAGE" desc="Message shown in the Google Photos page in the wallpaper app when the user views an album with no photos.">
+          This album doesn't have any photos. To add photos, go to <ph name="LINK">$1<ex>photos.google.com</ex></ph>
         </message>
         <message name="IDS_PERSONALIZATION_APP_MY_IMAGES" desc="Label for the local images page in wallpaper app.">
           My Images
@@ -2357,8 +2413,14 @@
         <message name="IDS_PERSONALIZATION_APP_SCREENSAVER_PREVIEW_BUTTON" desc="Label for the button to preview screen saver.">
           Preview
         </message>
+        <message name="IDS_PERSONALIZATION_APP_SCREENSAVER_PREVIEW_BUTTON_ARIA_LABEL" desc="Aria label for the button to preview screen saver.">
+          Screen saver preview
+        </message>
         <message name="IDS_PERSONALIZATION_APP_SCREENSAVER_PREVIEW_DOWNLOADING" desc="Label for the button while screen saver preview is loading.">
           Downloading image
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_SCREENSAVER_PREVIEW_DOWNLOADING_ARIA_LABEL" desc="Aria label for the button while screen saver preview is loading.">
+          Downloading the screen saver
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_PAGE_DESCRIPTION" desc="Description for the ambient mode settings page.">
           When your screen is idle, show photos, time, weather, and media info.
@@ -2545,6 +2607,32 @@
         </message>
         <message name="IDS_PERSONALIZATION_APP_KEYBOARD_BACKLIGHT_WALLPAPER_COLOR_NUDGE_TEXT" desc="The text of the educational nudge for keyboard backlight wallpaper-extracted color.">
           Your keyboard can automatically match your wallpaper
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_KEYBOARD_BACKLIGHT_ZONE_CUSTOMIZATION_BUTTON" desc="The text of the button that allows users to customize rgb keyboard zone colors.">
+          Customize
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_KEYBOARD_BACKLIGHT_ZONE_CUSTOMIZATION_DISMISS_BUTTON" desc="The text of the button that dismisses the zone customization dialog.">
+          Done
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_KEYBOARD_BACKLIGHT_WALLPAPER_COLOR_DESCRIPTION" desc="The description for the button that allows users to select a keyboard backlight wallpaper-extracted color.">
+          Match wallpaper
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_KEYBOARD_BACKLIGHT_ZONE_TITLE" desc="Title of the zone colors in the keyboard backlight customization dialog of personalization hub.">
+          Zone <ph name="ZONE_NUMBER">$1<ex>1</ex></ph>
+        </message>
+
+        <!-- Personalization App Time of Day strings -->
+        <message name="IDS_PERSONALIZATION_APP_TIME_OF_DAY_WALLPAPER_DIALOG_TITLE" desc="Title for the dialog confirming user's selection of a Time of Day wallpaper.">
+          Confirm preset
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_TIME_OF_DAY_WALLPAPER_DIALOG_CONTENT" desc="Content for the dialog confirming user's selection of a Time of Day wallpaper.">
+          Selecting this wallpaper will turn on auto dark mode and wallpaper color matching.
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_TIME_OF_DAY_WALLPAPER_DIALOG_BACK_BUTTON" desc="Label for the button to close the dialog confirming user's selection of a Time of Day wallpaper.">
+          Back
+        </message>
+        <message name="IDS_PERSONALIZATION_APP_TIME_OF_DAY_WALLPAPER_DIALOG_CONFIRM_BUTTON" desc="Label for the button to accept the dialog confirming user's selection of a Time of Day wallpaper.">
+          Confirm
         </message>
 
         <!-- Personalization App Search Results -->
@@ -3591,6 +3679,9 @@
         <message name="IDS_FEEDBACK_TOOL_ASSISTANT_LOGS_CHECKBOX" translateable="false" desc="Checkbox for Google internal account to attach assistant logs from the current session.">
         Include recent Google Assistant history and information. <ph name="BEGIN_LINK1">&lt;a id="assistantLogsLink"&gt;</ph>View more details<ph name="END_LINK1">&lt;/a&gt;</ph>.
         </message>
+        <message name="IDS_FEEDBACK_TOOL_AUTOFILL_LOGS_CHECKBOX" translateable="false" desc="Checkbox for Google internal account to attach autofill logs from the current page.">
+        Send <ph name="BEGIN_LINK1">&lt;a href="#" id="autofillMetadataUrl"&gt;</ph>autofill metadata<ph name="END_LINK1">&lt;/a&gt;</ph>
+        </message>
         <message name="IDS_FEEDBACK_TOOL_ASSISTANT_LOGS_MESSAGE" translateable="false" desc="Message shown after user clicks on the assistant logs hyperlink">
           Google Assistance captures recent history and information such as your identity and location to help us better understand your issue.&#10;&#10;The information is stored for up to 90 days and access is restricted to the team working on this issue.
         </message>
@@ -3676,10 +3767,10 @@
         <!-- End of Feedback Tool -->
 
         <!-- Shortcut Customization -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_APP_TITLE" desc="Title of the app" translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_APP_TITLE" desc="Title of the app">
           Shortcuts
         </message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEYBOARD_SETTINGS" desc="Label for link to open keyboard settings in the Settings app." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEYBOARD_SETTINGS" desc="Label for link to open keyboard settings in the Settings app.">
           Keyboard settings
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ADD_SHORTCUT" desc="Button label to add a new shortcut for a specific action" translateable="false">
@@ -3697,7 +3788,7 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT_VIEW_STATUS_MESSAGE" desc="Instructions to user when they're inputting a new shortcut" translateable="false">
           Press 1-4 modifiers and 1 other key on your keyboard
         </message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_RESET_ALL_SHORTCUTS" desc="Button label to reset all shortcuts in the app to their default values" translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_RESET_ALL_SHORTCUTS" desc="Button label to reset all shortcuts in the app to their default values">
           Reset all shortcuts
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_CONFIRM_RESET_ALL_SHORTCUTS_TITLE" desc="Title of the modal shown when user clicks button to reset all shortcuts" translateable="false">
@@ -3712,23 +3803,84 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_SHORTCUT_WITH_CONFILICT_STATUS_MESSAGE" desc="The status message that displays when user clicks button to override an accelerator" translateable="false">
           Shortcut is used by <ph name="CONFLICT_ACCEL_NAME">$1<ex>BRIGHTNESS_UP</ex></ph>. Press a new shortcut or press the same one again to use it for this action instead.
         </message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_TABS_AND_WINDOWS" desc="Category named 'Tabs and Windows' shown on the navigation sidebar" translateable="false">Tabs &#38; Windows</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_PAGE_AND_WEB_BROWSER" desc="Category named 'Page and Web Browser' shown on the navigation sidebar" translateable="false">Page &#38; Web Browser</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_SYSTEM_AND_DISPLAY_SETTINGS" desc="Category named 'System and Display Settings' shown on the navigation sidebar" translateable="false">System &#38; Display Settings</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_TEXT_EDITING" desc="Category named 'Text Editing' shown on the navigation sidebar" translateable="false">Text Editing</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_ACCESSIBILITY" desc="Category named 'Accessibility' shown on the navigation sidebar" translateable="false">Accessibility</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_DEBUG" desc="Category named 'Debug' shown on the navigation sidebar" translateable="false">Debug</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_DEVELOPER" desc="Category named 'Developer' shown on the navigation sidebar" translateable="false">Developer</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_EVENT_REWRITER" desc="Category named 'Special Keys' shown on the navigation sidebar" translateable="false">Special Keys</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_GENERAL" desc="Subcategory named 'General' shown within main shortcuts section" translateable="false">General</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_SYSTEM_APPS" desc="Subcategory named 'System Apps' shown within main shortcuts section" translateable="false">System Apps</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_SYSTEM_CONTROLS" desc="Subcategory named 'System Controls' shown within main shortcuts section" translateable="false">System Controls</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_SIX_PACK" desc="Subcategory named 'Six Pack' shown within main shortcuts section" translateable="false">Six Pack</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEY_SPACE" desc="Lowercase name of the keyboard key 'Space'" translateable="false">space</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEY_TAB" desc="Lowercase name of the keyboard key 'Tab'" translateable="false">tab</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEY_ESCAPE" desc="Lowercase name of the keyboard key 'Escape', abbreviated if possible" translateable="false">esc</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEY_RETURN" desc="Lowercase name of the keyboard key 'Enter'" translateable="false">enter</message>
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_KEY_BACKSPACE" desc="Lowercase name of the keyboard key 'Backspace'" translateable="false">backspace</message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_GENERAL" desc="Category named 'General' shown on the navigation sidebar">
+          General
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_DEVICE" desc="Category named 'Device' shown on the navigation sidebar">
+          Device
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_BROWSER" desc="Category named 'Browser' shown on the navigation sidebar">
+          Browser
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_TEXT" desc="Category named 'Text' shown on the navigation sidebar">
+          Text
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_WINDOWS_AND_DESKS" desc="Category named 'Windows and Desks' shown on the navigation sidebar">
+          Windows and Desks
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_ACCESSIBILITY" desc="Category named 'Accessibility' shown on the navigation sidebar">
+          Accessibility
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_DEBUG" desc="Category named 'Debug' shown on the navigation sidebar" translateable="false">
+          Debug
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CATEGORY_DEVELOPER" desc="Category named 'Developer' shown on the navigation sidebar" translateable="false">
+          Developer
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_GENERAL_CONTROLS" desc="Subcategory named 'GeneralControls' shown within main shortcuts section">
+          General Controls
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_APPS" desc="Subcategory named 'Apps' shown within main shortcuts section">
+          Apps
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_MEDIA" desc="Subcategory named 'Media' shown within main shortcuts section">
+          Media
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_INPUTS" desc="Subcategory named 'Inputs' shown within main shortcuts section">
+          Inputs
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_DISPLAY" desc="Subcategory named 'Display' shown within main shortcuts section">
+          Display
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_GENERAL" desc="Subcategory named 'General' shown within main shortcuts section">
+          General
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_BROWSER_NAVIGATION" desc="Subcategory named 'BrowserNavigation' shown within main shortcuts section">
+          Browser navigation
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_PAGES" desc="Subcategory named 'Pages' shown within main shortcuts section">
+          Pages
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_TABS" desc="Subcategory named 'Tabs' shown within main shortcuts section">
+          Tabs
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_BOOKMARKS" desc="Subcategory named 'Bookmarks' shown within main shortcuts section">
+          Bookmarks
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_DEVELOPER_TOOLS" desc="Subcategory named 'DeveloperTools' shown within main shortcuts section">
+          Developer tools
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_TEXT_NAVIGATION" desc="Subcategory named 'TextNavigation' shown within main shortcuts section">
+          Text navigation
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_TEXT_EDITING" desc="Subcategory named 'TextEditing' shown within main shortcuts section">
+          Text editing
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_WINDOWS" desc="Subcategory named 'Windows' shown within main shortcuts section">
+          Windows
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_DESKS" desc="Subcategory named 'Desks' shown within main shortcuts section">
+          Desks
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_CHROMEVOX" desc="Subcategory named 'ThoriumVox' shown within main shortcuts section">
+          ChromeVox
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_VISIBILITY" desc="Subcategory named 'Visibility' shown within main shortcuts section">
+          Visibility
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SUBCATEGORY_ACCESSIBILITY_NAVIGATION" desc="Subcategory named 'AccessibilityNavigation' shown within main shortcuts section">
+          Accessibility navigation
+        </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_ARROW_DOWN" desc="The text read aloud by the screen reader describing the keyboard icon 'arrow down'." translateable="false">
           arrow down
         </message>
@@ -3765,6 +3917,15 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_REFRESH" desc="The text read aloud by the screen reader describing the keyboard icon 'refresh'." translateable="false">
           refresh
         </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_SEARCH" desc="The text read aloud by the screen reader describing the keyboard icon 'search'." translateable="false">
+          search
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_TOGGLE_DICTATION" desc="The text read aloud by the screen reader describing the keyboard icon 'toggle dictation'." translateable="false">
+          toggle dictation
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_EMOJI_PICKER" desc="The text read aloud by the screen reader describing the keyboard icon 'emoji picker'." translateable="false">
+          emoji picker
+        </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_KEYBOARD_BACKLIGHT_TOGGLE" desc="The text read aloud by the screen reader describing the keyboard icon 'toggle keyboard backlight'." translateable="false">
           toggle keyboard backlight
         </message>
@@ -3777,8 +3938,20 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_LAUNCH_APPLICATION1" desc="The text read aloud by the screen reader describing the keyboard icon 'overview'." translateable="false">
           overview
         </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_LAUNCH_APPLICATION2" desc="The text read aloud by the screen reader describing the keyboard icon 'open calculator'." translateable="false">
+          open calculator
+        </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_LAUNCH_ASSISTANT" desc="The text read aloud by the screen reader describing the keyboard icon 'assistant'." translateable="false">
           assistant
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MEDIA_FAST_FORWARD" desc="The text read aloud by the screen reader describing the keyboard icon 'fast forward media'." translateable="false">
+          fast forward media
+        </message>
+         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MEDIA_PAUSE" desc="The text read aloud by the screen reader describing the keyboard icon 'pause media'." translateable="false">
+          pause media
+        </message>
+         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MEDIA_PLAY" desc="The text read aloud by the screen reader describing the keyboard icon 'play media'." translateable="false">
+          play media
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MEDIA_PLAY_PAUSE" desc="The text read aloud by the screen reader describing the keyboard icon 'play pause'." translateable="false">
           play pause
@@ -3792,6 +3965,9 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MICROPHONE_MUTE_TOGGLE" desc="The text read aloud by the screen reader describing the keyboard icon 'toggle microphone mute'." translateable="false">
           toggle microphone mute
         </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MODE_CHANGE" desc="The text read aloud by the screen reader describing the keyboard icon 'mode change'." translateable="false">
+          mode change
+        </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_OPEN_LAUNCHER" desc="The text read aloud by the screen reader describing the keyboard icon 'launcher'." translateable="false">
           launcher
         </message>
@@ -3803,6 +3979,9 @@
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_PRIVACY_SCREEN_TOGGLE" desc="The text read aloud by the screen reader describing the keyboard icon 'toggle privacy screen'." translateable="false">
           toggle privacy screen
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_SETTINGS" desc="The text read aloud by the screen reader describing the keyboard icon 'settings'." translateable="false">
+          settings
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_ZOOM_TOGGLE" desc="The text read aloud by the screen reader describing the keyboard icon 'full screen'." translateable="false">
           full screen
@@ -3910,6 +4089,42 @@
           Done
         </message>
         <!-- End of APN -->
+
+        <!-- Arc Input Overlay -->
+        <message name="IDS_INPUT_OVERLAY_SETTINGS_NUDGE_ALPHAV2" desc="Label displayed next to the Settings UI's entry point so the user is aware.">
+          Open menu to customize keys. Drag menu to move.
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEYMAPPING_KEY" desc="Accessibility label for key label. Spoken by screen readers when the label 'w' control gets focus but not visually rendered.">
+          Keymapping key
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEYMAPPING_TOUCH_POINT_DOT" desc="Accessibility label for touch point which is dot shape. Spoken by screen readers when the dot-shaped touch point control gets focus but not visually rendered.">
+          Keymapping touch point
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEYMAPPING_TOUCH_POINT_CROSS" desc="Accessibility label for touch point which is cross shape. Spoken by screen readers when the cross-shaped touch point control gets focus but not visually rendered.">
+          Keymapping D-pad
+        </message>
+        <message name="IDS_INPUT_OVERLAY_LAYOUT_ACCTIONS_MENU" desc="Accessibility label for save and reset button group. Spoken by screen readers when the save and reset button group gets focus but not visually rendered.">
+          Layout actions menu
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEY_LABEL_BACKSPACE" desc="Name for symbol of backspace key. Spoken by screen readers when symbol backspace renders in key label and gets focus but the symbol name not visually rendered.">
+          backspace
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEY_LABEL_ENTER" desc="Name for symbol of enter key. Spoken by screen readers when symbol enter renders in key label and gets focus but the symbol name not visually rendered.">
+          enter
+        </message>
+        <message name="IDS_INPUT_OVERLAY_KEY_LABEL_SPACE" desc="Name for symbol of space key. Spoken by screen readers when symbol space renders in key label and gets focus but the symbol name not visually rendered.">
+          space
+        </message>
+        <message name="IDS_INPUT_OVERLAY_EDIT_MENU_FOCUS" desc="Spoken by screen readers when action layout menu (save button group) is focused. The content is not rendered.">
+          Reposition with mouse or arrow keys.
+        </message>
+        <message name="IDS_INPUT_OVERLAY_EDIT_INSTRUCTIONS_ALPHAV2" desc="Text presented via a tooltip so the user knows how to interact and edit key-bindings.">
+          Click on any key to customize your button. Reposition key with mouse or arrow keys.
+        </message>
+        <message name="IDS_INPUT_OVERLAY_EDIT_INSTRUCTIONS_TOUCH_POINT_FOCUS" desc="Text presented via a tooltip so the user knows how to interact when the touch point is focused.">
+          Move the blue touch point to an action. Select the associated key to customize.
+        </message>
+        <!-- End of Arc Input Overlay -->
       </if>
     </messages>
   </release>
