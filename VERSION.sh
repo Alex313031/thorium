@@ -80,7 +80,7 @@ printf "${YEL}Downloading PGO Profile for V8 (when v8_enable_builtins_optimizati
 printf "\n" &&
 tput sgr0 &&
 
-python3 v8/tools/builtins-pgo/download_profiles.py download &&
+python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools download &&
 printf "\n" &&
 
 cd ~/thorium &&
