@@ -11,3 +11,7 @@
 &#45; Add native first run WebUI page
 
  - https://github.com/ungoogled-software/ungoogled-chromium/pull/2314/files
+
+&#45; Add env variables for all scripts
+
+ - https://github.com/thorium/trunk

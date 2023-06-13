@@ -33,6 +33,7 @@ use_icf = true
 is_cfi = true
 v8_symbol_level = 0
 v8_enable_fast_torque = true
+v8_enable_builtins_optimization = true
 use_v8_context_snapshot = true
 blink_symbol_level = 0
 enable_precompiled_headers = false

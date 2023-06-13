@@ -202,6 +202,8 @@ alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-b
 alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 
 alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
+
+alias pgomac-arm='python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 printf "\n" &&
 tput sgr0 &&
 
@@ -233,6 +235,8 @@ printf "alias ${YEL}pgo${c0} = ${CYA}python3 tools/update_pgo_profiles.py --targ
 printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 
 printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+
+printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 
 printf "${CYA}\n" &&
 
