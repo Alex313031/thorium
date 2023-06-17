@@ -156,7 +156,6 @@ if ((is_android && current_cpu == "arm" && arm_use_neon) || (is_android && curre
     "libavutil/buffer.c",
     "libavutil/camellia.c",
     "libavutil/channel_layout.c",
-    "libavutil/color_utils.c",
     "libavutil/crc.c",
     "libavutil/csp.c",
     "libavutil/detection_bbox.c",
@@ -243,25 +242,6 @@ if (use_linux_config && ffmpeg_branding == "ChromeOS") {
 }
 
 if ((is_apple && ffmpeg_branding == "Chrome") || (is_win && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "Chrome") || (use_linux_config && ffmpeg_branding == "ChromeOS")) {
-
-  ffmpeg_c_sources += [
-    "libavcodec/autorename_libavcodec_bswapdsp.c",
-    "libavcodec/dovi_rpu.c",
-    "libavcodec/dynamic_hdr_vivid.c",
-    "libavcodec/hevc_cabac.c",
-    "libavcodec/hevc_data.c",
-    "libavcodec/hevc_filter.c",
-    "libavcodec/hevc_mvs.c",
-    "libavcodec/hevc_parse.c",
-    "libavcodec/hevc_parser.c",
-    "libavcodec/hevc_ps.c",
-    "libavcodec/hevc_refs.c",
-    "libavcodec/hevc_sei.c",
-    "libavcodec/hevcdec.c",
-    "libavcodec/hevcdsp.c",
-    "libavcodec/hevcpred.c"
-  ]
-
   ffmpeg_c_sources += [
     "libavcodec/atsc_a53.c",
     "libavcodec/cabac.c",
@@ -358,22 +338,6 @@ if ((use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding
 }
 
 if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") || (is_win && current_cpu == "x64" && ffmpeg_branding == "Chrome") || (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "x64" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "x64" && ffmpeg_branding == "ChromeOS") || (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "ChromeOS")) {
-
-  ffmpeg_c_sources += [
-    "libavcodec/x86/bswapdsp_init.c",
-    "libavcodec/x86/hevcdsp_init.c"
-  ]
-
-  ffmpeg_asm_sources += [
-    "libavcodec/x86/bswapdsp.asm",
-    "libavcodec/x86/hevc_add_res.asm",
-    "libavcodec/x86/hevc_deblock.asm",
-    "libavcodec/x86/hevc_idct.asm",
-    "libavcodec/x86/hevc_mc.asm",
-    "libavcodec/x86/hevc_sao.asm",
-    "libavcodec/x86/hevc_sao_10bit.asm"
-  ]
-
   ffmpeg_c_sources += [
     "libavcodec/x86/h264_qpel.c",
     "libavcodec/x86/h264chroma_init.c",
@@ -539,17 +503,6 @@ if ((is_apple && current_cpu == "arm64") || (is_win && current_cpu == "arm64") |
 }
 
 if ((is_apple && current_cpu == "arm64" && ffmpeg_branding == "Chrome") || (is_win && current_cpu == "arm64" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "arm64" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "arm64" && ffmpeg_branding == "ChromeOS")) {
-
-  ffmpeg_c_sources += [
-    "libavcodec/aarch64/hevcdsp_init_aarch64.c"
-  ]
-
-  ffmpeg_gas_sources += [
-    "libavcodec/aarch64/autorename_libavcodec_aarch64_hevcdsp_idct_neon.S",
-    "libavcodec/aarch64/autorename_libavcodec_aarch64_hevcdsp_sao_neon.S",
-    "libavcodec/aarch64/hevcdsp_qpel_neon.S"
-  ]
-
   ffmpeg_c_sources += [
     "libavcodec/aarch64/h264chroma_init_aarch64.c",
     "libavcodec/aarch64/h264dsp_init_aarch64.c",
@@ -614,11 +567,6 @@ if (use_linux_config && current_cpu == "arm64" && ffmpeg_branding == "ChromeOS")
 }
 
 if ((use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "ChromeOS") || (use_linux_config && current_cpu == "arm" && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "arm" && ffmpeg_branding == "ChromeOS")) {
-
-  ffmpeg_c_sources += [
-    "libavcodec/arm/hevcdsp_init_arm.c"
-  ]
-
   ffmpeg_c_sources += [
     "libavcodec/arm/h264chroma_init_arm.c",
     "libavcodec/arm/h264dsp_init_arm.c",
@@ -630,18 +578,6 @@ if ((use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding
 }
 
 if ((use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "Chrome") || (use_linux_config && current_cpu == "arm" && arm_use_neon && ffmpeg_branding == "ChromeOS")) {
-
-  ffmpeg_c_sources += [
-    "libavcodec/arm/hevcdsp_init_neon.c"
-  ]
-
-  ffmpeg_gas_sources += [
-    "libavcodec/arm/hevcdsp_deblock_neon.S",
-    "libavcodec/arm/hevcdsp_idct_neon.S",
-    "libavcodec/arm/hevcdsp_qpel_neon.S",
-    "libavcodec/arm/hevcdsp_sao_neon.S"
-  ]
-
   ffmpeg_gas_sources += [
     "libavcodec/arm/h264cmc_neon.S",
     "libavcodec/arm/h264dsp_neon.S",

@@ -50,7 +50,9 @@
 #define MB_SIZE 16
 
 typedef struct X264Opaque {
+#if FF_API_REORDERED_OPAQUE
     int64_t reordered_opaque;
+#endif
     int64_t wallclock;
     int64_t duration;
 
@@ -187,28 +189,6 @@ static int encode_nals(AVCodecContext *ctx, AVPacket *pkt,
     return 1;
 }
 
-static int avfmt2_num_planes(int avfmt)
-{
-    switch (avfmt) {
-    case AV_PIX_FMT_YUV420P:
-    case AV_PIX_FMT_YUVJ420P:
-    case AV_PIX_FMT_YUV420P9:
-    case AV_PIX_FMT_YUV420P10:
-    case AV_PIX_FMT_YUV444P:
-        return 3;
-
-    case AV_PIX_FMT_BGR0:
-    case AV_PIX_FMT_BGR24:
-    case AV_PIX_FMT_RGB24:
-    case AV_PIX_FMT_GRAY8:
-    case AV_PIX_FMT_GRAY10:
-        return 1;
-
-    default:
-        return 3;
-    }
-}
-
 static void reconfig_encoder(AVCodecContext *ctx, const AVFrame *frame)
 {
     X264Context *x4 = ctx->priv_data;
@@ -309,11 +289,8 @@ static void reconfig_encoder(AVCodecContext *ctx, const AVFrame *frame)
     }
 }
 
-static void free_picture(AVCodecContext *ctx)
+static void free_picture(x264_picture_t *pic)
 {
-    X264Context *x4 = ctx->priv_data;
-    x264_picture_t *pic = &x4->pic;
-
     for (int i = 0; i < pic->extra_sei.num_payloads; i++)
         av_free(pic->extra_sei.payloads[i].payload);
     av_freep(&pic->extra_sei.payloads);
@@ -441,7 +418,7 @@ static int setup_frame(AVCodecContext *ctx, const AVFrame *frame,
 #endif
     if (bit_depth > 8)
         pic->img.i_csp |= X264_CSP_HIGH_DEPTH;
-    pic->img.i_plane = avfmt2_num_planes(ctx->pix_fmt);
+    pic->img.i_plane = av_pix_fmt_count_planes(ctx->pix_fmt);
 
     for (int i = 0; i < pic->img.i_plane; i++) {
         pic->img.plane[i]    = frame->data[i];
@@ -459,7 +436,19 @@ static int setup_frame(AVCodecContext *ctx, const AVFrame *frame,
             goto fail;
     }
 
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
+    /* Chromium https://crbug.com/1415548
+     * This comment is just to cause a conflict if this usage of
+     * `reordered_opaque` ever changes.
+     */
     opaque->reordered_opaque = frame->reordered_opaque;
+    /* Chromium https://crbug.com/1415548
+     * This comment is just to cause a conflict if this usage of
+     * `reordered_opaque` ever changes.
+     */
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     opaque->duration         = frame->duration;
     opaque->wallclock = wallclock;
     if (ctx->export_side_data & AV_CODEC_EXPORT_DATA_PRFT)
@@ -495,18 +484,19 @@ static int setup_frame(AVCodecContext *ctx, const AVFrame *frame,
             goto fail;
 
         if (sei_data) {
-            pic->extra_sei.payloads = av_mallocz(sizeof(pic->extra_sei.payloads[0]));
-            if (pic->extra_sei.payloads == NULL) {
+            sei->payloads = av_mallocz(sizeof(sei->payloads[0]));
+            if (!sei->payloads) {
+                av_free(sei_data);
                 ret = AVERROR(ENOMEM);
                 goto fail;
             }
 
-            pic->extra_sei.sei_free = av_free;
+            sei->sei_free = av_free;
 
-            pic->extra_sei.payloads[0].payload_size = sei_size;
-            pic->extra_sei.payloads[0].payload = sei_data;
-            pic->extra_sei.num_payloads = 1;
-            pic->extra_sei.payloads[0].payload_type = 4;
+            sei->payloads[0].payload_size = sei_size;
+            sei->payloads[0].payload      = sei_data;
+            sei->payloads[0].payload_type = 4;
+            sei->num_payloads = 1;
         }
     }
 
@@ -547,7 +537,7 @@ static int setup_frame(AVCodecContext *ctx, const AVFrame *frame,
     return 0;
 
 fail:
-    free_picture(ctx);
+    free_picture(pic);
     *ppic = NULL;
     return ret;
 }
@@ -612,7 +602,19 @@ static int X264_frame(AVCodecContext *ctx, AVPacket *pkt, const AVFrame *frame,
     out_opaque = pic_out.opaque;
     if (out_opaque >= x4->reordered_opaque &&
         out_opaque < &x4->reordered_opaque[x4->nb_reordered_opaque]) {
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
+    /* Chromium https://crbug.com/1415548
+     * This comment is just to cause a conflict if this usage of
+     * `reordered_opaque` ever changes.
+     */
         ctx->reordered_opaque = out_opaque->reordered_opaque;
+    /* Chromium https://crbug.com/1415548
+     * This comment is just to cause a conflict if this usage of
+     * `reordered_opaque` ever changes.
+     */
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
         wallclock = out_opaque->wallclock;
         pkt->duration = out_opaque->duration;
 
@@ -627,7 +629,11 @@ static int X264_frame(AVCodecContext *ctx, AVPacket *pkt, const AVFrame *frame,
         // Unexpected opaque pointer on picture output
         av_log(ctx, AV_LOG_ERROR, "Unexpected opaque pointer; "
                "this is a bug, please report it.\n");
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
         ctx->reordered_opaque = 0;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     }
 
     switch (pic_out.i_type) {

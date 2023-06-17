@@ -39,6 +39,7 @@
 #include "base/trace_event/trace_event_impl.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
+#include "chrome/browser/buildflags.h"
 #include "chrome/browser/chrome_content_browser_client.h"
 #include "chrome/browser/chrome_resource_bundle_helper.h"
 #include "chrome/browser/defaults.h"
@@ -121,6 +122,7 @@
 #include "base/message_loop/message_pump_mac.h"
 #include "chrome/app/chrome_main_mac.h"
 #include "chrome/browser/chrome_browser_application_mac.h"
+#include "chrome/browser/headless/headless_mode_util.h"
 #include "chrome/browser/mac/relauncher.h"
 #include "chrome/browser/shell_integration.h"
 #include "components/crash/core/common/objc_zombie.h"
@@ -146,6 +148,7 @@
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
+#include "ash/components/arc/arc_util.h"
 #include "ash/constants/ash_paths.h"
 #include "ash/constants/ash_switches.h"
 #include "base/system/sys_info.h"
@@ -207,10 +210,10 @@
 #include "chrome/child/pdf_child_init.h"
 #endif
 
-#if !BUILDFLAG(IS_ANDROID)
+#if BUILDFLAG(ENABLE_PROCESS_SINGLETON)
 #include "chrome/browser/chrome_process_singleton.h"
 #include "chrome/browser/process_singleton.h"
-#endif  // !BUILDFLAG(IS_ANDROID)
+#endif  // BUILDFLAG(ENABLE_PROCESS_SINGLETON)
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
 #include "chrome/common/chrome_paths_lacros.h"
@@ -226,6 +229,7 @@
 #include "content/public/browser/zygote_host/zygote_host_linux.h"
 #include "media/base/media_switches.h"
 #include "ui/base/resource/data_pack_with_resource_sharing_lacros.h"
+#include "ui/gfx/switches.h"
 #endif
 
 base::LazyInstance<ChromeContentGpuClient>::DestructorAtExit
@@ -658,7 +662,7 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
     return absl::nullopt;
   }
 
-#if !BUILDFLAG(IS_ANDROID)
+#if BUILDFLAG(ENABLE_PROCESS_SINGLETON)
   // Configure the early process singleton experiment.
   const base::CommandLine& command_line =
       *base::CommandLine::ForCurrentProcess();
@@ -807,7 +811,10 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
     // This lives here rather than in ChromeBrowserMainExtraPartsLacros due to
     // timing constraints. If we relocate it, then the flags aren't propagated
     // to the GPU process.
-    if (init_params->BuildFlags().has_value()) {
+    // All the flags in the block below relate to HW protected content, which
+    // require OOP video decoding as well.
+    if (init_params->BuildFlags().has_value() &&
+        init_params->OopVideoDecodingEnabled()) {
       for (auto flag : init_params->BuildFlags().value()) {
         switch (flag) {
           case crosapi::mojom::BuildFlag::kUnknown:
@@ -829,6 +836,11 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
             break;
         }
       }
+    }
+
+    if (init_params->EnableCpuMappableNativeGpuMemoryBuffers()) {
+      base::CommandLine::ForCurrentProcess()->AppendSwitch(
+          switches::kEnableNativeGpuMemoryBuffers);
     }
   }
 #endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
@@ -902,6 +914,9 @@ void ChromeMainDelegate::CommonEarlyInitialization() {
   // it if not already overridden by command line, field trial etc.
   net::HttpCache::SplitCacheFeatureEnableByDefault();
 
+  // Similarly, enable network state partitioning by default.
+  net::NetworkAnonymizationKey::PartitionByDefault();
+
 #if BUILDFLAG(IS_CHROMEOS)
   // Threading features.
   base::PlatformThread::InitFeaturesPostFieldTrial();
@@ -913,7 +928,7 @@ void ChromeMainDelegate::CommonEarlyInitialization() {
 
   if (is_browser_process) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-    ash::ConfigureSwap();
+    ash::ConfigureSwap(arc::IsArcAvailable());
     ash::InitializeKstaled();
 #endif
   }
@@ -946,7 +961,6 @@ void ChromeMainDelegate::CommonEarlyInitialization() {
   base::MessagePumpLibevent::InitializeFeatures();
 #elif BUILDFLAG(IS_MAC)
   base::PlatformThread::InitFeaturesPostFieldTrial();
-  base::MessagePumpDefault::InitFeaturesPostFieldTrial();
   base::MessagePumpCFRunLoopBase::InitializeFeatures();
   base::MessagePumpKqueue::InitializeFeatures();
 #endif
@@ -1614,10 +1628,10 @@ void ChromeMainDelegate::ProcessExiting(const std::string& process_type) {
         browser_shutdown::ShutdownType::kOtherExit);
   }
 
-#if !BUILDFLAG(IS_ANDROID)
+#if BUILDFLAG(ENABLE_PROCESS_SINGLETON)
   if (ChromeProcessSingleton::IsEarlySingletonFeatureEnabled())
     ChromeProcessSingleton::DeleteInstance();
-#endif  // !BUILDFLAG(IS_ANDROID)
+#endif  // BUILDFLAG(ENABLE_PROCESS_SINGLETON)
 
   if (SubprocessNeedsResourceBundle(process_type))
     ui::ResourceBundle::CleanupSharedInstance();
@@ -1731,6 +1745,12 @@ absl::optional<int> ChromeMainDelegate::PreBrowserMain() {
   // Initialize NSApplication using the custom subclass.
   chrome_browser_application_mac::RegisterBrowserCrApp();
 
+  // Perform additional initialization when running in headless mode: hide
+  // dock icon and menu bar.
+  if (headless::IsHeadlessMode()) {
+    chrome_browser_application_mac::InitializeHeadlessMode();
+  }
+
   if (l10n_util::GetLocaleOverride().empty()) {
     // The browser process only wants to support the language Cocoa will use,
     // so force the app locale to be overridden with that value. This must
@@ -1769,6 +1789,8 @@ void ChromeMainDelegate::InitializeMemorySystem() {
       .SetProfilingClientParameters(channel,
                                     GetProfileParamsProcess(*command_line))
       .SetDispatcherParameters(memory_system::DispatcherParameters::
-                                   PoissonAllocationSamplerInclusion::kEnforce)
+                                   PoissonAllocationSamplerInclusion::kEnforce,
+                               memory_system::DispatcherParameters::
+                                   AllocationTraceRecorderInclusion::kDynamic)
       .Initialize(memory_system_);
 }

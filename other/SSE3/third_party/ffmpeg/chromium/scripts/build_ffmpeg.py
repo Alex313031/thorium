@@ -821,7 +821,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
               '--extra-cflags=--target=arm-linux-gnueabihf',
               '--extra-ldflags=--target=arm-linux-gnueabihf',
               '--sysroot=' + os.path.join(CHROMIUM_ROOT_DIR,
-                                          'build/linux/debian_bullseye_arm-sysroot'),
+                                          'build/linux/debian_bullseye_armhf-sysroot'),
               '--extra-cflags=-mtune=cortex-a8',
               # NOTE: we don't need softfp for this hardware.
               '--extra-cflags=-mfloat-abi=hard',

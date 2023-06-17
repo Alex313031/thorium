@@ -115,9 +115,12 @@ static const struct {
     { AV_PIX_FMT_BGRA, MFX_FOURCC_RGB4, 0 },
     { AV_PIX_FMT_P010, MFX_FOURCC_P010, 1 },
     { AV_PIX_FMT_PAL8, MFX_FOURCC_P8,   0 },
-#if CONFIG_VAAPI
     { AV_PIX_FMT_YUYV422,
                        MFX_FOURCC_YUY2, 0 },
+#if CONFIG_VAAPI
+    { AV_PIX_FMT_UYVY422,
+                       MFX_FOURCC_UYVY, 0 },
+#endif
     { AV_PIX_FMT_Y210,
                        MFX_FOURCC_Y210, 1 },
     // VUYX is used for VAAPI child device,
@@ -141,7 +144,6 @@ static const struct {
     // the SDK only delares support for Y416
     { AV_PIX_FMT_XV36,
                        MFX_FOURCC_Y416, 1 },
-#endif
 #endif
 };
 
@@ -1524,7 +1526,6 @@ static int map_frame_to_surface(const AVFrame *frame, mfxFrameSurface1 *surface)
         surface->Data.R = frame->data[0] + 2;
         surface->Data.A = frame->data[0] + 3;
         break;
-#if CONFIG_VAAPI
     case AV_PIX_FMT_YUYV422:
         surface->Data.Y = frame->data[0];
         surface->Data.U = frame->data[0] + 1;
@@ -1555,6 +1556,12 @@ static int map_frame_to_surface(const AVFrame *frame, mfxFrameSurface1 *surface)
         // Only set Data.A to a valid address, the SDK doesn't
         // use the value from the frame.
         surface->Data.A = frame->data[0] + 6;
+        break;
+#if CONFIG_VAAPI
+    case AV_PIX_FMT_UYVY422:
+        surface->Data.Y = frame->data[0] + 1;
+        surface->Data.U = frame->data[0];
+        surface->Data.V = frame->data[0] + 2;
         break;
 #endif
     default:

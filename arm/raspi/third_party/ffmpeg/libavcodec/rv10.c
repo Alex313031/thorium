@@ -587,10 +587,7 @@ static int rv10_decode_packet(AVCodecContext *avctx, const uint8_t *buf,
 
 static int get_slice_offset(AVCodecContext *avctx, const uint8_t *buf, int n)
 {
-    if (avctx->slice_count)
-        return avctx->slice_offset[n];
-    else
-        return AV_RL32(buf + n * 8);
+    return AV_RL32(buf + n * 8);
 }
 
 static int rv10_decode_frame(AVCodecContext *avctx, AVFrame *pict,
@@ -603,28 +600,25 @@ static int rv10_decode_frame(AVCodecContext *avctx, AVFrame *pict,
     int slice_count;
     const uint8_t *slices_hdr = NULL;
 
-    ff_dlog(avctx, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
+    ff_dlog(avctx, "*****frame %"PRId64" size=%d\n", avctx->frame_num, buf_size);
 
     /* no supplementary picture */
     if (buf_size == 0) {
         return 0;
     }
 
-    if (!avctx->slice_count) {
-        slice_count = (*buf++) + 1;
-        buf_size--;
+    slice_count = (*buf++) + 1;
+    buf_size--;
 
-        if (!slice_count || buf_size <= 8 * slice_count) {
-            av_log(avctx, AV_LOG_ERROR, "Invalid slice count: %d.\n",
-                   slice_count);
-            return AVERROR_INVALIDDATA;
-        }
+    if (!slice_count || buf_size <= 8 * slice_count) {
+        av_log(avctx, AV_LOG_ERROR, "Invalid slice count: %d.\n",
+               slice_count);
+        return AVERROR_INVALIDDATA;
+    }
 
-        slices_hdr = buf + 4;
-        buf       += 8 * slice_count;
-        buf_size  -= 8 * slice_count;
-    } else
-        slice_count = avctx->slice_count;
+    slices_hdr = buf + 4;
+    buf       += 8 * slice_count;
+    buf_size  -= 8 * slice_count;
 
     for (i = 0; i < slice_count; i++) {
         unsigned offset = get_slice_offset(avctx, slices_hdr, i);

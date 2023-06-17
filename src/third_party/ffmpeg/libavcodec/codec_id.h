@@ -536,6 +536,8 @@ enum AVCodecID {
     AV_CODEC_ID_MISC4,
     AV_CODEC_ID_APAC,
     AV_CODEC_ID_FTR,
+    AV_CODEC_ID_WAVARC,
+    AV_CODEC_ID_RKA,
 
     /* subtitle codecs */
     AV_CODEC_ID_FIRST_SUBTITLE = 0x17000,          ///< A dummy ID pointing at the start of subtitle codecs.
@@ -580,6 +582,7 @@ enum AVCodecID {
     AV_CODEC_ID_DVD_NAV,
     AV_CODEC_ID_TIMED_ID3,
     AV_CODEC_ID_BIN_DATA,
+    AV_CODEC_ID_SMPTE_2038,
 
 
     AV_CODEC_ID_PROBE = 0x19000, ///< codec_id is not known (like AV_CODEC_ID_NONE) but lavf should attempt to identify it

@@ -876,48 +876,28 @@ function func_tr_32x4_\name
         movrel          r9, trans + 32
         vld1.s16        {q0}, [r9, :128]!
         vld1.s16        {q1}, [r9, :128]
-
-        bl              tr_block1
-
         add             r4, sp, #2048
-        vld1.s16        {q14-q15}, [r4, :128]!
-        butterfly32     q14, q10, q15, q11
-        scale32         d22, d23, d20, d21, q1, q14, q10, q15, \shift
-
-        vld1.s16        {q14-q15}, [r4, :128]!
-        butterfly32     q14, q12, q15, q13
-        scale32         d2, d3, d28, d29, q1, q14, q12, q15, \shift
-
-        transpose8_4x4  d22, d20, d2, d28
-        transpose8_4x4  d29, d3, d21, d23
-        mov             r1, r11
         mov             r2, #64
         mov             r8, #-64
-        add             r3, r11, #(56 + 3 * 64)
-        store16         d22, d23, d20, d21, d2, d3, d28, d29, r8
 
-        @ reload multiplication coefficiens to q1
-        vld1.s16        {q1}, [r9, :128]
+        bl              tr_block1
+        mov             r1, r11
+        add             r3, r11, #(56 + 3 * 64)
+        scale_store     \shift
 
         bl              tr_block2
         add             r1, r11, #8
         add             r3, r11, #(48 + 3 * 64)
-        mov             r2, #64
-        mov             r8, #-64
         scale_store     \shift
 
         bl              tr_block3
         add             r1, r11, #16
         add             r3, r11, #(40 + 3 * 64)
-        mov             r2, #64
-        mov             r8, #-64
         scale_store     \shift
 
         bl              tr_block4
         add             r1, r11, #24
         add             r3, r11, #(32 + 3 * 64)
-        mov             r2, #64
-        mov             r8, #-64
         scale_store     \shift
 
         bx               r10

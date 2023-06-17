@@ -29,7 +29,6 @@
 #include "zlib_wrapper.h"
 
 #include "libavutil/avassert.h"
-#include "libavutil/color_utils.h"
 #include "libavutil/crc.h"
 #include "libavutil/csp.h"
 #include "libavutil/libm.h"
@@ -252,7 +251,7 @@ static void png_write_image_data(AVCodecContext *avctx,
     const AVCRC *crc_table = av_crc_get_table(AV_CRC_32_IEEE_LE);
     uint32_t crc = ~0U;
 
-    if (avctx->codec_id == AV_CODEC_ID_PNG || avctx->frame_number == 0) {
+    if (avctx->codec_id == AV_CODEC_ID_PNG || avctx->frame_num == 0) {
         png_write_chunk(&s->bytestream, MKTAG('I', 'D', 'A', 'T'), buf, length);
         return;
     }
@@ -317,7 +316,7 @@ static int png_get_chrm(enum AVColorPrimaries prim,  uint8_t *buf)
 
 static int png_get_gama(enum AVColorTransferCharacteristic trc, uint8_t *buf)
 {
-    double gamma = avpriv_get_gamma_from_trc(trc);
+    double gamma = av_csp_approximate_trc_gamma(trc);
     if (gamma <= 1e-6)
         return 0;
 
@@ -412,14 +411,25 @@ static int encode_headers(AVCodecContext *avctx, const AVFrame *pict)
         }
     }
 
+    side_data = av_frame_get_side_data(pict, AV_FRAME_DATA_ICC_PROFILE);
+    if ((ret = png_write_iccp(s, side_data)))
+        return ret;
+
     /* write colorspace information */
     if (pict->color_primaries == AVCOL_PRI_BT709 &&
         pict->color_trc == AVCOL_TRC_IEC61966_2_1) {
         s->buf[0] = 1; /* rendering intent, relative colorimetric by default */
         png_write_chunk(&s->bytestream, MKTAG('s', 'R', 'G', 'B'), s->buf, 1);
-    } else if (pict->color_primaries != AVCOL_PRI_UNSPECIFIED ||
-        pict->color_trc != AVCOL_TRC_UNSPECIFIED) {
-        /* these values match H.273 so no translation is needed */
+    } else if (pict->color_trc != AVCOL_TRC_UNSPECIFIED && !side_data) {
+        /*
+         * Avoid writing cICP if the transfer is unknown. Known primaries
+         * with unknown transfer can be handled by cHRM.
+         *
+         * We also avoid writing cICP if an ICC Profile is present, because
+         * the standard requires that cICP overrides iCCP.
+         *
+         * These values match H.273 so no translation is needed.
+         */
         s->buf[0] = pict->color_primaries;
         s->buf[1] = pict->color_trc;
         s->buf[2] = 0; /* colorspace = RGB */
@@ -431,10 +441,6 @@ static int encode_headers(AVCodecContext *avctx, const AVFrame *pict)
         png_write_chunk(&s->bytestream, MKTAG('c', 'H', 'R', 'M'), s->buf, 32);
     if (png_get_gama(pict->color_trc, s->buf))
         png_write_chunk(&s->bytestream, MKTAG('g', 'A', 'M', 'A'), s->buf, 4);
-
-    side_data = av_frame_get_side_data(pict, AV_FRAME_DATA_ICC_PROFILE);
-    if ((ret = png_write_iccp(s, side_data)))
-        return ret;
 
     /* put the palette if needed, must be after colorspace information */
     if (s->color_type == PNG_COLOR_TYPE_PALETTE) {
@@ -793,7 +799,7 @@ static int apng_encode_frame(AVCodecContext *avctx, const AVFrame *pict,
     APNGFctlChunk last_fctl_chunk = *best_last_fctl_chunk;
     APNGFctlChunk fctl_chunk = *best_fctl_chunk;
 
-    if (avctx->frame_number == 0) {
+    if (avctx->frame_num == 0) {
         best_fctl_chunk->width = pict->width;
         best_fctl_chunk->height = pict->height;
         best_fctl_chunk->x_offset = 0;
@@ -918,7 +924,7 @@ static int encode_apng(AVCodecContext *avctx, AVPacket *pkt,
     if (pict && s->color_type == PNG_COLOR_TYPE_PALETTE) {
         uint32_t checksum = ~av_crc(av_crc_get_table(AV_CRC_32_IEEE_LE), ~0U, pict->data[1], 256 * sizeof(uint32_t));
 
-        if (avctx->frame_number == 0) {
+        if (avctx->frame_num == 0) {
             s->palette_checksum = checksum;
         } else if (checksum != s->palette_checksum) {
             av_log(avctx, AV_LOG_ERROR,
@@ -940,7 +946,7 @@ static int encode_apng(AVCodecContext *avctx, AVPacket *pkt,
     if (max_packet_size > INT_MAX)
         return AVERROR(ENOMEM);
 
-    if (avctx->frame_number == 0) {
+    if (avctx->frame_num == 0) {
         if (!pict)
             return AVERROR(EINVAL);
 

@@ -75,7 +75,7 @@
 #define IS_IDR(s) ((s)->nal_unit_type == HEVC_NAL_IDR_W_RADL || (s)->nal_unit_type == HEVC_NAL_IDR_N_LP)
 #define IS_BLA(s) ((s)->nal_unit_type == HEVC_NAL_BLA_W_RADL || (s)->nal_unit_type == HEVC_NAL_BLA_W_LP || \
                    (s)->nal_unit_type == HEVC_NAL_BLA_N_LP)
-#define IS_IRAP(s) ((s)->nal_unit_type >= 16 && (s)->nal_unit_type <= 23)
+#define IS_IRAP(s) ((s)->nal_unit_type >= HEVC_NAL_BLA_W_LP && (s)->nal_unit_type <= HEVC_NAL_RSV_IRAP_VCL23)
 
 enum RPSType {
     ST_CURR_BEF = 0,
@@ -295,12 +295,17 @@ typedef struct SliceHeader {
     int slice_cb_qp_offset;
     int slice_cr_qp_offset;
 
+    int slice_act_y_qp_offset;
+    int slice_act_cb_qp_offset;
+    int slice_act_cr_qp_offset;
+
     uint8_t cu_chroma_qp_offset_enabled_flag;
 
     int beta_offset;    ///< beta_offset_div2 * 2
     int tc_offset;      ///< tc_offset_div2 * 2
 
-    unsigned int max_num_merge_cand; ///< 5 - 5_minus_max_num_merge_cand
+    uint8_t max_num_merge_cand; ///< 5 - 5_minus_max_num_merge_cand
+    uint8_t use_integer_mv_flag;
 
     unsigned *entry_point_offset;
     int * offset;

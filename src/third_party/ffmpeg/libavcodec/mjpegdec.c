@@ -436,7 +436,7 @@ int ff_mjpeg_decode_sof(MJpegDecodeContext *s)
 
         /* test interlaced mode */
         if (s->first_picture   &&
-            (s->multiscope != 2 || s->avctx->time_base.den >= 25 * s->avctx->time_base.num) &&
+            (s->multiscope != 2 || s->avctx->pkt_timebase.den >= 25 * s->avctx->pkt_timebase.num) &&
             s->orig_height != 0 &&
             s->height < ((s->orig_height * 3) / 4)) {
             s->interlaced                    = 1;
@@ -2884,7 +2884,7 @@ av_cold int ff_mjpeg_decode_end(AVCodecContext *avctx)
     MJpegDecodeContext *s = avctx->priv_data;
     int i, j;
 
-    if (s->interlaced && s->bottom_field == !s->interlace_polarity && s->got_picture && !avctx->frame_number) {
+    if (s->interlaced && s->bottom_field == !s->interlace_polarity && s->got_picture && !avctx->frame_num) {
         av_log(avctx, AV_LOG_INFO, "Single field\n");
     }
 

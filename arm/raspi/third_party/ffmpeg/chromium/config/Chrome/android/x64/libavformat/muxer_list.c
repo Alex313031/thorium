@@ -1,2 +1,2 @@
-static const AVOutputFormat * const muxer_list[] = {
+static const FFOutputFormat * const muxer_list[] = {
     NULL };

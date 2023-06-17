@@ -320,7 +320,11 @@ int ff_mpv_frame_start(MpegEncContext *s, AVCodecContext *avctx)
             pic->reference = 3;
     }
 
+#if FF_API_FRAME_PICTURE_NUMBER
+FF_DISABLE_DEPRECATION_WARNINGS
     pic->f->coded_picture_number = s->coded_picture_number++;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
 
     if (alloc_picture(s, pic) < 0)
         return -1;
@@ -554,14 +558,6 @@ void ff_mpeg_flush(AVCodecContext *avctx)
 
     s->mb_x = s->mb_y = 0;
 
-#if FF_API_FLAG_TRUNCATED
-    s->parse_context.state = -1;
-    s->parse_context.frame_start_found = 0;
-    s->parse_context.overread = 0;
-    s->parse_context.overread_index = 0;
-    s->parse_context.index = 0;
-    s->parse_context.last_index = 0;
-#endif
     s->bitstream_buffer_size = 0;
     s->pp_time = 0;
 }

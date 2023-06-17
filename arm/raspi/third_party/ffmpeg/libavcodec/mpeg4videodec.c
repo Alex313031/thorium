@@ -2648,8 +2648,6 @@ static int decode_vol_header(Mpeg4DecContext *ctx, GetBitContext *gb)
     else
         s->avctx->framerate.den = 1;
 
-    s->avctx->time_base = av_inv_q(av_mul_q(s->avctx->framerate, (AVRational){s->avctx->ticks_per_frame, 1}));
-
     ctx->t_frame = 0;
 
     if (ctx->shape != BIN_ONLY_SHAPE) {
@@ -3145,7 +3143,6 @@ static int decode_vop_header(Mpeg4DecContext *ctx, GetBitContext *gb,
                "time_increment_bits set to %d bits, based on bitstream analysis\n", ctx->time_increment_bits);
         if (s->avctx->framerate.num && 4*s->avctx->framerate.num < 1<<ctx->time_increment_bits) {
             s->avctx->framerate.num = 1<<ctx->time_increment_bits;
-            s->avctx->time_base = av_inv_q(av_mul_q(s->avctx->framerate, (AVRational){s->avctx->ticks_per_frame, 1}));
         }
     }
 
@@ -3862,9 +3859,6 @@ const FFCodec ff_mpeg4_decoder = {
     .close                 = ff_h263_decode_end,
     FF_CODEC_DECODE_CB(ff_h263_decode_frame),
     .p.capabilities        = AV_CODEC_CAP_DRAW_HORIZ_BAND | AV_CODEC_CAP_DR1 |
-#if FF_API_FLAG_TRUNCATED
-                             AV_CODEC_CAP_TRUNCATED |
-#endif
                              AV_CODEC_CAP_DELAY | AV_CODEC_CAP_FRAME_THREADS,
     .caps_internal         = FF_CODEC_CAP_SKIP_FRAME_FILL_PARAM |
                              FF_CODEC_CAP_ALLOCATE_PROGRESS,

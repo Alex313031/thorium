@@ -329,6 +329,10 @@ static av_cold int init(AVCodecContext *avctx)
     av_log(avctx, AV_LOG_VERBOSE, "CrystalHD Init for %s\n",
            avctx->codec->name);
 
+    av_log(avctx, AV_LOG_WARNING, "CrystalHD support is deprecated and will "
+           "be removed. Please contact the developers if you are interested in "
+           "maintaining it.\n");
+
     avctx->pix_fmt = AV_PIX_FMT_YUYV422;
 
     /* Initialize the library */
@@ -545,9 +549,13 @@ static inline CopyRet copy_frame(AVCodecContext *avctx,
 
     frame->pts = pkt_pts;
 
-    frame->pkt_pos = -1;
     frame->duration = 0;
+#if FF_API_FRAME_PKT
+FF_DISABLE_DEPRECATION_WARNINGS
+    frame->pkt_pos = -1;
     frame->pkt_size = -1;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
 
     if (!priv->need_second_field) {
         *got_frame       = 1;

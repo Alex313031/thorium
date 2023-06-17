@@ -24,6 +24,7 @@
 #include "libavutil/avassert.h"
 #include "libavutil/cpu.h"
 #include "libavutil/film_grain_params.h"
+#include "libavutil/hdr_dynamic_metadata.h"
 #include "libavutil/mastering_display_metadata.h"
 #include "libavutil/imgutils.h"
 #include "libavutil/opt.h"
@@ -288,6 +289,13 @@ static void libdav1d_flush(AVCodecContext *c)
     dav1d_flush(dav1d->c);
 }
 
+typedef struct OpaqueData {
+    void    *pkt_orig_opaque;
+#if FF_API_REORDERED_OPAQUE
+    int64_t  reordered_opaque;
+#endif
+} OpaqueData;
+
 static void libdav1d_data_free(const uint8_t *data, void *opaque) {
     AVBufferRef *buf = opaque;
 
@@ -307,6 +315,7 @@ static int libdav1d_receive_frame(AVCodecContext *c, AVFrame *frame)
     Dav1dData *data = &dav1d->data;
     Dav1dPicture pic = { 0 }, *p = &pic;
     AVPacket *pkt;
+    OpaqueData *od = NULL;
 #if FF_DAV1D_VERSION_AT_LEAST(5,1)
     enum Dav1dEventFlags event_flags = 0;
 #endif
@@ -333,17 +342,26 @@ static int libdav1d_receive_frame(AVCodecContext *c, AVFrame *frame)
             }
 
             pkt->buf = NULL;
-            pkt->opaque = NULL;
 
-            if (c->reordered_opaque != AV_NOPTS_VALUE) {
-                pkt->opaque = av_memdup(&c->reordered_opaque,
-                                        sizeof(c->reordered_opaque));
-                if (!pkt->opaque) {
+FF_DISABLE_DEPRECATION_WARNINGS
+            if (
+#if FF_API_REORDERED_OPAQUE
+                c->reordered_opaque != AV_NOPTS_VALUE ||
+#endif
+                (pkt->opaque && (c->flags & AV_CODEC_FLAG_COPY_OPAQUE))) {
+                od = av_mallocz(sizeof(*od));
+                if (!od) {
                     av_packet_free(&pkt);
                     dav1d_data_unref(data);
                     return AVERROR(ENOMEM);
                 }
+                od->pkt_orig_opaque  = pkt->opaque;
+#if FF_API_REORDERED_OPAQUE
+                od->reordered_opaque = c->reordered_opaque;
+#endif
+FF_ENABLE_DEPRECATION_WARNINGS
             }
+            pkt->opaque = od;
 
             res = dav1d_data_wrap_user_data(data, (const uint8_t *)pkt,
                                             libdav1d_user_data_free, pkt);
@@ -423,13 +441,24 @@ static int libdav1d_receive_frame(AVCodecContext *c, AVFrame *frame)
     ff_set_sar(c, frame->sample_aspect_ratio);
 
     pkt = (AVPacket *)p->m.user_data.data;
-    if (pkt->opaque)
-        memcpy(&frame->reordered_opaque, pkt->opaque, sizeof(frame->reordered_opaque));
+    od  = pkt->opaque;
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
+    if (od && od->reordered_opaque != AV_NOPTS_VALUE)
+        frame->reordered_opaque = od->reordered_opaque;
     else
         frame->reordered_opaque = AV_NOPTS_VALUE;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
+
+    // restore the original user opaque value for
+    // ff_decode_frame_props_from_pkt()
+    pkt->opaque = od ? od->pkt_orig_opaque : NULL;
+    av_freep(&od);
 
     // match timestamps and packet size
-    res = ff_decode_frame_props_from_pkt(frame, pkt);
+    res = ff_decode_frame_props_from_pkt(c, frame, pkt);
+    pkt->opaque = NULL;
     if (res < 0)
         goto fail;
 
@@ -483,29 +512,57 @@ static int libdav1d_receive_frame(AVCodecContext *c, AVFrame *frame)
     }
     if (p->itut_t35) {
         GetByteContext gb;
-        unsigned int user_identifier;
+        int provider_code;
 
         bytestream2_init(&gb, p->itut_t35->payload, p->itut_t35->payload_size);
-        bytestream2_skip(&gb, 1); // terminal provider code
-        bytestream2_skip(&gb, 1); // terminal provider oriented code
-        user_identifier = bytestream2_get_be32(&gb);
-        switch (user_identifier) {
-        case MKBETAG('G', 'A', '9', '4'): { // closed captions
-            AVBufferRef *buf = NULL;
 
-            res = ff_parse_a53_cc(&buf, gb.buffer, bytestream2_get_bytes_left(&gb));
-            if (res < 0)
-                goto fail;
-            if (!res)
+        provider_code = bytestream2_get_be16(&gb);
+        switch (provider_code) {
+        case 0x31: { // atsc_provider_code
+            uint32_t user_identifier = bytestream2_get_be32(&gb);
+            switch (user_identifier) {
+            case MKBETAG('G', 'A', '9', '4'): { // closed captions
+                AVBufferRef *buf = NULL;
+
+                res = ff_parse_a53_cc(&buf, gb.buffer, bytestream2_get_bytes_left(&gb));
+                if (res < 0)
+                    goto fail;
+                if (!res)
+                    break;
+
+                if (!av_frame_new_side_data_from_buf(frame, AV_FRAME_DATA_A53_CC, buf))
+                    av_buffer_unref(&buf);
+
+                c->properties |= FF_CODEC_PROPERTY_CLOSED_CAPTIONS;
                 break;
-
-            if (!av_frame_new_side_data_from_buf(frame, AV_FRAME_DATA_A53_CC, buf))
-                av_buffer_unref(&buf);
-
-            c->properties |= FF_CODEC_PROPERTY_CLOSED_CAPTIONS;
+            }
+            default: // ignore unsupported identifiers
+                break;
+            }
             break;
         }
-        default: // ignore unsupported identifiers
+        case 0x3C: { // smpte_provider_code
+            AVDynamicHDRPlus *hdrplus;
+            int provider_oriented_code = bytestream2_get_be16(&gb);
+            int application_identifier = bytestream2_get_byte(&gb);
+
+            if (p->itut_t35->country_code != 0xB5 ||
+                provider_oriented_code != 1 || application_identifier != 4)
+                break;
+
+            hdrplus = av_dynamic_hdr_plus_create_side_data(frame);
+            if (!hdrplus) {
+                res = AVERROR(ENOMEM);
+                goto fail;
+            }
+
+            res = av_dynamic_hdr_plus_from_t35(hdrplus, gb.buffer,
+                                               bytestream2_get_bytes_left(&gb));
+            if (res < 0)
+                goto fail;
+            break;
+        }
+        default: // ignore unsupported provider codes
             break;
         }
     }

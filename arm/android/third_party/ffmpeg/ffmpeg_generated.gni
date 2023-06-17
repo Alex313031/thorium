@@ -156,7 +156,6 @@ if ((is_android && current_cpu == "arm" && arm_use_neon) || (is_android && curre
     "libavutil/buffer.c",
     "libavutil/camellia.c",
     "libavutil/channel_layout.c",
-    "libavutil/color_utils.c",
     "libavutil/crc.c",
     "libavutil/csp.c",
     "libavutil/detection_bbox.c",

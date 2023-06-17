@@ -5,7 +5,7 @@
  *
  * Ported from arm/hevcdsp_idct_neon.S by
  * Copyright (c) 2020 Reimar Döffinger
- * Copyright (c) 2020 J. Dekker
+ * Copyright (c) 2023 J. Dekker <jdek@itanimul.li>
  *
  * This file is part of FFmpeg.
  *
@@ -25,6 +25,7 @@
  */
 
 #include "libavutil/aarch64/asm.S"
+#include "neon.S"
 
 const trans, align=4
         .short          64, 83, 64, 36
@@ -36,13 +37,6 @@ const trans, align=4
         .short          61, 54, 46, 38
         .short          31, 22, 13, 4
 endconst
-
-.macro clip2 in1, in2, min, max
-        smax            \in1, \in1, \min
-        smax            \in2, \in2, \min
-        smin            \in1, \in1, \max
-        smin            \in2, \in2, \max
-.endm
 
 function ff_hevc_add_residual_4x4_8_neon, export=1
         ld1             {v0.8h-v1.8h}, [x1]
@@ -181,7 +175,7 @@ function hevc_add_residual_4x4_16_neon, export=0
         ld1             {v3.d}[1], [x12], x2
         movi            v4.8h, #0
         sqadd           v1.8h, v1.8h, v3.8h
-        clip2           v0.8h, v1.8h, v4.8h, v21.8h
+        clip            v4.8h, v21.8h, v0.8h, v1.8h
         st1             {v0.d}[0], [x0],  x2
         st1             {v0.d}[1], [x0],  x2
         st1             {v1.d}[0], [x0],  x2
@@ -200,7 +194,7 @@ function hevc_add_residual_8x8_16_neon, export=0
         sqadd           v0.8h, v0.8h, v2.8h
         ld1             {v3.8h}, [x12]
         sqadd           v1.8h, v1.8h, v3.8h
-        clip2           v0.8h, v1.8h, v4.8h, v21.8h
+        clip            v4.8h, v21.8h, v0.8h, v1.8h
         st1             {v0.8h}, [x0],  x2
         st1             {v1.8h}, [x12], x2
         bne             1b
@@ -220,8 +214,7 @@ function hevc_add_residual_16x16_16_neon, export=0
         sqadd           v1.8h, v1.8h, v17.8h
         sqadd           v2.8h, v2.8h, v18.8h
         sqadd           v3.8h, v3.8h, v19.8h
-        clip2           v0.8h, v1.8h, v20.8h, v21.8h
-        clip2           v2.8h, v3.8h, v20.8h, v21.8h
+        clip            v20.8h, v21.8h, v0.8h, v1.8h, v2.8h, v3.8h
         st1             {v0.8h-v1.8h}, [x0],  x2
         st1             {v2.8h-v3.8h}, [x12], x2
         bne             1b
@@ -238,12 +231,48 @@ function hevc_add_residual_32x32_16_neon, export=0
         sqadd           v1.8h, v1.8h, v17.8h
         sqadd           v2.8h, v2.8h, v18.8h
         sqadd           v3.8h, v3.8h, v19.8h
-        clip2           v0.8h, v1.8h, v20.8h, v21.8h
-        clip2           v2.8h, v3.8h, v20.8h, v21.8h
+        clip            v20.8h, v21.8h, v0.8h, v1.8h, v2.8h, v3.8h
         st1             {v0.8h-v3.8h}, [x0], x2
         bne             1b
         ret
 endfunc
+
+.macro tr_4x4 in0, in1, in2, in3, out0, out1, out2, out3, shift
+         sshll          v20.4s, \in0, #6
+         sshll          v21.4s, \in0, #6
+         smull          v22.4s, \in1, v4.h[1]
+         smull          v23.4s, \in1, v4.h[3]
+         smlal          v20.4s, \in2, v4.h[0] //e0
+         smlsl          v21.4s, \in2, v4.h[0] //e1
+         smlal          v22.4s, \in3, v4.h[3] //o0
+         smlsl          v23.4s, \in3, v4.h[1] //o1
+
+         add            v24.4s, v20.4s, v22.4s
+         sub            v20.4s, v20.4s, v22.4s
+         add            v22.4s, v21.4s, v23.4s
+         sub            v21.4s, v21.4s, v23.4s
+         sqrshrn        \out0, v24.4s, #\shift
+         sqrshrn        \out3, v20.4s, #\shift
+         sqrshrn        \out1, v22.4s, #\shift
+         sqrshrn        \out2, v21.4s, #\shift
+.endm
+
+.macro idct_4x4 bitdepth
+function ff_hevc_idct_4x4_\bitdepth\()_neon, export=1
+        ld1             {v0.4h-v3.4h}, [x0]
+
+        movrel          x1, trans
+        ld1             {v4.4h}, [x1]
+
+        tr_4x4          v0.4h, v1.4h, v2.4h, v3.4h, v16.4h, v17.4h, v18.4h, v19.4h, 7
+        transpose_4x8H  v16, v17, v18, v19, v26, v27, v28, v29
+
+        tr_4x4          v16.4h, v17.4h, v18.4h, v19.4h, v0.4h, v1.4h, v2.4h, v3.4h, 20 - \bitdepth
+        transpose_4x8H  v0, v1, v2, v3, v26, v27, v28, v29
+        st1             {v0.4h-v3.4h}, [x0]
+        ret
+endfunc
+.endm
 
 .macro sum_sub out, in, c, op, p
   .ifc \op, +
@@ -279,20 +308,9 @@ endfunc
          sub            \out3, v28.4s, v30.4s
 .endm
 
-.macro transpose8_4x4 r0, r1, r2, r3
-        trn1            v2.8h, \r0\().8h, \r1\().8h
-        trn2            v3.8h, \r0\().8h, \r1\().8h
-        trn1            v4.8h, \r2\().8h, \r3\().8h
-        trn2            v5.8h, \r2\().8h, \r3\().8h
-        trn1            \r0\().4s, v2.4s, v4.4s
-        trn2            \r2\().4s, v2.4s, v4.4s
-        trn1            \r1\().4s, v3.4s, v5.4s
-        trn2            \r3\().4s, v3.4s, v5.4s
-.endm
-
 .macro transpose_8x8 r0, r1, r2, r3, r4, r5, r6, r7
-        transpose8_4x4  \r0, \r1, \r2, \r3
-        transpose8_4x4  \r4, \r5, \r6, \r7
+        transpose_4x8H  \r0, \r1, \r2, \r3, v2, v3, v4, v5
+        transpose_4x8H  \r4, \r5, \r6, \r7, v2, v3, v4, v5
 .endm
 
 .macro tr_8x4 shift, in0,in0t, in1,in1t, in2,in2t, in3,in3t, in4,in4t, in5,in5t, in6,in6t, in7,in7t, p1, p2
@@ -577,6 +595,9 @@ function ff_hevc_idct_16x16_\bitdepth\()_neon, export=1
         ret
 endfunc
 .endm
+
+idct_4x4 8
+idct_4x4 10
 
 idct_8x8 8
 idct_8x8 10

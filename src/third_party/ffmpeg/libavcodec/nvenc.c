@@ -166,7 +166,9 @@ static int nvenc_print_error(AVCodecContext *avctx, NVENCSTATUS err,
 typedef struct FrameData {
     int64_t pts;
     int64_t duration;
+#if FF_API_REORDERED_OPAQUE
     int64_t reordered_opaque;
+#endif
 
     void        *frame_opaque;
     AVBufferRef *frame_opaque_ref;
@@ -175,6 +177,8 @@ typedef struct FrameData {
 static void reorder_queue_flush(AVFifo *queue)
 {
     FrameData fd;
+
+    av_assert0(queue);
 
     while (av_fifo_read(queue, &fd, 1) >= 0)
         av_buffer_unref(&fd.frame_opaque_ref);
@@ -455,7 +459,7 @@ static int nvenc_check_cap(AVCodecContext *avctx, NV_ENC_CAPS cap)
 static int nvenc_check_capabilities(AVCodecContext *avctx)
 {
     NvencContext *ctx = avctx->priv_data;
-    int ret;
+    int tmp, ret;
 
     ret = nvenc_check_codec_support(avctx);
     if (ret < 0) {
@@ -536,16 +540,18 @@ static int nvenc_check_capabilities(AVCodecContext *avctx)
     }
 
 #ifdef NVENC_HAVE_BFRAME_REF_MODE
+    tmp = (ctx->b_ref_mode >= 0) ? ctx->b_ref_mode : NV_ENC_BFRAME_REF_MODE_DISABLED;
     ret = nvenc_check_cap(avctx, NV_ENC_CAPS_SUPPORT_BFRAME_REF_MODE);
-    if (ctx->b_ref_mode == NV_ENC_BFRAME_REF_MODE_EACH && ret != 1 && ret != 3) {
+    if (tmp == NV_ENC_BFRAME_REF_MODE_EACH && ret != 1 && ret != 3) {
         av_log(avctx, AV_LOG_WARNING, "Each B frame as reference is not supported\n");
         return AVERROR(ENOSYS);
-    } else if (ctx->b_ref_mode != NV_ENC_BFRAME_REF_MODE_DISABLED && ret == 0) {
+    } else if (tmp != NV_ENC_BFRAME_REF_MODE_DISABLED && ret == 0) {
         av_log(avctx, AV_LOG_WARNING, "B frames as references are not supported\n");
         return AVERROR(ENOSYS);
     }
 #else
-    if (ctx->b_ref_mode != 0) {
+    tmp = (ctx->b_ref_mode >= 0) ? ctx->b_ref_mode : 0;
+    if (tmp > 0) {
         av_log(avctx, AV_LOG_WARNING, "B frames as references need SDK 8.1 at build time\n");
         return AVERROR(ENOSYS);
     }
@@ -1851,8 +1857,11 @@ av_cold int ff_nvenc_encode_close(AVCodecContext *avctx)
         p_nvenc->nvEncEncodePicture(ctx->nvencoder, &params);
     }
 
-    reorder_queue_flush(ctx->reorder_queue);
-    av_fifo_freep2(&ctx->reorder_queue);
+    if (ctx->reorder_queue) {
+        reorder_queue_flush(ctx->reorder_queue);
+        av_fifo_freep2(&ctx->reorder_queue);
+    }
+
     av_fifo_freep2(&ctx->output_surface_ready_queue);
     av_fifo_freep2(&ctx->output_surface_queue);
     av_fifo_freep2(&ctx->unused_surface_queue);
@@ -2203,7 +2212,11 @@ static void reorder_queue_enqueue(AVFifo *queue, const AVCodecContext *avctx,
 
     fd.pts              = frame->pts;
     fd.duration         = frame->duration;
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
     fd.reordered_opaque = frame->reordered_opaque;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     fd.frame_opaque     = frame->opaque;
     fd.frame_opaque_ref = *opaque_ref;
 
@@ -2222,7 +2235,11 @@ static int64_t reorder_queue_dequeue(AVFifo *queue, AVCodecContext *avctx,
         return AV_NOPTS_VALUE;
 
     if (pkt) {
+#if FF_API_REORDERED_OPAQUE
+FF_DISABLE_DEPRECATION_WARNINGS
         avctx->reordered_opaque = fd.reordered_opaque;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
         pkt->duration           = fd.duration;
 
         if (avctx->flags & AV_CODEC_FLAG_COPY_OPAQUE) {

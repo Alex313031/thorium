@@ -377,7 +377,7 @@ static av_cold int vp9_init(AVCodecContext *avctx)
     return vpx_init(avctx, &ctx->decoder, vpx_codec_vp9_dx());
 }
 
-FFCodec ff_libvpx_vp9_decoder = {
+const FFCodec ff_libvpx_vp9_decoder = {
     .p.name         = "libvpx-vp9",
     CODEC_LONG_NAME("libvpx VP9"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
@@ -391,6 +391,5 @@ FFCodec ff_libvpx_vp9_decoder = {
     FF_CODEC_DECODE_CB(vpx_decode),
     .caps_internal  = FF_CODEC_CAP_NOT_INIT_THREADSAFE |
                       FF_CODEC_CAP_AUTO_THREADS,
-    .init_static_data = ff_vp9_init_static,
 };
 #endif /* CONFIG_LIBVPX_VP9_DECODER */
