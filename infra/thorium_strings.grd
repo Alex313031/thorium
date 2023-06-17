@@ -378,12 +378,24 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <message name="IDS_ACCESSIBLE_CANARY_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window for the canary (nightly build) channel version of the browser">
         <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium Canary
       </message>
-      <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
-        The Thorium Authors
-      </message>
-      <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
-        Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Thorium Authors. All rights reserved.
-      </message>
+      <if expr="_is_chrome_for_testing_branded">
+        <then>
+          <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
+            Google LLC
+          </message>
+          <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
+            Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> Google LLC. All rights reserved.
+          </message>
+        </then>
+        <else>
+          <message name="IDS_ABOUT_VERSION_COMPANY_NAME" desc="Company name on the about pages">
+            The Thorium Authors
+          </message>
+          <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
+            Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Thorium Authors. All rights reserved.
+          </message>
+        </else>
+      </if>
       <if expr="chromeos_ash">
         <message name="IDS_ABOUT_CROS_VERSION_LICENSE" desc="Additional text displayed beneath the Thorium open source URLs for ThoriumOS.">
           ThoriumOS is made possible by additional <ph name="BEGIN_LINK_CROS_OSS">&lt;a target="_blank" href="$1"&gt;</ph>open source software<ph name="END_LINK_CROS_OSS">&lt;/a&gt;</ph>.
@@ -399,11 +411,11 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         Not used in Thorium. Placeholder to keep resource maps in sync.
       </message>
       <if expr="is_macosx">
-        <message name="IDS_MAC_10_11_OBSOLETE" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
-          To get future Thorium updates, you'll need macOS 10.13 or later. This computer is using OS X 10.11.
+        <message name="IDS_MAC_10_13_OBSOLETE" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
+          To get future Thorium updates, you'll need macOS 10.15 or later. This computer is using macOS 10.13.
         </message>
-        <message name="IDS_MAC_10_12_OBSOLETE" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
-          To get future Thorium updates, you'll need macOS 10.13 or later. This computer is using macOS 10.12.
+        <message name="IDS_MAC_10_14_OBSOLETE" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
+          To get future Thorium updates, you'll need macOS 10.15 or later. This computer is using macOS 10.14.
         </message>
       </if>
       <if expr="is_win">
@@ -502,11 +514,6 @@ Thorium is unable to recover your settings.
       </message>
       <!-- Add account dialog -->
       <if expr="chromeos_ash">
-        <message name="IDS_ACCOUNT_MANAGER_DIALOG_WELCOME_BODY_V2" desc="Text body for the Welcome screen in ThoriumOS 'Add account' dialog.">
-If you want to use this account one-time only, you can use Guest mode in Thorium browser. If you want to add an account for someone else, <ph name="LINK_BEGIN">&lt;a target="_blank" id="newPersonLink" href="$1<ex>https://google.com/</ex>"&gt;</ph>add a new person<ph name="LINK_END">&lt;/a&gt;</ph> to your <ph name="DEVICE_TYPE">$2<ex>Thoriumbook</ex></ph>.
-
-Permissions you've already given to websites and apps may apply to this account. You can manage your Google Accounts in <ph name="SETTINGS_LINK_BEGIN">&lt;a id="osSettingsLink" href="$3<ex>https://google.com/</ex>"&gt;</ph>Settings<ph name="SETTINGS_LINK_END">&lt;/a&gt;</ph>.
-        </message>
         <message name="IDS_ACCOUNT_MANAGER_DIALOG_WELCOME_BODY_V2_WITH_GUEST_MODE" desc="Text body for the Welcome screen in ThoriumOS 'Add account' dialog.">
 If you want to use this account one-time only, you can use <ph name="GUEST_LINK_BEGIN">&lt;a id="guestModeLink" href="#"&gt;</ph>Guest mode<ph name="GUEST_LINK_END">&lt;/a&gt;</ph> in Thorium browser. If you want to add an account for someone else, <ph name="LINK_BEGIN">&lt;a target="_blank" id="newPersonLink" href="$1<ex>https://google.com/</ex>"&gt;</ph>add a new person<ph name="LINK_END">&lt;/a&gt;</ph> to your <ph name="DEVICE_TYPE">$2<ex>Thoriumbook</ex></ph>.
 
@@ -543,17 +550,8 @@ Permissions you've already given to websites and apps may apply to this account.
         In Password Manager on this device
       </message>
       <if expr="is_macosx">
-        <message name="IDS_PASSWORDS_PAGE_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before revealing plaintext passwords on the password page.">
-          Thorium is trying to show passwords.
-        </message>
-        <message name="IDS_PASSWORDS_PAGE_COPY_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before copying plaintext passwords into the clipboard.">
-          Thorium is trying to copy passwords.
-        </message>
-        <message name="IDS_PASSWORDS_PAGE_EDIT_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before editing plaintext passwords on the password page.">
-          Thorium is trying to edit passwords.
-        </message>
-        <message name="IDS_PASSWORDS_PAGE_EXPORT_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before exporting passwords to a file.">
-          Thorium wants to export your passwords.
+      <message name="IDS_PASSWORDS_AUTHENTICATION_PROMPT_PREFIX" desc="Text shown in the beginning of the OS-level user authentication prompt before performing a seneitive operation such as show passwords in plain text.">
+          Thorium is trying to <ph name="AUTHENTICATION_PURPOSE">$1<ex>show passwords</ex></ph>
         </message>
       </if>
       <if expr="is_win">
@@ -569,6 +567,9 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_PASSWORDS_PAGE_EXPORT_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before exporting passwords to a file.">
           Thorium wants to export your passwords. Type your Windows password to allow this.
         </message>
+        <message name="IDS_PASSWORDS_PAGE_IMPORT_AUTHENTICATION_PROMPT" desc="Text for the dialog box that prompts the user for their OS account password before overriding passwords during Import.">
+          Thorium is trying to replace existing passwords. Type your Windows password to allow this.
+        </message>
         <message name="IDS_INSTALL_HIGHER_VERSION" desc="Error displayed when higher version already exists.">
           This computer already has a more recent version of Thorium. If the software is not working, please uninstall Thorium and try again.
         </message>
@@ -582,7 +583,7 @@ Permissions you've already given to websites and apps may apply to this account.
           Installation failed due to unspecified error. Please download Thorium again.
         </message>
         <message name="IDS_INSTALL_OS_NOT_SUPPORTED" desc="Error displayed if OS is not supported">
-          Thorium requires Windows 7 or higher.
+          Thorium requires Windows 10 or higher.
         </message>
         <message name="IDS_INSTALL_OS_ERROR" desc="Error displayed when any Windows API call fails and we do not have more specific information.">
           An operating system error occurred during installation. Please download Thorium again.
@@ -623,9 +624,6 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
       <message name="IDS_DEFAULT_BROWSER_INFOBAR_TEXT" desc="Text to show in an infobar when Thorium is not the current default browser.">
         Thorium isn't your default browser
-      </message>
-      <message name="IDS_TAILORED_SECURITY_CONSENTED_ENABLE_NOTIFICATION_DESCRIPTION" desc="The text of the notification asking if the user wants to enable Enhanced Safe Browsing">
-        You turned on Enhanced Safe Browsing in your account. Now get it for Thorium.
       </message>
       <if expr="is_win">
         <!-- Try Thorium Toast Dialog -->
@@ -815,6 +813,12 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
+      <if expr="is_win or is_macosx or is_linux">
+        <message name="IDS_RELAUNCH_TO_UPDATE_ALT" desc="Alternate text label of the relaunch to update Thorium menu item" translateable="false">
+        Not used in Thorium. Placeholder to keep resource maps in sync.
+        </message>
+      </if>
+
       <if expr="is_macosx">
         <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Google Thorium.">
           Thorium
@@ -826,6 +830,10 @@ Permissions you've already given to websites and apps may apply to this account.
           Thorium Helper
         </message>
       </if>
+
+      <message name="IDS_VIEW_PASSWORDS" desc="Item in the app menu which shows Password Manager page">
+        Password Manager
+      </message>
 
       <!-- Thorium sign-in page -->
       <message name="IDS_CHROME_SIGNIN_TITLE" desc="Title on the about:chrome-signin page">
@@ -1002,10 +1010,17 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <if expr="not is_android">
         <!-- WebHID system tray icon -->
-        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TOOLTIP" desc="Tooltip for the WebHID system tray icon when one or more HID devices are being accessed.">
+        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TITLE_SINGLE_EXTENSION" desc="Title for the WebHID system tray icon when one or more HID devices are being accessed by an extension.">
             {NUM_DEVICES, plural,
-            =1 {Thorium is connected to a HID device}
-            other {Thorium is connected to HID devices}}
+            =0 {A Thorium extension was accessing HID devices}
+            =1 {A Thorium extension is accessing 1 HID device}
+            other {A Thorium extension is accessing # HID devices}}
+        </message>
+        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TITLE_MULTIPLE_EXTENSIONS" desc="Title for the WebHID system tray icon when HID devices are being accessed by multiple extensions.">
+            {NUM_DEVICES, plural,
+            =0 {Thorium extensions were accessing HID devices}
+            =1 {Thorium extensions are accessing HID devices}
+            other {Thorium extensions are accessing # HID devices}}
         </message>
       </if>
 
@@ -1156,6 +1171,15 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
+      <if expr="is_win or is_macosx or is_linux">
+        <message name="IDS_UPDATE_RECOMMENDED_DIALOG_TITLE_ALT" desc="Alternate window title for the Update Recommended dialog." translateable="false">
+          Not used in Thorium. Placeholder to keep resource maps in sync.
+        </message>
+        <message name="IDS_UPDATE_RECOMMENDED_ALT" desc="Alternate main text of the Update Recommended dialog with a count of open Incognito windows." translateable="false">
+          Not used in Thorium. Placeholder to keep resource maps in sync.
+        </message>
+      </if>
+
       <!-- Update bubble -->
       <message name="IDS_REINSTALL_APP" desc="Text for the button the user clicks to reinstall the app.">
         Reinstall Thorium
@@ -1211,10 +1235,8 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
 
       <!-- Critical Notification bubble -->
-      <message name="IDS_CRITICAL_NOTIFICATION_TITLE" desc="The title for a bubble that appears when there is a critical update and Thorium must restart to install it. It counts down from # seconds and then Thorium automatically restarts.">
-        {SECONDS, plural,
-         =1 {Thorium will restart in 1 second}
-         other {Thorium will restart in # seconds}}
+      <message name="IDS_CRITICAL_NOTIFICATION_TITLE" desc="The title for a bubble that appears when there is a critical update and Thorium must restart to install it. It counts down a timer and then Thorium automatically restarts.">
+        Thorium will restart in <ph name="REMAINING_TIME">$1<ex>1 minute, 7 seconds</ex></ph>
       </message>
       <message name="IDS_CRITICAL_NOTIFICATION_TITLE_ALTERNATE" desc="The title for a bubble that appears when there is a critical update and Thorium must restart to install it. The title was previously countng down to an automatic restart and now it has finished. Will only be seen if a web page stops the shutdown process.">
         Please restart Thorium now
@@ -1359,19 +1381,29 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
       <!-- Idle timeout dialog. -->
       <if expr="not is_android and not is_chromeos">
-        <message name="IDS_IDLE_TIMEOUT_TITLE" desc="Title of the Idle Timeout dialog, warning the user that their windows are about to close.">
-          Thorium is inactive
+        <message name="IDS_IDLE_TIMEOUT_CLOSE_TITLE" desc="Title of the Idle Timeout dialog, warning the user that their windows are about to close.">
+          Thorium will soon close
         </message>
-        <message name="IDS_IDLE_TIMEOUT_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that all browsers are about to close automatically.">
+        <message name="IDS_IDLE_TIMEOUT_CLEAR_TITLE" desc="Title of the Idle Timeout dialog, warning the user that their browsing data will be lost soon.">
+          Thorium will soon delete browsing data
+        </message>
+        <message name="IDS_IDLE_TIMEOUT_CLOSE_AND_CLEAR_TITLE" desc="Title of the Idle Timeout dialog, warning the user that their windows are about to close and their browsing data will be lost.">
+          Thorium will soon close and delete data
+        </message>
+        <message name="IDS_IDLE_TIMEOUT_CLOSE_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to close automatically.">
           {COUNT, plural,
-          =1 {Your administrator has configured Thorium to close if it is idle for more than 1 minute.}
-          other {Your administrator has configured Thorium to close if it is idle for more than # minutes.}}
+          =1 {Your administrator automatically closes Thorium when it isn't used for 1 minute.}
+          other {Your administrator automatically closes Thorium when it isn't used for # minutes.}}
         </message>
-        <message name="IDS_IDLE_TIMEOUT_COUNTDOWN" desc="In the Idle Timeout dialog, a countdown that ticks every second. When it reaches zero, Thorium closes all browsers.">
-          {0, plural,
-          =0 {Thorium will close now.}
-          =1 {Thorium will close in 1 second.}
-          other {Thorium will close in # seconds.}}
+        <message name="IDS_IDLE_TIMEOUT_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to clear data automatically.">
+          {COUNT, plural,
+          =1 {Your administrator automatically deletes browsing data when it isn't used for 1 minute. This could include history, autofill, and downloads. Your existing tabs will remain open.}
+          other {Your administrator automatically deletes browsing data when it isn't used for # minutes. This could include history, autofill, and downloads. Your existing tabs will remain open.}}
+        </message>
+        <message name="IDS_IDLE_TIMEOUT_CLOSE_AND_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to close and clear data automatically.">
+          {COUNT, plural,
+          =1 {Your administrator automatically closes Thorium when it isn't used for 1 minute. Browsing data is deleted. This could include history, autofill, and downloads.}
+          other {Your administrator automatically closes Thorium when it isn't used for # minutes. Browsing data is deleted. This could include history, autofill, and downloads.}}
         </message>
         <message name="IDS_IDLE_DISMISS_BUTTON" desc="Button label in the Idle Timeout dialog, this button dismisses the dialog and prevents browsers from closing automatically.">
           Continue using Thorium
@@ -1404,6 +1436,9 @@ Permissions you've already given to websites and apps may apply to this account.
           </message>
           <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE" desc="Profile picker, account selection screen subtitle">
             Sign in to Thorium
+          </message>
+          <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_ACCOUNT_SELECTION_LACROS_SUBTITLE_WITH_GUEST" desc="Profile picker, account selection screen subtitle">
+            Sign in to Thorium. If you want to sign in an account one-time only, you can <ph name="GUEST_LINK_BEGIN">&lt;a id="guestModeLink" href="#"&gt;</ph>use the device as guest<ph name="GUEST_LINK_END">&lt;/a&gt;</ph>.
           </message>
         </if>
         <if expr="not chromeos_lacros">
@@ -1455,8 +1490,17 @@ Permissions you've already given to websites and apps may apply to this account.
           </message>
         </if>
         <if expr="not chromeos_lacros">
-          <message name="IDS_FRE_SIGN_IN_SUBTITLE" desc="The subtitle for the sign in page explaining to the users the benefits of signing in to Thorium">
-            You can enjoy the most out of Thorium
+          <message name="IDS_FRE_SIGN_IN_TITLE_0"
+            desc="This string appears as a heading on a full-page screen that asks the user to sign in to Thorium with their Google Account. It appears when the user launches Thorium for the first time. When they sign in, they can personalize and customize Thorium and remember their settings in their Google Account. The tone should be inviting and alluring.">
+            Sign in to Thorium
+          </message>
+          <message name="IDS_FRE_SIGN_IN_TITLE_1"
+            desc="This string appears as a heading on a full-page screen that asks the user to sign in to Thorium with their Google Account. It appears when the user launches Thorium for the first time. When they sign in, they can personalize and customize Thorium and remember their settings in their Google Account. The tone should be inviting and alluring.">
+            Make Thorium your own
+          </message>
+          <message name="IDS_FRE_SIGN_IN_TITLE_2"
+            desc="This string appears as a heading on a full-page screen that tells users the benefits of signing in to Thorium. It appears when the user launches Thorium for the first time. When they sign in, they can personalize and customize Thorium and remember their settings in their Google Account. The tone should be inviting and alluring.">
+            Do more with Thorium
           </message>
         </if>
 
@@ -1466,6 +1510,9 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_PROFILE_SWITCH_PROMO_SCREENREADER" desc="Text announced by screenreaders to explain how to switch between profiles.">
           <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+M</ex></ph> can switch between Thorium profiles
+        </message>
+        <message name="IDS_PASSWORD_MANAGER_IPH_BODY_WEB_APP_PROFILE_SWITCH" desc="Body of the in Product Help for profile switching shown in the password manager web app.">
+          You can switch to see passwords from another Thorium profile
         </message>
       </if>
 
@@ -1495,6 +1542,9 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
       <message name="IDS_TAILORED_SECURITY_UNCONSENTED_PROMOTION_MESSAGE_DESCRIPTION" desc="Description shown in the message shown when a user changes their account-level tailored security setting encouraging them to enable Enhanced Safe Browsing">
         Enhanced protection does more to block phishing and malware
+      </message>
+      <message name="IDS_TAILORED_SECURITY_UNCONSENTED_PROMOTION_MESSAGE_DESCRIPTION_UPDATED" desc="Description shown in the message shown when a user changes their account-level tailored security setting encouraging them to enable Enhanced Safe Browsing">
+        Enhanced Safe Browsing does more to protect you against dangerous websites and downloads
       </message>
       <message name="IDS_TAILORED_SECURITY_UNCONSENTED_PROMOTION_MESSAGE_ACCEPT" desc="Accept button shown in the message shown when a user changes their account-level tailored security setting encouraging them to enable Enhanced Safe Browsing">
         Continue
@@ -1647,16 +1697,6 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <!-- High Efficiency IPH strings -->
       <if expr="not is_android">
-        <if expr="use_titlecase">
-          <message name="IDS_HIGH_EFFICIENCY_INFO_MODE_PROMO_TITLE" desc="In Title Case: The title for the high efficiency info mode in-product promo bubble.">
-            Memory Saver Made Thorium Faster
-          </message>
-        </if>
-        <if expr="not use_titlecase">
-          <message name="IDS_HIGH_EFFICIENCY_INFO_MODE_PROMO_TITLE" desc="The title for the high efficiency info mode in-product promo bubble.">
-            Memory Saver made Thorium faster
-          </message>
-        </if>
         <if expr="use_titlecase">
           <message name="IDS_HIGH_EFFICIENCY_MODE_PROMO_TITLE" desc="In Title Case: The title for the high efficiency mode in-product promo bubble">
             Make Thorium Faster

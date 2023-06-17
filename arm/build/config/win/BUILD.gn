@@ -11,6 +11,7 @@ import("//build/config/win/control_flow_guard.gni")
 import("//build/config/win/visual_studio_version.gni")
 import("//build/timestamp.gni")
 import("//build/toolchain/goma.gni")
+import("//build/toolchain/rbe.gni")
 import("//build/toolchain/toolchain.gni")
 
 assert(is_win)
@@ -41,9 +42,6 @@ declare_args() {
   #  and with this switch, clang emits it like this:
   #    foo/bar.cc:12:34: error: something went wrong
   use_clang_diagnostics_format = false
-
-  # Indicates whether to use /pdbpagesize:8192 to allow PDBs larger than 4 GiB.
-  use_large_pdbs = true
 }
 
 # This is included by reference in the //build/config/compiler config that
@@ -143,13 +141,13 @@ config("compiler") {
       ]
     }
 
-    if (exec_script("//build/win/use_ansi_codes.py", [], "trim string") ==
+    # Enable ANSI escape codes if something emulating them is around (cmd.exe
+    # doesn't understand ANSI escape codes by default). Make sure to not enable
+    # this if goma/remoteexec is in use, because this will lower cache hits.
+    if (!use_goma && !use_remoteexec &&
+        exec_script("//build/win/use_ansi_codes.py", [], "trim string") ==
         "True") {
-      cflags += [
-        # cmd.exe doesn't understand ANSI escape codes by default,
-        # so only enable them if something emulating them is around.
-        "-fansi-escape-codes",
-      ]
+      cflags += [ "-fansi-escape-codes" ]
     }
 
     if (use_clang_diagnostics_format) {
@@ -183,14 +181,14 @@ config("compiler") {
     ldflags += [ "/opt:lldlto=3", ]
   }
 
-  if (use_large_pdbs) {
-    # This allows PDBs up to 8 GiB in size. This requires lld-link.exe or
-    # link.exe from VS 2022 or later.
-    if (!defined(configs)) {
-      configs = []
-    }
-    configs += [ ":pdb_larger_than_4gb" ]
-  }
+  # Some binaries create PDBs larger than 4 GiB. Increasing the PDB page size
+  # to 8 KiB allows 8 GiB PDBs. The larger page size also allows larger block maps
+  # which is a PDB limit that was hit in https://crbug.com/1406510. The page size
+  # can easily be increased in the future to allow even larger PDBs or larger
+  # block maps.
+  # This flag requires lld-link.exe or link.exe from VS 2022 or later to create
+  # the PDBs, and tools from circa 22H2 or later to consume the PDBs.
+  ldflags += [ "/pdbpagesize:8192" ]
 
   if (!is_debug && !is_component_build) {
     # Enable standard linker optimizations like GC (/OPT:REF) and ICF in static
@@ -346,17 +344,26 @@ config("common_linker_setup") {
   }
 }
 
+# Flags that should be applied to building .exe files but not .dll files.
+config("exe_flags") {
+  rustflags = [ "-Ctarget-feature=+crt-static" ]
+}
+
 config("default_cfg_compiler") {
   # Emit table of address-taken functions for Control-Flow Guard (CFG).
   # This is needed to allow functions to be called by code that is built
   # with CFG enabled, such as system libraries.
   # The CFG guards are only emitted if |win_enable_cfg_guards| is enabled.
-  if (is_clang) {
-    if (win_enable_cfg_guards) {
+  if (win_enable_cfg_guards) {
+    if (is_clang) {
       cflags = [ "/guard:cf" ]
-    } else {
+    }
+    rustflags = [ "-Ccontrol-flow-guard" ]
+  } else {
+    if (is_clang) {
       cflags = [ "/guard:cf,nochecks" ]
     }
+    rustflags = [ "-Ccontrol-flow-guard=nochecks" ]
   }
 }
 
@@ -369,6 +376,7 @@ config("disable_guards_cfg_compiler") {
   if (is_clang) {
     cflags = [ "/guard:cf,nochecks" ]
   }
+  rustflags = [ "-Ccontrol-flow-guard=nochecks" ]
 }
 
 config("cfi_linker") {
@@ -611,16 +619,4 @@ config("lean_and_mean") {
 
 config("nominmax") {
   defines = [ "NOMINMAX" ]
-}
-
-# Some binaries create PDBs larger than 4 GiB. Increasing the PDB page size
-# to 8 KiB allows 8 GiB PDBs. The larger page size also allows larger block maps
-# which is a PDB limit that was hit in https://crbug.com/1406510. The page size
-# can easily be increased in the future to allow even larger PDBs or larger
-# block maps.
-config("pdb_larger_than_4gb") {
-  if (!defined(ldflags)) {
-    ldflags = []
-  }
-  ldflags += [ "/pdbpagesize:8192" ]
 }
