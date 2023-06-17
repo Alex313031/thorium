@@ -7,5 +7,6 @@ static const AVCodecParser * const parser_list[] = {
     &ff_vorbis_parser,
     &ff_vp3_parser,
     &ff_vp8_parser,
+    &ff_ac3_parser,
     &ff_hevc_parser,
     NULL };
