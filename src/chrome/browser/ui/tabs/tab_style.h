@@ -17,12 +17,6 @@
 #include "ui/gfx/geometry/rect_f.h"
 #include "ui/gfx/geometry/size.h"
 
-namespace gfx {
-class Canvas;
-}
-
-class SkPath;
-
 // Holds the basic logic for rendering tabs, including preferred sizes, paths,
 // etc.
 class TabStyle {
@@ -108,94 +102,56 @@ class TabStyle {
   TabStyle& operator=(const TabStyle&) = delete;
   virtual ~TabStyle();
 
-  // Gets the specific |path_type| associated with the specific |tab|.
-  // If |force_active| is true, applies an active appearance on the tab (usually
-  // involving painting an optional stroke) even if the tab is not the active
-  // tab.
-  virtual SkPath GetPath(
-      PathType path_type,
-      float scale,
-      bool force_active = false,
-      RenderUnits render_units = RenderUnits::kPixels) const = 0;
-
-  // Returns the insets to use for laying out tab contents.
-  virtual gfx::Insets GetContentsInsets() const = 0;
-
-  // Returns the z-value of the tab, which should be used to paint them in
-  // ascending order. Return values are in the range (0,
-  // TabStyle::GetMaximumZValue()).
-  virtual float GetZValue() const = 0;
-
-  // Returns the current opacity of the "active" portion of the tab's state.
-  virtual float GetActiveOpacity() const = 0;
-
-  // Returns whichever of (active, inactive) the tab appears more like given the
-  // active opacity.
-  virtual TabActive GetApparentActiveState() const = 0;
-
-  // Derives and returns colors for the tab. See TabColors, above.
-  virtual TabColors CalculateColors() const = 0;
-
   // Returns the appropriate fonts for the current theme and active state.
   virtual const gfx::FontList& GetFontList() const = 0;
 
-  // Paints the tab.
-  virtual void PaintTab(gfx::Canvas* canvas) const = 0;
-
-  // Sets the center of the radial highlight in the hover animation.
-  virtual void SetHoverLocation(const gfx::Point& location) = 0;
-
-  // Shows the hover animation.
-  virtual void ShowHover(ShowHoverStyle style) = 0;
-
-  // Hides the hover animation.
-  virtual void HideHover(HideHoverStyle style) = 0;
-
-  // Opacity of the active tab background painted over inactive selected tabs.
-  static constexpr float kSelectedTabOpacity = 0.75f;
-
   // Returns the preferred width of a single Tab, assuming space is
   // available.
-  static int GetStandardWidth();
+  virtual int GetStandardWidth() const = 0;
 
   // Returns the width for pinned tabs. Pinned tabs always have this width.
-  static int GetPinnedWidth();
+  virtual int GetPinnedWidth() const = 0;
 
   // Returns the overlap between adjacent tabs.
-  static int GetTabOverlap();
-
-  // Get the space only partially occupied by a tab that we should
-  // consider to be padding rather than part of the body of the tab for
-  // interaction purposes.
-  static gfx::Insets GetTabInternalPadding();
+  virtual int GetTabOverlap() const = 0;
 
   // Gets the size of the separator drawn between tabs, if any.
-  static gfx::Size GetSeparatorSize();
+  virtual gfx::Size GetSeparatorSize() const = 0;
 
   // Returns, for a tab of height |height|, how far the window top drag handle
   // can extend down into inactive tabs or the new tab button. This behavior
   // is not used in all cases.
-  static int GetDragHandleExtension(int height);
+  virtual int GetDragHandleExtension(int height) const = 0;
 
   // Gets the preferred size for tab previews, which could be screencaps, hero
   // or og:image images, etc.
-  static gfx::Size GetPreviewImageSize();
+  virtual gfx::Size GetPreviewImageSize() const = 0;
 
   // Returns the radius of the outer corners of the tab shape.
-  static int GetCornerRadius();
+  virtual int GetTopCornerRadius() const = 0;
+
+  // Returns the radius of the outer corners of the tab shape.
+  virtual int GetBottomCornerRadius() const = 0;
+
+  // Opacity of the active tab background painted over inactive selected tabs.
+  virtual float GetSelectedTabOpacity() const = 0;
 
   // The largest valid value of TabStyle::GetZValue(). Currently,
   // GM2TabStyle::GetZValue is the only implementation, and it can't return
   // values larger than 7.
   static constexpr float kMaximumZValue = 7.0f;
 
- protected:
-  // Avoid implicitly-deleted constructor.
-  TabStyle() = default;
+  static constexpr float kDefaultSelectedTabOpacity = 0.75f;
+
+  static const TabStyle* Get();
 
   // Returns how far from the leading and trailing edges of a tab the contents
   // should actually be laid out.
-  static int GetContentsHorizontalInsetSize();
+  int GetContentsHorizontalInsetSize() const;
+
+ protected:
+  // Avoid implicitly-deleted constructor.
+  TabStyle() = default;
 };
 
 #endif  // CHROME_BROWSER_UI_TABS_TAB_STYLE_H_

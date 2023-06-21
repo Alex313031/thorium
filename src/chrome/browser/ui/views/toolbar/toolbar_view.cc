@@ -21,6 +21,7 @@
 #include "chrome/app/chrome_command_ids.h"
 #include "chrome/browser/apps/intent_helper/intent_picker_features.h"
 #include "chrome/browser/command_updater.h"
+#include "chrome/browser/companion/core/features.h"
 #include "chrome/browser/download/bubble/download_bubble_prefs.h"
 #include "chrome/browser/media/router/media_router_feature.h"
 #include "chrome/browser/profiles/profile.h"
@@ -104,6 +105,7 @@
 #include "ui/gfx/paint_vector_icon.h"
 #include "ui/gfx/scoped_canvas.h"
 #include "ui/views/accessibility/view_accessibility.h"
+#include "ui/views/background.h"
 #include "ui/views/cascading_property.h"
 #include "ui/views/layout/fill_layout.h"
 #include "ui/views/layout/flex_layout.h"
@@ -164,6 +166,8 @@ auto& GetViewCommandMap() {
 constexpr int kToolbarDividerWidth = 2;
 constexpr int kToolbarDividerHeight = 16;
 constexpr int kToolbarDividerCornerRadius = 1;
+constexpr int kToolbarDividerSpacing = 9;
+
 }  // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,16 +213,49 @@ void ToolbarView::Init() {
   // Make sure the toolbar shows by default.
   size_animation_.Reset(1);
 
+  std::unique_ptr<DownloadToolbarButtonView> download_button;
+  if (download::IsDownloadBubbleEnabled(browser_->profile())) {
+    download_button =
+        std::make_unique<DownloadToolbarButtonView>(browser_view_);
+  }
+
   if (display_mode_ != DisplayMode::NORMAL) {
     location_bar_ = AddChildView(std::move(location_bar));
     location_bar_->Init();
+  }
 
-    if (display_mode_ == DisplayMode::CUSTOM_TAB) {
-      custom_tab_bar_ =
-          AddChildView(std::make_unique<CustomTabBarView>(browser_view_, this));
-    }
-
+  if (display_mode_ == DisplayMode::CUSTOM_TAB) {
+    custom_tab_bar_ =
+        AddChildView(std::make_unique<CustomTabBarView>(browser_view_, this));
     SetLayoutManager(std::make_unique<views::FillLayout>());
+    initialized_ = true;
+    return;
+  } else if (display_mode_ == DisplayMode::LOCATION) {
+    // Add the download button for popups.
+    if (download_button) {
+      download_button_ = AddChildView(std::move(download_button));
+      download_button_->SetPreferredSize(
+          gfx::Size(location_bar_->GetPreferredSize().height(),
+                    location_bar_->GetPreferredSize().height()));
+      download_button_->SetFocusBehavior(FocusBehavior::ALWAYS);
+      // Hide the icon by default; it will show up when there's a download.
+      download_button_->Hide();
+    }
+    SetBackground(
+        views::CreateThemedSolidBackground(kColorLocationBarBackground));
+    SetLayoutManager(std::make_unique<views::FlexLayout>())
+        ->SetOrientation(views::LayoutOrientation::kHorizontal)
+        .SetCrossAxisAlignment(views::LayoutAlignment::kCenter)
+        .SetDefault(views::kFlexBehaviorKey,
+                    views::FlexSpecification(
+                        views::LayoutOrientation::kHorizontal,
+                        views::MinimumFlexSizeRule::kPreferredSnapToZero))
+        .SetFlexAllocationOrder(views::FlexAllocationOrder::kReverse);
+    location_bar_->SetProperty(
+        views::kFlexBehaviorKey,
+        views::FlexSpecification(views::LayoutOrientation::kHorizontal,
+                                 views::MinimumFlexSizeRule::kScaleToZero,
+                                 views::MaximumFlexSizeRule::kUnbounded));
     initialized_ = true;
     return;
   }
@@ -267,12 +304,6 @@ void ToolbarView::Init() {
         browser_view_, MediaToolbarButtonContextualMenu::Create(browser_));
   }
 
-  std::unique_ptr<DownloadToolbarButtonView> download_button;
-  if (download::IsDownloadBubbleEnabled(browser_->profile())) {
-    download_button =
-        std::make_unique<DownloadToolbarButtonView>(browser_view_);
-  }
-
   std::unique_ptr<send_tab_to_self::SendTabToSelfToolbarIconView>
       send_tab_to_self_button;
   if (!browser_->profile()->IsOffTheRecord()) {
@@ -285,7 +316,8 @@ void ToolbarView::Init() {
   std::unique_ptr<SidePanelToolbarContainer> side_panel_toolbar_container;
   if (browser_view_->unified_side_panel() &&
       !base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button")) {
-    if (base::FeatureList::IsEnabled(features::kSidePanelCompanion)) {
+    if (base::FeatureList::IsEnabled(
+            companion::features::kSidePanelCompanion)) {
       side_panel_toolbar_container =
           std::make_unique<SidePanelToolbarContainer>(browser_view_);
     } else {
@@ -330,11 +362,8 @@ void ToolbarView::Init() {
     }
   }
 
-  if (base::FeatureList::IsEnabled(
-          performance_manager::features::kBatterySaverModeAvailable)) {
-    battery_saver_button_ =
-        AddChildView(std::make_unique<BatterySaverButton>(browser_view_));
-  }
+  battery_saver_button_ =
+      AddChildView(std::make_unique<BatterySaverButton>(browser_view_));
 
   if (cast)
     cast_ = AddChildView(std::move(cast));
@@ -669,16 +698,14 @@ void ToolbarView::Layout() {
     return;
   }
 
-  if (display_mode_ == DisplayMode::LOCATION) {
-    location_bar_->SetBounds(0, 0, width(),
-                             location_bar_->GetPreferredSize().height());
-    return;
-  }
+  if (display_mode_ == DisplayMode::NORMAL) {
+    LayoutCommon();
 
-  LayoutCommon();
-
-  if (features::IsChromeRefresh2023()) {
-    UpdateClipPath();
+#if BUILDFLAG(IS_MAC)
+    if (features::IsChromeRefresh2023()) {
+      UpdateClipPath();
+    }
+#endif
   }
 
   // Call super implementation to ensure layout manager and child layouts
@@ -741,9 +768,10 @@ void ToolbarView::GetAccessibleNodeData(ui::AXNodeData* node_data) {
 }
 
 void ToolbarView::InitLayout() {
-  const int default_margin = GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
+  const int default_margin = GetLayoutConstant(TOOLBAR_ICON_DEFAULT_MARGIN);
   // TODO(dfried): rename this constant.
   const int location_bar_margin = GetLayoutConstant(TOOLBAR_STANDARD_SPACING);
+
   const views::FlexSpecification account_container_flex_rule =
       views::FlexSpecification(views::MinimumFlexSizeRule::kScaleToMinimum,
                                views::MaximumFlexSizeRule::kPreferred)
@@ -789,9 +817,8 @@ void ToolbarView::InitLayout() {
   }
 
   if (toolbar_divider_) {
-    SkColor color = GetColorProvider()->GetColor(ui::kColorSysOutline);
-    toolbar_divider_->SetBackground(
-        views::CreateRoundedRectBackground(color, kToolbarDividerCornerRadius));
+    toolbar_divider_->SetProperty(views::kMarginsKey,
+                                  gfx::Insets::VH(0, kToolbarDividerSpacing));
   }
 
   LayoutCommon();
@@ -815,6 +842,13 @@ void ToolbarView::LayoutCommon() {
   app_menu_button_->SetTrailingMargin(
       extend_buttons_to_edge ? interior_margin.right() : 0);
 
+  if (toolbar_divider_ && extensions_container_) {
+    toolbar_divider_->SetVisible(extensions_container_->GetVisible());
+    const SkColor toolbar_extension_separator_color =
+        GetColorProvider()->GetColor(kColorToolbarExtensionSeparatorEnabled);
+    toolbar_divider_->SetBackground(views::CreateRoundedRectBackground(
+        toolbar_extension_separator_color, kToolbarDividerCornerRadius));
+  }
   // Cast button visibility is controlled externally.
 }
 

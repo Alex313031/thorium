@@ -116,7 +116,11 @@ about:version template page
 </if>
 <if expr="is_android">
         <tr>
-          <td class="label">targetSdkVersion</td>
+          <td class="label">APK versionCode</td>
+          <td class="version">$i18n{version_code}</td>
+        </tr>
+        <tr>
+          <td class="label">APK targetSdkVersion</td>
           <td class="version">$i18n{target_sdk_version}</td>
         </tr>
          <tr>
@@ -198,6 +202,10 @@ about:version template page
           <td class="version" id="linker">$i18n{linker}</td>
         </tr>
 </if>
+        <tr id="variations-seed-section" hidden>
+          <td class="label">$i18n{variations_seed_name}</td>
+          <td class="version" id="variations-seed">$i18n{variations_seed}</td>
+        </tr>
         <tr id="variations-section">
           <td class="label">$i18n{variations_name}</td>
           <td class="version" id="variations-list"></td>

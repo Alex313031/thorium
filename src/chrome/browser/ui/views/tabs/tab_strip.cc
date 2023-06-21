@@ -18,13 +18,12 @@
 #include "base/containers/adapters.h"
 #include "base/containers/contains.h"
 #include "base/containers/flat_map.h"
-#include "base/cxx17_backports.h"
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback.h"
-#include "base/command_line.h"
 #include "base/i18n/rtl.h"
 #include "base/memory/raw_ptr.h"
+#include "base/command_line.h"
 #include "base/memory/weak_ptr.h"
 #include "base/metrics/histogram.h"
 #include "base/metrics/histogram_functions.h"
@@ -68,7 +67,6 @@
 #include "chrome/browser/ui/views/tabs/tab_strip_layout_types.h"
 #include "chrome/browser/ui/views/tabs/tab_strip_observer.h"
 #include "chrome/browser/ui/views/tabs/tab_strip_types.h"
-#include "chrome/browser/ui/views/tabs/tab_style_views.h"
 #include "chrome/browser/ui/views/tabs/z_orderable_tab_container_element.h"
 #include "chrome/browser/ui/views/touch_uma/touch_uma.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
@@ -88,6 +86,7 @@
 #include "ui/base/models/list_selection_model.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/base/theme_provider.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/color/color_provider.h"
 #include "ui/display/display.h"
 #include "ui/gfx/animation/throb_animation.h"
@@ -131,8 +130,7 @@ std::unique_ptr<TabContainer> MakeTabContainer(
     TabDragContext* drag_context) {
   if (base::FeatureList::IsEnabled(features::kSplitTabStrip)) {
     return std::make_unique<CompoundTabContainer>(
-        raw_ref<TabContainerController>::from_ptr(tab_strip),
-        hover_card_controller, drag_context, *tab_strip, tab_strip);
+        *tab_strip, hover_card_controller, drag_context, *tab_strip, tab_strip);
   }
   return std::make_unique<TabContainerImpl>(
       *tab_strip, hover_card_controller, drag_context, *tab_strip, tab_strip);
@@ -453,7 +451,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     constexpr int kHorizontalMoveThreshold = 16;  // DIPs.
 
     double ratio = static_cast<double>(tab_strip_->GetInactiveTabWidth()) /
-                   TabStyle::GetStandardWidth();
+                   TabStyle::Get()->GetStandardWidth();
     return base::ClampRound(ratio * kHorizontalMoveThreshold);
   }
 
@@ -492,7 +490,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     DCHECK(!views.empty());
 
     std::vector<gfx::Rect> bounds;
-    const int overlap = TabStyle::GetTabOverlap();
+    const int overlap = TabStyle::Get()->GetTabOverlap();
     int x = 0;
     for (const TabSlotView* view : views) {
       const int width = view->width();
@@ -835,7 +833,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
     if (candidate_index == 0)
       return 0;
 
-    const int tab_overlap = TabStyle::GetTabOverlap();
+    const int tab_overlap = TabStyle::Get()->GetTabOverlap();
 
     // We'll insert just right of the tab at |candidate_index| - 1.
     int ideal_x =
@@ -874,7 +872,7 @@ class TabStrip::TabDragContextImpl : public TabDragContext,
           return 0;
         const int header_width =
             GetTabGroupHeader(*right_group)->bounds().width() -
-            TabStyle::GetTabOverlap();
+            TabStyle::Get()->GetTabOverlap();
         return header_width;
       }
     }
@@ -911,7 +909,8 @@ TabStrip::TabStrip(std::unique_ptr<TabStripController> controller)
           *AddChildViewAt(MakeTabContainer(this,
                                            hover_card_controller_.get(),
                                            base::to_address(drag_context_)),
-                          0)) {
+                          0)),
+      style_(TabStyle::Get()) {
   // TODO(pbos): This is probably incorrect, the background of individual tabs
   // depend on their selected state. This should probably be pushed down into
   // tabs.
@@ -955,7 +954,7 @@ int TabStrip::GetSizeNeededForViews(const std::vector<TabSlotView*>& views) {
   for (const TabSlotView* view : views)
     width += view->width();
   if (!views.empty())
-    width -= TabStyle::GetTabOverlap() * (views.size() - 1);
+    width -= TabStyle::Get()->GetTabOverlap() * (views.size() - 1);
   return width;
 }
 
@@ -1153,8 +1152,16 @@ void TabStrip::OnGroupClosed(const tab_groups::TabGroupId& group) {
 
 bool TabStrip::ShouldDrawStrokes() const {
   // If the controller says we can't draw strokes, don't.
-  if (!controller_->CanDrawStrokes())
+  if (!controller_->CanDrawStrokes()) {
     return false;
+  }
+
+  // The Tabstrip in the refreshed style does not meet the contrast ratio
+  // requirements listed below but does not have strokes for Tabs or the bottom
+  // border.
+  if (features::IsChromeRefresh2023()) {
+    return false;
+  }
 
   // The tabstrip normally avoids strokes and relies on the active tab
   // contrasting sufficiently with the frame background.  When there isn't
@@ -1324,7 +1331,7 @@ absl::optional<int> TabStrip::GetFocusedTabIndex() const {
 }
 
 views::View* TabStrip::GetTabViewForPromoAnchor(int index_hint) {
-  return tab_at(base::clamp(index_hint, 0, GetTabCount() - 1));
+  return tab_at(std::clamp(index_hint, 0, GetTabCount() - 1));
 }
 
 views::View* TabStrip::GetDefaultFocusableChild() {

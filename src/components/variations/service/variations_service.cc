@@ -15,6 +15,7 @@
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback.h"
+#include "base/memory/raw_ptr.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/observer_list.h"
@@ -308,7 +309,7 @@ class DeviceVariationsRestrictionByPolicyApplicator {
     }
   }
 
-  PrefService* const policy_pref_service_;
+  const raw_ptr<PrefService, ExperimentalAsh> policy_pref_service_;
 
   // Watch the changes of the variations prefs.
   std::unique_ptr<PrefChangeRegistrar> pref_change_registrar_;
@@ -925,6 +926,10 @@ bool VariationsService::SetUpFieldTrials(
       variation_ids, command_line_variation_ids, extra_overrides,
       std::move(feature_list), state_manager_, platform_field_trials,
       &safe_seed_manager_, /*add_entropy_source_to_variations_ids=*/true);
+}
+
+SeedType VariationsService::GetSeedType() const {
+  return field_trial_creator_.seed_type();
 }
 
 void VariationsService::OverrideCachedUIStrings() {

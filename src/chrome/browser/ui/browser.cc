@@ -130,6 +130,7 @@
 #include "chrome/browser/ui/tab_dialogs.h"
 #include "chrome/browser/ui/tab_helpers.h"
 #include "chrome/browser/ui/tab_modal_confirm_dialog.h"
+#include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_service_factory.h"
 #include "chrome/browser/ui/tabs/tab_enums.h"
 #include "chrome/browser/ui/tabs/tab_group.h"
 #include "chrome/browser/ui/tabs/tab_group_model.h"
@@ -807,14 +808,21 @@ std::u16string Browser::GetWindowTitleFromWebContents(
     return app_controller_ ? app_controller_->GetAppShortName()
                            : base::UTF8ToUTF16(app_name());
   }
-
   // Include the app name in window titles for tabbed browser windows when
-  // requested with |include_app_name|.
+  // requested with |include_app_name|. Exception: On Lacros, when the OS is
+  // collecting window titles to render for desk overview mode, this function
+  // would get called with include_app_name=true. In this case,
+  // include_app_name=true would be ignored and no app name would be included
+  // in the title string that is to be returned. So always set
+  // `include_app_name` to false.
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  include_app_name = false;
+#endif  // BUILDFLAG(IS_CHROMEOS_LACROS)
   return ((is_type_normal() || is_type_popup()) && include_app_name)
              ? l10n_util::GetStringFUTF16(IDS_BROWSER_WINDOW_TITLE_FORMAT,
                                           title)
              : title;
-#endif
+#endif  // BUILDFLAG(IS_MAC)
 }
 
 // static
@@ -1241,8 +1249,22 @@ void Browser::OnTabGroupChanged(const TabGroupChange& change) {
           tab_strip_model_->group_model()
               ->GetTabGroup(change.group)
               ->visual_data();
+      const SavedTabGroupKeyedService* const saved_tab_group_keyed_service =
+          base::FeatureList::IsEnabled(features::kTabGroupsSave)
+              ? SavedTabGroupServiceFactory::GetForProfile(profile_)
+              : nullptr;
+      absl::optional<std::string> saved_guid;
+
+      if (saved_tab_group_keyed_service) {
+        const SavedTabGroup* const saved_group =
+            saved_tab_group_keyed_service->model()->Get(change.group);
+        if (saved_group) {
+          saved_guid = saved_group->saved_guid().AsLowercaseString();
+        }
+      }
+
       session_service->SetTabGroupMetadata(session_id(), change.group,
-                                           visual_data);
+                                           visual_data, std::move(saved_guid));
     }
   } else if (change.type == TabGroupChange::kClosed) {
     sessions::TabRestoreService* tab_restore_service =
@@ -1891,7 +1913,7 @@ void Browser::PortalWebContentsCreated(WebContents* portal_web_contents) {
   TabHelpers::AttachTabHelpers(portal_web_contents);
 
   // Make the portal show up in the task manager.
-  task_manager::WebContentsTags::CreateForPortal(portal_web_contents);
+  WebContentsBecamePortal(portal_web_contents);
 }
 
 void Browser::WebContentsBecamePortal(WebContents* portal_web_contents) {
@@ -2048,27 +2070,15 @@ blink::ProtocolHandlerSecurityLevel Browser::GetProtocolHandlerSecurityLevel(
 
   content::BrowserContext* context = requesting_frame->GetBrowserContext();
   extensions::ProcessMap* process_map = extensions::ProcessMap::Get(context);
-  const GURL& owner_site_url =
-      requesting_frame->GetSiteInstance()->GetSiteURL();
   const Extension* owner_extension =
       extensions::ProcessManager::Get(context)->GetExtensionForRenderFrameHost(
           requesting_frame);
-  switch (process_map->GetMostLikelyContextType(
-      owner_extension, requesting_frame->GetProcess()->GetID(),
-      &owner_site_url)) {
-    case extensions::Feature::BLESSED_WEB_PAGE_CONTEXT:
-    case extensions::Feature::CONTENT_SCRIPT_CONTEXT:
-    case extensions::Feature::LOCK_SCREEN_EXTENSION_CONTEXT:
-    case extensions::Feature::OFFSCREEN_EXTENSION_CONTEXT:
-    case extensions::Feature::UNBLESSED_EXTENSION_CONTEXT:
-    case extensions::Feature::UNSPECIFIED_CONTEXT:
-    case extensions::Feature::WEBUI_CONTEXT:
-    case extensions::Feature::WEBUI_UNTRUSTED_CONTEXT:
-    case extensions::Feature::WEB_PAGE_CONTEXT:
-      return blink::ProtocolHandlerSecurityLevel::kStrict;
-    case extensions::Feature::BLESSED_EXTENSION_CONTEXT:
-      return blink::ProtocolHandlerSecurityLevel::kExtensionFeatures;
+  if (owner_extension &&
+      process_map->IsPrivilegedExtensionProcess(
+          *owner_extension, requesting_frame->GetProcess()->GetID())) {
+    return blink::ProtocolHandlerSecurityLevel::kExtensionFeatures;
   }
+  return blink::ProtocolHandlerSecurityLevel::kStrict;
 }
 
 void Browser::RegisterProtocolHandler(

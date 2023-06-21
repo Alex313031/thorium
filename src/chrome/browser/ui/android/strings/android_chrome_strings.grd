@@ -551,12 +551,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_DIALOG_CARD_CONTAINER_TITLE" desc="Text describing how the virtual card will be shown to the user in autofill suggestions.">
         Virtual card
       </message>
-      <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_DIALOG_CARD_LABEL" desc="Notifies the user that their virtual card card is linked with a card on their account.">
-        Linked with <ph name="CARD_DETAIL">%1$s<ex>Visa  ....1234</ex></ph>
-      </message>
-      <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_INFOBAR_CARD_PREFIX" desc="Notifies the user that their virtual card card is linked with a card on their account.">
-        linked with
-      </message>
       <message name="IDS_AUTOFILL_CARD_EDITOR_VIRTUAL_CARD_TURN_ON_BUTTON_LABEL" desc="Label shown on the button that the user clicks on to enroll into virtual cards.">
         Turn on
       </message>
@@ -1078,8 +1072,11 @@ Private state tokens improve privacy on the web and can’t be used to find out 
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" desc="* This is 2 of 2 bullets that site beneath the sentence: 'We’re launching new ways to limit what sites can learn about you when they show you personalized ads, for example:' * 'ad measurement' is the name of a new setting we're launching and that appears on the Ad privacy page of Thorium settings.  * 'limited types of data': This setting helps an advertiser associate a user's actions on one site with their actions on another. For example, a user sees an ad on one site and then later buys that product from the company that sells the product. The ad measurement setting allows Thorium to help a company make the association between the two sites so that the first site can be fairly compensated for showing an ad. Compared with third-party cookies, very little info is shared between sites to support this functionality.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT EEA NOTICE **** 1) This screen provides notice to Thorium users in the European Economic Area (EEA). It follows guidelines established by the GDPR.  2) This screen is the second of 2 screens. This second screen describes 2 settings: “Site-suggested ads” and “Ad measurement”. The first screen describes the “Ad topics” setting. " formatter_data="android_java">
         With ad measurement, limited types of data can be shared among sites and apps to measure the performance of their ads, such as the time of day an ad was shown to you.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" desc="A paragraph on the 'Enhanced ad privacy in Thorium' page that provides notice to Thorium users outside of the EEA. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT ROW NOTICE **** 1) This screen provides notice to Thorium users outside of the European Economic Area (EEA) (we typically refer to this screen as “Rest of World” or “ROW”). It follows guidelines established by the GDPR.  2) We’re using similar but distinct content for EEA / ROW because legal requirements differ. For ROW, we can provide notice for all 3 settings, and so all 3 settings can appear on a single screen. " formatter_data="android_java">
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" desc="A paragraph on the 'Enhanced ad privacy in Thorium' page that provides notice to Thorium users outside of the EEA. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT ROW NOTICE **** 1) This screen provides notice to Thorium users outside of the European Economic Area (EEA) (we typically refer to this screen as “Rest of World” or “ROW”). It follows guidelines established by the GDPR.  2) We’re using similar but distinct content for EEA / ROW because legal requirements differ. For ROW, we can provide notice for all 3 settings, and so all 3 settings can appear on a single screen. ">
         To measure the performance of an ad, limited types of data can be shared among sites, such as the time of day an ad was shown to you.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_RESTRICTED_DESCRIPTION_3" translateable="false" formatter_data="android_java">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION_ANDROID" desc="As part of Privacy Sandbox (see details below), both Thorium and Android devices will have a new setting called 'Ad measurement'. Some details are different, but these settings essentially do the same thing. The Thorium setting allows sites you visit to ask Thorium for information that helps them measure the performance of their ads, linking 1) an ad for site B the user sees on site A, with 2) a purchase or other action the user might take on site B. On Android, it's essentially the same story only it's between apps and not sites. The challenge is that on Android, Thorium is a browser but it's also an App. This paragraph helps the user understand that, if both settings are on, information about the user's actions on a site might be connected with actions the user takes in an app. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com.">
         Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
@@ -1152,7 +1149,7 @@ Private state tokens improve privacy on the web and can’t be used to find out 
         Sites
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION" desc="A paragraph beneath the 'Sites' label. It explains how users can control the sites that appear in the list. * 'block sites': When a user blocks a site, that site may no longer save info with Thorium about the user's visit. As the user continues to browse, they will not see ads suggested by the blocked site. * 'auto-deletes': We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly. ">
-        You can block sites you don’t want. Thorium also auto-deletes sites from the list that are older than 4 weeks. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
+        You can block sites you don’t want. Thorium also auto-deletes sites from the list that are older than 30 days. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_DISABLED" desc="1 of 3 possible descriptions that appear beneath the 'Sites' title. If this setting is off, no sites appear. The link opens a dialog box that provides more information about Site-suggested ads.">
         When on, a list of sites you visit that guess your interests appears here.
@@ -1191,7 +1188,7 @@ Private state tokens improve privacy on the web and can’t be used to find out 
         For example, if you visit a site that sells long-distance running shoes, the site might decide that you’re interested in running marathons. Later, if you visit a different site, that site can show you an ad for running shoes suggested by the first site.
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_3" desc="3 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'Auto-deletes': This could just read 'Thorium deletes...' but we include the 'auto' to suggest that the deletion happens regularly and as part of the system. * 'A site you visit again...': We want to reassure the user. We just told them sites are automatically deleted. And yet, a user might see the same site in the list month after month if they visit that site regularly.">
-        Thorium auto-deletes sites that are older than 4 weeks. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
+        Thorium auto-deletes sites that are older than 30 days. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get blocked. The list is of sites the user has recently visited and that use the Site-suggested ads API to suggest ads to other sites as the user continues browsing.">
         Block <ph name="DOMAIN">%1$s<ex>example.com</ex></ph>
@@ -1400,11 +1397,14 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
 
       <!-- Privacy Guide -->
-      <message name="IDS_PREFS_PRIVACY_GUIDE_TITLE" desc="The title of the privacy guide menu item.">
-        Privacy guide
+      <message name="IDS_PRIVACY_GUIDE_PREF_TITLE" desc="The title of the privacy guide menu item. The text between the BEGIN_NEW and END_NEW tokens is a chip shown on the menu item, informing users that this is a new feature.">
+        Privacy Guide <ph name="BEGIN_NEW">&lt;new&gt;</ph>New<ph name="END_NEW">&lt;/new&gt;</ph>
       </message>
-      <message name="IDS_PREFS_PRIVACY_GUIDE_SUMMARY" desc="The summary of the privacy menu item.">
+      <message name="IDS_PRIVACY_GUIDE_PREF_SUMMARY" desc="The summary of the privacy menu item.">
         Review key privacy and security controls
+      </message>
+      <message name="IDS_PRIVACY_GUIDE_FRAGMENT_TITLE" desc="The title of all privacy guide fragments.">
+        Privacy Guide
       </message>
       <message name="IDS_PRIVACY_GUIDE_WELCOME_TITLE" desc="Title on the welcome page of the privacy guide.">
         A guide of your privacy choices
@@ -2629,10 +2629,13 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_FAILED_CONTENTS_GENERAL" desc="Message content indicates that the WebAPK install was unsuccessful for a general reason.">
         Something went wrong.
       </message>
+      <message name="IDS_NOTIFICATION_WEBAPK_INSTALL_FAILED_SPACE" desc="Message content indicates that the WebAPK install was unsuccessful because out of space.">
+        Not enough space on device.
+      </message>
       <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_OPEN" desc="The label of the button which upon click would open the site user was trying to install as PWA. ">
         Go back to site
       </message>
-      <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_RETRY" desc="The label of the button which upon click would retry installing the PWA" translateable="false">
+      <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_RETRY" desc="The label of the button which upon click would retry installing the PWA">
         Try again
       </message>
       <message name="IDS_IPH_PWA_INSTALL_AVAILABLE_TEXT" desc="The in-product-help message for PWAs that can be installed to the device.">
@@ -2675,6 +2678,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <!-- Sad tab page -->
       <message name="IDS_SAD_TAB_SUGGESTIONS" desc="The help message displayed on the sad tab page after a tab crashes.">
         If you’re seeing this frequently, try these <ph name="BEGIN_LINK">&lt;link&gt;</ph>suggestions<ph name="END_LINK">&lt;/link&gt;</ph>.
+      </message>
+
+      <!-- Can't launch dialog. -->
+      <message name="IDS_UPDATE_NEEDED" desc="The help message is displayed on launch if an update is required to function.">
+        Your device couldn’t open Thorium. To fix the issue, download the latest Thorium update from your app store.
       </message>
 
       <!-- Web Notifications API -->
@@ -2982,8 +2990,8 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_FRE_BROWSER_MANAGED_BY_ORGANIZATION" desc="Text that indicates the browser is managed by policy">
         Your browser is managed by your organization
       </message>
-      <message name="IDS_FRE_BROWSER_MANAGED_BY_PARENTS" desc="Text that indicates the browser is managed by parents">
-        Your browser is managed by your parents
+      <message name="IDS_FRE_BROWSER_MANAGED_BY_PARENT" desc="Text that indicates the browser is managed by parent">
+        Your browser is managed by your parent
        </message>
 
       <!-- Signin First Run strings -->
@@ -3039,6 +3047,24 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SIGNIN_ADD_ACCOUNT_TO_DEVICE" desc="Text for adding another Google Account to device in the web sign-in flow and account picker dialog, users will be asked to add an account to his device when this text is tapped">
         Add account to device
+      </message>
+
+      <!-- Strings for the Device Lock. -->
+      <!-- TODO(crbug.com/1431577): Finalize strings and set to translateable -->
+      <message name="IDS_DEVICE_LOCK_TITLE" translateable="false" desc="">
+        Keep your data secure with profile lock
+      </message>
+      <message name="IDS_DEVICE_LOCK_DESCRIPTION" translateable="false" desc="">
+        For your data security in the car, profile lock is required to sync and save your passwords, payments, and more.
+      </message>
+      <message name="IDS_DEVICE_LOCK_HIGHLIGHTED_NOTICE" translateable="false" desc="">
+        Your saved data will be erased if profile lock is removed later
+      </message>
+      <message name="IDS_DEVICE_LOCK_CREATE_LOCK_BUTTON" translateable="false" desc="">
+        Set up a profile lock
+      </message>
+      <message name="IDS_DEVICE_LOCK_USER_UNDERSTANDS_BUTTON" translateable="false" desc="">
+        I understand
       </message>
 
       <!-- Strings for Streamlined Signin and Unified Consent. -->
@@ -3517,6 +3543,15 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_CUSTOM_TAB_AMP_PUBLISHER_URL" desc="Text shown in a Custom Tab toolbar for a web page that is hosted by the Google content delivery network but was originally published by someone else.">
         From <ph name="PUBLISHER_ORIGIN">&lt;pub&gt;%1$s&lt;/pub&gt;<ex>example.com</ex></ph> – <ph name="BEGIN_DEEMPHASIZED">&lt;bg&gt;</ph>delivered by Google<ph name="END_DEEMPHASIZED">&lt;/bg&gt;</ph>
       </message>
+      <message name="IDS_ACCESSIBILITY_CUSTOM_TAB_DRAG_HANDLE" desc="The accesibility text for drag handle in the toolbar of the partial custom tab.">
+        Drag handle
+      </message>
+      <message name="IDS_ACCESSIBILITY_CUSTOM_TAB_EXPANDED" desc="The accesibility text informing the custom tab is expanded.">
+        Tab is expanded
+      </message>
+      <message name="IDS_ACCESSIBILITY_CUSTOM_TAB_COLLAPSED" desc="The accesibility text informing the custom tab is collapsed back to initial height.">
+        Tab is back to initial height
+      </message>
       <message name="IDS_CUSTOM_TAB_SIDE_SHEET_MAXIMIZE" desc="The accesibility text for maximize button in side-sheet custom tab.">
         Expand to full screen
       </message>
@@ -3690,9 +3725,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_MENU_CLOSE_ALL_INCOGNITO_TABS" desc="Menu item for closing all open Incognito tabs. [CHAR_LIMIT=27]">
         Close Incognito tabs
       </message>
-      <message name="IDS_MENU_GROUP_TABS" desc="Menu item for grouping tabs. [CHAR_LIMIT=27]">
-        Group tabs
-      </message>
       <message name="IDS_MENU_SELECT_TABS" desc="Menu item for bulk editing tabs. [CHAR_LIMIT=27]">
         Select tabs
       </message>
@@ -3863,6 +3895,30 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_IPH_SHOPPING_LIST_SAVE_FLOW_ACCESSIBILITY" is_accessibility_with_no_ui="true" desc="In-product help accessibility text that notifies a user that they can organize their saved products from a folder in bookmarks.">
         Organize your tracked products in Bookmarks from the folder icon
+      </message>
+      <message name="IDS_SORT_SUBMENU"  desc="Sub-menu in the bookmarks manager for sort/view options. [CHAR_LIMIT=24]">
+        Sort and view options
+      </message>
+      <message name="IDS_SORT_BY_NEWEST"  desc="Option in the bookmarks manager to sort by newest. [CHAR_LIMIT=24]">
+        Sort by newest
+      </message>
+      <message name="IDS_SORT_BY_OLDEST"  desc="Option in the bookmarks manager to sort by newest. [CHAR_LIMIT=24]">
+        Sort by oldest
+      </message>
+      <message name="IDS_SORT_BY_ALPHA"  desc="Option in the bookmarks manager to sort alphabetically. A and Z should be substituted with the first/last letter in the localized language. [CHAR_LIMIT=24]">
+        Sort by A to Z
+      </message>
+      <message name="IDS_SORT_BY_REVERSE_ALPHA"  desc="Option in the bookmarks manager to sort alphabetically. A and Z should be substituted with the first/last letter in the localized language. [CHAR_LIMIT=24]">
+        Sort by Z to A
+      </message>
+      <message name="IDS_VISUAL_VIEW"  desc="Option in the bookmarks manager to show the visual view with expanded rows and images. [CHAR_LIMIT=24]">
+        Visual view
+      </message>
+      <message name="IDS_COMPACT_VIEW"  desc="Option in the bookmarks manager to show the compact view with smaller rows and favicons. [CHAR_LIMIT=24]">
+        Compact view
+      </message>
+      <message name="IDS_CREATE_NEW_FOLDER"  desc="Option in the bookmarks manager to show the create a new folder in the current context. [CHAR_LIMIT=24]">
+        Create new folder
       </message>
 
       <!-- Read later strings -->
@@ -4869,7 +4925,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Sharing content types -->
-      <message name="IDS_BROWSER_SHARING_CONTENT_TYPE_TEXT" desc="The label used to describe that the content type being shared is a text.">
+      <message name="IDS_BROWSER_SHARING_CONTENT_TYPE_TEXT" desc="This will be used as a placeholder in the message 'Can't share [content type].' so it should be lower-case unless this is a language where nouns are upper case." meaning="text as placeholder">
         text
       </message>
 
@@ -5259,6 +5315,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save to device
       </message>
 
+      <message name="IDS_SHARING_INCLUDE_LINK" desc="Label for the button in android share sheet to include a link to share along with highlighted text.">
+        Include link
+      </message>
+
+      <message name="IDS_SHARING_EXCLUDE_LINK" desc="Label for the button in android share sheet to share the highlighted text without a link.">
+        Exclude link
+      </message>
+
       <message name="IDS_TEXT_COPIED" desc="Text shown in the toast notification when Copy Text is selected in the sharing hub.">
         Text Copied
       </message>
@@ -5521,8 +5585,17 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- WebID Account Selection strings -->
-      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT" desc="Header for sign in sheet. Sheet is shown to prompt user for sign in consent.">
+      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNIN" desc="Header for sign in sheet. Sheet is shown to prompt user to sign in to a website using an account from an identity provider.">
         Sign in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNUP" desc="Header for sign up sheet. Sheet is shown to prompt user to sign up to a website using an account from an identity provider.">
+        Sign up to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_USE" desc="Header for use sheet. Sheet is shown to prompt user to use a website using an account from an identity provider.">
+        Use <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_CONTINUE" desc="Header for continue sheet. Sheet is shown to prompt user to continue to a website using an account from an identity provider.">
+        Continue to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
       </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_SUBTITLE_EXPLICIT" desc="Message shown when the user is shown the federated identity login prompt. This message is the subtitle for the sign in sheet, which contains the top-level domain of the page the user is visiting when the user is receiving a prompt from an iframe embedded on such page.">
         on <ph name="MAIN_FRAME_ETLD_PLUS_ONE">%1$s<ex>main-frame.example</ex></ph>
@@ -5695,10 +5768,13 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Delete last 15 minutes?
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_DESCRIPTION" desc="Description of the dialog when asking users to confirm deleting the last 15 minutes of browsing data.">
-        Following data from the last 15 minutes will be deleted
+        Following data from the last 15 minutes will be deleted:
+      </message>
+      <message name="IDS_QUICK_DELETE_DIALOG_SEARCH_HISTORY_DISAMBIGUATION_TEXT" desc="Text for signed in users only in the Quick Delete dialog, that is shown when the user clicks on 'Delete last 15 minutes' option in the three dots menu, informing signed in users that search history and other forms of Activity saved in their Google account will not be deleted.">
+        <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>Search history<ph name="END_LINK1">&lt;/link1&gt;</ph> and <ph name="BEGIN_LINK2">&lt;link2&gt;</ph>other forms of activity<ph name="END_LINK2">&lt;/link2&gt;</ph> may be saved in your Google Account
       </message>
       <message name="IDS_QUICK_DELETE_SNACKBAR_MESSAGE" desc="Text inside the snackbar which is shown once the user confirms deletion via the 'Delete last 15 minutes' option present inside the three dots menu.">
-        Deleted history, cookies, and other data
+        Deleted
       </message>
     </messages>
   </release>
