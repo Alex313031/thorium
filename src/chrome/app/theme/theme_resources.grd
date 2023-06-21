@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2023 Alex313031. -->
 <!-- This grd file contains images that are pre-scaled for device scale
      factors. The image returned by ui::ResourceBundle::GetImageNamed()
      will contain multiple gfx:ImageSkiaReps for each scale factors. The
@@ -9,7 +10,6 @@
      currently set to true for all resources, but the default will
      become false in near future.
   -->
-<!-- Copyright (c) 2023 Alex313031. -->
 <grit latest_public_release="0" current_release="1" output_all_resource_defines="false">
   <outputs>
     <output filename="grit/theme_resources.h" type="rc_header" context="default_100_percent">
@@ -275,6 +275,8 @@
         <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_DARK" file="common/save_card_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_SECURELY_DARK" file="common/save_card_securely_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_SECURELY" file="common/save_card_securely.png" />
+        <structure type="chrome_scaled_image" name="IDR_MIGRATE_ADDRESS_AVATAR50_X135_Y54" file="common/migrate_address_avatar50_x135_y54.png" />
+        <structure type="chrome_scaled_image" name="IDR_MIGRATE_ADDRESS_AVATAR50_X135_Y54_DARK" file="common/migrate_address_avatar50_x135_y54_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_PRIVACY_SANDBOX_CONFIRMATION_BANNER" file="common/privacy_sandbox_confirmation_banner.png" />
         <structure type="chrome_scaled_image" name="IDR_PRIVACY_SANDBOX_CONFIRMATION_BANNER_DARK" file="common/privacy_sandbox_confirmation_banner_dark.png" />
       </if>

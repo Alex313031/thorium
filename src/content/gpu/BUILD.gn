@@ -77,6 +77,8 @@ target(link_target_type, "gpu_sources") {
     "//services/service_manager/public/mojom",
     "//services/tracing/public/cpp",
     "//services/viz/privileged/mojom",
+    "//services/webnn",
+    "//services/webnn/public/mojom",
     "//skia",
     "//third_party/angle:angle_gpu_info_util",
     "//ui/gfx/ipc",
@@ -145,6 +147,5 @@ target(link_target_type, "gpu_sources") {
 
   if (is_linux && use_vaapi) {
     public_configs = [ "//build/config/linux/libva" ]
-    configs += [ "//build/config/linux/libva" ]
   }
 }

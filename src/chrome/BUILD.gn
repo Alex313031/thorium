@@ -285,9 +285,6 @@ if (!is_android && !is_mac) {
           # Chromium functionality directly into the executable.
           ":dependencies",
 
-          # For configuring PartitionAlloc
-          "//base/allocator:buildflags",
-
           # For the sampling profiler.
           "//chrome/common/profiler",
 
@@ -433,7 +430,6 @@ if (is_win) {
       ":chrome_dll_manifest",
       ":chrome_dll_version",
       ":dependencies",
-      "//base/allocator:buildflags",
       "//chrome/app:chrome_dll_resources",
       "//chrome/app:command_ids",
       "//chrome/app/theme:chrome_unscaled_resources",
@@ -947,6 +943,8 @@ if (is_win) {
 
   bundle_data("chrome_framework_resources") {
     sources = [
+      "//ui/gl/resources/angle-metal/gpu_shader_cache.bin",
+
       # This image is used to badge the lock icon in the
       # authentication dialogs, such as those used for installation
       # from disk image and Keystone promotion (if so enabled).  It
@@ -1161,7 +1159,6 @@ if (is_win) {
 
     deps = [
       ":dependencies",
-      "//base/allocator:buildflags",
       "//build:chromeos_buildflags",
       "//chrome/app:command_ids",
       "//chrome/app:notification_metrics",
@@ -1428,6 +1425,7 @@ group("dependencies") {
     "//build:branding_buildflags",
     "//build:chromeos_buildflags",
     "//chrome/browser",
+    "//chrome/browser:buildflags",
     "//chrome/browser/policy:path_parser",
     "//chrome/child",
     "//chrome/common",
