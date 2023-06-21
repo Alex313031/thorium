@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//base/debug/debug.gni")
 import("//build/config/chrome_build.gni")
 import("//build/config/chromeos/ui_mode.gni")
 import("//build/config/features.gni")
@@ -31,6 +32,7 @@ if (is_ios) {
 
 if (is_ios) {
   bundle_data("components_tests_pak_bundle_data") {
+    testonly = true
     public_deps = [
       ":components_tests_pak",
       "//ui/resources:ui_test_pak",
@@ -39,6 +41,10 @@ if (is_ios) {
       "$root_out_dir/components_tests_resources.pak",
       "$root_out_dir/ui_test.pak",
     ]
+    if (use_blink) {
+      public_deps += [ "//content/shell:pak" ]
+      sources += [ "$root_out_dir/content_shell.pak" ]
+    }
     outputs = [ "{{bundle_resources_dir}}/{{source_file_part}}" ]
   }
 }
@@ -151,7 +157,6 @@ test("components_unittests") {
     "//components/history/core/browser:unit_tests",
     "//components/history/metrics:unit_tests",
     "//components/image_fetcher/core:unit_tests",
-    "//components/image_service:unit_tests",
     "//components/keyed_service/core:unit_tests",
     "//components/language/core/browser:unit_tests",
     "//components/language/core/common:unit_tests",
@@ -168,7 +173,6 @@ test("components_unittests") {
     "//components/net_log:unit_tests",
     "//components/network_session_configurator/browser:unit_tests",
     "//components/network_time:unit_tests",
-    "//components/ntp_snippets:unit_tests",
     "//components/ntp_tiles:unit_tests",
     "//components/offline_items_collection/core:unit_tests",
     "//components/omnibox/browser:unit_tests",
@@ -178,12 +182,14 @@ test("components_unittests") {
     "//components/os_crypt/async/browser:unit_tests",
     "//components/os_crypt/async/common:unit_tests",
     "//components/os_crypt/sync:unit_tests",
+    "//components/page_image_service:unit_tests",
     "//components/password_manager/core/browser:unit_tests",
     "//components/payments/core:unit_tests",
     "//components/policy/core/browser:unit_tests",
     "//components/policy/core/common:unit_tests",
     "//components/power_bookmarks/core:unit_tests",
     "//components/power_bookmarks/storage:unit_tests",
+    "//components/power_metrics:unit_tests",
     "//components/power_scheduler:unit_tests",
     "//components/prefs:unit_tests",
     "//components/profile_metrics:unit_tests",
@@ -201,7 +207,6 @@ test("components_unittests") {
     "//components/safe_browsing/core/browser/password_protection:unit_tests",
     "//components/safe_search_api:unit_tests",
     "//components/saved_tab_groups:unit_tests",
-    "//components/scheduling_metrics:unit_tests",
     "//components/search:unit_tests",
     "//components/search_engines:unit_tests",
     "//components/search_provider_logos:unit_tests",
@@ -258,8 +263,15 @@ test("components_unittests") {
     ]
   }
 
+  if (build_allocation_stack_trace_recorder) {
+    deps += [ "//components/allocation_recorder/crash_client:unit_tests" ]
+  }
+
   if (!is_ios) {
-    deps += [ "//components/file_access:unit_tests" ]
+    deps += [
+      "//components/file_access:unit_tests",
+      "//components/webauthn/json:unit_tests",
+    ]
   }
 
   if (enable_screen_ai_service) {
@@ -418,7 +430,6 @@ test("components_unittests") {
       "//components/safe_browsing/core/common:unit_tests",
       "//components/safety_check:unit_tests",
       "//components/security_interstitials/content:unit_tests",
-      "//components/services/heap_profiling:unit_tests",
       "//components/services/paint_preview_compositor:unit_tests",
       "//components/services/quarantine:unit_tests",
       "//components/services/storage:tests",
@@ -466,6 +477,10 @@ test("components_unittests") {
       "//ui/resources:ui_test_pak_data",
     ]
   }  # iOS / !iOS
+
+  if (use_blink) {
+    deps += [ "//components/services/heap_profiling:unit_tests" ]
+  }
 
   if (is_ios) {
     deps += [ ":components_tests_pak_bundle_data" ]
@@ -598,10 +613,6 @@ test("components_unittests") {
     ]
   }
 
-  if (is_mac) {
-    deps += [ "//components/power_metrics:unit_tests" ]
-  }
-
   if (toolkit_views) {
     deps += [ "//components/constrained_window:unit_tests" ]
   }
@@ -651,6 +662,7 @@ test("components_unittests") {
       "//components/safe_browsing/core/browser:verdict_cache_manager_unittest",
       "//components/safe_browsing/core/browser/db:unit_tests_local_db",
       "//components/safe_browsing/core/browser/db:v4_test_util",
+      "//components/safe_browsing/core/browser/password_protection:unit_tests",
       "//components/safe_browsing/core/browser/sync:unittests",
       "//components/safe_browsing/core/common:unit_tests",
     ]
@@ -784,7 +796,7 @@ if (is_android) {
   }
 }
 
-if (!is_ios) {
+if (use_blink) {
   test("components_browsertests") {
     use_xvfb = use_xvfb_in_this_config
 
@@ -889,6 +901,10 @@ if (!is_ios) {
       data += [ "$root_out_dir/Thorium Shell.app/" ]
     }
 
+    if (is_ios) {
+      deps += [ ":components_tests_pak_bundle_data" ]
+    }
+
     if (enable_pdf) {
       sources += [
         "pdf/browser/pdf_web_contents_helper_browsertest.cc",
@@ -899,6 +915,13 @@ if (!is_ios) {
         "//components/pdf/renderer",
         "//pdf:accessibility",
         "//pdf:features",
+      ]
+    }
+
+    if (enable_screen_ai_service) {
+      deps += [
+        "//components/services/screen_ai",
+        "//skia",
       ]
     }
 

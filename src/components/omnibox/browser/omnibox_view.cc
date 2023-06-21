@@ -28,8 +28,11 @@
 #include "components/omnibox/browser/omnibox_edit_model_delegate.h"
 #include "components/omnibox/browser/omnibox_field_trial.h"
 #include "components/omnibox/common/omnibox_features.h"
+#include "components/search/search.h"
+#include "components/search_engines/template_url_service.h"
 #include "extensions/buildflags/buildflags.h"
 #include "ui/base/l10n/l10n_util.h"
+#include "ui/base/ui_base_features.h"
 #include "url/url_constants.h"
 
 #if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_IOS)
@@ -180,7 +183,8 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
                                     SkColor color_current_page_icon,
                                     SkColor color_vectors,
                                     SkColor color_bright_vectors,
-                                    IconFetchedCallback on_icon_fetched) const {
+                                    IconFetchedCallback on_icon_fetched,
+                                    bool dark_mode) const {
 #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
   // This is used on desktop only.
   NOTREACHED();
@@ -206,7 +210,10 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
   gfx::Image favicon;
   AutocompleteMatch match = model_->CurrentMatch(nullptr);
   if (AutocompleteMatch::IsSearchType(match.type)) {
-    // For search queries, display default search engine's favicon. (Disabled by Alex313031).
+    // For search queries, display default search engine's favicon. If the
+    // default search engine is google return the icon instead of favicon for
+    // search queries with the chrome refresh feature.
+    // (DISABLED BY Alex313031).
   } else if (match.type != AutocompleteMatchType::HISTORY_CLUSTER) {
     // For site suggestions, display site's favicon.
     favicon = model_->client()->GetFaviconForPageUrl(

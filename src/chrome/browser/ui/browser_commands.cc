@@ -11,6 +11,7 @@
 #include "base/command_line.h"
 #include "base/feature_list.h"
 #include "base/memory/scoped_refptr.h"
+#include "base/metrics/field_trial_params.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/metrics/user_metrics.h"
@@ -28,6 +29,7 @@
 #include "chrome/browser/bookmarks/bookmark_model_factory.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.h"
+#include "chrome/browser/chained_back_navigation_tracker.h"
 #include "chrome/browser/devtools/devtools_window.h"
 #include "chrome/browser/dom_distiller/tab_utils.h"
 #include "chrome/browser/download/download_prefs.h"
@@ -119,6 +121,7 @@
 #include "components/media_router/browser/media_router_dialog_controller.h"  // nogncheck
 #include "components/media_router/browser/media_router_metrics.h"
 #include "components/omnibox/browser/omnibox_prefs.h"
+#include "components/policy/core/common/policy_pref_names.h"
 #include "components/prefs/pref_service.h"
 #include "components/reading_list/core/reading_list_entry.h"
 #include "components/reading_list/core/reading_list_model.h"
@@ -200,6 +203,8 @@ namespace {
 
 const char kOsOverrideForTabletSite[] = "Linux; Android 9; Chrome tablet";
 const char kChPlatformOverrideForTabletSite[] = "Android";
+const char kBackForwardNavigationIsTriggered[] =
+    "back_forward_navigation_is_triggered";
 
 translate::TranslateBubbleUiEvent TranslateBubbleResultToUiEvent(
     ShowTranslateBubbleResult result) {
@@ -488,7 +493,7 @@ void NewEmptyWindow(Profile* profile, bool should_trigger_session_restore) {
   PrefService* prefs = profile->GetPrefs();
   if (off_the_record) {
     if (IncognitoModePrefs::GetAvailability(prefs) ==
-        IncognitoModePrefs::Availability::kDisabled) {
+        policy::IncognitoModeAvailability::kDisabled) {
       off_the_record = false;
     }
   } else if (profile->IsGuestSession() ||
@@ -534,7 +539,13 @@ Browser* OpenEmptyWindow(Profile* profile,
       Browser::CreateParams(Browser::TYPE_NORMAL, profile, true);
   params.should_trigger_session_restore = should_trigger_session_restore;
   Browser* browser = Browser::Create(params);
-  AddTabAt(browser, GURL(), -1, true);
+
+  // Startup tabs could be created during browser creation. Add an empty tab
+  // only if no tabs are created.
+  if (browser->tab_strip_model()->empty()) {
+    AddTabAt(browser, GURL(), -1, true);
+  }
+
   browser->window()->Show();
   return browser;
 }
@@ -563,12 +574,59 @@ bool CanGoBack(content::WebContents* web_contents) {
   return web_contents->GetController().CanGoBack();
 }
 
+enum class BackNavigationMenuIPHTrigger : int {
+  kUserPerformsManyBackNavigation = 0,
+  kUserPerformsChainedBackNavigation,
+  kUserPerformsChainedBackNavigationWithBackButton
+};
+
+const char kBackNavigationMenuIPHExperimentParamName[] = "x_experiment";
+
+void MaybeShowFeatureBackNavigationMenuPromo(Browser* browser,
+                                             WebContents* web_contents) {
+  if (!base::FeatureList::IsEnabled(
+          feature_engagement::kIPHBackNavigationMenuFeature)) {
+    return;
+  }
+
+  bool should_show_feature_promo;
+  const ChainedBackNavigationTracker* tracker =
+      ChainedBackNavigationTracker::FromWebContents(web_contents);
+  CHECK(tracker);
+  switch (static_cast<BackNavigationMenuIPHTrigger>(
+      base::GetFieldTrialParamByFeatureAsInt(
+          feature_engagement::kIPHBackNavigationMenuFeature,
+          kBackNavigationMenuIPHExperimentParamName, 0))) {
+    case BackNavigationMenuIPHTrigger::kUserPerformsChainedBackNavigation:
+      should_show_feature_promo =
+          tracker->IsChainedBackNavigationRecentlyPerformed();
+      break;
+
+    case BackNavigationMenuIPHTrigger::
+        kUserPerformsChainedBackNavigationWithBackButton:
+      should_show_feature_promo =
+          tracker->IsBackButtonChainedBackNavigationRecentlyPerformed();
+      break;
+    default:
+      should_show_feature_promo = true;
+      break;
+  }
+
+  if (should_show_feature_promo) {
+    browser->window()->MaybeShowFeaturePromo(
+        feature_engagement::kIPHBackNavigationMenuFeature);
+  }
+}
+
 void GoBack(Browser* browser, WindowOpenDisposition disposition) {
   base::RecordAction(UserMetricsAction("Back"));
 
   if (CanGoBack(browser)) {
     WebContents* new_tab = GetTabAndRevertIfNecessary(browser, disposition);
     new_tab->GetController().GoBack();
+    MaybeShowFeatureBackNavigationMenuPromo(browser, new_tab);
+    browser->window()->NotifyFeatureEngagementEvent(
+        kBackForwardNavigationIsTriggered);
   }
 }
 
@@ -577,6 +635,12 @@ void GoBack(content::WebContents* web_contents) {
 
   if (CanGoBack(web_contents)) {
     web_contents->GetController().GoBack();
+    Browser* browser = chrome::FindBrowserWithWebContents(web_contents);
+    if (browser) {
+      browser->window()->NotifyFeatureEngagementEvent(
+          kBackForwardNavigationIsTriggered);
+      MaybeShowFeatureBackNavigationMenuPromo(browser, web_contents);
+    }
   }
 }
 
@@ -597,6 +661,8 @@ void GoForward(Browser* browser, WindowOpenDisposition disposition) {
     GetTabAndRevertIfNecessary(browser, disposition)
         ->GetController()
         .GoForward();
+    browser->window()->NotifyFeatureEngagementEvent(
+        kBackForwardNavigationIsTriggered);
   }
 }
 
@@ -604,6 +670,11 @@ void GoForward(content::WebContents* web_contents) {
   base::RecordAction(UserMetricsAction("Forward"));
   if (CanGoForward(web_contents)) {
     web_contents->GetController().GoForward();
+    Browser* browser = chrome::FindBrowserWithWebContents(web_contents);
+    if (browser) {
+      browser->window()->NotifyFeatureEngagementEvent(
+          kBackForwardNavigationIsTriggered);
+    }
   }
 }
 
@@ -949,7 +1020,7 @@ void MoveTabsToNewWindow(Browser* browser,
       // 1) Stop listening to changes on it
       // 2) Close the group in the browser
       // 3) Open the group in a new browser and link it to the saved guid.
-      const base::GUID& saved_guid =
+      const base::Uuid& saved_guid =
           service->model()->Get(group.value())->saved_guid();
 
       service->DisconnectLocalTabGroup(group.value());

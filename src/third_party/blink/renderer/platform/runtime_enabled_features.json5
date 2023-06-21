@@ -305,18 +305,12 @@
       base_feature: "none",
     },
     {
-      // TODO(crbug.com/1393662): Remove this flag after M113 branch.
-      name: "AllowDiscoverableCredentialsForSecurePaymentConfirmation",
-      status: "stable",
-    },
-    {
       name: "AndroidDownloadableFontsMatching",
       base_feature: "none",
       public: true,
     },
     {
       name: "AnimationWorklet",
-      status: "experimental",
       base_feature: "none",
     },
     {
@@ -343,6 +337,23 @@
       origin_trial_feature_name: "PrivacySandboxAdsAPIs",
       origin_trial_allows_third_party: true,
       status: "experimental",
+      base_feature: "none",
+    },
+    {
+      name: "AttributionReportingCrossAppWeb",
+      origin_trial_feature_name: "AttributionReportingCrossAppWeb",
+      origin_trial_allows_third_party: true,
+      base_feature: "none",
+    },
+    {
+      // This only exists so we can use RuntimeEnabled in the IDL file
+      // when either implied_by flag is enabled.
+      name: "AttributionReportingInterface",
+      // This is not going into origin trial, "origin_trial_feature_name" is
+      // required for using the "implied_by" behaviour.
+      origin_trial_feature_name: "AttributionReportingInterface",
+      origin_trial_allows_third_party: true,
+      implied_by: ["AttributionReporting", "AttributionReportingCrossAppWeb"],
       base_feature: "none",
     },
     {
@@ -466,6 +477,9 @@
       name: "BlinkExtensionChromeOSWindowManagement",
       depends_on: ["BlinkExtensionChromeOS"],
       base_feature: "none",
+    },
+    {
+      name: "BlinkLifecycleScriptForbidden",
     },
     {
       name: "BlinkRuntimeCallStats",
@@ -596,7 +610,6 @@
     },
     {
       name: "CloseWatcher",
-      base_feature: "none",
     },
     {
       name: "CLSScrollAnchoring",
@@ -606,6 +619,9 @@
       name: "CoepReflection",
       status: "test",
       base_feature: "none",
+    },
+    {
+      name: "CompositeBackgroundAttachmentFixed",
     },
     {
       name: "CompositeBGColorAnimation",
@@ -627,6 +643,24 @@
       public: true,
       status: {"Android": "stable"},
       base_feature: "none",
+    },
+    {
+      name: "CompositeScrollAfterPaint",
+      status: "experimental",
+    },
+    {
+      name: "CompressionDictionaryTransport",
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
+      origin_trial_feature_name: "CompressionDictionaryTransport",
+      public: true,
+      status: "experimental",
+    },
+    {
+      name: "CompressionDictionaryTransportBackend",
+      base_feature_status: "disabled",
+      public: true,
+      status: "experimental",
     },
     {
       name: "ComputedAccessibilityInfo",
@@ -705,7 +739,7 @@
       // Additionally, animation-delay becomes a shorthand which expands
       // to those properties.
       name: "CSSAnimationDelayStartEnd",
-      depends_on: ["CSSScrollTimeline"],
+      depends_on: ["ScrollTimeline"],
       status: "test",
     },
     {
@@ -768,8 +802,12 @@
     },
     {
       name: "CSSDisplayAnimation",
-      status: "test",
-      base_feature: "none",
+      status: "experimental",
+    },
+    {
+      // crbug.com/995106
+      name: "CSSDisplayMultipleValues",
+      status: "experimental",
     },
     // Exists so that we can run a reverse-Finch experiment to assess its performance.
     {
@@ -782,6 +820,10 @@
       name: "CSSEnumeratedCustomProperties",
       status: "test",
       base_feature: "none",
+    },
+    {
+      name: "CSSExponentialFunctions",
+      status: "experimental",
     },
     {
       name: "CSSFocusVisible",
@@ -932,6 +974,10 @@
       status: "stable",
     },
     {
+      // Support nested selectors that start with idents.
+      name: "CSSNestingIdent",
+    },
+    {
       name: "CSSNewRootFontUnits",
       status: "stable",
       base_feature: "none",
@@ -1018,14 +1064,6 @@
       status: "test",
       base_feature: "none",
     },
-    // Support for scroll-timeline.
-    //
-    // https://drafts.csswg.org/scroll-animations-1/#scroll-timeline-shorthand
-    {
-      name: "CSSScrollTimeline",
-      status: "experimental",
-      base_feature: "none",
-    },
     {
       name: "CSSSelectorFragmentAnchor",
       status: "experimental",
@@ -1056,11 +1094,21 @@
       base_feature: "none",
     },
     {
+      // Explainer: https://drafts.csswg.org/css-values/#round-func
+      name: "CSSSteppedValueFunctions",
+      status: "experimental",
+    },
+    {
       // https://drafts.csswg.org/css-contain-3/#style-container
       // This flag is for querying custom properties only.
       name: "CSSStyleQueries",
       status: "stable",
       base_feature: "none",
+    },
+    {
+      // Support style() queries that evaluate in a boolean context.
+      name: "CSSStyleQueriesBoolean",
+      status: "experimental",
     },
     {
       // TODO(https://crbug.com/1411581):
@@ -1071,7 +1119,7 @@
     // `text-wrap: balance`. crbug.com/1251079
     {
       name: "CSSTextWrap",
-      status: "experimental",
+      status: "stable",
     },
     // Support for CSS Toggles, https://tabatkins.github.io/css-toggle/
     {
@@ -1080,7 +1128,12 @@
       base_feature: "none",
     },
     {
-      // Support for CSS top-layer property for being able to transition
+      // Support for transitioning top layer elements out of the top layer by
+      // allowing the new CSS overlay property to keep the element in the top
+      // layer with transition-name: overlay. Also, the HTML implementation is
+      // deferring removal of top layer elements from the top layer until the
+      // overlay property computes to 'none'.
+      //
       // See: https://github.com/w3c/csswg-drafts/issues/8189
       name: "CSSTopLayerForTransitions",
       status: "experimental",
@@ -1088,7 +1141,7 @@
     },
     {
       name: "CSSTransitionDiscrete",
-      status: "test",
+      status: "experimental",
     },
     {
       // Support for tree-scoped [1] timeline names (e.g. produced by
@@ -1140,13 +1193,15 @@
       status: "stable",
       base_feature: "none",
     },
-    // Support for view-timeline.
-    //
-    // https://drafts.csswg.org/scroll-animations-1/#view-timeline-shorthand
+    // `white-space` as a shorthand. crbug.com/1417543
     {
-      name: "CSSViewTimeline",
-      status: "experimental",
-      base_feature: "none",
+      name: "CSSWhiteSpaceShorthand",
+      status: "stable",
+      depends_on: ["CSSTextWrap"],
+    },
+    {
+      name: "CSSZoom",
+      status: "stable",
     },
     {
       name: "Database",
@@ -1174,6 +1229,12 @@
       name: "DeflateRawCompressionFormat",
       status: "stable",
       base_feature: "none",
+    },
+    {
+      name: "DelayOutOfViewportLazyImages",
+      depends_on: ["LazyImageLoading"],
+      public: true,
+      status: "experimental",
     },
     {
       name: "DelegatedInkTrails",
@@ -1387,7 +1448,10 @@
       status: "stable",
     },
     {
-      name: "ElementSuperRareData",
+      // Experiment with preventing some instances of mutation XSS
+      // by escaping "<" and ">" in attribute values.
+      // See: crbug.com/1175016
+      name: "EscapeLtGtInAttributes",
       status: "experimental",
     },
     {
@@ -1468,6 +1532,13 @@
       name: "FedCm",
       public: true,
       status: "stable",
+      base_feature: "none",
+    },
+    {
+      name: "FedCmAuthz",
+      depends_on: ["FedCm"],
+      public: true,
+      status: "test",
       base_feature: "none",
     },
     {
@@ -1564,8 +1635,8 @@
       // `config`, `sandbox`, and `allow`).
       origin_trial_feature_name: "PrivacySandboxAdsAPIs",
       origin_trial_allows_third_party: true,
-      base_feature_status: "disabled",
-      copied_from_base_feature_if: "overridden",
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "enabled_or_overridden",
     },
     {
       name: "FetchUploadStreaming",
@@ -1578,8 +1649,6 @@
       name: "FileHandling",
       depends_on: ["FileSystemAccessLocal"],
       status: {"Android": "test", "default": "stable"},
-      origin_trial_feature_name: "FileHandling",
-      origin_trial_os: ["win", "mac", "linux", "fuchsia", "chromeos"],
       base_feature: "FileHandlingAPI",
     },
     {
@@ -1715,6 +1784,9 @@
       name: "FormControlRestoreStateIfAutocompleteOff",
     },
     {
+      name: "FormControlsVerticalWritingModeDirectionSupport",
+    },
+    {
       name: "FormControlsVerticalWritingModeSupport",
       status: "experimental",
     },
@@ -1746,12 +1818,23 @@
       // assume that screen dimensions match window.innerWidth/innerHeight while
       // a page is fullscreen, but that is not always true. crbug.com/1367416
       name: "FullscreenScreenSizeMatchesDisplay",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "GamepadButtonAxisEvents",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      name: "GamepadMultitouch",
+      status: "experimental",
+      public: true,
+    },
+    {
+      name: "GetAllScreensMedia",
+      depends_on: ["GetDisplayMedia"],
+      public: true,
+      status: "test",
     },
     {
       name: "GetDisplayMedia",
@@ -1836,10 +1919,15 @@
       status: "stable",
     },
     {
+      // A kill-switch for crbug.com/1412729
+      // (enabling the `v` flag for `pattern` RegExps).
+      name: "HTMLPatternRegExpUnicodeSets",
+      status: "stable",
+    },
+    {
       // TODO(crbug.com/1307772): Enables the Popover API.
       name: "HTMLPopoverAttribute",
-      status: "experimental",
-      // Because the OT is already underway, it is being left with the "popup" name.
+      status: "stable",
       origin_trial_feature_name: "HTMLPopupAttribute",
       implied_by: ["HTMLSelectMenuElement","HTMLPopoverHint"],
     },
@@ -1870,10 +1958,6 @@
       origin_trial_feature_name: "IgnoreCSPInWebPaymentAPI",
       origin_trial_allows_third_party: true,
       public: true,
-    },
-    {
-      name: "ImeVerticalFlag",
-      status: "stable",
     },
     {
       name: "ImplicitRootScroller",
@@ -1939,14 +2023,20 @@
       settable_from_internals: true,
     },
     {
+      name: "LayoutDisableBrokenFloatInvalidation",
+      status: "stable",
+    },
+    {
+      name: "LayoutDisableBrokenIntrinsicSize",
+      status: "stable",
+    },
+    {
       // crbug.com/1425520. Enabled since M113.
       name: "LayoutMediaChildPaintContainment",
       status: "stable",
     },
     {
       name: "LayoutMediaNGContainer",
-      // This feature doesn't work in the legacy layout.
-      depends_on: ["LayoutNGPrinting"],
       status: "stable",
     },
     {
@@ -1954,22 +2044,26 @@
       status: "stable",  // Since M112.
     },
     {
+      name: "LayoutNewFormCentering",
+      status: "stable",
+    },
+    {
+      name: "LayoutNewSubtreeRoot",
+      status: "stable",
+    },
+    {
+      name: "LayoutNewSVGForeignObjectEntry",
+      status: "stable",
+    },
+    {
+      name: "LayoutNewSVGTextEntry",
+      status: "stable",
+    },
+    {
       // crbug.com/1353190
       name: "LayoutNGNoCopyBack",
-      depends_on: ["LayoutMediaNGContainer", "LayoutNGReplacedNoBoxSetters"],
+      depends_on: ["LayoutMediaNGContainer", "RemoveConvertToLayerCoords"],
       status: "test",
-    },
-    {
-      name: "LayoutNGPrinting",
-      status: "stable",
-    },
-    {
-      // Avoid UpdateLogicalWidth() and UpdateLogicalHeight() in LayoutReplaced
-      // subclasses.
-      // It's a part of "stop-copying-back" project. crbug.com/1353190
-      name: "LayoutNGReplacedNoBoxSetters",
-      depends_on: ["LayoutNGPrinting"],
-      status: "stable",
     },
     {
       name: "LayoutNGShapeCache",
@@ -1978,16 +2072,8 @@
     },
     {
       name: "LayoutNGSubgrid",
-      status: "test",
+      status: "experimental",
       base_feature: "none",
-    },
-    {
-      // Merge UpdateAfterLayout() calls for LayoutReplaced into one in
-      // CopyFragmentDataToLayoutBox(). crbug.com/1353190
-      name: "LayoutNGUnifyUpdateAfterLayout",
-      // This feature doesn't work in the legacy layout.
-      depends_on: ["LayoutNGPrinting"],
-      status: "stable",
     },
     {
       name: "LazyFrameLoading",
@@ -2052,7 +2138,7 @@
     {
       // Enables long aniamtion frame logging to UKM
       name: "LongAnimationFrameUKM",
-      status: "experimental"
+      status: "stable"
     },
     {
       name: "MachineLearningCommon",
@@ -2109,11 +2195,13 @@
     },
     {
       name: "MediaCaptureBackgroundBlur",
+      origin_trial_feature_name: "MediaCaptureBackgroundBlur",
       status: "experimental",
       base_feature: "none",
     },
     {
       name: "MediaCaptureConfigurationChange",
+      origin_trial_feature_name: "MediaCaptureBackgroundBlur",
       status: "experimental",
       implied_by: ["MediaCaptureBackgroundBlur"],
       base_feature: "none",
@@ -2178,29 +2266,8 @@
       origin_trial_feature_name: "MediaSourceExtensionsForWebCodecs",
     },
     {
-      name: "MediaSourceInWorkers",
-      status: "stable",
-      origin_trial_feature_name: "MediaSourceInWorkers",
-    },
-    {
-      // Availability of this feature depends on MediaSourceInWorkers also
-      // being enabled. MediaSourceInWorkers is an OT feature, so this cannot
-      // use the "depends_on" key.
-      name: "MediaSourceInWorkersUsingHandle",
-      status: "stable",
-    },
-    {
       name: "MediaSourceNewAbortAndDuration",
       status: "experimental",
-      base_feature: "none",
-    },
-    {
-      // This is used in cases of mixed specification of stable and
-      // experimental MediaSource features, such as in the IDL for an interface
-      // constructor where exposure of the constructor in Window vs other
-      // contexts can vary in stable vs experimental.
-      name: "MediaSourceStable",
-      status: "stable",
       base_feature: "none",
     },
     {
@@ -2233,14 +2300,12 @@
       base_feature: "none",
     },
     {
-      // When enabled, iframes are not capturing mouse events by default.
-      name: "MouseSubframeNoImplicitCapture",
-      base_feature: "none",
-      public: true,
-    },
-    {
       name: "NavigateEventCancelableTraversals",
       status: "stable",
+    },
+    {
+      name: "NavigateEventCommitBehavior",
+      status: "experimental",
     },
     {
       name: "NavigationId",
@@ -2273,6 +2338,12 @@
       name: "NoIdleEncodingForWebTests",
       status: "test",
       base_feature: "none",
+    },
+    {
+      // Kill switch for crbug.com/1427047 fix.
+      // TODO(xiaochengh): Remove in M117.
+      name: "NonReentrantFieldSetDisable",
+      status: "stable",
     },
     {
       name: "NotificationConstructor",
@@ -2456,6 +2527,10 @@
       origin_trial_allows_third_party: true,
     },
     {
+      name: "OverflowOverlayAliasesAuto",
+      status: "stable",
+    },
+    {
       name: "OverscrollCustomization",
       status: "experimental",
       base_feature: "none",
@@ -2601,13 +2676,6 @@
       status: "test",
     },
     {
-      name: "PointerLockOptions",
-      origin_trial_feature_name: "PointerLockOptions",
-      public: true,
-      status: "stable",
-      base_feature: "none",
-    },
-    {
       name: "Portals",
       // Portals must be enabled by blink::features::kPortals as we require the
       // support of the browser process to enable the feature. Enabling this
@@ -2653,19 +2721,6 @@
       // https://crbug.com/1126305
       name: "Prerender2",
       status: "stable",
-    },
-    // This RTE feature is used to indicate the status of RTE feature Prerender2
-    // and an embedder feature flag that enables the Prerender2. With this flag
-    // on, the related functions document.prerendering,
-    // document.onprerenderingchange, and activationStart will be exported.
-    {
-      name: "Prerender2RelatedFeatures",
-      implied_by: ["Prerender2"],
-      base_feature: "none",
-      // This is not going into origin trial, "origin_trial_feature_name" is
-      // required for using the "implied_by" behaviour.
-      origin_trial_feature_name: "Prerender2RelatedFeatures__DONOTUSE",
-      public: true,
     },
     {
       name: "Presentation",
@@ -2729,11 +2784,16 @@
     },
     {
       name: "QuickIntensiveWakeUpThrottlingAfterLoading",
+      status: "stable",
     },
     {
       name: "QuotaChange",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      name: "ReadableStreamTeeCloneForBranch2",
+      status: "experimental",
     },
     // If enabled, the Accept-Language header will be reduced.
     {
@@ -2782,6 +2842,11 @@
       base_feature: "none",
     },
     {
+      // crbug.com/1432839
+      name: "RemoveConvertToLayerCoords",
+      status: "stable",
+    },
+    {
       name: "RemoveDataUrlInSvgUse",
       status: "experimental",
       base_feature: "none",
@@ -2791,6 +2856,12 @@
       public: true,
       status: "stable",
       base_feature: "none",
+    },
+    {
+      // Non-standard appearance values should be removed. This feature removes
+      // slider-vertical.
+      // https://drafts.csswg.org/css-ui-4/#appearance-switching
+      name: "RemoveNonStandardAppearanceValueSliderVertical",
     },
     {
       name: "RenderBlockingStatus",
@@ -2852,21 +2923,6 @@
       name: "RTCEncodedVideoFrameClone",
       status: "experimental",
     },
-    // Enables the use of the RTCIceTransport with extensions.
-    {
-      name: "RTCIceTransportExtension",
-      origin_trial_feature_name: "RTCQuicTransport",
-      status: "experimental",
-      base_feature: "none",
-    },
-    // Enables the use of the Insertable Streams legacy API.
-    // TODO(https://crbug.com/1119801): Remove when the origin trial ends.
-    {
-      name: "RTCInsertableStreams",
-      origin_trial_feature_name: "RTCInsertableStreams",
-      status: "experimental",
-      base_feature: "none",
-    },
     // Legacy callback-based getStats() has limited availability unless this
     // Deprecation Trial is enabled.
     // TODO(https://crbug.com/822696): Remove when origin trial ends.
@@ -2882,13 +2938,6 @@
     {
       name: "RTCLegacyTrackStats",
       origin_trial_feature_name: "RTCLegacyTrackStats",
-      status: "experimental",
-      base_feature: "none",
-    },
-    // Enables the use of the RTCQuicTransport object.
-    {
-      name: "RTCQuicTransport",
-      origin_trial_feature_name: "RTCQuicTransport",
       status: "experimental",
       base_feature: "none",
     },
@@ -2932,7 +2981,6 @@
       status: "test",
       base_feature: "none",
     },
-
     // WebSpeech API with both speech recognition and synthesis functionality
     // is not fully enabled on all platforms.
     {
@@ -2963,24 +3011,18 @@
     },
     {
       name: "ScrollEndEvents",
-      status: "experimental",
-      base_feature: "none",
+      status: "stable",
     },
     {
       name: "ScrollTimeline",
       status: "experimental",
-      implied_by: ["AnimationWorklet", "CSSScrollTimeline", "CSSViewTimeline"],
+      implied_by: ["AnimationWorklet"],
       base_feature: "none",
     },
     // Implements documentElement.scrollTop/Left and bodyElement.scrollTop/Left
     // as per the spec, matching other Web engines.
     {
       name: "ScrollTopLeftInterop",
-      status: "stable",
-      base_feature: "none",
-    },
-    {
-      name: "SecureContextFixForSharedWorkers",
       status: "stable",
       base_feature: "none",
     },
@@ -2996,6 +3038,11 @@
       public: true,
       status: "test",
       base_feature: "none",
+    },
+    {
+      name: "SecurePaymentConfirmationAllowOneActivationlessShow",
+      public: true,
+      status: "test",
     },
     {
       name: "SecurePaymentConfirmationDebug",
@@ -3047,6 +3094,12 @@
       name: "ServiceWorkerClientLifecycleState",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      name: "ServiceWorkerRaceNetworkRequest",
+      base_feature: "none",
+      origin_trial_feature_name: "ServiceWorkerBypassFetchHandlerWithRaceNetworkRequest",
+      public: true,
     },
     {
       name: "SharedArrayBuffer",
@@ -3145,6 +3198,7 @@
       base_feature: "none",
       origin_trial_feature_name: "SpeculationRulesPrefetchFuture",
       origin_trial_allows_third_party: true,
+      status: "experimental",
     },
     {
       name: "SpeculationRulesDocumentRulesSelectorMatches",
@@ -3152,6 +3206,7 @@
       copied_from_base_feature_if: "overridden",
       origin_trial_feature_name: "SpeculationRulesPrefetchFuture",
       origin_trial_allows_third_party: true,
+      status: "experimental",
     },
     {
       name: "SpeculationRulesEagerness",
@@ -3159,12 +3214,14 @@
       copied_from_base_feature_if: "overridden",
       origin_trial_feature_name: "SpeculationRulesPrefetchFuture",
       origin_trial_allows_third_party: true,
+      status: "experimental",
     },
     {
       name: "SpeculationRulesFetchFromHeader",
       base_feature: "none",
       origin_trial_feature_name: "SpeculationRulesPrefetchFuture",
       origin_trial_allows_third_party: true,
+      status: "experimental",
     },
     {
       name: "SpeculationRulesNoVarySearchHint",
@@ -3206,6 +3263,7 @@
       base_feature: "none",
       origin_trial_feature_name: "SpeculationRulesPrefetchFuture",
       origin_trial_allows_third_party: true,
+      status: "experimental",
     },
     {
       name: "SrcsetMaxDensity",
@@ -3234,6 +3292,7 @@
     {
       name: "StorageBuckets",
       status: "experimental",
+      origin_trial_feature_name: "StorageBuckets",
     },
     {
       // Gates the `locks()` method on a storage bucket.
@@ -3257,11 +3316,6 @@
       name: "SupportsFontFormatTech",
       status: "stable",
       base_feature: "none",
-    },
-    {
-      // crbug.com/1393223
-      name: "SvgContainersRejectSvgInDisplayContents",
-      status: "stable",
     },
     {
       name: "SvgRasterOptimizations",
@@ -3420,9 +3474,6 @@
       name: "UnexposedTaskIds",
       base_feature: "none",
     },
-    {
-      name: "UnifiedScrollPainting",
-    },
     // This is a reverse OT used for a phased deprecation, on desktop
     // https://crbug.com/1071424
     {
@@ -3442,6 +3493,11 @@
       base_feature: "none",
     },
     {
+      // Makes the global root scrollbars follow the preferred color scheme
+      // by default. Please see more details: crbug.com/1423087.
+      name: "UsedColorSchemeRootScrollbars",
+    },
+    {
       name: "UserActivationSameOriginVisibility",
       base_feature: "none",
       public: true,
@@ -3457,18 +3513,6 @@
       // iOS not included as it should not send a reduced User-Agent string.
       origin_trial_os: ["android", "chromeos", "fuchsia", "linux", "mac", "win"],
       base_feature: "ReduceUserAgent",
-    },
-    {
-      // When moving trees between documents, traverse the tree first to
-      // notify nodes that they `WillMoveToNewDocument()` before doing a
-      // second traversal to move them.  If not set, then these two steps are
-      // done during a single traversal at the cost of the ordering of
-      // `WillMoveToNewDocument()` sometimes being called after the node has
-      // already been moved.  `false` is the original behavior, while `true`
-      // is the new default.  Switch is present in case there is some
-      // interaction that causes a web-visible change that wasn't anticipated.
-      name: "UseSeparateTraversalForWillMove",
-      status: "stable",
     },
     {
       name: "V8IdleTasks",
@@ -3525,11 +3569,6 @@
       name: "ViewTransition",
       status: "stable",
       implied_by: ["ViewTransitionOnNavigation"],
-    },
-    {
-      // Temporary flag for stable merge. See crbug.com/1443134.
-      name: "ViewTransitionAnonymousLayoutObject",
-      status: "stable",
     },
     {
       // If enabled, ViewTransition API is supported for navigations including
@@ -3658,6 +3697,13 @@
       status: "experimental",
       base_feature: "none",
     },
+    // https://w3c.github.io/webauthn/#dom-publickeycredential-tojson
+    // https://w3c.github.io/webauthn/#sctn-parseCreationOptionsFromJSON
+    // https://w3c.github.io/webauthn/#sctn-parseRequestOptionsFromJSON
+    {
+      name: "WebAuthenticationJSONSerialization",
+      status: "test",
+    },
     {
       name: "WebAuthenticationLargeBlobExtension",
       status: "stable",
@@ -3762,12 +3808,6 @@
       name: "WebGPUDeveloperFeatures",
       base_feature: "none",
       public: true,
-    },
-    {
-      // Requires both WebGPU and --enable-experimental-web-platform-features
-      name: "WebGPUImportTexture",
-      status: "experimental",
-      base_feature: "none",
     },
     {
       name: "WebGPUWebCodecs",
@@ -3931,6 +3971,13 @@
       name: "WebXRPlaneDetection",
       depends_on: ["WebXR"],
       origin_trial_feature_name: "WebXRPlaneDetection",
+      public: true,
+      status: "experimental",
+      base_feature: "none",
+    },
+    {
+      name: "WebXRPoseMotionData",
+      depends_on: ["WebXR"],
       public: true,
       status: "experimental",
       base_feature: "none",
