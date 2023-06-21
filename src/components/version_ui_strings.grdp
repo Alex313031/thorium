@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2023 Alex313031. -->
 <grit-part>
   <message name="IDS_VERSION_UI_TITLE" desc="Title on the about:version page">
-    About Version
+    About Thorium Version
   </message>
   <message name="IDS_VERSION_UI_OFFICIAL" desc="official build on the about:version page">
     Official Build

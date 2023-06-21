@@ -463,7 +463,7 @@
   </if>
   <if expr="is_win">
     <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling.">
-      Google Thorium is trying to verify it's you so it can fill in your payment info.
+      Thorium is trying to verify it's you so it can fill in your payment info.
     </message>
   </if>
 
