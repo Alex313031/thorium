@@ -18,6 +18,7 @@
 #include "chrome/browser/ui/color/chrome_color_id.h"
 #include "chrome/browser/ui/layout_constants.h"
 #include "chrome/browser/ui/tabs/tab_types.h"
+#include "chrome/browser/ui/tabs/tab_style.h"
 #include "chrome/browser/ui/ui_features.h"
 #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
 #include "chrome/browser/ui/views/tabs/glow_hover_controller.h"
@@ -487,7 +488,7 @@ TabStyle::TabColors GM2TabStyleViews::CalculateColors() const {
           close_button_focus_ring_color};
 }
 
-const gfx::FontList& GM2TabStyle::GetFontList() const {
+const gfx::FontList& GM2TabStyleViews::GetFontList() const {
   // Don't want to have to keep re-computing this value.
   static const bool prominent_dark_mode_title = base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-dark-mode-active-tab-title");
 
