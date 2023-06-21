@@ -104,6 +104,7 @@ static_library("content_shell_app") {
     ]
   }
   if (is_apple) {
+    configs += [ "//build/config/compiler:enable_arc" ]
     sources += [
       "app/paths_mac.h",
       "app/paths_mac.mm",
@@ -120,7 +121,6 @@ static_library("content_shell_app") {
       "app/ios/shell_application_ios.h",
       "app/ios/shell_application_ios.mm",
     ]
-    configs += [ "//build/config/compiler:enable_arc" ]
   }
   defines = [
     "CONTENT_SHELL_VERSION=\"$content_shell_version\"",
@@ -208,10 +208,15 @@ static_library("content_shell_lib") {
       "browser/shell_platform_delegate_mac.mm",
       "browser/shell_web_contents_view_delegate_mac.mm",
     ]
+    configs += [ "//build/config/compiler:enable_arc" ]
   }
 
   if (is_ios) {
     sources += [
+      "browser/bluetooth/shell_bluetooth_delegate_impl_client.cc",
+      "browser/bluetooth/shell_bluetooth_delegate_impl_client.h",
+      "browser/shell_file_select_helper.cc",
+      "browser/shell_file_select_helper.h",
       "browser/shell_platform_delegate_ios.mm",
       "browser/shell_web_contents_view_delegate_ios.mm",
     ]
@@ -357,8 +362,10 @@ static_library("content_shell_lib") {
 
   if (is_ios) {
     deps += [
+      "//components/permissions",
       "//services/tracing/public/cpp",
       "//services/tracing/public/mojom:mojom",
+      "//ui/shell_dialogs",
     ]
   }
 
@@ -472,6 +479,8 @@ repack("pak") {
     "$root_gen_dir/content/browser/webrtc/resources/webrtc_internals_resources.pak",
     "$root_gen_dir/content/content_resources.pak",
     "$root_gen_dir/content/dev_ui_content_resources.pak",
+    "$root_gen_dir/content/gpu_resources.pak",
+    "$root_gen_dir/content/histograms_resources.pak",
     "$root_gen_dir/content/quota_internals_resources.pak",
     "$root_gen_dir/content/shell/shell_resources.pak",
     "$root_gen_dir/content/test/web_ui_mojo_test_resources.pak",
@@ -519,7 +528,7 @@ repack("pak") {
     sources +=
         [ "$root_gen_dir/ui/views/resources/views_resources_100_percent.pak" ]
   }
-  if (!is_android && !is_fuchsia) {
+  if (!is_android && !is_fuchsia && !is_ios) {
     sources +=
         [ "$root_gen_dir/content/browser/devtools/devtools_resources.pak" ]
     deps += [ "//content/browser/devtools:devtools_resources" ]
@@ -528,7 +537,7 @@ repack("pak") {
 }
 
 if (is_android) {
-  group("content_shell") {
+  group("thorium_shell") {
     testonly = true
     deps = [ "//content/shell/android:content_shell_apk" ]
   }
@@ -584,7 +593,7 @@ if (is_android) {
         "//build/config/ios/entitlements.plist"
   }
 
-  ios_app_bundle("content_shell") {
+  ios_app_bundle("thorium_shell") {
     info_plist = "app/ios-Info.plist"
     testonly = true
 
@@ -695,6 +704,10 @@ if (is_apple) {
       deps = [ "//third_party/icu:icudata" ]
     }
 
+    if (is_mac) {
+      sources += [ "//ui/gl/resources/angle-metal/gpu_shader_cache.bin" ]
+    }
+
     if (v8_use_external_startup_data) {
       public_deps += [ "//v8" ]
       if (use_v8_context_snapshot) {
@@ -796,6 +809,7 @@ if (is_mac) {
       # Specify a sensible install_name for static builds. The library is
       # dlopen()ed so this is not used to resolve the module.
       ldflags = [ "-Wl,-install_name,@executable_path/../Frameworks/$output_name.framework/$output_name" ]
+      deps += [ "//base/test:test_trace_processor_bundle_data" ]
     } else {
       # Both the main :content_shell and :content_shell_helper_app executables
       # need to link the framework. Because they are at different directory
