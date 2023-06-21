@@ -1,0 +1,48 @@
+From aa591989d204a64f2cb9d5cb616a9481b695c0c9 Mon Sep 17 00:00:00 2001
+From: Jan Schmidt <jan@centricular.com>
+Date: Wed, 1 May 2019 17:49:42 +0200
+Subject: [PATCH] ffmpeg: Handle transient decode errors arising from
+ libfdk-aac
+
+GStreamer can successfully play an .m4a file that ffplay cannot, albeit
+with some audible glitching.
+
+For most errors, the input buffer should be discarded in this case, but
+decoding not stopped, so we attempt to do this in order to make decoding more robust.
+(see https://github.com/esrlabs/fdk-aac/blob/master/libAACdec/include/aacdecoder_lib.h#L362)
+
+These errors happen much more often with the cut-down fdk-aac that
+avoids patent encumbered portions of AAC
+
+https://phabricator.endlessm.com/T23374
+---
+ libavcodec/libfdk-aacdec.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/third_party/ffmpeg/libavcodec/libfdk-aacdec.c b/third_party/ffmpeg/libavcodec/libfdk-aacdec.c
+index 8c1586e25e..d81289e97d 100644
+--- a/third_party/ffmpeg/libavcodec/libfdk-aacdec.c
++++ b/third_party/ffmpeg/libavcodec/libfdk-aacdec.c
+@@ -409,11 +409,15 @@ static int fdk_aac_decode_frame(AVCodecContext *avctx, AVFrame *frame,
+     err = aacDecoder_DecodeFrame(s->handle, (INT_PCM *) s->decoder_buffer,
+                                  s->decoder_buffer_size / sizeof(INT_PCM),
+                                  flags);
+-    if (err == AAC_DEC_NOT_ENOUGH_BITS) {
+-        ret = avpkt->size - valid;
+-        goto end;
+-    }
+     if (err != AAC_DEC_OK) {
++        /* Just ignore sync or non-fatal decode errors and keep feeding */
++        if ((err >= aac_dec_sync_error_start && err <= aac_dec_sync_error_end) ||
++           (err >= aac_dec_decode_error_start && err <= aac_dec_decode_error_end) ||
++           (err >= aac_dec_anc_data_error_start && err <= aac_dec_anc_data_error_end)) {
++            ret = avpkt->size - valid;
++            goto end;
++        }
++	/* All other errors, return them */
+         av_log(avctx, AV_LOG_ERROR,
+                "aacDecoder_DecodeFrame() failed: %x\n", err);
+         ret = AVERROR_UNKNOWN;
+-- 
+2.39.2
+

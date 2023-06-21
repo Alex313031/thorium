@@ -1,0 +1,29 @@
+From 165d50d603fce1340986ce4a9330881a41043a1e Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Mon, 19 Dec 2022 19:58:16 -0600
+Subject: [PATCH] Ignore useless warnings from the Asahi driver
+
+---
+ ui/gl/gl_display.cc | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/ui/gl/gl_display.cc b/ui/gl/gl_display.cc
+index ce97bb0b98f79..4a2db3615b2f5 100644
+--- a/ui/gl/gl_display.cc
++++ b/ui/gl/gl_display.cc
+@@ -501,6 +501,12 @@ void EGLAPIENTRY LogEGLDebugMessage(EGLenum error,
+                                     EGLLabelKHR thread_label,
+                                     EGLLabelKHR object_label,
+                                     const char* message) {
++  if (message == std::string("_eglClientWaitSyncCommon") ||
++      message == std::string("_eglDestroySync")) {
++    // Unimplemented on the Asahi driver, so just ignore.
++    return;
++  }
++
+   std::string formatted_message = std::string("EGL Driver message (") +
+                                   GetDebugMessageTypeString(message_type) +
+                                   ") " + command + ": " + message;
+-- 
+2.39.2
+

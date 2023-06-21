@@ -1,0 +1,152 @@
+app-id: org.chromium.Chromium
+runtime: org.freedesktop.Platform
+runtime-version: '22.08'
+sdk: org.freedesktop.Sdk
+base: org.chromium.Chromium.BaseApp
+base-version: '22.08'
+command: chromium
+finish-args:
+  - --require-version=1.8.2
+  - --filesystem=home
+  - --filesystem=/run/.heim_org.h5l.kcm-socket
+  - --device=all
+  - --env=GTK_PATH=/app/lib/gtkmodules
+  - --env=LD_LIBRARY_PATH=/app/chromium/nonfree-codecs/lib
+  - --share=ipc
+  - --share=network
+  - --socket=cups
+  - --socket=pulseaudio
+  - --socket=x11
+  - --socket=wayland
+  - --system-talk-name=org.bluez
+  - --system-talk-name=org.freedesktop.Avahi
+  - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=com.canonical.AppMenu.Registrar
+  - --talk-name=org.freedesktop.FileManager1
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.ScreenSaver
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --talk-name=org.gnome.SessionManager
+  - --own-name=org.mpris.MediaPlayer2.chromium.*
+
+add-extensions:
+  org.chromium.Chromium.Codecs:
+    directory: chromium/nonfree-codecs
+    add-ld-path: lib
+    bundle: true
+    autodelete: true
+
+  org.chromium.Chromium.NativeMessagingHost:
+    version: '1'
+    directory: chromium/native-messaging-hosts
+    merge-dirs: native-messaging-hosts
+    subdirectories: true
+    no-autodownload: true
+    autodelete: true
+
+  org.chromium.Chromium.Extension:
+    version: '1'
+    directory: chromium/extensions
+    merge-dirs: extensions;native-messaging-hosts;policies/managed;policies/recommended
+    subdirectories: true
+    no-autodownload: true
+    autodelete: true
+
+  org.chromium.Chromium.Policy:
+    version: '1'
+    directory: chromium/policies
+    merge-dirs: policies/managed;policies/recommended
+    subdirectories: true
+    no-autodownload: true
+    autodelete: true
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.llvm14
+  - org.freedesktop.Sdk.Extension.node16
+  - org.freedesktop.Sdk.Extension.openjdk11
+
+modules:
+  # Based on https://github.com/flathub/shared-modules/blob/master/python2.7/python-2.7.json
+  - name: python2
+    config-opts:
+      - --enable-shared
+      - --with-ensurepip=yes
+      - --with-system-expat
+      - --with-system-ffi
+      - --with-dbmliborder=gdbm
+      - --enable-unicode=ucs4
+    build-options:
+      no-debuginfo: true
+    post-install:
+      - chmod 644 $FLATPAK_DEST/lib/libpython2.7.so.1.0
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        url: https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz
+        sha256: b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
+
+  - name: readelf-symlink
+    only-arches: [aarch64]
+    buildsystem: simple
+    build-commands:
+      # Chromium expects to find readelf with its full toolprefix on arm64
+      - ln -s /usr/bin/readelf /app/bin/aarch64-linux-gnu-readelf
+
+  - name: extensions
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/chromium/{extensions,native-messaging-hosts,policies}
+      - for dir in native-messaging-hosts policies; do ln -s /app/chromium/{$dir,extensions}/$dir;
+        done
+      - touch /app/chromium/extensions/no-mount-stamp
+
+  - name: chromium
+    buildsystem: simple
+    build-commands:
+      - ./bootstrap.sh
+      - ./build.sh
+      - ./install.sh
+    sources:
+      - type: archive
+        url: https://commondatastorage.googleapis.com/chromium-browser-official/chromium-114.0.5735.133.tar.xz
+        sha256: 8289ec1ec9e2540313af10bcf97721ec560789c931fc0583a2f5a545f223d262
+        x-checker-data:
+          type: chromium
+          component: chromium
+          is-main-source: true
+      - type: archive
+        url: https://commondatastorage.googleapis.com/chromium-browser-clang/Linux_x64/clang-llvmorg-17-init-8029-g27f27d15-3.tgz
+        sha256: 1ac590c011158940037ce9442d4bf12943dc14a7ddaab6094e75a8750b47b861
+        dest: third_party/llvm-build/Release+Asserts
+        strip-components: 0
+        only-arches: [x86_64]
+        x-checker-data:
+          type: chromium
+          component: llvm-prebuilt
+      - type: shell
+        commands:
+          - rm -rf third_party/llvm
+        only-arches: [aarch64]
+      - type: git
+        url: https://github.com/llvm/llvm-project
+        commit: llvmorg-17-init-8029-g27f27d15
+        dest: third_party/llvm
+        only-arches: [aarch64]
+        x-checker-data:
+          type: chromium
+          component: llvm-git
+      - patches/all.json
+      - type: file
+        path: org.chromium.Chromium.desktop
+      - type: file
+        path: org.chromium.Chromium.metainfo.xml
+      - type: file
+        path: chromium.sh
+      - type: file
+        path: unlink_profiles.py
+      - type: file
+        path: cobalt.ini
+      - type: dir
+        path: build-aux

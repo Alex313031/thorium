@@ -1,0 +1,64 @@
+From 316519ae5254029edb019bf85cb28c70af768ad6 Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Tue, 1 Mar 2022 19:29:12 -0600
+Subject: [PATCH] clang build script: Support disabling the bundled libxml2
+
+In the case of toolchain builds that won't be using the cross
+compilers, this isn't needed, and it can be a problem when
+attempting to build a toolchain without network access.
+---
+ tools/clang/scripts/build.py | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/tools/clang/scripts/build.py b/tools/clang/scripts/build.py
+index 8dafae1c08f2d..155ac4b52724b 100755
+--- a/tools/clang/scripts/build.py
++++ b/tools/clang/scripts/build.py
+@@ -574,6 +574,8 @@ def main():
+       '\'default\', will download an official model which was '
+       'trained for Chrome on Android',
+       default='default' if sys.platform.startswith('linux') else '')
++  parser.add_argument('--use-system-libxml', action='store_true',
++                      help='use the system libxml2 (unsupported on Windows)')
+   parser.add_argument('--with-android', type=gn_arg, nargs='?', const=True,
+                       help='build the Android ASan runtime (linux only)',
+                       default=sys.platform.startswith('linux'))
+@@ -628,6 +630,10 @@ def main():
+     print('--with-ml-inliner-model only supports linux hosts')
+     return 1
+ 
++  if args.use_system_libxml and sys.platform == 'win32':
++    print('--use-system-xml is not valid on Windows')
++    return 1
++
+   # Don't buffer stdout, so that print statements are immediately flushed.
+   # LLVM tests print output without newlines, so with buffering they won't be
+   # immediately printed.
+@@ -821,13 +827,17 @@ def main():
+     rpmalloc_dir = DownloadRPMalloc()
+     base_cmake_args.append('-DLLVM_INTEGRATED_CRT_ALLOC=' + rpmalloc_dir)
+ 
+-  # Statically link libxml2 to make lld-link not require mt.exe on Windows,
+-  # and to make sure lld-link output on other platforms is identical to
+-  # lld-link on Windows (for cross-builds).
+-  libxml_cmake_args, libxml_cflags = BuildLibXml2()
+-  base_cmake_args += libxml_cmake_args
+-  cflags += libxml_cflags
+-  cxxflags += libxml_cflags
++  if args.use_system_libxml:
++    # libxml2 is required by the Win manifest merging tool used in cross-builds.
++    base_cmake_args.append('-DLLVM_ENABLE_LIBXML2=FORCE_ON')
++  else:
++    # Statically link libxml2 to make lld-link not require mt.exe on Windows,
++    # and to make sure lld-link output on other platforms is identical to
++    # lld-link on Windows (for cross-builds).
++    libxml_cmake_args, libxml_cflags = BuildLibXml2()
++    base_cmake_args += libxml_cmake_args
++    cflags += libxml_cflags
++    cxxflags += libxml_cflags
+ 
+   if args.bootstrap:
+     print('Building bootstrap compiler')
+-- 
+2.39.2
+

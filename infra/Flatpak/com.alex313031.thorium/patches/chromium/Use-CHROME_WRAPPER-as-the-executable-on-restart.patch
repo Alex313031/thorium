@@ -1,0 +1,40 @@
+From 65b71b0ee6ae746a75e9ecc76fbc36d43d9fe761 Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Wed, 11 Nov 2020 17:13:38 -0600
+Subject: [PATCH] Use CHROME_WRAPPER as the executable on restart
+
+---
+ chrome/browser/first_run/upgrade_util_linux.cc | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/chrome/browser/first_run/upgrade_util_linux.cc b/chrome/browser/first_run/upgrade_util_linux.cc
+index 229da211ae987..22fbcd9d890f2 100644
+--- a/chrome/browser/first_run/upgrade_util_linux.cc
++++ b/chrome/browser/first_run/upgrade_util_linux.cc
+@@ -12,6 +12,7 @@
+ #include "base/path_service.h"
+ #include "base/process/launch.h"
+ #include "chrome/browser/first_run/upgrade_util_linux.h"
++#include "chrome/browser/shell_integration_linux.h"
+ 
+ namespace {
+ 
+@@ -22,10 +23,14 @@ double saved_last_modified_time_of_exe = 0;
+ namespace upgrade_util {
+ 
+ bool RelaunchChromeBrowserImpl(const base::CommandLine& command_line) {
++  base::CommandLine new_cl(command_line);
++  // TODO: move the code outside the internal namespace.
++  new_cl.SetProgram(shell_integration_linux::internal::GetChromeExePath());
++
+   base::LaunchOptions options;
+   // Don't set NO_NEW_PRIVS on the relaunched browser process.
+   options.allow_new_privs = true;
+-  return base::LaunchProcess(command_line, options).IsValid();
++  return base::LaunchProcess(new_cl, options).IsValid();
+ }
+ 
+ bool IsUpdatePendingRestart() {
+-- 
+2.39.2
+

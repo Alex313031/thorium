@@ -1,0 +1,124 @@
+From f58cb69ed276841108b9769cf2ba8d0905e8a3f9 Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Tue, 25 Aug 2020 19:26:07 -0500
+Subject: [PATCH] flatpak: Adjust paths for the sandbox
+
+---
+ chrome/common/BUILD.gn        |  4 ++++
+ chrome/common/chrome_paths.cc | 43 +++++++++++++++++++++++++++--------
+ 2 files changed, 38 insertions(+), 9 deletions(-)
+
+diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
+index 21ba8f95b198d..13c51765c360d 100644
+--- a/chrome/common/BUILD.gn
++++ b/chrome/common/BUILD.gn
+@@ -662,6 +662,10 @@ static_library("constants") {
+       "//third_party/widevine/cdm:headers",
+     ]
+   }
++
++  if (is_linux) {
++    deps += [ "//sandbox/linux:sandbox_services" ]
++  }
+ }
+ 
+ # Use a static library here because many test binaries depend on this but don't
+diff --git a/chrome/common/chrome_paths.cc b/chrome/common/chrome_paths.cc
+index b6a56e6406a20..378e637c16afb 100644
+--- a/chrome/common/chrome_paths.cc
++++ b/chrome/common/chrome_paths.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/common/chrome_paths.h"
+ 
++#include "base/files/file_path.h"
+ #include "base/files/file_util.h"
+ #include "base/logging.h"
+ #include "base/native_library.h"
+@@ -37,6 +38,10 @@
+ #include "base/win/registry.h"
+ #endif
+ 
++#if BUILDFLAG(IS_LINUX)
++#include "sandbox/linux/services/flatpak_sandbox.h"
++#endif
++
+ #if BUILDFLAG(ENABLE_WIDEVINE)
+ #include "third_party/widevine/cdm/widevine_cdm_common.h"  // nogncheck
+ #endif
+@@ -190,8 +195,8 @@ bool PathProvider(int key, base::FilePath* result) {
+ #else
+       if (!GetUserDownloadsDirectory(&cur))
+         return false;
+-      // Do not create the download directory here, we have done it twice now
+-      // and annoyed a lot of users.
++        // Do not create the download directory here, we have done it twice now
++        // and annoyed a lot of users.
+ #endif
+       break;
+     case chrome::DIR_CRASH_DUMPS:
+@@ -420,6 +425,14 @@ bool PathProvider(int key, base::FilePath* result) {
+       break;
+ #if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_OPENBSD)
+     case chrome::DIR_POLICY_FILES: {
++#if defined(OS_LINUX)
++      if (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++          sandbox::FlatpakSandbox::SandboxLevel::kNone) {
++        cur = base::FilePath(
++            FILE_PATH_LITERAL("/app/chromium/extensions/policies"));
++        break;
++      }
++#endif
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+       cur = base::FilePath(FILE_PATH_LITERAL("/etc/opt/chrome/policies"));
+ #else
+@@ -443,7 +456,13 @@ bool PathProvider(int key, base::FilePath* result) {
+ #endif
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+     case chrome::DIR_STANDALONE_EXTERNAL_EXTENSIONS: {
+-      cur = base::FilePath(kFilepathSinglePrefExtensions);
++      if (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++          sandbox::FlatpakSandbox::SandboxLevel::kNone) {
++        cur = base::FilePath(
++            FILE_PATH_LITERAL("/app/chromium/extensions/extensions"));
++      } else {
++        cur = base::FilePath(kFilepathSinglePrefExtensions);
++      }
+       break;
+     }
+ #endif
+@@ -489,19 +508,25 @@ bool PathProvider(int key, base::FilePath* result) {
+     case chrome::DIR_NATIVE_MESSAGING:
+ #if BUILDFLAG(IS_MAC)
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-      cur = base::FilePath(FILE_PATH_LITERAL(
+-           "/Library/Google/Chrome/NativeMessagingHosts"));
++      cur = base::FilePath(
++          FILE_PATH_LITERAL("/Library/Google/Chrome/NativeMessagingHosts"));
+ #else
+       cur = base::FilePath(FILE_PATH_LITERAL(
+           "/Library/Application Support/Chromium/NativeMessagingHosts"));
+ #endif
+ #else  // BUILDFLAG(IS_MAC)
++      if (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++          sandbox::FlatpakSandbox::SandboxLevel::kNone) {
++        cur = base::FilePath(FILE_PATH_LITERAL(
++            "/app/chromium/extensions/native-messaging-hosts"));
++        break;
++      }
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-      cur = base::FilePath(FILE_PATH_LITERAL(
+-          "/etc/opt/chrome/native-messaging-hosts"));
++      cur = base::FilePath(
++          FILE_PATH_LITERAL("/etc/opt/chrome/native-messaging-hosts"));
+ #else
+-      cur = base::FilePath(FILE_PATH_LITERAL(
+-          "/etc/chromium/native-messaging-hosts"));
++      cur = base::FilePath(
++          FILE_PATH_LITERAL("/etc/chromium/native-messaging-hosts"));
+ #endif
+ #endif  // !BUILDFLAG(IS_MAC)
+       break;
+-- 
+2.39.2
+

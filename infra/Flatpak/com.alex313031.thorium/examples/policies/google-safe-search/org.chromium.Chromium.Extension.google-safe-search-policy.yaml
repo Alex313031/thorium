@@ -1,0 +1,18 @@
+app-id: org.chromium.Chromium.Extension.google-safe-search-policy
+# This should match the extension point version
+branch: '1'
+runtime: org.chromium.Chromium
+runtime-version: stable
+sdk: org.freedesktop.Sdk//20.08
+build-extension: true
+appstream-compose: false
+
+modules:
+  - name: policy
+    buildsystem: simple
+    build-commands:
+      - mkdir -p ${FLATPAK_DEST}/policies/managed
+      - install -Dm 644 google-safe-search.json ${FLATPAK_DEST}/policies/managed
+    sources:
+      - type: file
+        path: google-safe-search.json

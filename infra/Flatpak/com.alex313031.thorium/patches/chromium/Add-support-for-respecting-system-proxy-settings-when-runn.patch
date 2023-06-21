@@ -1,0 +1,388 @@
+From c91ff0722be8317f940d11474bff671b01b4636a Mon Sep 17 00:00:00 2001
+From: Andre Moreira Magalhaes <andre.magalhaes@endlessos.org>
+Date: Thu, 17 Dec 2020 19:05:10 -0300
+Subject: [PATCH] Add support for respecting system proxy settings when running
+ on Linux/Flatpak
+
+Some general notes on implementation:
+- The implementation uses the same codepath used when
+  `--winhttp-proxy-resolver` is passed as param, which uses the
+  `net::ProxyResolver` interface to determine the proxy given an url:
+  - This is due to limitations in the portal APIs which don't allow
+    access to the system proxy settings, and with that no reliable
+    way to implement a proper ProxyConfigService when on flatpak
+  - Despite the name of the param, this flag is not Windows(tm)
+    specific and also used on Mac builds
+  - This param may be removed at some point in the future, see
+    https://bugs.chromium.org/p/chromium/issues/detail?id=644030 but
+    it should be replaced with
+    https://bugs.chromium.org/p/chromium/issues/detail?id=1032820,
+    which from the looks of it would not require too many changes
+    to the impl here
+  - To avoid having to pass this param, this codepath is enabled
+     automatically when detecting we are running on flatpak
+- This means that proxy resolution is done by invoking
+  `net::ProxyResolver::GetProxyForURL()` (instead of relying on the
+  internal chromium mechanism based on the proxy settings, set to
+  "mode=auto" in this case), which in turn invokes
+  `g_proxy_resolver_lookup` which uses the portal API via D-Bus
+  - To avoid having one D-Bus call per
+    `net::ProxyResolver::GetProxyForURL()`, this implements a (very)
+    simple cache that gets invalidated every 1min (same default
+    timeout used on chromium dns refresh)
+- Another issue is that the impl will invoke the portal even if
+  proxy is disabled in the system, also because of a limitation
+  in the portal API where there is no way to know whether the
+  proxy is disabled
+- We could skip using the portal on KDE, given the flatpak has
+  access to $HOME today (and the impl just reads .ini files),
+  but this impl uses the same codepath no matter the DE when running
+  on flatpak
+
+Closes https://github.com/flathub/org.chromium.Chromium/issues/36
+---
+ chrome/app/generated_resources.grd            |   6 +
+ .../net/system_network_context_manager.cc     |   9 +-
+ chrome/browser/ui/webui/about_ui.cc           |  14 +-
+ net/BUILD.gn                                  |   8 ++
+ .../configured_proxy_resolution_service.cc    |   6 +-
+ .../proxy_config_service_linux.cc             |  10 +-
+ net/proxy_resolution/proxy_resolver_linux.cc  | 123 ++++++++++++++++++
+ net/proxy_resolution/proxy_resolver_linux.h   |  29 +++++
+ 8 files changed, 201 insertions(+), 4 deletions(-)
+ create mode 100644 net/proxy_resolution/proxy_resolver_linux.cc
+ create mode 100644 net/proxy_resolution/proxy_resolver_linux.h
+
+diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
+index 1632fdfac5b94..e020244444348 100644
+--- a/chrome/app/generated_resources.grd
++++ b/chrome/app/generated_resources.grd
+@@ -12358,6 +12358,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
+ 
+           &lt;p&gt;But you can still configure via the command line.  Please see &lt;code&gt;man <ph name="PRODUCT_BINARY_NAME">$2<ex>google-chrome</ex></ph>&lt;/code&gt; for more information on flags and environment variables.&lt;/p&gt;
+         </message>
++        <message name="IDS_ABOUT_LINUX_PROXY_CONFIG_FLATPAK_BODY" desc="HTML body of page shown on systems running with flatpak where system proxy configuration is unsupported.">
++          &lt;p&gt;The flatpak version of <ph name="PRODUCT_NAME">$1<ex>Google Chrome</ex></ph> does not support changing the system proxy settings. However, it does respect those settings.&lt;/p&gt;
++          &lt;p&gt;If you need to adjust the proxy settings, please do so through the configuration system of your desktop environment.&lt;/p&gt;
++
++          &lt;p&gt;You can also override your system proxy settings via the command line. Please see &lt;code&gt;man <ph name="PRODUCT_BINARY_NAME">$2<ex>google-chrome</ex></ph>&lt;/code&gt; for more information on flags and environment variables.&lt;/p&gt;
++        </message>
+       </if>
+ 
+       <message name="IDS_IMAGE_FILES" desc="The description of the image file extensions in the select file dialog.">
+diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
+index 35847a946ce57..52fb3b7721ee3 100644
+--- a/chrome/browser/net/system_network_context_manager.cc
++++ b/chrome/browser/net/system_network_context_manager.cc
+@@ -96,6 +96,7 @@
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
+ #include "chrome/common/chrome_paths_internal.h"
+ #include "chrome/grit/chromium_strings.h"
++#include "sandbox/linux/services/flatpak_sandbox.h"
+ #include "ui/base/l10n/l10n_util.h"
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
+ 
+@@ -771,7 +772,13 @@ void SystemNetworkContextManager::ConfigureDefaultNetworkContextParams(
+   // or if it does work, now.
+   // Should be possible now that a private isolate is used.
+   // http://crbug.com/474654
+-  if (!command_line.HasSwitch(switches::kWinHttpProxyResolver)) {
++  bool use_system_proxy_resolver = command_line.HasSwitch(switches::kWinHttpProxyResolver);
++#if defined(OS_LINUX)
++  bool use_flatpak_sandbox = (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++                              sandbox::FlatpakSandbox::SandboxLevel::kNone);
++  use_system_proxy_resolver |= use_flatpak_sandbox;
++#endif
++  if (!use_system_proxy_resolver) {
+     if (command_line.HasSwitch(switches::kSingleProcess)) {
+       LOG(ERROR) << "Cannot use V8 Proxy resolver in single process mode.";
+     } else {
+diff --git a/chrome/browser/ui/webui/about_ui.cc b/chrome/browser/ui/webui/about_ui.cc
+index 56d077d10879c..330f87ad252d7 100644
+--- a/chrome/browser/ui/webui/about_ui.cc
++++ b/chrome/browser/ui/webui/about_ui.cc
+@@ -87,6 +87,10 @@
+ #include "chrome/common/webui_url_constants.h"
+ #endif  // BUILDFLAG(IS_CHROMEOS)
+ 
++#if defined(OS_LINUX)
++#include "sandbox/linux/services/flatpak_sandbox.h"
++#endif
++
+ using content::BrowserThread;
+ 
+ namespace {
+@@ -611,8 +615,16 @@ std::string AboutLinuxProxyConfig() {
+   data.append("<style>body { max-width: 70ex; padding: 2ex 5ex; }</style>");
+   AppendBody(&data);
+   base::FilePath binary = base::CommandLine::ForCurrentProcess()->GetProgram();
++
++  int id = IDS_ABOUT_LINUX_PROXY_CONFIG_BODY;
++#if defined(OS_LINUX)
++  bool use_flatpak_sandbox = (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++                              sandbox::FlatpakSandbox::SandboxLevel::kNone);
++  if (use_flatpak_sandbox)
++    id = IDS_ABOUT_LINUX_PROXY_CONFIG_FLATPAK_BODY;
++#endif
+   data.append(
+-      l10n_util::GetStringFUTF8(IDS_ABOUT_LINUX_PROXY_CONFIG_BODY,
++      l10n_util::GetStringFUTF8(id,
+                                 l10n_util::GetStringUTF16(IDS_PRODUCT_NAME),
+                                 base::ASCIIToUTF16(binary.BaseName().value())));
+   AppendFooter(&data);
+diff --git a/net/BUILD.gn b/net/BUILD.gn
+index 355767d5e548f..40eda4de3c758 100644
+--- a/net/BUILD.gn
++++ b/net/BUILD.gn
+@@ -1231,6 +1231,13 @@ component("net") {
+     deps += [ "//third_party/xdg_shared_mime_info" ]
+   }
+ 
++  if (is_linux) {
++    sources += [
++      "proxy_resolution/proxy_resolver_linux.cc",
++      "proxy_resolution/proxy_resolver_linux.h",
++    ]
++  }
++
+   if (is_mac) {
+     sources += [
+       "base/network_notification_thread_mac.cc",
+@@ -1672,6 +1679,7 @@ source_set("net_deps") {
+ 
+   if (use_gio) {
+     public_configs += [ "//build/linux:gio_config" ]
++    public_deps += [ "//dbus" ]
+   }
+ 
+   if (is_android) {
+diff --git a/net/proxy_resolution/configured_proxy_resolution_service.cc b/net/proxy_resolution/configured_proxy_resolution_service.cc
+index 2463ee9c9c2bd..ff02aab556a81 100644
+--- a/net/proxy_resolution/configured_proxy_resolution_service.cc
++++ b/net/proxy_resolution/configured_proxy_resolution_service.cc
+@@ -49,6 +49,8 @@
+ #include "net/proxy_resolution/proxy_resolver_mac.h"
+ #elif BUILDFLAG(IS_MAC)
+ #include "net/proxy_resolution/proxy_resolver_mac.h"
++#elif BUILDFLAG(IS_LINUX)
++#include "net/proxy_resolution/proxy_resolver_linux.h"
+ #endif
+ 
+ using base::TimeTicks;
+@@ -230,6 +232,8 @@ class ProxyResolverFactoryForSystem : public MultiThreadedProxyResolverFactory {
+     return std::make_unique<ProxyResolverFactoryWinHttp>();
+ #elif BUILDFLAG(IS_APPLE)
+     return std::make_unique<ProxyResolverFactoryMac>();
++#elif defined(OS_LINUX)
++    return std::make_unique<ProxyResolverFactoryLinux>();
+ #else
+     NOTREACHED();
+     return nullptr;
+@@ -237,7 +241,7 @@ class ProxyResolverFactoryForSystem : public MultiThreadedProxyResolverFactory {
+   }
+ 
+   static bool IsSupported() {
+-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE)
++#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_LINUX)
+     return true;
+ #else
+     return false;
+diff --git a/net/proxy_resolution/proxy_config_service_linux.cc b/net/proxy_resolution/proxy_config_service_linux.cc
+index a74a05068239a..e0646499cacd1 100644
+--- a/net/proxy_resolution/proxy_config_service_linux.cc
++++ b/net/proxy_resolution/proxy_config_service_linux.cc
+@@ -35,6 +35,7 @@
+ #include "base/timer/timer.h"
+ #include "net/base/proxy_server.h"
+ #include "net/base/proxy_string_util.h"
++#include "sandbox/linux/services/flatpak_sandbox.h"
+ 
+ #if defined(USE_GIO)
+ #include <gio/gio.h>
+@@ -1074,11 +1075,18 @@ ProxyConfigServiceLinux::Delegate::GetConfigFromSettings() {
+   config.set_from_system(true);
+ 
+   std::string mode;
+-  if (!setting_getter_->GetString(SettingGetter::PROXY_MODE, &mode)) {
++  bool use_flatpak_sandbox = (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++                              sandbox::FlatpakSandbox::SandboxLevel::kNone);
++
++  if (!use_flatpak_sandbox &&
++      !setting_getter_->GetString(SettingGetter::PROXY_MODE, &mode)) {
+     // We expect this to always be set, so if we don't see it then we probably
+     // have a gsettings problem, and so we don't have a valid proxy config.
+     return absl::nullopt;
++  } else if (use_flatpak_sandbox) {
++    mode = "auto";
+   }
++
+   if (mode == "none") {
+     // Specifically specifies no proxy.
+     return ProxyConfigWithAnnotation(
+diff --git a/net/proxy_resolution/proxy_resolver_linux.cc b/net/proxy_resolution/proxy_resolver_linux.cc
+new file mode 100644
+index 0000000000000..3e3a252f0ef66
+--- /dev/null
++++ b/net/proxy_resolution/proxy_resolver_linux.cc
+@@ -0,0 +1,123 @@
++// Copyright (c) 2020 Endless OS Foundation LLC
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "net/proxy_resolution/proxy_resolver_linux.h"
++
++#include "base/time/time.h"
++#include "base/timer/timer.h"
++#include "net/base/net_errors.h"
++#include "net/proxy_resolution/proxy_info.h"
++#include "net/proxy_resolution/proxy_resolver.h"
++#include "sandbox/linux/services/flatpak_sandbox.h"
++
++#if defined(USE_GIO)
++#include <gio/gio.h>
++#endif  // defined(USE_GIO)
++
++namespace net {
++
++namespace {
++
++#if defined(USE_GIO)
++// Same TTL used for DNS caches, see net/dns/host_resolver_manager.cc
++static const unsigned kCacheExpireSeconds = 60;
++
++class ProxyResolverLinuxImplPortal : public ProxyResolver {
++ public:
++  explicit ProxyResolverLinuxImplPortal();
++  ~ProxyResolverLinuxImplPortal() override;
++
++  // ProxyResolver methods:
++  int GetProxyForURL(const GURL& url,
++                     const NetworkAnonymizationKey& network_anonymization_key,
++                     ProxyInfo* results,
++                     CompletionOnceCallback callback,
++                     std::unique_ptr<Request>* request,
++                     const NetLogWithSource& net_log) override;
++
++ private:
++  void InvalidateCache();
++
++  // Both InvalidateCache and GetProxyForURL run on the same thread,
++  // no need for explicit synchronization here
++  std::map<std::string, std::string> cache_;
++  base::RepeatingTimer cacheInvalidateTimer_;
++
++  GCancellable* cancellable_;
++};
++
++ProxyResolverLinuxImplPortal::ProxyResolverLinuxImplPortal() {
++  cancellable_ = g_cancellable_new();
++
++  cacheInvalidateTimer_.Start(FROM_HERE, base::Seconds(kCacheExpireSeconds),
++                              this,
++                              &ProxyResolverLinuxImplPortal::InvalidateCache);
++}
++
++ProxyResolverLinuxImplPortal::~ProxyResolverLinuxImplPortal() {
++  g_cancellable_cancel(cancellable_);
++  g_clear_object(&cancellable_);
++  cacheInvalidateTimer_.Stop();
++}
++
++// Runs on the worker thread
++int ProxyResolverLinuxImplPortal::GetProxyForURL(
++    const GURL& query_url,
++    const NetworkAnonymizationKey& /* network_anonymization_key_key */,
++    ProxyInfo* results,
++    CompletionOnceCallback /* callback */,
++    std::unique_ptr<Request>* /* request */,
++    const NetLogWithSource& /* net_log */) {
++  std::map<std::string, std::string>::const_iterator it =
++      cache_.find(query_url.spec());
++  if (it != cache_.end()) {
++    results->UseNamedProxy(it->second);
++    return OK;
++  }
++
++  GProxyResolver* resolver = g_proxy_resolver_get_default();
++  // TODO: support async resolution if 'request' is non-null - the current
++  // consumer is MultiThreadProxyResolver which always expects a sync
++  // resolver
++  // TODO: handle/warn on error
++  g_auto(GStrv) proxy_list = g_proxy_resolver_lookup(
++      resolver, query_url.spec().c_str(), cancellable_, NULL);
++  if (proxy_list) {
++    g_autofree gchar* proxy_list_str = g_strjoinv(";", proxy_list);
++    if (proxy_list_str && proxy_list_str[0] != '\0') {
++      cache_[query_url.spec()] = proxy_list_str;
++      results->UseNamedProxy(proxy_list_str);
++    }
++  }
++
++  return OK;
++}
++
++void ProxyResolverLinuxImplPortal::InvalidateCache() {
++  cache_.clear();
++}
++
++#endif  // defined(USE_GIO)
++
++}  // namespace
++
++ProxyResolverFactoryLinux::ProxyResolverFactoryLinux()
++    : ProxyResolverFactory(false /* expects_pac_bytes */) {}
++
++int ProxyResolverFactoryLinux::CreateProxyResolver(
++    const scoped_refptr<PacFileData>& pac_script,
++    std::unique_ptr<ProxyResolver>* resolver,
++    CompletionOnceCallback callback,
++    std::unique_ptr<Request>* request) {
++#if defined(USE_GIO)
++  if (sandbox::FlatpakSandbox::GetInstance()->GetSandboxLevel() >
++      sandbox::FlatpakSandbox::SandboxLevel::kNone) {
++    resolver->reset(new ProxyResolverLinuxImplPortal());
++    return OK;
++  }
++#endif
++  return ERR_NOT_IMPLEMENTED;
++}
++
++}  // namespace net
+diff --git a/net/proxy_resolution/proxy_resolver_linux.h b/net/proxy_resolution/proxy_resolver_linux.h
+new file mode 100644
+index 0000000000000..7ae45eeae1a43
+--- /dev/null
++++ b/net/proxy_resolution/proxy_resolver_linux.h
+@@ -0,0 +1,29 @@
++// Copyright (c) 2020 Endless OS Foundation LLC
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef NET_PROXY_RESOLUTION_PROXY_RESOLVER_LINUX_H_
++#define NET_PROXY_RESOLUTION_PROXY_RESOLVER_LINUX_H_
++
++#include "net/base/completion_once_callback.h"
++#include "net/base/net_export.h"
++#include "net/proxy_resolution/proxy_resolver_factory.h"
++#include "url/gurl.h"
++
++namespace net {
++
++class NET_EXPORT ProxyResolverFactoryLinux : public ProxyResolverFactory {
++ public:
++  ProxyResolverFactoryLinux();
++  ProxyResolverFactoryLinux(const ProxyResolverFactoryLinux&) = delete;
++  ProxyResolverFactoryLinux(ProxyResolverFactoryLinux&&) = delete;
++
++  int CreateProxyResolver(const scoped_refptr<PacFileData>& pac_script,
++                          std::unique_ptr<ProxyResolver>* resolver,
++                          CompletionOnceCallback callback,
++                          std::unique_ptr<Request>* request) override;
++};
++
++}  // namespace net
++
++#endif  // NET_PROXY_RESOLUTION_PROXY_RESOLVER_LINUX_H_
+-- 
+2.39.2
+

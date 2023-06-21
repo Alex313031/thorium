@@ -1,0 +1,29 @@
+Your Flatpak version does not support a feature needed for this Chromium Flatpak
+to run. This generally happens when your distribution has unprivileged user
+namespaces disabled.
+
+========== FOR DEBIAN FAMILY USERS ==========
+
+If the distro you are currently using is Debian or a derivative, you can run the
+following commands as root (you can enter a root shell via 'sudo -i'):
+
+dpkg-statoverride --update --add root root 0755 /usr/bin/bwrap
+echo kernel.unprivileged_userns_clone=1 > /etc/sysctl.d/50-bubblewrap.conf
+sudo sysctl -w kernel.unprivileged_userns_clone=1
+
+========== FOR OTHER DISTROS =========
+
+If you installed a "hardened" security kernel, these also usually disable
+unprivileged user namespaces. They can be re-enabled by running the following
+as root (you can enter a root shell via 'sudo -i'):
+
+echo kernel.unprivileged_userns_clone=1 > /etc/sysctl.d/50-bubblewrap.conf
+sudo sysctl -w kernel.unprivileged_userns_clone=1
+
+If 'ls -l /usr/bin/bwrap' contains 'rws', then bwrap is also setuid. This can be
+removed, if present, via:
+
+sudo chmod u-s /usr/bin/bwrap
+
+However, note that the permissions may be overridden on the next update of your
+distro's bubblewrap package.

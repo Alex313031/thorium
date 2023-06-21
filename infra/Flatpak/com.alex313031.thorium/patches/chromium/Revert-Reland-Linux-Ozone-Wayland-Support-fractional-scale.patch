@@ -1,0 +1,1118 @@
+From a1dd39af55603f173d99f6461a54b6f385683fca Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <git@refi64.dev>
+Date: Wed, 31 May 2023 14:11:43 -0500
+Subject: [PATCH] Revert "Reland "[Linux/Ozone/Wayland] Support
+ fractional-scale-v1""
+
+This reverts commit c8b4f6bb5bf563e9e94f1069433cea1023177aba.
+---
+ ui/ozone/common/features.cc                   |  15 --
+ ui/ozone/common/features.h                    |   2 -
+ ui/ozone/platform/wayland/BUILD.gn            |   3 -
+ .../platform/wayland/common/wayland_object.cc |   3 -
+ .../platform/wayland/common/wayland_object.h  |   2 -
+ .../wayland/gpu/wayland_buffer_manager_gpu.cc |   2 -
+ .../wayland/gpu/wayland_buffer_manager_gpu.h  |   5 -
+ .../gpu/wayland_overlay_manager_unittest.cc   |   3 +-
+ .../gpu/wayland_surface_factory_unittest.cc   |   3 +-
+ .../wayland/host/fractional_scale_manager.cc  |  58 -------
+ .../wayland/host/fractional_scale_manager.h   |  29 ----
+ .../host/wayland_buffer_manager_connector.cc  |   1 -
+ .../host/wayland_buffer_manager_host.cc       |   4 -
+ .../host/wayland_buffer_manager_host.h        |   1 -
+ .../wayland/host/wayland_connection.cc        |   8 -
+ .../wayland/host/wayland_connection.h         |  36 -----
+ .../host/wayland_data_drag_controller.cc      |   6 -
+ .../platform/wayland/host/wayland_output.cc   |   4 +-
+ .../platform/wayland/host/wayland_surface.cc  | 142 +++---------------
+ .../platform/wayland/host/wayland_surface.h   |  28 +---
+ .../platform/wayland/host/wayland_window.cc   |   5 +-
+ .../wayland/host/wayland_window_unittest.cc   |  16 +-
+ .../wayland_zcr_color_manager_unittest.cc     |   4 +-
+ .../mojom/wayland_buffer_manager.mojom        |   3 -
+ .../wayland/ozone_platform_wayland.cc         |  12 +-
+ .../wayland/test/test_wayland_server_thread.h |   1 -
+ .../wayland_buffer_manager_unittest.cc        |  52 ++-----
+ 27 files changed, 58 insertions(+), 390 deletions(-)
+ delete mode 100644 ui/ozone/platform/wayland/host/fractional_scale_manager.cc
+ delete mode 100644 ui/ozone/platform/wayland/host/fractional_scale_manager.h
+
+diff --git a/ui/ozone/common/features.cc b/ui/ozone/common/features.cc
+index 98bc2f0b5d304..92d4f0448096f 100644
+--- a/ui/ozone/common/features.cc
++++ b/ui/ozone/common/features.cc
+@@ -26,17 +26,6 @@ BASE_FEATURE(kWaylandSurfaceSubmissionInPixelCoordinates,
+ #endif
+ );
+ 
+-// Controls whether support for the fractional_scale_v1 protocol should be
+-// enabled.
+-BASE_FEATURE(kWaylandFractionalScaleV1,
+-             "WaylandFractionalScaleV1",
+-#if BUILDFLAG(IS_LINUX)
+-             base::FEATURE_ENABLED_BY_DEFAULT
+-#else
+-             base::FEATURE_DISABLED_BY_DEFAULT
+-#endif
+-);
+-
+ // This debug/dev flag pretty-prints DRM modeset configuration logs for ease
+ // of reading. For more information, see: http://b/233006802
+ BASE_FEATURE(kPrettyPrintDrmModesetConfigLogs,
+@@ -52,10 +41,6 @@ bool IsWaylandOverlayDelegationEnabled() {
+   return base::FeatureList::IsEnabled(kWaylandOverlayDelegation);
+ }
+ 
+-bool IsWaylandFractionalScaleV1Enabled() {
+-  return base::FeatureList::IsEnabled(kWaylandFractionalScaleV1);
+-}
+-
+ bool IsPrettyPrintDrmModesetConfigLogsEnabled() {
+   return base::FeatureList::IsEnabled(kPrettyPrintDrmModesetConfigLogs);
+ }
+diff --git a/ui/ozone/common/features.h b/ui/ozone/common/features.h
+index 76fade990c68c..e4ba5cf582260 100644
+--- a/ui/ozone/common/features.h
++++ b/ui/ozone/common/features.h
+@@ -11,12 +11,10 @@ namespace ui {
+ 
+ BASE_DECLARE_FEATURE(kWaylandSurfaceSubmissionInPixelCoordinates);
+ BASE_DECLARE_FEATURE(kWaylandOverlayDelegation);
+-BASE_DECLARE_FEATURE(kWaylandFractionalScaleV1);
+ BASE_DECLARE_FEATURE(kPrettyPrintDrmModesetConfigLogs);
+ 
+ bool IsWaylandSurfaceSubmissionInPixelCoordinatesEnabled();
+ bool IsWaylandOverlayDelegationEnabled();
+-bool IsWaylandFractionalScaleV1Enabled();
+ bool IsPrettyPrintDrmModesetConfigLogsEnabled();
+ 
+ }  // namespace ui
+diff --git a/ui/ozone/platform/wayland/BUILD.gn b/ui/ozone/platform/wayland/BUILD.gn
+index ebe4a339a343e..fc68bb7c80fa4 100644
+--- a/ui/ozone/platform/wayland/BUILD.gn
++++ b/ui/ozone/platform/wayland/BUILD.gn
+@@ -48,8 +48,6 @@ source_set("wayland") {
+     "gpu/wayland_surface_factory.cc",
+     "gpu/wayland_surface_factory.h",
+     "gpu/wayland_surface_gpu.h",
+-    "host/fractional_scale_manager.cc",
+-    "host/fractional_scale_manager.h",
+     "host/gtk_primary_selection_device.cc",
+     "host/gtk_primary_selection_device.h",
+     "host/gtk_primary_selection_device_manager.cc",
+@@ -250,7 +248,6 @@ source_set("wayland") {
+     "//third_party/wayland-protocols:content_type_protocol",
+     "//third_party/wayland-protocols:cursor_shapes_protocol",
+     "//third_party/wayland-protocols:extended_drag",
+-    "//third_party/wayland-protocols:fractional_scale_protocol",
+     "//third_party/wayland-protocols:gtk_primary_selection_protocol",
+     "//third_party/wayland-protocols:gtk_shell_protocol",
+     "//third_party/wayland-protocols:idle_inhibit_protocol",
+diff --git a/ui/ozone/platform/wayland/common/wayland_object.cc b/ui/ozone/platform/wayland/common/wayland_object.cc
+index a1089b0fec14c..9a790e189584b 100644
+--- a/ui/ozone/platform/wayland/common/wayland_object.cc
++++ b/ui/ozone/platform/wayland/common/wayland_object.cc
+@@ -10,7 +10,6 @@
+ #include <content-type-v1-client-protocol.h>
+ #include <cursor-shapes-unstable-v1-client-protocol.h>
+ #include <extended-drag-unstable-v1-client-protocol.h>
+-#include <fractional-scale-v1-client-protocol.h>
+ #include <gtk-primary-selection-client-protocol.h>
+ #include <gtk-shell-client-protocol.h>
+ #include <idle-client-protocol.h>
+@@ -226,8 +225,6 @@ IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_viewport)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_viewporter)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_content_type_v1)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_content_type_manager_v1)
+-IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_fractional_scale_manager_v1)
+-IMPLEMENT_WAYLAND_OBJECT_TRAITS(wp_fractional_scale_v1)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(xdg_activation_v1)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(xdg_activation_token_v1)
+ IMPLEMENT_WAYLAND_OBJECT_TRAITS(xdg_popup)
+diff --git a/ui/ozone/platform/wayland/common/wayland_object.h b/ui/ozone/platform/wayland/common/wayland_object.h
+index af491c78018ed..6f8971cbbc9d5 100644
+--- a/ui/ozone/platform/wayland/common/wayland_object.h
++++ b/ui/ozone/platform/wayland/common/wayland_object.h
+@@ -145,8 +145,6 @@ DECLARE_WAYLAND_OBJECT_TRAITS(wp_viewport)
+ DECLARE_WAYLAND_OBJECT_TRAITS(wp_viewporter)
+ DECLARE_WAYLAND_OBJECT_TRAITS(wp_content_type_manager_v1)
+ DECLARE_WAYLAND_OBJECT_TRAITS(wp_content_type_v1)
+-DECLARE_WAYLAND_OBJECT_TRAITS(wp_fractional_scale_manager_v1)
+-DECLARE_WAYLAND_OBJECT_TRAITS(wp_fractional_scale_v1)
+ DECLARE_WAYLAND_OBJECT_TRAITS(xdg_activation_v1)
+ DECLARE_WAYLAND_OBJECT_TRAITS(xdg_activation_token_v1)
+ DECLARE_WAYLAND_OBJECT_TRAITS(xdg_popup)
+diff --git a/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.cc b/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.cc
+index 49c9f1c60cff5..bd3b4074e2416 100644
+--- a/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.cc
++++ b/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.cc
+@@ -76,7 +76,6 @@ void WaylandBufferManagerGpu::Initialize(
+     bool supports_dma_buf,
+     bool supports_viewporter,
+     bool supports_acquire_fence,
+-    bool supports_overlays,
+     uint32_t supported_surface_augmentor_version) {
+   DCHECK_CALLED_ON_VALID_SEQUENCE(gpu_sequence_checker_);
+ 
+@@ -88,7 +87,6 @@ void WaylandBufferManagerGpu::Initialize(
+   supports_viewporter_ = supports_viewporter;
+   supports_acquire_fence_ = supports_acquire_fence;
+   supports_dmabuf_ = supports_dma_buf;
+-  supports_overlays_ = supports_overlays;
+ 
+   supports_non_backed_solid_color_buffers_ =
+       supported_surface_augmentor_version >=
+diff --git a/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h b/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h
+index 4ea62111fc7e1..4e6dbda0bed4e 100644
+--- a/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h
++++ b/ui/ozone/platform/wayland/gpu/wayland_buffer_manager_gpu.h
+@@ -60,7 +60,6 @@ class WaylandBufferManagerGpu : public ozone::mojom::WaylandBufferManagerGpu {
+       bool supports_dma_buf,
+       bool supports_viewporter,
+       bool supports_acquire_fence,
+-      bool supports_overlays,
+       uint32_t supported_surface_augmentor_version) override;
+ 
+   // These two calls get the surface, which backs the |widget| and notifies it
+@@ -151,7 +150,6 @@ class WaylandBufferManagerGpu : public ozone::mojom::WaylandBufferManagerGpu {
+ 
+   bool supports_acquire_fence() const { return supports_acquire_fence_; }
+   bool supports_viewporter() const { return supports_viewporter_; }
+-  bool supports_overlays() const { return supports_overlays_; }
+   bool supports_non_backed_solid_color_buffers() const {
+     return supports_non_backed_solid_color_buffers_;
+   }
+@@ -261,9 +259,6 @@ class WaylandBufferManagerGpu : public ozone::mojom::WaylandBufferManagerGpu {
+   // cropping and scaling buffers.
+   bool supports_viewporter_ = false;
+ 
+-  // Whether delegated overlays should be used for this Wayland server.
+-  bool supports_overlays_ = false;
+-
+   // Determines whether solid color overlays can be delegated without a backing
+   // image via a wayland protocol.
+   bool supports_non_backed_solid_color_buffers_ = false;
+diff --git a/ui/ozone/platform/wayland/gpu/wayland_overlay_manager_unittest.cc b/ui/ozone/platform/wayland/gpu/wayland_overlay_manager_unittest.cc
+index 23f27680f692f..12c4b13141fcb 100644
+--- a/ui/ozone/platform/wayland/gpu/wayland_overlay_manager_unittest.cc
++++ b/ui/ozone/platform/wayland/gpu/wayland_overlay_manager_unittest.cc
+@@ -58,8 +58,7 @@ class WaylandOverlayManagerTest : public WaylandTest {
+         std::move(manager_ptr), kSupportedFormatsWithModifiers,
+         /*supports_dma_buf=*/false,
+         /*supports_viewporter=*/true,
+-        /*supports_acquire_fence=*/false,
+-        /*supports_overlays=*/true, kAugmentedSurfaceNotSupportedVersion);
++        /*supports_acquire_fence=*/false, kAugmentedSurfaceNotSupportedVersion);
+ 
+     // Wait until initialization and mojo calls go through.
+     base::RunLoop().RunUntilIdle();
+diff --git a/ui/ozone/platform/wayland/gpu/wayland_surface_factory_unittest.cc b/ui/ozone/platform/wayland/gpu/wayland_surface_factory_unittest.cc
+index a529cabd39c67..b357a0bc89dc2 100644
+--- a/ui/ozone/platform/wayland/gpu/wayland_surface_factory_unittest.cc
++++ b/ui/ozone/platform/wayland/gpu/wayland_surface_factory_unittest.cc
+@@ -207,8 +207,7 @@ class WaylandSurfaceFactoryTest : public WaylandTest {
+         std::move(manager_ptr), kSupportedFormatsWithModifiers,
+         /*supports_dma_buf=*/false,
+         /*supports_viewporter=*/true,
+-        /*supports_acquire_fence=*/false,
+-        /*supports_overlays=*/true, kAugmentedSurfaceNotSupportedVersion);
++        /*supports_acquire_fence=*/false, kAugmentedSurfaceNotSupportedVersion);
+ 
+     // Wait until initialization and mojo calls go through.
+     base::RunLoop().RunUntilIdle();
+diff --git a/ui/ozone/platform/wayland/host/fractional_scale_manager.cc b/ui/ozone/platform/wayland/host/fractional_scale_manager.cc
+deleted file mode 100644
+index fc2b8c3676ea8..0000000000000
+--- a/ui/ozone/platform/wayland/host/fractional_scale_manager.cc
++++ /dev/null
+@@ -1,58 +0,0 @@
+-// Copyright 2023 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#include "ui/ozone/platform/wayland/host/fractional_scale_manager.h"
+-
+-#include <fractional-scale-v1-client-protocol.h>
+-
+-#include "base/check_op.h"
+-#include "base/logging.h"
+-#include "ui/ozone/common/features.h"
+-#include "ui/ozone/platform/wayland/common/wayland_object.h"
+-#include "ui/ozone/platform/wayland/host/wayland_connection.h"
+-
+-namespace ui {
+-
+-namespace {
+-
+-constexpr uint32_t kMaxVersion = 1;
+-
+-}  // namespace
+-
+-// static
+-void FractionalScaleManager::Instantiate(WaylandConnection* connection,
+-                                         wl_registry* registry,
+-                                         uint32_t name,
+-                                         const std::string& interface,
+-                                         uint32_t version) {
+-  if (!IsWaylandFractionalScaleV1Enabled()) {
+-    return;
+-  }
+-
+-  CHECK_EQ(interface, kInterfaceName) << "Expected \"" << kInterfaceName
+-                                      << "\" but got \"" << interface << "\"";
+-
+-  if (connection->fractional_scale_manager_v1_) {
+-    return;
+-  }
+-
+-  auto instance = wl::Bind<::wp_fractional_scale_manager_v1>(
+-      registry, name, std::min(version, kMaxVersion));
+-  if (!instance) {
+-    LOG(ERROR) << "Failed to bind " << kInterfaceName;
+-    return;
+-  }
+-  connection->fractional_scale_manager_v1_ = std::move(instance);
+-
+-  connection->set_supports_viewporter_surface_scaling(true);
+-
+-  // Since using fractional_scale_v1 requires using viewport to rescale the
+-  // window to Wayland logical coordinates, using overlays in conjunction with
+-  // fractional_scale_v1 would require support for subpixel viewport
+-  // destination sizes and subpixel subsurface positions, which currently
+-  // isn't present on any non-exo Wayland compositors.
+-  connection->set_overlay_delegation_disabled(true);
+-}
+-
+-}  // namespace ui
+diff --git a/ui/ozone/platform/wayland/host/fractional_scale_manager.h b/ui/ozone/platform/wayland/host/fractional_scale_manager.h
+deleted file mode 100644
+index eae19681e49a0..0000000000000
+--- a/ui/ozone/platform/wayland/host/fractional_scale_manager.h
++++ /dev/null
+@@ -1,29 +0,0 @@
+-// Copyright 2023 The Chromium Authors
+-// Use of this source code is governed by a BSD-style license that can be
+-// found in the LICENSE file.
+-
+-#ifndef UI_OZONE_PLATFORM_WAYLAND_HOST_FRACTIONAL_SCALE_MANAGER_H_
+-#define UI_OZONE_PLATFORM_WAYLAND_HOST_FRACTIONAL_SCALE_MANAGER_H_
+-
+-#include "ui/ozone/platform/wayland/common/wayland_object.h"
+-
+-namespace ui {
+-
+-// Sets up the global wp_fractional_scale_manager_v1 instance.
+-class FractionalScaleManager
+-    : public wl::GlobalObjectRegistrar<FractionalScaleManager> {
+- public:
+-  static constexpr char kInterfaceName[] = "wp_fractional_scale_manager_v1";
+-
+-  static void Instantiate(WaylandConnection* connection,
+-                          wl_registry* registry,
+-                          uint32_t name,
+-                          const std::string& interface,
+-                          uint32_t version);
+-
+-  FractionalScaleManager() = delete;
+-};
+-
+-}  // namespace ui
+-
+-#endif  // UI_OZONE_PLATFORM_WAYLAND_HOST_FRACTIONAL_SCALE_MANAGER_H_
+diff --git a/ui/ozone/platform/wayland/host/wayland_buffer_manager_connector.cc b/ui/ozone/platform/wayland/host/wayland_buffer_manager_connector.cc
+index 09600c07ca176..4207d87e8e991 100644
+--- a/ui/ozone/platform/wayland/host/wayland_buffer_manager_connector.cc
++++ b/ui/ozone/platform/wayland/host/wayland_buffer_manager_connector.cc
+@@ -57,7 +57,6 @@ void WaylandBufferManagerConnector::OnGpuServiceLaunched(
+       std::move(pending_remote), buffer_formats_with_modifiers,
+       supports_dma_buf, buffer_manager_host_->SupportsViewporter(),
+       buffer_manager_host_->SupportsAcquireFence(),
+-      buffer_manager_host_->SupportsOverlays(),
+       buffer_manager_host_->GetSurfaceAugmentorVersion());
+ }
+ 
+diff --git a/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.cc b/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.cc
+index f7e22308d0360..4d12410ed4a10 100644
+--- a/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.cc
++++ b/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.cc
+@@ -98,10 +98,6 @@ bool WaylandBufferManagerHost::SupportsNonBackedSolidColorBuffers() const {
+   return !!connection_->surface_augmenter();
+ }
+ 
+-bool WaylandBufferManagerHost::SupportsOverlays() const {
+-  return connection_->ShouldUseOverlayDelegation();
+-}
+-
+ uint32_t WaylandBufferManagerHost::GetSurfaceAugmentorVersion() const {
+   auto* augmenter = connection_->surface_augmenter();
+   return augmenter ? augmenter->GetSurfaceAugmentorVersion() : 0u;
+diff --git a/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.h b/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.h
+index ced92039cbc59..41431403b8acc 100644
+--- a/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.h
++++ b/ui/ozone/platform/wayland/host/wayland_buffer_manager_host.h
+@@ -70,7 +70,6 @@ class WaylandBufferManagerHost : public ozone::mojom::WaylandBufferManagerHost {
+   bool SupportsDmabuf() const;
+   bool SupportsAcquireFence() const;
+   bool SupportsViewporter() const;
+-  bool SupportsOverlays() const;
+   bool SupportsNonBackedSolidColorBuffers() const;
+   uint32_t GetSurfaceAugmentorVersion() const;
+ 
+diff --git a/ui/ozone/platform/wayland/host/wayland_connection.cc b/ui/ozone/platform/wayland/host/wayland_connection.cc
+index ebc669717b849..951b9433ccf43 100644
+--- a/ui/ozone/platform/wayland/host/wayland_connection.cc
++++ b/ui/ozone/platform/wayland/host/wayland_connection.cc
+@@ -27,8 +27,6 @@
+ #include "ui/events/ozone/layout/keyboard_layout_engine_manager.h"
+ #include "ui/gfx/geometry/point.h"
+ #include "ui/ozone/common/features.h"
+-#include "ui/ozone/platform/wayland/common/wayland_object.h"
+-#include "ui/ozone/platform/wayland/host/fractional_scale_manager.h"
+ #include "ui/ozone/platform/wayland/host/gtk_primary_selection_device_manager.h"
+ #include "ui/ozone/platform/wayland/host/gtk_shell1.h"
+ #include "ui/ozone/platform/wayland/host/org_kde_kwin_idle.h"
+@@ -131,8 +129,6 @@ WaylandConnection::~WaylandConnection() = default;
+ bool WaylandConnection::Initialize() {
+   // Register factories for classes that implement wl::GlobalObjectRegistrar<T>.
+   // Keep alphabetical order for convenience.
+-  RegisterGlobalObjectFactory(FractionalScaleManager::kInterfaceName,
+-                              &FractionalScaleManager::Instantiate);
+   RegisterGlobalObjectFactory(GtkPrimarySelectionDeviceManager::kInterfaceName,
+                               &GtkPrimarySelectionDeviceManager::Instantiate);
+   RegisterGlobalObjectFactory(GtkShell1::kInterfaceName,
+@@ -615,10 +611,6 @@ const gfx::PointF WaylandConnection::MaybeConvertLocation(
+   return converted;
+ }
+ 
+-bool WaylandConnection::ShouldUseOverlayDelegation() const {
+-  return IsWaylandOverlayDelegationEnabled() && !overlay_delegation_disabled_;
+-}
+-
+ // static
+ void WaylandConnection::GlobalRemove(void* data,
+                                      wl_registry* registry,
+diff --git a/ui/ozone/platform/wayland/host/wayland_connection.h b/ui/ozone/platform/wayland/host/wayland_connection.h
+index 4462b62a779df..c0197481bab7f 100644
+--- a/ui/ozone/platform/wayland/host/wayland_connection.h
++++ b/ui/ozone/platform/wayland/host/wayland_connection.h
+@@ -160,10 +160,6 @@ class WaylandConnection {
+     return xdg_output_manager_.get();
+   }
+ 
+-  wp_fractional_scale_manager_v1* fractional_scale_manager_v1() const {
+-    return fractional_scale_manager_v1_.get();
+-  }
+-
+   void SetPlatformCursor(wl_cursor* cursor_data, int buffer_scale);
+ 
+   void SetCursorBufferListener(WaylandCursorBufferListener* listener);
+@@ -301,29 +297,6 @@ class WaylandConnection {
+     surface_submission_in_pixel_coordinates_ = enabled;
+   }
+ 
+-  bool supports_viewporter_surface_scaling() const {
+-    return supports_viewporter_surface_scaling_;
+-  }
+-
+-  void set_supports_viewporter_surface_scaling(bool enabled) {
+-    supports_viewporter_surface_scaling_ = enabled;
+-  }
+-
+-  bool UseViewporterSurfaceScaling() {
+-    return supports_viewporter_surface_scaling_ &&
+-           !surface_submission_in_pixel_coordinates_;
+-  }
+-
+-  bool overlay_delegation_disabled() const {
+-    return overlay_delegation_disabled_;
+-  }
+-
+-  void set_overlay_delegation_disabled(bool disabled) {
+-    overlay_delegation_disabled_ = disabled;
+-  }
+-
+-  bool ShouldUseOverlayDelegation() const;
+-
+   wl::SerialTracker& serial_tracker() { return serial_tracker_; }
+ 
+   void set_tablet_layout_state(display::TabletState tablet_layout_state) {
+@@ -347,7 +320,6 @@ class WaylandConnection {
+   // makes it possible to avoid exposing setters for all those global objects:
+   // these setters would only be needed by the globals but would be visible to
+   // everyone.
+-  friend class FractionalScaleManager;
+   friend class GtkPrimarySelectionDeviceManager;
+   friend class GtkShell1;
+   friend class OrgKdeKwinIdle;
+@@ -431,7 +403,6 @@ class WaylandConnection {
+   wl::Object<zxdg_decoration_manager_v1> xdg_decoration_manager_;
+   wl::Object<zcr_extended_drag_v1> extended_drag_v1_;
+   wl::Object<zxdg_output_manager_v1> xdg_output_manager_;
+-  wl::Object<wp_fractional_scale_manager_v1> fractional_scale_manager_v1_;
+ 
+   // Manages Wayland windows.
+   WaylandWindowManager window_manager_{this};
+@@ -502,13 +473,6 @@ class WaylandConnection {
+   // sizes.
+   bool surface_submission_in_pixel_coordinates_ = false;
+ 
+-  // This is set if wp_viewporter may be used to instruct the compositor to
+-  // properly scale fractional scaled surfaces.
+-  bool supports_viewporter_surface_scaling_ = false;
+-
+-  // This is set if delegated composition should not be used.
+-  bool overlay_delegation_disabled_ = false;
+-
+   wl::SerialTracker serial_tracker_;
+ 
+   // Global Wayland interfaces available in the current session, with their
+diff --git a/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc b/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
+index 6494e0a05e37f..2b3a4ff6cdbbc 100644
+--- a/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
++++ b/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
+@@ -4,8 +4,6 @@
+ 
+ #include "ui/ozone/platform/wayland/host/wayland_data_drag_controller.h"
+ 
+-#include <viewporter-client-protocol.h>
+-
+ #include <bitset>
+ #include <cstdint>
+ #include <memory>
+@@ -294,10 +292,6 @@ void WaylandDataDragController::DrawIconInternal() {
+                       pending_icon_offset_.x() - current_icon_offset_.x(),
+                       pending_icon_offset_.y() - current_icon_offset_.y());
+   }
+-  if (connection_->UseViewporterSurfaceScaling() && icon_surface_->viewport()) {
+-    wp_viewport_set_destination(icon_surface_->viewport(), size_dip.width(),
+-                                size_dip.height());
+-  }
+   wl_surface_damage(surface, 0, 0, size_px.width(), size_px.height());
+   wl_surface_commit(surface);
+ 
+diff --git a/ui/ozone/platform/wayland/host/wayland_output.cc b/ui/ozone/platform/wayland/host/wayland_output.cc
+index 1a7be4d1e9092..3723e4cb34325 100644
+--- a/ui/ozone/platform/wayland/host/wayland_output.cc
++++ b/ui/ozone/platform/wayland/host/wayland_output.cc
+@@ -191,9 +191,7 @@ void WaylandOutput::UpdateMetrics() {
+ 
+   if (xdg_output_) {
+     xdg_output_->UpdateMetrics(
+-        connection_->surface_submission_in_pixel_coordinates() ||
+-            connection_->supports_viewporter_surface_scaling(),
+-        metrics_);
++        connection_->surface_submission_in_pixel_coordinates(), metrics_);
+   }
+   if (aura_output_) {
+     aura_output_->UpdateMetrics(metrics_);
+diff --git a/ui/ozone/platform/wayland/host/wayland_surface.cc b/ui/ozone/platform/wayland/host/wayland_surface.cc
+index 3d81da0f3a378..737dec097aab7 100644
+--- a/ui/ozone/platform/wayland/host/wayland_surface.cc
++++ b/ui/ozone/platform/wayland/host/wayland_surface.cc
+@@ -7,7 +7,6 @@
+ #include <alpha-compositing-unstable-v1-client-protocol.h>
+ #include <chrome-color-management-client-protocol.h>
+ #include <content-type-v1-client-protocol.h>
+-#include <fractional-scale-v1-client-protocol.h>
+ #include <linux-explicit-synchronization-unstable-v1-client-protocol.h>
+ #include <overlay-prioritizer-client-protocol.h>
+ #include <surface-augmenter-client-protocol.h>
+@@ -29,7 +28,6 @@
+ #include "ui/gfx/native_widget_types.h"
+ #include "ui/gfx/overlay_priority_hint.h"
+ #include "ui/ozone/platform/wayland/common/wayland_util.h"
+-#include "ui/ozone/platform/wayland/host/fractional_scale_manager.h"
+ #include "ui/ozone/platform/wayland/host/overlay_prioritizer.h"
+ #include "ui/ozone/platform/wayland/host/surface_augmenter.h"
+ #include "ui/ozone/platform/wayland/host/wayland_buffer_handle.h"
+@@ -93,9 +91,7 @@ WaylandSurface::WaylandSurface(WaylandConnection* connection,
+       root_window_(root_window),
+       surface_(connection->CreateSurface()),
+       surface_submission_in_pixel_coordinates_(
+-          connection->surface_submission_in_pixel_coordinates()),
+-      use_viewporter_surface_scaling_(
+-          connection->UseViewporterSurfaceScaling()) {}
++          connection->surface_submission_in_pixel_coordinates()) {}
+ 
+ WaylandSurface::~WaylandSurface() {
+   for (auto& release : linux_buffer_releases_) {
+@@ -124,18 +120,6 @@ bool WaylandSurface::Initialize() {
+   };
+   wl_surface_add_listener(surface_.get(), &surface_listener, this);
+ 
+-  if (auto* fractional_scale_manager =
+-          connection_->fractional_scale_manager_v1()) {
+-    static struct wp_fractional_scale_v1_listener fractional_scale_listener {
+-      &WaylandSurface::PreferredScale,
+-    };
+-    fractional_scale_ =
+-        wl::Object(wp_fractional_scale_manager_v1_get_fractional_scale(
+-            fractional_scale_manager, surface_.get()));
+-    wp_fractional_scale_v1_add_listener(fractional_scale_.get(),
+-                                        &fractional_scale_listener, this);
+-  }
+-
+   if (connection_->viewporter()) {
+     viewport_.reset(
+         wp_viewporter_get_viewport(connection_->viewporter(), surface()));
+@@ -295,15 +279,8 @@ void WaylandSurface::set_surface_buffer_scale(float scale) {
+ 
+   if (apply_state_immediately_) {
+     state_.buffer_scale_float = pending_state_.buffer_scale_float;
+-    if (!(surface_submission_in_pixel_coordinates_ ||
+-          use_viewporter_surface_scaling_)) {
+-      // It's safe to cast the result of GetWaylandScale to an integer here
+-      // because the buffer scale should always be integer when both surface
+-      // submission in pixel coordinates and viewporter surface scaling is
+-      // disabled.
+-      wl_surface_set_buffer_scale(
+-          surface_.get(), static_cast<int32_t>(GetWaylandScale(state_)));
+-    }
++    if (!surface_submission_in_pixel_coordinates_)
++      wl_surface_set_buffer_scale(surface_.get(), GetWaylandScale(state_));
+     if (root_window_)
+       root_window_->PropagateBufferScale(scale);
+   }
+@@ -353,49 +330,25 @@ void WaylandSurface::set_input_region(const gfx::Rect* region_px) {
+   }
+ }
+ 
+-float WaylandSurface::GetWaylandScale(const State& state) {
+-  if (surface_submission_in_pixel_coordinates_) {
++int WaylandSurface::GetWaylandScale(const State& state) {
++  if (surface_submission_in_pixel_coordinates_)
+     return 1;
+-  }
+-  return (state.buffer_scale_float < 1.f)
+-             ? 1.f
+-             : (use_viewporter_surface_scaling_
+-                    ? state.buffer_scale_float
+-                    : std::ceil(state.buffer_scale_float));
+-}
+-
+-bool WaylandSurface::IsViewportScaled(const State& state) {
+-  if (state.viewport_px.IsEmpty()) {
+-    return false;
+-  }
+-  gfx::SizeF src_size_px =
+-      wl::ApplyWaylandTransform(gfx::SizeF(state.buffer_size_px),
+-                                wl::ToWaylandTransform(state.buffer_transform));
+-  if (!state.crop.IsEmpty()) {
+-    const gfx::RectF crop_transformed = wl::ApplyWaylandTransform(
+-        state.crop, gfx::SizeF(1, 1),
+-        wl::ToWaylandTransform(state.buffer_transform));
+-    src_size_px = gfx::ScaleRect(crop_transformed, src_size_px.width(),
+-                                 src_size_px.height())
+-                      .size();
+-  }
+-  if (src_size_px != state.viewport_px) {
+-    return true;
+-  }
+-  return false;
++  return (state.buffer_scale_float < 1.0f)
++             ? 1
++             : std::ceil(state.buffer_scale_float);
+ }
+ 
+ wl::Object<wl_region> WaylandSurface::CreateAndAddRegion(
+     const std::vector<gfx::Rect>& region_px,
+-    float buffer_scale) {
++    int32_t buffer_scale) {
+   DCHECK(root_window_);
+-  DCHECK(!surface_submission_in_pixel_coordinates_ || buffer_scale == 1.f);
++  DCHECK(!surface_submission_in_pixel_coordinates_ || buffer_scale == 1);
+ 
+   wl::Object<wl_region> region(
+       wl_compositor_create_region(connection_->compositor()));
+ 
+   for (const auto& rect_px : region_px) {
+-    gfx::Rect rect = gfx::ScaleToEnclosedRect(rect_px, 1.f / buffer_scale);
++    gfx::Rect rect = gfx::ScaleToEnclosingRect(rect_px, 1.f / buffer_scale);
+     wl_region_add(region.get(), rect.x(), rect.y(), rect.width(),
+                   rect.height());
+   }
+@@ -609,58 +562,17 @@ void WaylandSurface::ApplyPendingState() {
+       wl::ToWaylandTransform(pending_state_.buffer_transform));
+   int32_t applying_surface_scale = surface_scale_set_;
+ 
+-  gfx::RectF crop = pending_state_.crop;
+-  gfx::SizeF viewport_px = pending_state_.viewport_px;
+-
+-  // If this is the root surface, no viewport scaling is requested, surface
+-  // submission in pixel coordinates is disabled and fractional_scale_v1 is in
+-  // use, then crop the buffer in accordance with the protocol specification to
+-  // ensure that a pixel on the window will correspond to a pixel on the
+-  // physical display.
+-  if (!surface_submission_in_pixel_coordinates_ &&
+-      connection_->fractional_scale_manager_v1() && root_window_ &&
+-      root_window_->root_surface() == this &&
+-      !IsViewportScaled(pending_state_)) {
+-    gfx::Size old_size_px =
+-        crop.IsEmpty()
+-            ? pending_state_.buffer_size_px
+-            : gfx::ToFlooredSize(
+-                  gfx::ScaleRect(crop, pending_state_.buffer_size_px.width(),
+-                                 pending_state_.buffer_size_px.height())
+-                      .size());
+-    gfx::Size new_size_dip = gfx::ScaleToFlooredSize(
+-        old_size_px, 1.f / pending_state_.buffer_scale_float);
+-    gfx::Size new_size_px = gfx::ScaleToRoundedSize(
+-        new_size_dip, pending_state_.buffer_scale_float);
+-    if (new_size_px != old_size_px) {
+-      crop.set_width(static_cast<float>(new_size_px.width()) /
+-                     static_cast<float>(pending_state_.buffer_size_px.width()));
+-      crop.set_height(
+-          static_cast<float>(new_size_px.height()) /
+-          static_cast<float>(pending_state_.buffer_size_px.height()));
+-      viewport_px = wl::ApplyWaylandTransform(
+-          gfx::SizeF(new_size_px),
+-          wl::ToWaylandTransform(pending_state_.buffer_transform));
+-    }
+-  }
+-
+-  if (viewport_px.IsEmpty() && use_viewporter_surface_scaling_) {
+-    // Force usage of viewporter when needed for fractional scaling.
+-    viewport_px = bounds;
+-  }
+-
+   // When viewport_px is set, wp_viewport will scale the surface accordingly.
+   // Thus, there is no need to downscale bounds as Wayland compositor
+   // understands that.
+-  if (!viewport_px.IsEmpty() && viewport()) {
++  if (!pending_state_.viewport_px.IsEmpty() && viewport()) {
+     // Unset buffer scale if wp_viewport.destination will be set.
+     applying_surface_scale = 1;
+   } else {
+     applying_surface_scale = GetWaylandScale(pending_state_);
+     bounds = gfx::ScaleSize(bounds, 1.f / GetWaylandScale(pending_state_));
+   }
+-  if (!(surface_submission_in_pixel_coordinates_ ||
+-        use_viewporter_surface_scaling_) &&
++  if (!surface_submission_in_pixel_coordinates_ &&
+       surface_scale_set_ != applying_surface_scale) {
+     wl_surface_set_buffer_scale(surface_.get(), applying_surface_scale);
+     surface_scale_set_ = applying_surface_scale;
+@@ -674,12 +586,12 @@ void WaylandSurface::ApplyPendingState() {
+   gfx::RectF viewport_src_dip;
+   wl_fixed_t src_to_set[4] = {wl_fixed_from_int(-1), wl_fixed_from_int(-1),
+                               wl_fixed_from_int(-1), wl_fixed_from_int(-1)};
+-  if (crop.IsEmpty()) {
++  if (pending_state_.crop.IsEmpty()) {
+     viewport_src_dip = gfx::RectF(bounds);
+   } else {
+     // viewport_src_dip needs to be in post-transform coordinates.
+     gfx::RectF crop_transformed = wl::ApplyWaylandTransform(
+-        crop, gfx::SizeF(1, 1),
++        pending_state_.crop, gfx::SizeF(1, 1),
+         wl::ToWaylandTransform(pending_state_.buffer_transform));
+     viewport_src_dip =
+         gfx::ScaleRect(crop_transformed, bounds.width(), bounds.height());
+@@ -693,7 +605,7 @@ void WaylandSurface::ApplyPendingState() {
+       // TODO(crbug.com/1325344): Resolve why this viewport size ends up being
+       // zero and remove the fix below.
+       LOG(ERROR) << "viewport_src_dip=" << viewport_src_dip.ToString()
+-                 << " crop=" << crop.ToString()
++                 << " pending_state_.crop=" << pending_state_.crop.ToString()
+                  << " bounds=" << bounds.ToString()
+                  << "  pending_state_.buffer_size_px="
+                  << pending_state_.buffer_size_px.ToString();
+@@ -723,9 +635,10 @@ void WaylandSurface::ApplyPendingState() {
+   }
+ 
+   gfx::SizeF viewport_dst_dip =
+-      viewport_px.IsEmpty()
++      pending_state_.viewport_px.IsEmpty()
+           ? viewport_src_dip.size()
+-          : gfx::ScaleSize(viewport_px, 1.f / GetWaylandScale(pending_state_));
++          : gfx::ScaleSize(pending_state_.viewport_px,
++                           1.f / GetWaylandScale(pending_state_));
+   float dst_to_set[2] = {-1.f, -1.f};
+   if (viewport_dst_dip != viewport_src_dip.size()) {
+     dst_to_set[0] = viewport_dst_dip.width();
+@@ -749,9 +662,9 @@ void WaylandSurface::ApplyPendingState() {
+     } else if (viewport()) {
+       wp_viewport_set_destination(
+           viewport(),
+-          dst_to_set[0] > 0.f ? base::ClampRound(viewport_dst_dip.width())
++          dst_to_set[0] > 0.f ? base::ClampCeil(viewport_dst_dip.width())
+                               : static_cast<int>(dst_to_set[0]),
+-          dst_to_set[1] > 0.f ? base::ClampRound(viewport_dst_dip.height())
++          dst_to_set[1] > 0.f ? base::ClampCeil(viewport_dst_dip.height())
+                               : static_cast<int>(dst_to_set[1]));
+     }
+     memcpy(dst_set_, dst_to_set, 2 * sizeof(*dst_to_set));
+@@ -783,9 +696,10 @@ void WaylandSurface::ApplyPendingState() {
+                        1.0f / pending_state_.buffer_size_px.width(),
+                        1.0f / pending_state_.buffer_size_px.height());
+ 
+-    if (!crop.IsEmpty()) {
+-      damage_uv.Offset(-crop.OffsetFromOrigin());
+-      damage_uv.InvScale(crop.width(), crop.height());
++    if (!pending_state_.crop.IsEmpty()) {
++      damage_uv.Offset(-pending_state_.crop.OffsetFromOrigin());
++      damage_uv.InvScale(pending_state_.crop.width(),
++                         pending_state_.crop.height());
+     }
+     damage_uv.Intersect(gfx::RectF(1, 1));
+ 
+@@ -898,12 +812,6 @@ void WaylandSurface::Leave(void* data,
+   surface->RemoveEnteredOutput(wayland_output->output_id());
+ }
+ 
+-// static
+-void WaylandSurface::PreferredScale(
+-    void* data,
+-    struct wp_fractional_scale_v1* wp_fractional_scale_v1,
+-    uint32_t scale) {}
+-
+ void WaylandSurface::RemoveEnteredOutput(uint32_t output_id) {
+   auto it = base::ranges::find(entered_outputs_, output_id);
+   if (it == entered_outputs_.end())
+diff --git a/ui/ozone/platform/wayland/host/wayland_surface.h b/ui/ozone/platform/wayland/host/wayland_surface.h
+index b5accec941a36..b478f50decf70 100644
+--- a/ui/ozone/platform/wayland/host/wayland_surface.h
++++ b/ui/ozone/platform/wayland/host/wayland_surface.h
+@@ -27,7 +27,6 @@
+ #include "ui/ozone/platform/wayland/host/wayland_zcr_color_space.h"
+ 
+ struct wp_content_type_v1;
+-struct wp_fractional_scale_v1;
+ struct zwp_linux_buffer_release_v1;
+ struct zcr_blending_v1;
+ 
+@@ -308,15 +307,11 @@ class WaylandSurface {
+     bool contains_video = false;
+   };
+ 
+-  // The wayland scale refers to the scale factor between the buffer coordinates
+-  // and Wayland surface coordinates. When SurfaceSubmissionInPixelCoordinates
+-  // is true, this is always 1. Otherwise, this is buffer_scale_float unless the
+-  // value is less than 1. In that case 1 is returned. Additionally, if
+-  // viewporter surface scaling is disabled, the value will be rounded up to the
+-  // next integer.
+-  float GetWaylandScale(const State& state);
+-
+-  bool IsViewportScaled(const State& state);
++  // The wayland scale refers to the scale factor used for calls to wayland
++  // apis such as wl_region_add. When SurfaceSubmissionInPixelCoordinates is
++  // true, this is always 1. Otherwise this is buffer_scale_float casted to an
++  // integer.
++  int GetWaylandScale(const State& state);
+ 
+   // Tracks the last sent src and dst values across wayland protocol s.t. we
+   // skip resending them when possible.
+@@ -330,7 +325,7 @@ class WaylandSurface {
+ 
+   wl::Object<wl_region> CreateAndAddRegion(
+       const std::vector<gfx::Rect>& region_px,
+-      float buffer_scale);
++      int32_t buffer_scale);
+ 
+   // wl_surface states that are stored in Wayland client. It moves to |state_|
+   // on ApplyPendingState().
+@@ -357,7 +352,6 @@ class WaylandSurface {
+   wl::Object<overlay_prioritized_surface> overlay_priority_surface_;
+   wl::Object<augmented_surface> augmented_surface_;
+   wl::Object<wp_content_type_v1> content_type_;
+-  wl::Object<wp_fractional_scale_v1> fractional_scale_;
+   std::unique_ptr<WaylandZcrColorManagementSurface>
+       zcr_color_management_surface_;
+   base::flat_map<zwp_linux_buffer_release_v1*, ExplicitReleaseInfo>
+@@ -369,10 +363,6 @@ class WaylandSurface {
+   // it's constant.
+   const bool surface_submission_in_pixel_coordinates_;
+ 
+-  // Same as above except it caches
+-  // connection->UseViewporterSurfaceScaling().
+-  const bool use_viewporter_surface_scaling_;
+-
+   // For top level window, stores outputs that the window is currently rendered
+   // at.
+   //
+@@ -394,12 +384,6 @@ class WaylandSurface {
+                     struct wl_surface* wl_surface,
+                     struct wl_output* output);
+ 
+-  // wp_fractional_scale_v1_listener
+-  static void PreferredScale(
+-      void* data,
+-      struct wp_fractional_scale_v1* wp_fractional_scale_v1,
+-      uint32_t scale);
+-
+   // zwp_linux_buffer_release_v1_listener
+   static void FencedRelease(
+       void* data,
+diff --git a/ui/ozone/platform/wayland/host/wayland_window.cc b/ui/ozone/platform/wayland/host/wayland_window.cc
+index 0b26b92eb5967..3396cad345072 100644
+--- a/ui/ozone/platform/wayland/host/wayland_window.cc
++++ b/ui/ozone/platform/wayland/host/wayland_window.cc
+@@ -37,6 +37,7 @@
+ #include "ui/gfx/native_widget_types.h"
+ #include "ui/gfx/overlay_priority_hint.h"
+ #include "ui/ozone/common/bitmap_cursor.h"
++#include "ui/ozone/common/features.h"
+ #include "ui/ozone/platform/wayland/common/wayland_overlay_config.h"
+ #include "ui/ozone/platform/wayland/host/wayland_connection.h"
+ #include "ui/ozone/platform/wayland/host/wayland_data_drag_controller.h"
+@@ -73,8 +74,8 @@ WaylandWindow::WaylandWindow(PlatformWindowDelegate* delegate,
+     : delegate_(delegate),
+       connection_(connection),
+       frame_manager_(std::make_unique<WaylandFrameManager>(this, connection)),
+-      wayland_overlay_delegation_enabled_(
+-          connection->viewporter() && connection->ShouldUseOverlayDelegation()),
++      wayland_overlay_delegation_enabled_(connection->viewporter() &&
++                                          IsWaylandOverlayDelegationEnabled()),
+       accelerated_widget_(
+           connection->window_manager()->AllocateAcceleratedWidget()),
+       ui_task_runner_(base::SingleThreadTaskRunner::GetCurrentDefault()) {
+diff --git a/ui/ozone/platform/wayland/host/wayland_window_unittest.cc b/ui/ozone/platform/wayland/host/wayland_window_unittest.cc
+index 6e6c08f6e00bf..b1921f04ae149 100644
+--- a/ui/ozone/platform/wayland/host/wayland_window_unittest.cc
++++ b/ui/ozone/platform/wayland/host/wayland_window_unittest.cc
+@@ -3348,12 +3348,8 @@ TEST_P(WaylandWindowTest, ReattachesBackgroundOnShow) {
+   EXPECT_TRUE(connection_->buffer_manager_host());
+ 
+   auto interface_ptr = connection_->buffer_manager_host()->BindInterface();
+-  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                  /*supports_dma_buf=*/false,
+-                                  /*supports_viewporter=*/true,
+-                                  /*supports_acquire_fence=*/false,
+-                                  /*supports_overlays=*/true,
+-                                  kAugmentedSurfaceNotSupportedVersion);
++  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                  false, kAugmentedSurfaceNotSupportedVersion);
+ 
+   // Setup wl_buffers.
+   constexpr uint32_t buffer_id1 = 1;
+@@ -4090,12 +4086,8 @@ TEST_P(WaylandWindowTest, NoDuplicateViewporterRequests) {
+   EXPECT_TRUE(connection_->buffer_manager_host());
+ 
+   auto interface_ptr = connection_->buffer_manager_host()->BindInterface();
+-  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                  /*supports_dma_buf=*/false,
+-                                  /*supports_viewporter=*/true,
+-                                  /*supports_acquire_fence=*/false,
+-                                  /*supports_overlays=*/true,
+-                                  kAugmentedSurfaceNotSupportedVersion);
++  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                  false, kAugmentedSurfaceNotSupportedVersion);
+ 
+   // Setup wl_buffers.
+   constexpr uint32_t buffer_id = 1;
+diff --git a/ui/ozone/platform/wayland/host/wayland_zcr_color_manager_unittest.cc b/ui/ozone/platform/wayland/host/wayland_zcr_color_manager_unittest.cc
+index b5316bcd04e3b..2d220138ff8e3 100644
+--- a/ui/ozone/platform/wayland/host/wayland_zcr_color_manager_unittest.cc
++++ b/ui/ozone/platform/wayland/host/wayland_zcr_color_manager_unittest.cc
+@@ -119,7 +119,7 @@ TEST_P(WaylandZcrColorManagerTest, CreateColorManagementSurface) {
+   EXPECT_TRUE(connection_->buffer_manager_host());
+   auto interface_ptr = connection_->buffer_manager_host()->BindInterface();
+   buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
+-                                  false, true, 0);
++                                  false, 0);
+ 
+   // Setup wl_buffers.
+   constexpr uint32_t buffer_id = 1;
+@@ -161,7 +161,7 @@ TEST_P(WaylandZcrColorManagerTest, DoNotSetInvaliColorSpace) {
+   EXPECT_TRUE(connection_->buffer_manager_host());
+   auto interface_ptr = connection_->buffer_manager_host()->BindInterface();
+   buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
+-                                  false, true, 0);
++                                  false, 0);
+ 
+   // Setup wl_buffers.
+   constexpr uint32_t buffer_id = 1;
+diff --git a/ui/ozone/platform/wayland/mojom/wayland_buffer_manager.mojom b/ui/ozone/platform/wayland/mojom/wayland_buffer_manager.mojom
+index 96f3f31330ed7..8d30edf526a29 100644
+--- a/ui/ozone/platform/wayland/mojom/wayland_buffer_manager.mojom
++++ b/ui/ozone/platform/wayland/mojom/wayland_buffer_manager.mojom
+@@ -104,8 +104,6 @@ interface WaylandBufferManagerGpu {
+   // |supports_acquire_fence| indicates whether acquire fences can be submitted
+   // with buffers for wayland servers to wait on before accessing buffer
+   // contents.
+-  // |supports_overlays| indicates whether overlays should be used with this
+-  // Wayland compositor.
+   // |supported_surface_augmentor_version| says what version of the augment
+   // surface protocol the client is using. If the version is 0, the surface
+   // augmentor is not available.
+@@ -115,7 +113,6 @@ interface WaylandBufferManagerGpu {
+              bool supports_dma_buf,
+              bool supports_viewporter,
+              bool supports_acquire_fence,
+-             bool supports_overlays,
+              uint32 supported_surface_augmentor_version);
+ 
+   // Signals about swap completion and presentation.
+diff --git a/ui/ozone/platform/wayland/ozone_platform_wayland.cc b/ui/ozone/platform/wayland/ozone_platform_wayland.cc
+index c2511b3ec18da..60d3bffb7cfa4 100644
+--- a/ui/ozone/platform/wayland/ozone_platform_wayland.cc
++++ b/ui/ozone/platform/wayland/ozone_platform_wayland.cc
+@@ -334,10 +334,9 @@ class OzonePlatformWayland : public OzonePlatform,
+           override_supports_ssd_for_test == SupportsSsdForTest::kNotSet) ||
+           override_supports_ssd_for_test == SupportsSsdForTest::kYes;
+       properties.supports_overlays =
+-          connection_->ShouldUseOverlayDelegation() &&
+-          connection_->viewporter();
++          ui::IsWaylandOverlayDelegationEnabled() && connection_->viewporter();
+       properties.supports_non_backed_solid_color_buffers =
+-          connection_->ShouldUseOverlayDelegation() &&
++          ui::IsWaylandOverlayDelegationEnabled() &&
+           connection_->buffer_manager_host()
+               ->SupportsNonBackedSolidColorBuffers();
+       // Primary planes can be transluscent due to underlay strategy. As a
+@@ -345,8 +344,7 @@ class OzonePlatformWayland : public OzonePlatform,
+       // To prevent this, an opaque background image is stacked below the
+       // accelerated widget to occlude contents below.
+       properties.needs_background_image =
+-          connection_->ShouldUseOverlayDelegation() &&
+-          connection_->viewporter();
++          ui::IsWaylandOverlayDelegationEnabled() && connection_->viewporter();
+       if (connection_->zaura_shell()) {
+         properties.supports_activation =
+             zaura_shell_get_version(connection_->zaura_shell()->wl_object()) >=
+@@ -369,11 +367,11 @@ class OzonePlatformWayland : public OzonePlatform,
+       // These properties are set when the GetPlatformRuntimeProperties is
+       // called on the gpu process side.
+       properties.supports_non_backed_solid_color_buffers =
+-          buffer_manager_->supports_overlays() &&
++          ui::IsWaylandOverlayDelegationEnabled() &&
+           buffer_manager_->supports_non_backed_solid_color_buffers();
+       // See the comment above.
+       properties.needs_background_image =
+-          buffer_manager_->supports_overlays() &&
++          ui::IsWaylandOverlayDelegationEnabled() &&
+           buffer_manager_->supports_viewporter();
+       properties.supports_native_pixmaps =
+           surface_factory_->SupportsNativePixmaps();
+diff --git a/ui/ozone/platform/wayland/test/test_wayland_server_thread.h b/ui/ozone/platform/wayland/test/test_wayland_server_thread.h
+index eb7d89e944bf4..515c5499efac1 100644
+--- a/ui/ozone/platform/wayland/test/test_wayland_server_thread.h
++++ b/ui/ozone/platform/wayland/test/test_wayland_server_thread.h
+@@ -67,7 +67,6 @@ struct ServerConfig {
+   EnableAuraShellProtocol enable_aura_shell =
+       EnableAuraShellProtocol::kDisabled;
+   bool surface_submission_in_pixel_coordinates = true;
+-  bool supports_viewporter_surface_scaling = false;
+   bool use_aura_output_manager = false;
+ };
+ 
+diff --git a/ui/ozone/platform/wayland/wayland_buffer_manager_unittest.cc b/ui/ozone/platform/wayland/wayland_buffer_manager_unittest.cc
+index e4d1b7a4e4394..cd6f71860eb5f 100644
+--- a/ui/ozone/platform/wayland/wayland_buffer_manager_unittest.cc
++++ b/ui/ozone/platform/wayland/wayland_buffer_manager_unittest.cc
+@@ -112,8 +112,6 @@ class WaylandBufferManagerTest : public WaylandTest {
+     // before we create the surface.
+     connection_->set_surface_submission_in_pixel_coordinates(
+         GetParam().surface_submission_in_pixel_coordinates);
+-    connection_->set_supports_viewporter_surface_scaling(
+-        GetParam().supports_viewporter_surface_scaling);
+ 
+     // Set this bug fix so that WaylandFrameManager does not use a freeze
+     // counter. Otherwise, we won't be able to have a reliable test order of
+@@ -130,11 +128,8 @@ class WaylandBufferManagerTest : public WaylandTest {
+     // callback and bind the interface again if the manager failed.
+     manager_host_->SetTerminateGpuCallback(callback_.Get());
+     auto interface_ptr = manager_host_->BindInterface();
+-    buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                    /*supports_dma_buf=*/false,
+-                                    /*supports_viewporter=*/true,
+-                                    /*supports_acquire_fence=*/false,
+-                                    /*supports_overlays=*/true,
++    buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                    false,
+                                     kAugmentedSurfaceNotSupportedVersion);
+     surface_id_ = window_->root_surface()->get_surface_id();
+   }
+@@ -208,11 +203,7 @@ class WaylandBufferManagerTest : public WaylandTest {
+                 buffer_manager_gpu_ =
+                     std::make_unique<WaylandBufferManagerGpu>();
+                 buffer_manager_gpu_->Initialize(
+-                    std::move(interface_ptr), {},
+-                    /*supports_dma_buf=*/false,
+-                    /*supports_viewporter=*/true,
+-                    /*supports_acquire_fence=*/false,
+-                    /*supports_overlays=*/true,
++                    std::move(interface_ptr), {}, false, true, false,
+                     kAugmentedSurfaceNotSupportedVersion);
+               }));
+     }
+@@ -2506,12 +2497,8 @@ TEST_P(WaylandBufferManagerTest,
+   });
+ 
+   auto interface_ptr = manager_host_->BindInterface();
+-  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                  /*supports_dma_buf=*/false,
+-                                  /*supports_viewporter=*/true,
+-                                  /*supports_acquire_fence=*/false,
+-                                  /*supports_overlays=*/true,
+-                                  kAugmentedSurfaceNotSupportedVersion);
++  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                  false, kAugmentedSurfaceNotSupportedVersion);
+ 
+   PostToServerAndWait([](wl::TestWaylandServerThread* server) {
+     EXPECT_CALL(*server->zwp_linux_dmabuf_v1(), CreateParams(_, _, _)).Times(1);
+@@ -2625,12 +2612,8 @@ TEST_P(WaylandBufferManagerTest, HidesSubsurfacesOnChannelDestroyed) {
+   });
+ 
+   auto interface_ptr = manager_host_->BindInterface();
+-  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                  /*supports_dma_buf=*/false,
+-                                  /*supports_viewporter=*/true,
+-                                  /*supports_acquire_fence=*/false,
+-                                  /*supports_overlays=*/true,
+-                                  kAugmentedSurfaceNotSupportedVersion);
++  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                  false, kAugmentedSurfaceNotSupportedVersion);
+ 
+   PostToServerAndWait([](wl::TestWaylandServerThread* server) {
+     // Now, create only one buffer and attach that to the root surface. The
+@@ -2795,12 +2778,6 @@ TEST_P(WaylandBufferManagerTest, CanSetRoundedCorners) {
+ 
+   uint32_t frame_id = 0u;
+   for (auto scale_factor : scale_factors) {
+-    if (scale_factor != std::ceil(scale_factor) &&
+-        !GetParam().surface_submission_in_pixel_coordinates) {
+-      // Fractional scales not supported when surface submission in pixel
+-      // coordinates is disabled.
+-      continue;
+-    }
+     for (const auto& rounded_corners : rounded_corners_vec) {
+       std::vector<wl::WaylandOverlayConfig> overlay_configs;
+       for (auto id : kBufferIds) {
+@@ -2964,12 +2941,8 @@ TEST_P(WaylandBufferManagerTest, ExecutesTasksAfterInitialization) {
+   EXPECT_EQ(3u, buffer_manager_gpu_->pending_tasks_.size());
+ 
+   auto interface_ptr = manager_host_->BindInterface();
+-  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {},
+-                                  /*supports_dma_buf=*/false,
+-                                  /*supports_viewporter=*/true,
+-                                  /*supports_acquire_fence=*/false,
+-                                  /*supports_overlays=*/true,
+-                                  kAugmentedSurfaceNotSupportedVersion);
++  buffer_manager_gpu_->Initialize(std::move(interface_ptr), {}, false, true,
++                                  false, kAugmentedSurfaceNotSupportedVersion);
+ 
+   base::RunLoop().RunUntilIdle();
+ 
+@@ -3127,7 +3100,7 @@ TEST_P(WaylandBufferManagerViewportTest, ViewportDestinationNonInteger) {
+ // available (the destination is set with floating point precision).
+ TEST_P(WaylandBufferManagerViewportTest, ViewportDestinationInteger) {
+   constexpr gfx::RectF test_data[2][2] = {
+-      {gfx::RectF({21, 18}, {7.423, 11.854}), gfx::RectF({21, 18}, {7, 12})},
++      {gfx::RectF({21, 18}, {7.423, 11.854}), gfx::RectF({21, 18}, {8, 12})},
+       {gfx::RectF({7, 8}, {43.562, 63.76}),
+        gfx::RectF({7, 8}, {43.562, 63.76})}};
+ 
+@@ -3166,10 +3139,5 @@ INSTANTIATE_TEST_SUITE_P(
+     XdgVersionStableTestWithSurfaceSubmissionInPixelCoordinatesDisabled,
+     WaylandBufferManagerTest,
+     Values(wl::ServerConfig{.surface_submission_in_pixel_coordinates = false}));
+-INSTANTIATE_TEST_SUITE_P(
+-    XdgVersionStableTestWithViewporterSurfaceScalingEnabled,
+-    WaylandBufferManagerTest,
+-    Values(wl::ServerConfig{.surface_submission_in_pixel_coordinates = false,
+-                            .supports_viewporter_surface_scaling = true}));
+ 
+ }  // namespace ui
+-- 
+2.39.2
+

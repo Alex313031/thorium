@@ -1,0 +1,46 @@
+From cc1c69b61de411b413e6cef70d5830df60947dc2 Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Thu, 19 Nov 2020 16:20:05 -0600
+Subject: [PATCH] Enable new-dtags on non-component builds
+
+---
+ build/config/gcc/BUILD.gn | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/build/config/gcc/BUILD.gn b/build/config/gcc/BUILD.gn
+index 147ebfc53426c..d598bfa70b1b6 100644
+--- a/build/config/gcc/BUILD.gn
++++ b/build/config/gcc/BUILD.gn
+@@ -101,13 +101,22 @@ config("executable_config") {
+   }
+ 
+   if (!is_android && current_os != "aix") {
+-    ldflags += [
+-      # TODO(GYP): Do we need a check on the binutils version here?
+-      #
+-      # Newer binutils don't set DT_RPATH unless you disable "new" dtags
+-      # and the new DT_RUNPATH doesn't work without --no-as-needed flag.
+-      "-Wl,--disable-new-dtags",
+-    ]
++    if (is_component_build) {
++      ldflags += [
++        # TODO(GYP): Do we need a check on the binutils version here?
++        #
++        # Newer binutils don't set DT_RPATH unless you disable "new" dtags
++        # and the new DT_RUNPATH doesn't work without --no-as-needed flag.
++        "-Wl,--disable-new-dtags",
++      ]
++    } else {
++      # Using DT_RUNPATH breaks the component builds, because RUNPATH isn't used
++      # to look up transitive dependencies like RPATH is, but it's fine for
++      # primarily static builds.
++      ldflags += [
++        "-Wl,--enable-new-dtags"
++      ]
++    }
+   }
+ }
+ 
+-- 
+2.39.2
+

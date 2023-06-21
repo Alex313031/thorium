@@ -1,0 +1,24 @@
+From a1a5b43acabb7a39a0fa1256b68f6bcd5e534244 Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Tue, 17 Nov 2020 22:57:29 -0600
+Subject: [PATCH] Import chromium-71.0.3578.98-widevine-r3.patch
+
+Taken from the Fedora 33 repositories.
+---
+ third_party/widevine/cdm/widevine_cdm_version.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/third_party/widevine/cdm/widevine_cdm_version.h b/third_party/widevine/cdm/widevine_cdm_version.h
+index db80700b6c1b2..370bb3c9724ec 100644
+--- a/third_party/widevine/cdm/widevine_cdm_version.h
++++ b/third_party/widevine/cdm/widevine_cdm_version.h
+@@ -12,4 +12,6 @@
+ //  - WIDEVINE_CDM_VERSION_STRING (with the version of the CDM that's available
+ //    as a string, e.g., "1.0.123.456").
+ 
++#define WIDEVINE_CDM_VERSION_STRING "unknown"
++
+ #endif  // WIDEVINE_CDM_VERSION_H_
+-- 
+2.39.2
+

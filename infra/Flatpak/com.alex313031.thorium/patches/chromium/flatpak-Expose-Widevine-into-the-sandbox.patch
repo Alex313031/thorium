@@ -1,0 +1,326 @@
+From 4c3e8472d56b6897f1e1c32e838a83dd42ae5a0d Mon Sep 17 00:00:00 2001
+From: Ryan Gonzalez <rymg19@gmail.com>
+Date: Tue, 17 Nov 2020 13:00:39 -0600
+Subject: [PATCH] flatpak: Expose Widevine into the sandbox
+
+---
+ .../zygote_host/zygote_host_impl_linux.cc     | 54 +++++++++++++-
+ sandbox/linux/services/flatpak_sandbox.cc     | 74 ++++++++++++++-----
+ sandbox/linux/services/flatpak_sandbox.h      | 27 ++++++-
+ 3 files changed, 131 insertions(+), 24 deletions(-)
+
+diff --git a/content/browser/zygote_host/zygote_host_impl_linux.cc b/content/browser/zygote_host/zygote_host_impl_linux.cc
+index b60dc232c4322..828c7729ffc9e 100644
+--- a/content/browser/zygote_host/zygote_host_impl_linux.cc
++++ b/content/browser/zygote_host/zygote_host_impl_linux.cc
+@@ -10,7 +10,10 @@
+ 
+ #include "base/allocator/allocator_extension.h"
+ #include "base/files/file_enumerator.h"
++#include "base/files/file_util.h"
+ #include "base/logging.h"
++#include "base/nix/xdg_util.h"
++#include "base/path_service.h"
+ #include "base/posix/unix_domain_socket.h"
+ #include "base/process/kill.h"
+ #include "base/process/launch.h"
+@@ -18,9 +21,12 @@
+ #include "base/strings/string_number_conversions.h"
+ #include "build/build_config.h"
+ #include "build/chromeos_buildflags.h"
++#include "chrome/common/chrome_paths.h"  // nogncheck
+ #include "content/common/zygote/zygote_commands_linux.h"
+ #include "content/common/zygote/zygote_communication_linux.h"
+ #include "content/common/zygote/zygote_handle_impl_linux.h"
++#include "content/public/common/cdm_info.h"
++#include "content/public/common/content_client.h"
+ #include "content/public/common/zygote/zygote_handle.h"
+ #include "sandbox/linux/services/credentials.h"
+ #include "sandbox/linux/services/flatpak_sandbox.h"
+@@ -29,6 +35,7 @@
+ #include "sandbox/linux/suid/common/sandbox.h"
+ #include "sandbox/policy/linux/sandbox_linux.h"
+ #include "sandbox/policy/switches.h"
++#include "third_party/widevine/cdm/buildflags.h"  // nogncheck
+ 
+ #if BUILDFLAG(IS_CHROMEOS)
+ #include "content/common/zygote/zygote_communication_linux.h"
+@@ -187,8 +194,51 @@ pid_t ZygoteHostImpl::LaunchZygote(
+   if (is_sandboxed_zygote && use_namespace_sandbox_) {
+     process = sandbox::NamespaceSandbox::LaunchProcess(*cmd_line, options);
+   } else if (is_sandboxed_zygote && use_flatpak_sandbox_) {
+-    process = sandbox::FlatpakSandbox::GetInstance()->LaunchProcess(*cmd_line,
+-                                                                    options);
++    sandbox::FlatpakSandbox::SpawnOptions spawn_options;
++
++#if BUILDFLAG(ENABLE_LIBRARY_CDMS)
++    // Expose the CDM paths into the sandbox. This is similar to PreSandboxInit
++    // in content_main_runner_impl.cc.
++    std::vector<CdmInfo> cdms;
++    GetContentClient()->AddContentDecryptionModules(&cdms, nullptr);
++    for (const auto& cdm : cdms) {
++      if (!spawn_options.ExposePathRo(cdm.path)) {
++        LOG(ERROR) << "Failed to expose CDM module";
++      }
++    }
++#endif
++
++#if BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)
++    // Make sure we also expose the full Widevine CDM folder so it can be
++    // detected.
++    // TODO: Remove the explicit dependencies on chrome::.
++    base::FilePath widevine_cdm_path;
++    if (!base::PathService::Get(chrome::DIR_COMPONENT_UPDATED_WIDEVINE_CDM,
++                                &widevine_cdm_path)) {
++      LOG(ERROR) << "Failed to get Widevine CDM folder for sandbox forwarding";
++    }
++
++    LOG(INFO) << "Widevine CDM path IS: " << widevine_cdm_path;
++
++    if (!widevine_cdm_path.empty() && base::PathExists(widevine_cdm_path)) {
++      if (!spawn_options.ExposePathRo(widevine_cdm_path)) {
++        LOG(ERROR) << "Failed to expose updated Widevine CDM path";
++      }
++    }
++
++    // The Widevine data is found relative to $XDG_CONFIG_HOME, which is not set
++    // by default when running a sandboxed process.
++    auto env = base::Environment::Create();
++    base::FilePath xdgConfigHome = base::nix::GetXDGDirectory(
++        env.get(), base::nix::kXdgConfigHomeEnvVar, nullptr);
++    if (!xdgConfigHome.empty()) {
++      options.environment[base::nix::kXdgConfigHomeEnvVar] =
++          xdgConfigHome.value();
++    }
++#endif
++
++    process = sandbox::FlatpakSandbox::GetInstance()->LaunchProcess(
++        *cmd_line, options, spawn_options);
+   } else {
+     process = base::LaunchProcess(*cmd_line, options);
+   }
+diff --git a/sandbox/linux/services/flatpak_sandbox.cc b/sandbox/linux/services/flatpak_sandbox.cc
+index cdc225a18b815..f848b3360b8e6 100644
+--- a/sandbox/linux/services/flatpak_sandbox.cc
++++ b/sandbox/linux/services/flatpak_sandbox.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "sandbox/linux/services/flatpak_sandbox.h"
+ 
++#include <fcntl.h>
+ #include <signal.h>
+ #include <sstream>
+ #include <string>
+@@ -92,6 +93,18 @@ enum FlatpakSpawnSandboxFlags {
+   kFlatpakSpawnSandbox_ShareA11yBus = 1 << 4,
+ };
+ 
++bool FlatpakSandbox::SpawnOptions::ExposePathRo(base::FilePath path) {
++  base::ScopedFD fd(
++      HANDLE_EINTR(open(path.value().c_str(), O_PATH | O_NOFOLLOW)));
++  if (!fd.is_valid()) {
++    PLOG(ERROR) << "Failed to expose path " << path;
++    return false;
++  }
++
++  sandbox_expose_ro.push_back(std::move(fd));
++  return true;
++}
++
+ FlatpakSandbox::FlatpakSandbox()
+     : bus_thread_("FlatpakPortalBus"), process_info_cv_(&process_info_lock_) {}
+ 
+@@ -168,8 +181,9 @@ bool FlatpakSandbox::IsPidSandboxed(base::ProcessId relative_pid) {
+ 
+ base::Process FlatpakSandbox::LaunchProcess(
+     const base::CommandLine& cmdline,
+-    const base::LaunchOptions& launch_options) {
+-  base::ProcessId external_pid = Spawn(cmdline, launch_options);
++    const base::LaunchOptions& launch_options,
++    const SpawnOptions& spawn_options /*= {}*/) {
++  base::ProcessId external_pid = Spawn(cmdline, launch_options, spawn_options);
+   if (external_pid == base::kNullProcessId) {
+     return base::Process();
+   }
+@@ -363,9 +377,9 @@ void FlatpakSandbox::OnSpawnExitedSignal(dbus::Signal* signal) {
+   process_info_cv_.Broadcast();
+ }
+ 
+-base::ProcessId FlatpakSandbox::Spawn(
+-    const base::CommandLine& cmdline,
+-    const base::LaunchOptions& launch_options) {
++base::ProcessId FlatpakSandbox::Spawn(const base::CommandLine& cmdline,
++                                      const base::LaunchOptions& launch_options,
++                                      const SpawnOptions& spawn_options) {
+   base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
+                                                 base::BlockingType::MAY_BLOCK);
+   base::ScopedAllowBaseSyncPrimitives allow_wait;
+@@ -391,24 +405,26 @@ base::ProcessId FlatpakSandbox::Spawn(
+       FROM_HERE,
+       base::BindOnce(&FlatpakSandbox::SpawnOnBusThread, base::Unretained(this),
+                      base::Unretained(&external_pid), base::Unretained(&event),
+-                     cmdline, launch_options));
++                     base::Unretained(&cmdline),
++                     base::Unretained(&launch_options),
++                     base::Unretained(&spawn_options)));
+   event.Wait();
+ 
+   return external_pid;
+ }
+ 
+-void FlatpakSandbox::SpawnOnBusThread(
+-    base::ProcessId* out_external_pid,
+-    base::WaitableEvent* event,
+-    const base::CommandLine& cmdline,
+-    const base::LaunchOptions& launch_options) {
++void FlatpakSandbox::SpawnOnBusThread(base::ProcessId* out_external_pid,
++                                      base::WaitableEvent* event,
++                                      const base::CommandLine* cmdline,
++                                      const base::LaunchOptions* launch_options,
++                                      const SpawnOptions* spawn_options) {
+   dbus::ObjectProxy* object_proxy = GetPortalObjectProxy();
+   dbus::MethodCall method_call(kFlatpakPortalInterfaceName, "Spawn");
+   dbus::MessageWriter writer(&method_call);
+ 
+   const base::FilePath& current_directory =
+-      !launch_options.current_directory.empty()
+-          ? launch_options.current_directory
++      !launch_options->current_directory.empty()
++          ? launch_options->current_directory
+           // Change to /app since it's guaranteed to always be present in
+           // the sandbox.
+           : kFlatpakAppPath;
+@@ -417,7 +433,7 @@ void FlatpakSandbox::SpawnOnBusThread(
+   dbus::MessageWriter argv_writer(nullptr);
+   writer.OpenArray("ay", &argv_writer);
+ 
+-  for (const std::string& arg : cmdline.argv()) {
++  for (const std::string& arg : cmdline->argv()) {
+     WriteStringAsByteArray(&argv_writer, arg);
+   }
+ 
+@@ -439,7 +455,7 @@ void FlatpakSandbox::SpawnOnBusThread(
+   WriteFdPairMap(&fds_writer, STDOUT_FILENO, STDOUT_FILENO);
+   WriteFdPairMap(&fds_writer, STDERR_FILENO, STDERR_FILENO);
+ 
+-  for (const auto& pair : launch_options.fds_to_remap) {
++  for (const auto& pair : launch_options->fds_to_remap) {
+     WriteFdPairMap(&fds_writer, pair.first, pair.second);
+   }
+ 
+@@ -448,7 +464,7 @@ void FlatpakSandbox::SpawnOnBusThread(
+   dbus::MessageWriter env_writer(nullptr);
+   writer.OpenArray("{ss}", &env_writer);
+ 
+-  for (const auto& pair : launch_options.environment) {
++  for (const auto& pair : launch_options->environment) {
+     dbus::MessageWriter entry_writer(nullptr);
+     env_writer.OpenDictEntry(&entry_writer);
+ 
+@@ -472,11 +488,11 @@ void FlatpakSandbox::SpawnOnBusThread(
+ #else
+ #endif
+ 
+-  if (launch_options.clear_environment) {
++  if (launch_options->clear_environment) {
+     spawn_flags |= kFlatpakSpawn_ClearEnvironment;
+   }
+ 
+-  if (launch_options.kill_on_parent_death) {
++  if (launch_options->kill_on_parent_death) {
+     spawn_flags |= kFlatpakSpawn_WatchBus;
+   }
+ 
+@@ -485,6 +501,28 @@ void FlatpakSandbox::SpawnOnBusThread(
+   dbus::MessageWriter options_writer(nullptr);
+   writer.OpenArray("{sv}", &options_writer);
+ 
++  if (!spawn_options->sandbox_expose_ro.empty()) {
++    dbus::MessageWriter entry_writer(nullptr);
++    options_writer.OpenDictEntry(&entry_writer);
++
++    entry_writer.AppendString("sandbox-expose-fd-ro");
++
++    dbus::MessageWriter variant_writer(nullptr);
++    entry_writer.OpenVariant("ah", &variant_writer);
++
++    dbus::MessageWriter fds_writer(nullptr);
++    variant_writer.OpenArray("h", &fds_writer);
++
++    for (const base::ScopedFD& fd : spawn_options->sandbox_expose_ro) {
++      CHECK(fd.is_valid()) << "Invalid spawn expose fd";
++      fds_writer.AppendFileDescriptor(fd.get());
++    }
++
++    variant_writer.CloseContainer(&fds_writer);
++    entry_writer.CloseContainer(&variant_writer);
++    options_writer.CloseContainer(&entry_writer);
++  }
++
+   if (sandbox_flags != 0) {
+     dbus::MessageWriter entry_writer(nullptr);
+     options_writer.OpenDictEntry(&entry_writer);
+diff --git a/sandbox/linux/services/flatpak_sandbox.h b/sandbox/linux/services/flatpak_sandbox.h
+index 167bbc85945ad..de8e7165b4573 100644
+--- a/sandbox/linux/services/flatpak_sandbox.h
++++ b/sandbox/linux/services/flatpak_sandbox.h
+@@ -9,6 +9,8 @@
+ #include "base/compiler_specific.h"
+ #include "base/containers/flat_map.h"
+ #include "base/containers/flat_set.h"
++#include "base/files/file_path.h"
++#include "base/files/scoped_file.h"
+ #include "base/no_destructor.h"
+ #include "base/process/kill.h"
+ #include "base/process/launch.h"
+@@ -34,6 +36,20 @@ namespace sandbox {
+ // it is known inside the sandbox's PID namespace.
+ class SANDBOX_EXPORT FlatpakSandbox {
+  public:
++  class SpawnOptions {
++   public:
++    SpawnOptions() = default;
++    SpawnOptions(const SpawnOptions& other) = delete;
++    SpawnOptions(SpawnOptions&& other) = delete;
++
++    bool ExposePathRo(base::FilePath path);
++
++   private:
++    friend class FlatpakSandbox;
++
++    std::vector<base::ScopedFD> sandbox_expose_ro;
++  };
++
+   static FlatpakSandbox* GetInstance();
+ 
+   // Represents the level of sandboxing inside a Flatpak. kNone means this is
+@@ -55,7 +71,8 @@ class SANDBOX_EXPORT FlatpakSandbox {
+   // GetRelativePid. This is the reason why a vanilla ProcessId is returned
+   // rather than a base::Process instance.
+   base::Process LaunchProcess(const base::CommandLine& cmdline,
+-                              const base::LaunchOptions& launch_options);
++                              const base::LaunchOptions& launch_options,
++                              const SpawnOptions& spawn_options = {});
+ 
+   // Indefinitely waits for the given process and fills the exit code pointer
+   // if given and non-null. Returns false on wait failure.
+@@ -84,11 +101,13 @@ class SANDBOX_EXPORT FlatpakSandbox {
+   void OnSpawnExitedSignal(dbus::Signal* signal);
+ 
+   base::ProcessId Spawn(const base::CommandLine& cmdline,
+-                        const base::LaunchOptions& launch_options);
++                        const base::LaunchOptions& launch_options,
++                        const SpawnOptions& spawn_options);
+   void SpawnOnBusThread(base::ProcessId* out_external_pid,
+                         base::WaitableEvent* event,
+-                        const base::CommandLine& cmdline,
+-                        const base::LaunchOptions& launch_options);
++                        const base::CommandLine* cmdline,
++                        const base::LaunchOptions* launch_options,
++                        const SpawnOptions* spawn_options);
+   void OnSpawnResponse(base::ProcessId* out_external_pid,
+                        base::WaitableEvent* event,
+                        dbus::Response* response,
+-- 
+2.39.2
+
