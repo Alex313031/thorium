@@ -11,13 +11,13 @@
     Search flags
   </message>
   <message name="IDS_FLAGS_UI_TITLE" translateable="false" desc="The page title for the about:flags page.">
-    Thorium Flags
+    Experiments
   </message>
   <message name="IDS_FLAGS_UI_PAGE_RESET" translateable="false" desc="Label for button that resets the flags to their default value.">
     Reset all
   </message>
   <message name="IDS_FLAGS_UI_PAGE_WARNING" translateable="false" desc="A warning stating that the features of the page are experimental.">
-    Warning: Experimental Thorium features ahead!
+    Warning: Experimental features ahead!
   </message>
   <message name="IDS_FLAGS_UI_PAGE_WARNING_EXPLANATION" translateable="false" desc="A warning stating what the user gets exposed to by enabling one the features.">
     By enabling these features, you could lose browser data or

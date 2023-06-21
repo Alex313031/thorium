@@ -349,6 +349,9 @@
     <message name="IDS_PAGE_INFO_STATE_TEXT_NOT_ALLOWED_IN_INCOGNITO" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the permission is not allowed in incognito mode.">
       Not allowed in Incognito
     </message>
+    <message name="IDS_PAGE_INFO_STATE_TEXT_NOT_ALLOWED_IN_GUEST" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the permission is not allowed in Guest mode.">
+      Not allowed in Guest mode
+    </message>
     <message name="IDS_PAGE_INFO_STATE_TEXT_NOT_ALLOWED_INSECURE" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the permission is not allowed in non-secure sites.">
       Not allowed for non-secure sites
     </message>
@@ -503,7 +506,7 @@
 
     <!-- Permission change infobar. -->
     <if expr="not is_android">
-      <message name="IDS_PAGE_INFO_INFOBAR_TEXT" desc="The string shown in the infobar after the user has changed site permissions settings, reminding them to reload the page in order for the new settings to take effect.">
+      <message name="IDS_PAGE_INFO_INFOBAR_TEXT" desc="The string shown in the infobar after the user has changed site permissions settings, reminding them to reload the page in order for the new settings to take effect.  Deliberately similar to IDS_EXTENSION_SITE_RELOAD_PAGE_BUBBLE_HEADING, but used for an different permission setting so they are not combined. If updating the one, please update the other or consult the extensions and privacy teams.">
         To apply your updated settings to this site, reload this page
       </message>
       <message name="IDS_PAGE_INFO_INFOBAR_BUTTON" desc="The string used in the infobar button allowing the user to reload the page directly from the infobar.">

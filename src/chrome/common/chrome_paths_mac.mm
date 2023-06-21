@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -213,13 +213,6 @@ NSBundle* OuterAppBundle() {
   // to OuterAppBundleInternal().
   static NSBundle* bundle = OuterAppBundleInternal();
   return bundle;
-}
-
-bool GetUserDataDirectoryForBrowserBundle(NSBundle* bundle,
-                                          base::FilePath* result) {
-  std::unique_ptr<char, base::FreeDeleter> product_dir_name(
-      ProductDirNameForBundle(bundle));
-  return GetDefaultUserDataDirectoryForProduct(product_dir_name.get(), result);
 }
 
 bool ProcessNeedsProfileDir(const std::string& process_type) {
