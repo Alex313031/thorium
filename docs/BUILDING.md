@@ -216,11 +216,10 @@ $ out/thorium/thorium
 
 ## Installing Thorium
 
-Of course, you will probably want to make an installation package. To make a .deb file
-run `thordeb.sh` (where the # is the number of jobs) in the root of the repo:
+Of course, you will probably want to make installation packages. To make a .deb and .rpm run `package.sh` (where the # is the number of jobs) in the root of the repo:
 
 ```shell
-$ ./thordeb.sh 8
+$ ./package.sh 8
 ```
 To make an appimage, copy the .deb to `//thorium/infra/APPIMAGE/`
 and follow the [Instructions](https://github.com/Alex313031/thorium/blob/main/infra/APPIMAGE/README.md#instructions) therein.

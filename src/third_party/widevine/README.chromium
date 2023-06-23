@@ -1,0 +1,17 @@
+Name: Widevine Content Decryption Module
+Short Name: Widevine CDM
+URL: https://www.widevine.com
+Version: N/A
+Date: 2023-06-23
+License: By exception only
+License File: LICENSE
+Security Critical: yes
+License Android Compatible: no
+
+Description:
+This directory contains build files for integrating Widevine CDM into Chrome.
+No third-party files are checked in here. If you are interested in integrating
+Widevine CDM into your product, please visit the URL above.
+
+Local Modifications:
+Prebuilt binaries for bundle_widevine_cdm = true
