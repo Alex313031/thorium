@@ -353,7 +353,7 @@ if (!is_chromeos_ash) {
     visibility = [ ":*" ]
     sources = [
       "rpm/build.sh",
-      "rpm/chrome.spec.template",
+      "rpm/thorium.spec.template",
     ]
     outputs = [ "$root_out_dir/installer/rpm/{{source_file_part}}" ]
   }

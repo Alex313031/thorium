@@ -8,5 +8,5 @@ solutions = [
   },
 ]
 
-target_os = [ 'linux', 'win' ]
+target_os = [ 'linux', 'win', 'android' ]
 target_cpu = [ 'x64', 'x86', 'arm64', 'arm' ]

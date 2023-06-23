@@ -102,6 +102,9 @@ verify_package() {
     echo
     exit $BAD_DIFF
   fi
+
+  # Rename package to match Thorium naming scheme
+  mv -v "${PACKAGE}_${VERSIONFULL}_${ARCHITECTURE}.deb" "${PACKAGE}_${DEBVERSIONNAME}_${ARCHITECTURE}.deb"
 }
 
 # Actually generate the package file.
@@ -243,6 +246,7 @@ source ${OUTPUTDIR}/installer/common/installer.include
 
 get_version_info
 VERSIONFULL="${VERSION}-${PACKAGE_RELEASE}"
+DEBVERSIONNAME="${VERSION}"
 
 if [ "$BRANDING" = "google_chrome" ]; then
   source "${OUTPUTDIR}/installer/common/google-chrome.info"

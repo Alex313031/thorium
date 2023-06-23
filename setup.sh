@@ -34,11 +34,20 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="${CR_SRC_DIR}"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
 printf "${YEL}Creating build output directory...\n" &&
 tput sgr0 &&
 
-mkdir -v -p $HOME/chromium/src/out/thorium/ &&
+mkdir -v -p ${CR_SRC_DIR}/out/thorium/ &&
 printf "\n" &&
 
 printf "\n" &&
@@ -47,46 +56,46 @@ tput sgr0 &&
 
 # Copy libjxl src
 cd ~/thorium &&
-cp -r -v thorium-libjxl/src/. $HOME/chromium/src/ &&
+cp -r -v thorium-libjxl/src/. ${CR_SRC_DIR}/ &&
 
 # Copy Thorium sources
-cp -r -v src/BUILD.gn $HOME/chromium/src/ &&
-cp -r -v src/ash/. $HOME/chromium/src/ash/ &&
-cp -r -v src/build/. $HOME/chromium/src/build/ &&
-cp -r -v src/chrome/. $HOME/chromium/src/chrome/ &&
-cp -r -v src/chromeos/. $HOME/chromium/src/chromeos/ &&
-cp -r -v src/components/. $HOME/chromium/src/components/ &&
-cp -r -v src/extensions/. $HOME/chromium/src/extensions/ &&
-cp -r -v src/content/. $HOME/chromium/src/content/ &&
-cp -r -v src/media/. $HOME/chromium/src/media/ &&
-cp -r -v src/net/. $HOME/chromium/src/net/ &&
-cp -r -v src/sandbox/. $HOME/chromium/src/sandbox/ &&
-cp -r -v src/services/. $HOME/chromium/src/services/ &&
-cp -r -v src/third_party/. $HOME/chromium/src/third_party/ &&
-cp -r -v src/tools/. $HOME/chromium/src/tools/ &&
-cp -r -v src/ui/. $HOME/chromium/src/ui/ &&
-cp -r -v src/v8/. $HOME/chromium/src/v8/ &&
-cp -r -v thorium_shell/. $HOME/chromium/src/out/thorium/ &&
-cp -r -v pak_src/bin/pak $HOME/chromium/src/out/thorium/ &&
-cp -r -v pak_src/bin/pak-win/. $HOME/chromium/src/out/thorium/ &&
+cp -r -v src/BUILD.gn ${CR_SRC_DIR}/ &&
+cp -r -v src/ash/. ${CR_SRC_DIR}/ash/ &&
+cp -r -v src/build/. ${CR_SRC_DIR}/build/ &&
+cp -r -v src/chrome/. ${CR_SRC_DIR}/chrome/ &&
+cp -r -v src/chromeos/. ${CR_SRC_DIR}/chromeos/ &&
+cp -r -v src/components/. ${CR_SRC_DIR}/components/ &&
+cp -r -v src/extensions/. ${CR_SRC_DIR}/extensions/ &&
+cp -r -v src/content/. ${CR_SRC_DIR}/content/ &&
+cp -r -v src/media/. ${CR_SRC_DIR}/media/ &&
+cp -r -v src/net/. ${CR_SRC_DIR}/net/ &&
+cp -r -v src/sandbox/. ${CR_SRC_DIR}/sandbox/ &&
+cp -r -v src/services/. ${CR_SRC_DIR}/services/ &&
+cp -r -v src/third_party/. ${CR_SRC_DIR}/third_party/ &&
+cp -r -v src/tools/. ${CR_SRC_DIR}/tools/ &&
+cp -r -v src/ui/. ${CR_SRC_DIR}/ui/ &&
+cp -r -v src/v8/. ${CR_SRC_DIR}/v8/ &&
+cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
+cp -r -v pak_src/bin/pak ${CR_SRC_DIR}/out/thorium/ &&
+cp -r -v pak_src/bin/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
 # Add default_apps dir for Google Docs Offline extension.
-mkdir -v -p $HOME/chromium/src/out/thorium/default_apps &&
-cp -r -v infra/default_apps/. $HOME/chromium/src/out/thorium/default_apps/ &&
+mkdir -v -p ${CR_SRC_DIR}/out/thorium/default_apps &&
+cp -r -v infra/default_apps/. ${CR_SRC_DIR}/out/thorium/default_apps/ &&
 
 # Add initial preferences file to open Thorium welcome page on first run.
-cp -v infra/initial_preferences $HOME/chromium/src/out/thorium/ &&
+cp -v infra/initial_preferences ${CR_SRC_DIR}/out/thorium/ &&
 
 echo " # Workaround for DevTools" &&
-mkdir -v -p $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
-cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg $HOME/chromium/src/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
+mkdir -v -p ${CR_SRC_DIR}/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
+cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg ${CR_SRC_DIR}/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 
 # MacOS Widevine Workaround
 copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
-	cp -r -v other/Mac/cdm_registration.cc $HOME/chromium/src/chrome/common/media/ &&
-	cp -r -v arm/mac_arm.gni $HOME/chromium/src/build/config/arm.gni &&
+	cp -r -v other/Mac/cdm_registration.cc ${CR_SRC_DIR}/chrome/common/media/ &&
+	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
 }
 case $1 in
@@ -97,7 +106,7 @@ esac
 copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
-	cp -r -v arm/raspi/* $HOME/chromium/src/ &&
+	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	printf "\n"
 }
 # Display raspi ascii art
@@ -112,7 +121,7 @@ esac
 copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
-	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
+	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	printf "\n"
 }
 case $1 in
@@ -123,9 +132,9 @@ esac
 copyAVX2 () {
 	printf "\n" &&
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
-	cp -r -v other/AVX2/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v other/AVX2/v8/* $HOME/chromium/src/v8/ &&
-	cp -r -v other/AVX2/third_party/* $HOME/chromium/src/third_party/ &&
+	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v other/AVX2/v8/* ${CR_SRC_DIR}/v8/ &&
+	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -136,9 +145,9 @@ esac
 copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
-	cp -r -v other/SSE3/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v other/SSE3/v8/* $HOME/chromium/src/v8/ &&
-	cp -r -v other/SSE3/third_party/* $HOME/chromium/src/third_party/ &&
+	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v other/SSE3/v8/* ${CR_SRC_DIR}/v8/ &&
+	cp -r -v other/SSE3/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -149,8 +158,8 @@ esac
 copySSE2 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
-	cp -r -v other/SSE2/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v other/SSE2/third_party/* $HOME/chromium/src/third_party/ &&
+	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v other/SSE2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -161,9 +170,9 @@ esac
 copyAndroid () {
 	printf "\n" &&
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
-	cp -r -v arm/build/config/* $HOME/chromium/src/build/config/ &&
-	cp -r -v arm/android/* $HOME/chromium/src/ &&
-	cp -r -v arm/android/third_party/* $HOME/chromium/src/third_party/ &&
+	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
+	cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in

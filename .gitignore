@@ -1,6 +1,7 @@
 .DS_Store
 API_KEYS.txt
 *.deb
+*.rpm
 *.AppImage
 *.zip
 thorium_mini_installer.exe
