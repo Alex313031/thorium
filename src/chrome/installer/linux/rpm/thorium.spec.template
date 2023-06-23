@@ -177,6 +177,8 @@ case $CHANNEL in
     ;;
 esac
 
+ln -sf /opt/chromium.org/thorium/thorium-browser /usr/bin/thorium-browser
+
 exit 0
 
 
