@@ -4,5 +4,6 @@ Simply a place to hold documentation and resources for people building or contri
 
 __I've also made some pages on the thorium.rocks website relating to Thorium development.__
 
- - There is a developer page [Here](https://thorium.rocks/misc/dev), with links to different tools on the Thorium Website.
+ - There is a developer page [Here](https://thorium.rocks//dev), with links to different tools on the Thorium Website.
  - There is also the [documentation page](https://thorium.rocks/docs/), which has html copies of things in here as well as some things not in here. Recommended.
+ - The .txt instructions are old, use the .md instructions.
