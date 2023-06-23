@@ -1,4 +1,4 @@
-# Checking out and Building Thorium for Windows &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
+# Checking out and Building Thorium for Windows &nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
 ## System Requirements
 
@@ -7,7 +7,7 @@
 * At least 75GB of free disk space on an NTFS-formatted hard drive. FAT32
   will not work, as some of the Git packfiles are larger than 4GB.
 * An appropriate version of Visual Studio, as described below.
-* Windows 10 1709 or newer.
+* Windows 10 1809 or newer.
 
 ## Setting up Windows
 
@@ -155,7 +155,7 @@ cd src
 
 *Optional*: You can also [build with API
 keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
-build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
+build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
 you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
 to enable Sync.
 
@@ -165,14 +165,15 @@ You can either use git clone, or download a .zip from the repo. It should be pla
 Using Git:
 
 ```shell
-git clone https://github.com/Alex313031/Thorium.git
+git clone https://github.com/Alex313031/thorium.git
 ```
-Or download the .zip (Make sure to rename the extracted dir to just Thorium, not Thorium-main).
-[https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip](https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip)
+Or download the .zip (Make sure to rename the extracted dir to just thorium, not thorium-main).
+[https://github.com/Alex313031/thorium/archive/refs/heads/main.zip](https://github.com/Alex313031/thorium/archive/refs/heads/main.zip)
 
 ## Setting up the build
 
-First, we need to copy the Thorium source files over the Chromium tree.
+First, we need to check out the revision that Chromium is currently using. For this, run `version.bat`. \
+Secondly, we need to copy the Thorium source files over the Chromium tree. \
 Run the `setup.bat` script in *Thorium\win_scripts* to automate this.
 
 ```shell
@@ -197,7 +198,7 @@ gn args out\thorium
 ```
 
 This will open up notepad.exe, and this is where we will specify build arguments ("args") which direct Ninja on how to lay out the build directory tree.
-We will be copy/pasting the contents of the [win_args.gn](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.gn) file (from *C:\src\Thorium\infra\win_args.gn*) into notepad.
+We will be copy/pasting the contents of the [win_args.gn](https://github.com/Alex313031/thorium/blob/main/infra/win_args.gn) file (from *C:\src\Thorium\infra\win_args.gn*) into notepad.
 Notice the three lines at the top, related to API Keys. It is fine to leave them blank, or add the ones you have made. \
 __At the bottom__, though, notice the line that says *pgo_data_path = ""*. This is where we will put the full path to the PGO profile data file we downloaded earlier.
 
@@ -205,13 +206,13 @@ That line should look something like:
 
 `pgo_data_path = "C:\src\chromium\src\chrome\build\pgo_profiles\chrome-win64-main-1659409120-058034bd778fed227d12a29fd0edd0942810dbf8.profdata"`
 
-* For other build arguments, and what the ones that Thorium uses do, see [ABOUT_GN_ARGS.md](https://github.com/Alex313031/Thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) & [win_args.list](https://github.com/Alex313031/Thorium/blob/main/infra/win_args.list)
+* For other build arguments, and what the ones that Thorium uses do, see [ABOUT_GN_ARGS.md](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) & [win_args.list](https://github.com/Alex313031/thorium/blob/main/infra/win_args.list)
 * For more info on GN, run `gn help` on the command line or read the [quick
   start guide](https://gn.googlesource.com/gn/+/main/docs/quick_start.md).
 
 ## Build Thorium
 
-Build Thorium, and the other things like [chromedriver](https://chromedriver.chromium.org/home) and [thorium_shell](https://github.com/Alex313031/Thorium/tree/main/thorium_shell#readme) with Ninja using the command:
+Build Thorium, and the other things like [chromedriver](https://chromedriver.chromium.org/home) and [thorium_shell](https://github.com/Alex313031/thorium/tree/main/thorium_shell#readme) with Ninja using the command:
 
 ```shell
 autoninja -C out\thorium chrome chromedriver thorium_shell setup mini_installer -j8
@@ -254,4 +255,4 @@ git pull origin main
 
 *Happy Thorium Building!*
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">
+<img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/Thorium90_504.jpg" width="200">

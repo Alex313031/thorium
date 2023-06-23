@@ -19,7 +19,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 
 # --help
 displayHelp () {
-	cd ~/chromium/src &&
+	cd ${CR_SRC_DIR} &&
 	python3 tools/clang/scripts/build.py --help &&
 	printf "\n" &&
 	printf "${bold}${GRE}Script to clone the latest LLVM being used by the Chromium Project, and builds a local ${c0}\n" &&
@@ -30,26 +30,33 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --version flag to show version, and --help to show help.${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 # --version
 displayVersion () {
-	cd ~/chromium/src &&
+	cd ${CR_SRC_DIR} &&
 	printf "\n" &&
 	python3 tools/clang/scripts/build.py --version &&
 	printf "\n"
 }
-
 case $1 in
 	--version) displayVersion; exit 0;;
 esac
 
 # Build with PGO
 buildPollyPGO () {
-	cd ~/chromium/src &&
+	cd ${CR_SRC_DIR} &&
 
 	printf "${GRE}Building LLVM and Polly using PGO...${c0}\n" &&
 	printf "\n"
@@ -63,7 +70,6 @@ buildPollyPGO () {
 
 	tput sgr0
 }
-
 case $1 in
 	--pgo) buildPollyPGO; exit 0;;
 esac
@@ -77,7 +83,7 @@ printf "${bold}${YEL}Use the --verbose or -v flag to make Ninja show verbose com
 printf "${bold}${YEL}Use the --version flag to show version, and --help to show help.${c0}\n" &&
 printf "\n"
 
-cd ~/chromium/src &&
+cd ${CR_SRC_DIR} &&
 
 printf "${GRE}Building LLVM and Polly...${c0}\n" &&
 printf "\n"

@@ -28,11 +28,20 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
 printf "${YEL}Cleaning up build artifacts...\n" &&
 printf "${RED}\n" &&
 
-cd ~/chromium/src/out/thorium &&
+cd ${CR_SRC_DIR}/out/thorium &&
 
 rm -r -f -v pyproto &&
 rm -r -f -v obj &&
@@ -46,8 +55,8 @@ rm -r -f -v etc &&
 rm -r -f -v clang_newlib_x64 &&
 rm -r -f -v thinlto-cache &&
 rm -r -f -v fontconfig_caches &&
-find ~/chromium/src/out/thorium -name "*deps*" -delete &&
-find ~/chromium/src/out/thorium -name "*TOC*" -delete &&
+find ${CR_SRC_DIR}/out/thorium -name "*deps*" -delete &&
+find ${CR_SRC_DIR}/out/thorium -name "*TOC*" -delete &&
 
 printf "${GRE}Done cleaning artifacts.\n" &&
 tput sgr0

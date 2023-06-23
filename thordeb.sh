@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to build Thorium .deb package on Linux.${c0}\n" &&
+	printf "${bold}${GRE}Script to build Thorium .deb and .rpm packages on Linux.${c0}\n" &&
 	printf "${underline}${YEL}Usage: ${c0}thordeb.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
@@ -26,14 +26,23 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
-printf "${YEL}Building Thorium .deb package...\n" &&
+printf "${YEL}Building Thorium .deb & .rpm packages...\n" &&
 printf "${CYA}\n" &&
 
 # Build debian package
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium "chrome/installer/linux:stable_deb" -j$@ &&
+./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j$@ &&
 
-printf "${GRE}Done! ${YEL}Installer at \'//out/thorium/thorium*.deb\'\n" &&
+printf "${GRE}Done! ${YEL}Installers at \'//out/thorium/thorium*.deb\' and \'//out/thorium/thorium*.rpm\'\n" &&
 tput sgr0

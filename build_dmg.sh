@@ -15,11 +15,20 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
 printf "${YEL}Building .dmg of Thorium...\n" &&
 printf "${CYA}\n" &&
 
-cd ~/chromium/src &&
+cd ${CR_SRC_DIR} &&
 
 # Fix file attr
 xattr -csr out/thorium/Thorium.app &&
@@ -32,5 +41,5 @@ chrome/installer/mac/pkg-dmg --sourcefile --source out/thorium/Thorium.app --tar
 
 cat logos/apple_ascii_art.txt &&
 
-printf "${GRE}.DMG Build Completed. ${YEL}Installer at \'//out/thorium/Thorium*_MacOS.dmg\'\n" &&
+printf "${GRE}.DMG Build Completed. ${YEL}Installer at \'//chromium/src/out/thorium/Thorium*_MacOS.dmg\'\n" &&
 tput sgr0

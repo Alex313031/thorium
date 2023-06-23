@@ -36,7 +36,7 @@ esac
 
 # chromium/src dir env variable
 if [ -z "${CR_DIR}" ]; then 
-    CR_SRC_DIR="${CR_SRC_DIR}"
+    CR_SRC_DIR="$HOME/chromium/src"
     export CR_SRC_DIR
 else 
     CR_SRC_DIR="${CR_DIR}"

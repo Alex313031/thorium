@@ -28,13 +28,22 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
 printf "${YEL}Building Thorium for Android...\n" &&
 printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
 printf "${CYA}\n" &&
 
 # Workaround for branding dir
-cd $HOME/chromium/src &&
+cd ${CR_SRC_DIR} &&
 rm -v -r -f chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
 rm -v -r -f chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
 rm -v -r -f chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&
@@ -54,9 +63,9 @@ buildARM32 () {
 # Build Thorium for ARM32
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
+./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
 # ADD # thorium_shell_apk
-mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm32.apk &&
+mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm32.apk &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
@@ -71,9 +80,9 @@ esac
 # Build Thorium for ARM64
 export NINJA_SUMMARIZE_BUILD=1 &&
 # ADD # thorium_shell_apk
-./depot_tools/autoninja -C ~/chromium/src/out/thorium content_shell_apk chrome_public_apk -j$@ &&
+./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
-mv ~/chromium/src/out/thorium/apks/ChromePublic.apk ~/chromium/src/out/thorium/apks/Thorium_Public_arm64.apk &&
+mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm64.apk &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 

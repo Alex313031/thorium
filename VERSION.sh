@@ -27,6 +27,15 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 THOR_VER="114.0.5735.134"
 
 export THOR_VER &&
@@ -34,10 +43,10 @@ export THOR_VER &&
 printf "\n"
 printf "${GRE}Current Thorium version is:${c0} ${underline}$THOR_VER${c0}\n"
 printf "\n"
-printf "${RED}NOTE: ${YEL}Checking out${CYA} tags/$THOR_VER ${YEL}in $HOME/chromium/src...${c0}\n"
+printf "${RED}NOTE: ${YEL}Checking out${CYA} tags/$THOR_VER ${YEL}in ${CR_SRC_DIR}...${c0}\n"
 printf "\n"
 
-cd ~/chromium/src &&
+cd ${CR_SRC_DIR} &&
 
 git checkout -f tags/$THOR_VER &&
 
@@ -47,12 +56,12 @@ git clean -ffd &&
 cd ~/thorium &&
 
 # Use our artifacts hash
-cp -v src/build/vs_toolchain.py ~/chromium/src/build/ &&
+cp -v src/build/vs_toolchain.py ${CR_SRC_DIR}/build/ &&
 
 # Add //third_party/libjxl to DEPS
-cp -v thorium-libjxl/DEPS ~/chromium/src/ &&
+cp -v thorium-libjxl/DEPS ${CR_SRC_DIR}/ &&
 
-cd ~/chromium/src &&
+cd ${CR_SRC_DIR} &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
