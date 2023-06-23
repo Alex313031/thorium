@@ -1,0 +1,202 @@
+@@include@@repo_variables.include
+
+# Install the repository signing key (see also:
+# https://www.google.com/linuxrepositories/)
+install_rpm_key() {
+  return 0
+}
+
+determine_rpm_package_manager() {
+  local RELEASE
+
+  # Modern method using os-release(5)
+  if [ -f "/etc/os-release" ]; then
+    RELEASE=$(. "/etc/os-release"; echo "$ID")
+    case $RELEASE in
+    "fedora"|"rhel"|"centos"|"amzn"|"mageia"|"openmandriva")
+      PACKAGEMANAGERS=(yum)
+      ;;
+    "suse"|"sles"|"sled"|"opensuse"|"opensuse-leap"|"opensuse-tumbleweed")
+      PACKAGEMANAGERS=(zypp)
+      ;;
+    esac
+  fi
+
+  if [ "$PACKAGEMANAGERS" ]; then
+    return
+  fi
+
+  # Fallback method using lsb_release(1)
+  LSB_RELEASE="$(command -v lsb_release 2> /dev/null)"
+  if [ -x "$LSB_RELEASE" ]; then
+    RELEASE=$(lsb_release -i 2> /dev/null | sed 's/:\t/:/' | cut -d ':' -f 2-)
+    case $RELEASE in
+    "Fedora"|"Amazon"|"Mageia"|"OpenMandrivaLinux")
+      PACKAGEMANAGERS=(yum)
+      ;;
+    "SUSE LINUX"|"openSUSE")
+      PACKAGEMANAGERS=(zypp)
+      ;;
+    esac
+  fi
+
+  if [ "$PACKAGEMANAGERS" ]; then
+    return
+  fi
+
+  # Fallback methods that are probably unnecessary on modern systems.
+  if [ -f "/etc/fedora-release" ] || [ -f "/etc/redhat-release" ]; then
+    PACKAGEMANAGERS=(yum)
+  elif [ -f "/etc/system-release" ] && grep -Fq "Amazon Linux" "/etc/system-release"; then
+    PACKAGEMANAGERS=(yum)
+  elif [ -f "/etc/SuSE-release" ]; then
+    PACKAGEMANAGERS=(zypp)
+  fi
+}
+
+DEFAULT_ARCH="@@ARCHITECTURE@@"
+YUM_REPO_FILE="/etc/yum.repos.d/@@PACKAGE@@.repo"
+ZYPPER_REPO_FILE="/etc/zypp/repos.d/@@PACKAGE@@.repo"
+
+install_yum() {
+  install_rpm_key
+
+  if [ ! "$REPOCONFIG" ]; then
+    return 0
+  fi
+
+  if [ -d "/etc/yum.repos.d" ]; then
+cat > "$YUM_REPO_FILE" << REPOCONTENT
+[@@PACKAGE@@]
+name=@@PACKAGE@@
+baseurl=$REPOCONFIG/$DEFAULT_ARCH
+enabled=1
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+REPOCONTENT
+  fi
+}
+
+install_zypp() {
+  if [ ! "$REPOCONFIG" ]; then
+    return 0
+  fi
+
+  # Ideally, we would run: zypper addrepo -t YUM -f \
+  # "$REPOCONFIG/$DEFAULT_ARCH" "@@PACKAGE@@"
+  # but that does not work when zypper is running.
+  if [ -d "/etc/zypp/repos.d" ]; then
+cat > "$ZYPPER_REPO_FILE" << REPOCONTENT
+[@@PACKAGE@@]
+name=@@PACKAGE@@
+enabled=1
+autorefresh=1
+baseurl=$REPOCONFIG/$DEFAULT_ARCH
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+type=rpm-md
+keeppackages=0
+REPOCONTENT
+  fi
+}
+
+# Check if the automatic repository configuration is done, so we know when to
+# stop trying.
+verify_install() {
+  # It's probably enough to see that the repo configs have been created. If they
+  # aren't configured properly, update_bad_repo should catch that when it's run.
+  case $1 in
+  "yum")
+    [ -f "$YUM_REPO_FILE" ]
+    ;;
+  "zypp")
+    [ -f "$ZYPPER_REPO_FILE" ]
+    ;;
+  esac
+}
+
+# Update the Google repository if it's not set correctly.
+update_bad_repo() {
+  if [ ! "$REPOCONFIG" ]; then
+    return 0
+  fi
+
+  determine_rpm_package_manager
+
+  for PACKAGEMANAGER in ${PACKAGEMANAGERS[*]}
+  do
+    case $PACKAGEMANAGER in
+    "yum")
+      update_repo_file "$YUM_REPO_FILE"
+      ;;
+    "zypp")
+      update_repo_file "$ZYPPER_REPO_FILE"
+      ;;
+    esac
+  done
+}
+
+update_repo_file() {
+  REPO_FILE="$1"
+
+  # Don't do anything if the file isn't there, since that probably means the
+  # user disabled it.
+  if [ ! -r "$REPO_FILE" ]; then
+    return 0
+  fi
+
+  # Check if the correct repository configuration is in there.
+  REPOMATCH=$(grep "^baseurl=$REPOCONFIG/$DEFAULT_ARCH" "$REPO_FILE" \
+    2>/dev/null)
+  # If it's there, nothing to do
+  if [ "$REPOMATCH" ]; then
+    return 0
+  fi
+
+  # Check if it's there but disabled by commenting out (as opposed to using the
+  # 'enabled' setting).
+  MATCH_DISABLED=$(grep "^[[:space:]]*#.*baseurl=$REPOCONFIG/$DEFAULT_ARCH" \
+    "$REPO_FILE" 2>/dev/null)
+  if [ "$MATCH_DISABLED" ]; then
+    # It's OK for it to be disabled, as long as nothing bogus is enabled in its
+    # place.
+    ACTIVECONFIGS=$(grep "^baseurl=.*" "$REPO_FILE" 2>/dev/null)
+    if [ ! "$ACTIVECONFIGS" ]; then
+      return 0
+    fi
+  fi
+
+  # If we get here, the correct repository wasn't found, or something else is
+  # active, so fix it. This assumes there is a 'baseurl' setting, but if not,
+  # then that's just another way of disabling, so we won't try to add it.
+  sed -i -e "s,^baseurl=.*,baseurl=$REPOCONFIG/$DEFAULT_ARCH," "$REPO_FILE"
+}
+
+# We only remove the repository configuration during a purge. Since RPM has
+# no equivalent to dpkg --purge, the code below is actually never used. We
+# keep it only for reference purposes, should we ever need it.
+#
+#remove_yum() {
+#  rm -f "$YUM_REPO_FILE"
+#}
+#
+#remove_zypp() {
+#  # Ideally, we would run: zypper removerepo "@@PACKAGE@@"
+#  # but that does not work when zypper is running.
+#  rm -f /etc/zypp/repos.d/@@PACKAGE@@.repo
+#}
+
+DEFAULT_ARCH="@@ARCHITECTURE@@"
+
+get_lib_dir() {
+  if [ "$DEFAULT_ARCH" = "i386" ] || [ "$DEFAULT_ARCH" = "armhf" ] || \
+      [ "$DEFAULT_ARCH" = "mipsel" ]; then
+    LIBDIR=lib
+  elif [ "$DEFAULT_ARCH" = "x86_64" ] || [ "$DEFAULT_ARCH" = "aarch64" ] || \
+        [ "$DEFAULT_ARCH" = "mips64el" ]; then
+    LIBDIR=lib64
+  else
+    echo Unknown CPU Architecture: "$DEFAULT_ARCH"
+    exit 1
+  fi
+}

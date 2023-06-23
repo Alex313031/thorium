@@ -1,1 +1,1 @@
-START "" "%cd%\BIN\113.0.5672.134\thorium_shell.exe" --data-path="%~dp0%\USER_DATA\thorium_shell" --allow-outdated-plugins --disable-logging --disable-breakpad --enable-experimental-web-platform-features --new-canvas-2d-api
+START "" "%cd%\BIN\114.0.5735.134\thorium_shell.exe" --data-path="%~dp0%\USER_DATA\thorium_shell" --allow-outdated-plugins --disable-logging --disable-breakpad --enable-experimental-web-platform-features --new-canvas-2d-api

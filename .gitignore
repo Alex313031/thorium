@@ -2,6 +2,7 @@
 API_KEYS.txt
 *.deb
 *.rpm
+*.snap
 *.AppImage
 *.zip
 thorium_mini_installer.exe

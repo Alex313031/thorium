@@ -42,6 +42,16 @@ prefix          : /opt
 %build
 
 #------------------------------------------------------------------------------
+#   Ignore libffmpeg.so
+#------------------------------------------------------------------------------
+%global _privatelibs libffmpeg.so
+%global __provides_exclude ^(%{_privatelibs})$
+%global __requires_exclude ^(%{_privatelibs})$
+%global __requires_exclude ^libffmpeg\\((autotest|basetest)
+
+# %define __requires_exclude libffmpeg.so
+
+#------------------------------------------------------------------------------
 #       Installation rule - how to install it (note that it
 #   gets installed into a temp directory given by $RPM_BUILD_ROOT)
 #------------------------------------------------------------------------------
@@ -167,9 +177,6 @@ case $CHANNEL in
     ;;
 esac
 
-%{_sbindir}/update-alternatives --install /usr/bin/@@PACKAGE_ORIG@@ \
-  @@PACKAGE_ORIG@@ /usr/bin/@@USR_BIN_SYMLINK_NAME@@ $PRIORITY
-
 exit 0
 
 
@@ -194,9 +201,6 @@ if [ "$mode" = "uninstall" ]; then
 @@include@@../common/prerm.include
   remove_nss_symlinks
   remove_udev_symlinks
-
-  %{_sbindir}/update-alternatives --remove @@PACKAGE_ORIG@@ \
-    /usr/bin/@@USR_BIN_SYMLINK_NAME@@
 fi
 
 # On Debian we only remove when we purge. However, RPM has no equivalent to
