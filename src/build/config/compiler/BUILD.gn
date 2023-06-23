@@ -939,7 +939,7 @@ config("thinlto_optimize_default") {
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
-      ## ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     rustflags = [ "-Clinker-plugin-lto=yes" ]
@@ -967,7 +967,7 @@ config("thinlto_optimize_max") {
       ldflags += [ "-mllvm:-enable-pre=false", ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
-      ## ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     rustflags = [ "-Clinker-plugin-lto=yes" ]
