@@ -182,8 +182,8 @@ stage_install_common() {
     install -m 755 "${OUTPUTDIR}/pak" "${STAGEDIR}/usr/bin/"
     install -m 644 "${OUTPUTDIR}/initial_preferences" "${STAGEDIR}/${INSTALLDIR}/"
   else
-    install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/theme_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/ui_resources_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
   fi
 
   # ICU data file; Necessary when the GN icu_use_data_file flag is true.

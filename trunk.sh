@@ -56,61 +56,9 @@ git checkout -f origin/master &&
 
 cd ${CR_SRC_DIR} &&
 
-rm -v -f ${CR_SRC_DIR}/components/neterror/resources/images/default_100_percent/offline/favicon-16x16.png &&
-
-rm -v -f ${CR_SRC_DIR}/components/neterror/resources/images/default_200_percent/offline/favicon-32x32.png &&
-
-rm -v -f ${CR_SRC_DIR}/content/shell/app/thorium_shell.ico &&
-
-rm -v -f ${CR_SRC_DIR}/chrome/browser/thorium_flag_entries.h &&
-
-rm -v -f ${CR_SRC_DIR}/chrome/browser/thorium_flag_choices.h &&
-
 rm -v -r -f ${CR_SRC_DIR}/third_party/pak &&
-rm -v -r -f ${CR_SRC_DIR}/third_party/widevine/CREDITS.chromium &&
 
-rm -r -f -v	chrome/browser/bromite_flag_choices.h &&
-rm -r -f -v	chrome/browser/bromite_flag_entries.h &&
-rm -r -f -v	chrome/browser/ungoogled_flag_choices.h &&
-rm -r -f -v	chrome/browser/ungoogled_flag_entries.h &&
-rm -r -f -v	chrome/browser/ungoogled_platform_flag_choices.h &&
-rm -r -f -v	chrome/browser/ungoogled_platform_flag_entries.h &&
 rm -r -f -v	components/ungoogled/ &&
-rm -r -f -v	net/url_request/trk_protocol_handler.cc &&
-rm -r -f -v	net/url_request/trk_protocol_handler.h &&
-
-rm -r -f -v	chrome/browser/BUILD.gn.rej &&
-rm -r -f -v	chrome/browser/browser_process.h.rej &&
-rm -r -f -v	chrome/browser/browser_process_impl.cc.rej &&
-rm -r -f -v	chrome/browser/browser_process_impl.h.rej &&
-rm -r -f -v	chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.cc.rej &&
-rm -r -f -v	chrome/browser/chrome_content_browser_client.cc.rej &&
-rm -r -f -v	chrome/browser/component_updater/file_type_policies_component_installer.cc.rej &&
-rm -r -f -v	chrome/browser/download/chrome_download_manager_delegate.cc.rej &&
-rm -r -f -v	chrome/browser/download/download_item_model.cc.rej &&
-rm -r -f -v	chrome/browser/download/download_prefs.cc.rej &&
-rm -r -f -v	chrome/browser/download/download_target_determiner.cc.rej &&
-rm -r -f -v	chrome/browser/extensions/api/downloads/downloads_api.cc.rej &&
-rm -r -f -v	chrome/browser/extensions/api/downloads/downloads_api.h.rej &&
-rm -r -f -v	chrome/browser/extensions/api/safe_browsing_private/safe_browsing_private_api.cc.rej &&
-rm -r -f -v	chrome/browser/extensions/api/webstore_private/webstore_private_api.cc.rej &&
-rm -r -f -v	chrome/browser/extensions/blocklist_state_fetcher.cc.rej &&
-rm -r -f -v	chrome/browser/extensions/blocklist_state_fetcher.h.rej &&
-rm -r -f -v	chrome/browser/metrics/chrome_metrics_service_client.cc.rej &&
-rm -r -f -v	chrome/browser/net/trial_comparison_cert_verifier_controller.cc.rej &&
-rm -r -f -v	chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc.rej &&
-rm -r -f -v	chrome/browser/profiles/profile_impl.cc.rej &&
-rm -r -f -v	chrome/browser/profiles/profiles_state.cc.rej &&
-rm -r -f -v	chrome/browser/safe_browsing/BUILD.gn.rej &&
-rm -r -f -v	chrome/browser/ssl/security_state_tab_helper.cc.rej &&
-rm -r -f -v	chrome/browser/ui/BUILD.gn.rej &&
-rm -r -f -v	chrome/browser/ui/tab_helpers.cc.rej &&
-rm -r -f -v	chrome/browser/ui/webui/downloads/downloads_dom_handler.cc.rej &&
-rm -r -f -v	chrome/browser/ui/webui/downloads/downloads_dom_handler.h.rej &&
-rm -r -f -v	chrome/browser/ui/webui/interstitials/interstitial_ui.cc.rej &&
-rm -r -f -v	chrome/renderer/chrome_content_renderer_client.cc.rej &&
-rm -r -f -v	components/security_interstitials/content/cert_report_helper.cc.rej &&
-rm -r -f -v	chrome/browser/safe_browsing/safe_browsing_dummy.cc &&
 
 git checkout -f origin/main &&
 

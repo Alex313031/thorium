@@ -17,6 +17,15 @@ yell() { echo "$0: $*" >&2; }
 die() { yell "$*"; exit 111; }
 try() { "$@" || die "${RED}Failed $*"; }
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 # --help
 displayHelp () {
 	cd ${CR_SRC_DIR} &&
@@ -33,15 +42,6 @@ displayHelp () {
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
-
-# chromium/src dir env variable
-if [ -z "${CR_DIR}" ]; then 
-    CR_SRC_DIR="$HOME/chromium/src"
-    export CR_SRC_DIR
-else 
-    CR_SRC_DIR="${CR_DIR}"
-    export CR_SRC_DIR
-fi
 
 # --version
 displayVersion () {
