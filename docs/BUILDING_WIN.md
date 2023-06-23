@@ -37,8 +37,10 @@ installed. This can be installed separately or by checking the appropriate box
 in the Visual Studio Installer __(Note that MSVS 2022 will try to install the 22000 version by default, uncheck this and check the 22621 version)__.
 There is also experimental support for the Windows 11 10.1.22000.755 version.
 
-The SDK Debugging Tools must also be installed. If the Windows 10 SDK was
-installed via the Visual Studio installer, then they can be installed by going
+The 10.0.22621.755 SDK Debugging Tools must also be installed. This
+version of the Debugging tools is needed in order to support reading the
+large-page PDBs that Chrome uses to allow greater-than 4 GiB PDBs.
+If the Windows 10 SDK was installed via the Visual Studio installer, then they can be installed by going
 to: Control Panel → Programs → Programs and Features → Select the "Windows
 Software Development Kit" → Change → Change → Check "Debugging Tools For
 Windows" → Change. Or, you can download the standalone SDK installer and use it
@@ -49,7 +51,7 @@ to install the Debugging Tools.
 Download the [depot_tools bundle](https://storage.googleapis.com/chrome-infra/depot_tools.zip)
 and extract it to *C:\src\depot_tools*.
 
-***note
+***
 __Warning:__ __*DO NOT*__ use drag-n-drop or copy-n-paste extract from Explorer,
 this will not extract the hidden “.git” folder which is necessary for
 depot_tools to autoupdate itself. You can use “Extract all…” from the
@@ -87,7 +89,6 @@ for Visual Studio 2022.
 
 Once all of this is done, we will download some infra archives using `gclient`. \
 From a cmd.exe shell, run:
-
 ```shell
 gclient
 ```
@@ -225,7 +226,7 @@ arguments passed to `ninja`.
 You can get a list of all of the other build targets from GN by running
 `gn ls out\thorium` from the command line. To compile one, pass to Ninja
 the GN label with no preceding "//" (so for `//chrome/test:unit_tests`
-use autoninja -C out/Default chrome/test:unit_tests).
+use autoninja -C out\thorium chrome/test:unit_tests).
 
 ## Install/Run Thorium
 
