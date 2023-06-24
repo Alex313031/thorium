@@ -12,8 +12,9 @@ arm_tune = "cortex-a72"
 arm_use_neon = true
 arm_optionally_use_neon = true
 arm_use_thumb = true
-use_system_minigbm = false
-use_vc4_minigbm = true
+# Disabled due to breakage
+#use_system_minigbm = false
+#use_vc4_minigbm = true
 enable_linux_installer = true
 enable_distro_version_check = false
 is_official_build = true

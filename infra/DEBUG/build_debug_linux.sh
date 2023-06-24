@@ -48,7 +48,7 @@ cp -r -f -v ./icons/icon_64.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shel
 cp -r -f -v ./icons/icon_128.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
 cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ./icons/thorium_debug_shell.ico ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
+# cp -r -f -v ./icons/thorium_debug_shell.ico ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 cp -r -f -v DEBUG_SHELL_README.md ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/README.md &&
 cp -r -f -v Thorium_Debug_Shell.sh ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
 cp -r -f -v ~/chromium/src/out/thorium/locales ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
