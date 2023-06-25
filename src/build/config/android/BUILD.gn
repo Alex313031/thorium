@@ -46,7 +46,6 @@ config("compiler") {
     # Reduce the page size from 65536 in order to reduce binary size slightly
     # by shrinking the alignment gap between segments. This also causes all
     # segments to be mapped adjacently, which breakpad relies on.
-    cflags += [ "-mfloat-abi=hard", "-march=armv8-a+simd", "-mfpu=neon", ]
     ldflags += [ "-Wl,-z,max-page-size=4096" ]
   }
 
@@ -58,10 +57,6 @@ config("compiler") {
       cflags += [ "-mbranch-protection=pac-ret" ]
       rustflags = [ "-Zbranch-protection=pac-ret" ]
     }
-  }
-
-  if (current_cpu == "arm") {
-    cflags += [ "-march=armv7-a", ]
   }
 
   # Instead of using an unwind lib from the toolchain,
@@ -78,6 +73,16 @@ config("compiler") {
 
   cflags += [ "--target=$android_abi_target$compile_api_level" ]
   ldflags += [ "--target=$android_abi_target$compile_api_level" ]
+
+  if (current_cpu == "arm64" || target_cpu == "arm64") {
+    cflags += [ "-march=armv8-a+simd", "-mfloat-abi=hard", "-mfpu=neon" ]
+    ldflags += [ "-march=armv8-a+simd" ]
+  }
+
+  if (current_cpu == "arm" || target_cpu == "arm") {
+    cflags += [ "-march=armv7-a" ]
+    ldflags += [ "-march=armv7-a" ]
+  }
 
   # Assign any flags set for the C compiler to asmflags so that they are sent
   # to the assembler.
