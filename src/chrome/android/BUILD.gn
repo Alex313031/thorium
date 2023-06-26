@@ -2274,7 +2274,7 @@ if (current_toolchain == default_toolchain) {
 
   chrome_public_apk_or_module_tmpl("chrome_public_apk") {
     target_type = "android_apk"
-    apk_name = "ChromePublic"
+    apk_name = "ThoriumPublic"
     enable_multidex = is_java_debug
     baseline_profile_path = "//chrome/android/baseline_profiles/profile.txt"
   }
@@ -2581,7 +2581,7 @@ if (current_toolchain == default_toolchain) {
     # TODO(wnwen): Re-enable when new lint failures are disabled for test targets.
     #enable_lint = true
 
-    apk_name = "ChromePublicTest"
+    apk_name = "ThoriumPublicTest"
     deps = [
       ":chrome_test_apk_template_resources",
       ":chrome_test_java",
