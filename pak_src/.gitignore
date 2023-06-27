@@ -66,3 +66,7 @@ obj/*
 *.cbp
 *.depend
 *.layout
+
+# Ignore Prebuilts
+!binaries/*
+!binaries/pak-win/*
