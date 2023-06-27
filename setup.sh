@@ -76,8 +76,8 @@ cp -r -v src/tools/. ${CR_SRC_DIR}/tools/ &&
 cp -r -v src/ui/. ${CR_SRC_DIR}/ui/ &&
 cp -r -v src/v8/. ${CR_SRC_DIR}/v8/ &&
 cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
-cp -r -v pak_src/bin/pak ${CR_SRC_DIR}/out/thorium/ &&
-cp -r -v pak_src/bin/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
+cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
+cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
 # Add default_apps dir for Google Docs Offline extension.
 mkdir -v -p ${CR_SRC_DIR}/out/thorium/default_apps &&
@@ -107,6 +107,8 @@ copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
+	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
+	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
 	printf "\n"
 }
 # Display raspi ascii art
