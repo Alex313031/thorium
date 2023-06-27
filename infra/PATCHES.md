@@ -201,4 +201,7 @@ Patches for mini_installer and abseil when using AVX on Windows. Credit goes to 
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, and Experimental Canvas2D.
   - Modified by me.
 
+Remove discovery module from NTP on Android
+  - Made by @gz83.
+
 - Any other code/patches are written from scratch by me.

@@ -1,0 +1,78 @@
+From 9d07f991a3996c0219320b77b6611e80053db0e3 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <uioptt24@gmail.com>
+Date: Wed, 28 Jun 2023 02:52:35 +0800
+Subject: [PATCH] [Android] Remove discovery module from NTP
+
+Change-Id: Ied94517abba26e45e18b5a98ca5851a2c37b1c42
+---
+ .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
+ .../java/res/layout/new_tab_page_multi_feed_header.xml       | 5 +++--
+ components/feed/core/shared_prefs/pref_names.cc              | 4 ++--
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
+index ee1283cb9a6a0..e15ddc9532cce 100644
+--- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
++++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!--
+-Copyright 2020 The Chromium Authors
++Copyright 2020 The Chromium Authors, Alex313031 and gz83
+ Use of this source code is governed by a BSD-style license that can be
+ found in the LICENSE file.
+ -->
+@@ -14,7 +14,8 @@ found in the LICENSE file.
+     android:minHeight="@dimen/snippets_article_header_height"
+     android:orientation="vertical"
+     android:gravity="center_vertical"
+-    android:layoutDirection="locale" >
++    android:layoutDirection="locale"
++    android:visibility="gone" >
+ 
+     <RelativeLayout
+         tools:ignore="RelativeOverlap"
+diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
+index 9c7aa0fb74cb1..df79f5c27f07e 100644
+--- a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
++++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!--
+-Copyright 2021 The Chromium Authors
++Copyright 2021 The Chromium Authors, Alex313031 and gz83
+ Use of this source code is governed by a BSD-style license that can be
+ found in the LICENSE file.
+ -->
+@@ -11,7 +11,8 @@ found in the LICENSE file.
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+-    android:orientation="vertical" >
++    android:orientation="vertical"
++    android:visibility="gone" >
+ 
+   <LinearLayout
+       android:id="@+id/main_content"
+diff --git a/components/feed/core/shared_prefs/pref_names.cc b/components/feed/core/shared_prefs/pref_names.cc
+index e239b42b31ef3..21c7aab6bedd0 100644
+--- a/components/feed/core/shared_prefs/pref_names.cc
++++ b/components/feed/core/shared_prefs/pref_names.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2020 The Chromium Authors
++// Copyright 2020 The Chromium Authors, Alex313031 and gz83
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -21,7 +21,7 @@ const char kVideoPreviewsType[] = "ntp_snippets.video_previews_type";
+ 
+ void RegisterFeedSharedProfilePrefs(PrefRegistrySimple* registry) {
+   registry->RegisterBooleanPref(kEnableSnippets, true);
+-  registry->RegisterBooleanPref(kArticlesListVisible, true);
++  registry->RegisterBooleanPref(kArticlesListVisible, false);
+   registry->RegisterIntegerPref(kVideoPreviewsType, 1);
+ }
+ 
+-- 
+2.39.1.windows.1
+
