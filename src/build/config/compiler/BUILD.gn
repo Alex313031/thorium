@@ -1831,6 +1831,12 @@ config("no_chromium_code") {
   defines = []
 
   if (is_win) {
+    cflags += [ "/O2" ]
+  } else {
+    cflags += [ "-O3" ]
+  }
+
+  if (is_win) {
     if (is_clang) {
       cflags += [ "/W3" ]  # Warning level 3.
     }

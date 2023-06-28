@@ -62,6 +62,7 @@ printf "${CYA}\n" &&
 
 # Build Thorium
 export NINJA_SUMMARIZE_BUILD=1 &&
+export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 ./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome chromedriver -j$@ &&
 

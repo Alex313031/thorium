@@ -32,6 +32,7 @@ printf "${GRE}\n" &&
 
 # Build Thorium and mini_installer
 export NINJA_SUMMARIZE_BUILD=1 &&
+export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 ./depot_tools/autoninja -C ~/chromium/src/out/thorium chrome chromedriver clear_key_cdm thorium_shell setup mini_installer -j$@ &&
 

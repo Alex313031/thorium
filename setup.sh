@@ -200,6 +200,7 @@ printf "\n" &&
 printf "${YEL}Exporting variables and setting handy aliases...\n" &&
 
 export NINJA_SUMMARIZE_BUILD=1 &&
+export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 export EDITOR=nano &&
 

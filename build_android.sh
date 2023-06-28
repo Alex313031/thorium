@@ -62,6 +62,7 @@ esac
 
 # Build Thorium for ARM64
 export NINJA_SUMMARIZE_BUILD=1 &&
+export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 # ADD # thorium_shell_apk
 ./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
