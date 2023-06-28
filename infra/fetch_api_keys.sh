@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 # Simply uses wget to fetch Thorium API Keys.
 # This is to keep them out of the main repo, in the case Google
@@ -24,8 +24,9 @@ printf "${YEL}Downloading API_KEYS.txt here...${c0}\n" &&
 printf "\n" &&
 
 rm -f ./API_KEYS.txt &&
+rm -f ../API_KEYS.txt &&
 
-wget https://raw.githubusercontent.com/cr-bucket/thor-bucket/main/API_KEYS.txt &&
+wget --directory-prefix=../ https://raw.githubusercontent.com/cr-bucket/thor-bucket/main/API_KEYS.txt &&
 
 printf "${GRE}Done.\n" &&
 printf "${YEL}- Use the three lines therein at the atop of your args.gn\n" &&
