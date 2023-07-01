@@ -1,0 +1,13 @@
+{
+    "arch": "x64",
+    "description": "Widevine Content Decryption Module",
+    "manifest_version": 2,
+    "name": "WidevineCdm",
+    "os": "linux",
+    "version": "4.10.2557.0",
+    "x-cdm-codecs": "vp8,vp09,avc1,av01",
+    "x-cdm-host-versions": "10",
+    "x-cdm-interface-versions": "10",
+    "x-cdm-module-versions": "4",
+    "x-cdm-persistent-license-support": false
+}

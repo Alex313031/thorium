@@ -43,7 +43,7 @@ enable_library_widevine_cdm =
 # Note: Not enabled on ChromeOS. See https://crbug.com/971433
 enable_widevine_cdm_component =
     enable_library_widevine_cdm &&
-    (is_win || is_mac || is_linux || is_chromeos_lacros)
+    (is_linux || is_chromeos_lacros)
 
 # Enable (Windows) Media Foundation Widevine CDM component.
 declare_args() {

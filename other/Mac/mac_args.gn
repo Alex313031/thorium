@@ -43,7 +43,7 @@ enable_cros_media_app = false
 proprietary_codecs = true
 ffmpeg_branding = "Chrome"
 # Set to false for Polly build
-# clang_use_chrome_plugins = false
+clang_use_chrome_plugins = false
 enable_ffmpeg_video_decoders = true
 is_component_ffmpeg = false
 use_webaudio_ffmpeg = false
@@ -52,7 +52,7 @@ use_webaudio_pffft = false
 # enable_dav1d_decoder = true
 enable_library_cdms = true
 enable_widevine = true
-bundle_widevine_cdm = false
+bundle_widevine_cdm = true
 # enable_widevine_cdm_component = true
 enable_cdm_host_verification = false
 ignore_missing_widevine_signing_cert = true
