@@ -43,11 +43,10 @@ printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
 printf "${CYA}\n" &&
 
 buildARM32 () {
-# Build Thorium for ARM32
+# Build Thorium for ARM32 and System WebView
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
-# ADD # thorium_shell_apk
+autoninja -C ${CR_SRC_DIR}/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
 mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm32.apk &&
 
 cat logos/thorium_logo_ascii_art.txt &&
@@ -63,8 +62,7 @@ esac
 # Build Thorium for ARM64
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
-# ADD # thorium_shell_apk
-./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium content_shell_apk chrome_public_apk -j$@ &&
+autoninja -C ${CR_SRC_DIR}/out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
 mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm64.apk &&
 

@@ -26,6 +26,15 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# chromium/src dir env variable
+if [ -z "${CR_DIR}" ]; then 
+    CR_SRC_DIR="$HOME/chromium/src"
+    export CR_SRC_DIR
+else 
+    CR_SRC_DIR="${CR_DIR}"
+    export CR_SRC_DIR
+fi
+
 printf "\n" &&
 printf "${YEL}Building Thorium for Linux...\n" &&
 printf "${CYA}\n" &&
@@ -34,7 +43,7 @@ printf "${CYA}\n" &&
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
-./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome chrome_sandbox chromedriver clear_key_cdm thorium_shell -j$@ &&
+autoninja -C ${CR_SRC_DIR}/out/thorium chrome chrome_sandbox chromedriver clear_key_cdm thorium_shell -j$@ &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 

@@ -36,7 +36,7 @@ buildShell () {
 	# Build Thorium
 	export NINJA_SUMMARIZE_BUILD=1 &&
 	
-	./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome chromedriver thorium_shell -j$@ &&
+	autoninja -C ${CR_SRC_DIR}/out/thorium chrome chromedriver thorium_shell -j$@ &&
 	
 	cat logos/thorium_logo_ascii_art.txt &&
 	
@@ -64,7 +64,7 @@ printf "${CYA}\n" &&
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
-./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium chrome chromedriver -j$@ &&
+autoninja -C ${CR_SRC_DIR}/out/thorium chrome chromedriver -j$@ &&
 
 cat logos/thorium_logo_ascii_art.txt &&
 
