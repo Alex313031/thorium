@@ -234,6 +234,8 @@ stage_install_common() {
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -type f -exec chmod 644 '{}' \;
     find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -name libwidevinecdm.so \
       -exec chmod ${SHLIB_PERMS} '{}' \;
+    find "${STAGEDIR}/${INSTALLDIR}/WidevineCdm" -name libwidevinecdm_real.so \
+      -exec chmod ${SHLIB_PERMS} '{}' \;
   fi
 
   # ClearKey CDM.
