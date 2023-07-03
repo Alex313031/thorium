@@ -8,8 +8,8 @@
 #
 thorium.exe: %(ChromeDir)s\
 chrome_proxy.exe: %(ChromeDir)s\
-# initial_preferences file, to show Thorium welcome page on first start
 initial_preferences: %(ChromeDir)s\
+# initial_preferences file, to show Thorium welcome page on first start
 #
 # Chrome version dir assembly manifest.
 # The name of this file must match the name of the version dir, so we cannot
@@ -36,6 +36,7 @@ content_shell.pak: %(VersionDir)s\
 d3dcompiler_47.dll: %(VersionDir)s\
 eventlog_provider.dll: %(VersionDir)s\
 ffmpeg.dll: %(VersionDir)s\
+initial_preferences: %(VersionDir)s\
 icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\

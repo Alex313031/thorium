@@ -46,10 +46,10 @@ buildARM32 () {
 # Build Thorium for ARM32 and System WebView
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-autoninja -C ${CR_SRC_DIR}/out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
-mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm32.apk &&
+cd ${CR_SRC_DIR} &&
+autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
 
-cat logos/thorium_logo_ascii_art.txt &&
+cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
@@ -62,11 +62,11 @@ esac
 # Build Thorium for ARM64
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
-autoninja -C ${CR_SRC_DIR}/out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
-mv ${CR_SRC_DIR}/out/thorium/apks/ChromePublic.apk ${CR_SRC_DIR}/out/thorium/apks/Thorium_Public_arm64.apk &&
+cd ${CR_SRC_DIR} &&
+autoninja -C out/thorium content_shell_apk chrome_public_apk -j$@ &&
 
-cat logos/thorium_logo_ascii_art.txt &&
+cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&

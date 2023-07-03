@@ -43,9 +43,10 @@ printf "${CYA}\n" &&
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
-autoninja -C ${CR_SRC_DIR}/out/thorium chrome chrome_sandbox chromedriver clear_key_cdm thorium_shell -j$@ &&
+cd ${CR_SRC_DIR} &&
+autoninja -C out/thorium chrome chrome_sandbox chromedriver clear_key_cdm thorium_shell -j$@ &&
 
-cat logos/thorium_logo_ascii_art.txt &&
+cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed! ${YEL}${bold}You can now run \'./package.sh\' to build installation packages.\n" &&
 tput sgr0 &&
