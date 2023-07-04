@@ -2070,9 +2070,9 @@ if (is_win) {
   common_optimize_on_cflags = [ "-O3", ]
   common_optimize_on_ldflags = [ "-Wl,-O3", ]
   
-  if (current_cpu == "arm64") {
-    common_optimize_on_cflags += [ "-march=armv8-a+simd", "-mtune=cortex-a72", "-mfloat-abi=hard", "-mfpu=neon-vfpv4", ]
-    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
+  if (current_cpu == "arm64" || target_cpu == "arm64") {
+    common_optimize_on_cflags += [ "-march=armv8-a+crc", "-mtune=cortex-a72", "-mfpu=neon-fp-armv8", "-mfloat-abi=hard", ]
+    common_optimize_on_ldflags += [ "-march=armv8-a+crc", ]
     if (is_linux) {
       common_optimize_on_cflags += [ "-Wno-unused-command-line-argument", ]
     }
