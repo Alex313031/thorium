@@ -14,7 +14,6 @@
 //  - WIDEVINE_CDM_VERSION_STRING (with the version of the CDM that's available
 //    as a string, e.g., "1.0.123.456").
 
-#define WIDEVINE_CDM_AVAILABLE
 #define WIDEVINE_CDM_VERSION_STRING "undefined"
 
 #endif  // WIDEVINE_CDM_VERSION_H_
