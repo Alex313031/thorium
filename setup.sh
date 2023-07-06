@@ -200,7 +200,6 @@ copyCros () {
 	printf "\n" &&
 	printf "${YEL}Copying ChromiumOS build files...${c0}\n" &&
 	cp -r -v other/CrOS/* ${CR_SRC_DIR}/ &&
-	cp -r -v other/CrOS/* ${CR_SRC_DIR}/ &&
 	printf "\n"
 }
 case $1 in
