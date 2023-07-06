@@ -26,6 +26,7 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse2 flag for 32 bit SSE2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --android flag for Android Builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --cros flag for ChromiumOS Builds.${c0}\n" &&
 	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in Thorium/infra, then use the setup_polly.sh${c0}\n" &&
 	printf "${bold}${YEL}script in Thorium/other/Polly. Both of these actions should be taken AFTER running this script!${c0}\n" &&
 	printf "\n"
@@ -192,6 +193,18 @@ copyAndroid () {
 }
 case $1 in
 	--android) copyAndroid;
+esac
+
+# Copy CrOS files
+copyCros () {
+	printf "\n" &&
+	printf "${YEL}Copying ChromiumOS build files...${c0}\n" &&
+	cp -r -v other/CrOS/* ${CR_SRC_DIR}/ &&
+	cp -r -v other/CrOS/* ${CR_SRC_DIR}/ &&
+	printf "\n"
+}
+case $1 in
+	--cros) copyCros;
 esac
 
 printf "${GRE}Done!\n" &&

@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -572,6 +572,13 @@ config("compiler") {
         ldflags += [ "-Wl,-mllvm,-instcombine-lower-dbg-declare=0" ]
       }
     }
+
+    # TODO(crbug.com/1235145): Investigate why/if this should be needed.
+    if (is_win) {
+      cflags += [ "/clang:-ffp-contract=off" ]
+    } else {
+      cflags += [ "-ffp-contract=off" ]
+    }
   }
 
   # C11/C++11 compiler flags setup.
@@ -685,6 +692,7 @@ config("compiler") {
         "-mllvm:-import-instr-limit=$import_instr_limit",
         "-mllvm:-import-hot-multiplier=15",
         "-mllvm:-import-cold-multiplier=4",
+        "-mllvm:-disable-auto-upgrade-debug-info",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
         # "/lldltocachepolicy:$cache_policy",
@@ -727,6 +735,14 @@ config("compiler") {
       }
 
       ldflags += [ "-Wl,-mllvm,-import-instr-limit=$import_instr_limit" ]
+
+      if (!is_chromeos) {
+        # TODO(https://crbug.com/972449): turn on for ChromeOS when that
+        # toolchain has this flag.
+        # We only use one version of LLVM within a build so there's no need to
+        # upgrade debug info, which can be expensive since it runs the verifier.
+        ldflags += [ "-Wl,-mllvm,-disable-auto-upgrade-debug-info" ]
+      }
     }
 
     # TODO(https://crbug.com/1211155): investigate why this isn't effective on
@@ -890,7 +906,7 @@ config("compiler") {
     "-Zremap-cwd-prefix=.",
 
     # Full RUSTC optimizations.
-    "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul",
+    "-Copt-level=3", "-Ctarget-feature=+sse4.1",
   ]
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
@@ -900,7 +916,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
   }
 }
 
@@ -915,7 +931,7 @@ config("compiler") {
 # https://doc.rust-lang.org/rustc/linker-plugin-lto.html
 config("rust_defer_lto_to_linker") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
-    rustflags = [ "-Clinker-plugin-lto", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+    rustflags = [ "-Clinker-plugin-lto", "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
   }
 }
 
@@ -935,7 +951,7 @@ config("thinlto_optimize_default") {
       # ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
     }
 
-    rustflags = [ "-Clto=thin" ]
+    rustflags = [ "-Clinker-plugin-lto=yes" ]
   }
 }
 
@@ -965,7 +981,7 @@ config("thinlto_optimize_max") {
       # ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
     }
 
-    rustflags = [ "-Clto=thin" ]
+    rustflags = [ "-Clinker-plugin-lto=yes" ]
   }
 }
 
@@ -997,11 +1013,9 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
-        "-mavx",
-        "-maes",
-        "-mpclmul",
+        "-msse4.1",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mpclmul", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse4.1", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -1773,14 +1787,14 @@ config("chromium_code") {
       defines += [ "_FORTIFY_SOURCE=2" ]
     }
 
-    if (is_mac) {
-      cflags_objc = [ "-Wobjc-missing-property-synthesis" ]
-      cflags_objcc = [ "-Wobjc-missing-property-synthesis" ]
+    if (is_apple) {
+      cflags_objc = [ "-Wimplicit-retain-self" ]
+      cflags_objcc = [ "-Wimplicit-retain-self" ]
     }
 
-    if (is_ios) {
-      cflags_objc = [ "-Wimplicit-retain-self" ]
-      cflags_objcc = cflags_objc
+    if (is_mac) {
+      cflags_objc += [ "-Wobjc-missing-property-synthesis" ]
+      cflags_objcc += [ "-Wobjc-missing-property-synthesis" ]
     }
   }
 
@@ -2082,9 +2096,7 @@ if (is_win) {
     "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
-    "/clang:-mavx",
-    "/clang:-maes",
-    "/clang:-mpclmul",
+    "/clang:-msse4.1",
     "-Xclang", "-O3",
   ]
 
@@ -2347,7 +2359,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
   }
 }
 
@@ -2380,13 +2392,13 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
   }
 }
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2510,6 +2522,7 @@ config("win_pdbaltpath") {
 
 # Full symbols.
 config("symbols") {
+  rustflags = []
   if (is_win) {
     if (is_clang) {
       cflags = [
@@ -2548,11 +2561,13 @@ config("symbols") {
     if (!is_nacl && current_os != "aix") {
       if (use_dwarf5) {
         cflags += [ "-gdwarf-5" ]
+        rustflags += [ "-Zdwarf-version=5" ]
       } else if (!is_apple) {
         # Recent clang versions default to DWARF5 on Linux, and Android is about
         # to switch. TODO: Adopt that in controlled way.
         # Apple platforms still default to 4, so the flag is not needed there.
         cflags += [ "-gdwarf-4" ]
+        rustflags += [ "-Zdwarf-version=4" ]
       }
     }
 
@@ -2643,7 +2658,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags = [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
 }
 
 # Minimal symbols.
@@ -2717,7 +2732,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,-pclmul", ]
+  rustflags = [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse4.1", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
