@@ -1,0 +1,65 @@
+<!-- Copyright 2023 The Chromium Authors and Alex313031
+     Use of this source code is governed by a BSD-style license that can be
+     found in the LICENSE file. -->
+<!DOCTYPE html>
+<html dir="$i18n{textdirection}" lang="$i18n{appLocale}">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Discovery App</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    font-family: "Roboto", sans-serif;
+  }
+  body {
+    font-family: "Roboto", sans-serif;
+    margin: 0.5em auto;
+    padding: 1rem;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  h2.heading {
+    align-content: center;
+    text-align: center;
+  }
+  p.info {
+    align-content: center;
+    text-align: center;
+  }
+  div.gallery {
+    float: center;
+    max-width: 300px;
+    height: auto;
+    margin: auto;
+  }
+</style>
+
+<link rel="stylesheet" href="//theme/colors.css?sets=ref">
+<body>
+<h2 class="heading">Discovery App</h2>
+  <p class="info">
+  Welcome to <a >ThoriumOS!</a>
+  <br/>
+  The discovery app is a shim in ChromiumOS, usually being populated on ChromeOS by tips & tricks, and sponsored purchasing content.
+  <br/>
+  I am working on modifying it, so this is some preliminary text.
+  </p>
+  <br/>
+  <div class="gallery">
+    <img title="ThoriumOS Install Success!" alt="OS Install Success" src="/os-install-success.svg"></img>
+  </div>
+</body>
+<script src="/receiver.js" type="module"></script>
+<!--
+  Populates `window.loadTimeData.data`. Needs to be after
+  "receiver.js" which loads "sandboxed_load_time_data.js". But
+  module scripts do not block parsing, so these non-module scripts must be
+  loaded on the defer queue.
+-->
+<script src="/strings.js" defer></script>
+<script src="/app_bin.js" defer></script>
+</html>
