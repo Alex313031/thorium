@@ -661,7 +661,7 @@
     Go to permission settings
   </message>
   <message name="IDS_PAGE_INFO_PERMISSIONS_SUBPAGE_REMEMBER_THIS_SETTING" desc="The text near the checkbox, that controls if user's decision will be remembered for this permission, in permission's subpage in page info bubble.">
-    Allow on every visit
+    Remember this setting
   </message>
   <message name="IDS_PAGE_INFO_RESET_PERMISSIONS" desc="The label of the button to reset permissions for a site.">
     {NUM_PERMISSIONS, plural, =1 {Reset permission} other {Reset permissions}}

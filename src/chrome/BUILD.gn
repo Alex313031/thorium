@@ -72,6 +72,15 @@ if (is_win && enable_resource_allowlist_generation) {
   _chrome_resource_allowlist = "$target_gen_dir/chrome_resource_allowlist.txt"
 }
 
+# Thorium target that simply pulls in the chrome target as a dependency
+group("thorium") {
+  deps = [ ":chrome" ]
+
+  if (is_win) {
+    deps += [ ":chrome_dll" ]
+  }
+}
+
 if (is_win) {
   action("reorder_imports") {
     script = "//build/win/reorder-imports.py"

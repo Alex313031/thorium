@@ -40,7 +40,7 @@ shell_use_toolkit_views = toolkit_views && !is_castos
 
 declare_args() {
   content_shell_product_name = "Thorium Shell"
-  content_shell_version = "999.77.34.5"
+  content_shell_version = "999.0.3434.555"
   content_shell_major_version = "999"
 }
 
@@ -213,8 +213,19 @@ static_library("content_shell_lib") {
 
   if (is_ios) {
     sources += [
+      "browser/bluetooth/ios/shell_bluetooth_chooser_coordinator.h",
+      "browser/bluetooth/ios/shell_bluetooth_chooser_coordinator.mm",
+      "browser/bluetooth/ios/shell_bluetooth_chooser_ios.h",
+      "browser/bluetooth/ios/shell_bluetooth_chooser_ios.mm",
+      "browser/bluetooth/ios/shell_bluetooth_chooser_mediator.h",
+      "browser/bluetooth/ios/shell_bluetooth_chooser_mediator.mm",
+      "browser/bluetooth/ios/shell_bluetooth_device_list_consumer.h",
+      "browser/bluetooth/ios/shell_bluetooth_device_list_delegate.h",
+      "browser/bluetooth/ios/shell_bluetooth_device_list_view_controller.h",
+      "browser/bluetooth/ios/shell_bluetooth_device_list_view_controller.mm",
       "browser/bluetooth/shell_bluetooth_delegate_impl_client.cc",
       "browser/bluetooth/shell_bluetooth_delegate_impl_client.h",
+      "browser/shell_browser_main_parts_ios.mm",
       "browser/shell_file_select_helper.cc",
       "browser/shell_file_select_helper.h",
       "browser/shell_platform_delegate_ios.mm",
@@ -287,7 +298,6 @@ static_library("content_shell_lib") {
     "//components/variations/service",
     "//components/web_cache/renderer",
     "//content:content_resources",
-    "//content:dev_ui_content_resources",
     "//content/common:main_frame_counter",
     "//content/public/common",
     "//content/test:content_test_mojo_bindings",
@@ -363,6 +373,7 @@ static_library("content_shell_lib") {
   if (is_ios) {
     deps += [
       "//components/permissions",
+      "//components/strings:components_strings",
       "//services/tracing/public/cpp",
       "//services/tracing/public/mojom:mojom",
       "//ui/shell_dialogs",
@@ -478,10 +489,11 @@ repack("pak") {
     "$root_gen_dir/content/browser/resources/media/media_internals_resources.pak",
     "$root_gen_dir/content/browser/webrtc/resources/webrtc_internals_resources.pak",
     "$root_gen_dir/content/content_resources.pak",
-    "$root_gen_dir/content/dev_ui_content_resources.pak",
     "$root_gen_dir/content/gpu_resources.pak",
     "$root_gen_dir/content/histograms_resources.pak",
+    "$root_gen_dir/content/process_resources.pak",
     "$root_gen_dir/content/quota_internals_resources.pak",
+    "$root_gen_dir/content/service_worker_resources.pak",
     "$root_gen_dir/content/shell/shell_resources.pak",
     "$root_gen_dir/content/test/web_ui_mojo_test_resources.pak",
     "$root_gen_dir/mojo/public/js/mojo_bindings_resources.pak",
@@ -502,7 +514,6 @@ repack("pak") {
     ":resources",
     "//base/tracing/protos:chrome_track_event_resources",
     "//content:content_resources",
-    "//content:dev_ui_content_resources",
     "//content/browser/resources:resources",
     "//content/browser/resources/media:resources",
     "//content/browser/webrtc/resources",
@@ -523,6 +534,17 @@ repack("pak") {
     sources += [ "$root_gen_dir/content/browser/tracing/tracing_resources.pak" ]
   }
 
+  if (is_ios) {
+    sources += [
+      "$root_gen_dir/device/bluetooth/strings/bluetooth_strings_en-US.pak",
+      "${root_gen_dir}/components/strings/components_strings_en-US.pak",
+    ]
+    deps += [
+      "//components/strings:components_strings",
+      "//device/bluetooth/strings/",
+    ]
+  }
+
   if (shell_use_toolkit_views) {
     deps += [ "//ui/views/resources" ]
     sources +=
@@ -537,7 +559,7 @@ repack("pak") {
 }
 
 if (is_android) {
-  group("thorium_shell") {
+  group("content_shell") {
     testonly = true
     deps = [ "//content/shell/android:content_shell_apk" ]
   }
@@ -593,7 +615,7 @@ if (is_android) {
         "//build/config/ios/entitlements.plist"
   }
 
-  ios_app_bundle("thorium_shell") {
+  ios_app_bundle("content_shell") {
     info_plist = "app/ios-Info.plist"
     testonly = true
 
@@ -670,24 +692,24 @@ if (is_android) {
     fuchsia_component("content_shell_component") {
       testonly = true
       manifest = "fuchsia/content_shell.cml"
-      data_deps = [ ":thorium_shell" ]
+      data_deps = [ ":content_shell" ]
       visibility = [ ":*" ]
     }
 
-    fuchsia_package("thorium_shell_pkg") {
+    fuchsia_package("content_shell_pkg") {
       testonly = true
-      package_name = "thorium_shell"
+      package_name = "content_shell"
       deps = [ ":content_shell_component" ]
     }
 
-    fuchsia_package_installer("thorium_shell_fuchsia") {
+    fuchsia_package_installer("content_shell_fuchsia") {
       testonly = true
       visibility = [
         ":*",  # See https://crbug.com/1328459#c4.
         "//:*",
       ]
-      package = ":thorium_shell_pkg"
-      package_name = "thorium_shell"
+      package = ":content_shell_pkg"
+      package_name = "content_shell"
     }
   }
 }

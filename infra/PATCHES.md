@@ -29,7 +29,7 @@ V8 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/b
 VAAPI Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/enable-vaapi-on-linux.diff
   - Modified by me.
 
-~~ VAAPI on Wayland Patch > https://github.com/ungoogled-software/ungoogled-chromium-archlinux/blob/master/ozone-add-va-api-support-to-wayland.patch ~~ REMOVED
+ REMOVED ~~VAAPI on Wayland Patch > https://github.com/ungoogled-software/ungoogled-chromium-archlinux/blob/master/ozone-add-va-api-support-to-wayland.patch~~
   - From Arch AUR ~~
 
 Use default search icon instead of search engine icon in omnibox patch > https://github.com/ungoogled-software/contrib/blob/master/tweaks/visual/default-search-icon.patch
@@ -175,7 +175,7 @@ Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core
   - Found by @gz83, modified by me.
   
 Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
-  - Modfied by me.
+  - Modified by me.
 
 CFI Ignores Patch - https://github.com/RobRich999/Chromium_Clang/blob/150e755bdb3f2c389ab3d485f38d62a36414e73a/Linux/linux64-avx.patch#L386
   - Made by RobRich999

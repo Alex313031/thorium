@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) 2023 Alex313031. -->
-
 <grit-part>
   <message name="IDS_APP_MANAGEMENT_CAMERA" desc="Label for the camera permission toggle.">
     Camera
@@ -60,7 +59,7 @@
     Opening <ph name="BEGIN_LINK">&lt;a href="#"&gt;</ph>supported links<ph name="END_LINK">&lt;/a&gt;</ph>
   </message>
   <message name="IDS_APP_MANAGEMENT_INTENT_SHARING_APP_OPEN" desc="Label for the intent sharing option to open in a specified app.">
-    Open in <ph name="APP_NAME">$1<ex>Chrome browser</ex></ph>
+    Open in <ph name="APP_NAME">$1<ex>Thorium browser</ex></ph>
   </message>
   <message name="IDS_APP_MANAGEMENT_INTENT_SHARING_BROWSER_OPEN" desc="Label for the intent sharing option to open in the browser.">
     Open in Thorium browser
@@ -113,7 +112,7 @@
   <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_ANDROID" desc="Text for Android app type">
     Android App
   </message>
-  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_CHROME" desc="Text for Chrome app type">
+  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_CHROME" desc="Text for Thorium app type">
     Thorium App
   </message>
   <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_WEB" desc="Text for Web app type">
@@ -122,16 +121,16 @@
   <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_SYSTEM" desc="Text for System app type">
     System App
   </message>
-  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_CROS_SYSTEM" desc="Text for ChromeOS System app type">
+  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_CROS_SYSTEM" desc="Text for ThoriumOS System app type">
     ThoriumOS System App
   </message>
-  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_INSTALL_SOURCE_WEB_STORE" desc="Text for Chrome Web Store installation source">
+  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_INSTALL_SOURCE_WEB_STORE" desc="Text for Thorium Web Store installation source">
     Thorium Web Store
   </message>
   <message name="IDS_APP_MANAGEMENT_APP_DETAILS_INSTALL_SOURCE_PLAY_STORE" desc="Text for Google Play Store installation source">
     Google Play Store
   </message>
-  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_INSTALL_SOURCE_BROWSER" desc="Text for Chrome browser installation source for Web App">
+  <message name="IDS_APP_MANAGEMENT_APP_DETAILS_INSTALL_SOURCE_BROWSER" desc="Text for Thorium browser installation source for Web App">
     Web App installed from Thorium browser
   </message>
   <message name="IDS_APP_MANAGEMENT_APP_DETAILS_TYPE_AND_SOURCE_COMBINED" desc="Full text for installation source and app type line">
@@ -152,6 +151,18 @@
   <message name="IDS_APP_MANAGEMENT_ARC_MANAGE_PERMISSIONS" desc="Label for a link to manage permissions and more settings for an app.">
     Manage permissions and settings
   </message>
+  <message name="IDS_APP_MANAGEMENT_PERMISSION_ASK" desc="Label explaining that the user will be asked whether an app can access a permission (e.g. camera access) every time it is used.">
+    Ask every time
+  </message>
+  <message name="IDS_APP_MANAGEMENT_PERMISSION_ALLOWED" desc="Label explaining that access to a permission (e.g. camera access) is allowed for an app.">
+    Allowed
+  </message>
+  <message name="IDS_APP_MANAGEMENT_PERMISSION_ALLOWED_WITH_DETAILS" desc="Label explaining that access to a permission (e.g. camera access) is allowed for an app. The placeholder after the dash provides additional details about what access is allowed.">
+    Allowed – <ph name="PERMISSION_DETAILS">$1<ex>While in use</ex></ph>
+  </message>
+  <message name="IDS_APP_MANAGEMENT_PERMISSION_DENIED" desc="Label explaining that access to a permission (e.g. camera access) is denied for an app.">
+    Denied
+  </message>
 
   <!-- File Handling -->
   <message name="IDS_APP_MANAGEMENT_FILE_HANDLING_HEADER" desc="Main text for toggling a web app's ability to use the File Handling API. This controls whether the app can appear in an 'Open With' list in a file's context menu.">
@@ -168,7 +179,7 @@
     </message>
   </if>
   <if expr="is_chromeos">
-    <message name="IDS_APP_MANAGEMENT_FILE_HANDLING_SET_DEFAULTS_LINK" desc="Further explanation of the File Handling API, including text describing the purpose of the toggle (referencing the ChromeOS Files app) and a link to a learn more link for default filetype associations.">
+    <message name="IDS_APP_MANAGEMENT_FILE_HANDLING_SET_DEFAULTS_LINK" desc="Further explanation of the File Handling API, including text describing the purpose of the toggle (referencing the ThoriumOS Files app) and a link to a learn more link for default filetype associations.">
       You can open and edit supported files with this app from the Files app or other apps. To control which files open this app by default, <ph name="BEGIN_LINK">&lt;a href="#"&gt;</ph>learn how to set default apps on your device<ph name="END_LINK">&lt;/a&gt;</ph>.
     </message>
   </if>

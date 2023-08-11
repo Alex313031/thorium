@@ -577,7 +577,6 @@ static_library("test_support") {
     "//ui/accessibility:ax_enums_mojo",
     "//ui/base",
     "//ui/base:test_support",
-    "//ui/base:ui_data_pack",
     "//ui/base/clipboard",
     "//ui/base/clipboard:clipboard_test_support",
     "//ui/base/ime",
@@ -975,11 +974,11 @@ static_library("browsertest_support") {
     "../public/test/content_browser_test_utils.h",
     "../public/test/content_cert_verifier_browser_test.cc",
     "../public/test/content_cert_verifier_browser_test.h",
+    "../public/test/resource_load_observer.cc",
+    "../public/test/resource_load_observer.h",
     "content_browser_test_utils_internal.cc",
     "content_browser_test_utils_internal.h",
     "content_test_launcher.cc",
-    "resource_load_observer.cc",
-    "resource_load_observer.h",
   ]
 
   public_deps = [
@@ -1268,6 +1267,7 @@ test("content_browsertests") {
     "../browser/attribution_reporting/attribution_internals_browsertest.cc",
     "../browser/attribution_reporting/attribution_src_browsertest.cc",
     "../browser/attribution_reporting/attributions_browsertest.cc",
+    "../browser/attribution_reporting/cross_app_web_attribution_browsertest.cc",
     "../browser/attribution_reporting/privacy_sandbox_ads_apis_browsertest.cc",
     "../browser/attribution_reporting/source_declaration_browsertest.cc",
     "../browser/attribution_reporting/trigger_registration_browsertest.cc",
@@ -1296,6 +1296,7 @@ test("content_browsertests") {
     "../browser/browsing_topics/browsing_topics_browsertest.cc",
     "../browser/child_process_launcher_browsertest.cc",
     "../browser/child_process_security_policy_browsertest.cc",
+    "../browser/compute_pressure/compute_pressure_origin_trial_browsertest.cc",
     "../browser/content_index/content_index_browsertest.cc",
     "../browser/content_security_policy_browsertest.cc",
     "../browser/cross_origin_opener_policy_browsertest.cc",
@@ -1391,6 +1392,7 @@ test("content_browsertests") {
     "../browser/network/sandboxed_http_cache_browsertest.cc",
     "../browser/network/sandboxed_nqe_browsertest.cc",
     "../browser/network/sandboxed_socket_broker_browsertest.cc",
+    "../browser/network/shared_dictionary_browsertest.cc",
     "../browser/network/split_cache_browsertest.cc",
     "../browser/network/transferable_socket_browsertest.cc",
     "../browser/network/trust_token_browsertest.cc",
@@ -1410,6 +1412,7 @@ test("content_browsertests") {
     "../browser/portal/portal_navigation_throttle_browsertest.cc",
     "../browser/power_monitor_browsertest.cc",
     "../browser/preloading/anchor_element_interaction_browsertest.cc",
+    "../browser/preloading/preloading_decider_browsertest.cc",
     "../browser/preloading/prerender/prerender_browsertest.cc",
     "../browser/process_internals/process_internals_browsertest.cc",
     "../browser/quota/quota_browsertest.cc",
@@ -1523,8 +1526,12 @@ test("content_browsertests") {
     "../browser/web_contents/web_contents_view_aura_browsertest.cc",
     "../browser/web_package/signed_exchange_request_handler_browsertest.cc",
     "../browser/web_package/signed_exchange_subresource_prefetch_browsertest.cc",
+    "../browser/webid/test/mock_identity_request_dialog_controller.cc",
+    "../browser/webid/test/mock_identity_request_dialog_controller.h",
     "../browser/webid/test/mock_mdoc_provider.cc",
     "../browser/webid/test/mock_mdoc_provider.h",
+    "../browser/webid/test/mock_modal_dialog_view_delegate.cc",
+    "../browser/webid/test/mock_modal_dialog_view_delegate.h",
     "../browser/webid/test/webid_test_content_browser_client.cc",
     "../browser/webid/test/webid_test_content_browser_client.h",
     "../browser/webid/webid_browsertest.cc",
@@ -1606,7 +1613,6 @@ test("content_browsertests") {
     ":test_interfaces",
     ":web_ui_mojo_test_resources",
     "//content:content_resources",
-    "//content:dev_ui_content_resources",
   ]
 
   deps = [
@@ -1736,10 +1742,17 @@ test("content_browsertests") {
     "//ui/webui:test_support",
   ]
 
-  data = [
-    "data/",
-    "//media/test/data/",
-  ]
+  if (is_ios) {
+    bundle_deps = [
+      ":content_test_bundle_data",
+      "//media/test:media_bundle_data",
+    ]
+  } else {
+    data = [
+      "data/",
+      "//media/test/data/",
+    ]
+  }
 
   data_deps = [
     "//content/shell:pak",
@@ -1863,6 +1876,8 @@ test("content_browsertests") {
       "//third_party/isimpledom",
     ]
 
+    data_deps += [ "//services/test/echo:echo_preload_library" ]
+
     libs = [ "uiautomationcore.lib" ]
 
     configs += [ "//build/config/win:delayloads" ]
@@ -1961,7 +1976,9 @@ test("content_browsertests") {
       "//content/public/browser:proto",
       "//ui/base/clipboard:clipboard_test_support",
     ]
-    data += [ "//content/test/data/clipboard/" ]
+    if (!is_ios) {
+      data += [ "//content/test/data/clipboard/" ]
+    }
   }
   if (is_posix) {
     deps += [ "//services/tracing:test_utils" ]
@@ -2013,7 +2030,7 @@ test("content_browsertests") {
       "../browser/keyboard_lock_browsertest_ios.mm",
       "../browser/pointer_lock_browsertest_ios.mm",
     ]
-    bundle_deps = [ ":content_shell_pak_bundle_data" ]
+    bundle_deps += [ ":content_shell_pak_bundle_data" ]
   }
 
   if (is_chromeos_ash) {
@@ -2213,6 +2230,7 @@ test("content_unittests") {
     "../browser/attribution_reporting/attribution_storage_unittest.cc",
     "../browser/attribution_reporting/attribution_utils_unittest.cc",
     "../browser/attribution_reporting/combinatorics_unittest.cc",
+    "../browser/attribution_reporting/destination_throttler_unittest.cc",
     "../browser/attribution_reporting/rate_limit_table_unittest.cc",
     "../browser/background_fetch/background_fetch_cross_origin_filter_unittest.cc",
     "../browser/background_fetch/background_fetch_data_manager_unittest.cc",
@@ -2251,7 +2269,7 @@ test("content_unittests") {
     "../browser/browsing_data/clear_site_data_handler_unittest.cc",
     "../browser/browsing_topics/browsing_topics_site_data_manager_impl_unittest.cc",
     "../browser/browsing_topics/browsing_topics_site_data_storage_unittest.cc",
-    "../browser/browsing_topics/browsing_topics_url_loader_service_unittest.cc",
+    "../browser/browsing_topics/browsing_topics_url_loader_unittest.cc",
     "../browser/browsing_topics/header_util_unittest.cc",
     "../browser/buckets/bucket_manager_host_unittest.cc",
     "../browser/buckets/bucket_utils_unittest.cc",
@@ -2340,6 +2358,7 @@ test("content_unittests") {
     "../browser/indexed_db/mock_mojo_indexed_db_database_callbacks.cc",
     "../browser/indexed_db/mock_mojo_indexed_db_database_callbacks.h",
     "../browser/interest_group/ad_auction_service_impl_unittest.cc",
+    "../browser/interest_group/ad_auction_url_loader_interceptor_unittest.cc",
     "../browser/interest_group/auction_metrics_recorder_unittest.cc",
     "../browser/interest_group/auction_process_manager_unittest.cc",
     "../browser/interest_group/auction_runner_unittest.cc",
@@ -2391,6 +2410,7 @@ test("content_unittests") {
     "../browser/media/system_media_controls_notifier_unittest.cc",
     "../browser/media/webaudio/audio_context_manager_impl_unittest.cc",
     "../browser/memory/swap_metrics_driver_impl_unittest.cc",
+    "../browser/metrics/histogram_shared_memory_config_unittest.cc",
     "../browser/metrics/histograms_monitor_unittest.cc",
     "../browser/mojo_binder_policy_applier_unittest.cc",
     "../browser/mojo_binder_policy_map_impl_unittest.cc",
@@ -2511,6 +2531,7 @@ test("content_unittests") {
     "../browser/renderer_host/media/video_capture_controller_unittest.cc",
     "../browser/renderer_host/media/video_capture_manager_unittest.cc",
     "../browser/renderer_host/media/video_capture_unittest.cc",
+    "../browser/renderer_host/mixed_content_checker_unittest.cc",
     "../browser/renderer_host/mixed_content_navigation_throttle_unittest.cc",
     "../browser/renderer_host/navigation_controller_impl_unittest.cc",
     "../browser/renderer_host/navigation_entry_impl_unittest.cc",
@@ -2610,6 +2631,7 @@ test("content_unittests") {
     "../browser/webid/federated_auth_request_impl_registry_unittest.cc",
     "../browser/webid/federated_auth_request_impl_unittest.cc",
     "../browser/webid/federated_auth_user_info_request_unittest.cc",
+    "../browser/webid/identity_registry_unittest.cc",
     "../browser/webid/idp_network_request_manager_unittest.cc",
     "../browser/webid/test/delegated_idp_network_request_manager.cc",
     "../browser/webid/test/delegated_idp_network_request_manager.h",
@@ -2619,10 +2641,14 @@ test("content_unittests") {
     "../browser/webid/test/mock_api_permission_delegate.h",
     "../browser/webid/test/mock_auto_reauthn_permission_delegate.cc",
     "../browser/webid/test/mock_auto_reauthn_permission_delegate.h",
+    "../browser/webid/test/mock_identity_registry.cc",
+    "../browser/webid/test/mock_identity_registry.h",
     "../browser/webid/test/mock_identity_request_dialog_controller.cc",
     "../browser/webid/test/mock_identity_request_dialog_controller.h",
     "../browser/webid/test/mock_idp_network_request_manager.cc",
     "../browser/webid/test/mock_idp_network_request_manager.h",
+    "../browser/webid/test/mock_modal_dialog_view_delegate.cc",
+    "../browser/webid/test/mock_modal_dialog_view_delegate.h",
     "../browser/webid/test/mock_permission_delegate.cc",
     "../browser/webid/test/mock_permission_delegate.h",
     "../browser/webrtc/webrtc_internals_message_handler_unittest.cc",
@@ -2634,6 +2660,7 @@ test("content_unittests") {
     "../browser/webui/web_ui_unittest.cc",
     "../browser/webui/web_ui_url_loader_factory_unittest.cc",
     "../browser/webui/web_ui_webui_js_bridge_unittest.cc",
+    "../browser/webui/webui_config_map_unittest.cc",
     "../browser/worker_host/dedicated_worker_service_impl_unittest.cc",
     "../browser/worker_host/mock_shared_worker.cc",
     "../browser/worker_host/mock_shared_worker.h",
@@ -2766,17 +2793,14 @@ test("content_unittests") {
   if (is_ios) {
     bundle_deps = [
       ":content_shell_pak_bundle_data",
-      ":content_unittests_bundle_data",
+      ":content_test_bundle_data",
       "//media/test:media_bundle_data",
     ]
   }
 
   configs += [ "//build/config:precompiled_headers" ]
 
-  public_deps = [
-    "//content:content_resources",
-    "//content:dev_ui_content_resources",
-  ]
+  public_deps = [ "//content:content_resources" ]
 
   deps = [
     ":content_test_mojo_bindings",
@@ -2963,13 +2987,10 @@ test("content_unittests") {
   }
 
   if (is_fuchsia) {
-    deps += [
-      "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.accessibility.semantics:fuchsia.accessibility.semantics_cpp",
-      "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.accessibility.semantics:fuchsia.accessibility.semantics_hlcpp",
-    ]
+    deps += [ "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.accessibility.semantics:fuchsia.accessibility.semantics_cpp" ]
   }
 
-  if (enable_printing) {
+  if (enable_printing || enable_printing_unittests) {
     deps += [
       "//printing",
       "//printing/backend",
@@ -2989,7 +3010,6 @@ test("content_unittests") {
       "../renderer/pepper/event_conversion_unittest.cc",
       "../renderer/pepper/host_var_tracker_unittest.cc",
       "../renderer/pepper/mock_resource.h",
-      "../renderer/pepper/resource_creation_impl_unittest.cc",
       "../renderer/pepper/v8_var_converter_unittest.cc",
     ]
     deps += [
@@ -3136,6 +3156,7 @@ test("content_unittests") {
     sources += [
       "../browser/devtools/protocol/webauthn_handler_unittest.cc",
       "../browser/host_zoom_map_impl_unittest.cc",
+      "../browser/picture_in_picture/document_picture_in_picture_navigation_throttle_unittest.cc",
       "../browser/serial/serial_unittest.cc",
       "../browser/speech/endpointer/endpointer_unittest.cc",
       "../browser/speech/speech_recognition_engine_unittest.cc",
@@ -3238,9 +3259,9 @@ if (is_ios) {
     outputs = [ "{{bundle_resources_dir}}/content_shell.pak" ]
   }
 
-  bundle_data_from_filelist("content_unittests_bundle_data") {
+  bundle_data_from_filelist("content_test_bundle_data") {
     testonly = true
-    filelist_name = "content_unittests_bundle_data.filelist"
+    filelist_name = "content_test_bundle_data.filelist"
   }
 }
 
@@ -3308,6 +3329,7 @@ group("gpu_pytype") {
 
   data = [
     "//content/test/gpu/run_pytype.py",
+    "//content/test/gpu/unexpected_pass_finder.py",
     "//content/test/gpu/validate_tag_consistency.py",
 
     "//content/test/gpu/gold_inexact_matching/",
