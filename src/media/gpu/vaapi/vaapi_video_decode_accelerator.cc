@@ -1229,11 +1229,13 @@ VaapiVideoDecodeAccelerator::DecideBufferAllocationMode() {
     return BufferAllocationMode::kReduced;
   return BufferAllocationMode::kSuperReduced;
 #else
+
   // NVIDIA blobs use VDPAU
   if (VaapiWrapper::GetImplementationType() == VAImplementation::kNVIDIAVDPAU) {
     LOG(INFO) << "VA-API driver on VDPAU backend";
     return BufferAllocationMode::kWrapVdpau;
   }
+
   // TODO(crbug.com/912295): Enable a better BufferAllocationMode for IMPORT
   // |output_mode_| as well.
   if (output_mode_ == VideoDecodeAccelerator::Config::OutputMode::IMPORT)
