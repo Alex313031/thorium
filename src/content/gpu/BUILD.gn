@@ -139,7 +139,7 @@ target(link_target_type, "gpu_sources") {
     deps += [ "//gpu/vulkan" ]
   }
 
- # Use DRI on desktop Linux builds.
+  # Use DRI on desktop Linux builds.
   if (current_cpu != "s390x" && current_cpu != "ppc64" && is_linux &&
       !is_castos) {
     configs += [ "//build/config/linux/dri" ]

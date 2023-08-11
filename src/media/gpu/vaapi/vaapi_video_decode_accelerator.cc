@@ -1234,7 +1234,6 @@ VaapiVideoDecodeAccelerator::DecideBufferAllocationMode() {
     LOG(INFO) << "VA-API driver on VDPAU backend";
     return BufferAllocationMode::kWrapVdpau;
   }
-
   // TODO(crbug.com/912295): Enable a better BufferAllocationMode for IMPORT
   // |output_mode_| as well.
   if (output_mode_ == VideoDecodeAccelerator::Config::OutputMode::IMPORT)
