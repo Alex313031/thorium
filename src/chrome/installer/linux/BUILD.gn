@@ -42,13 +42,12 @@ packaging_files_executables = [
 ]
 packaging_files_shlibs = []
 
-# TODO(https://crbug.com/1299021): Implement building these NaCl targets as
-# ARM32 when Chrome is built for ARM64 (for Linux/Chrome OS).
-if (target_cpu == "arm64") {
-  enable_nacl = false
-}
+# Don't attempt to package NaCl when building the ARM32-NaCl-on-ARM64
+# configuration.  That could be made to work, but it would be somewhat
+# difficult, and not worthwhile given that NaCl is deprecated.
+package_nacl = enable_nacl && target_cpu != "arm64"
 
-if (enable_nacl) {
+if (package_nacl) {
   packaging_files_executables += [
     "$root_out_dir/nacl_helper",
     "$root_out_dir/nacl_helper_bootstrap",
@@ -94,18 +93,24 @@ packaging_files_binaries = packaging_files_executables + packaging_files_shlibs
 # TODO(mmoss) Any convenient way to get all the relevant build files?
 # (e.g. all locales, resources, etc.)
 packaging_files = packaging_files_binaries + [
-                    "$root_out_dir/vk_swiftshader_icd.json",
                     "$root_out_dir/xdg-mime",
                     "$root_out_dir/xdg-settings",
                     "$root_out_dir/locales/en-US.pak",
                     "$root_out_dir/MEIPreload/manifest.json",
                     "$root_out_dir/MEIPreload/preloaded_data.pb",
                   ]
+if (enable_swiftshader) {
+  packaging_files += [ "$root_out_dir/vk_swiftshader_icd.json" ]
+}
+
 if (use_qt) {
   # Even though this is a shared library, add it to `packaging_files` instead of
   # `packaging_files_shlibs` to skip the dependency check.  This is intentional
   # to prevent a hard dependency on QT for the package.
   packaging_files += [ "$root_out_dir/libqt5_shim.so" ]
+}
+if (use_qt6) {
+  packaging_files += [ "$root_out_dir/libqt6_shim.so" ]
 }
 
 action_foreach("calculate_deb_dependencies") {
@@ -220,7 +225,7 @@ strip_binary("strip_libvk_swiftshader.shlib") {
   deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
 }
 
-if (enable_nacl) {
+if (package_nacl) {
   strip_binary("strip_nacl_helper") {
     binary_input = "$root_out_dir/nacl_helper"
     deps = [ "//components/nacl/loader:nacl_helper" ]
@@ -245,6 +250,12 @@ if (use_qt) {
   strip_binary("strip_qt5_shim") {
     binary_input = "$root_out_dir/libqt5_shim.so"
     deps = [ "//ui/qt:qt5_shim" ]
+  }
+}
+if (use_qt6) {
+  strip_binary("strip_qt6_shim") {
+    binary_input = "$root_out_dir/libqt6_shim.so"
+    deps = [ "//ui/qt:qt6_shim" ]
   }
 }
 
@@ -393,7 +404,7 @@ group("installer_deps") {
     "//components/crash/core/app:chrome_crashpad_handler",
     "//sandbox/linux:chrome_sandbox",
   ]
-  if (enable_nacl) {
+  if (package_nacl) {
     public_deps += [
       ":strip_nacl_helper",
       ":strip_nacl_helper_bootstrap",
@@ -442,6 +453,12 @@ group("installer_deps") {
     public_deps += [
       ":strip_qt5_shim",
       "//ui/qt:qt5_shim",
+    ]
+  }
+  if (use_qt6) {
+    public_deps += [
+      ":strip_qt6_shim",
+      "//ui/qt:qt6_shim",
     ]
   }
 }
@@ -610,4 +627,10 @@ template("linux_package") {
 # Standard packages.
 linux_package("stable") {
   channel = "stable"
+}
+linux_package("beta") {
+  channel = "beta"
+}
+linux_package("unstable") {
+  channel = "unstable"
 }

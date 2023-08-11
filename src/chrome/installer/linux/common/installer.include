@@ -279,9 +279,14 @@ stage_install_common() {
     install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
   fi
 
-  # QT shim
+  # QT shims
   if [ -f "${OUTPUTDIR}/libqt5_shim.so" ]; then
     file="libqt5_shim.so"
+    strippedfile="${OUTPUTDIR}/${file}.stripped"
+    install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
+  fi
+  if [ -f "${OUTPUTDIR}/libqt6_shim.so" ]; then
+    file="libqt6_shim.so"
     strippedfile="${OUTPUTDIR}/${file}.stripped"
     install -m ${SHLIB_PERMS} "${strippedfile}" "${STAGEDIR}/${INSTALLDIR}/${file}"
   fi
