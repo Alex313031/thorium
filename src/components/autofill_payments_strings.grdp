@@ -463,7 +463,7 @@
   </if>
   <if expr="is_win">
     <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling.">
-      Thorium is trying to verify it's you so it can fill in your payment info.
+      Google Thorium is trying to verify it's you so it can fill in your payment info.
     </message>
   </if>
 
@@ -567,6 +567,32 @@
     Manage payment methods
   </message>
 
+  <!-- Mandatory Reauth related strings - start -->
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_NO_THANKS" desc="Text for the cancel button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will not be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    No Thanks
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_ACCEPT" desc="Text for the accept button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    Yes
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_TITLE" desc="Title text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    Always verify?
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_EXPLANATION" desc="Explanation text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    For added security on shared devices, turn on verification every time you pay using autofill.
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_ICON_TOOLTIP" desc="The tooltip message for the omnibox icon for the mandatory reauth opt-in bubble on Desktop. This bubble prompts users if they would like to enroll in mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    Enable mandatory re-authentication
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_TITLE" desc="Title text for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    You're all set
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_EXPLANATION" desc="Explanation text for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    Thorium will now verify it's you before filling in payment methods. You can update this at any time in <ph name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK">$1<ex>settings</ex></ph>.
+  </message>
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK" desc="A link to the settings page for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+    settings
+  </message>
+
   <!-- virtual cards related strings - start -->
   <if expr="not is_ios and not is_android">
     <message name="IDS_AUTOFILL_CLOUD_TOKEN_DROPDOWN_OPTION_LABEL" desc="Text shown in the button in the Autofill dropdown menu when a credit card form field is queried, to offer the option to use a virtual card.">
@@ -635,7 +661,7 @@
       Yes
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_DIALOG_TITLE_LABEL" desc="Title encouraging users to enroll their card to VCN." formatter_data="android_java">
-      Make it more secure with a virtual card?
+      Make it more secure with a virtual card next time?
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_DIALOG_CONTENT_LABEL" desc="Text explaining the benefit of enrolling a credit card as a virtual card. Also contains a link to learn more about virtual cards from IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_LEARN_MORE_LINK_LABEL.">
     A virtual card hides your actual card to help protect you from potential fraud. <ph name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_LEARN_MORE_LINK_LABEL">$1<ex>Learn about virtual cards</ex></ph>
@@ -860,12 +886,19 @@
   </if>
 
   <!-- Mandatory Reauth related strings -->
-  <!-- TODO(crbug.com/1427216): Remove translateable tags when strings are approved. -->
-  <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_PAYMENT_METHOD_MANDATORY_REAUTH_LABEL" translateable="false" desc="Label for a settings page toggle that allows users to control whether or not to add mandatory reauth for payment methods filling." formatter_data="android_java">
-    Verify it’s you when filling in payment methods
+  <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_PAYMENT_METHOD_MANDATORY_REAUTH_LABEL" desc="Label for a settings page toggle that allows users to control whether or not to add mandatory reauth for payment methods filling." formatter_data="android_java">
+    Always verify when using autofill
   </message>
-  <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_PAYMENT_METHOD_MANDATORY_REAUTH_SUBLABEL" translateable="false" desc="Sublabel for a setttings page toggle that allows users to control whether or not to add mandatory reauth for payment methods filling." formatter_data="android_java">
-    If turned off, you may still be asked to sometimes verify it’s you for security purposes
+  <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_PAYMENT_METHOD_MANDATORY_REAUTH_SUBLABEL" desc="Sublabel for a setttings page toggle that allows users to control whether or not to add mandatory reauth for payment methods filling." formatter_data="android_java">
+    When turned off, you may be asked occasionally to verify for security purposes
   </message>
+  <if expr="is_android">
+    <message name="IDS_AUTOFILL_MANDATORY_REAUTH_SNACKBAR_MESSAGE_TEXT" desc="Text to be displayed in the snackbar shown after opting in mandatory reauth.">
+      Payment verification settings saved
+    </message>
+    <message name="IDS_AUTOFILL_MANDATORY_REAUTH_SNACKBAR_ACTION_TEXT" desc="Text to be displayed as the snackbar action shown after opting in mandatory reauth.">
+      Settings
+    </message>
+  </if>
 
 </grit-part>

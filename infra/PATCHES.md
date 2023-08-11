@@ -175,11 +175,17 @@ Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core
   - Found by @gz83, modified by me.
   
 Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
-  - Modfiied by me.
+  - Modfied by me.
 
 CFI Ignores Patch - https://github.com/RobRich999/Chromium_Clang/blob/150e755bdb3f2c389ab3d485f38d62a36414e73a/Linux/linux64-avx.patch#L386
   - Made by RobRich999
-  
+
+Warn instead of Error on V8 PGO Profile Mismatch Patch - https://github.com/RobRich999/Chromium_Clang/blob/main/V8/v8.patch
+  - Made by RobRich999
+
+Enable Middle Click Autoscroll on ALL Platforms - https://github.com/Alex313031/thorium/issues/199
+  - Made by me.
+
 Patches to enable truly Portable usage > Disable Encryption and Machine ID
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-encryption.patch
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-machine-id.patch

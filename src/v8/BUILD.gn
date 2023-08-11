@@ -2282,7 +2282,9 @@ template("run_mksnapshot") {
 
         # Replace this with --warn-about-builtin-profile-data to see the full
         # list of builtins with incompatible profiles.
-        "--abort-on-bad-builtin-profile-data",
+        # TODO(crbug.com/v8/13647): Do not fail for invalid profiles
+        # "--abort-on-bad-builtin-profile-data",
+        "--warn-about-builtin-profile-data",
       ]
     }
 

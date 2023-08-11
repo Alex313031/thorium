@@ -2281,6 +2281,7 @@
       name: "MiddleClickAutoscroll",
       status: "test",
       base_feature: "none",
+      base_feature_status: "enabled",
     },
     {
 

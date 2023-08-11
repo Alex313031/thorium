@@ -77,7 +77,7 @@ cd ${CR_SRC_DIR} &&
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}You can now run \'./VERSION.sh\'\n" &&
+printf "${GRE}Done! ${YEL}You can now run \'./version.sh\'\n" &&
 tput sgr0 &&
 
 c0='\033[0m' # Reset Text

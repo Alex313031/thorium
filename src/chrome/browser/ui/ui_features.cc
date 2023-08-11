@@ -13,9 +13,10 @@ namespace features {
 
 // Enables the tab dragging fallback when full window dragging is not supported
 // by the platform (e.g. Wayland). See https://crbug.com/896640
+// TODO: Alex313031 bug fix
 BASE_FEATURE(kAllowWindowDragUsingSystemDragDrop,
              "AllowWindowDragUsingSystemDragDrop",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 #if !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kDesktopPWAsAppHomePage,
@@ -52,9 +53,10 @@ BASE_FEATURE(kAccessCodeCastUI,
 
 // Enables displaying the submenu to open a link with a different profile if
 // there is at least one other active profile.
+// TODO: Alex313031 bug fix
 BASE_FEATURE(kDisplayOpenLinkAsProfile,
              "DisplayOpenLinkAsProfile",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Enables showing the EV certificate details in the Page Info bubble.
 BASE_FEATURE(kEvDetailsInPageInfo,
@@ -197,21 +199,13 @@ BASE_FEATURE(kTabGroupsCollapseFreezing,
              "TabGroupsCollapseFreezing",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Directly controls the "new" badge (as opposed to old "master switch"; see
-// https://crbug.com/1169907 for master switch deprecation and
-// https://crbug.com/968587 for the feature itself)
-// https://crbug.com/1173792
-BASE_FEATURE(kTabGroupsNewBadgePromo,
-             "TabGroupsNewBadgePromo",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enables users to explicitly save and recall tab groups.
 // https://crbug.com/1223929
 BASE_FEATURE(kTabGroupsSave,
              "TabGroupsSave",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Enables users to explicitly save and recall tab groups.
+// Enables users to explicitly save and recall tab groups with sync.
 // https://crbug.com/1223929
 BASE_FEATURE(kTabGroupsSaveSyncIntegration,
              "TabGroupsSaveSyncIntegration",
