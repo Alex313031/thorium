@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2012 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -30,8 +30,8 @@
 #include "url/gurl.h"
 
 #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
-#include "chrome/browser/supervised_user/supervised_user_service.h"
 #include "chrome/browser/supervised_user/supervised_user_service_factory.h"
+#include "components/supervised_user/core/browser/supervised_user_service.h"
 #include "components/supervised_user/core/browser/supervised_user_url_filter.h"  // nogncheck
 #endif
 
@@ -140,7 +140,7 @@ bool IsNTPOrRelatedURLHelper(const GURL& url, Profile* profile) {
 
 bool IsURLAllowedForSupervisedUser(const GURL& url, Profile* profile) {
 #if BUILDFLAG(ENABLE_SUPERVISED_USERS)
-  SupervisedUserService* supervised_user_service =
+  supervised_user::SupervisedUserService* supervised_user_service =
       SupervisedUserServiceFactory::GetForProfile(profile);
   if (!supervised_user_service ||
       !supervised_user_service->IsURLFilteringEnabled()) {

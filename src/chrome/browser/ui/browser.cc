@@ -990,7 +990,7 @@ Browser::DownloadCloseType Browser::OkToCloseWithInProgressDownloads(
     return DownloadCloseType::kOk;
 
   int total_download_count =
-      DownloadCoreService::NonMaliciousDownloadCountAllProfiles();
+      DownloadCoreService::BlockingShutdownCountAllProfiles();
   if (total_download_count == 0)
     return DownloadCloseType::kOk;  // No downloads; can definitely close.
 
@@ -1023,10 +1023,9 @@ Browser::DownloadCloseType Browser::OkToCloseWithInProgressDownloads(
   DownloadCoreService* download_core_service =
       DownloadCoreServiceFactory::GetForBrowserContext(profile());
   if ((profile_window_count == 0) &&
-      (download_core_service->NonMaliciousDownloadCount() > 0) &&
+      (download_core_service->BlockingShutdownCount() > 0) &&
       (profile()->IsIncognitoProfile() || profile()->IsGuestSession())) {
-    *num_downloads_blocking =
-        download_core_service->NonMaliciousDownloadCount();
+    *num_downloads_blocking = download_core_service->BlockingShutdownCount();
     return profile()->IsGuestSession()
                ? DownloadCloseType::kLastWindowInGuestSession
                : DownloadCloseType::kLastWindowInIncognitoProfile;
@@ -3296,7 +3295,7 @@ BackgroundContents* Browser::CreateBackgroundContents(
 }
 
 #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-// TODO(https://1278249): Update function name (and trigger chain) when usage
+// TODO(crbug.com/1443349): Update function name (and trigger chain) when usage
 // is finalized.
 void Browser::RunScreenAIAnnotator() {
   screen_ai::AXScreenAIAnnotatorFactory::GetForBrowserContext(profile())

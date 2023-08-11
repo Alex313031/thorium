@@ -110,6 +110,10 @@ declare_args() {
   # with hardware acceleration assist. Enabled by default for fuzzer builds,
   # ChromeOS builds with protected content support, Windows, Mac, and Android.
   enable_hevc_parser_and_hw_decoder = true
+
+  # Enable inclusion of VVC/H.266 parser/demuxer, and also enable VVC/H.266 decoding
+  # with hardware acceleration provided by platform. Disabled by default for all builds.
+  enable_platform_vvc = false
 }
 
 # Use another declare_args() to allow dependence on args defined above.

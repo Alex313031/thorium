@@ -39,9 +39,12 @@
 #include "chrome/browser/ui/global_error/global_error_service_factory.h"
 #include "chrome/browser/ui/intent_picker_tab_helper.h"
 #include "chrome/browser/ui/layout_constants.h"
+#include "chrome/browser/ui/side_panel/companion/companion_utils.h"
 #include "chrome/browser/ui/side_search/side_search_utils.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/toolbar/chrome_labs_model.h"
 #include "chrome/browser/ui/toolbar/chrome_labs_prefs.h"
+#include "chrome/browser/ui/toolbar/chrome_labs_utils.h"
 #include "chrome/browser/ui/ui_features.h"
 #include "chrome/browser/ui/view_ids.h"
 #include "chrome/browser/ui/views/bookmarks/bookmark_bubble_view.h"
@@ -66,9 +69,7 @@
 #include "chrome/browser/ui/views/toolbar/app_menu.h"
 #include "chrome/browser/ui/views/toolbar/back_forward_button.h"
 #include "chrome/browser/ui/views/toolbar/browser_app_menu_button.h"
-#include "chrome/browser/ui/views/toolbar/chrome_labs_bubble_view_model.h"
 #include "chrome/browser/ui/views/toolbar/chrome_labs_button.h"
-#include "chrome/browser/ui/views/toolbar/chrome_labs_utils.h"
 #include "chrome/browser/ui/views/toolbar/home_button.h"
 #include "chrome/browser/ui/views/toolbar/reload_button.h"
 #include "chrome/browser/ui/views/toolbar/side_panel_toolbar_button.h"
@@ -167,6 +168,8 @@ constexpr int kToolbarDividerWidth = 2;
 constexpr int kToolbarDividerHeight = 16;
 constexpr int kToolbarDividerCornerRadius = 1;
 constexpr int kToolbarDividerSpacing = 9;
+constexpr int kBrowserAppMenuRefreshExpandedMargin = 5;
+constexpr int kBrowserAppMenuRefreshCollapsedMargin = 2;
 
 }  // namespace
 
@@ -316,8 +319,7 @@ void ToolbarView::Init() {
   std::unique_ptr<SidePanelToolbarContainer> side_panel_toolbar_container;
   if (browser_view_->unified_side_panel() &&
       !base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button")) {
-    if (base::FeatureList::IsEnabled(
-            companion::features::kSidePanelCompanion)) {
+    if (companion::IsCompanionFeatureEnabled()) {
       side_panel_toolbar_container =
           std::make_unique<SidePanelToolbarContainer>(browser_view_);
     } else {
@@ -343,11 +345,10 @@ void ToolbarView::Init() {
   }
 
   if (base::FeatureList::IsEnabled(features::kChromeLabs)) {
-    chrome_labs_model_ = std::make_unique<ChromeLabsBubbleViewModel>();
+    chrome_labs_model_ = std::make_unique<ChromeLabsModel>();
     UpdateChromeLabsNewBadgePrefs(browser_->profile(),
                                   chrome_labs_model_.get());
-    if (ChromeLabsButton::ShouldShowButton(chrome_labs_model_.get(),
-                                           browser_->profile())) {
+    if (ShouldShowChromeLabsUI(chrome_labs_model_.get(), browser_->profile())) {
       chrome_labs_button_ = AddChildView(std::make_unique<ChromeLabsButton>(
           browser_view_, chrome_labs_model_.get()));
 
@@ -827,10 +828,26 @@ void ToolbarView::InitLayout() {
 void ToolbarView::LayoutCommon() {
   DCHECK(display_mode_ == DisplayMode::NORMAL);
 
-  const gfx::Insets interior_margin =
+  gfx::Insets interior_margin =
       GetLayoutInsets(browser_view_->webui_tab_strip()
                           ? LayoutInset::WEBUI_TAB_STRIP_TOOLBAR_INTERIOR_MARGIN
                           : LayoutInset::TOOLBAR_INTERIOR_MARGIN);
+
+  if (features::IsChromeRefresh2023() && !browser_view_->webui_tab_strip()) {
+    if (app_menu_button_->IsLabelPresentAndVisible()) {
+      // The interior margin in an expanded state should be more than in a
+      // collapsed state.
+      interior_margin.set_right(interior_margin.right() + 1);
+      app_menu_button_->SetProperty(
+          views::kMarginsKey,
+          gfx::Insets::VH(0, kBrowserAppMenuRefreshExpandedMargin));
+    } else {
+      app_menu_button_->SetProperty(
+          views::kMarginsKey,
+          gfx::Insets::VH(0, kBrowserAppMenuRefreshCollapsedMargin));
+    }
+  }
+
   layout_manager_->SetInteriorMargin(interior_margin);
 
   // Extend buttons to the window edge if we're either in a maximized or

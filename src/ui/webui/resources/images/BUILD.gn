@@ -38,6 +38,7 @@ generate_grd("build_grdp") {
     "throbber_small_dark.svg",
     "throbber_small.svg",
     "tree_triangle.svg",
+
     "2x/checkbox_black.png",
     "2x/checkbox_white.png",
     "2x/check.png",
@@ -55,6 +56,7 @@ generate_grd("build_grdp") {
       "icon_arrow_back.svg",
       "icon_arrow_dropdown.svg",
       "icon_bookmark.svg",
+      "icon_checkmark.svg",
       "icon_clear.svg",
       "icon_clock.svg",
       "icon_delete_gray.svg",

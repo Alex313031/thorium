@@ -600,9 +600,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_PASSWORDS_LEAK_DETECTION_SWITCH_TITLE" desc="Title for the switch toggling whether Thorium should check that entered credentials have been part of a leak.">
         Warn you if passwords are exposed in a data breach
       </message>
-      <message name="IDS_PASSWORDS_LEAK_DETECTION_SWITCH_SIGNED_OUT_ENABLE_DESCRIPTION" desc="Description for the switch toggling whether Thorium should check that entered credentials have been part of a leak. Displayed for users who are not signed in and syncing.">
-        When you sign in to your Google Account, this feature is turned on
-      </message>
       <message name="IDS_PASSWORDS_CHECK_TITLE" desc="Title for the check passwords button which allows to check whether the user's passwords have been compromised.">
         Check passwords
       </message>
@@ -732,18 +729,25 @@ CHAR_LIMIT guidelines:
       <message name="IDS_PASSWORD_SETTINGS_EXPORT_ERROR_DETAILS" desc="A short prefix to introduce a technical error message passed to the user from Android after exporting passwords through a temporary file fails. Both the prefix and the error message are shown in the body of an alert dialog.">
         Details: <ph name="ERROR_DESCRIPTION">%1$s<ex>IOException: No space left on device</ex></ph>
       </message>
-      <message name="IDS_UPM_ERROR_NOTIFICATION_TITLE" translateable="false" desc="The title of the UI surface telling the user that the new password manager backend has encountered an error.">
-        Unified password manager error
-      </message>
-      <message name="IDS_UPM_ERROR_NOTIFICATION_CONTENTS" translateable="false" desc="The contents of the UI surface shown when the new password manager backend encounters an error, prompting the user to file a bug.">
-        The unified password manager was automatically disabled. Please submit an issue via the bug app!
-      </message>
       <message name="IDS_PASSWORDS_NOT_SECURE_FILLING" desc="The title of the dialog which is shown when the user attempts to enter obfuscated text to a regular text field.">
         Not secure
       </message>
       <message name="IDS_PASSWORDS_NOT_SECURE_FILLING_DETAILS" desc="The message of the dialog which is shown when the user attempts to enter obfuscated text to a regular text field.">
         To protect your privacy, Thorium will not autofill your password in this field.
       </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_TITLE" desc="The title of the password migration warning sheet.">
+        We’re changing how passwords are saved on this device
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_SUBTITLE" desc="The subtitle of the password migration warning sheet." formatter_data="android_java">
+        Your lists of saved passwords for Thorium and Thorium <ph name="ERROR_DESCRIPTION">%1$s<ex>Dev</ex></ph> will merge after version 121. You’ll be able to autofill all your saved passwords on both apps.
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_ACKNOWLEDGE" desc="The text on the button that acknowledges the password migration warning.">
+        Got it
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_OTHER_OPTIONS" desc="The text on the button that leads to other options in the password migration warning sheet.">
+        Other options
+      </message>
+
 
       <!-- Lock Screen Fragment -->
       <message name="IDS_LOCKSCREEN_DESCRIPTION_COPY" desc="When a user attempts to copy a password for a particular website into clipboard in Thorium's settings, Thorium launches a lock screen to verify the user's identity and displays the following explanation.">
@@ -841,8 +845,8 @@ CHAR_LIMIT guidelines:
       <message name="IDS_CONTEXTUAL_SEARCH_SEE_BETTER_RESULTS_SUMMARY" desc="Summary for the see better results switch in Contextual Search preference.">
         By including more of a page’s text, you might see better results
       </message>
-      <message name="IDS_DO_NOT_TRACK_TITLE" desc="Title for 'Do Not Track' preference">
-        “Do Not Track”
+      <message name="IDS_DO_NOT_TRACK_TITLE" desc="Title for the 'Do Not Track' preference. Please leave the 'Do Not Track' part in English according to the glossary.">
+        Send a “Do Not Track” request
       </message>
       <message name="IDS_DO_NOT_TRACK_DESCRIPTION" desc="Description for 'Do Not Track' preference">
         Enabling “Do Not Track” means that a request will be included with your browsing traffic. Any effect depends on whether a website responds to the request, and how the request is interpreted.
@@ -865,6 +869,9 @@ For example, some websites may respond to this request by showing you ads that a
       </message>
       <message name="IDS_PRIVACY_SANDBOX_SNACKBAR_MESSAGE" desc="The text displayed in the snackbar, which gives the user an option to navigate to the Privacy Sandbox settings page. 'Privacy sandbox' has TC ID 5753235213964358658.">
         Learn about and control new technologies that aim to replace third-party cookies
+      </message>
+      <message name="IDS_SETTINGS_AD_PRIVACY_RESTRICTED_LINK_ROW_SUB_LABEL" desc="A string that describes 'Ad privacy', the label that appears just above it. This is the version of IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL for restricted users.">
+        Manage info used by sites to measure ad performance
       </message>
 
       <message name="IDS_PRIVACY_SANDBOX_TRIALS_TITLE" desc="The title of the settings page on which the user can find all Privacy Sandbox trials. When launched, this page will appear at chrome://settings/privacySandbox. To get there: 1) go to Thorium settings 2) From the main menu (top left of the page) choose “Security and privacy” 3) At the bottom of the page, choose “Privacy Sandbox” There are 3 cards on this page that are presented as features. Only the first includes controls the user can manage, but we want to convey that Privacy Sandbox includes all of the things on this page.">
@@ -1069,14 +1076,17 @@ Private state tokens improve privacy on the web and can’t be used to find out 
       </message>
 
       <!-- Privacy Sandbox v4 - Consent & Notice Flow -->
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" desc="* This is 2 of 2 bullets that site beneath the sentence: 'We’re launching new ways to limit what sites can learn about you when they show you personalized ads, for example:' * 'ad measurement' is the name of a new setting we're launching and that appears on the Ad privacy page of Thorium settings.  * 'limited types of data': This setting helps an advertiser associate a user's actions on one site with their actions on another. For example, a user sees an ad on one site and then later buys that product from the company that sells the product. The ad measurement setting allows Thorium to help a company make the association between the two sites so that the first site can be fairly compensated for showing an ad. Compared with third-party cookies, very little info is shared between sites to support this functionality.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT EEA NOTICE **** 1) This screen provides notice to Thorium users in the European Economic Area (EEA). It follows guidelines established by the GDPR.  2) This screen is the second of 2 screens. This second screen describes 2 settings: “Site-suggested ads” and “Ad measurement”. The first screen describes the “Ad topics” setting. " formatter_data="android_java">
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" desc="* This is 2 of 2 bullets that site beneath the sentence: 'We’re launching new ways to limit what sites can learn about you when they show you personalized ads, for example:' * 'ad measurement' is the name of a new setting we're launching and that appears on the Ad privacy page of Thorium settings.  * 'limited types of data': This setting helps an advertiser associate a user's actions on one site with their actions on another. For example, a user sees an ad on one site and then later buys that product from the company that sells the product. The ad measurement setting allows Thorium to help a company make the association between the two sites so that the first site can be fairly compensated for showing an ad. Compared with third-party cookies, very little info is shared between sites to support this functionality.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT EEA NOTICE **** 1) This screen provides notice to Thorium users in the European Economic Area (EEA). It follows guidelines established by the GDPR.  2) This screen is the second of 2 screens. This second screen describes 2 settings: “Site-suggested ads” and “Ad measurement”. The first screen describes the “Ad topics” setting. ">
         With ad measurement, limited types of data can be shared among sites and apps to measure the performance of their ads, such as the time of day an ad was shown to you.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" desc="A paragraph on the 'Enhanced ad privacy in Thorium' page that provides notice to Thorium users outside of the EEA. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT ROW NOTICE **** 1) This screen provides notice to Thorium users outside of the European Economic Area (EEA) (we typically refer to this screen as “Rest of World” or “ROW”). It follows guidelines established by the GDPR.  2) We’re using similar but distinct content for EEA / ROW because legal requirements differ. For ROW, we can provide notice for all 3 settings, and so all 3 settings can appear on a single screen. ">
         To measure the performance of an ad, limited types of data can be shared among sites, such as the time of day an ad was shown to you.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_RESTRICTED_DESCRIPTION_3" translateable="false" formatter_data="android_java">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_RESTRICTED_DESCRIPTION_1_ANDROID" desc="First description in the restricted notice which applies to Android only">
+        We’re launching a new ad privacy feature called ad measurement. Thorium shares only very limited information among sites and apps, such as when an ad was shown to you, to help measure the performance of ads.
+      </message>
+      <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_RESTRICTED_DESCRIPTION_ANDROID" desc="Special description in the restricted notice which applies to Android only">
+        Your Android device may include a similar setting. If this setting is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across websites you visit and apps you use.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_LEARN_MORE_DESCRIPTION_ANDROID" desc="As part of Privacy Sandbox (see details below), both Thorium and Android devices will have a new setting called 'Ad measurement'. Some details are different, but these settings essentially do the same thing. The Thorium setting allows sites you visit to ask Thorium for information that helps them measure the performance of their ads, linking 1) an ad for site B the user sees on site A, with 2) a purchase or other action the user might take on site B. On Android, it's essentially the same story only it's between apps and not sites. The challenge is that on Android, Thorium is a browser but it's also an App. This paragraph helps the user understand that, if both settings are on, information about the user's actions on a site might be connected with actions the user takes in an app. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com.">
         Your Android device may include a similar setting. If Ad measurement is turned on in Thorium and on your Android device, a company may be able to measure the effectiveness of an ad across web sites you visit and apps you use.
@@ -1347,9 +1357,6 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_TITLE" desc="Label of the dropdown that selects the time range for which browsing data will be deleted.">
         Time range
       </message>
-      <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_15_MINUTES" desc="The option to delete browsing data from the last 15 minutes.">
-        Last 15 minutes
-      </message>
       <message name="IDS_CLEAR_BROWSING_DATA_TAB_PERIOD_HOUR" desc="The option to delete browsing data from the last hour.">
         Last hour
       </message>
@@ -1488,7 +1495,7 @@ Your Google account may have other forms of browsing history like searches and a
         Privacy Sandbox trial
       </message>
       <message name="IDS_PRIVACY_GUIDE_PRIVACY_SANDBOX_DESCRIPTION" desc="Description for the Privacy Sandbox item on the final page of the privacy guide">
-        See how Thorium plans to safeguard you from cross-site tracking while preserving the open web
+        Thorium is exploring new features that allow sites to deliver the same browsing experience using less of your data
       </message>
       <message name="IDS_PRIVACY_GUIDE_WEB_APP_ACTIVITY_HEADING" desc="Title for the Web and App Activity item on the final page of the privacy guide">
         Web &amp; App Activity
@@ -1726,9 +1733,6 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_ADD_LANGUAGE" desc="Title for the screen that allows users to add languages to their preferred language list. [CHAR_LIMIT=32]">
         Add language
       </message>
-      <message name="IDS_CHANGE_CHROME_LANG" desc="Title of page to select a language within Thorium's language settings. [CHAR_LIMIT=32]">
-        Change language
-      </message>
       <message name="IDS_LANGUAGES_SELECT" desc="Option in overflow menu on Language settings page to change Thorium’s user interface language. [CHAR_LIMIT=32]">
         Select language
       </message>
@@ -1959,30 +1963,6 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
 
       <!-- Child accounts -->
-      <message name="IDS_ACCOUNT_MANAGEMENT_PARENTAL_SETTINGS" desc="Title of parental settings section of account page for child account.">
-        Parental Settings
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_NO_PARENTAL_DATA" desc="String saying that we are waiting for family information.">
-        Waiting for details of parents.
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_ONE_PARENT_NAME" desc="String for name of single parent for child account.">
-        This browser is managed by <ph name="PARENT_NAME">%1$s<ex>parent1@gmail.com</ex></ph>.
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_TWO_PARENT_NAMES" desc="String for names of two parents for child account.">
-        This browser is managed by <ph name="PARENT_NAME_1">%1$s<ex>parent1@gmail.com</ex></ph> and <ph name="PARENT_NAME_2">%2$s<ex>parent2@gmail.com</ex></ph>.
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_CHILD_CONTENT_TITLE" desc="Title of the Content setting, which controls which websites a child is allowed to visit.">
-        Content
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_CHILD_CONTENT_APPROVED" desc="Setting that permits child accounts to visit only sites approved by their parents.">
-        Only allow certain sites
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_CHILD_CONTENT_FILTER_MATURE" desc="Setting that permits child accounts to visit any websites that don't have mature contents. As the filter is not perfect, the browser can only attempt to block these sites.">
-        Try to block mature sites
-      </message>
-      <message name="IDS_ACCOUNT_MANAGEMENT_CHILD_CONTENT_ALL" desc="Setting that permits child accounts to visit any websites.">
-        Allow all sites
-      </message>
       <message name="IDS_ACCOUNT_MANAGEMENT_HEADER_NO_PARENTAL_DATA" desc="String saying that child should go to parent for help for child account.">
         If you need help, ask your parent
       </message>
@@ -2259,9 +2239,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SYNC_NEEDS_VERIFICATION_TITLE" desc="Title of the error message shown when sync needs to verify the user.">
         Sync needs to verify it's you
-      </message>
-      <message name="IDS_HINT_SYNC_AUTH_ERROR" desc="Hint message to resolve sync auth error.">
-        Sign in again to start sync
       </message>
       <message name="IDS_HINT_SYNC_AUTH_ERROR_MODERN" desc="Hint message to resolve sync auth error updated to align with the UPM error message.">
         Sign back in to start sync
@@ -2864,6 +2841,12 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_DOWNLOAD_MANAGER_NO_DOWNLOADS" desc="Text appearing on an empty tab that indicates that downloaded files appear on this tab.">
         Files that you download appear here
       </message>
+      <message name="IDS_DOWNLOAD_MANAGER_NO_DOWNLOADS_EMPTY_STATE" desc="Text appearing on an empty tab that indicates that downloaded files appear on this tab.">
+        You’ll find your downloads here
+      </message>
+      <message name="IDS_DOWNLOAD_MANAGER_NO_DOWNLOADS_VIEW_OFFLINE_OR_SHARE" desc="Text appearing on an empty tab that indicates that users can save downloaded files to view offline or share in other apps.">
+        You can save images and files to view offline or share in other apps
+      </message>
       <message name="IDS_DOWNLOAD_MANAGER_OPEN_WITH" desc="Menu item to open an item with another app.">
         Open with…
       </message>
@@ -2913,6 +2896,12 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <!-- Browsing History UI -->
       <message name="IDS_HISTORY_MANAGER_EMPTY" desc="Indicates that there are no browsing history items.">
         Pages that you visit appear here
+      </message>
+      <message name="IDS_HISTORY_MANAGER_EMPTY_STATE" desc="Indicates that there are no browsing history items.">
+        You’ll find your history here
+      </message>
+      <message name="IDS_HISTORY_MANAGER_EMPTY_STATE_VIEW_OR_CLEAR_PAGE_VISITED" desc="Indicates that users can view or clear page visited here">
+        You can see the pages you’ve visited or clear them from your history
       </message>
       <message name="IDS_HISTORY_MANAGER_NO_RESULTS" desc="Text explaining that no browsing history items match a search query.">
         Can’t find that page. Check your spelling or try a search on <ph name="SEARCH_ENGINE">%1$s<ex>Google</ex></ph>.
@@ -2976,10 +2965,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Thorium First Run Experience
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS" desc="Message explaining that use of Thorium is governed by Thorium's terms of service.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS_AND_PRIVACY_CHILD_ACCOUNT" desc="Message explaining that use of Thorium is governed by Thorium's terms of service, and the Google Privacy Policy.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
       </message>
       <message name="IDS_FRE_ACCEPT_CONTINUE" desc="Text for first page accept and continue button [CHAR_LIMIT=20]">
         Accept &amp; continue
@@ -3050,21 +3039,26 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Strings for the Device Lock. -->
-      <!-- TODO(crbug.com/1431577): Finalize strings and set to translateable -->
-      <message name="IDS_DEVICE_LOCK_TITLE" translateable="false" desc="">
-        Keep your data secure with profile lock
+      <message name="IDS_DEVICE_LOCK_TITLE" desc="Title shown on the profile lock page prompting the user to set a profile lock.">
+        Create a profile lock for your car
       </message>
-      <message name="IDS_DEVICE_LOCK_DESCRIPTION" translateable="false" desc="">
-        For your data security in the car, profile lock is required to sync and save your passwords, payments, and more.
+      <message name="IDS_DEVICE_LOCK_EXISTING_LOCK_TITLE" desc="Title shown on the profile lock page if there is a pre-existing profile lock.">
+        Your info is secured with a profile lock
       </message>
-      <message name="IDS_DEVICE_LOCK_HIGHLIGHTED_NOTICE" translateable="false" desc="">
-        Your saved data will be erased if profile lock is removed later
+      <message name="IDS_DEVICE_LOCK_DESCRIPTION" desc="Text description explaining that a profile lock is required for automotive devices to protect data privacy. 'Sync' is short for synchronization.">
+        To sync your info and keep your data secure in the car, you must create a profile lock. You’ll use a code or password every time you enter the car.
       </message>
-      <message name="IDS_DEVICE_LOCK_CREATE_LOCK_BUTTON" translateable="false" desc="">
-        Set up a profile lock
+      <message name="IDS_DEVICE_LOCK_THROUGH_SETTINGS_DESCRIPTION" desc="Text description explaining that a profile lock is required for automotive devices to protect data privacy, and that such a lock can be created in the device's security settings. 'Sync' is short for synchronization.">
+        To sync your info and keep your data secure in the car, you must create a profile lock in your security settings. You’ll use a code or password every time you enter the car.
       </message>
-      <message name="IDS_DEVICE_LOCK_USER_UNDERSTANDS_BUTTON" translateable="false" desc="">
-        I understand
+      <message name="IDS_DEVICE_LOCK_EXISTING_LOCK_DESCRIPTION" desc="Text description explaining to users who have already set an existing lock that a profile lock is required for automotive devices to protect data privacy. 'Sync' is short for synchronization.">
+        Your profile lock keeps your info secure in the car, including synced passwords, payments and more.
+      </message>
+      <message name="IDS_DEVICE_LOCK_NOTICE" desc="Notice appearing on the profile lock page informing users that data saved on Thorium will be erased if they remove the profile lock from the device.">
+        Your saved info will be erased if you remove profile lock later.
+      </message>
+      <message name="IDS_DEVICE_LOCK_CREATE_LOCK_BUTTON" desc="Text for the button that navigates the user to create a profile lock on the device.">
+        Create a profile lock
       </message>
 
       <!-- Strings for Streamlined Signin and Unified Consent. -->
@@ -3154,6 +3148,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_SUBTITLE_FOR_BACK_OF_CARD_MENU_SIGNIN" desc="The subtitle for the account picker bottom sheet that tells the user what happens if the Continue button is clicked, when signin from BoC triggered the UI.">
         Sign in to manage your preferences
+      </message>
+
+      <!-- Cormorant Signin Strings -->
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_TITLE_FOR_CORMORANT_SIGNIN" desc="The title for the bottom sheet that shows the list of accounts on the device and asks the user to select one of these accounts, when signin from Cormorant triggered the UI. [CHAR_LIMIT=27]">
+        Get better suggestions
+      </message>
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_SUBTITLE_FOR_CORMORANT_SIGNIN" desc="The subtitle for the account picker bottom sheet that tells the user what happens if the Continue button is clicked, when signin from Cormorant triggered the UI.">
+        Sync to get the most relevant content from Google
       </message>
 
       <!-- Personalized Signin Promos Strings -->
@@ -3371,7 +3373,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NTP_DISCOVER_OFF_BRANDED" desc="Title in the feed header when the feed is turned off and the default search engine is not Google. Please use the branded term for Discover, as listed under Product Names in the Google Glossary Manager (TC ID 1799975766543019278).">
         Discover by Google - off
       </message>
-      <message name="IDS_NTP_FOLLOWING" desc="Title in the feed header for user-customized following feed.">Following</message>
+      <message name="IDS_NTP_FOLLOWING"
+        meaning="Title for content - e.g. Followed sites"
+        desc="Title in the feed header for user-customized following feed. This feed is composed of articles and content from sites that the user has followed">Following</message>
       <message name="IDS_NTP_FEED_MENU_IPH" desc="In-product help that points at the menu icon for the news feed on Thorium's new tab page. This string instructs the user to open the menu for settings that let them control the content that appears on the feed.">
         Control your stories and activity here
       </message>
@@ -3431,71 +3435,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_WEB_FEED_AWARENESS" desc="Educating the user about the web feed.">
         Explore content to follow
-      </message>
-
-      <!-- Video tutorials -->
-      <message name="IDS_VIDEO_TUTORIALS_CARD_CHROME_INTRO" desc="Card text prompting user to learn about an introduction to chrome. Tapping on this card will open a video tutorial.">
-        How to use Thorium
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_CARD_SEARCH" desc="Card text prompting user to learn about how to search using chrome. Tapping on this card will open a video tutorial.">
-        How to search with Thorium
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_CARD_VOICE_SEARCH" desc="Card text prompting user to learn about how use voice search inside chrome. Tapping on this card will open a video tutorial.">
-        How to search with your voice
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_CARD_DOWNLOAD" desc="Card text prompting user to learn about how to download content using chrome. Tapping on this card will open a video tutorial.">
-        How to download content for later
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_CARD_ALL_VIDEOS" desc="Card text prompting user to tap on this card and explore videos on various aspects of chrome. Tapping on this card will open up a page listing all the available video tutorials.">
-        Videos about how to use Thorium
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_LEARN_CHROME" desc="Header text for the video tutorials home page that lists all the video tutorials.">
-        Learn Thorium
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_POPULAR_VIDEOS" desc="Header text for the video tutorials carousel on the help and feedback page.">
-        Popular videos
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_TILE_CHROME_INTRO" desc="Text under image tile prompting user to learn about an introduction to chrome. Tapping on this image will open a video tutorial.">
-        Navigate Thorium
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_TILE_SEARCH" desc="Text under image tile prompting user to learn about how to search using chrome. Tapping on this image will open a video tutorial.">
-        Search the internet
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_TILE_VOICE_SEARCH" desc="Text under image tile prompting user to learn about how use voice search inside chrome. Tapping on this image will open a video tutorial.">
-        Use voice search
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_TILE_DOWNLOAD" desc="Text under image tile prompting user to learn about how to download content using chrome. Tapping on this image will open a video tutorial.">
-        Download content
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_LANGUAGE_PICKER_TITLE" desc="Label text in the video player prompting user to pick a language.">
-        Pick your language
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_WATCH" desc="Button text in the video player prompting user to watch the video.">
-        Watch
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_TRY_NOW" desc="Button text in the video player prompting user to try out the steps mentioned in the tutorial.">
-        Try now
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_WATCH_NEXT_VIDEO" desc="Button text in the video player prompting user to watch the next video.">
-        Watch next video
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_CHANGE_LANGUAGE" desc="Button text in the video player prompting user to change the language.">
-        Change <ph name="LANGUAGE">%1$s<ex>Hindi</ex></ph>?
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_ACCESSIBILITY_SHARE" desc="Accessibility text in the video player describing that users can tap on this icon to share the video.">
-        Share
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_ACCESSIBILITY_CLOSE" desc="Accessibility text in the video player describing that users can tap on this icon to close the video.">
-        Close
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_IPH_TAP_HERE_TO_START" desc="In-product help bubble text prompting user to click on the search box to start.">
-        Tap here to start
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_IPH_TAP_VOICE_ICON_TO_START" desc="In-product help bubble text prompting user to start typing on the search box or tap on the microphone icon to start a voice search.">
-        Type here or tap the voice icon to start
-      </message>
-      <message name="IDS_VIDEO_TUTORIALS_LOADING" desc="Text on the loading animation screen indicating that the video loading is currently in progress.">
-        Loading…
       </message>
 
       <!-- Feature notification guide -->
@@ -3680,10 +3619,15 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_MENU_FIND_IN_PAGE" desc="Menu item allowing users to find text within the current page. [CHAR_LIMIT=27]">
         Find in page
       </message>
+      <message name="IDS_MENU_PAGE_INSIGHTS" desc="Menu item showing Page Insights hub. [CHAR_LIMIT=27]">
+        View page insights
+      </message>
       <message name="IDS_MENU_FOLLOW" desc="Menu item allowing users to follow the current website. [CHAR_LIMIT=27]">
         Follow
       </message>
-      <message name="IDS_MENU_FOLLOWING" desc="Menu item indicating the current website is followed, allowing users to unfollow the current website. [CHAR_LIMIT=27]">
+      <message name="IDS_MENU_FOLLOWING"
+        meaning="Toggle button text for something that is being followed."
+        desc="Menu item indicating the current website is followed, allowing users to unfollow the current website. [CHAR_LIMIT=27]">
         Following
       </message>
       <message name="IDS_FOLLOW_ACCELERATOR" desc="IPH text for letting a user know that a website can be followed with minimal context. [CHAR_LIMIT=50]">
@@ -3744,6 +3688,18 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_NO_BOOKMARKS" desc="Text describing that there is no bookmarks in a bookmark folder.">
         No bookmarks
+      </message>
+      <message name="IDS_BOOKMARK_MANAGER_EMPTY_STATE" desc="Text appearing on an empty tab that indicates that bookmarked page appear on this tab.">
+        You’ll find your bookmarks here
+      </message>
+      <message name="IDS_BOOKMARK_MANAGER_BACK_TO_PAGE_BY_ADDING_BOOKMARK" desc="Text appearing on an empty tab that indicates that users can get back to pages in this tab by adding bookmark.">
+        You can get back to a page that’s important to you by adding a bookmark
+      </message>
+      <message name="IDS_READING_LIST_MANAGER_EMPTY_STATE" desc="Text appearing on an empty tab that indicates that reading list page appear on this tab.">
+        You’ll find your reading list here
+      </message>
+      <message name="IDS_READING_LIST_MANAGER_SAVE_PAGE_TO_READ_LATER" desc="Text appearing on an empty tab that indicates that users can save pages read later in this tab.">
+        You can save pages to read later or offline
       </message>
       <message name="IDS_BOOKMARKS_COUNT" desc="Text describing the number of bookmarks in a bookmark folder [ICU Syntax]">
         {BOOKMARKS_COUNT, plural,
@@ -3893,9 +3849,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_IPH_SHOPPING_LIST_SAVE_FLOW" desc="In-product help text that notifies a user that they can organize their saved products from a folder in bookmarks.">
         Organize your tracked products in Bookmarks
       </message>
-      <message name="IDS_IPH_SHOPPING_LIST_SAVE_FLOW_ACCESSIBILITY" is_accessibility_with_no_ui="true" desc="In-product help accessibility text that notifies a user that they can organize their saved products from a folder in bookmarks.">
-        Organize your tracked products in Bookmarks from the folder icon
-      </message>
       <message name="IDS_SORT_SUBMENU"  desc="Sub-menu in the bookmarks manager for sort/view options. [CHAR_LIMIT=24]">
         Sort and view options
       </message>
@@ -3936,14 +3889,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_READING_LIST_MARK_AS_UNREAD" desc="The text for the action to mark the reading list as unread.">
         Mark as unread
-      </message>
-      <message name="IDS_READING_LIST_REMINDER_NOTIFICATION_TITLE" desc="The title of the reminder notification for reading list.">
-        Catch up on your reading list
-      </message>
-      <message name="IDS_READING_LIST_REMINDER_NOTIFICATION_SUBTITLE" desc="The subtitle of the reminder notification for reading list.">
-          {READING_LIST_REMINDER_NOTIFICATION_SUBTITLE, plural,
-          =1 {You have <ph name="READING_LIST_REMINDER_NOTIFICATION_SUBTITLE_ONE">%1$d<ex>1</ex></ph> unread page}
-          other {You have <ph name="READING_LIST_REMINDER_NOTIFICATION_SUBTITLE_MANY">%1$d<ex>8</ex></ph> unread pages}}
       </message>
       <message name="IDS_READING_LIST_UNREAD_PAGE_COUNT" desc="Inform the user about the number of unread reading list items.">
           {READING_LIST_UNREAD_PAGE_COUNT, plural,
@@ -4517,15 +4462,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_TWA_CLEAR_DATA_SITE_SELECTION_TITLE" desc="Title of screen showing the sites linked to TWA, allowing the user to clean data in any of them.">
         Linked sites
       </message>
-      <message name="IDS_TWA_QUALITY_ENFORCEMENT_VIOLATION_ERROR" desc="Text shown on a toast when TWA violation 404.">
-        <ph name="ERROR_CODE">%1$s<ex>404</ex></ph> on <ph name="VIOLATED_URL">%2$s<ex>https://example.com/</ex></ph>
-      </message>
-      <message name="IDS_TWA_QUALITY_ENFORCEMENT_VIOLATION_ASSET_LINK" desc="Text shown on a toast when TWA violate the quality enforcement criteria: digital asset link verification failed.">
-        Digital asset links verification failed on <ph name="VIOLATED_URL">%1$s<ex>https://example.com/</ex></ph>
-      </message>
-      <message name="IDS_TWA_QUALITY_ENFORCEMENT_VIOLATION_OFFLINE" desc="Text shown on a toast when TWA violate the quality enforcement criteria: page unavailable offline.">
-        Page unavailable offline: <ph name="VIOLATED_URL">%1$s<ex>https://example.com/</ex></ph>
-      </message>
 
       <message name="IDS_WEBAPP_TAP_TO_COPY_URL" desc="Message on the notification that indicates that taping it will copy a Web App's URL into the clipboard.">
         Tap to copy the URL for this app
@@ -4598,14 +4534,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_KEYBOARD_SHORTCUT_RELOAD_NO_CACHE" desc="A text label that appears next to the keyboard shortcut that will reload the current page without a cache. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Reload the current page, ignoring cached content
       </message>
-      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Google Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
+      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Open the Thorium Help Center in a new tab
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_TAB_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Tab and window shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_CHROME_FEATURE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the Thorium app features. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
-        Google Thorium feature shortcuts
+        Thorium feature shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_WEBPAGE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to manipulation of the current tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Webpage shortcuts
@@ -5059,7 +4995,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_CABLEV2_ACTIVITY_TITLE"
         desc="The label of the Activity for using your phone as a security key. A 'security key' in this context is generally a small USB device that is used for logging into websites. This feature allows Thorium on an Android phone to act as a security key. A user may see it in Android permissions prompts (see screenshot).">
-         Google Thorium as a Security Key
+         Thorium as a Security Key
       </message>
 
       <message name="IDS_CABLEV2_REGISTRATION_SUCCEEDED"
@@ -5315,6 +5251,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save to device
       </message>
 
+      <message name="IDS_SHARING_SEND_TAB_TO_SELF" desc="Label for the button in sharing hub for sending the current tab to other devices if user signed in (Send Tab to Self feature).">
+        Send to devices
+      </message>
+
       <message name="IDS_SHARING_INCLUDE_LINK" desc="Label for the button in android share sheet to include a link to share along with highlighted text.">
         Include link
       </message>
@@ -5511,7 +5451,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save up to 60% data
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_2_DESCRIPTION" desc="The body text of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.  Promotes data savings.">
-        Use Lite mode on Google Thorium
+        Use Lite mode on Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_TITLE" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.">
         Google recommends Thorium
@@ -5763,12 +5703,29 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Undo
       </message>
 
+      <!-- Partial Custom Tab accessibility -->
+      <message name="IDS_ACCESSIBILITY_PARTIAL_CUSTOM_TAB_BOTTOM_SHEET" desc="Content description for partial custom tab of bottom sheet type">
+        Bottom sheet
+      </message>
+      <message name="IDS_ACCESSIBILITY_PARTIAL_CUSTOM_TAB_SIDE_SHEET" desc="Content description for partial custom tab of side sheet type">
+        Side sheet
+      </message>
+      <message name="IDS_ACCESSIBILITY_PARTIAL_CUSTOM_TAB_FULL_SHEET" desc="Content description for partial custom tab of full size type">
+        Full-size sheet
+      </message>
+
        <!-- Quick Delete strings -->
       <message name="IDS_QUICK_DELETE_DIALOG_TITLE" desc="Title of the dialog when asking users to confirm deleting the last 15 minutes of browsing data.">
         Delete last 15 minutes?
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_DESCRIPTION" desc="Description of the dialog when asking users to confirm deleting the last 15 minutes of browsing data.">
-        Following data from the last 15 minutes will be deleted:
+        History from the last 15 minutes will be deleted:
+      </message>
+      <message name="IDS_QUICK_DELETE_DIALOG_TABS_CLOSED_TEXT" desc="Text indicating that the tabs which a user recently used to visit a website within 15 minutes would be closed.">
+        {NUM_TABS, plural, =1 {1 tab on this device} other {# tabs on this device}}
+      </message>
+      <message name="IDS_QUICK_DELETE_DIALOG_COOKIES_CACHE_AND_OTHER_SITE_DATA_TEXT" desc="Text indicating that browsing data like cookies, cache, and other site data would be deleted.">
+        Cookies, cache, and other site data
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_SEARCH_HISTORY_DISAMBIGUATION_TEXT" desc="Text for signed in users only in the Quick Delete dialog, that is shown when the user clicks on 'Delete last 15 minutes' option in the three dots menu, informing signed in users that search history and other forms of Activity saved in their Google account will not be deleted.">
         <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>Search history<ph name="END_LINK1">&lt;/link1&gt;</ph> and <ph name="BEGIN_LINK2">&lt;link2&gt;</ph>other forms of activity<ph name="END_LINK2">&lt;/link2&gt;</ph> may be saved in your Google Account
