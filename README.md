@@ -3,16 +3,19 @@
 
 <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/thorium_ver_2048_grey_old.png">
 
-## Chromium fork for linux named after [radioactive element No. 90](https://en.wikipedia.org/wiki/Thorium). Windows/MacOS/RasPi/Other builds see below.
+## Chromium fork for linux named after [radioactive element No. 90](https://en.wikipedia.org/wiki/Thorium). Windows/MacOS/RasPi/Android/Other builds see below.
 
-- Always built with the latest stable version build of [Chromium](https://www.chromium.org/).
+- Always built with the latest stable version of [Chromium](https://www.chromium.org/).
 - Intended to behave like and have the featureset of Google Chrome, with differences/patches/enhancements listed below.
-- Includes [Widevine](https://www.widevine.com/), [All Codecs](https://tools.woolyss.com/html5-audio-video-tester/), Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations. It is built with [SSE4](https://en.wikipedia.org/wiki/SSE4), [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), and [AES](https://en.wikipedia.org/wiki/AES_instruction_set), so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. You can disable this and build with regular SSE3 like Chromium and Chrome, or use builds from [Thorium Special](https://github.com/Alex313031/Thorium-Special), some of which are SSE4 only. (See below.)
+- Includes [Widevine](https://www.widevine.com/), [All Codecs](https://tools.woolyss.com/html5-audio-video-tester/), Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations. It is built with [SSE4](https://en.wikipedia.org/wiki/SSE4), [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), and [AES](https://en.wikipedia.org/wiki/AES_instruction_set), so it won't launch on CPU's below 2nd gen Core or AMD FX, but benefits from Advanced Vector EXtensions. If your CPU lacks AVX, you can use builds from [Thorium Special](https://github.com/Alex313031/Thorium-Special).
 ### Other Builds &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/winflag_animated.gif" width="34"> &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/AVX2.png" width="48"> &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/apple.png" width="30"> &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Android_Robot.svg" width="26"> &nbsp;<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Raspberry_Pi_Logo.svg" width="24"> &nbsp;<img src="https://raw.githubusercontent.com/Alex313031/thorium-win7/main/logos/STAGING/win7/compatible-with-windows-7.png" width="28">
-&nbsp;&ndash; I also build for Windows > [Thorium Win](https://github.com/Alex313031/Thorium-Win) \
-&nbsp;&ndash; AVX2 Builds for Windows and Linux > [Thorium AVX2](https://github.com/Alex313031/Thorium-AVX2) (source files for AVX2 are here in the "other" directory, as well as files for SSE3 builds.) \
-&nbsp;&ndash; MacOS (M1 and X64), Raspberry Pi, and Android builds are located at > [Thorium Special](https://github.com/Alex313031/Thorium-Special) You can also find SSE3 builds for CPUs without AVX here. \
-&nbsp;&ndash; __NEW__: Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/ \
+&nbsp;&ndash; Windows builds are here > [Thorium Win](https://github.com/Alex313031/Thorium-Win) \
+&nbsp;&ndash; AVX2 Builds for Windows and Linux > [Thorium AVX2](https://github.com/Alex313031/Thorium-AVX2) \
+&nbsp;&ndash; MacOS (M1 and X64) builds are located at > [Thorium Mac](https://github.com/Alex313031/Thorium-Mac) \
+&nbsp;&ndash; Android (arm32 & arm64) builds are located at > [Thorium Android](https://github.com/Alex313031/Thorium-Android) I might also occasionally post x86 builds. \
+&nbsp;&ndash; Raspberry Pi builds are located at > [Thorium Raspi](https://github.com/Alex313031/Thorium-Raspi) For the Pi 3B/3B+ and Pi 4/400. \
+&nbsp;&ndash; Special builds are located at > [Thorium Special](https://github.com/Alex313031/Thorium-Special) You can find SSE3 builds for CPUs without AVX here. \
+&nbsp;&ndash; Thorium Website with deb repo for auto-updating on Linux > https://thorium.rocks/ \
 &nbsp;&ndash; __NEW__: Windows 7 / 8 / 8.1 / Server 2012 builds in > [Thorium Win7](https://github.com/Alex313031/thorium-win7)
 
 ### FEATURES & DIFFERENCES BETWEEN CHROMIUM AND THORIUM <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/bulb_dark.svg#gh-light-mode-only">
