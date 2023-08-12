@@ -67,6 +67,15 @@ if (is_official_build) {
   assert(!is_component_build)
 }
 
+# Thorium target that simply pulls in the chrome target as a dependency
+group("thorium") {
+  deps = [ "//chrome:chrome" ]
+
+  if (is_win) {
+    deps += [ "//chrome:chrome_dll" ]
+  }
+}
+
 # The `gn_all` target is used to list all of the main targets in the build, so
 # that we can figure out which BUILD.gn files to process, following the process
 # described at the top of this file.
