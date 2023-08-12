@@ -146,10 +146,6 @@
 #endif // BUILDFLAG(IS_LINUX)
 
 #if BUILDFLAG(IS_WIN)
-    {"disable-windows10-custom-titlebar",
-     "Disable Custom Windows Titlebar",
-     "Disables custom-drawing the window titlebar on Windows 10/11.",
-     kOsWin, SINGLE_VALUE_TYPE(switches::kDisableWindows10CustomTitlebar)},
     {"enable-exclusive-audio",
      "Enable Exclusive Audio Streams",
      "Use exclusive mode audio streaming for Windows Vista and higher. Leads to lower latencies for audio streams which use the AudioParameters::AUDIO_PCM_LOW_LATENCY audio path. "
@@ -158,3 +154,5 @@
 #endif // BUILDFLAG(IS_WIN)
 
 #endif  // CHROME_BROWSER_THORIUM_FLAG_ENTRIES_H_
+
+// kDisableWindows10CustomTitlebar
