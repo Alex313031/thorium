@@ -722,18 +722,16 @@ BASE_FEATURE(kVaapiVideoDecodeLinux,
              "VaapiVideoDecoder",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Temporary fix TODO: Alex313031
 BASE_FEATURE(kVaapiVideoDecodeLinuxGL,
              "VaapiVideoDecodeLinuxGL",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Temporary fix TODO: Alex313031
 BASE_FEATURE(kVaapiVideoEncodeLinux,
              "VaapiVideoEncoder",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Ignore the non-intel driver blacklist for VaapiVideoDecoder implementations.
-// Intended for manual usage only in order to gague the status of newer driver
+// Intended for manual usage only in order to gauge the status of newer driver
 // implementations.
 BASE_FEATURE(kVaapiIgnoreDriverChecks,
              "VaapiIgnoreDriverChecks",
