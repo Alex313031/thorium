@@ -1331,7 +1331,7 @@ config("toolchain") {
       cflags += [ "/O2", "/arch:SSE3" ]
       ldflags += [ "/STACK:2097152" ]
     }
-    if (is_linux) {
+    if (is_linux || is_chromeos) {
       # Full optimization for V8.
       cflags += [ "-O3", "-msse4.1" ]
       ldflags += [ "-Wl,-O3", "-msse4.1" ]
