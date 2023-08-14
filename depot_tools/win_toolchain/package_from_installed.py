@@ -24,7 +24,7 @@ frameworks-> Visual C++ MFC for ARM64 (which also brings in ATL for ARM64).
 3. Use Add or Remove Programs to find the Windows SDK installed with VS
 and modify it to include the debuggers.
 4. Run this script, which will build a <sha1>.zip, something like this:
-  python package_from_installed.py 2019|2022 -w 10.0.20348.0|<SDK version>
+  python package_from_installed.py 2019|2022 -w 10.0.22621.0|<SDK version>
 
 Express is not yet supported by this script, but patches welcome (it's not too
 useful as the resulting zip can't be redistributed, and most will presumably
@@ -234,7 +234,7 @@ def BuildFileList(override_dir, include_arm, vs_path):
       # versions of Windows and packaging them all wastes ~450 MB
       # (uncompressed) per version and wastes time. Only copy the specified
       # version. Note that the SDK version number started being part of the bin
-      # path with 10.0.20348.0.
+      # path with 10.0.15063.0.
       if (tail.startswith('Include\\') or tail.startswith('Lib\\') or
           tail.startswith('Source\\') or tail.startswith('bin\\')):
         if tail.count(_win_version) == 0:
@@ -484,8 +484,8 @@ def main():
   usage = 'usage: %prog [options] 2019|2022'
   parser = optparse.OptionParser(usage)
   parser.add_option('-w', '--winver', action='store', type='string',
-                    dest='winver', default='10.0.20348.0',
-                    help='Windows SDK version, such as 10.0.20348.0')
+                    dest='winver', default='10.0.22621.0',
+                    help='Windows SDK version, such as 10.0.22621.0')
   parser.add_option('-d', '--dryrun', action='store_true', dest='dryrun',
                     default=False,
                     help='scan for file existence and prints statistics')
