@@ -559,7 +559,7 @@ repack("pak") {
 }
 
 if (is_android) {
-  group("content_shell") {
+  group("thorium_shell") {
     testonly = true
     deps = [ "//content/shell/android:content_shell_apk" ]
   }

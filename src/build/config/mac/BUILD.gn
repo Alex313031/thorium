@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -48,12 +48,14 @@ config("compiler") {
 
   ldflags = [ "-Wl,-O3", ] + common_mac_flags
   
-  if (target_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-ffp-contract=fast", "-mf16c", "-mfma", "-Wno-unused-command-line-argument", ]
+  if (current_cpu == "arm64") {
+    cflags += [ "-march=armv8.3-a+simd", "-mfloat-abi=hard", "-mfpu=neon" ]
+    ldflags += [ "-march=armv8.3-a+simd" ]
   }
 
   if (current_cpu == "x64") {
-    cflags += [ "-maes", "-mavx", "-ffp-contract=fast", "-mf16c", "-mfma", "-Wno-unused-command-line-argument", ]
+    cflags += [ "-O3", "-maes", "-march=x86-64-v3", "-ffp-contract=fast", "-mf16c", "-mfma", ]
+    ldflags += [ "-Wl,-O3", "-maes", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
   }
 
   if (save_unstripped_output) {

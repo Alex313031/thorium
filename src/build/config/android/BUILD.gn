@@ -74,12 +74,12 @@ config("compiler") {
   cflags += [ "--target=$android_abi_target$compile_api_level" ]
   ldflags += [ "--target=$android_abi_target$compile_api_level" ]
 
-  if (current_cpu == "arm64" || target_cpu == "arm64") {
+  if (current_cpu == "arm64") {
     cflags += [ "-march=armv8-a+simd", "-mfloat-abi=hard", "-mfpu=neon" ]
     ldflags += [ "-march=armv8-a+simd" ]
   }
 
-  if (current_cpu == "arm" || target_cpu == "arm") {
+  if (current_cpu == "arm") {
     cflags += [ "-march=armv7-a" ]
     ldflags += [ "-march=armv7-a" ]
   }

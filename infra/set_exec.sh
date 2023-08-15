@@ -27,6 +27,8 @@ sudo chmod -v +x depot_tools/autoninja &&
 
 sudo chmod -v +x build.sh &&
 
+sudo chmod -v +x build_android.sh &&
+
 sudo chmod -v +x build_dmg.sh &&
 
 sudo chmod -v +x build_mac.sh &&

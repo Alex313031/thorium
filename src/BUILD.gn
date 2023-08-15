@@ -69,7 +69,9 @@ if (is_official_build) {
 
 # Thorium target that simply pulls in the chrome target as a dependency
 group("thorium") {
-  deps = [ "//chrome:chrome" ]
+  if (is_win || is_linux || is_mac) {
+    deps = [ "//chrome:chrome" ]
+  }
 
   if (is_win) {
     deps += [ "//chrome:chrome_dll" ]
