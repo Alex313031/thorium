@@ -217,7 +217,7 @@ fi
 eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/export \1='\2'/" \
   "${OUTPUTDIR}/installer/theme/BRANDING")
 
-REPOCONFIG="https://dl.google.com/linux/${PACKAGE#google-}/rpm/stable"
+# REPOCONFIG="https://dl.google.com/linux/${PACKAGE#google-}/rpm/stable"
 export USR_BIN_SYMLINK_NAME="${PACKAGE}"
 
 stage_install_rpm
