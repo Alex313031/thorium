@@ -42,12 +42,16 @@ printf "${YEL}Building Thorium for Android...\n" &&
 printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
 printf "${CYA}\n" &&
 
+cr_build_jobs="$2"
+export cr_build_jobs
+
 buildARM32 () {
 # Build Thorium for ARM32 and System WebView
 export NINJA_SUMMARIZE_BUILD=1 &&
+export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
+autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
 
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 

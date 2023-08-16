@@ -1,1 +1,1 @@
-START "" "%cd%\BIN\115.0.5790.172\thorium_shell.exe" --data-path="%~dp0%\USER_DATA\thorium_shell" --allow-outdated-plugins --disable-logging --disable-breakpad
+START "" "%cd%\BIN\115.0.5790.172\thorium_shell.exe" --data-path="%~dp0%\USER_DATA\thorium_shell" --allow-outdated-plugins --disable-logging --disable-breakpad --enable-experimental-web-platform-features

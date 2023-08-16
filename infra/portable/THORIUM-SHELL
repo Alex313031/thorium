@@ -2,4 +2,4 @@
 
 # Copyright (c) 2022 Alex313031
 
-./thorium_shell --data-path=$(pwd)/.config/thorium-shell --debug --enable-clear-hevc-for-testing $@
+./thorium_shell --data-path=$(pwd)/.config/thorium-shell --enable-experimental-web-platform-features --debug --enable-clear-hevc-for-testing $@
