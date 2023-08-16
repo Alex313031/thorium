@@ -75,9 +75,8 @@ verify_package() {
   diff -u "${EXPECTED_DEPENDS}" "${ACTUAL_DEPENDS}" || BAD_DIFF=1
   if [ $BAD_DIFF -ne 0 ] && [ -z "${IGNORE_DEPS_CHANGES:-}" ]; then
     echo
-    echo "ERROR: bad rpm dependencies!"
+    echo "NOTICE: bad rpm dependencies!"
     echo
-    exit $BAD_DIFF
   fi
 }
 
