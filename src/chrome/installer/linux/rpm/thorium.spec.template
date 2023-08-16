@@ -50,6 +50,7 @@ prefix          : /opt
 %global __requires_exclude ^libffmpeg\\((autotest|basetest)
 
 # %define __requires_exclude libffmpeg.so
+%define _requires_exceptions libffmpeg.so()(64bit)
 
 #------------------------------------------------------------------------------
 #       Installation rule - how to install it (note that it
