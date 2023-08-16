@@ -5,4 +5,4 @@ PARENT="$(dirname "$HERE")"
 
 export LD_LIBRARY_PATH="${PARENT}"/lib:$PATH
 
-"${HERE}"/thorium_shell --no-default-browser-check --use-gl=desktop --enable-experimental-web-platform-features --new-canvas-2d-api $@
+"${HERE}"/thorium_shell --use-gl=desktop --debug $@
