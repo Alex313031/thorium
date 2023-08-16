@@ -108,4 +108,4 @@ fi
 
 # Launch Thorium
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/@@PROGNAME@@" "--enable-experimental-web-platform-features" "--new-canvas-2d-api" "$CHROME_USER_FLAGS" "$@"
+exec -a "$0" "$HERE/@@PROGNAME@@" "$CHROME_USER_FLAGS" "$@"
