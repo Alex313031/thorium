@@ -53,10 +53,9 @@ BASE_FEATURE(kAccessCodeCastUI,
 
 // Enables displaying the submenu to open a link with a different profile if
 // there is at least one other active profile.
-// TODO: Alex313031 bug fix
 BASE_FEATURE(kDisplayOpenLinkAsProfile,
              "DisplayOpenLinkAsProfile",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables showing the EV certificate details in the Page Info bubble.
 BASE_FEATURE(kEvDetailsInPageInfo,
