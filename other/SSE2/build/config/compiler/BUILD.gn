@@ -1103,8 +1103,9 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
-        "-msse2",
         "-mmmx",
+        "-mfxsr",
+        "-msse2",
       ]
       ldflags += [ "-m64", "-Wl,-O3", "-msse2", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
     } else if (current_cpu == "x86") {
