@@ -45,7 +45,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME ICON "thorium_shell.ico"
-IDI_THORIUM_SHELL ICON "thorium_shell.ico"
+// IDI_THORIUM_SHELL ICON "thorium_shell.ico"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

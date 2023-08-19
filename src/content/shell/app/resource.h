@@ -24,7 +24,6 @@
 #define IDC_PROMPTEDIT            1005
 #define IDC_DIALOGTEXT            1006
 
-#define IDI_THORIUM_SHELL 104
 #ifndef IDC_STATIC
 #define IDC_STATIC                -1
 #endif
