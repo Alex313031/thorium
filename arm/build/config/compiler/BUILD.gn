@@ -2178,6 +2178,10 @@ if (is_win) {
     ]
   }
 
+  if (current_cpu == "arm64") {
+    common_optimize_on_cflags += [ "-march=armv8-a+simd", ]
+  }
+
   common_optimize_on_cflags += [
     "/O2",
     "/clang:-O3",
