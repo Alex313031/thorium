@@ -12,10 +12,6 @@ import("//build/config/riscv.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build_overrides/build.gni")
 
-if (is_android) {
-  import("//build/config/android/rules.gni")
-}
-
 import("gni/snapshot_toolchain.gni")
 import("gni/v8.gni")
 
@@ -323,6 +319,10 @@ declare_args() {
   # Sets -DV8_ENABLE_SANDBOX.
   v8_enable_sandbox = ""
 
+  # Enable experimental code pointer sandboxing for the V8 sandbox.
+  # Sets -DV8_CODE_POINTER_SANDBOXING
+  v8_code_pointer_sandboxing = false
+
   # Expose the memory corruption API to JavaScript. Useful for testing the sandbox.
   # WARNING This will expose builtins that (by design) cause memory corruption.
   # Sets -DV8_EXPOSE_MEMORY_CORRUPTION_API
@@ -372,13 +372,6 @@ declare_args() {
   # (incomplete and experimental).
   v8_enable_cet_shadow_stack = false
 
-  # Get VMEX priviledge at startup.
-  # It allows to run V8 without "deprecated-ambient-replace-as-executable".
-  # Sets -DV8_USE_VMEX_RESOURCE.
-  # TODO(victorgomes): Remove this flag once Chormium no longer needs
-  # the deprecated feature.
-  v8_fuchsia_use_vmex_resource = is_fuchsia && !build_with_chromium
-
   # Enables pointer compression for 8GB heaps.
   # Sets -DV8_COMPRESS_POINTERS_8GB.
   v8_enable_pointer_compression_8gb = ""
@@ -397,6 +390,10 @@ declare_args() {
   # iOS (non-simulator) does not have executable pages for 3rd party
   # applications yet so disable jit.
   v8_jitless = v8_enable_lite_mode || target_is_ios_device
+
+  # Enable Maglev's graph printer.
+  # Sets -DV8_MAGLEV_GRAPH_PRINTER.
+  v8_enable_maglev_graph_printer = !build_with_chromium
 }
 
 # Derived defaults.
@@ -476,13 +473,13 @@ if (v8_enable_short_builtin_calls == "") {
 if (v8_enable_external_code_space == "") {
   v8_enable_external_code_space =
       v8_enable_pointer_compression &&
-      (v8_current_cpu == "x64" ||
-       (target_os != "fuchsia" && v8_current_cpu == "arm64"))
+      (v8_current_cpu == "x64" || v8_current_cpu == "arm64")
 }
 if (v8_enable_maglev == "") {
   v8_enable_maglev = v8_enable_turbofan &&
-                     (v8_current_cpu == "x64" || v8_current_cpu == "arm64") &&
-                     v8_enable_pointer_compression
+                     (v8_current_cpu == "arm" ||
+                      ((v8_current_cpu == "x64" || v8_current_cpu == "arm64") &&
+                       v8_enable_pointer_compression))
 }
 assert(v8_enable_turbofan || !v8_enable_maglev,
        "Maglev is not available when Turbofan is disabled.")
@@ -645,6 +642,9 @@ assert(!v8_enable_sandbox || v8_enable_pointer_compression_shared_cage,
 assert(!v8_enable_sandbox || v8_enable_external_code_space,
        "The sandbox requires the external code space")
 
+assert(!v8_code_pointer_sandboxing || v8_enable_sandbox,
+       "Code pointer sandboxing requires the sandbox")
+
 assert(!v8_expose_memory_corruption_api || v8_enable_sandbox,
        "The Memory Corruption API requires the sandbox")
 
@@ -676,10 +676,6 @@ if (v8_enable_single_generation == true) {
   assert(
       v8_enable_unconditional_write_barriers || v8_disable_write_barriers,
       "Requires unconditional write barriers or none (which disables incremental marking)")
-}
-
-if (v8_fuchsia_use_vmex_resource) {
-  assert(target_os == "fuchsia", "VMEX resource only available on Fuchsia")
 }
 
 assert(!v8_enable_snapshot_compression || v8_use_zlib,
@@ -724,7 +720,9 @@ config("internal_config") {
   }
 
   if (v8_current_cpu == "riscv64" || v8_current_cpu == "riscv32") {
-    libs = [ "atomic" ]
+    if (!is_clang) {
+      libs = [ "atomic" ]
+    }
   }
 }
 
@@ -796,7 +794,9 @@ config("external_config") {
   }
 
   if (current_cpu == "riscv64" || current_cpu == "riscv32") {
-    libs = [ "atomic" ]
+    if (!is_clang) {
+      libs = [ "atomic" ]
+    }
   }
 }
 
@@ -1142,9 +1142,6 @@ config("features") {
   if (v8_advanced_bigint_algorithms) {
     defines += [ "V8_ADVANCED_BIGINT_ALGORITHMS" ]
   }
-  if (v8_fuchsia_use_vmex_resource) {
-    defines += [ "V8_USE_VMEX_RESOURCE" ]
-  }
   if (v8_expose_memory_corruption_api) {
     defines += [ "V8_EXPOSE_MEMORY_CORRUPTION_API" ]
   }
@@ -1168,6 +1165,12 @@ config("features") {
   }
   if (v8_enable_wasm_simd256_revec) {
     defines += [ "V8_ENABLE_WASM_SIMD256_REVEC" ]
+  }
+  if (v8_code_pointer_sandboxing) {
+    defines += [ "V8_CODE_POINTER_SANDBOXING" ]
+  }
+  if (v8_enable_maglev_graph_printer) {
+    defines += [ "V8_ENABLE_MAGLEV_GRAPH_PRINTER" ]
   }
 }
 
@@ -1313,6 +1316,12 @@ config("toolchain") {
     defines += [ "V8_TARGET_ARCH_RISCV32" ]
     defines += [ "__riscv_xlen=32" ]
     defines += [ "CAN_USE_FPU_INSTRUCTIONS" ]
+
+    # TODO(riscv32): Add condition riscv_use_rvv and riscv_rvv_vlen here after
+    # 4538202 merge.
+    if (target_is_simulator) {
+      defines += [ "CAN_USE_RVV_INSTRUCTIONS" ]
+    }
   }
 
   if (v8_current_cpu == "x86") {
@@ -1331,7 +1340,7 @@ config("toolchain") {
       cflags += [ "/O2", "/arch:SSE3" ]
       ldflags += [ "/STACK:2097152" ]
     }
-    if (is_linux) {
+    if (is_linux || is_chromeos) {
       # Full optimization for V8.
       cflags += [ "-O3", "-msse3" ]
       ldflags += [ "-Wl,-O3", "-msse3" ]
@@ -1339,7 +1348,6 @@ config("toolchain") {
   }
   if (is_android && v8_android_log_stdout) {
     defines += [ "V8_ANDROID_LOG_STDOUT" ]
-    cflags += [ "-O3" ]
   }
 
   # V8_TARGET_OS_ defines. The target OS may differ from host OS e.g. in
@@ -1408,14 +1416,17 @@ config("toolchain") {
       "-Wmissing-field-initializers",
       "-Wunreachable-code",
 
-      # Google3 enables this warning, so we should also enable it to find issue
-      # earlier. See https://reviews.llvm.org/D56731 for details about this
-      # warning.
-      "-Wctad-maybe-unsupported",
-
       # TODO(v8:12245): Fix shadowing instances and remove.
       "-Wno-shadow",
     ]
+
+    # TODO(fuchsia:127411): Re-enable once FIDL bindings are compatible.
+    if (!is_fuchsia) {
+      # Google3 enables this warning, so we should also enable it to find issue
+      # earlier. See https://reviews.llvm.org/D56731 for details about this
+      # warning.
+      cflags += [ "-Wctad-maybe-unsupported" ]
+    }
 
     if (v8_current_cpu == "x64" || v8_current_cpu == "arm64" ||
         v8_current_cpu == "mips64el" || v8_current_cpu == "riscv64") {
@@ -1760,6 +1771,7 @@ if (v8_postmortem_support) {
       "src/objects/string-inl.h",
       "src/objects/struct.h",
       "src/objects/struct-inl.h",
+      "src/objects/tagged.h",
     ]
 
     outputs = [ "$target_gen_dir/debug-support.cc" ]
@@ -1826,9 +1838,11 @@ torque_files = [
   "src/builtins/iterator.tq",
   "src/builtins/iterator-from.tq",
   "src/builtins/iterator-helpers.tq",
+  "src/builtins/map-groupby.tq",
   "src/builtins/math.tq",
   "src/builtins/number.tq",
   "src/builtins/object-fromentries.tq",
+  "src/builtins/object-groupby.tq",
   "src/builtins/object.tq",
   "src/builtins/promise-abstract-operations.tq",
   "src/builtins/promise-all.tq",
@@ -1864,6 +1878,8 @@ torque_files = [
   "src/builtins/regexp-split.tq",
   "src/builtins/regexp-test.tq",
   "src/builtins/regexp.tq",
+  "src/builtins/set-intersection.tq",
+  "src/builtins/set-union.tq",
   "src/builtins/string-at.tq",
   "src/builtins/string-endswith.tq",
   "src/builtins/string-html.tq",
@@ -2003,6 +2019,7 @@ if (v8_enable_i18n_support) {
 
 if (v8_enable_webassembly) {
   torque_files += [
+    "src/builtins/js-to-wasm.tq",
     "src/builtins/wasm.tq",
     "src/debug/debug-wasm-objects.tq",
     "src/wasm/wasm-objects.tq",
@@ -3082,6 +3099,7 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/js-create-lowering.h",
     "src/compiler/js-generic-lowering.h",
     "src/compiler/js-graph.h",
+    "src/compiler/js-heap-broker-inl.h",
     "src/compiler/js-heap-broker.h",
     "src/compiler/js-inlining-heuristic.h",
     "src/compiler/js-inlining.h",
@@ -3181,7 +3199,6 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/store-store-elimination-phase.h",
     "src/compiler/turboshaft/store-store-elimination-reducer.h",
     "src/compiler/turboshaft/structural-optimization-reducer.h",
-    "src/compiler/turboshaft/tag-untag-lowering-reducer.h",
     "src/compiler/turboshaft/tracing.h",
     "src/compiler/turboshaft/type-assertions-phase.h",
     "src/compiler/turboshaft/type-inference-analysis.h",
@@ -3361,6 +3378,7 @@ v8_header_set("v8_internal_headers") {
     "src/heap/marking-worklist.h",
     "src/heap/marking.h",
     "src/heap/memory-allocator.h",
+    "src/heap/memory-balancer.h",
     "src/heap/memory-chunk-inl.h",
     "src/heap/memory-chunk-layout.h",
     "src/heap/memory-chunk.h",
@@ -3377,6 +3395,7 @@ v8_header_set("v8_internal_headers") {
     "src/heap/paged-spaces-inl.h",
     "src/heap/paged-spaces.h",
     "src/heap/parallel-work-item.h",
+    "src/heap/parked-scope-inl.h",
     "src/heap/parked-scope.h",
     "src/heap/pretenuring-handler-inl.h",
     "src/heap/pretenuring-handler.h",
@@ -3649,6 +3668,7 @@ v8_header_set("v8_internal_headers") {
     "src/objects/tagged-index.h",
     "src/objects/tagged-value-inl.h",
     "src/objects/tagged-value.h",
+    "src/objects/tagged.h",
     "src/objects/template-objects-inl.h",
     "src/objects/template-objects.h",
     "src/objects/templates-inl.h",
@@ -3733,6 +3753,10 @@ v8_header_set("v8_internal_headers") {
     "src/runtime/runtime.h",
     "src/sandbox/bounded-size-inl.h",
     "src/sandbox/bounded-size.h",
+    "src/sandbox/code-pointer-inl.h",
+    "src/sandbox/code-pointer-table-inl.h",
+    "src/sandbox/code-pointer-table.h",
+    "src/sandbox/code-pointer.h",
     "src/sandbox/external-entity-table-inl.h",
     "src/sandbox/external-entity-table.h",
     "src/sandbox/external-pointer-inl.h",
@@ -3752,6 +3776,7 @@ v8_header_set("v8_internal_headers") {
     "src/snapshot/embedded/embedded-file-writer-interface.h",
     "src/snapshot/object-deserializer.h",
     "src/snapshot/read-only-deserializer.h",
+    "src/snapshot/read-only-serializer-deserializer.h",
     "src/snapshot/read-only-serializer.h",
     "src/snapshot/references.h",
     "src/snapshot/roots-serializer.h",
@@ -3856,7 +3881,9 @@ v8_header_set("v8_internal_headers") {
       "src/maglev/maglev-register-frame-array.h",
       "src/maglev/maglev.h",
     ]
-    if (v8_current_cpu == "arm64") {
+    if (v8_current_cpu == "arm") {
+      sources += [ "src/maglev/arm/maglev-assembler-arm-inl.h" ]
+    } else if (v8_current_cpu == "arm64") {
       sources += [ "src/maglev/arm64/maglev-assembler-arm64-inl.h" ]
     } else if (v8_current_cpu == "x64") {
       sources += [ "src/maglev/x64/maglev-assembler-x64-inl.h" ]
@@ -3871,6 +3898,7 @@ v8_header_set("v8_internal_headers") {
       "src/asmjs/asm-scanner.h",
       "src/asmjs/asm-types.h",
       "src/compiler/int64-lowering.h",
+      "src/compiler/turboshaft/wasm-js-lowering-reducer.h",
       "src/compiler/wasm-address-reassociation.h",
       "src/compiler/wasm-call-descriptors.h",
       "src/compiler/wasm-compiler-definitions.h",
@@ -3881,6 +3909,7 @@ v8_header_set("v8_internal_headers") {
       "src/compiler/wasm-graph-assembler.h",
       "src/compiler/wasm-inlining-into-js.h",
       "src/compiler/wasm-inlining.h",
+      "src/compiler/wasm-js-lowering.h",
       "src/compiler/wasm-load-elimination.h",
       "src/compiler/wasm-loop-peeling.h",
       "src/compiler/wasm-typer.h",
@@ -4538,6 +4567,7 @@ if (v8_enable_webassembly) {
     "src/compiler/wasm-graph-assembler.cc",
     "src/compiler/wasm-inlining-into-js.cc",
     "src/compiler/wasm-inlining.cc",
+    "src/compiler/wasm-js-lowering.cc",
     "src/compiler/wasm-load-elimination.cc",
     "src/compiler/wasm-loop-peeling.cc",
     "src/compiler/wasm-typer.cc",
@@ -4889,6 +4919,7 @@ v8_source_set("v8_base_without_compiler") {
     "src/heap/marking-worklist.cc",
     "src/heap/marking.cc",
     "src/heap/memory-allocator.cc",
+    "src/heap/memory-balancer.cc",
     "src/heap/memory-chunk-layout.cc",
     "src/heap/memory-chunk.cc",
     "src/heap/memory-measurement.cc",
@@ -5100,6 +5131,7 @@ v8_source_set("v8_base_without_compiler") {
     "src/runtime/runtime-typedarray.cc",
     "src/runtime/runtime-weak-refs.cc",
     "src/runtime/runtime.cc",
+    "src/sandbox/code-pointer-table.cc",
     "src/sandbox/external-pointer-table.cc",
     "src/sandbox/sandbox.cc",
     "src/sandbox/testing.cc",
@@ -5174,7 +5206,12 @@ v8_source_set("v8_base_without_compiler") {
       "src/maglev/maglev-regalloc.cc",
       "src/maglev/maglev.cc",
     ]
-    if (v8_current_cpu == "arm64") {
+    if (v8_current_cpu == "arm") {
+      sources += [
+        "src/maglev/arm/maglev-assembler-arm.cc",
+        "src/maglev/arm/maglev-ir-arm.cc",
+      ]
+    } else if (v8_current_cpu == "arm64") {
       sources += [
         "src/maglev/arm64/maglev-assembler-arm64.cc",
         "src/maglev/arm64/maglev-ir-arm64.cc",
@@ -5589,7 +5626,9 @@ v8_source_set("v8_base_without_compiler") {
       v8_current_cpu == "ppc" || v8_current_cpu == "ppc64" ||
       v8_current_cpu == "s390" || v8_current_cpu == "s390x" ||
       v8_current_cpu == "riscv64" || v8_current_cpu == "riscv32") {
-    libs += [ "atomic" ]
+    if (!is_clang) {
+      libs += [ "atomic" ]
+    }
   }
 
   if (v8_enable_vtunetracemark && (is_linux || is_chromeos || is_win)) {
@@ -5936,8 +5975,8 @@ v8_component("v8_libbase") {
       "src/base/platform/platform-fuchsia.cc",
     ]
     deps += [
-      "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.kernel",
-      "//third_party/fuchsia-sdk/sdk/pkg/fdio",
+      "//third_party/fuchsia-sdk/sdk/fidl/fuchsia.kernel:fuchsia.kernel_cpp",
+      "//third_party/fuchsia-sdk/sdk/pkg/component_incoming_cpp",
       "//third_party/fuchsia-sdk/sdk/pkg/zx",
     ]
   } else if (is_mac) {
@@ -5989,7 +6028,9 @@ v8_component("v8_libbase") {
   }
 
   if (v8_current_cpu == "riscv64" || v8_current_cpu == "riscv32") {
-    libs += [ "atomic" ]
+    if (!is_clang) {
+      libs += [ "atomic" ]
+    }
   }
 
   if (is_tsan && !build_with_chromium) {
@@ -6099,7 +6140,9 @@ v8_component("v8_libplatform") {
   }
 
   if (v8_current_cpu == "riscv64" || v8_current_cpu == "riscv32") {
-    libs = [ "atomic" ]
+    if (!is_clang) {
+      libs = [ "atomic" ]
+    }
   }
 }
 
@@ -7038,7 +7081,9 @@ v8_executable("cppgc_hello_world") {
   sources = [ "samples/cppgc/hello-world.cc" ]
 
   if (v8_current_cpu == "riscv64" || v8_current_cpu == "riscv32") {
-    libs = [ "atomic" ]
+    if (!is_clang) {
+      libs = [ "atomic" ]
+    }
   }
 
   configs = [
