@@ -277,12 +277,31 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <part file="settings_chromium_strings.grdp" />
       </if>
 
-      <message name="IDS_PRODUCT_NAME" desc="The Thorium application name">
-        Thorium
-      </message>
-      <message name="IDS_SHORT_PRODUCT_NAME" desc="The Thorium application short name.">
-        Thorium
-      </message>
+      <!--
+        Even though Google Thorium for Testing is a separate brand, there is
+        no separate file for it. Instead, we use the same file as Thorium, with
+        a few select overrides for the most prominent end-user strings.
+
+        Rationale: https://goo.gle/chrome-for-testing#bookmark=id.n1rat320av91
+      -->
+      <if expr="_is_chrome_for_testing_branded">
+        <then>
+          <message name="IDS_PRODUCT_NAME" desc="The Thorium for Testing application name" translateable="false">
+            Google Thorium for Testing
+          </message>
+          <message name="IDS_SHORT_PRODUCT_NAME" desc="The Thorium for Testing application short name." translateable="false">
+            Thorium for Testing
+          </message>
+        </then>
+        <else>
+          <message name="IDS_PRODUCT_NAME" desc="The Thorium application name" translateable="false">
+            Thorium
+          </message>
+          <message name="IDS_SHORT_PRODUCT_NAME" desc="The Thorium application short name." translateable="false">
+            Thorium
+          </message>
+        </else>
+      </if>
       <if expr="is_win">
         <message name="IDS_SXS_SHORTCUT_NAME" desc="Unused in Thorium builds" translateable="false">
         </message>
@@ -443,7 +462,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
           Thorium may not function correctly because it is no longer supported on this Linux distribution
         </message>
       </if>
-      <message name="IDS_ACCNAME_APP" desc="The accessible name for the app menu.">
+      <message name="IDS_ACCNAME_APP" desc="The accessible name for the app menu." translateable="false">
         Thorium
       </message>
       <!-- Hung Browser Detector -->
@@ -521,7 +540,7 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
       <!-- Crash Recovery Dialog -->
-      <message name="IDS_CRASH_RECOVERY_TITLE" desc="Title of dialog shown when the browser crashes.">
+      <message name="IDS_CRASH_RECOVERY_TITLE" desc="Title of dialog shown when the browser crashes." translateable="false">
         Thorium
       </message>
       <if expr="is_win">
@@ -537,7 +556,7 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_PASSWORD_MANAGER_ONBOARDING_DETAILS_C" desc="The explanation text that is shown below the title in the password manager onboarding dialog.">
         Thorium lets you know if your passwords are ever compromised
       </message>
-      <message name="IDS_PASSWORD_MANAGER_TITLE_BRAND" desc="The product name used in the title of the password bubble.">
+      <message name="IDS_PASSWORD_MANAGER_TITLE_BRAND" desc="The product name used in the title of the password bubble." translateable="false">
         Thorium
       </message>
       <message name="IDS_PASSWORD_BUBBLES_PASSWORD_MANAGER_LINK_TEXT_SAVING_ON_DEVICE" desc="The text of the Google Password Manager links displayed on Password Manager bubbles footer when the credentials are stored only locally.">
@@ -748,6 +767,17 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
+      <!-- Extension Safety Check Detail Page strings -->
+      <message name="IDS_SAFETY_CHECK_EXTENSIONS_MALWARE" desc="The text explaining the reason for disabling extension. The extension in question contains malware.">
+        This extension contains malware and is unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      </message>
+       <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
+          This extension violates the Thorium Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      </message>
+      <message name="IDS_SAFETY_CHECK_EXTENSIONS_UNPUBLISHED" desc="The text explaining the reason for disabling extension. The extension in question was unpublished by the developer.">
+          This extension was unpublished by its developer, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      </message>
+
       <!-- chrome://settings/extensions page -->
       <message name="IDS_EXTENSIONS_ITEM_SHOW_ACCESS_REQUESTS_IN_TOOLBAR" desc="The label on the toggle to allow the extension to show site access requests in the toolbar.">
         Allow extension to show access requests in the Thorium toolbar
@@ -789,17 +819,35 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
 
       <if expr="use_titlecase and not chromeos_ash">
-        <message name="IDS_ABOUT" desc="In Title Case: The text label of the About Thorium menu item">
-          About &amp;Thorium
-        </message>
+        <if expr="_is_chrome_for_testing_branded">
+          <then>
+            <message name="IDS_ABOUT" desc="In Title Case: The text label of the About Thorium for Testing menu item">
+              About &amp;Google Thorium for Testing
+            </message>
+          </then>
+          <else>
+            <message name="IDS_ABOUT" desc="In Title Case: The text label of the About Thorium menu item">
+              About &amp;Thorium
+            </message>
+          </else>
+        </if>
         <message name="IDS_RELAUNCH_TO_UPDATE" desc="In Title Case: The text label of the relaunch to update Thorium menu item">
           Relaunch to Update &amp;Thorium
         </message>
       </if>
       <if expr="not use_titlecase and not chromeos_ash">
-        <message name="IDS_ABOUT" desc="The text label of the About Thorium menu item">
-          About &amp;Thorium
-        </message>
+        <if expr="_is_chrome_for_testing_branded">
+          <then>
+            <message name="IDS_ABOUT" desc="The text label of the About Thorium for Testing menu item">
+              About &amp;Google Thorium for Testing
+            </message>
+          </then>
+          <else>
+            <message name="IDS_ABOUT" desc="The text label of the About Thorium menu item">
+              About &amp;Thorium
+            </message>
+          </else>
+        </if>
         <message name="IDS_RELAUNCH_TO_UPDATE" desc="The text label of the relaunch to update Thorium menu item">
           Relaunch to update &amp;Thorium
         </message>
@@ -820,7 +868,7 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <if expr="is_macosx">
-        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Google Thorium.">
+        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Google Thorium." translateable="false">
           Thorium
         </message>
         <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Thorium application name (IDS_PRODUCT_NAME). Example: Google Thorium Helper.">
@@ -832,11 +880,11 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <message name="IDS_VIEW_PASSWORDS" desc="Item in the app menu which shows Password Manager page">
-        Password Manager
+        P&amp;assword Manager
       </message>
 
       <!-- Thorium sign-in page -->
-      <message name="IDS_CHROME_SIGNIN_TITLE" desc="Title on the about:chrome-signin page">
+      <message name="IDS_CHROME_SIGNIN_TITLE" desc="Title on the about:chrome-signin page" translateable="false">
         Thorium
       </message>
 
@@ -1069,6 +1117,22 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_USER_MANAGER_TUTORIAL_SLIDE_OUTRO_ADD_USER" desc="Text of the add a new user button">
           Add yourself to Thorium
+        </message>
+      </if>
+
+      <if expr="not is_android">
+        <!-- Password Manager Tutorial Strings -->
+        <message name="IDS_TUTORIAL_PASSWORD_MANAGER_OPEN_APP_MENU" desc="The description of the 'open add menu' step in password manager tutorial">
+          Click the Thorium menu
+        </message>
+        <message name="IDS_TUTORIAL_PASSWORD_MANAGER_CLICK_PASSWORD_MANAGER" desc="The description of the 'click password manager' step in password manager tutorial">
+          Click “Password Manager”
+        </message>
+        <message name="IDS_TUTORIAL_PASSWORD_MANAGER_SUCCESS_BODY" desc="The description of the body text in the 'success' step in password manager tutorial">
+          Use your shortcut to quickly get to the Password Manager. You can move your shortcut to your computer's home screen or app launcher.
+        </message>
+        <message name="IDS_PASSWORD_MANAGER_IPH_CREATE_SHORTCUT_BODY" desc="Body of the in Product Help shown after successfully logging into a website telling user about how to create a shortcut">
+          Add a shortcut to Password Manager
         </message>
       </if>
 
@@ -1405,18 +1469,18 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_IDLE_TIMEOUT_CLOSE_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to close automatically.">
           {COUNT, plural,
-          =1 {Your administrator automatically closes Thorium when it isn't used for 1 minute.}
-          other {Your administrator automatically closes Thorium when it isn't used for # minutes.}}
+          =1 {Your organization automatically closes Thorium when it isn't used for 1 minute.}
+          other {Your organization automatically closes Thorium when it isn't used for # minutes.}}
         </message>
         <message name="IDS_IDLE_TIMEOUT_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to clear data automatically.">
           {COUNT, plural,
-          =1 {Your administrator automatically deletes browsing data when it isn't used for 1 minute. This could include history, autofill, and downloads. Your existing tabs will remain open.}
-          other {Your administrator automatically deletes browsing data when it isn't used for # minutes. This could include history, autofill, and downloads. Your existing tabs will remain open.}}
+          =1 {Your organization automatically deletes browsing data when Thorium isn't used for 1 minute. This could include history, autofill, and downloads. Your existing tabs will remain open.}
+          other {Your organization automatically deletes browsing data when Thorium isn't used for # minutes. This could include history, autofill, and downloads. Your existing tabs will remain open.}}
         </message>
         <message name="IDS_IDLE_TIMEOUT_CLOSE_AND_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to close and clear data automatically.">
           {COUNT, plural,
-          =1 {Your administrator automatically closes Thorium when it isn't used for 1 minute. Browsing data is deleted. This could include history, autofill, and downloads.}
-          other {Your administrator automatically closes Thorium when it isn't used for # minutes. Browsing data is deleted. This could include history, autofill, and downloads.}}
+          =1 {Your organization automatically closes Thorium when it isn't used for 1 minute. Browsing data is deleted. This could include history, autofill, and downloads.}
+          other {Your organization automatically closes Thorium when it isn't used for # minutes. Browsing data is deleted. This could include history, autofill, and downloads.}}
         </message>
         <message name="IDS_IDLE_DISMISS_BUTTON" desc="Button label in the Idle Timeout dialog, this button dismisses the dialog and prevents browsers from closing automatically.">
           Continue using Thorium
@@ -1606,7 +1670,7 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <!-- ThoriumUpdater Strings -->
       <if expr="is_win">
-        <message name="IDS_FRIENDLY_COMPANY_NAME" desc="Company name">
+        <message name="IDS_FRIENDLY_COMPANY_NAME" desc="Company name" translateable="false">
           Thorium
         </message>
         <message name="IDS_NO_UPDATE_RESPONSE" desc="Updater response for no updates when handling install result.">
@@ -1706,6 +1770,9 @@ Permissions you've already given to websites and apps may apply to this account.
             Memory Saver made Thorium faster
           </message>
         </if>
+        <message name="IDS_HIGH_EFFICIENCY_DIALOG_BODY_V2" desc="Body text for a dialog describing that Memory Saver mode will use less memory.">
+          While this tab was inactive, memory was freed up to keep Thorium fast. You can choose to always exclude this site from being inactive.
+        </message>
       </if>
 
       <!-- High Efficiency IPH strings -->
@@ -1720,18 +1787,6 @@ Permissions you've already given to websites and apps may apply to this account.
             Make Thorium faster
           </message>
         </if>
-      </if>
-
-      <!-- Payments settings DeviceAuthentication strings -->
-      <if expr="is_macosx">
-        <message name="IDS_PAYMENTS_AUTOFILL_MANDATORY_REAUTH_PROMPT" desc="Message to be displayed to the user in the device authentication prompt when they click on the mandatory auth toggle on the Payments settings page, irrespective to enable or disable it. When mandatory auth toggle is enabled, we would authenticate the user before autofilling in the payment details. Note: MacOS has the wording 'Thorium is trying to' prepended onto the message during user auth.">
-          modify settings for filling payment methods.
-        </message>
-      </if>
-      <if expr="is_win">
-        <message name="IDS_PAYMENTS_AUTOFILL_MANDATORY_REAUTH_PROMPT" desc="Message to be displayed to the user in the device authentication prompt when they click on the mandatory auth toggle on the Payments settings page, irrespective to enable or disable it. When mandatory auth toggle is enabled, we would authenticate the user before autofilling in the payment details.">
-          Thorium is trying to modify settings for filling payment methods.
-        </message>
       </if>
     </messages>
   </release>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <!-- Settings-specific strings (included from generated_resources.grd). -->
 <grit-part>
   <message name="IDS_SETTINGS_EMPTY_STRING" desc="Empty string, exist only to make code generic. No translation required."></message>
@@ -114,10 +113,10 @@
     Downloading text recognition files
   </message>
   <message name="IDS_SETTINGS_PDF_OCR_TITLE" desc="Description for screen reader pdf ocr feature.">
-    Convert images to text
+    Convert PDF images to text
   </message>
   <message name="IDS_SETTINGS_PDF_OCR_SUBTITLE" desc="Subtitle for screen reader pdf ocr feature.">
-    Scan PDF images to convert text for screen reader when necessary
+    Scan PDF images to convert content to text for the screen reader, when available. Only supported on Thorium browser.
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_TITLE" desc="Name of the setting to enable Live Caption feature.">
     Live Caption
@@ -126,7 +125,7 @@
     Live Translate
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_TRANSLATE_SUBTITLE" desc="Description text for Live Translate feature.">
-    Automatically translate captions to a target language.
+    Automatically translates captions
   </message>
   <if expr="chromeos_ash">
     <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Thorium browser initially. Currently only works for English media.">
@@ -236,6 +235,9 @@
   </message>
   <message name="IDS_SETTINGS_SHOW_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing the bookmarks bar in the toolbar.">
     Show bookmarks bar
+  </message>
+  <message name="IDS_SETTINGS_SHOW_HOVER_CARD_IMAGES" desc="Label for the checkbox which enables or disables showing image previews for tab hovercards.">
+    Show images on tab hover preview cards
   </message>
   <message name="IDS_SETTINGS_SIDE_PANEL" desc="Title for the side panel section. Allows the user to toggle which side the side panel is displayed on.">
     Side panel
@@ -585,6 +587,12 @@
       =0 {No weak passwords}
       =1 {1 weak password}
       other {{NUM_WEAK} weak passwords}}
+  </message>
+  <message name="IDS_SETTINGS_REUSED_PASSWORDS_COUNT_SHORT" desc="This short text shows the amount of reused passwords that the Thorium password check found.">
+    {NUM_REUSED, plural,
+      =0 {No reused passwords}
+      =1 {1 reused password}
+      other {{NUM_REUSED} reused passwords}}
   </message>
   <message name="IDS_SETTINGS_INSECURE_PASSWORDS_COUNT" desc="Number of insecure passwords present in the database">
     {COUNT, plural,
@@ -1408,6 +1416,9 @@
   <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC_MAIN_PROFILE" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the user out of most websites but your Google sign in will stay.">
     Signs you out of most sites. You won't be signed out of your Google Account.
   </message>
+  <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC_SUPERVISED_PROFILE" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the the child user out of most websites but your Google account and Family Link settings will stay .">
+    Signs you out of most sites. You'll stay signed in to your Google Account so your Family Link settings for Thorium apply.
+  </message>
   <message name="IDS_SETTINGS_CLEAR_BROWSING_HISTORY_SUMMARY" desc="A subtext for the basic tab explaining browsing history.">
     Clears history, including in the search box
   </message>
@@ -1538,11 +1549,20 @@
   <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_SETTING" desc="Memory saver mode setting label. This mode allows the browser to save memory from background tabs">
     Memory Saver
   </message>
-  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_ON_TIMER_LABEL" desc="Label for the memory saver mode to discard tabs on a timer" translateable="false">
-    Select when your tabs become inactive
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_HEURISTICS_LABEL" desc="Label for the memory saver mode to discard tabs based on a set of heuristics">
+    Free up memory based on usage
   </message>
-  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_RADIO_GROUP_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focus enters the memory saver mode radio group. When memory saver mode is enabled, this radio group will be expanded and allow the user to choose between different tab discarding policies." translateable="false">
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_RECOMMENDED_BADGE" desc="Label for the recommended badge for the heuristics based memory saver option">
+    Recommended
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_ON_TIMER_LABEL" desc="Label for the memory saver mode to discard tabs on a timer">
+    Free up memory based on tab inactivity
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_RADIO_GROUP_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focus enters the memory saver mode radio group. When memory saver mode is enabled, this radio group will be expanded and allow the user to choose between different tab discarding policies.">
     Memory saver options
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_CHOOSE_DISCARD_TIME_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focus enters the dropdown menu in the second option of the memory saver radio group. The dropdown allows the user to select the time before a tab is discarded by memory saver.">
+    Choose time range
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADD_BUTTON_ARIA_LABEL" desc="Accessibility label which will be read by screen readers when focusing the tab discarding exceptions list add button. Sites added to the list will not be discarded by memory saver.">
     Add to the "always keep these sites active" list
@@ -1555,6 +1575,18 @@
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADDITIONAL_SITES" desc="Label for button that expands the tab discarding exceptions list to show all entries. Sites added to the list will not be discarded by memory saver.">
     Additional sites
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADD_DIALOG_CURRENT_TABS" desc="Label for the first tab of the tab discarding exception list add dialog, that allows users to pick sites from currently opened tabs to add to the list.">
+    Add current sites
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADD_DIALOG_MANUAL" desc="Label for the second tab of the tab discarding exception list add dialog, where users can manually input a site to be added to the list.">
+    Add sites manually
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ACTIVE_SITE_ARIA_DESCRIPTION" desc="Accessibilty description which will be read by screen readers when focusing a currently opened site in the list under the first tab of the add exception dialog.">
+    Active site
+  </message>
+  <message name="IDS_SETTINGS_PERFORMANCE_TAB_DISCARDING_EXCEPTIONS_ADD_DIALOG_HELP" desc="Label for button that expands the tab discarding exceptions list to show all entries. Sites added to the list will not be discarded by memory saver.">
+    Sites you add will always stay active and memory won't be freed up from them. <ph name="BEGIN_LINK">&lt;a href="$1" target="_blank"&gt;</ph>Learn more about site exclusion<ph name="END_LINK">&lt;/a&gt;</ph>
   </message>
   <message name="IDS_SETTINGS_BATTERY_PAGE_TITLE" desc="Title of the power section of the performance settings page">
     Power
@@ -2012,6 +2044,9 @@
   <message name="IDS_SETTINGS_TOPICS_PAGE_BLOCKED_TOPICS_REGION_A11Y_DESCRIPTION" desc="Read by screen readers to describe the list of blocked topics.">
     List of topics you blocked that you don't want shared with sites
   </message>
+  <message name="IDS_SETTINGS_TOPICS_PAGE_LEARN_MORE_BULLET_3" desc="Paragraph 3 of 3 on the Learn more about ad topics page. * 'auto-deletes': this could also read 'Thorium deletes...' We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
+    Thorium auto-deletes topics that are older than 4 weeks. As you keep browsing, a topic might reappear on the list. Or you can block topics you don’t want Thorium to share with sites. Learn more about <ph name="BEGIN_LINK">&lt;a href="$1" target="_blank"&gt;</ph>managing your ad privacy in Thorium.<ph name="END_LINK">&lt;/a&gt;</ph>
+  </message>
   <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Ad topics' setting. The user is on this page. * 'Site-suggested ads': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
     As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK1">&lt;a href="$1" target="_blank"&gt;</ph>Site-suggested ads<ph name="LINK_END1">&lt;/a&gt;</ph>, your <ph name="BEGIN_LINK2">&lt;a href="$2" target="_blank"&gt;</ph>cookie settings<ph name="LINK_END2">&lt;/a&gt;</ph>, and if the site you’re viewing personalizes ads
   </message>
@@ -2084,7 +2119,7 @@
     For example, if you visit a site that sells long-distance running shoes, the site might decide that you're interested in running marathons. Later, if you visit a different site, that site can show you an ad for running shoes suggested by the first site.
   </message>
   <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_3" desc="3 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'Auto-deletes': This could just read 'Thorium deletes...' but we include the 'auto' to suggest that the deletion happens regularly and as part of the system. * 'A site you visit again...': We want to reassure the user. We just told them sites are automatically deleted. And yet, a user might see the same site in the list month after month if they visit that site regularly.">
-    Thorium auto-deletes sites that are older than 30 days. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
+    Thorium auto-deletes sites that are older than 30 days. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you. Learn more about <ph name="BEGIN_LINK">&lt;a href="$1" target="_blank"&gt;</ph>managing your ad privacy in Thorium.<ph name="END_LINK">&lt;/a&gt;</ph>
   </message>
   <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_LEARN_MORE_A11Y_LABEL" desc="Text read by screen readers to help users distinguish this 'Learn more' link from others that might get added to this page.">
     Learn more about site-suggested ads
@@ -3970,6 +4005,24 @@
     Cancel
   </message>
 
+  <!-- Site Settings - Storage Access Page -->
+  <!-- TODO(https://crbug.com/1433644): Replace with the final SAA strings.  -->
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_DESCRIPTION" translateable="false" desc="It explains that an embedded site can request access to its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab).">
+    Sites you visit can embed content from other sites, for example images, ads, and text. These other sites can ask for permission to use info they’ve saved about you as you browse the site.
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED" translateable="false" desc="It explains that an embedded site can request access to its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab).">
+    Sites can ask to use info they’ve saved about you
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED" translateable="false" desc="It explains that an embedded site is blocked from accessing its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
+    Sites are blocked from asking you to use info they’ve saved about you
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED_EXCEPTIONS" translateable="false" desc="It explains that an embedded site is allowed to access its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
+    Allowed to access info they've about you while embedded in another site
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED_EXCEPTIONS" translateable="false" desc="It explains that an embedded site is blocked from accessing its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
+    Not allowed to access info they've about you while embedded in another site
+  </message>
+
   <message name="IDS_SETTINGS_NO_BLUETOOTH_DEVICES_FOUND" desc="Explanation for not showing Bluetooth devices in site settings.">
     No Bluetooth devices found
   </message>
@@ -3996,6 +4049,9 @@
   </message>
   <message name="IDS_SETTINGS_ADD_SITE_TITLE" desc="Title for the Add Site dialog">
     Add a site
+  </message>
+  <message name="IDS_SETTINGS_ADD_SITES_TITLE" desc="Title for the Add Sites dialog">
+    Add sites
   </message>
   <message name="IDS_SETTINGS_EDIT_SITE_TITLE" desc="Title for the Edit Site dialog">
     Edit site

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <!-- Settings-specific strings shared by Browser and ThoriumOS settings -->
 <grit-part>
   <!-- All subpages -->
@@ -96,10 +95,13 @@
     Default
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_LANGUAGE" desc="Name of the language setting for the caption text.">
-    Caption language
+    Preferred caption language
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_MANAGE_LANGUAGES_TITLE" desc="Name of the caption settings section for managing language packs.">
     Manage languages
+  </message>
+  <message name="IDS_SETTINGS_CAPTIONS_MANAGE_LANGUAGES_SUBTITLE" desc="Subtitle for the caption settings section for managing language packs.">
+    Add and remove languages to caption
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_LIVE_TRANSLATE_TARGET_LANGUAGE" desc="Description of the target language setting for the Live Translate feature.">
     Translate to
@@ -420,6 +422,9 @@
   <!-- About Subpage-->
   <message name="IDS_SETTINGS_ABOUT_UPGRADE_CHECK_STARTED" desc="Status label: About to start checking for updates">
     Checking for updates
+  </message>
+  <message name="IDS_SETTINGS_UPDATE_TO_ROLLBACK_VERSION_DISALLOWED" desc="Status label: After a consumer rollback, updating to the previously installed version just rolledback from is disallowed (ThoriumOS/ThoriumOS)">
+    You reverted to a previous version of ThoriumOS. To get updates, wait until the next version is available.
   </message>
 
   <if expr="chromeos_ash">

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <!-- Settings-specific Thorium strings (included from chromium_strings.grd). -->
 <grit-part>
   <!-- Shared across multiple page -->
@@ -9,12 +8,24 @@
     </message>
   </if>
   <!-- About Page -->
-  <message name="IDS_SETTINGS_ABOUT_PROGRAM" desc="Menu title for the About Thorium page.">
-    About Thorium
-  </message>
-  <message name="IDS_SETTINGS_GET_HELP_USING_CHROME" desc="Text of the button which takes the user to the Thorium help page.">
-    Get help with Thorium
-  </message>
+  <if expr="_is_chrome_for_testing_branded">
+    <then>
+      <message name="IDS_SETTINGS_ABOUT_PROGRAM" desc="Menu title for the About Thorium for Testing page.">
+        About Thorium for Testing
+      </message>
+      <message name="IDS_SETTINGS_GET_HELP_USING_CHROME" desc="Text of the button which takes the user to the Thorium for Testing help page.">
+        Get help with Thorium for Testing
+      </message>
+    </then>
+    <else>
+      <message name="IDS_SETTINGS_ABOUT_PROGRAM" desc="Menu title for the About Thorium page.">
+        About Thorium
+      </message>
+      <message name="IDS_SETTINGS_GET_HELP_USING_CHROME" desc="Text of the button which takes the user to the Thorium help page.">
+        Get help with Thorium
+      </message>
+    </else>
+  </if>
   <if expr="not chromeos_ash">
     <message name="IDS_SETTINGS_UPGRADE_UPDATING" desc="Status label: Updating Thorium">
       Updating Thorium
@@ -89,9 +100,18 @@
     <message name="IDS_SETTINGS_DEFAULT_BROWSER_ERROR" desc="The text displayed when Thorium cannot determine or set the default browser">
       Thorium cannot determine or set the default browser
     </message>
-    <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium is installed in side-by-side mode, which does not support setting as the default browser.">
-      This is a secondary installation of Thorium, and cannot be made your default browser.
-    </message>
+    <if expr="_is_chrome_for_testing_branded">
+      <then>
+        <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium for Testing is installed in side-by-side mode, which does not support setting as the default browser.">
+          Google Thorium for Testing cannot be made your default browser.
+        </message>
+      </then>
+      <else>
+        <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium is installed in side-by-side mode, which does not support setting as the default browser.">
+          This is a secondary installation of Thorium, and cannot be made your default browser.
+        </message>
+      </else>
+    </if>
   </if>
 
   <!-- Privacy Page -->
@@ -274,9 +294,6 @@
   <!-- Performance Page -->
   <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_SETTING_DESCRIPTION" desc="Description for the memory saver mode setting">
     When on, Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
-  </message>
-  <message name="IDS_SETTINGS_PERFORMANCE_HIGH_EFFICIENCY_MODE_HEURISTICS_LABEL" desc="Label for the memory saver mode to discard tabs based on a set of heuristics" translateable="false">
-    Thorium decides when a tab becomes inactive
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the energy saver mode setting">
     When on, Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.

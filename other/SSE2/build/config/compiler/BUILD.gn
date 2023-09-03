@@ -279,6 +279,7 @@ config("compiler") {
   ldflags = []
   defines = []
   configs = []
+  rustflags = []
 
   # System-specific flags. If your compiler flags apply to one of the
   # categories here, add it to the associated file to keep this shared config
@@ -457,9 +458,11 @@ config("compiler") {
           "-fno-unwind-tables",
           "-fno-asynchronous-unwind-tables",
         ]
+        rustflags += [ "-Cforce-unwind-tables=no" ]
         defines += [ "NO_UNWIND_TABLES" ]
       } else {
         cflags += [ "-funwind-tables" ]
+        rustflags += [ "-Cforce-unwind-tables=yes" ]
       }
     }
   }
@@ -781,8 +784,12 @@ config("compiler") {
       cflags += [ "-fwhole-program-vtables" ]
 
       # whole-program-vtables implies -fsplit-lto-unit, and Rust needs to match
-      # behaviour.
-      rustflags += [ "-Zsplit-lto-unit" ]
+      # behaviour. Rust needs to know the linker will be doing LTO in this case
+      # or it rejects the Zsplit-lto-unit flag.
+      rustflags += [
+        "-Zsplit-lto-unit",
+        "-Clinker-plugin-lto=yes",
+      ]
 
       if (!is_win) {
         ldflags += [ "-fwhole-program-vtables" ]
@@ -971,11 +978,6 @@ config("compiler") {
     # to compile dylibs on Android, such as for constructing unit test APKs.
     "-Cdefault-linker-libraries",
 
-    # Require `unsafe` blocks even in `unsafe` fns. This is intended to become
-    # an error by default eventually; see
-    # https://github.com/rust-lang/rust/issues/71668
-    "-Dunsafe_op_in_unsafe_fn",
-
     # To make Rust .d files compatible with ninja
     "-Zdep-info-omit-d-target",
 
@@ -1016,6 +1018,18 @@ config("compiler") {
       "-Cpanic=abort",
       "-Zpanic_abort_tests",
     ]
+  }
+
+  # Normally, this would be defined in the `runtime_library` config but NaCl
+  # saigo libc++ does not use the custom hermetic libc++. Unfortunately, there
+  # isn't really a better config to add this define for the define to
+  # consistently apply in both Chromium and non-Chromium code *and* non-NaCl
+  # and NaCl code.
+  #
+  # TODO(https://crbug.com/702997): Move this back to the `runtime_library`
+  # config when NaCl is removed.
+  if (use_safe_libcxx) {
+    defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
   }
 }
 
@@ -1081,7 +1095,7 @@ config("thinlto_optimize_max") {
 # tweak code generation for a particular CPU do not belong here!
 # See "compiler_codegen", below.
 config("compiler_cpu_abi") {
-  cflags = [ "-O3", ]
+  cflags = []
   ldflags = []
   defines = []
 
@@ -1608,6 +1622,16 @@ config("runtime_library") {
     configs += [ "//build/config/c++:runtime_library" ]
   }
 
+  # Rust and C++ both provide intrinsics for LLVM to call for math operations. We
+  # want to use the C++ intrinsics, not the ones in the Rust compiler_builtins
+  # library. The Rust symbols are marked as weak, so that they can be replaced by
+  # the C++ symbols. This config ensures the C++ symbols exist and are strong in
+  # order to cause that replacement to occur by explicitly linking in clang's
+  # compiler-rt library.
+  if (is_clang && toolchain_has_rust) {
+    configs += [ "//build/config/clang:compiler_builtins" ]
+  }
+
   # TODO(crbug.com/830987): Come up with a better name for is POSIX + Fuchsia
   # configuration.
   if (is_posix || is_fuchsia) {
@@ -1779,9 +1803,21 @@ config("default_warnings") {
           # TODO(crbug.com/1412713) Evaluate and possibly enable.
           "-Wno-deprecated-this-capture",
         ]
+
+        if (llvm_force_head_revision) {
+          # TODO(https://crbug.com/1448905): Evaluate and possibly enable.
+          cflags += [ "-Wno-builtin-macro-redefined" ]
+        }
       }
     }
   }
+
+  # Rust warnings
+
+  # Require `unsafe` blocks even in `unsafe` fns. This is intended to become
+  # an error by default eventually; see
+  # https://github.com/rust-lang/rust/issues/71668
+  rustflags = [ "-Dunsafe_op_in_unsafe_fn" ]
 }
 
 # prevent_unsafe_narrowing ----------------------------------------------------
@@ -1990,7 +2026,7 @@ config("no_chromium_code") {
 config("noshadowing") {
   # This flag has to be disabled for nacl because the nacl compiler is too
   # strict about shadowing.
-  if (is_clang && (!is_nacl || is_nacl_saigo)) {
+  if (is_clang && (!is_nacl || is_nacl_saigo) && !llvm_force_head_revision) {
     cflags = [ "-Wshadow" ]
   }
 }
@@ -2909,10 +2945,22 @@ config("strip_debug") {
 }
 
 if (is_apple) {
-  # On Mac and iOS, this enables support for ARC (automatic ref-counting).
-  # See http://clang.llvm.org/docs/AutomaticReferenceCounting.html.
+  # On macOS and iOS, this enables support for ARC (automatic reference
+  # counting). See http://clang.llvm.org/docs/AutomaticReferenceCounting.html.
+  #
+  # -fobjc-arc enables ARC overall.
+  #
+  # ARC does not add exception handlers to pure Objective-C code, but does add
+  # them to Objective-C++ code with the rationale that C++ pervasively adds them
+  # in for exception safety. However, exceptions are banned in Chromium code for
+  # C++ and exceptions in Objective-C code are intended to be fatal, so
+  # -fno-objc-arc-exceptions is specified to disable these unwanted exception
+  # handlers.
   config("enable_arc") {
-    common_flags = [ "-fobjc-arc" ]
+    common_flags = [
+      "-fobjc-arc",
+      "-fno-objc-arc-exceptions",
+    ]
     cflags_objc = common_flags
     cflags_objcc = common_flags
   }
