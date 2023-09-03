@@ -55,6 +55,7 @@ typedef struct AACContext {
     int metadata_mode;
     AACENC_MetaData metaDataSetup;
     int delay_sent;
+    int frame_length;
 
     AudioFrameQueue afq;
 } AACContext;
@@ -78,6 +79,7 @@ static const AVOption aac_enc_options[] = {
     { "comp_profile", "The desired compression profile for AAC DRC", offsetof(AACContext, comp_profile), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 256, AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM },
     { "comp_target_ref", "Expected target reference level at decoder side in dB (for clipping prevention/limiter)", offsetof(AACContext, comp_target_ref), AV_OPT_TYPE_INT, { .i64 = 0.0 }, -31.75, 0, AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM },
     { "prog_ref", "The program reference level or dialog level in dB", offsetof(AACContext, prog_ref), AV_OPT_TYPE_INT, { .i64 = 0.0 }, -31.75, 0, AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM },
+    { "frame_length", "The desired frame length", offsetof(AACContext, frame_length), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, 1024, AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_ENCODING_PARAM },
     FF_AAC_PROFILE_OPTS
     { NULL }
 };
@@ -132,6 +134,44 @@ static int aac_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
+static void aac_encode_flush(AVCodecContext *avctx)
+{
+    AACContext *s = avctx->priv_data;
+    AACENC_BufDesc in_buf   = { 0 }, out_buf = { 0 };
+    AACENC_InArgs  in_args  = { 0 };
+    AACENC_OutArgs out_args;
+    int64_t pts, duration;
+    uint8_t dummy_in[1], dummy_out[1];
+    int in_buffer_identifiers[] = { IN_AUDIO_DATA, IN_METADATA_SETUP };
+    int in_buffer_element_sizes[] = { 2, sizeof(AACENC_MetaData) };
+    int in_buffer_sizes[] = { 0, sizeof(s->metaDataSetup) };
+    int out_buffer_identifier = OUT_BITSTREAM_DATA;
+    int out_buffer_size = sizeof(dummy_out), out_buffer_element_size = 1;
+    void* inBuffer[] = { dummy_in, &s->metaDataSetup };
+    void *out_ptr = dummy_out;
+    AACENC_ERROR err;
+
+    ff_af_queue_remove(&s->afq, s->afq.frame_count, &pts, &duration);
+
+    in_buf.bufs              = (void **)inBuffer;
+    in_buf.numBufs           = s->metadata_mode == 0 ? 1 : 2;
+    in_buf.bufferIdentifiers = in_buffer_identifiers;
+    in_buf.bufSizes          = in_buffer_sizes;
+    in_buf.bufElSizes        = in_buffer_element_sizes;
+
+    out_buf.numBufs           = 1;
+    out_buf.bufs              = &out_ptr;
+    out_buf.bufferIdentifiers = &out_buffer_identifier;
+    out_buf.bufSizes          = &out_buffer_size;
+    out_buf.bufElSizes        = &out_buffer_element_size;
+
+    err = aacEncEncode(s->handle, &in_buf, &out_buf, &in_args, &out_args);
+    if (err != AACENC_OK) {
+        av_log(avctx, AV_LOG_ERROR, "Unexpected error while flushing: %s\n",
+               aac_get_error(err));
+    }
+}
+
 static av_cold int aac_encode_init(AVCodecContext *avctx)
 {
     AACContext *s = avctx->priv_data;
@@ -161,6 +201,15 @@ static av_cold int aac_encode_init(AVCodecContext *avctx)
         if ((err = aacEncoder_SetParam(s->handle, AACENC_SBR_MODE,
                                        1)) != AACENC_OK) {
             av_log(avctx, AV_LOG_ERROR, "Unable to enable SBR for ELD: %s\n",
+                   aac_get_error(err));
+            goto error;
+        }
+    }
+
+    if (s->frame_length >= 0) {
+        if ((err = aacEncoder_SetParam(s->handle, AACENC_GRANULE_LENGTH,
+                                       s->frame_length)) != AACENC_OK) {
+            av_log(avctx, AV_LOG_ERROR, "Unable to set granule length: %s\n",
                    aac_get_error(err));
             goto error;
         }
@@ -561,11 +610,13 @@ const FFCodec ff_libfdk_aac_encoder = {
     .p.type                = AVMEDIA_TYPE_AUDIO,
     .p.id                  = AV_CODEC_ID_AAC,
     .p.capabilities        = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY |
+                             AV_CODEC_CAP_ENCODER_FLUSH |
                              AV_CODEC_CAP_SMALL_LAST_FRAME,
     .caps_internal         = FF_CODEC_CAP_NOT_INIT_THREADSAFE,
     .priv_data_size        = sizeof(AACContext),
     .init                  = aac_encode_init,
     FF_CODEC_ENCODE_CB(aac_encode_frame),
+    .flush                 = aac_encode_flush,
     .close                 = aac_encode_close,
     .p.sample_fmts         = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_S16,
                                                             AV_SAMPLE_FMT_NONE },

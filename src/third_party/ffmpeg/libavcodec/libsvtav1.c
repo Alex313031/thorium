@@ -170,7 +170,7 @@ static int config_enc_params(EbSvtAv1EncConfiguration *param,
         param->look_ahead_distance    = svt_enc->la_depth;
 #endif
 
-    if (svt_enc->enc_mode >= 0)
+    if (svt_enc->enc_mode >= -1)
         param->enc_mode             = svt_enc->enc_mode;
 
     if (avctx->bit_rate) {
@@ -250,7 +250,13 @@ static int config_enc_params(EbSvtAv1EncConfiguration *param,
         param->frame_rate_denominator = avctx->framerate.den;
     } else {
         param->frame_rate_numerator   = avctx->time_base.den;
-        param->frame_rate_denominator = avctx->time_base.num * avctx->ticks_per_frame;
+FF_DISABLE_DEPRECATION_WARNINGS
+        param->frame_rate_denominator = avctx->time_base.num
+#if FF_API_TICKS_PER_FRAME
+            * avctx->ticks_per_frame
+#endif
+            ;
+FF_ENABLE_DEPRECATION_WARNINGS
     }
 
     /* 2 = IDR, closed GOP, 1 = CRA, open GOP */
@@ -593,7 +599,7 @@ static const AVOption options[] = {
         { "high", NULL, 0, AV_OPT_TYPE_CONST, { .i64 = 1 }, 0, 0, VE, "tier" },
 #endif
     { "preset", "Encoding preset",
-      OFFSET(enc_mode), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, MAX_ENC_PRESET, VE },
+      OFFSET(enc_mode), AV_OPT_TYPE_INT, { .i64 = -2 }, -2, MAX_ENC_PRESET, VE },
 
     FF_AV1_PROFILE_OPTS
 

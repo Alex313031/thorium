@@ -319,10 +319,49 @@ int ff_AMediaCodecProfile_getProfileFromAVCodecContext(AVCodecContext *avctx)
     static const int HEVCProfileMain10HDR10 = 0x1000;
     static const int HEVCProfileMain10HDR10Plus = 0x2000;
 
+    static const int VP9Profile0 = 0x01;
+    static const int VP9Profile1 = 0x02;
+    static const int VP9Profile2 = 0x04;
+    static const int VP9Profile3 = 0x08;
+    static const int VP9Profile2HDR = 0x1000;
+    static const int VP9Profile3HDR = 0x2000;
+    static const int VP9Profile2HDR10Plus = 0x4000;
+    static const int VP9Profile3HDR10Plus = 0x8000;
+
+    static const int MPEG4ProfileSimple           = 0x01;
+    static const int MPEG4ProfileSimpleScalable   = 0x02;
+    static const int MPEG4ProfileCore             = 0x04;
+    static const int MPEG4ProfileMain             = 0x08;
+    static const int MPEG4ProfileNbit             = 0x10;
+    static const int MPEG4ProfileScalableTexture  = 0x20;
+    static const int MPEG4ProfileSimpleFBA        = 0x80;
+    static const int MPEG4ProfileSimpleFace       = 0x40;
+    static const int MPEG4ProfileBasicAnimated    = 0x100;
+    static const int MPEG4ProfileHybrid           = 0x200;
+    static const int MPEG4ProfileAdvancedRealTime = 0x400;
+    static const int MPEG4ProfileCoreScalable     = 0x800;
+    static const int MPEG4ProfileAdvancedCoding   = 0x1000;
+    static const int MPEG4ProfileAdvancedCore     = 0x2000;
+    static const int MPEG4ProfileAdvancedScalable = 0x4000;
+    static const int MPEG4ProfileAdvancedSimple   = 0x8000;
+
+
+    static const int AV1ProfileMain8  = 0x1;
+    static const int AV1ProfileMain10 = 0x2;
+    static const int AV1ProfileMain10HDR10     = 0x1000;
+    static const int AV1ProfileMain10HDR10Plus = 0x2000;
+
     // Unused yet.
     (void)AVCProfileConstrainedHigh;
     (void)HEVCProfileMain10HDR10;
     (void)HEVCProfileMain10HDR10Plus;
+    (void)VP9Profile2HDR;
+    (void)VP9Profile3HDR;
+    (void)VP9Profile2HDR10Plus;
+    (void)VP9Profile3HDR10Plus;
+    (void)AV1ProfileMain10;
+    (void)AV1ProfileMain10HDR10;
+    (void)AV1ProfileMain10HDR10Plus;
 
     if (avctx->codec_id == AV_CODEC_ID_H264) {
         switch(avctx->profile) {
@@ -356,6 +395,65 @@ int ff_AMediaCodecProfile_getProfileFromAVCodecContext(AVCodecContext *avctx)
             return HEVCProfileMainStill;
         case FF_PROFILE_HEVC_MAIN_10:
             return HEVCProfileMain10;
+        }
+    } else if (avctx->codec_id == AV_CODEC_ID_VP9) {
+        switch (avctx->profile) {
+        case FF_PROFILE_VP9_0:
+            return VP9Profile0;
+        case FF_PROFILE_VP9_1:
+            return VP9Profile1;
+        case FF_PROFILE_VP9_2:
+            return VP9Profile2;
+         case FF_PROFILE_VP9_3:
+            return VP9Profile3;
+        }
+    } else if(avctx->codec_id == AV_CODEC_ID_MPEG4) {
+        switch (avctx->profile)
+        {
+        case FF_PROFILE_MPEG4_SIMPLE:
+            return MPEG4ProfileSimple;
+        case FF_PROFILE_MPEG4_SIMPLE_SCALABLE:
+            return MPEG4ProfileSimpleScalable;
+        case FF_PROFILE_MPEG4_CORE:
+            return MPEG4ProfileCore;
+        case FF_PROFILE_MPEG4_MAIN:
+            return MPEG4ProfileMain;
+        case FF_PROFILE_MPEG4_N_BIT:
+            return MPEG4ProfileNbit;
+        case FF_PROFILE_MPEG4_SCALABLE_TEXTURE:
+            return MPEG4ProfileScalableTexture;
+        case FF_PROFILE_MPEG4_SIMPLE_FACE_ANIMATION:
+            return MPEG4ProfileSimpleFBA;
+        case FF_PROFILE_MPEG4_BASIC_ANIMATED_TEXTURE:
+            return MPEG4ProfileBasicAnimated;
+        case FF_PROFILE_MPEG4_HYBRID:
+            return MPEG4ProfileHybrid;
+        case FF_PROFILE_MPEG4_ADVANCED_REAL_TIME:
+            return MPEG4ProfileAdvancedRealTime;
+        case FF_PROFILE_MPEG4_CORE_SCALABLE:
+            return MPEG4ProfileCoreScalable;
+        case FF_PROFILE_MPEG4_ADVANCED_CODING:
+            return MPEG4ProfileAdvancedCoding;
+        case FF_PROFILE_MPEG4_ADVANCED_CORE:
+            return MPEG4ProfileAdvancedCore;
+        case FF_PROFILE_MPEG4_ADVANCED_SCALABLE_TEXTURE:
+            return MPEG4ProfileAdvancedScalable;
+        case FF_PROFILE_MPEG4_ADVANCED_SIMPLE:
+            return MPEG4ProfileAdvancedSimple;
+        case FF_PROFILE_MPEG4_SIMPLE_STUDIO:
+            // Studio profiles are not supported by mediacodec.
+        default:
+            break;
+        }
+    } else if(avctx->codec_id == AV_CODEC_ID_AV1) {
+        switch (avctx->profile)
+        {
+        case FF_PROFILE_AV1_MAIN:
+            return AV1ProfileMain8;
+        case FF_PROFILE_AV1_HIGH:
+        case FF_PROFILE_AV1_PROFESSIONAL:
+        default:
+            break;
         }
     }
 

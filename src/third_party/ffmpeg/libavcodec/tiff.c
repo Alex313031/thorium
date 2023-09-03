@@ -1036,7 +1036,7 @@ static int dng_decode_tiles(AVCodecContext *avctx, AVFrame *frame,
 
     /* Frame is ready to be output */
     frame->pict_type = AV_PICTURE_TYPE_I;
-    frame->key_frame = 1;
+    frame->flags |= AV_FRAME_FLAG_KEY;
 
     return avpkt->size;
 }
@@ -1451,7 +1451,7 @@ static int tiff_decode_tag(TiffContext *s, AVFrame *frame)
         break;
     case TIFF_GRAY_RESPONSE_CURVE:
     case DNG_LINEARIZATION_TABLE:
-        if (count > FF_ARRAY_ELEMS(s->dng_lut))
+        if (count < 1 || count > FF_ARRAY_ELEMS(s->dng_lut))
             return AVERROR_INVALIDDATA;
         for (int i = 0; i < count; i++)
             s->dng_lut[i] = ff_tget(&s->gb, type, s->le);
@@ -2379,6 +2379,7 @@ again:
         }
     }
 
+    p->flags |= AV_FRAME_FLAG_KEY;
     *got_frame = 1;
 
     return avpkt->size;

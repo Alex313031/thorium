@@ -1571,7 +1571,13 @@ static av_cold int nvenc_setup_encoder(AVCodecContext *avctx)
         ctx->init_encode_params.frameRateDen = avctx->framerate.den;
     } else {
         ctx->init_encode_params.frameRateNum = avctx->time_base.den;
-        ctx->init_encode_params.frameRateDen = avctx->time_base.num * avctx->ticks_per_frame;
+FF_DISABLE_DEPRECATION_WARNINGS
+        ctx->init_encode_params.frameRateDen = avctx->time_base.num
+#if FF_API_TICKS_PER_FRAME
+            * avctx->ticks_per_frame
+#endif
+            ;
+FF_ENABLE_DEPRECATION_WARNINGS
     }
 
     ctx->init_encode_params.enableEncodeAsync = 0;
@@ -2266,7 +2272,14 @@ static int nvenc_set_timestamp(AVCodecContext *avctx,
     dts = reorder_queue_dequeue(ctx->reorder_queue, avctx, pkt);
 
     if (avctx->codec_descriptor->props & AV_CODEC_PROP_REORDER) {
-        pkt->dts = dts - FFMAX(ctx->encode_config.frameIntervalP - 1, 0) * FFMAX(avctx->ticks_per_frame, 1);
+FF_DISABLE_DEPRECATION_WARNINGS
+        pkt->dts = dts -
+            FFMAX(ctx->encode_config.frameIntervalP - 1, 0)
+#if FF_API_TICKS_PER_FRAME
+            * FFMAX(avctx->ticks_per_frame, 1)
+#endif
+            * FFMAX(avctx->time_base.num, 1);
+FF_ENABLE_DEPRECATION_WARNINGS
     } else {
         pkt->dts = pkt->pts;
     }
@@ -2633,7 +2646,7 @@ static int nvenc_send_frame(AVCodecContext *avctx, const AVFrame *frame)
         pic_params.outputBitstream = in_surf->output_surface;
 
         if (avctx->flags & AV_CODEC_FLAG_INTERLACED_DCT) {
-            if (frame->top_field_first)
+            if (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST)
                 pic_params.pictureStruct = NV_ENC_PIC_STRUCT_FIELD_TOP_BOTTOM;
             else
                 pic_params.pictureStruct = NV_ENC_PIC_STRUCT_FIELD_BOTTOM_TOP;

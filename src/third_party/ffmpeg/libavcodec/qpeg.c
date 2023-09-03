@@ -297,14 +297,24 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *p,
     }
 
     /* make the palette available on the way out */
-    p->palette_has_changed = ff_copy_palette(a->pal, avpkt, avctx);
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
+    p->palette_has_changed =
+#endif
+    ff_copy_palette(a->pal, avpkt, avctx);
+#if FF_API_PALETTE_HAS_CHANGED
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     memcpy(p->data[1], a->pal, AVPALETTE_SIZE);
 
     av_frame_unref(ref);
     if ((ret = av_frame_ref(ref, p)) < 0)
         return ret;
 
-    p->key_frame = intra;
+    if (intra)
+        p->flags |= AV_FRAME_FLAG_KEY;
+    else
+        p->flags &= ~AV_FRAME_FLAG_KEY;
     p->pict_type = intra ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_P;
 
     *got_frame      = 1;

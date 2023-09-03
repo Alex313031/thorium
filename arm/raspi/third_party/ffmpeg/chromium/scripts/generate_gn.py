@@ -700,11 +700,11 @@ LICENSE_EXCEPTIONS = [
 
 # Regex to find lines matching #include "some_dir\some_file.h".
 # Also works for assembly files that use %include.
-INCLUDE_REGEX = re.compile('[#%]\s*include\s+"([^"]+)"')
+INCLUDE_REGEX = re.compile('^\s*[#%]\s*include\s+"([^"]+)"')
 
 # Regex to find whacky includes that we might be overlooking (e.g. using macros
 # or defines).
-EXOTIC_INCLUDE_REGEX = re.compile('[#%]\s*include\s+[^"<\s].+')
+EXOTIC_INCLUDE_REGEX = re.compile('^\s*[#%]\s*include\s+[^"<\s].+')
 
 # Prefix added to renamed files as part of
 RENAME_PREFIX = 'autorename'
@@ -782,7 +782,7 @@ def GetIncludedSources(file_path, source_dir, include_set, scan_only=False):
     elif include_file_path in MUST_BE_MISSING_INCLUDE_FILES:
       continue
     else:
-      exit('Failed to find file ' + include_file_path)
+      exit('Failed to find file ' + include_file_path + " in " + file_path)
 
     # At this point we've found the file. Check if its in our ignore list which
     # means that the list should be updated to no longer mention this file.

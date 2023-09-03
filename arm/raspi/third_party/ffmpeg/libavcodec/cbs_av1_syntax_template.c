@@ -176,7 +176,7 @@ static int FUNC(decoder_model_info)(CodedBitstreamContext *ctx, RWContext *rw,
     int err;
 
     fb(5, buffer_delay_length_minus_1);
-    fb(32, num_units_in_decoding_tick);
+    fc(32, num_units_in_decoding_tick, 1, MAX_UINT_BITS(32));
     fb(5,  buffer_removal_time_length_minus_1);
     fb(5,  frame_presentation_time_length_minus_1);
 
@@ -1843,6 +1843,8 @@ static int FUNC(metadata_hdr_cll)(CodedBitstreamContext *ctx, RWContext *rw,
 {
     int err;
 
+    HEADER("HDR CLL Metadata");
+
     fb(16, max_cll);
     fb(16, max_fall);
 
@@ -1853,6 +1855,8 @@ static int FUNC(metadata_hdr_mdcv)(CodedBitstreamContext *ctx, RWContext *rw,
                                    AV1RawMetadataHDRMDCV *current)
 {
     int err, i;
+
+    HEADER("HDR MDCV Metadata");
 
     for (i = 0; i < 3; i++) {
         fbs(16, primary_chromaticity_x[i], 1, i);
@@ -1920,6 +1924,8 @@ static int FUNC(metadata_scalability)(CodedBitstreamContext *ctx, RWContext *rw,
 {
     int err;
 
+    HEADER("Scalability Metadata");
+
     fb(8, scalability_mode_idc);
 
     if (current->scalability_mode_idc == AV1_SCALABILITY_SS)
@@ -1933,6 +1939,8 @@ static int FUNC(metadata_itut_t35)(CodedBitstreamContext *ctx, RWContext *rw,
 {
     int err;
     size_t i;
+
+    HEADER("ITU-T T.35 Metadata");
 
     fb(8, itu_t_t35_country_code);
     if (current->itu_t_t35_country_code == 0xff)
@@ -1960,6 +1968,8 @@ static int FUNC(metadata_timecode)(CodedBitstreamContext *ctx, RWContext *rw,
                                    AV1RawMetadataTimecode *current)
 {
     int err;
+
+    HEADER("Timecode Metadata");
 
     fb(5, counting_type);
     flag(full_timestamp_flag);
@@ -1994,6 +2004,29 @@ static int FUNC(metadata_timecode)(CodedBitstreamContext *ctx, RWContext *rw,
     return 0;
 }
 
+static int FUNC(metadata_unknown)(CodedBitstreamContext *ctx, RWContext *rw,
+                                  AV1RawMetadataUnknown *current)
+{
+    int err;
+    size_t i;
+
+    HEADER("Unknown Metadata");
+
+#ifdef READ
+    current->payload_size = cbs_av1_get_payload_bytes_left(rw);
+
+    current->payload_ref = av_buffer_alloc(current->payload_size);
+    if (!current->payload_ref)
+        return AVERROR(ENOMEM);
+    current->payload = current->payload_ref->data;
+#endif
+
+    for (i = 0; i < current->payload_size; i++)
+        fbs(8, payload[i], 1, i);
+
+    return 0;
+}
+
 static int FUNC(metadata_obu)(CodedBitstreamContext *ctx, RWContext *rw,
                               AV1RawMetadata *current)
 {
@@ -2018,8 +2051,7 @@ static int FUNC(metadata_obu)(CodedBitstreamContext *ctx, RWContext *rw,
         CHECK(FUNC(metadata_timecode)(ctx, rw, &current->metadata.timecode));
         break;
     default:
-        // Unknown metadata type.
-        return AVERROR_PATCHWELCOME;
+        CHECK(FUNC(metadata_unknown)(ctx, rw, &current->metadata.unknown));
     }
 
     return 0;

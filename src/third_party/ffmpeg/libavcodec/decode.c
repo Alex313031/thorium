@@ -423,13 +423,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
         }
     }
 
-    if (avctx->codec->type == AVMEDIA_TYPE_AUDIO &&
-        !avci->showed_multi_packet_warning &&
-        ret >= 0 && ret != pkt->size && !(avctx->codec->capabilities & AV_CODEC_CAP_SUBFRAMES)) {
-        av_log(avctx, AV_LOG_WARNING, "Multiple frames in a packet.\n");
-        avci->showed_multi_packet_warning = 1;
-    }
-
     if (!got_frame)
         av_frame_unref(frame);
 
@@ -570,6 +563,19 @@ static int decode_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
     }
 
     if (!ret) {
+        if (avctx->codec_type != AVMEDIA_TYPE_VIDEO)
+            frame->flags |= AV_FRAME_FLAG_KEY;
+#if FF_API_FRAME_KEY
+FF_DISABLE_DEPRECATION_WARNINGS
+        frame->key_frame = !!(frame->flags & AV_FRAME_FLAG_KEY);
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
+#if FF_API_INTERLACED_FRAME
+FF_DISABLE_DEPRECATION_WARNINGS
+        frame->interlaced_frame = !!(frame->flags & AV_FRAME_FLAG_INTERLACED);
+        frame->top_field_first =  !!(frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST);
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
         frame->best_effort_timestamp = guess_correct_pts(avctx,
                                                          frame->pts,
                                                          frame->pkt_dts);

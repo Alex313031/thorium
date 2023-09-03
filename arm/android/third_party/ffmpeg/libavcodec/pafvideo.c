@@ -296,10 +296,10 @@ static int paf_video_decode(AVCodecContext *avctx, AVFrame *rframe,
     if (code & 0x20) {  // frame is keyframe
         memset(c->pic->data[1], 0, AVPALETTE_SIZE);
         c->current_frame  = 0;
-        c->pic->key_frame = 1;
+        c->pic->flags |= AV_FRAME_FLAG_KEY;
         c->pic->pict_type = AV_PICTURE_TYPE_I;
     } else {
-        c->pic->key_frame = 0;
+        c->pic->flags &= ~AV_FRAME_FLAG_KEY;
         c->pic->pict_type = AV_PICTURE_TYPE_P;
     }
 
@@ -327,7 +327,11 @@ static int paf_video_decode(AVCodecContext *avctx, AVFrame *rframe,
             b = b << 2 | b >> 4;
             *out++ = (0xFFU << 24) | (r << 16) | (g << 8) | b;
         }
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
         c->pic->palette_has_changed = 1;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     }
 
     c->dirty[c->current_frame] = 1;

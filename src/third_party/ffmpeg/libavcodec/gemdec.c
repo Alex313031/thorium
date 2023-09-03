@@ -180,8 +180,12 @@ static int gem_decode_frame(AVCodecContext *avctx, AVFrame *p,
         return ret;
 
     p->pict_type = AV_PICTURE_TYPE_I;
-    p->key_frame = 1;
+    p->flags |= AV_FRAME_FLAG_KEY;
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
     p->palette_has_changed = 1;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     palette = (uint32_t  *)p->data[1];
 
     if (tag == AV_RB32("STTT")) {

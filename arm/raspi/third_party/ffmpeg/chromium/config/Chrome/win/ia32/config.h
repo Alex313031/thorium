@@ -6,7 +6,7 @@
 #define CONFIG_THIS_YEAR 2023
 #define FFMPEG_DATADIR "/usr/local/share/ffmpeg"
 #define AVCONV_DATADIR "/usr/local/share/ffmpeg"
-#define CC_IDENT "clang version 17.0.0 (https://chromium.googlesource.com/a/external/github.com/llvm/llvm-project 547e3456660000a16fc5c2a2f819f1a2b5d35b5d)"
+#define CC_IDENT "clang version 17.0.0 (https://chromium.googlesource.com/a/external/github.com/llvm/llvm-project 3da83fbafef1689de1fc45c2c3fa3d258edda09d)"
 #define OS_NAME win32
 #define av_restrict restrict
 #define EXTERN_PREFIX "_"
@@ -345,6 +345,7 @@
 #define HAVE_BCRYPT 0
 #define HAVE_VAAPI_DRM 0
 #define HAVE_VAAPI_X11 0
+#define HAVE_VAAPI_WIN32 0
 #define HAVE_VDPAU_X11 0
 #define HAVE_PTHREADS 0
 #define HAVE_OS2THREADS 0

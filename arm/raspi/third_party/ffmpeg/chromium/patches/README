@@ -953,3 +953,18 @@ Affects:
     libavcodec/libx264.c
     libavutil/frame.h
 
+------------------------------------------------------------------
+commit 13156c083ffe746a0f5908778c6fc6d165217af0
+Author: Frank Liberato <liberato@chromium.org>
+Date:   Wed May 24 05:24:25 2023 +0000
+
+    Replace #include "" with #include <>
+
+    generate_gn.py assumes that "includes" can be found in the current
+    directory, while <includes> can be ignored.  Rather than try to
+    teach it how to search include paths, change the one instance in
+    ffmpeg of "stdint.h" to <stdint.h> .
+
+Affects:
+    libavcodec/vp8data.c
+

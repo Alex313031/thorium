@@ -79,6 +79,7 @@ const patches = [
     ffmpeg_gas_sources: [
       'libavcodec/aarch64/autorename_libavcodec_aarch64_hevcdsp_idct_neon.S',
       'libavcodec/aarch64/autorename_libavcodec_aarch64_hevcdsp_sao_neon.S',
+      'libavcodec/aarch64/hevcdsp_deblock_neon.S',
       'libavcodec/aarch64/hevcdsp_qpel_neon.S',
     ]
   },

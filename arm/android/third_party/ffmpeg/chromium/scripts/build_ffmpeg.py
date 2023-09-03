@@ -731,10 +731,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
     configure_flags['Common'].extend([
         # --optflags doesn't append multiple entries, so set all at once.
         '--optflags="-O3"',
-        '--extra-cflags=-mavx',
-        '--extra-cflags=-maes',
-        '--extra-cflags=-mpclmul',
-        '--extra-cflags=-O3',
         '--enable-decoder=theora,vp8',
         '--enable-parser=vp3,vp8',
     ])
@@ -748,10 +744,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       else:
         configure_flags['Common'].extend([
           '--enable-lto',
-          '--extra-cflags=-O3',
-          '--extra-cflags=-mavx',
-          '--extra-cflags=-maes',
-          '--extra-cflags=-mpclmul',
           '--arch=x86_64',
           '--target-os=linux',
         ])
@@ -1011,9 +1003,9 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
 
   # Google Chrome & ChromeOS specific configuration.
   configure_flags['Chrome'].extend([
-      '--enable-decoder=aac,h264,mp3,eac3,ac3,hevc,mpeg4,mpegvideo,mp2,mp1,flac',
-      '--enable-demuxer=aac,mp3,mov,dtshd,dts,avi,mpegvideo,m4v,h264,vc1,flac',
-      '--enable-parser=aac,h264,hevc,mpegaudio,mpeg4video,mpegvideo,ac3,h261,vc1,h263,flac',
+      '--enable-decoder=aac,h264,mp3,hevc',
+      '--enable-demuxer=aac,mp3',
+      '--enable-parser=aac,h264,hevc',
   ])
 
   # Google ChromeOS specific configuration.
@@ -1024,12 +1016,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-decoder=mpeg4',
       '--enable-parser=h263,mpeg4video',
       '--enable-demuxer=avi',
-      # Enable playing Android 3gp files.
-      '--enable-demuxer=amr',
-      '--enable-decoder=amrnb,amrwb',
-      # Wav files for playing phone messages.
-      '--enable-decoder=gsm_ms',
-      '--enable-parser=gsm',
   ])
 
   configure_flags['ChromeAndroid'].extend([

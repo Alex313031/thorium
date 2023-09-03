@@ -379,7 +379,7 @@ static int cinepak_decode (CinepakContext *s)
 
     num_strips = FFMIN(num_strips, MAX_STRIPS);
 
-    s->frame->key_frame = 0;
+    s->frame->flags &= ~AV_FRAME_FLAG_KEY;
 
     for (i=0; i < num_strips; i++) {
         if ((s->data + 12) > eod)
@@ -395,7 +395,7 @@ static int cinepak_decode (CinepakContext *s)
         s->strips[i].x2 = AV_RB16 (&s->data[10]);
 
         if (s->strips[i].id == 0x10)
-            s->frame->key_frame = 1;
+            s->frame->flags |= AV_FRAME_FLAG_KEY;
 
         strip_size = AV_RB24 (&s->data[1]) - 12;
         if (strip_size < 0)
@@ -476,7 +476,14 @@ static int cinepak_decode_frame(AVCodecContext *avctx, AVFrame *rframe,
         return ret;
 
     if (s->palette_video) {
-        s->frame->palette_has_changed = ff_copy_palette(s->pal, avpkt, avctx);
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
+        s->frame->palette_has_changed =
+#endif
+        ff_copy_palette(s->pal, avpkt, avctx);
+#if FF_API_PALETTE_HAS_CHANGED
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     }
 
     if ((ret = cinepak_decode(s)) < 0) {

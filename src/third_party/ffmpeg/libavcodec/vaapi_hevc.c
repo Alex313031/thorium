@@ -60,10 +60,10 @@ static void fill_vaapi_pic(VAPictureHEVC *va_pic, const HEVCFrame *pic, int rps_
     if (pic->flags & HEVC_FRAME_FLAG_LONG_REF)
         va_pic->flags |= VA_PICTURE_HEVC_LONG_TERM_REFERENCE;
 
-    if (pic->frame->interlaced_frame) {
+    if (pic->frame->flags & AV_FRAME_FLAG_INTERLACED) {
         va_pic->flags |= VA_PICTURE_HEVC_FIELD_PIC;
 
-        if (!pic->frame->top_field_first)
+        if (!(pic->frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST))
             va_pic->flags |= VA_PICTURE_HEVC_BOTTOM_FIELD;
     }
 }
@@ -259,7 +259,7 @@ static int vaapi_hevc_start_frame(AVCodecContext          *avctx,
     pre_palette_size = pps->pps_palette_predictor_initializers_present_flag ?
                        pps->pps_num_palette_predictor_initializers :
                        (sps->sps_palette_predictor_initializers_present_flag ?
-                       sps->sps_num_palette_predictor_initializers_minus1 + 1 :
+                       sps->sps_num_palette_predictor_initializers :
                        0);
 
     if (avctx->profile == FF_PROFILE_HEVC_SCC) {

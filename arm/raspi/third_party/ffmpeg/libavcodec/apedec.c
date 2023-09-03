@@ -944,7 +944,7 @@ static void long_filter_high_3800(int32_t *buffer, int order, int shift, int len
 {
     int i, j;
     int32_t dotprod, sign;
-    int32_t coeffs[256], delay[256];
+    int32_t coeffs[256], delay[256+256], *delayp = delay;
 
     if (order >= length)
         return;
@@ -955,14 +955,28 @@ static void long_filter_high_3800(int32_t *buffer, int order, int shift, int len
     for (i = order; i < length; i++) {
         dotprod = 0;
         sign = APESIGN(buffer[i]);
-        for (j = 0; j < order; j++) {
-            dotprod += delay[j] * (unsigned)coeffs[j];
-            coeffs[j] += ((delay[j] >> 31) | 1) * sign;
+        if (sign == 1) {
+            for (j = 0; j < order; j++) {
+                dotprod += delayp[j] * (unsigned)coeffs[j];
+                coeffs[j] += (delayp[j] >> 31) | 1;
+            }
+        } else if (sign == -1) {
+            for (j = 0; j < order; j++) {
+                dotprod += delayp[j] * (unsigned)coeffs[j];
+                coeffs[j] -= (delayp[j] >> 31) | 1;
+            }
+        } else {
+            for (j = 0; j < order; j++) {
+                dotprod += delayp[j] * (unsigned)coeffs[j];
+            }
         }
         buffer[i] -= (unsigned)(dotprod >> shift);
-        for (j = 0; j < order - 1; j++)
-            delay[j] = delay[j + 1];
-        delay[order - 1] = buffer[i];
+        delayp ++;
+        delayp[order - 1] = buffer[i];
+        if (delayp - delay == 256) {
+            memcpy(delay, delayp, sizeof(*delay)*256);
+            delayp = delay;
+        }
     }
 }
 
@@ -1666,7 +1680,11 @@ const FFCodec ff_ape_decoder = {
     .init           = ape_decode_init,
     .close          = ape_decode_close,
     FF_CODEC_DECODE_CB(ape_decode_frame),
-    .p.capabilities = AV_CODEC_CAP_SUBFRAMES | AV_CODEC_CAP_DELAY |
+    .p.capabilities =
+#if FF_API_SUBFRAMES
+                      AV_CODEC_CAP_SUBFRAMES |
+#endif
+                      AV_CODEC_CAP_DELAY |
                       AV_CODEC_CAP_DR1,
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .flush          = ape_flush,

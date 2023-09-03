@@ -773,11 +773,11 @@ static int hls_slice_header(HEVCContext *s)
                 sh->nb_refs[L1] = s->ps.pps->num_ref_idx_l1_default_active;
 
             if (get_bits1(gb)) { // num_ref_idx_active_override_flag
-                sh->nb_refs[L0] = get_ue_golomb_long(gb) + 1;
+                sh->nb_refs[L0] = get_ue_golomb_31(gb) + 1;
                 if (sh->slice_type == HEVC_SLICE_B)
-                    sh->nb_refs[L1] = get_ue_golomb_long(gb) + 1;
+                    sh->nb_refs[L1] = get_ue_golomb_31(gb) + 1;
             }
-            if (sh->nb_refs[L0] > HEVC_MAX_REFS || sh->nb_refs[L1] > HEVC_MAX_REFS) {
+            if (sh->nb_refs[L0] >= HEVC_MAX_REFS || sh->nb_refs[L1] >= HEVC_MAX_REFS) {
                 av_log(s->avctx, AV_LOG_ERROR, "Too many refs: %d/%d.\n",
                        sh->nb_refs[L0], sh->nb_refs[L1]);
                 return AVERROR_INVALIDDATA;
@@ -2497,7 +2497,7 @@ static void hls_decode_neighbour(HEVCLocalContext *lc, int x_ctb, int y_ctb,
     lc->ctb_up_left_flag = ((x_ctb > 0) && (y_ctb > 0)  && (ctb_addr_in_slice-1 >= s->ps.sps->ctb_width) && (s->ps.pps->tile_id[ctb_addr_ts] == s->ps.pps->tile_id[s->ps.pps->ctb_addr_rs_to_ts[ctb_addr_rs-1 - s->ps.sps->ctb_width]]));
 }
 
-static int hls_decode_entry(AVCodecContext *avctxt, void *isFilterThread)
+static int hls_decode_entry(AVCodecContext *avctxt, void *arg)
 {
     HEVCContext *s  = avctxt->priv_data;
     HEVCLocalContext *const lc = s->HEVClc;
@@ -2561,14 +2561,10 @@ static int hls_decode_entry(AVCodecContext *avctxt, void *isFilterThread)
 
 static int hls_slice_data(HEVCContext *s)
 {
-    int arg[2];
-    int ret[2];
+    int ret = 0;
 
-    arg[0] = 0;
-    arg[1] = 1;
-
-    s->avctx->execute(s->avctx, hls_decode_entry, arg, ret , 1, sizeof(int));
-    return ret[0];
+    s->avctx->execute(s->avctx, hls_decode_entry, NULL, &ret , 1, 0);
+    return ret;
 }
 static int hls_decode_entry_wpp(AVCodecContext *avctxt, void *hevc_lclist,
                                 int job, int self_id)
@@ -2914,7 +2910,10 @@ static int hevc_frame_start(HEVCContext *s)
         goto fail;
     }
 
-    s->ref->frame->key_frame = IS_IRAP(s);
+    if (IS_IRAP(s))
+        s->ref->frame->flags |= AV_FRAME_FLAG_KEY;
+    else
+        s->ref->frame->flags &= ~AV_FRAME_FLAG_KEY;
 
     s->ref->needs_fg = s->sei.common.film_grain_characteristics.present &&
         !(s->avctx->export_side_data & AV_CODEC_EXPORT_DATA_FILM_GRAIN) &&

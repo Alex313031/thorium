@@ -556,14 +556,22 @@ typedef struct AVCodecContext {
      */
     AVRational time_base;
 
+#if FF_API_TICKS_PER_FRAME
     /**
      * For some codecs, the time base is closer to the field rate than the frame rate.
      * Most notably, H.264 and MPEG-2 specify time_base as half of frame duration
      * if no telecine is used ...
      *
      * Set to time_base ticks per frame. Default 1, e.g., H.264/MPEG-2 set it to 2.
+     *
+     * @deprecated
+     * - decoding: Use AVCodecDescriptor.props & AV_CODEC_PROP_FIELDS
+     * - encoding: Set AVCodecContext.framerate instead
+     *
      */
+    attribute_deprecated
     int ticks_per_frame;
+#endif
 
     /**
      * Codec delay.
@@ -1016,8 +1024,11 @@ typedef struct AVCodecContext {
 
     /**
      * MPEG vs JPEG YUV range.
-     * - encoding: Set by user
-     * - decoding: Set by libavcodec
+     * - encoding: Set by user to override the default output color range value,
+     *   If not specified, libavcodec sets the color range depending on the
+     *   output format.
+     * - decoding: Set by libavcodec, can be set by the user to propagate the
+     *   color range to components reading from the decoder context.
      */
     enum AVColorRange color_range;
 

@@ -60,6 +60,12 @@ enum DVPackType {
  */
 #define DV_MAX_FRAME_SIZE 576000
 
+// LCM of video framerate numerators
+#define DV_TIMESCALE_VIDEO 60000
+
+// LCM of audio sample rates
+#define DV_TIMESCALE_AUDIO 14112000
+
 /**
  * maximum number of blocks per macroblock in any DV format
  */

@@ -280,7 +280,19 @@ void ff_msmpeg4_encode_picture_header(MpegEncContext * s)
 
 void ff_msmpeg4_encode_ext_header(MpegEncContext * s)
 {
-    unsigned fps = s->avctx->time_base.den / s->avctx->time_base.num / FFMAX(s->avctx->ticks_per_frame, 1);
+    unsigned fps;
+
+    if (s->avctx->framerate.num > 0 && s->avctx->framerate.den > 0)
+        fps = s->avctx->framerate.num / s->avctx->framerate.den;
+    else
+FF_DISABLE_DEPRECATION_WARNINGS
+        fps = s->avctx->time_base.den / s->avctx->time_base.num
+#if FF_API_TICKS_PER_FRAME
+            / FFMAX(s->avctx->ticks_per_frame, 1)
+#endif
+            ;
+FF_ENABLE_DEPRECATION_WARNINGS
+
     put_bits(&s->pb, 5, FFMIN(fps, 31)); //yes 29.97 -> 29
 
     put_bits(&s->pb, 11, FFMIN(s->bit_rate / 1024, 2047));

@@ -130,8 +130,10 @@ static av_cold int encode_init(AVCodecContext *avctx)
     if (ret)
         return ret;
 
-    ff_set_cmp(&s->mecc, s->mecc.me_cmp, s->avctx->me_cmp);
-    ff_set_cmp(&s->mecc, s->mecc.me_sub_cmp, s->avctx->me_sub_cmp);
+    ret  = ff_set_cmp(&s->mecc, s->mecc.me_cmp, s->avctx->me_cmp);
+    ret |= ff_set_cmp(&s->mecc, s->mecc.me_sub_cmp, s->avctx->me_sub_cmp);
+    if (ret < 0)
+        return AVERROR(EINVAL);
 
     s->input_picture = av_frame_alloc();
     if (!s->input_picture)
@@ -1761,7 +1763,7 @@ redo_frame:
                 ff_build_rac_states(c, (1LL<<32)/20, 256-8);
                 pic->pict_type= AV_PICTURE_TYPE_I;
                 s->keyframe=1;
-                s->current_picture->key_frame=1;
+                s->current_picture->flags |= AV_FRAME_FLAG_KEY;
                 goto redo_frame;
             }
 
@@ -1889,7 +1891,7 @@ redo_frame:
     }
 
     pkt->size = ff_rac_terminate(c, 0);
-    if (s->current_picture->key_frame)
+    if (s->current_picture->flags & AV_FRAME_FLAG_KEY)
         pkt->flags |= AV_PKT_FLAG_KEY;
     *got_packet = 1;
 

@@ -85,13 +85,14 @@ static av_cold int libkvazaar_init(AVCodecContext *avctx)
         cfg->framerate_num   = avctx->framerate.num;
         cfg->framerate_denom = avctx->framerate.den;
     } else {
-        if (avctx->ticks_per_frame > INT_MAX / avctx->time_base.num) {
-            av_log(avctx, AV_LOG_ERROR,
-                   "Could not set framerate for kvazaar: integer overflow\n");
-            return AVERROR(EINVAL);
-        }
         cfg->framerate_num   = avctx->time_base.den;
-        cfg->framerate_denom = avctx->time_base.num * avctx->ticks_per_frame;
+FF_DISABLE_DEPRECATION_WARNINGS
+        cfg->framerate_denom = avctx->time_base.num
+#if FF_API_TICKS_PER_FRAME
+            * avctx->ticks_per_frame
+#endif
+            ;
+FF_ENABLE_DEPRECATION_WARNINGS
     }
     cfg->target_bitrate = avctx->bit_rate;
     cfg->vui.sar_width  = avctx->sample_aspect_ratio.num;

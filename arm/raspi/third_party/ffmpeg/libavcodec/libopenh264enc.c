@@ -139,12 +139,13 @@ static av_cold int svc_encode_init(AVCodecContext *avctx)
     if (avctx->framerate.num > 0 && avctx->framerate.den > 0) {
         param.fMaxFrameRate = av_q2d(avctx->framerate);
     } else {
-        if (avctx->ticks_per_frame > INT_MAX / avctx->time_base.num) {
-            av_log(avctx, AV_LOG_ERROR,
-                   "Could not set framerate for libopenh264enc: integer overflow\n");
-            return AVERROR(EINVAL);
-        }
-        param.fMaxFrameRate = 1.0 / av_q2d(avctx->time_base) / FFMAX(avctx->ticks_per_frame, 1);
+FF_DISABLE_DEPRECATION_WARNINGS
+        param.fMaxFrameRate = 1.0 / av_q2d(avctx->time_base)
+#if FF_API_TICKS_PER_FRAME
+                                  / FFMAX(avctx->ticks_per_frame, 1)
+#endif
+                                  ;
+FF_ENABLE_DEPRECATION_WARNINGS
     }
     param.iPicWidth                  = avctx->width;
     param.iPicHeight                 = avctx->height;
@@ -311,15 +312,15 @@ static av_cold int svc_encode_init(AVCodecContext *avctx)
 
 #if OPENH264_VER_AT_LEAST(1, 6)
     param.sSpatialLayers[0].uiVideoFormat = VF_UNDEF;
+
     if (avctx->color_range != AVCOL_RANGE_UNSPECIFIED) {
-        param.sSpatialLayers[0].bVideoSignalTypePresent = true;
         param.sSpatialLayers[0].bFullRange = (avctx->color_range == AVCOL_RANGE_JPEG);
-    }
+    }  else if (avctx->pix_fmt == AV_PIX_FMT_YUVJ420P)
+        param.sSpatialLayers[0].bFullRange = 1;
 
     if (avctx->colorspace != AVCOL_SPC_UNSPECIFIED      ||
         avctx->color_primaries != AVCOL_PRI_UNSPECIFIED ||
         avctx->color_trc != AVCOL_TRC_UNSPECIFIED) {
-        param.sSpatialLayers[0].bVideoSignalTypePresent = true;
         param.sSpatialLayers[0].bColorDescriptionPresent = true;
     }
 
@@ -329,6 +330,9 @@ static av_cold int svc_encode_init(AVCodecContext *avctx)
         param.sSpatialLayers[0].uiColorPrimaries = avctx->color_primaries;
     if (avctx->color_trc != AVCOL_TRC_UNSPECIFIED)
         param.sSpatialLayers[0].uiTransferCharacteristics = avctx->color_trc;
+
+    param.sSpatialLayers[0].bVideoSignalTypePresent =
+        (param.sSpatialLayers[0].bFullRange || param.sSpatialLayers[0].bColorDescriptionPresent);
 #endif
 
     if ((*s->encoder)->InitializeExt(s->encoder, &param) != cmResultSuccess) {
@@ -443,6 +447,7 @@ const FFCodec ff_libopenh264_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP |
                       FF_CODEC_CAP_AUTO_THREADS,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P,
+                                                    AV_PIX_FMT_YUVJ420P,
                                                     AV_PIX_FMT_NONE },
     .defaults       = svc_enc_defaults,
     .p.priv_class   = &class,

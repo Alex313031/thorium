@@ -115,6 +115,7 @@ typedef struct {
 
     int width, height; ///< image width and height
     uint8_t cbps[4]; ///< bits per sample in particular components
+    uint8_t comp_remap[4];
     int chroma_shift[2];
     uint8_t planar;
     int ncomponents;
@@ -319,8 +320,8 @@ static int put_siz(Jpeg2000EncoderContext *s)
 
     for (i = 0; i < s->ncomponents; i++){ // Ssiz_i XRsiz_i, YRsiz_i
         bytestream_put_byte(&s->buf, s->cbps[i] - 1);
-        bytestream_put_byte(&s->buf, i?1<<s->chroma_shift[0]:1);
-        bytestream_put_byte(&s->buf, i?1<<s->chroma_shift[1]:1);
+        bytestream_put_byte(&s->buf, (i+1&2)?1<<s->chroma_shift[0]:1);
+        bytestream_put_byte(&s->buf, (i+1&2)?1<<s->chroma_shift[1]:1);
     }
     return 0;
 }
@@ -431,7 +432,7 @@ static void compute_rates(Jpeg2000EncoderContext* s)
             for (compno = 0; compno < s->ncomponents; compno++) {
                 int tilew = tile->comp[compno].coord[0][1] - tile->comp[compno].coord[0][0];
                 int tileh = tile->comp[compno].coord[1][1] - tile->comp[compno].coord[1][0];
-                int scale = (compno?1 << s->chroma_shift[0]:1) * (compno?1 << s->chroma_shift[1]:1);
+                int scale = ((compno+1&2)?1 << s->chroma_shift[0]:1) * ((compno+1&2)?1 << s->chroma_shift[1]:1);
                 for (layno = 0; layno < s->nlayers; layno++) {
                     if (s->layer_rates[layno] > 0) {
                         tile->layer_rates[layno] += (double)(tilew * tileh) * s->ncomponents * s->cbps[compno] /
@@ -483,7 +484,7 @@ static int init_tiles(Jpeg2000EncoderContext *s)
                 comp->coord[0][1] = comp->coord_o[0][1] = FFMIN((tilex+1)*s->tile_width, s->width);
                 comp->coord[1][0] = comp->coord_o[1][0] = tiley * s->tile_height;
                 comp->coord[1][1] = comp->coord_o[1][1] = FFMIN((tiley+1)*s->tile_height, s->height);
-                if (compno > 0)
+                if (compno + 1 & 2)
                     for (i = 0; i < 2; i++)
                         for (j = 0; j < 2; j++)
                             comp->coord[i][j] = comp->coord_o[i][j] = ff_jpeg2000_ceildivpow2(comp->coord[i][j], s->chroma_shift[i]);
@@ -492,8 +493,8 @@ static int init_tiles(Jpeg2000EncoderContext *s)
                                                 codsty,
                                                 qntsty,
                                                 s->cbps[compno],
-                                                compno?1<<s->chroma_shift[0]:1,
-                                                compno?1<<s->chroma_shift[1]:1,
+                                                (compno+1&2)?1<<s->chroma_shift[0]:1,
+                                                (compno+1&2)?1<<s->chroma_shift[1]:1,
                                                 s->avctx
                                                )) < 0)
                     return ret;
@@ -512,17 +513,18 @@ static int init_tiles(Jpeg2000EncoderContext *s)
             Jpeg2000Tile *tile = s->tile + tileno;                                                                          \
             if (s->planar){                                                                                                 \
                 for (compno = 0; compno < s->ncomponents; compno++){                                                        \
+                    int icompno = s->comp_remap[compno];                                                                    \
                     Jpeg2000Component *comp = tile->comp + compno;                                                          \
                     int *dst = comp->i_data;                                                                                \
                     int cbps = s->cbps[compno];                                                                             \
-                    line = (const PIXEL*)s->picture->data[compno]                                                           \
-                           + comp->coord[1][0] * (s->picture->linesize[compno] / sizeof(PIXEL))                             \
+                    line = (const PIXEL*)s->picture->data[icompno]                                                           \
+                           + comp->coord[1][0] * (s->picture->linesize[icompno] / sizeof(PIXEL))                             \
                            + comp->coord[0][0];                                                                             \
                     for (y = comp->coord[1][0]; y < comp->coord[1][1]; y++){                                                \
                         const PIXEL *ptr = line;                                                                            \
                         for (x = comp->coord[0][0]; x < comp->coord[0][1]; x++)                                             \
                             *dst++ = *ptr++ - (1 << (cbps - 1));                                                            \
-                        line += s->picture->linesize[compno] / sizeof(PIXEL);                                               \
+                        line += s->picture->linesize[icompno] / sizeof(PIXEL);                                               \
                     }                                                                                                       \
                 }                                                                                                           \
             } else{                                                                                                         \
@@ -721,11 +723,10 @@ static void encode_cblk(Jpeg2000EncoderContext *s, Jpeg2000T1Context *t1, Jpeg20
 
     if (max == 0){
         cblk->nonzerobits = 0;
-        bpno = 0;
     } else{
         cblk->nonzerobits = av_log2(max) + 1 - NMSEDEC_FRACBITS;
-        bpno = cblk->nonzerobits - 1;
     }
+    bpno = cblk->nonzerobits - 1;
 
     cblk->data[0] = 0;
     ff_mqc_initenc(&t1->mqc, cblk->data + 1);
@@ -1008,7 +1009,7 @@ static int encode_packets(Jpeg2000EncoderContext *s, Jpeg2000Tile *tile, int til
                     Jpeg2000Component *comp     = tile->comp + compno;
                     uint8_t reducedresno = codsty->nreslevels - 1 -reslevelno; //  ==> N_L - r
                     Jpeg2000ResLevel *reslevel = comp->reslevel + reslevelno;
-                    int log_subsampling[2] = { compno?s->chroma_shift[0]:0, compno?s->chroma_shift[1]:0};
+                    int log_subsampling[2] = { (compno+1&2)?s->chroma_shift[0]:0, (compno+1&2)?s->chroma_shift[1]:0};
                     unsigned prcx, prcy;
                     int trx0, try0;
 
@@ -1069,7 +1070,7 @@ static int encode_packets(Jpeg2000EncoderContext *s, Jpeg2000Tile *tile, int til
             for (x = tile_coord[0][0]; x < tile_coord[0][1]; x = (x/step_x + 1)*step_x) {
                 for (compno = 0; compno < s->ncomponents; compno++) {
                     Jpeg2000Component *comp     = tile->comp + compno;
-                    int log_subsampling[2] = { compno?s->chroma_shift[0]:0, compno?s->chroma_shift[1]:0};
+                    int log_subsampling[2] = { (compno+1&2)?s->chroma_shift[0]:0, (compno+1&2)?s->chroma_shift[1]:0};
 
                     for (reslevelno = 0; reslevelno < codsty->nreslevels; reslevelno++) {
                         unsigned prcx, prcy;
@@ -1115,7 +1116,7 @@ static int encode_packets(Jpeg2000EncoderContext *s, Jpeg2000Tile *tile, int til
     case JPEG2000_PGOD_CPRL:
         for (compno = 0; compno < s->ncomponents; compno++) {
             Jpeg2000Component *comp     = tile->comp + compno;
-            int log_subsampling[2] = { compno?s->chroma_shift[0]:0, compno?s->chroma_shift[1]:0};
+            int log_subsampling[2] = { (compno+1&2)?s->chroma_shift[0]:0, (compno+1&2)?s->chroma_shift[1]:0};
             step_x = 32;
             step_y = 32;
 
@@ -1531,6 +1532,7 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     int tileno, ret;
     Jpeg2000EncoderContext *s = avctx->priv_data;
     uint8_t *chunkstart, *jp2cstart, *jp2hstart;
+    const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(avctx->pix_fmt);
 
     if ((ret = ff_alloc_packet(avctx, pkt, avctx->width*avctx->height*9 + AV_INPUT_BUFFER_MIN_SIZE)) < 0)
         return ret;
@@ -1543,7 +1545,7 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     s->lambda = s->picture->quality * LAMBDA_SCALE;
 
-    if (avctx->pix_fmt == AV_PIX_FMT_BGR48 || avctx->pix_fmt == AV_PIX_FMT_GRAY16)
+    if (s->cbps[0] > 8)
         copy_frame_16(s);
     else
         copy_frame_8(s);
@@ -1587,7 +1589,7 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         bytestream_put_byte(&s->buf, 1);
         bytestream_put_byte(&s->buf, 0);
         bytestream_put_byte(&s->buf, 0);
-        if (avctx->pix_fmt == AV_PIX_FMT_RGB24 || avctx->pix_fmt == AV_PIX_FMT_PAL8) {
+        if ((desc->flags & AV_PIX_FMT_FLAG_RGB) || avctx->pix_fmt == AV_PIX_FMT_PAL8) {
             bytestream_put_be32(&s->buf, 16);
         } else if (s->ncomponents == 1) {
             bytestream_put_be32(&s->buf, 17);
@@ -1717,6 +1719,7 @@ static av_cold int j2kenc_init(AVCodecContext *avctx)
     Jpeg2000EncoderContext *s = avctx->priv_data;
     Jpeg2000CodingStyle *codsty = &s->codsty;
     Jpeg2000QuantStyle  *qntsty = &s->qntsty;
+    const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(avctx->pix_fmt);
 
     s->avctx = avctx;
     av_log(s->avctx, AV_LOG_DEBUG, "init\n");
@@ -1729,7 +1732,7 @@ static av_cold int j2kenc_init(AVCodecContext *avctx)
 
     if (avctx->pix_fmt == AV_PIX_FMT_PAL8 && (s->pred != FF_DWT97_INT || s->format != CODEC_JP2)) {
         av_log(s->avctx, AV_LOG_WARNING, "Forcing lossless jp2 for pal8\n");
-        s->pred = FF_DWT97_INT;
+        s->pred = 1;
         s->format = CODEC_JP2;
     }
 
@@ -1759,24 +1762,23 @@ static av_cold int j2kenc_init(AVCodecContext *avctx)
     s->width = avctx->width;
     s->height = avctx->height;
 
-    for (i = 0; i < 3; i++) {
-        if (avctx->pix_fmt == AV_PIX_FMT_GRAY16 || avctx->pix_fmt == AV_PIX_FMT_RGB48)
-            s->cbps[i] = 16;
-        else
-            s->cbps[i] = 8;
+    s->ncomponents = desc->nb_components;
+    for (i = 0; i < 4; i++) {
+        s->cbps[i] = desc->comp[i].depth;
+        s->comp_remap[i] = i; //default
     }
 
-    if (avctx->pix_fmt == AV_PIX_FMT_RGB24 || avctx->pix_fmt == AV_PIX_FMT_RGB48){
-        s->ncomponents = 3;
-    } else if (avctx->pix_fmt == AV_PIX_FMT_GRAY8 || avctx->pix_fmt == AV_PIX_FMT_PAL8 || avctx->pix_fmt == AV_PIX_FMT_GRAY16){
-        s->ncomponents = 1;
-    } else{ // planar YUV
+    if ((desc->flags & AV_PIX_FMT_FLAG_PLANAR) && s->ncomponents > 1) {
         s->planar = 1;
-        s->ncomponents = 3;
         ret = av_pix_fmt_get_chroma_sub_sample(avctx->pix_fmt,
                                                s->chroma_shift, s->chroma_shift + 1);
         if (ret)
             return ret;
+        if (desc->flags & AV_PIX_FMT_FLAG_RGB) {
+            s->comp_remap[0] = 2;
+            s->comp_remap[1] = 0;
+            s->comp_remap[2] = 1;
+        }
     }
 
     ff_thread_once(&init_static_once, init_luts);
@@ -1810,7 +1812,7 @@ static const AVOption options[] = {
     { "tile_height",   "Tile Height",       OFFSET(tile_height),   AV_OPT_TYPE_INT,   { .i64 = 256         }, 1,     1<<30,           VE, },
     { "pred",          "DWT Type",          OFFSET(pred),          AV_OPT_TYPE_INT,   { .i64 = 0           }, 0,         1,           VE, "pred"        },
     { "dwt97int",      NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = 0           }, INT_MIN, INT_MAX,       VE, "pred"        },
-    { "dwt53",         NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = 0           }, INT_MIN, INT_MAX,       VE, "pred"        },
+    { "dwt53",         NULL,                0,                     AV_OPT_TYPE_CONST, { .i64 = 1           }, INT_MIN, INT_MAX,       VE, "pred"        },
     { "sop",           "SOP marker",        OFFSET(sop),           AV_OPT_TYPE_INT,   { .i64 = 0           }, 0,         1,           VE, },
     { "eph",           "EPH marker",        OFFSET(eph),           AV_OPT_TYPE_INT,   { .i64 = 0           }, 0,         1,           VE, },
     { "prog",          "Progression Order", OFFSET(prog),          AV_OPT_TYPE_INT,   { .i64 = 0           }, JPEG2000_PGOD_LRCP,         JPEG2000_PGOD_CPRL,           VE, "prog" },
@@ -1835,17 +1837,30 @@ const FFCodec ff_jpeg2000_encoder = {
     CODEC_LONG_NAME("JPEG 2000"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_JPEG2000,
-    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE |
+                      AV_CODEC_CAP_FRAME_THREADS,
     .priv_data_size = sizeof(Jpeg2000EncoderContext),
     .init           = j2kenc_init,
     FF_CODEC_ENCODE_CB(encode_frame),
     .close          = j2kenc_destroy,
     .p.pix_fmts     = (const enum AVPixelFormat[]) {
-        AV_PIX_FMT_RGB24, AV_PIX_FMT_YUV444P, AV_PIX_FMT_GRAY8,
-        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P,
-        AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
+        AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB48,
+        AV_PIX_FMT_GBR24P,AV_PIX_FMT_GBRP9, AV_PIX_FMT_GBRP10, AV_PIX_FMT_GBRP12, AV_PIX_FMT_GBRP14, AV_PIX_FMT_GBRP16,
+        AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY9, AV_PIX_FMT_GRAY10, AV_PIX_FMT_GRAY12, AV_PIX_FMT_GRAY14, AV_PIX_FMT_GRAY16,
+        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P9, AV_PIX_FMT_YUV420P10, AV_PIX_FMT_YUV420P12, AV_PIX_FMT_YUV420P14, AV_PIX_FMT_YUV420P16,
+        AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV422P9, AV_PIX_FMT_YUV422P10, AV_PIX_FMT_YUV422P12, AV_PIX_FMT_YUV422P14, AV_PIX_FMT_YUV422P16,
+        AV_PIX_FMT_YUV444P, AV_PIX_FMT_YUV444P9, AV_PIX_FMT_YUV444P10, AV_PIX_FMT_YUV444P12, AV_PIX_FMT_YUV444P14, AV_PIX_FMT_YUV444P16,
+        AV_PIX_FMT_YUV440P,                      AV_PIX_FMT_YUV440P10, AV_PIX_FMT_YUV440P12,
+        AV_PIX_FMT_YUV411P,
+        AV_PIX_FMT_YUV410P,
+        AV_PIX_FMT_YA8,                                           AV_PIX_FMT_YA16,
+        AV_PIX_FMT_RGBA,                                          AV_PIX_FMT_RGBA64,
+        AV_PIX_FMT_GBRAP, AV_PIX_FMT_GBRAP10, AV_PIX_FMT_GBRAP12, AV_PIX_FMT_GBRAP16,
+        AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVA420P9, AV_PIX_FMT_YUVA420P10, AV_PIX_FMT_YUVA420P16,
+        AV_PIX_FMT_YUVA422P, AV_PIX_FMT_YUVA422P9, AV_PIX_FMT_YUVA422P10, AV_PIX_FMT_YUVA422P16,
+        AV_PIX_FMT_YUVA444P, AV_PIX_FMT_YUVA444P9, AV_PIX_FMT_YUVA444P10, AV_PIX_FMT_YUVA444P16,
+
         AV_PIX_FMT_PAL8,
-        AV_PIX_FMT_RGB48, AV_PIX_FMT_GRAY16,
         AV_PIX_FMT_NONE
     },
     .p.priv_class   = &j2k_class,

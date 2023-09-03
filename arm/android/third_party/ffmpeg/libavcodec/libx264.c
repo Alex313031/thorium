@@ -151,7 +151,7 @@ static int encode_nals(AVCodecContext *ctx, AVPacket *pkt,
 {
     X264Context *x4 = ctx->priv_data;
     uint8_t *p;
-    uint64_t size = x4->sei_size;
+    uint64_t size = FFMAX(x4->sei_size, 0);
     int ret;
 
     if (!nnal)
@@ -178,8 +178,8 @@ static int encode_nals(AVCodecContext *ctx, AVPacket *pkt,
         memcpy(p, x4->sei, x4->sei_size);
         p += x4->sei_size;
         size -= x4->sei_size;
-        x4->sei_size = 0;
-        av_freep(&x4->sei);
+        /* Keep the value around in case of flush */
+        x4->sei_size = -x4->sei_size;
     }
 
     /* x264 guarantees the payloads of the NALs
@@ -196,9 +196,9 @@ static void reconfig_encoder(AVCodecContext *ctx, const AVFrame *frame)
 
 
     if (x4->avcintra_class < 0) {
-        if (x4->params.b_interlaced && x4->params.b_tff != frame->top_field_first) {
+        if (x4->params.b_interlaced && x4->params.b_tff != !!(frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST)) {
 
-            x4->params.b_tff = frame->top_field_first;
+            x4->params.b_tff = !!(frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST);
             x264_encoder_reconfig(x4->enc, &x4->params);
         }
         if (x4->params.vui.i_sar_height*ctx->sample_aspect_ratio.num != ctx->sample_aspect_ratio.den * x4->params.vui.i_sar_width) {
@@ -339,7 +339,7 @@ static int setup_roi(AVCodecContext *ctx, x264_picture_t *pic, int bit_depth,
             av_log(ctx, AV_LOG_WARNING, "Adaptive quantization must be enabled to use ROI encoding, skipping ROI.\n");
         }
         return 0;
-    } else if (frame->interlaced_frame) {
+    } else if (frame->flags & AV_FRAME_FLAG_INTERLACED) {
         if (!x4->roi_warned) {
             x4->roi_warned = 1;
             av_log(ctx, AV_LOG_WARNING, "interlaced_frame not supported for ROI encoding yet, skipping ROI.\n");
@@ -662,6 +662,24 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     *got_packet = ret;
     return 0;
+}
+
+static void X264_flush(AVCodecContext *avctx)
+{
+    X264Context *x4 = avctx->priv_data;
+    x264_nal_t *nal;
+    int nnal, ret;
+    x264_picture_t pic_out = {0};
+
+    do {
+        ret = x264_encoder_encode(x4->enc, &nal, &nnal, NULL, &pic_out);
+    } while (ret > 0 && x264_encoder_delayed_frames(x4->enc));
+
+    for (int i = 0; i < x4->nb_reordered_opaque; i++)
+        opaque_uninit(&x4->reordered_opaque[i]);
+
+    if (x4->sei_size < 0)
+        x4->sei_size = -x4->sei_size;
 }
 
 static av_cold int X264_close(AVCodecContext *avctx)
@@ -1016,7 +1034,13 @@ static av_cold int X264_init(AVCodecContext *avctx)
         x4->params.i_fps_den = avctx->framerate.den;
     } else {
         x4->params.i_fps_num = avctx->time_base.den;
-        x4->params.i_fps_den = avctx->time_base.num * avctx->ticks_per_frame;
+FF_DISABLE_DEPRECATION_WARNINGS
+        x4->params.i_fps_den = avctx->time_base.num
+#if FF_API_TICKS_PER_FRAME
+            * avctx->ticks_per_frame
+#endif
+            ;
+FF_ENABLE_DEPRECATION_WARNINGS
     }
 
     x4->params.analyse.b_psnr = avctx->flags & AV_CODEC_FLAG_PSNR;
@@ -1351,12 +1375,14 @@ FFCodec ff_libx264_encoder = {
     .p.capabilities   = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY |
                         AV_CODEC_CAP_OTHER_THREADS |
                         AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE |
+                        AV_CODEC_CAP_ENCODER_FLUSH |
                         AV_CODEC_CAP_ENCODER_RECON_FRAME,
     .p.priv_class     = &x264_class,
     .p.wrapper_name   = "libx264",
     .priv_data_size   = sizeof(X264Context),
     .init             = X264_init,
     FF_CODEC_ENCODE_CB(X264_frame),
+    .flush            = X264_flush,
     .close            = X264_close,
     .defaults         = x264_defaults,
 #if X264_BUILD < 153

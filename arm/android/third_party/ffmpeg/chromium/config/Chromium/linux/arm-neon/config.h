@@ -6,7 +6,7 @@
 #define CONFIG_THIS_YEAR 2023
 #define FFMPEG_DATADIR "/usr/local/share/ffmpeg"
 #define AVCONV_DATADIR "/usr/local/share/ffmpeg"
-#define CC_IDENT "clang version 17.0.0 (https://chromium.googlesource.com/a/external/github.com/llvm/llvm-project 547e3456660000a16fc5c2a2f819f1a2b5d35b5d)"
+#define CC_IDENT "clang version 17.0.0 (https://chromium.googlesource.com/a/external/github.com/llvm/llvm-project 3da83fbafef1689de1fc45c2c3fa3d258edda09d)"
 #define OS_NAME linux
 #define av_restrict restrict
 #define EXTERN_PREFIX ""
@@ -345,6 +345,7 @@
 #define HAVE_BCRYPT 0
 #define HAVE_VAAPI_DRM 0
 #define HAVE_VAAPI_X11 0
+#define HAVE_VAAPI_WIN32 0
 #define HAVE_VDPAU_X11 0
 #define HAVE_PTHREADS 1
 #define HAVE_OS2THREADS 0
@@ -656,7 +657,7 @@
 #define CONFIG_AUDIO_FRAME_QUEUE 0
 #define CONFIG_AUDIODSP 0
 #define CONFIG_BLOCKDSP 0
-#define CONFIG_BSWAPDSP 0
+#define CONFIG_BSWAPDSP 1
 #define CONFIG_CABAC 0
 #define CONFIG_CBS 0
 #define CONFIG_CBS_AV1 0
@@ -668,7 +669,7 @@
 #define CONFIG_DEFLATE_WRAPPER 0
 #define CONFIG_DIRAC_PARSE 1
 #define CONFIG_DNN 0
-#define CONFIG_DOVI_RPU 0
+#define CONFIG_DOVI_RPU 1
 #define CONFIG_DVPROFILE 0
 #define CONFIG_EXIF 0
 #define CONFIG_FAANDCT 0
@@ -686,8 +687,8 @@
 #define CONFIG_H264PRED 1
 #define CONFIG_H264QPEL 0
 #define CONFIG_H264_SEI 0
-#define CONFIG_HEVCPARSE 0
-#define CONFIG_HEVC_SEI 0
+#define CONFIG_HEVCPARSE 1
+#define CONFIG_HEVC_SEI 1
 #define CONFIG_HPELDSP 1
 #define CONFIG_HUFFMAN 0
 #define CONFIG_HUFFYUVDSP 0

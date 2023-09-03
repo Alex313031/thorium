@@ -68,7 +68,7 @@ static int bfi_decode_frame(AVCodecContext *avctx, AVFrame *frame,
     /* Set frame parameters and palette, if necessary */
     if (!avctx->frame_num) {
         frame->pict_type = AV_PICTURE_TYPE_I;
-        frame->key_frame = 1;
+        frame->flags |= AV_FRAME_FLAG_KEY;
         /* Setting the palette */
         if (avctx->extradata_size > 768) {
             av_log(avctx, AV_LOG_ERROR, "Palette is too large.\n");
@@ -84,11 +84,19 @@ static int bfi_decode_frame(AVCodecContext *avctx, AVFrame *frame,
             pal++;
         }
         memcpy(bfi->pal, frame->data[1], sizeof(bfi->pal));
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
         frame->palette_has_changed = 1;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
     } else {
         frame->pict_type = AV_PICTURE_TYPE_P;
-        frame->key_frame = 0;
+        frame->flags &= ~AV_FRAME_FLAG_KEY;
+#if FF_API_PALETTE_HAS_CHANGED
+FF_DISABLE_DEPRECATION_WARNINGS
         frame->palette_has_changed = 0;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
         memcpy(frame->data[1], bfi->pal, sizeof(bfi->pal));
     }
 

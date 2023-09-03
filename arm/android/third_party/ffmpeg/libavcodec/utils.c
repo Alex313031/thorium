@@ -317,7 +317,7 @@ void avcodec_align_dimensions2(AVCodecContext *s, int *width, int *height,
     }
 
     if (s->codec_id == AV_CODEC_ID_IFF_ILBM) {
-        w_align = FFMAX(w_align, 8);
+        w_align = FFMAX(w_align, 16);
     }
 
     *width  = FFALIGN(*width, w_align);
@@ -910,6 +910,27 @@ int ff_thread_ref_frame(ThreadFrame *dst, const ThreadFrame *src)
         !(dst->progress = av_buffer_ref(src->progress))) {
         ff_thread_release_ext_buffer(dst->owner[0], dst);
         return AVERROR(ENOMEM);
+    }
+
+    return 0;
+}
+
+int ff_thread_replace_frame(AVCodecContext *avctx, ThreadFrame *dst,
+                            const ThreadFrame *src)
+{
+    int ret;
+
+    dst->owner[0] = src->owner[0];
+    dst->owner[1] = src->owner[1];
+
+    ret = av_frame_replace(dst->f, src->f);
+    if (ret < 0)
+        return ret;
+
+    ret = av_buffer_replace(&dst->progress, src->progress);
+    if (ret < 0) {
+        ff_thread_release_ext_buffer(dst->owner[0], dst);
+        return ret;
     }
 
     return 0;
