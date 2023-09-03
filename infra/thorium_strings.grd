@@ -772,7 +772,7 @@ Permissions you've already given to websites and apps may apply to this account.
         This extension contains malware and is unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
        <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
-          This extension violates the Thorium Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+          This extension violates the Chrome Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_UNPUBLISHED" desc="The text explaining the reason for disabling extension. The extension in question was unpublished by the developer.">
           This extension was unpublished by its developer, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
