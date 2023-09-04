@@ -152,7 +152,6 @@ copySSE3 () {
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/SSE3/v8/* ${CR_SRC_DIR}/v8/ &&
-	cp -r -v other/SSE3/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
@@ -165,7 +164,6 @@ copySSE2 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
-	cp -r -v other/SSE2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }

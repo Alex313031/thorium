@@ -12529,7 +12529,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
           Location is turned off in Mac System Preferences
         </message>
         <message name="IDS_GEOLOCATION_TURNED_OFF_IN_MACOS_SETTINGS" desc="Title for the geolocation bubble that is used when a site requests geolocation, but geolocation is blocked on an OS level in macOS.">
-          Turn on "Google Thorium" in Location Services on your Mac
+          Turn on "Thorium" in Location Services on your Mac
         </message>
       </if>
         <message name="IDS_GEOLOCATION_TURNED_OFF" desc="Description text in the omnibox icon showing when location permission is blocked on an OS level.">
@@ -13811,10 +13811,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <!-- Windows 10 toast strings -->
     <if expr="is_win">
       <message name="IDS_WIN10_TOAST_BROWSE_FAST" desc="Toast message variant: browse fast.">
-        Browse fast with Google Thorium
+        Browse fast with Thorium
       </message>
       <message name="IDS_WIN10_TOAST_BROWSE_SAFELY" desc="Toast message variant: browse safely.">
-        Browse safely with Google Thorium
+        Browse safely with Thorium
       </message>
       <message name="IDS_WIN10_TOAST_BROWSE_SMART" desc="Toast message variant: browse smart.">
         Browse smart with Thorium
@@ -13832,7 +13832,7 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Switch to a smart and secure browser
       </message>
       <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Google recommends Thorium.">
-        Google recommends Thorium
+        Alex313031 recommends Thorium
       </message>
       <message name="IDS_WIN10_TOAST_OPEN_CHROME" desc="The label on the button to dismiss the toast and launch Thorium.">
         Open Thorium
