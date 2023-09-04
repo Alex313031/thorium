@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors, Alex313031 and gz83
+// Copyright 2023 The Chromium Authors, Alex313031 and gz83
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,12 +17,10 @@ const char kEnableSnippets[] = "ntp_snippets.enable";
 // FEED_ARTICLES_LIST_VISIBLE in ChromePreferenceKeys.java is a pre-native cache
 // and should be consistent with this pref.
 const char kArticlesListVisible[] = "ntp_snippets.list_visible";
-const char kVideoPreviewsType[] = "ntp_snippets.video_previews_type";
 
 void RegisterFeedSharedProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(kEnableSnippets, true);
   registry->RegisterBooleanPref(kArticlesListVisible, false);
-  registry->RegisterIntegerPref(kVideoPreviewsType, 1);
 }
 
 }  // namespace prefs

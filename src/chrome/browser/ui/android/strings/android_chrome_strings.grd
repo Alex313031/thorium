@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
+
 <!-- android_chrome_strings.grd contains strings for Thorium for Android.
 
 FAQ:
@@ -747,7 +747,39 @@ CHAR_LIMIT guidelines:
       <message name="IDS_PASSWORD_MIGRATION_WARNING_OTHER_OPTIONS" desc="The text on the button that leads to other options in the password migration warning sheet.">
         Other options
       </message>
-
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_CONTENT_DESCRIPTION" desc="Accessibility string read when the password migration warning sheet opens." formatter_data="android_java">
+        Google Password Manager update
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_CLOSED" desc="Accessibility string read when the password migration warning sheet closes." formatter_data="android_java">
+        Update about password merge is closed
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_TURN_ON_SYNC" desc="The text that describes the option to start syncing that is offered in the password migration warning sheet.">
+        Save the passwords on this device in your Google Account by turning on sync
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_TURN_ON_SYNC_SUBTITLE" desc="The subtitle that appears under the option to turn on sync in the password migration warning sheet if the user is not signed in.">
+        You’ll be asked to sign in to your Google Account
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_PASSWORD_EXPORT" desc="The text that describes the option to export the passwords that is offered in the password migration warning sheet.">
+        Export &amp; delete passwords saved to this device
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_PASSWORD_EXPORT_SUBTITLE" desc="The subtitle that explaint the password export option in the password migration warning sheet.">
+        All passwords will be downloaded on your device and removed from Thorium <ph name="CHROME_CHANNEL">%1$s<ex>Dev</ex></ph>
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_NEXT" desc="The text for the next button in the password migration warning sheet. It starts one of the flows offered on the sheet.">
+        Next
+      </message>
+      <message name="IDS_PASSWORD_MIGRATION_WARNING_CANCEL" desc="The text for the cancel button in the password migration warning sheet. It closes the sheet">
+        Cancel
+      </message>
+      <message name="IDS_EXPORTED_PASSWORDS_DELETION_DIALOG_TITLE" desc="The title of the dialog that offers to delete passwords from Google Password Manager." formatter_data="android_java">
+        Delete passwords from Google Password Manager?
+      </message>
+      <message name="IDS_EXPORTED_PASSWORDS_DELETION_DIALOG_TEXT" desc="The text that describes the option to delete the passwords that were just exported." formatter_data="android_java">
+        Your passwords will be deleted from Google Password Manager for Thorium <ph name="CHROME_CHANNEL">%1$s<ex>Dev</ex></ph>. You will keep the passwords file you just downloaded.
+      </message>
+      <message name="IDS_EXPORTED_PASSWORDS_DELETE_BUTTON" desc="The text on the button that confirms the action of deleting the passwords that were exported." formatter_data="android_java">
+        Delete passwords
+      </message>
 
       <!-- Lock Screen Fragment -->
       <message name="IDS_LOCKSCREEN_DESCRIPTION_COPY" desc="When a user attempts to copy a password for a particular website into clipboard in Thorium's settings, Thorium launches a lock screen to verify the user's identity and displays the following explanation.">
@@ -1135,6 +1167,9 @@ Private state tokens improve privacy on the web and can’t be used to find out 
       <message name="IDS_SETTINGS_TOPICS_PAGE_CURRENT_TOPICS_DESCRIPTION" desc="A description that appear beneath the 'Your topics' label. * 'You can block': There is a 'Block' button (or an X on mobile) that appears next to each topic in the list. * 'auto-deletes': this could also read 'Thorium deletes...' We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
         You can block topics you don't want shared with sites. Thorium also auto-deletes your topics older than 4 weeks. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
+      <message name="IDS_SETTINGS_TOPICS_PAGE_LEARN_MORE_BULLET_3" desc="Paragraph 3 of 3 on the Learn more about ad topics page. * 'auto-deletes': this could also read 'Thorium deletes...' We included the 'auto' to reinforce that this is part of a system and the deletion is done regularly.">
+        Thorium auto-deletes topics that are older than 4 weeks. As you keep browsing, a topic might reappear on the list. Or you can block topics you don’t want Thorium to share with sites. Learn more about <ph name="BEGIN_LINK">&lt;link&gt;</ph>managing your ad privacy in Thorium.<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
       <message name="IDS_SETTINGS_TOPICS_PAGE_FOOTER" desc="This footer helps the user understand that this setting is just one signal among others that affect whether this user sees personalized ads on a site. We define 'personalize' as 'when Google provides recommendations and other content for users based on their data'. At a high level, there are 4 things that affect whether an ad is personalized in this context: * 'this setting' refers to the 'Ad topics' setting. The user is on this page. * 'Site-suggested ads': this is a link to the other new ad setting Thorium is launching and that sites can use to personalize ads a user sees. * 'cookie settings': this is a link to the cookies control section in Thorium settings. The Privacy Sandbox project deprecates third-party cookies, but it's a process, and we're launching new functionality that will replace important functionality of cookies. Until third-party cookies are deprecated, the two systems remain active in Thorium. * 'site you're viewing personalizes ads': When a user engages with a site, Thorium has no control over whether that site shows the user personalized ads. Imagine you visit www.interesting-site.com and they know a lot about you already based on previous visits. They can personalize content and ads to you if they like. They can use an ad-serving product, like Facebook or Google Ads to deliver personalized ads. They can also use the new Privacy Sandbox APIs (if they so choose) in order to get more information about the user that could be helpful to them in order to personalize ads. Those 2 APIs (settings, from the user's perspective), are 'Ad topics' and 'Site-suggested ads'.">
         As you browse, whether an ad you see is personalized depends on this setting, <ph name="BEGIN_LINK_1">&lt;link1&gt;</ph>Site-suggested ads<ph name="END_LINK_1">&lt;/link1&gt;</ph>, your <ph name="BEGIN_LINK_2">&lt;link2&gt;</ph>cookie settings<ph name="END_LINK_2">&lt;/link2&gt;</ph>, and if the site you're viewing personalizes ads.
       </message>
@@ -1198,7 +1233,7 @@ Private state tokens improve privacy on the web and can’t be used to find out 
         For example, if you visit a site that sells long-distance running shoes, the site might decide that you’re interested in running marathons. Later, if you visit a different site, that site can show you an ad for running shoes suggested by the first site.
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_LEARN_MORE_BULLET_3" desc="3 of 3 paragraphs on the Learn more page for Site-suggested ads. * 'Auto-deletes': This could just read 'Thorium deletes...' but we include the 'auto' to suggest that the deletion happens regularly and as part of the system. * 'A site you visit again...': We want to reassure the user. We just told them sites are automatically deleted. And yet, a user might see the same site in the list month after month if they visit that site regularly.">
-        Thorium auto-deletes sites that are older than 30 days. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you.
+        Thorium auto-deletes sites that are older than 30 days. A site you visit again might reappear on the list. Or you can block a site from suggesting ads for you. Learn more about <ph name="BEGIN_LINK">&lt;link&gt;</ph>managing your ad privacy in Thorium.<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
       <message name="IDS_SETTINGS_FLEDGE_PAGE_BLOCK_SITE_A11Y_LABEL" desc="A button label read by screen readers that indicates which site will get blocked. The list is of sites the user has recently visited and that use the Site-suggested ads API to suggest ads to other sites as the user continues browsing.">
         Block <ph name="DOMAIN">%1$s<ex>example.com</ex></ph>
@@ -2965,10 +3000,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Thorium First Run Experience
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS" desc="Message explaining that use of Thorium is governed by Thorium's terms of service.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS_AND_PRIVACY_CHILD_ACCOUNT" desc="Message explaining that use of Thorium is governed by Thorium's terms of service, and the Google Privacy Policy.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
       </message>
       <message name="IDS_FRE_ACCEPT_CONTINUE" desc="Text for first page accept and continue button [CHAR_LIMIT=20]">
         Accept &amp; continue
@@ -3271,9 +3306,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NTP_MANAGE_REACTIONS" desc="Content description to manage feed reactions from the feed header overflow menu.">
         Manage reactions
       </message>
-      <message name="IDS_NTP_MANAGE_AUTOPLAY" desc="Content description to manage feed autoplay from the feed header overflow menu.">
-        Manage autoplay
-      </message>
       <message name="IDS_NTP_MANAGE_FEED" desc="Menu item to manage feed settings from the feed header overflow menu.">
         Manage
       </message>
@@ -3319,17 +3351,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_FEED_MANAGE_INTERESTS_DESCRIPTION" desc="Content description to manage settings from the feed header overflow menu.">
         Manage the topics you're interested in
       </message>
+      <message name="IDS_FEED_MANAGE_INTERESTS_DESCRIPTION_UI_UPDATE" desc="Content description to manage settings from the feed header overflow menu.">
+        Manage the topics and searches you're interested in
+      </message>
       <message name="IDS_FEED_MANAGE_HIDDEN" desc="Menu item to manage hiding and unhiding topics.">
         Hidden
       </message>
       <message name="IDS_FEED_MANAGE_HIDDEN_DESCRIPTION" desc="Content description to manage hiding and unhiding topics.">
         Hide and unhide topics
-      </message>
-      <message name="IDS_FEED_MANAGE_AUTOPLAY" desc="Menu item to manage feed autoplay from the feed header overflow menu.">
-        Autoplay
-      </message>
-      <message name="IDS_FEED_MANAGE_AUTOPLAY_DESCRIPTION" desc="Content description to manage feed autoplay from the feed header overflow menu.">
-        Manage Video Preview Settings
       </message>
       <message name="IDS_FEED_MANAGE_FOLLOWING" desc="Menu item to manage followed sites.">
         Following
@@ -4119,9 +4148,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_ACCESSIBILITY_OMNIBOX_SHOWING_SUGGESTIONS_FOR_WEBSITE" desc="Whenever the User is visiting a Website, when they click the Omnibox, we will announce this message, if we have suggestions to show.">
         Showing suggestions for <ph name="WEBSITE_TITLE">%1$s<ex>Crater Lake National Park (U.S. National Park Service)</ex></ph>
       </message>
-      <message name="IDS_ACCESSIBILITY_OMNIBOX_PEDAL" desc="Announce focused Thorium Action Button on the Omnibox Suggestions List. List of known Action buttons is defined here: https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc">
-        Thorium action button: <ph name="ACTION">%s<ex>clear browsing data</ex></ph>
-      </message>
       <message name="IDS_ACCESSIBILITY_OMNIBOX_SUGGESTED_ITEMS" desc="Announcement about the presence and volume of suggestions below the Omnibox.">
         <ph name="SUGGESTIONS_COUNT">%d<ex>12</ex></ph> suggested items in list below.
       </message>
@@ -4298,24 +4324,15 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Feed card menu is closed
       </message>
 
-      <!-- Feed Autoplay Preferences  -->
-      <message name="IDS_FEED_AUTOPLAY_TITLE" desc="Title for feed autoplay preference.">
-        Autoplay
+      <!-- PageInsights Hub -->
+      <message name="IDS_PAGE_INSIGHTS_SHEET_DESCRIPTION" desc="The content description of the page insights sheet.">
+        Page insights bottom sheet
       </message>
-      <message name="IDS_VIDEO_PREVIEWS_TITLE" desc="Title for setting video previews preference.">
-        Video previews
+      <message name="IDS_PAGE_INSIGHTS_SHEET_OPENED_FULL" desc="Accessibility string read when the page insights sheet is opened at full height. The sheet will occupy up to the full screen.">
+        Page insights bottom sheet is opened
       </message>
-      <message name="IDS_VIDEO_PREVIEWS_SUMMARY" desc="Summary for setting video previews preference.">
-        Choose how video previews will automatically play on the Thorium homepage.
-      </message>
-      <message name="IDS_VIDEO_PREVIEWS_OPTION_NEVER" desc="Option in video previews preference. Users can click this option to disable video previews.">
-        Never
-      </message>
-      <message name="IDS_VIDEO_PREVIEWS_OPTION_WIFI" desc="Option in video previews preference. Users can click this option to allow video previews on Wi-Fi only.">
-        Only on Wi-Fi
-      </message>
-      <message name="IDS_VIDEO_PREVIEWS_OPTION_WIFI_AND_MOBILE_DATA" desc="Option in video previews preference. Users can click this option to allow video previews on both Wi-Fi and mobile data.">
-        On Wi-Fi &amp; mobile data
+      <message name="IDS_PAGE_INSIGHTS_SHEET_CLOSED" desc="Accessibility string read when the page insights sheet is closed.">
+        Page insights bottom sheet is closed
       </message>
 
       <!-- WebFeed -->
@@ -4534,14 +4551,14 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_KEYBOARD_SHORTCUT_RELOAD_NO_CACHE" desc="A text label that appears next to the keyboard shortcut that will reload the current page without a cache. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Reload the current page, ignoring cached content
       </message>
-      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
+      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Google Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Open the Thorium Help Center in a new tab
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_TAB_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Tab and window shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_CHROME_FEATURE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the Thorium app features. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
-        Thorium feature shortcuts
+        Google Thorium feature shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_WEBPAGE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to manipulation of the current tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Webpage shortcuts
@@ -4995,7 +5012,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_CABLEV2_ACTIVITY_TITLE"
         desc="The label of the Activity for using your phone as a security key. A 'security key' in this context is generally a small USB device that is used for logging into websites. This feature allows Thorium on an Android phone to act as a security key. A user may see it in Android permissions prompts (see screenshot).">
-         Thorium as a Security Key
+         Google Thorium as a Security Key
       </message>
 
       <message name="IDS_CABLEV2_REGISTRATION_SUCCEEDED"
@@ -5203,8 +5220,16 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Copy image
       </message>
 
+      <message name="IDS_SHARING_COPY_IMAGE_WITH_LINK" desc="Label for the Copy Image button with link in the sharing hub.">
+        Copy image with link
+      </message>
+
       <message name="IDS_SHARING_COPY_GIF" desc="Label for the Copy GIF button in the sharing hub.">
         Copy GIF
+      </message>
+
+      <message name="IDS_SHARING_COPY_HIGHLIGHT_WITHOUT_LINK" desc="Label for the Copy highlighted text without link button in the sharing hub. This is used when sharing highlighted text with a generated link.">
+        Copy without link
       </message>
 
       <message name="IDS_SHARING_SCREENSHOT" desc="Label for Screenshot button in the sharing hub.">
@@ -5255,20 +5280,8 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Send to devices
       </message>
 
-      <message name="IDS_SHARING_INCLUDE_LINK" desc="Label for the button in android share sheet to include a link to share along with highlighted text.">
-        Include link
-      </message>
-
-      <message name="IDS_SHARING_EXCLUDE_LINK" desc="Label for the button in android share sheet to share the highlighted text without a link.">
-        Exclude link
-      </message>
-
-      <message name="IDS_TEXT_COPIED" desc="Text shown in the toast notification when Copy Text is selected in the sharing hub.">
-        Text Copied
-      </message>
-
-      <message name="IDS_IMAGE_COPIED" desc="Text shown in the toast notification when Copy Image is selected in the sharing hub.">
-        Image Copied
+      <message name="IDS_SHARING_INCLUDING_LINK_TITLE_TEMPLATE" desc="Title used in share sheet when sharing the highlighted text with a generated link.">
+        Including link: <ph name="ORIGIN">%1$s<ex>https://www.example.com</ex></ph>
       </message>
 
       <message name="IDS_GIF_COPIED" desc="Text shown in the toast notification when Copy GIF is selected in the sharing hub.">
@@ -5451,7 +5464,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save up to 60% data
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_2_DESCRIPTION" desc="The body text of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.  Promotes data savings.">
-        Use Lite mode on Thorium
+        Use Lite mode on Google Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_TITLE" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.">
         Google recommends Thorium
@@ -5732,6 +5745,29 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_QUICK_DELETE_SNACKBAR_MESSAGE" desc="Text inside the snackbar which is shown once the user confirms deletion via the 'Delete last 15 minutes' option present inside the three dots menu.">
         Deleted
+      </message>
+
+      <!-- Password generation bottom sheet -->
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the bottom sheet is opened. It describes that the bottom sheet proposes a generated password to be automatically filled into the sign up form and saved to the Password Manager.">
+        Strong password suggested. Keyboard hidden.
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_CLOSED" desc="Accessibility string read when the password generation bottom sheet is closed.">
+        Password suggestion is closed.
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_TITLE" desc="The title of the password generation bottom sheet.">
+        Use strong password?
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_SUBTITLE" desc="The subtitle for the password generation bottom sheet.">
+        You won’t need to remember this password. It will be saved to Google Password Manager for <ph name="USERNAME">%1$s<ex>elisa.becket@gmail.com</ex></ph>.
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_SUBTITLE_NO_ACCOUNT" desc="The subtitle for the password generation bottom sheet.">
+        You won’t need to remember this password. It will be saved to Google Password Manager.
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_USE_PASSWORD_BUTTON" desc="Appears on the button, which reflects the user agreement to user the generated strong password.">
+        Use password
+      </message>
+      <message name="IDS_PASSWORD_GENERATION_BOTTOM_SHEET_DISMISS_BUTTON" desc="Appears on the button, which reflects that the user has rejected the proposed generated password and decided to continue with creating their own password.">
+        Create my own
       </message>
     </messages>
   </release>

@@ -310,6 +310,14 @@ void AddChromeWorkItems(const InstallParams& install_params,
                                     temp_path, WorkItem::NEW_NAME_IF_IN_USE,
                                     new_chrome_exe);
 
+  // Add Thorium-specific files
+  install_list->AddCopyTreeWorkItem(src_path.Append('initial_preferences'),
+                                    target_path.Append('initial_preferences'),
+                                    temp_path, WorkItem::ALWAYS);
+  install_list->AddCopyTreeWorkItem(src_path.Append('thor_ver'),
+                                    target_path.Append('thor_ver'),
+                                    temp_path, WorkItem::ALWAYS);
+
   // Install kVisualElementsManifest if it is present in |src_path|. No need to
   // make this a conditional work item as if the file is not there now, it will
   // never be.

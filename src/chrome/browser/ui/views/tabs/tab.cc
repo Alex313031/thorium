@@ -65,6 +65,7 @@
 #include "ui/base/pointer/touch_ui_controller.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/base/theme_provider.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/compositor/clip_recorder.h"
 #include "ui/compositor/compositor.h"
 #include "ui/gfx/animation/tween.h"
@@ -195,7 +196,7 @@ Tab::Tab(TabSlotController* controller)
       title_animation_(this) {
   DCHECK(controller);
 
-  tab_style_views_ = TabStyleViews::Create()->CreateForTab(this);
+  tab_style_views_ = TabStyleViews::CreateForTab(this);
 
   // So we get don't get enter/exit on children and don't prematurely stop the
   // hover.
@@ -292,7 +293,10 @@ void Tab::Layout() {
   UpdateIconVisibility();
 
   int start = contents_rect.x();
-  if (extra_padding_before_content_) {
+
+  // ChromeRefresh doesnt respect this extra padding since it has exact values
+  // for left/right padding.
+  if (extra_padding_before_content_ && !features::IsChromeRefresh2023()) {
     constexpr int kExtraLeftPaddingToBalanceCloseButtonPadding = 4;
     start += kExtraLeftPaddingToBalanceCloseButtonPadding;
   }
@@ -314,9 +318,7 @@ void Tab::Layout() {
     }
     // Add space for insets outside the favicon bounds.
     favicon_bounds.Inset(-icon_->GetInsets());
-    favicon_bounds.set_size(
-        gfx::Size(icon_->GetPreferredSize().width(),
-                  contents_rect.height() - favicon_bounds.y()));
+    favicon_bounds.set_size(icon_->GetPreferredSize());
   }
   icon_->SetBoundsRect(favicon_bounds);
   icon_->SetVisible(showing_icon_);
@@ -335,7 +337,7 @@ void Tab::Layout() {
     // for touch events.
     // TODO(pkasting): The padding should maybe be removed, see comments in
     // TabCloseButton::TargetForRect().
-    const int close_button_size = TabCloseButton::GetGlyphSize();
+    const int close_button_size = GetLayoutConstant(TAB_CLOSE_BUTTON_SIZE);
     const int top =
         contents_rect.y() + Center(contents_rect.height(), close_button_size);
     // Clamp the close button position to "centered within the tab"; this should
@@ -745,9 +747,8 @@ TabSlotView::ViewType Tab::GetTabSlotViewType() const {
 }
 
 TabSizeInfo Tab::GetTabSizeInfo() const {
-  return {tab_style()->GetPinnedWidth(),
-          tab_style_views()->GetMinimumActiveWidth(),
-          tab_style_views()->GetMinimumInactiveWidth(),
+  return {tab_style()->GetPinnedWidth(), tab_style()->GetMinimumActiveWidth(),
+          tab_style()->GetMinimumInactiveWidth(),
           tab_style()->GetStandardWidth()};
 }
 
@@ -772,7 +773,7 @@ absl::optional<SkColor> Tab::GetGroupColor() const {
       controller_->GetGroupColorId(group().value()));
 }
 
-SkColor Tab::GetAlertIndicatorColor(TabAlertState state) const {
+ui::ColorId Tab::GetAlertIndicatorColor(TabAlertState state) const {
   const ui::ColorProvider* color_provider = GetColorProvider();
   if (!color_provider)
     return gfx::kPlaceholderColor;
@@ -811,10 +812,9 @@ SkColor Tab::GetAlertIndicatorColor(TabAlertState state) const {
         kColorTabAlertAudioPlayingInactiveFrameActive},
        {kColorTabAlertAudioPlayingActiveFrameInactive,
         kColorTabAlertAudioPlayingActiveFrameActive}}};
-  return color_provider->GetColor(
-      color_ids[group][tab_style_views()->GetApparentActiveState() ==
-                       TabActive::kActive]
-               [controller_->ShouldPaintAsActiveFrame()]);
+  return color_ids[group][tab_style_views()->GetApparentActiveState() ==
+                          TabActive::kActive]
+                  [GetWidget()->ShouldPaintAsActive()];
 }
 
 bool Tab::IsActive() const {
