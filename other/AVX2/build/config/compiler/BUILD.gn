@@ -990,7 +990,7 @@ config("compiler") {
     "-Zremap-cwd-prefix=.",
 
     # Full RUSTC optimizations.
-    "-Copt-level=3", "-Ctune-cpu=haswell", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul",
+    "-Copt-level=3", "-Ctune-cpu=haswell", "-Ctarget-feature=+aes,+avx,+avx2",
   ]
 
   if (!is_win || force_rustc_color_output) {
@@ -1007,7 +1007,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
   if (!rust_prebuilt_stdlib) {
     # When building against the Chromium Rust stdlib (which we compile) always
@@ -2518,7 +2518,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
 }
 
@@ -2551,13 +2551,13 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   }
 }
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2817,7 +2817,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
 }
 
 # Minimal symbols.
@@ -2902,7 +2902,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,-pclmul", ]
+  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
