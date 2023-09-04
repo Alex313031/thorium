@@ -330,9 +330,12 @@ group("gn_all") {
       deps += [
         "//ui/aura:aura_demo",
         "//ui/aura:aura_unittests",
-        "//ui/webui/examples:webui_examples",
         "//ui/wm:wm_unittests",
       ]
+    }
+
+    if (use_aura || is_mac) {
+      deps += [ "//ui/webui/examples:webui_examples" ]
     }
 
     if (use_ozone) {
@@ -860,20 +863,14 @@ group("all_rust") {
   deps = [ ":rust_build_tests" ]
 
   if (toolchain_has_rust) {
+    # There is rust stuff behind flags in here.
+    deps += [ "//base:base_unittests" ]
+
     if (enable_rust_mojo) {
       deps += [
         "//mojo/public/rust",
         "//mojo/public/rust:mojo_rust_integration_unittests",
         "//mojo/public/rust:mojo_rust_unittests",
-      ]
-    }
-
-    # gnrt is a developer tool run on developer machines. It is not needed when
-    # cross-compiling.
-    if (enable_rust_gnrt && host_os == target_os && host_cpu == target_cpu) {
-      deps += [
-        "//tools/crates/gnrt($host_toolchain)",
-        "//tools/crates/gnrt/lib:gnrt_unittests",
       ]
     }
   }
@@ -1026,7 +1023,7 @@ if (is_chromeos_ash) {
       "//ui/ozone/gl:ozone_gl_unittests",
     ]
 
-    if (enable_plugins) {
+    if (enable_ppapi) {
       data_deps += [ "//ppapi/examples/video_decode" ]
     }
 
@@ -1048,6 +1045,7 @@ if (is_chromeos_ash) {
       }
       if (use_v4l2_codec) {
         data_deps += [
+          "//media/gpu/chromeos:image_processor_perf_test",
           "//media/gpu/v4l2:v4l2_stateless_decoder",
           "//media/gpu/v4l2:v4l2_unittest",
         ]
@@ -1142,6 +1140,7 @@ if (!is_ios && !is_cronet_build) {
       args = [
         "--product=chrome",
         "--no-show-results",
+        "--zero-tests-executed-ok",
       ]
       data_deps = [
         "//chrome:chrome",
@@ -1151,7 +1150,10 @@ if (!is_ios && !is_cronet_build) {
     }
     script_test("wpt_tests_isolate_content_shell") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [ "--no-show-results" ]
+      args = [
+        "--no-show-results",
+        "--zero-tests-executed-ok",
+      ]
       data_deps = [
         ":blink_web_tests_support_data",
         "//third_party/blink/tools:wpt_tests_isolate",
@@ -1243,6 +1245,7 @@ if (!is_ios && !is_cronet_build) {
     if (is_win) {
       data += [
         "//third_party/apache-win32/",
+        "//third_party/apache-windows-arm64/",
         "//third_party/perl/perl/",
       ]
       data_deps += [ "//build/win:copy_cdb_to_output" ]
@@ -1338,6 +1341,7 @@ if (!is_ios && !is_cronet_build) {
       "//third_party/blink/web_tests/TestExpectations",
       "//third_party/blink/web_tests/WebDriverExpectations",
       "//third_party/blink/web_tests/WebGPUExpectations",
+      "//third_party/blink/web_tests/SmokeTests/SingleThreadedTests",
 
       # === List Test Cases folders here ===
       "//third_party/blink/web_tests/accessibility/",
@@ -1430,6 +1434,7 @@ if (!is_ios && !is_cronet_build) {
       data += [
         "//third_party/blink/web_tests/platform/win/",
         "//third_party/blink/web_tests/platform/win10/",
+        "//third_party/blink/web_tests/platform/win11-arm64/",
       ]
       if (is_linux || is_fuchsia) {
         data += [ "//third_party/blink/web_tests/platform/linux/" ]
@@ -1478,6 +1483,7 @@ if (!is_ios && !is_cronet_build) {
     data = [
       "//third_party/blink/perf_tests/",
       "//third_party/blink/web_tests/SmokeTests/Default.txt",
+      "//third_party/blink/web_tests/SmokeTests/rel-ready.blink_wpt_tests.filter",
       "//third_party/blink/web_tests/VirtualTestSuites",
 
       # List all test expectations here
@@ -1490,6 +1496,7 @@ if (!is_ios && !is_cronet_build) {
       "//third_party/blink/web_tests/TestExpectations",
       "//third_party/blink/web_tests/WebDriverExpectations",
       "//third_party/blink/web_tests/WebGPUExpectations",
+      "//third_party/blink/web_tests/SmokeTests/SingleThreadedTests",
 
       # === List Test Cases folders here ===
       "//third_party/blink/web_tests/external/",
@@ -1637,6 +1644,7 @@ if (!is_ios && !is_cronet_build) {
       "//third_party/blink/web_tests/TestExpectations",
       "//third_party/blink/web_tests/VirtualTestSuites",
       "//third_party/blink/web_tests/W3CImportExpectations",
+      "//third_party/blink/web_tests/SmokeTests/SingleThreadedTests",
       "//third_party/catapult/common/py_utils/",
       "//third_party/catapult/devil/",
       "//third_party/catapult/dependency_manager/",
