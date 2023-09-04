@@ -279,7 +279,7 @@ cd "${OUTPUTDIR}"
 # Allowed configs include optional HTTPS support and explicit multiarch
 # platforms.
 REPOCONFIGREGEX="deb (\\\\[arch=[^]]*\\\\b${ARCHITECTURE}\\\\b[^]]*\\\\]"
-REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
+# REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
 stage_install_debian
 
 do_package
