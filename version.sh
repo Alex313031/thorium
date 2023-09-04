@@ -50,9 +50,6 @@ cd ${CR_SRC_DIR} &&
 
 git checkout -f tags/$THOR_VER &&
 
-git clean -ffd &&
-git clean -ffd &&
-
 cd ~/thorium &&
 
 # Use our artifacts hash
