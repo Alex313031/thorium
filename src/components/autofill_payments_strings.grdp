@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <grit-part>
 
   <if expr="not use_titlecase">
@@ -339,7 +338,7 @@
       Enter your security code for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_TITLE_V2" desc="Title for the credit card unmasking dialog, according to August 2019 UI guidelines.">
-      Verify your card
+      Verify it's you
     </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_EXPIRED_TITLE" desc="Title for the credit card unmasking dialog when the credit card is expired.">
       Enter the expiration date and CVC for <ph name="CREDIT_CARD">$1<ex>Visa - 5679</ex></ph>
@@ -457,13 +456,13 @@
 
   <!-- DeviceAuthentication titles-->
   <if expr="is_macosx">
-    <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling. Please note that on macOS the string 'Thorium is trying to' will always come before this string.">
+    <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling. Please note that on macOS the string 'Google Thorium is trying to' will always come before this string.">
       verify it's you so it can fill in your payment info.
     </message>
   </if>
   <if expr="is_win">
     <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling.">
-      Thorium is trying to verify it's you so it can fill in your payment info.
+      Google Thorium is trying to verify it's you so it can fill in your payment info.
     </message>
   </if>
 
@@ -568,16 +567,16 @@
   </message>
 
   <!-- Mandatory Reauth related strings - start -->
-  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_NO_THANKS" desc="Text for the cancel button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will not be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
-    No Thanks
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_NO_THANKS" desc="Text for the cancel button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will not be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
+    No thanks
   </message>
-  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_ACCEPT" desc="Text for the accept button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_ACCEPT" desc="Text for the accept button in the mandatory reauth opt-in prompt. If the user clicks this button, mandatory reauth will be enabled. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
     Yes
   </message>
-  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_TITLE" desc="Title text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_TITLE" desc="Title text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
     Always verify?
   </message>
-  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_EXPLANATION" desc="Explanation text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
+  <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_EXPLANATION" desc="Explanation text for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
     For added security on shared devices, turn on verification every time you pay using autofill.
   </message>
   <message name="IDS_AUTOFILL_MANDATORY_REAUTH_ICON_TOOLTIP" desc="The tooltip message for the omnibox icon for the mandatory reauth opt-in bubble on Desktop. This bubble prompts users if they would like to enroll in mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
@@ -592,6 +591,18 @@
   <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK" desc="A link to the settings page for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
     settings
   </message>
+
+  <if expr="is_android">
+    <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_CONTENT_DESCRIPTION" desc="Content description for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. It is read as accessibility string when the bottom sheet containing the prompt is focused. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
+      Alert about new payment setting
+    </message>
+    <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_OPENED_FULL" desc="The accessibility string for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. It is read as accessibility string when the bottom sheet containing the prompt is fully opened. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
+      Alert about new payment setting is opened
+    </message>
+    <message name="IDS_AUTOFILL_MANDATORY_REAUTH_OPT_IN_CLOSED" desc="The accessibility string for the mandatory reauth opt-in prompt that is displayed to the user after filling in payment method information. It is read as accessibility string when the bottom sheet containing the prompt is closed. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information." formatter_data="android_java">
+      Alert about new payment setting is closed
+    </message>
+  </if>
 
   <!-- virtual cards related strings - start -->
   <if expr="not is_ios and not is_android">
@@ -721,7 +732,7 @@
       Choose how you'll verify it's you
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_AUTHENTICATION_SELECTION_DIALOG_ISSUER_CONFIRMATION_TEXT" desc="The issuer confirmation text shown in the Autofill card unmask authentication selection dialog on Desktop. This is the header text of the dialog, and it is the text stating that the issuer wants additional authentication. This dialog lets the user choose the method of authentication when unmasking a server card, including a virtual card.">
-      Your bank wants to confirm it's you.
+      Your bank wants to make sure it's you
   </message>
   <message name="IDS_AUTOFILL_AUTHENTICATION_MODE_SECURITY_CODE" desc="The label for the 3 digit security code authentication option shown in the Autofill card unmask authentication selection dialog on Desktop. Only shown when there are multiple unmask options presented to the user. If selected, the user will be prompted to enter their security code.">
     Enter your security code
@@ -748,16 +759,16 @@
       This is the <ph name="NUMBER_OF_DIGITS">$1<ex>3</ex></ph>-digit code on the <ph name="SIDE_OF_CARD">$2<ex>back of your card</ex></ph>
     </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_TITLE" desc="The title for the dialog that lets the user type in the OTP they received on Desktop. This message is shown right next to the logo for the dialog, and it lets the users know the action that is required in this dialog, which is to enter their verification code (OTP).">
-    Enter verification code
+    Enter code
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_FOOTER_MESSAGE" desc="The footer message for the dialog that lets the user type in the OTP they received on Desktop. This message instructs the user on what to do if they can't find their OTP code, for example if the OTP code was sent by email but it never came. It contains a link that comes from IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_NEW_CODE_MESSAGE which allows them to get a new code sent if clicked.">
-    Can't find your code? <ph name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_NEW_CODE_MESSAGE">$1<ex>Get new code</ex></ph>
+    Didn't receive your code? <ph name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_NEW_CODE_MESSAGE">$1<ex>Get new code</ex></ph>
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_NEW_CODE_MESSAGE" desc="The second sentence of the footer message for the dialog that lets the user type in the OTP they received on Desktop. The entire footer message is for when the user can't find his OTP, for example if it was sent by email but the email never came. This is shown as a link that the user can click on to get a new OTP code, and will be substituted into IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_FOOTER_MESSAGE.">
     Get new code
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_TEXTFIELD_PLACEHOLDER_MESSAGE" desc="The textfield placeholder text for the dialog that lets the user type in the OTP they received on Desktop. This message is shown when the textfield is empty, and it lets the user know the number of digits required for their OTP.">
-    Enter <ph name="NUMBER_OF_DIGITS">$1<ex>6</ex></ph>-digit code
+    Enter <ph name="NUMBER_OF_DIGITS">$1<ex>6</ex></ph>-digit verification code
   </message>
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_PENDING_MESSAGE" desc="The textfield placeholder text for the dialog that lets the user type in the OTP they received on Desktop. This message is shown after the user submits an OTP, and the dialog goes into pending state. It informs the user that we are currently verifying that the OTP they typed in is correct.">
     Verifying code...

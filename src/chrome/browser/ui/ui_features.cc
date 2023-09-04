@@ -13,7 +13,7 @@ namespace features {
 
 // Enables the tab dragging fallback when full window dragging is not supported
 // by the platform (e.g. Wayland). See https://crbug.com/896640
-// TODO: Alex313031 bug fix
+// TODO: Alex313031 possibly re-enable? Causes issues on newer Wayland
 BASE_FEATURE(kAllowWindowDragUsingSystemDragDrop,
              "AllowWindowDragUsingSystemDragDrop",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -28,13 +28,14 @@ BASE_FEATURE(kDesktopPWAsAppHomePage,
 BASE_FEATURE(kChromeLabs, "ChromeLabs", base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables "Chrome What's New" UI.
+// TODO: Alex313031 Test Mock UI
 BASE_FEATURE(kChromeWhatsNewUI,
              "ChromeWhatsNewUI",
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING) && !defined(ANDROID) && \
     !BUILDFLAG(IS_CHROMEOS_LACROS) && !BUILDFLAG(IS_CHROMEOS_ASH)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
-             base::FEATURE_DISABLED_BY_DEFAULT
+             base::FEATURE_ENABLED_BY_DEFAULT
 #endif
 );
 
@@ -42,13 +43,20 @@ BASE_FEATURE(kChromeWhatsNewUI,
 // with submenu to manage extensions and visit chrome web store.
 BASE_FEATURE(kExtensionsMenuInAppMenu,
              "ExtensionsMenuInAppMenu",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 #if !defined(ANDROID)
 // Enables "Access Code Cast" UI.
 BASE_FEATURE(kAccessCodeCastUI,
              "AccessCodeCastUI",
              base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
+
+#if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_CHROMEOS)
+// Enables camera preview in permission bubble and site settings.
+BASE_FEATURE(kCameraMicPreview,
+             "CameraMicPreview",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
 
 // Enables displaying the submenu to open a link with a different profile if
@@ -67,38 +75,6 @@ BASE_FEATURE(kEvDetailsInPageInfo,
 BASE_FEATURE(kGetTheMostOutOfChrome,
              "GetTheMostOutOfChrome",
              base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
-
-#if !BUILDFLAG(IS_ANDROID) && BUILDFLAG(GOOGLE_CHROME_BRANDING)
-// This feature controls whether the user can be shown the Chrome for iOS promo
-// when saving/updating their passwords.
-BASE_FEATURE(kIOSPromoPasswordBubble,
-             "IOSPromoPasswordBubble",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
-// This array lists the different activation params that can be passed in the
-// experiment config, with their corresponding string.
-constexpr base::FeatureParam<IOSPromoPasswordBubbleActivation>::Option
-    kIOSPromoPasswordBubbleActivationOptions[] = {
-        {IOSPromoPasswordBubbleActivation::kContextualDirect,
-         "contextual-direct"},
-        {IOSPromoPasswordBubbleActivation::kContextualIndirect,
-         "contextual-indirect"},
-        {IOSPromoPasswordBubbleActivation::kNonContextualDirect,
-         "non-contextual-direct"},
-        {IOSPromoPasswordBubbleActivation::kNonContextualIndirect,
-         "non-contextual-indirect"},
-        {IOSPromoPasswordBubbleActivation::kAlwaysShowWithPasswordBubbleDirect,
-         "always-show-direct"},
-        {IOSPromoPasswordBubbleActivation::
-             kAlwaysShowWithPasswordBubbleIndirect,
-         "always-show-indirect"}};
-
-constexpr base::FeatureParam<IOSPromoPasswordBubbleActivation>
-    kIOSPromoPasswordBubbleActivationParam{
-        &kIOSPromoPasswordBubble, "activation",
-        IOSPromoPasswordBubbleActivation::kContextualDirect,
-        &kIOSPromoPasswordBubbleActivationOptions};
 #endif
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -204,11 +180,10 @@ BASE_FEATURE(kTabGroupsSave,
              "TabGroupsSave",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Enables users to explicitly save and recall tab groups with sync.
-// https://crbug.com/1223929
-BASE_FEATURE(kTabGroupsSaveSyncIntegration,
-             "TabGroupsSaveSyncIntegration",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+// Enables configuring tab hover card image previews in the settings.
+BASE_FEATURE(kTabHoverCardImageSettings,
+             "TabHoverCardImageSettings",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables preview images in tab-hover cards.
 // https://crbug.com/928954
@@ -230,7 +205,6 @@ const char kTabHoverCardImagesCrossfadePreviewAtParameterName[] =
     "crossfade_preview_at";
 const char kTabHoverCardAdditionalMaxWidthDelay[] =
     "additional_max_width_delay";
-const char kTabHoverCardAlternateFormat[] = "alternate_format";
 
 BASE_FEATURE(kTabSearchChevronIcon,
              "TabSearchChevronIcon",

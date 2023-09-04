@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <grit-part>
   <!-- Shared strings for SSL-related interstitials -->
   <message name="IDS_SSL_OPEN_DETAILS_BUTTON" desc="The text for the button that expands the details on an error page. Paired with IDS_SSL_CLOSE_DETAILS_BUTTON.">

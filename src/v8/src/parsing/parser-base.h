@@ -2580,12 +2580,7 @@ typename ParserBase<Impl>::ExpressionT ParserBase<Impl>::ParseMemberInitializer(
   }
 
   if (is_static) {
-    // For the instance initializer, we will save the positions
-    // later with the positions of the class body so that we can reparse
-    // it later.
     // TODO(joyee): Make scopes be non contiguous.
-    initializer_scope->set_start_position(beg_pos);
-    initializer_scope->set_end_position(end_position());
     class_info->static_elements_scope = initializer_scope;
     class_info->has_static_elements = true;
   } else {
@@ -4574,6 +4569,11 @@ ParserBase<Impl>::ParseArrowFunctionLiteral(
   FunctionKind kind = formal_parameters.scope->function_kind();
   FunctionLiteral::EagerCompileHint eager_compile_hint =
       default_eager_compile_hint_;
+
+  int compile_hint_position = formal_parameters.scope->start_position();
+  eager_compile_hint =
+      impl()->GetEmbedderCompileHint(eager_compile_hint, compile_hint_position);
+
   bool can_preparse = impl()->parse_lazily() &&
                       eager_compile_hint == FunctionLiteral::kShouldLazyCompile;
   // TODO(marja): consider lazy-parsing inner arrow functions too. is_this
@@ -4838,6 +4838,12 @@ typename ParserBase<Impl>::ExpressionT ParserBase<Impl>::ParseClassLiteral(
   Expect(Token::RBRACE);
   int end_pos = end_position();
   class_scope->set_end_position(end_pos);
+  if (class_info.static_elements_scope != nullptr) {
+    // Use the positions of the class body for the static initializer
+    // function so that we can reparse it later.
+    class_info.static_elements_scope->set_start_position(class_token_pos);
+    class_info.static_elements_scope->set_end_position(end_pos);
+  }
   if (class_info.instance_members_scope != nullptr) {
     // Use the positions of the class body for the instance initializer
     // function so that we can reparse it later.

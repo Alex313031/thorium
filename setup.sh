@@ -86,6 +86,7 @@ cp -r -v infra/default_apps/. ${CR_SRC_DIR}/out/thorium/default_apps/ &&
 
 # Add initial preferences file to open Thorium welcome page on first run.
 cp -v infra/initial_preferences ${CR_SRC_DIR}/out/thorium/ &&
+cp -v infra/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 
 echo " # Workaround for DevTools" &&
 mkdir -v -p ${CR_SRC_DIR}/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
@@ -138,6 +139,7 @@ copyAVX2 () {
 	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/AVX2/v8/* ${CR_SRC_DIR}/v8/ &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in
@@ -151,6 +153,7 @@ copySSE3 () {
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/SSE3/v8/* ${CR_SRC_DIR}/v8/ &&
 	cp -r -v other/SSE3/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in
@@ -163,6 +166,7 @@ copySSE2 () {
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/SSE2/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in

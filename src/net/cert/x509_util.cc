@@ -1,4 +1,4 @@
-// Copyright (c) 2022 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -26,8 +26,8 @@
 #include "net/cert/pki/parse_certificate.h"
 #include "net/cert/pki/parse_name.h"
 #include "net/cert/pki/signature_algorithm.h"
+#include "net/cert/time_conversions.h"
 #include "net/cert/x509_certificate.h"
-#include "net/der/encode_values.h"
 #include "net/der/input.h"
 #include "net/der/parse_values.h"
 #include "third_party/boringssl/src/include/openssl/bytestring.h"
@@ -80,7 +80,12 @@ const EVP_MD* ToEVP(DigestAlgorithm alg) {
 
 class BufferPoolSingleton {
  public:
-  BufferPoolSingleton() : pool_(CRYPTO_BUFFER_POOL_new()) {}
+  BufferPoolSingleton() {
+    crypto::EnsureOpenSSLInit();
+
+    pool_ = CRYPTO_BUFFER_POOL_new();
+  }
+
   CRYPTO_BUFFER_POOL* pool() { return pool_; }
 
  private:
@@ -164,8 +169,9 @@ bool AddName(CBB* cbb, base::StringPiece name) {
 
 bool CBBAddTime(CBB* cbb, base::Time time) {
   der::GeneralizedTime generalized_time;
-  if (!der::EncodeTimeAsGeneralizedTime(time, &generalized_time))
+  if (!EncodeTimeAsGeneralizedTime(time, &generalized_time)) {
     return false;
+  }
 
   // Per RFC 5280, 4.1.2.5, times which fit in UTCTime must be encoded as
   // UTCTime rather than GeneralizedTime.
