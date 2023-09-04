@@ -1,26 +1,18 @@
-From 953b1d8165d73d341c30300f160e108a9ab4df40 Mon Sep 17 00:00:00 2001
+From 7b72001f9bd47cb1190617a72ee35017b923ada4 Mon Sep 17 00:00:00 2001
 From: Ho Cheung <uioptt24@gmail.com>
-Date: Sun, 3 Sep 2023 11:39:19 +0800
+Date: Mon, 4 Sep 2023 20:56:29 +0800
 Subject: [PATCH] [Android] Remove discovery module from NTP
 
 ---
- .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
- .../java/res/layout/new_tab_page_multi_feed_header.xml       | 5 +++--
- components/feed/core/shared_prefs/pref_names.cc              | 4 ++--
- 3 files changed, 8 insertions(+), 6 deletions(-)
+ .../java/res/layout/new_tab_page_feed_v2_expandable_header.xml | 3 ++-
+ .../android/java/res/layout/new_tab_page_multi_feed_header.xml | 3 ++-
+ components/feed/core/shared_prefs/pref_names.cc                | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
-index ee1283cb9a6a0..e15ddc9532cce 100644
+index ee1283cb9a6a0..01cf8d4ef4e7e 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
-@@ -1,6 +1,6 @@
- <?xml version="1.0" encoding="utf-8"?>
- <!--
--Copyright 2020 The Chromium Authors
-+Copyright 2020 The Chromium Authors, Alex313031 and gz83
- Use of this source code is governed by a BSD-style license that can be
- found in the LICENSE file.
- -->
 @@ -14,7 +14,8 @@ found in the LICENSE file.
      android:minHeight="@dimen/snippets_article_header_height"
      android:orientation="vertical"
@@ -32,17 +24,9 @@ index ee1283cb9a6a0..e15ddc9532cce 100644
      <RelativeLayout
          tools:ignore="RelativeOverlap"
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
-index 483e954de0a49..102ba230e2134 100644
+index 483e954de0a49..8a68a7b230cbf 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
-@@ -1,6 +1,6 @@
- <?xml version="1.0" encoding="utf-8"?>
- <!--
--Copyright 2021 The Chromium Authors
-+Copyright 2021 The Chromium Authors, Alex313031 and gz83
- Use of this source code is governed by a BSD-style license that can be
- found in the LICENSE file.
- -->
 @@ -11,7 +11,8 @@ found in the LICENSE file.
      xmlns:tools="http://schemas.android.com/tools"
      android:layout_width="match_parent"
@@ -54,15 +38,9 @@ index 483e954de0a49..102ba230e2134 100644
    <LinearLayout
        android:id="@+id/main_content"
 diff --git a/components/feed/core/shared_prefs/pref_names.cc b/components/feed/core/shared_prefs/pref_names.cc
-index 71586a65fcd92..26e9cfbe72c80 100644
+index 71586a65fcd92..3455a46cb886e 100644
 --- a/components/feed/core/shared_prefs/pref_names.cc
 +++ b/components/feed/core/shared_prefs/pref_names.cc
-@@ -1,4 +1,4 @@
--// Copyright 2020 The Chromium Authors
-+// Copyright 2020 The Chromium Authors, Alex313031 and gz83
- // Use of this source code is governed by a BSD-style license that can be
- // found in the LICENSE file.
- 
 @@ -20,7 +20,7 @@ const char kArticlesListVisible[] = "ntp_snippets.list_visible";
  
  void RegisterFeedSharedProfilePrefs(PrefRegistrySimple* registry) {
