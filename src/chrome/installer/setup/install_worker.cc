@@ -85,6 +85,10 @@ constexpr wchar_t kLpacChromeInstallFilesCapabilitySid[] =
     L"S-1-15-3-1024-2302894289-466761758-1166120688-1039016420-2430351297-"
     L"4240214049-4028510897-3317428798";
 
+// Thorium Application dir files
+const wchar_t kInitPref[] = L"initial_preferences";
+const wchar_t kThorVer[] = L"thor_ver";
+
 void AddInstallerCopyTasks(const InstallParams& install_params,
                            WorkItemList* install_list) {
   DCHECK(install_list);
@@ -311,11 +315,11 @@ void AddChromeWorkItems(const InstallParams& install_params,
                                     new_chrome_exe);
 
   // Add Thorium-specific files
-  install_list->AddCopyTreeWorkItem(src_path.Append('initial_preferences'),
-                                    target_path.Append('initial_preferences'),
+  install_list->AddCopyTreeWorkItem(src_path.Append(kInitPref),
+                                    target_path.Append(kInitPref),
                                     temp_path, WorkItem::ALWAYS);
-  install_list->AddCopyTreeWorkItem(src_path.Append('thor_ver'),
-                                    target_path.Append('thor_ver'),
+  install_list->AddCopyTreeWorkItem(src_path.Append(kThorVer),
+                                    target_path.Append(kThorVer),
                                     temp_path, WorkItem::ALWAYS);
 
   // Install kVisualElementsManifest if it is present in |src_path|. No need to
