@@ -62,6 +62,9 @@ rm -r -f -v	components/ungoogled/ &&
 
 git checkout -f origin/main &&
 
+git clean -ffd &&
+git clean -ffd &&
+
 git rebase-update &&
 
 git fetch --tags &&
@@ -73,7 +76,6 @@ cd ${CR_SRC_DIR} &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
-git clean -ffd &&
 git clean -ffd &&
 
 printf "\n" &&

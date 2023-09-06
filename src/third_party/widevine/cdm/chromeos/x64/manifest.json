@@ -3,7 +3,7 @@
   "update_url": "https://clients2.google.com/service/update2/crx",
   "name": "WidevineCdm",
   "description": "Widevine Content Decryption Module",
-  "version": "4.10.2557.0",
+  "version": "4.10.2662.3",
   "minimum_chrome_version": "68.0.3430.0",
   "x-cdm-module-versions": "4",
   "x-cdm-interface-versions": "10",
