@@ -24,7 +24,6 @@ debuggable_apks = false
 use_relative_vtables_abi = false
 icu_use_data_file = true
 # use_cfi_cast = true
-use_gnome_keyring = false
 v8_use_external_startup_data = true
 android_channel = "stable"
 disable_android_lint = true

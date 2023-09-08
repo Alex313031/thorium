@@ -19,7 +19,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium on Linux.${c0}\n" &&
-	printf "${underline}${YEL}Usage: ${c0}build.sh # (where # is number of jobs)${c0}\n" &&
+	printf "${underline}${YEL}Usage:${c0} build.sh # (where # is number of jobs)${c0}\n" &&
 	printf "\n"
 }
 case $1 in

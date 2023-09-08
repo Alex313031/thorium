@@ -19,9 +19,9 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium for Android.${c0}\n" &&
-	printf "${underline}${YEL}Usage: ${c0}build.sh # (where # is number of jobs)${c0}\n" &&
-	printf "${underline}${YEL}Use the --arm32 flag to make an ARM32 Build.{c0}\n" &&
-	printf "${underline}${YEL}Use the --help flag to show this help.{c0}\n" &&
+	printf "${underline}${YEL}Usage:${c0} build.sh # (where # is number of jobs)${c0}\n" &&
+	printf "${YEL}Use the --arm32 flag to make an ARM32 Build.${c0}\n" &&
+	printf "${YEL}Use the --help flag to show this help.${c0}\n" &&
 	printf "\n"
 }
 case $1 in

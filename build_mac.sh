@@ -19,8 +19,8 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium and Thorium Shell on MacOS.${c0}\n" &&
-	printf "${underline}${YEL}Usage: ${c0}build.sh # (where # is number of jobs)${c0}\n" &&
-	printf "${c0}Use the --build-shell flag to also build the thorium_shell target.${c0}\n" &&
+	printf "${underline}${YEL}Usage:${c0} build.sh # (where # is number of jobs)${c0}\n" &&
+	printf "${YEL}Use the --build-shell flag to also build the thorium_shell target.${c0}\n" &&
 	printf "\n"
 }
 case $1 in

@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/config/android/config.gni")
+import("//build/config/android/jni.gni")
 import("//build/config/android/rules.gni")
 import("//third_party/icu/config.gni")
 
@@ -18,7 +19,7 @@ generate_jni("content_shell_jni_headers") {
   ]
 }
 
-shared_library("libcontent_shell_content_view") {
+shared_library_with_jni("libcontent_shell_content_view") {
   testonly = true
   deps = [
     ":content_shell_jni_headers",
@@ -41,9 +42,10 @@ shared_library("libcontent_shell_content_view") {
   sources = [ "shell_library_loader.cc" ]
   configs -= [ "//build/config/android:hide_all_but_jni_onload" ]
   configs += [ "//build/config/android:hide_all_but_jni" ]
+  java_targets = [ ":content_shell_apk" ]
 }
 
-shared_library("libcontent_native_test") {
+shared_library_with_jni("libcontent_native_test") {
   testonly = true
   deps = [
     "//base",
@@ -56,6 +58,7 @@ shared_library("libcontent_native_test") {
   sources = [ "shell_test_library_loader.cc" ]
   configs -= [ "//build/config/android:hide_all_but_jni_onload" ]
   configs += [ "//build/config/android:hide_all_but_jni" ]
+  java_targets = [ ":content_shell_test_apk__test_apk" ]
 }
 
 android_resources("content_shell_java_resources") {
@@ -95,13 +98,12 @@ android_library("content_shell_java") {
     "//ui/base/cursor/mojom:cursor_type_java",
     "//url:gurl_java",
   ]
+  srcjar_deps = [ ":content_shell_jni_headers" ]
   sources = [
     "java/src/org/chromium/content_shell/Shell.java",
     "java/src/org/chromium/content_shell/ShellManager.java",
     "java/src/org/chromium/content_shell/ShellViewAndroidDelegate.java",
   ]
-
-  annotation_processor_deps = [ "//base/android/jni_generator:jni_processor" ]
 }
 
 jinja_template("content_shell_manifest") {
@@ -208,24 +210,26 @@ template("content_shell_apk_tmpl") {
 
 content_shell_apk_tmpl("content_shell_apk") {
   target_type = "android_apk"
-  apk_name = "ThoriumShell"
+  apk_name = "Thorium_Shell"
   android_manifest = content_shell_manifest
   android_manifest_dep = ":content_shell_manifest"
   shared_libraries = [ ":libcontent_shell_content_view" ]
+  srcjar_deps = [ ":libcontent_shell_content_view__jni_registration" ]
   command_line_flags_file = "content-shell-command-line"
 }
 
 content_shell_apk_tmpl("content_shell_test_apk") {
   target_type = "instrumentation_test_apk"
-  apk_name = "ThoriumShellTest"
+  apk_name = "Thorium_Shell_Test"
   android_manifest = content_shell_test_manifest
   android_manifest_dep = ":content_shell_test_manifest"
   shared_libraries = [ ":libcontent_native_test" ]
+  srcjar_deps = [ ":libcontent_native_test__jni_registration" ]
   deps = [
     "//base:base_java_test_support",
     "//base:base_javatests",
     "//content/public/android:content_javatests",
-    "//net/android:net_javatests",
+    "//net/android:net_tests_java",
   ]
   data_deps = [ "//testing/buildbot/filters:content_shell_test_apk_filters" ]
   if (enable_chrome_android_internal) {
