@@ -42,7 +42,7 @@ $ export PATH="$PATH:${HOME}/depot_tools" or $ export PATH="$PATH:/home/alex/dep
 Clone the Thorium repo into *$HOME*
 
 ```shell
-$ git clone https://github.com/Alex313031/thorium.git
+$ git clone --recursive https://github.com/Alex313031/thorium.git
 ```
 
 ### Chromium Code

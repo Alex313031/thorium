@@ -166,7 +166,7 @@ You can either use git clone, or download a .zip from the repo. It should be pla
 Using Git:
 
 ```shell
-git clone https://github.com/Alex313031/thorium.git
+git clone --recursive https://github.com/Alex313031/thorium.git
 ```
 Or download the .zip (Make sure to rename the extracted dir to just thorium, not thorium-main).
 [https://github.com/Alex313031/thorium/archive/refs/heads/main.zip](https://github.com/Alex313031/thorium/archive/refs/heads/main.zip)

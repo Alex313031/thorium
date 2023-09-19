@@ -38,6 +38,13 @@ Are you a Google employee? See
     version of the macOS SDK on it.
 *   An APFS-formatted volume (this is the default format for macOS volumes).
 
+##  Downloading the Thorium code
+Using Git:
+
+```shell
+git clone --recursive https://github.com/Alex313031/thorium.git
+```
+
 ## Install `depot_tools`
 
 Clone the `depot_tools` repository:
