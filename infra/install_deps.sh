@@ -32,7 +32,7 @@ cd &&
 # Clone repos
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
 printf "\n" &&
-git clone --recursive https://github.com/Alex313031/Thorium.git &&
+git clone --recursive https://github.com/Alex313031/thorium.git &&
 
 # Make Chromium dirs
 printf "\n" &&

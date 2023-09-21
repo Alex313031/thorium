@@ -71,7 +71,7 @@ Good, now we have a full Chromium checkout ready to be built, but to turn it int
 ## Thorium Setup
 So, lets download Thorium in C:\src
 
-git clone --recursive https://github.com/Alex313031/Thorium.git or download the .zip and unpack it there > https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip
+git clone --recursive https://github.com/Alex313031/thorium.git or download the .zip and unpack it there > https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip
 
 Now, go back to C:\chromium\src
 

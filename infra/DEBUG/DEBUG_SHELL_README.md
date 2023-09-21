@@ -23,7 +23,7 @@ These files are in:
 
 *More info can be found at > https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/components/vector_icons/README.md*
 
-## Building <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
+## Building <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only">
 
 To build, use: autoninja -C out/thorium chrome chromedriver thorium_shell setup mini_installer thorium_ui_debug_shell or just
 autoninja -C out/thorium thorium_ui_debug_shell to exclude building the rest of Thorium.

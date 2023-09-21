@@ -12,7 +12,7 @@
 .SH DESCRIPTION
 See the Thorium Repository for help on using the browser.
 .IP
-<https://github.com/Alex313031/Thorium/>
+<https://github.com/Alex313031/thorium/>
 .PP
 This manpage only describes invocation, environment, and arguments.
 
@@ -156,7 +156,7 @@ Default directory for cache data.  (Why?  See
 .SH BUGS
 Bug tracker:
 .IP
-http://code.google.com/p/chromium/issues/list & https://github.com/Alex313031/Thorium/issues
+http://code.google.com/p/chromium/issues/list & https://github.com/Alex313031/thorium/issues
 .PP
 Be sure to do your search within "All Issues" before reporting bugs,
 and be sure to pick the "Defect on Linux" template when filing a new one.

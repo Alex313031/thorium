@@ -30,7 +30,7 @@ printf "\n" &&
 printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this directory before running.${c0}\n" &&
 printf "${bold}${RED}   AND you must have p7zip-full and zip installed.${c0}\n" &&
 printf "\n" &&
-printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/Thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
+printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
 printf "${YEL}\n" &&
 
 read -p "Press Enter to continue or Ctrl + C to abort."
