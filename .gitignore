@@ -1,6 +1,6 @@
 .DS_Store
 API_KEYS.txt
-*.deb
+#*.deb
 *.rpm
 *.snap
 *.AppImage
