@@ -60,22 +60,7 @@ cd ~/thorium &&
 cp -r -v thorium-libjxl/src/. ${CR_SRC_DIR}/ &&
 
 # Copy Thorium sources
-cp -r -v src/BUILD.gn ${CR_SRC_DIR}/ &&
-cp -r -v src/ash/. ${CR_SRC_DIR}/ash/ &&
-cp -r -v src/build/. ${CR_SRC_DIR}/build/ &&
-cp -r -v src/chrome/. ${CR_SRC_DIR}/chrome/ &&
-cp -r -v src/chromeos/. ${CR_SRC_DIR}/chromeos/ &&
-cp -r -v src/components/. ${CR_SRC_DIR}/components/ &&
-cp -r -v src/extensions/. ${CR_SRC_DIR}/extensions/ &&
-cp -r -v src/content/. ${CR_SRC_DIR}/content/ &&
-cp -r -v src/media/. ${CR_SRC_DIR}/media/ &&
-cp -r -v src/net/. ${CR_SRC_DIR}/net/ &&
-cp -r -v src/sandbox/. ${CR_SRC_DIR}/sandbox/ &&
-cp -r -v src/services/. ${CR_SRC_DIR}/services/ &&
-cp -r -v src/third_party/. ${CR_SRC_DIR}/third_party/ &&
-cp -r -v src/tools/. ${CR_SRC_DIR}/tools/ &&
-cp -r -v src/ui/. ${CR_SRC_DIR}/ui/ &&
-cp -r -v src/v8/. ${CR_SRC_DIR}/v8/ &&
+cp -r -v src/. ${CR_SRC_DIR}/ &&
 cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
