@@ -13,8 +13,9 @@ class RoboConfiguration:
     '_chrome_src', '_host_operating_system', '_host_architecture',
     '_ffmpeg_home', '_relative_asan_directory', '_branch_name',
     '_sushi_branch_name', '_readme_chromium_commit_title', '_nasm_path',
-    '_prompt_on_call', '_os_flavor', '_force_gn_rebuild', '_skip_allowed')
-  def __init__(self):
+    '_prompt_on_call', '_os_flavor', '_force_gn_rebuild', '_skip_allowed',
+    '_script_directory')
+  def __init__(self, quiet=False):
     """Ensure that our config has basic fields fill in, and passes some sanity
     checks too.
 
@@ -36,6 +37,7 @@ class RoboConfiguration:
     self._readme_chromium_commit_title = "README.chromium file"
     self.EnsureHostInfo()
     self.EnsureChromeSrc()
+    self.EnsureScriptDirectory()
 
     # Origin side of the merge.  Only needs to change if you're trying to
     # modify and test robosushi itself.  See robosushi.py for details.
@@ -47,16 +49,20 @@ class RoboConfiguration:
 
     self.EnsurePathContainsLLVM()
     self.EnsureNoMakeInfo()
-    shell.log("Using chrome src: %s" % self.chrome_src())
     self.EnsureFFmpegHome()
-    shell.log("Using ffmpeg home: %s" % self.ffmpeg_home())
     self.EnsureASANConfig()
     self.ComputeBranchName()
-    shell.log("On branch: %s" % self.branch_name())
-    if self.sushi_branch_name():
-      shell.log("On sushi branch: %s" % self.sushi_branch_name())
+    if not quiet:
+      shell.log(f"Using chrome src: {self.chrome_src()}")
+      shell.log(f"Using script dir: {self._script_directory}")
+      shell.log(f"Using ffmpeg home:{self.ffmpeg_home()}")
+      shell.log(f"On branch: {self.branch_name()}")
+      if self.sushi_branch_name():
+        shell.log(f"On sushi branch: {self.sushi_branch_name()}")
 
     # Filename that we'll ask generate_gn.py to write git commands to.
+    # TODO: Should this use script_directory, or stay with ffmpeg?  As long as
+    # there's a .gitignore entry, either should be fine.
     self._autorename_git_file = os.path.join(
       self.ffmpeg_home(), "chromium", "scripts", ".git_commands.sh")
 
@@ -81,6 +87,10 @@ class RoboConfiguration:
 
   def absolute_asan_directory(self):
     return os.path.join(self.chrome_src(), self.relative_asan_directory())
+
+  def get_script_path(self, script_name):
+    """Return /path/to/robosuhi/scripts/dir/script_name"""
+    return os.path.join(self._script_directory, script_name)
 
   def chdir_to_chrome_src(self):
     os.chdir(self.chrome_src())
@@ -160,6 +170,14 @@ class RoboConfiguration:
         return
       wd = os.path.dirname(wd)
     raise Exception("could not find src/AUTHORS in any parent of the wd")
+
+  def EnsureScriptDirectory(self):
+    """Make sure we know where the scripts are."""
+    # Assume that __func__ is /.../scripts/robo_lib/something.py
+    self._script_directory = os.path.dirname(os.path.dirname(__file__))
+    # Verify that `robosushi.py` is in this directory, for sanity.
+    if not os.path.isfile(self.get_script_path("robosushi.py")):
+      raise Exception("Fix EnsureScriptDir -- cannot find robosushi.py")
 
   def EnsureFFmpegHome(self):
     """Ensure that |self| has "ffmpeg_home" set."""

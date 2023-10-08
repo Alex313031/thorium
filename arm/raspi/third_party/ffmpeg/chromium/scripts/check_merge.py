@@ -51,6 +51,7 @@ INSERTION_TRIPWIRES = [
 ]
 
 # Filenames that will be excluded from the regex matching.
+# Note: chromium/scripts can be removed once the scripts move out of ffmpeg.
 EXCLUDED_FILENAMES = [
     r"^configure$",
     r"^chromium/scripts/",

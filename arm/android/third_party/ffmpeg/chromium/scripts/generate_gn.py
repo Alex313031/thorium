@@ -36,6 +36,10 @@ import re
 import shutil
 import subprocess
 import sys
+from robo_lib import config
+
+# The test wrapper doesn't appreciate the status messages.
+ROBO_CONFIGURATION = config.RoboConfiguration(quiet=True)
 
 COPYRIGHT = """# Copyright %d The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -576,7 +580,7 @@ def ParseOptions():
       '-s',
       '--source_dir',
       dest='source_dir',
-      default='.',
+      default=ROBO_CONFIGURATION.ffmpeg_home(),
       metavar='DIR',
       help='FFmpeg source directory.')
 
@@ -584,7 +588,7 @@ def ParseOptions():
       '-b',
       '--build_dir',
       dest='build_dir',
-      default='.',
+      default=ROBO_CONFIGURATION.ffmpeg_home(),
       metavar='DIR',
       help='Build root containing build.x64.linux, etc...')
 

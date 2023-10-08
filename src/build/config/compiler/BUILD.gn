@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -17,6 +17,7 @@ import("//build/config/host_byteorder.gni")
 import("//build/config/rust.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build/config/ui.gni")
+import("//build/config/unwind.gni")
 import("//build/toolchain/cc_wrapper.gni")
 import("//build/toolchain/goma.gni")
 import("//build/toolchain/rbe.gni")
@@ -153,10 +154,6 @@ declare_args() {
   # The gold linker by default has text section splitting enabled.
   use_text_section_splitting = false
 
-  # Turn off the --call-graph-profile-sort flag for lld by default. Enable
-  # selectively for targets where it's beneficial.
-  enable_call_graph_profile_sort = chrome_pgo_phase == 2
-
   # Enable DWARF v5.
   use_dwarf5 = false
 
@@ -210,7 +207,7 @@ declare_args() {
                                                        current_cpu == "x64"))))
 }
 
-if (is_android || (is_chromeos_ash && is_chromeos_device)) {
+if (is_android) {
   # Set the path to use orderfile for linking Chrome
   # Note that this is for using only one orderfile for linking
   # the Chrome binary/library.
@@ -221,15 +218,17 @@ if (is_android || (is_chromeos_ash && is_chromeos_device)) {
       # Allow downstream tools to set orderfile path with
       # another variable.
       chrome_orderfile_path = default_chrome_orderfile
-    } else if (is_chromeos_ash && is_chromeos_device) {
-      if (chromeos_afdo_platform == "arm" ||
-          chromeos_afdo_platform == "arm-exp") {
-        chrome_orderfile_path = "//chromeos/profiles/chromeos.arm.orderfile.txt"
-      } else {
-        chrome_orderfile_path = "//chromeos/profiles/chromeos.orderfile.txt"
-      }
     }
   }
+}
+
+declare_args() {
+  # Turn off the --call-graph-profile-sort flag for lld by default. Enable
+  # selectively for targets where it's beneficial.
+  enable_call_graph_profile_sort =
+      chrome_pgo_phase == 2 ||
+      (is_chromeos &&
+       (clang_use_default_sample_profile || clang_sample_profile_path != ""))
 }
 
 assert(!(llvm_force_head_revision && use_goma),
@@ -1637,6 +1636,12 @@ config("runtime_library") {
   # configuration.
   if (is_posix || is_fuchsia) {
     configs += [ "//build/config/posix:runtime_library" ]
+
+    if (use_custom_libunwind) {
+      # Instead of using an unwind lib from the toolchain,
+      # buildtools/third_party/libunwind will be built and used directly.
+      ldflags = [ "--unwindlib=none" ]
+    }
   }
 
   # System-specific flags. If your compiler flags apply to one of the
@@ -1804,12 +1809,17 @@ config("default_warnings") {
           # TODO(crbug.com/1412713) Evaluate and possibly enable.
           "-Wno-deprecated-this-capture",
         ]
-
-        if (llvm_force_head_revision) {
-          # TODO(https://crbug.com/1448905): Evaluate and possibly enable.
-          cflags += [ "-Wno-builtin-macro-redefined" ]
-        }
       }
+    }
+
+    # Some builders, such as Cronet, use a different version of Clang than
+    # Chromium. This can cause minor errors when compiling Chromium changes. We
+    # want to avoid these errors.
+    if (use_lenient_compiler_flags) {
+      cflags += [
+        "-Wno-error=unknown-warning-option",
+        "-Wno-error=unused-command-line-argument",
+      ]
     }
   }
 
@@ -1939,7 +1949,8 @@ config("chromium_code") {
 
     # TODO(thakis): Enable this more often, https://crbug.com/346399
     # use_fuzzing_engine_with_lpm: https://crbug.com/1063180
-    if ((!is_nacl || is_nacl_saigo) && !use_fuzzing_engine_with_lpm) {
+    if ((!is_nacl || is_nacl_saigo) &&
+        !(is_win && use_fuzzing_engine_with_lpm)) {
       cflags += [ "-Wunreachable-code-aggressive" ]
     }
 
@@ -2027,7 +2038,7 @@ config("no_chromium_code") {
 config("noshadowing") {
   # This flag has to be disabled for nacl because the nacl compiler is too
   # strict about shadowing.
-  if (is_clang && (!is_nacl || is_nacl_saigo) && !llvm_force_head_revision) {
+  if (is_clang && (!is_nacl || is_nacl_saigo)) {
     cflags = [ "-Wshadow" ]
   }
 }
@@ -2181,9 +2192,6 @@ config("no_incompatible_pointer_warnings") {
 
 # Shared settings for both "optimize" and "optimize_max" configs.
 # IMPORTANT: On Windows "/O1" and "/O2" must go before the common flags.
-
-  common_optimize_on_cflags = [ "-O3", ]
-  common_optimize_on_ldflags = [ "-Wl,-O3", ]
 
 if (is_win) {
 
@@ -2412,7 +2420,7 @@ config("optimize") {
       # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
       # suggests not using an explicit `-Copt-level` at all, and the default is
       # to optimize for performance like `/O2` for clang.
-      rustflags = [ "-Copt-level=3" ]
+      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2431,7 +2439,7 @@ config("optimize") {
 
     # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
     # vectorization.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx" ]
   } else if (is_chromeos) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
     # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
@@ -2443,14 +2451,14 @@ config("optimize") {
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx" ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx" ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2640,6 +2648,14 @@ config("afdo") {
       if (use_profi) {
         cflags += [ "-fsample-profile-use-profi" ]
       }
+
+      # crbug.com/1459429: ARM builds see failures due to -Wbackend-plugin.
+      # These seem to be false positives - the complaints are about functions
+      # marked with `__nodebug__` not having associated debuginfo. In the case
+      # where this was observed, the `__nodebug__` function was also marked
+      # `__always_inline__` and had no branches, so AFDO info is likely useless
+      # there.
+      cflags += [ "-Wno-backend-plugin" ]
       inputs = [ _clang_sample_profile ]
     }
   } else if (auto_profile_path != "" && is_a_target_toolchain) {
@@ -2721,11 +2737,17 @@ config("symbols") {
       if (use_dwarf5) {
         cflags += [ "-gdwarf-5" ]
         rustflags += [ "-Zdwarf-version=5" ]
-      } else if (!is_apple) {
+      } else {
         # Recent clang versions default to DWARF5 on Linux, and Android is about
-        # to switch. TODO: Adopt that in controlled way.
-        # Apple platforms still default to 4, so the flag is not needed there.
-        cflags += [ "-gdwarf-4" ]
+        # to switch. TODO: Adopt that in controlled way. For now, keep DWARF4.
+        # Apple platforms still default to 4 in clang, so they don't need the
+        # cflags.
+        if (!is_apple) {
+          cflags += [ "-gdwarf-4" ]
+        }
+
+        # On Apple, rustc defaults to DWARF2 so it needs to be told how to
+        # match clang.
         rustflags += [ "-Zdwarf-version=4" ]
       }
     }
@@ -2967,27 +2989,14 @@ if (is_apple) {
   }
 }
 
-if (is_chromeos_ash && is_chromeos_device) {
-  # This config is intended to be a temporary to facilitate
-  # the transition to use orderfile in Chrome OS. Once orderfile
-  # use becomes a default in Chrome OS, this config should not
-  # be needed.
-  config("use_orderfile_for_hugepage") {
-    if (chrome_orderfile_path != "") {
-      defines = [ "CHROMEOS_ORDERFILE_USE" ]
-    }
-  }
-}
-
-if (is_android || (is_chromeos_ash && is_chromeos_device)) {
-  # Use orderfile for linking Chrome on Android and Chrome OS.
+if (is_android) {
+  # Use orderfile for linking Chrome on Android.
   # This config enables using an orderfile for linking in LLD.
   config("chrome_orderfile_config") {
     # Don't try to use an orderfile with call graph sorting, except on Android,
     # where we care about memory used by code, so we still want to mandate
     # ordering.
-    if (chrome_orderfile_path != "" &&
-        (is_android || !enable_call_graph_profile_sort)) {
+    if (chrome_orderfile_path != "") {
       assert(use_lld)
       _rebased_orderfile = rebase_path(chrome_orderfile_path, root_build_dir)
       ldflags = [
