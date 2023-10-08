@@ -530,7 +530,7 @@ const gfx::FontList& GM2TabStyleViews::GetFontList() const {
   static const bool prominent_dark_mode_title = base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-dark-mode-active-tab-title");
 
   if (prominent_dark_mode_title && tab_->IsActive() &&
-      color_utils::IsDark(GetTabBackgroundColor(TabActive::kActive))) {
+      color_utils::IsDark(GetCurrentTabBackgroundColor(TabStyle::TabSelectionState::kActive, false))) {
     return heavy_font_;
   }
 
