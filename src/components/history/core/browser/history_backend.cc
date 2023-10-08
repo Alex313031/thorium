@@ -967,6 +967,11 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
   VisitID last_visit_id = tracker_.GetLastVisit(
       request.context_id, request.nav_entry_id, request.referrer);
 
+  GURL external_referrer_url;
+  if (request.referrer.is_valid() && last_visit_id == kInvalidVisitID) {
+    external_referrer_url = request.referrer;
+  }
+
   const VisitID from_visit_id = last_visit_id;
 
   // If a redirect chain is given, we expect the last item in that chain to be
@@ -1015,10 +1020,11 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
 
     // No redirect case (one element means just the page itself).
     last_visit_id =
-        AddPageVisit(request.url, request.time, last_visit_id, t,
-                     request.hidden, request.visit_source, IsTypedIncrement(t),
-                     opener_visit, request.consider_for_ntp_most_visited,
-                     request.title)
+        AddPageVisit(request.url, request.time, last_visit_id,
+                     external_referrer_url, t, request.hidden,
+                     request.visit_source, IsTypedIncrement(t), opener_visit,
+                     request.consider_for_ntp_most_visited,
+                     request.local_navigation_id, request.title)
             .second;
 
     // Update the segment for this visit. KEYWORD_GENERATED visits should not
@@ -1141,10 +1147,12 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
       // the chain.
       last_visit_id =
           AddPageVisit(redirects[redirect_index], request.time, last_visit_id,
-                       t, request.hidden, request.visit_source,
+                       redirect_index == 0 ? external_referrer_url : GURL(), t,
+                       request.hidden, request.visit_source,
                        should_increment_typed_count,
                        redirect_index == 0 ? opener_visit : 0,
-                       request.consider_for_ntp_most_visited, request.title)
+                       request.consider_for_ntp_most_visited,
+                       request.local_navigation_id, request.title)
               .second;
 
       if (t & ui::PAGE_TRANSITION_CHAIN_START) {
@@ -1338,12 +1346,14 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
     const GURL& url,
     Time time,
     VisitID referring_visit,
+    const GURL& external_referrer_url,
     ui::PageTransition transition,
     bool hidden,
     VisitSource visit_source,
     bool should_increment_typed_count,
     VisitID opener_visit,
     bool consider_for_ntp_most_visited,
+    absl::optional<int64_t> local_navigation_id,
     absl::optional<std::u16string> title,
     absl::optional<base::TimeDelta> visit_duration,
     absl::optional<std::string> originator_cache_guid,
@@ -1391,6 +1401,7 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
   VisitRow visit_info(url_id, time, referring_visit, transition,
                       /*arg_segment_id=*/0, should_increment_typed_count,
                       opener_visit);
+  visit_info.external_referrer_url = external_referrer_url;
   if (visit_duration.has_value())
     visit_info.visit_duration = *visit_duration;
   if (originator_cache_guid.has_value())
@@ -1411,7 +1422,7 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
 
   // Broadcast a notification of the visit.
   if (visit_info.visit_id) {
-    NotifyURLVisited(url_info, visit_info);
+    NotifyURLVisited(url_info, visit_info, local_navigation_id);
   } else {
     DLOG(ERROR) << "Failed to build visit insert statement:  "
                 << "url_id = " << url_id;
@@ -1635,11 +1646,13 @@ bool HistoryBackend::AddVisits(const GURL& url,
                                VisitSource visit_source) {
   if (db_) {
     for (const auto& visit : visits) {
-      if (!AddPageVisit(url, visit.first, /*referring_visit=*/0, visit.second,
+      if (!AddPageVisit(url, visit.first, /*referring_visit=*/0,
+                        /*external_referrer_url=*/GURL(), visit.second,
                         /*hidden=*/!ui::PageTransitionIsMainFrame(visit.second),
                         visit_source, IsTypedIncrement(visit.second),
                         /*opener_visit=*/0,
-                        /*consider_for_ntp_most_visited=*/true)
+                        /*consider_for_ntp_most_visited=*/true,
+                        /*local_navigation_id=*/absl::nullopt)
                .first) {
         return false;
       }
@@ -1682,12 +1695,14 @@ VisitID HistoryBackend::AddSyncedVisit(
   }
 
   auto [url_id, visit_id] = AddPageVisit(
-      url, visit.visit_time, visit.referring_visit, visit.transition, hidden,
-      VisitSource::SOURCE_SYNCED, IsTypedIncrement(visit.transition),
-      visit.opener_visit, visit.consider_for_ntp_most_visited, title,
-      visit.visit_duration, visit.originator_cache_guid,
-      visit.originator_visit_id, visit.originator_referring_visit,
-      visit.originator_opener_visit, visit.is_known_to_sync);
+      url, visit.visit_time, visit.referring_visit, visit.external_referrer_url,
+      visit.transition, hidden, VisitSource::SOURCE_SYNCED,
+      IsTypedIncrement(visit.transition), visit.opener_visit,
+      visit.consider_for_ntp_most_visited,
+      /*local_navigation_id=*/absl::nullopt, title, visit.visit_duration,
+      visit.originator_cache_guid, visit.originator_visit_id,
+      visit.originator_referring_visit, visit.originator_opener_visit,
+      visit.is_known_to_sync);
 
   if (visit_id == kInvalidVisitID) {
     // Adding the page visit failed, do not continue.
@@ -2445,6 +2460,16 @@ void HistoryBackend::UpdateClusterVisit(
   }
 
   db_->UpdateClusterVisit(cluster_id, cluster_visit);
+}
+
+void HistoryBackend::UpdateVisitsInteractionState(
+    const std::vector<VisitID>& visit_ids,
+    const ClusterVisit::InteractionState interaction_state) {
+  TRACE_EVENT0("browser", "HistoryBackend::UpdateVisitsInteractionState");
+  if (!db_) {
+    return;
+  }
+  db_->UpdateVisitsInteractionState(visit_ids, interaction_state);
 }
 
 std::vector<Cluster> HistoryBackend::GetMostRecentClusters(
@@ -3521,12 +3546,14 @@ void HistoryBackend::NotifyFaviconsChanged(const std::set<GURL>& page_urls,
   delegate_->NotifyFaviconsChanged(page_urls, icon_url);
 }
 
-void HistoryBackend::NotifyURLVisited(const URLRow& url_row,
-                                      const VisitRow& visit_row) {
+void HistoryBackend::NotifyURLVisited(
+    const URLRow& url_row,
+    const VisitRow& visit_row,
+    absl::optional<int64_t> local_navigation_id) {
   for (HistoryBackendObserver& observer : observers_)
     observer.OnURLVisited(this, url_row, visit_row);
 
-  delegate_->NotifyURLVisited(url_row, visit_row);
+  delegate_->NotifyURLVisited(url_row, visit_row, local_navigation_id);
 }
 
 void HistoryBackend::NotifyURLsModified(const URLRows& changed_urls,

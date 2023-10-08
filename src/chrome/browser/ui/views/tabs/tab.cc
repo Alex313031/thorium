@@ -138,7 +138,7 @@ class TabStyleHighlightPathGenerator : public views::HighlightPathGenerator {
   }
 
  private:
-  const raw_ptr<TabStyleViews, DanglingUntriaged> tab_style_views_;
+  const raw_ptr<TabStyleViews, AcrossTasksDanglingUntriaged> tab_style_views_;
 };
 
 }  // namespace
@@ -222,6 +222,12 @@ Tab::Tab(TabSlotController* controller)
   // need a manual suppression by detecting cases where the text is painted onto
   // onto opaque parts of a not-entirely-opaque layer.
   title_->SetSkipSubpixelRenderingOpacityCheck(true);
+
+  if (features::IsChromeRefresh2023()) {
+    title_->SetTextContext(views::style::CONTEXT_LABEL);
+    title_->SetTextStyle(views::style::STYLE_BODY_4_EMPHASIS);
+  }
+
   AddChildView(title_.get());
 
   SetEventTargeter(std::make_unique<views::ViewTargeter>(this));
@@ -327,31 +333,34 @@ void Tab::Layout() {
 
   int close_x = contents_rect.right();
   if (showing_close_button_) {
-    // If the ratio of the close button size to tab width exceeds the maximum.
-    // The close button should be as large as possible so that there is a larger
-    // hit-target for touch events. So the close button bounds extends to the
-    // edges of the tab. However, the larger hit-target should be active only
-    // for touch events, and the close-image should show up in the right place.
-    // So a border is added to the button with necessary padding. The close
-    // button (Tab::TabCloseButton) makes sure the padding is a hit-target only
-    // for touch events.
-    // TODO(pkasting): The padding should maybe be removed, see comments in
-    // TabCloseButton::TargetForRect().
-    const int close_button_size = GetLayoutConstant(TAB_CLOSE_BUTTON_SIZE);
+    // The visible size is the button's hover shape size. The actual size
+    // includes the border insets for the button.
+    const int close_button_visible_size =
+        GetLayoutConstant(TAB_CLOSE_BUTTON_SIZE);
+    const gfx::Size close_button_actual_size =
+        close_button_->GetPreferredSize();
+
+    // The close button is vertically centered in the contents_rect.
     const int top =
-        contents_rect.y() + Center(contents_rect.height(), close_button_size);
-    // Clamp the close button position to "centered within the tab"; this should
-    // only have an effect when animating in a new active tab, which might start
-    // out narrower than the minimum active tab width.
-    close_x = std::max(contents_rect.right() - close_button_size,
-                       Center(width(), close_button_size));
-    const int left = std::min(after_title_padding, close_x);
-    const int bottom = height() - close_button_size - top;
-    const int right = std::max(0, width() - (close_x + close_button_size));
-    close_button_->SetButtonPadding(
-        gfx::Insets::TLBR(top, left, bottom, right));
+        contents_rect.y() +
+        Center(contents_rect.height(), close_button_actual_size.height());
+
+    // The visible part of the close button should be placed against the
+    // right of the contents rect unless the tab is so small that it would
+    // overflow the left side of the contents_rect, in that case it will be
+    // placed in the middle of the tab.
+    const int visible_left =
+        std::max(close_x - close_button_visible_size,
+                 Center(width(), close_button_visible_size));
+
+    // Offset the new bounds rect by the extra padding in the close button.
+    const int non_visible_left_padding =
+        (close_button_actual_size.width() - close_button_visible_size) / 2;
+
     close_button_->SetBoundsRect(
-        {gfx::Point(close_x - left, 0), close_button_->GetPreferredSize()});
+        {gfx::Point(visible_left - non_visible_left_padding, top),
+         close_button_actual_size});
+    close_x = visible_left - after_title_padding;
   }
   close_button_->SetVisible(showing_close_button_);
 
@@ -799,22 +808,23 @@ ui::ColorId Tab::GetAlertIndicatorColor(TabAlertState state) const {
       group = 2;
       break;
   }
-  ui::ColorId color_ids[3][2][2] = {
-      {{kColorTabAlertMediaRecordingInactiveFrameInactive,
-        kColorTabAlertMediaRecordingInactiveFrameActive},
-       {kColorTabAlertMediaRecordingActiveFrameInactive,
-        kColorTabAlertMediaRecordingActiveFrameActive}},
-      {{kColorTabAlertPipPlayingInactiveFrameInactive,
-        kColorTabAlertPipPlayingInactiveFrameActive},
-       {kColorTabAlertPipPlayingActiveFrameInactive,
-        kColorTabAlertPipPlayingActiveFrameActive}},
-      {{kColorTabAlertAudioPlayingInactiveFrameInactive,
-        kColorTabAlertAudioPlayingInactiveFrameActive},
-       {kColorTabAlertAudioPlayingActiveFrameInactive,
-        kColorTabAlertAudioPlayingActiveFrameActive}}};
-  return color_ids[group][tab_style_views()->GetApparentActiveState() ==
-                          TabActive::kActive]
-                  [GetWidget()->ShouldPaintAsActive()];
+
+    const ui::ColorId color_ids[3][2][2] = {
+        {{kColorTabAlertMediaRecordingInactiveFrameInactive,
+          kColorTabAlertMediaRecordingInactiveFrameActive},
+         {kColorTabAlertMediaRecordingActiveFrameInactive,
+          kColorTabAlertMediaRecordingActiveFrameActive}},
+        {{kColorTabAlertPipPlayingInactiveFrameInactive,
+          kColorTabAlertPipPlayingInactiveFrameActive},
+         {kColorTabAlertPipPlayingActiveFrameInactive,
+          kColorTabAlertPipPlayingActiveFrameActive}},
+        {{kColorTabAlertAudioPlayingInactiveFrameInactive,
+          kColorTabAlertAudioPlayingInactiveFrameActive},
+         {kColorTabAlertAudioPlayingActiveFrameInactive,
+          kColorTabAlertAudioPlayingActiveFrameActive}}};
+    return color_ids[group][tab_style_views()->GetApparentActiveState() ==
+                            TabActive::kActive]
+                    [GetWidget()->ShouldPaintAsActive()];
 }
 
 bool Tab::IsActive() const {
@@ -1007,10 +1017,8 @@ void Tab::UpdateIconVisibility() {
       alert_indicator_button_->GetPreferredSize().width();
   // In case of touch optimized UI, the close button has an extra padding on the
   // left that needs to be considered.
-  const int close_button_width =
-      close_button_->GetPreferredSize().width() -
-      (touch_ui ? close_button_->GetInsets().right()
-                : close_button_->GetInsets().width());
+  const int close_button_width = GetLayoutConstant(TAB_CLOSE_BUTTON_SIZE) +
+                                 GetLayoutConstant(TAB_AFTER_TITLE_PADDING);
   const bool large_enough_for_close_button =
       available_width >= (touch_ui ? kTouchMinimumContentsWidthForCloseButtons
                                    : kMinimumContentsWidthForCloseButtons);
@@ -1100,7 +1108,7 @@ int Tab::GetWidthOfLargestSelectableRegion() const {
 }
 
 void Tab::UpdateForegroundColors() {
-  TabStyle::TabColors colors = tab_style_views()->CalculateColors();
+  TabStyle::TabColors colors = tab_style_views()->CalculateTargetColors();
   title_->SetEnabledColor(colors.foreground_color);
   close_button_->SetColors(colors);
   alert_indicator_button_->OnParentTabButtonColorChanged();
