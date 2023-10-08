@@ -321,6 +321,9 @@ enum AVCodecID {
     AV_CODEC_ID_MEDIA100,
     AV_CODEC_ID_VQC,
     AV_CODEC_ID_PDV,
+    AV_CODEC_ID_EVC,
+    AV_CODEC_ID_RTV1,
+    AV_CODEC_ID_VMIX,
 
     /* various PCM "codecs" */
     AV_CODEC_ID_FIRST_AUDIO = 0x10000,     ///< A dummy id pointing at the start of audio codecs
@@ -539,6 +542,7 @@ enum AVCodecID {
     AV_CODEC_ID_FTR,
     AV_CODEC_ID_WAVARC,
     AV_CODEC_ID_RKA,
+    AV_CODEC_ID_AC4,
 
     /* subtitle codecs */
     AV_CODEC_ID_FIRST_SUBTITLE = 0x17000,          ///< A dummy ID pointing at the start of subtitle codecs.

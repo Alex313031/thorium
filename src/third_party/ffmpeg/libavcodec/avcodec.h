@@ -226,11 +226,15 @@ typedef struct RcOverride{
  * Use qpel MC.
  */
 #define AV_CODEC_FLAG_QPEL            (1 <<  4)
+#if FF_API_DROPCHANGED
 /**
  * Don't output frames whose parameters differ from first
  * decoded frame in stream.
+ *
+ * @deprecated callers should implement this functionality in their own code
  */
 #define AV_CODEC_FLAG_DROPCHANGED     (1 <<  5)
+#endif
 /**
  * Request the encoder to output reconstructed frames, i.e.\ frames that would
  * be produced by decoding the encoded bistream. These frames may be retrieved
@@ -1717,6 +1721,9 @@ typedef struct AVCodecContext {
 #define FF_PROFILE_KLVA_SYNC 0
 #define FF_PROFILE_KLVA_ASYNC 1
 
+#define FF_PROFILE_EVC_BASELINE             0
+#define FF_PROFILE_EVC_MAIN                 1
+
     /**
      * level
      * - encoding: Set by user.
@@ -2255,6 +2262,25 @@ typedef struct AVHWAccel {
      * that avctx->hwaccel_priv_data is invalid.
      */
     int (*frame_params)(AVCodecContext *avctx, AVBufferRef *hw_frames_ctx);
+
+    /**
+     * Copy necessary context variables from a previous thread context to the current one.
+     * For thread-safe hwaccels only.
+     */
+    int (*update_thread_context)(AVCodecContext *dst, const AVCodecContext *src);
+
+    /**
+     * Callback to free the hwaccel-specific frame data.
+     *
+     * @param hwctx a pointer to an AVHWDeviceContext.
+     * @param data the per-frame hardware accelerator private data to be freed.
+     */
+    void (*free_frame_priv)(void *hwctx, uint8_t *data);
+
+    /**
+     * Callback to flush the hwaccel state.
+     */
+    void (*flush)(AVCodecContext *avctx);
 } AVHWAccel;
 
 /**
@@ -2693,9 +2719,6 @@ int avcodec_send_packet(AVCodecContext *avctx, const AVPacket *avpkt);
  *                          no more output frames
  * @retval AVERROR(EINVAL)  codec not opened, or it is an encoder without the
  *                          @ref AV_CODEC_FLAG_RECON_FRAME flag enabled
- * @retval AVERROR_INPUT_CHANGED current decoded frame has changed parameters with
- *                          respect to first decoded frame. Applicable when flag
- *                          AV_CODEC_FLAG_DROPCHANGED is set.
  * @retval "other negative error code" legitimate decoding errors
  */
 int avcodec_receive_frame(AVCodecContext *avctx, AVFrame *frame);

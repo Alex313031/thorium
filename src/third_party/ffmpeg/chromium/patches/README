@@ -954,16 +954,16 @@ Affects:
     libavutil/frame.h
 
 ------------------------------------------------------------------
-commit 13156c083ffe746a0f5908778c6fc6d165217af0
+commit 881c5c3f6412020c37e97e178e0f5da9ddd2ae90
 Author: Frank Liberato <liberato@chromium.org>
-Date:   Wed May 24 05:24:25 2023 +0000
+Date:   Thu Jun 1 18:20:23 2023 +0000
 
-    Replace #include "" with #include <>
+    FFMpeg roll for M116
 
-    generate_gn.py assumes that "includes" can be found in the current
-    directory, while <includes> can be ignored.  Rather than try to
-    teach it how to search include paths, change the one instance in
-    ffmpeg of "stdint.h" to <stdint.h> .
+    Bug: 1449369
+    Change-Id: Icb1bf9347dcf6ec71e61f552ab060cd8ba7504d2
+    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/4581055
+    Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
 
 Affects:
     libavcodec/vp8data.c

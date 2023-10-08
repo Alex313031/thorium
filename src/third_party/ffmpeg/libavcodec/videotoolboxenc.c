@@ -108,6 +108,8 @@ static struct{
     CFStringRef kVTProfileLevel_H264_High_AutoLevel;
     CFStringRef kVTProfileLevel_H264_Extended_5_0;
     CFStringRef kVTProfileLevel_H264_Extended_AutoLevel;
+    CFStringRef kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel;
+    CFStringRef kVTProfileLevel_H264_ConstrainedHigh_AutoLevel;
 
     CFStringRef kVTProfileLevel_HEVC_Main_AutoLevel;
     CFStringRef kVTProfileLevel_HEVC_Main10_AutoLevel;
@@ -120,6 +122,11 @@ static struct{
     CFStringRef kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder;
     CFStringRef kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder;
     CFStringRef kVTVideoEncoderSpecification_EnableLowLatencyRateControl;
+    CFStringRef kVTCompressionPropertyKey_AllowOpenGOP;
+    CFStringRef kVTCompressionPropertyKey_MaximizePowerEfficiency;
+    CFStringRef kVTCompressionPropertyKey_ReferenceBufferCount;
+    CFStringRef kVTCompressionPropertyKey_MaxAllowedFrameQP;
+    CFStringRef kVTCompressionPropertyKey_MinAllowedFrameQP;
 
     getParameterSetAtIndex CMVideoFormatDescriptionGetHEVCParameterSetAtIndex;
 } compat_keys;
@@ -171,6 +178,8 @@ static void loadVTEncSymbols(void){
     GET_SYM(kVTProfileLevel_H264_High_AutoLevel,     "H264_High_AutoLevel");
     GET_SYM(kVTProfileLevel_H264_Extended_5_0,       "H264_Extended_5_0");
     GET_SYM(kVTProfileLevel_H264_Extended_AutoLevel, "H264_Extended_AutoLevel");
+    GET_SYM(kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel, "H264_ConstrainedBaseline_AutoLevel");
+    GET_SYM(kVTProfileLevel_H264_ConstrainedHigh_AutoLevel,     "H264_ConstrainedHigh_AutoLevel");
 
     GET_SYM(kVTProfileLevel_HEVC_Main_AutoLevel,     "HEVC_Main_AutoLevel");
     GET_SYM(kVTProfileLevel_HEVC_Main10_AutoLevel,   "HEVC_Main10_AutoLevel");
@@ -188,29 +197,22 @@ static void loadVTEncSymbols(void){
             "RequireHardwareAcceleratedVideoEncoder");
     GET_SYM(kVTVideoEncoderSpecification_EnableLowLatencyRateControl,
                 "EnableLowLatencyRateControl");
+    GET_SYM(kVTCompressionPropertyKey_AllowOpenGOP, "AllowOpenGOP");
+    GET_SYM(kVTCompressionPropertyKey_MaximizePowerEfficiency,
+            "MaximizePowerEfficiency");
+    GET_SYM(kVTCompressionPropertyKey_ReferenceBufferCount,
+            "ReferenceBufferCount");
+    GET_SYM(kVTCompressionPropertyKey_MaxAllowedFrameQP, "MaxAllowedFrameQP");
+    GET_SYM(kVTCompressionPropertyKey_MinAllowedFrameQP, "MinAllowedFrameQP");
 }
 
-typedef enum VT_H264Profile {
-    H264_PROF_AUTO,
-    H264_PROF_BASELINE,
-    H264_PROF_MAIN,
-    H264_PROF_HIGH,
-    H264_PROF_EXTENDED,
-    H264_PROF_COUNT
-} VT_H264Profile;
+#define H264_PROFILE_CONSTRAINED_HIGH (FF_PROFILE_H264_HIGH | FF_PROFILE_H264_CONSTRAINED)
 
 typedef enum VTH264Entropy{
     VT_ENTROPY_NOT_SET,
     VT_CAVLC,
     VT_CABAC
 } VTH264Entropy;
-
-typedef enum VT_HEVCProfile {
-    HEVC_PROF_AUTO,
-    HEVC_PROF_MAIN,
-    HEVC_PROF_MAIN10,
-    HEVC_PROF_COUNT
-} VT_HEVCProfile;
 
 static const uint8_t start_code[] = { 0, 0, 0, 1 };
 
@@ -249,7 +251,7 @@ typedef struct VTEncContext {
     int64_t first_pts;
     int64_t dts_delta;
 
-    int64_t profile;
+    int profile;
     int level;
     int entropy;
     int realtime;
@@ -268,6 +270,10 @@ typedef struct VTEncContext {
 
     /* can't be bool type since AVOption will access it as int */
     int a53_cc;
+
+    int max_slice_bytes;
+    int power_efficient;
+    int max_ref_frames;
 } VTEncContext;
 
 static int vtenc_populate_extradata(AVCodecContext   *avctx,
@@ -436,7 +442,7 @@ static int count_nalus(size_t length_code_size,
 }
 
 static CMVideoCodecType get_cm_codec_type(AVCodecContext *avctx,
-                                          int64_t profile,
+                                          int profile,
                                           double alpha_quality)
 {
     const AVPixFmtDescriptor *desc = av_pix_fmt_desc_get(avctx->pix_fmt == AV_PIX_FMT_VIDEOTOOLBOX ? avctx->sw_pix_fmt : avctx->pix_fmt);
@@ -463,7 +469,7 @@ static CMVideoCodecType get_cm_codec_type(AVCodecContext *avctx,
             return MKBETAG('a','p','4','x'); // kCMVideoCodecType_AppleProRes4444XQ
 
         default:
-            av_log(avctx, AV_LOG_ERROR, "Unknown profile ID: %"PRId64", using auto\n", profile);
+            av_log(avctx, AV_LOG_ERROR, "Unknown profile ID: %d, using auto\n", profile);
         case FF_PROFILE_UNKNOWN:
             if (desc &&
                 ((desc->flags & AV_PIX_FMT_FLAG_ALPHA) ||
@@ -728,20 +734,20 @@ static bool get_vt_h264_profile_level(AVCodecContext *avctx,
                                       CFStringRef    *profile_level_val)
 {
     VTEncContext *vtctx = avctx->priv_data;
-    int64_t profile = vtctx->profile;
+    int profile = vtctx->profile;
 
-    if (profile == H264_PROF_AUTO && vtctx->level) {
+    if (profile == FF_PROFILE_UNKNOWN && vtctx->level) {
         //Need to pick a profile if level is not auto-selected.
-        profile = vtctx->has_b_frames ? H264_PROF_MAIN : H264_PROF_BASELINE;
+        profile = vtctx->has_b_frames ? FF_PROFILE_H264_MAIN : FF_PROFILE_H264_BASELINE;
     }
 
     *profile_level_val = NULL;
 
     switch (profile) {
-        case H264_PROF_AUTO:
+        case FF_PROFILE_UNKNOWN:
             return true;
 
-        case H264_PROF_BASELINE:
+        case FF_PROFILE_H264_BASELINE:
             switch (vtctx->level) {
                 case  0: *profile_level_val =
                                   compat_keys.kVTProfileLevel_H264_Baseline_AutoLevel; break;
@@ -763,7 +769,19 @@ static bool get_vt_h264_profile_level(AVCodecContext *avctx,
             }
             break;
 
-        case H264_PROF_MAIN:
+        case FF_PROFILE_H264_CONSTRAINED_BASELINE:
+            *profile_level_val =  compat_keys.kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel;
+
+            if (vtctx->level != 0) {
+                av_log(avctx,
+                       AV_LOG_WARNING,
+                       "Level is auto-selected when constrained-baseline "
+                       "profile is used. The output may be encoded with a "
+                       "different level.\n");
+            }
+            break;
+
+        case FF_PROFILE_H264_MAIN:
             switch (vtctx->level) {
                 case  0: *profile_level_val =
                                   compat_keys.kVTProfileLevel_H264_Main_AutoLevel; break;
@@ -782,7 +800,19 @@ static bool get_vt_h264_profile_level(AVCodecContext *avctx,
             }
             break;
 
-        case H264_PROF_HIGH:
+        case H264_PROFILE_CONSTRAINED_HIGH:
+            *profile_level_val =  compat_keys.kVTProfileLevel_H264_ConstrainedHigh_AutoLevel;
+
+            if (vtctx->level != 0) {
+                av_log(avctx,
+                      AV_LOG_WARNING,
+                       "Level is auto-selected when constrained-high profile "
+                       "is used. The output may be encoded with a different "
+                       "level.\n");
+            }
+            break;
+
+        case FF_PROFILE_H264_HIGH:
             switch (vtctx->level) {
                 case  0: *profile_level_val =
                                   compat_keys.kVTProfileLevel_H264_High_AutoLevel; break;
@@ -805,7 +835,7 @@ static bool get_vt_h264_profile_level(AVCodecContext *avctx,
                                   compat_keys.kVTProfileLevel_H264_High_5_2;       break;
             }
             break;
-        case H264_PROF_EXTENDED:
+        case FF_PROFILE_H264_EXTENDED:
             switch (vtctx->level) {
                 case  0: *profile_level_val =
                                   compat_keys.kVTProfileLevel_H264_Extended_AutoLevel; break;
@@ -833,18 +863,18 @@ static bool get_vt_hevc_profile_level(AVCodecContext *avctx,
                                       CFStringRef    *profile_level_val)
 {
     VTEncContext *vtctx = avctx->priv_data;
-    int64_t profile = vtctx->profile;
+    int profile = vtctx->profile;
 
     *profile_level_val = NULL;
 
     switch (profile) {
-        case HEVC_PROF_AUTO:
+        case FF_PROFILE_UNKNOWN:
             return true;
-        case HEVC_PROF_MAIN:
+        case FF_PROFILE_HEVC_MAIN:
             *profile_level_val =
                 compat_keys.kVTProfileLevel_HEVC_Main_AutoLevel;
             break;
-        case HEVC_PROF_MAIN10:
+        case FF_PROFILE_HEVC_MAIN_10:
             *profile_level_val =
                 compat_keys.kVTProfileLevel_HEVC_Main10_AutoLevel;
             break;
@@ -1104,6 +1134,47 @@ static int get_cv_ycbcr_matrix(AVCodecContext *avctx, CFStringRef *matrix) {
 static bool vtenc_qscale_enabled(void)
 {
     return !TARGET_OS_IPHONE && TARGET_CPU_ARM64;
+}
+
+static void set_encoder_property_or_log(AVCodecContext *avctx,
+                                        CFStringRef key,
+                                        const char *print_option_name,
+                                        CFTypeRef value) {
+    int status;
+    VTEncContext *vtctx = avctx->priv_data;
+
+    status = VTSessionSetProperty(vtctx->session, key, value);
+    if (status == kVTPropertyNotSupportedErr) {
+        av_log(avctx,
+               AV_LOG_INFO,
+               "This device does not support the %s option. Value ignored.\n",
+               print_option_name);
+    } else if (status != 0) {
+        av_log(avctx,
+               AV_LOG_ERROR,
+               "Error setting %s: Error %d\n",
+               print_option_name,
+               status);
+    }
+}
+
+static int set_encoder_int_property_or_log(AVCodecContext* avctx,
+                                           CFStringRef key,
+                                           const char* print_option_name,
+                                           int value) {
+    CFNumberRef value_cfnum = CFNumberCreate(kCFAllocatorDefault,
+                                             kCFNumberIntType,
+                                             &value);
+
+    if (value_cfnum == NULL) {
+        return AVERROR(ENOMEM);
+    }
+
+    set_encoder_property_or_log(avctx, key, print_option_name, value_cfnum);
+
+    CFRelease(value_cfnum);
+
+    return 0;
 }
 
 static int vtenc_create_encoder(AVCodecContext   *avctx,
@@ -1465,14 +1536,61 @@ static int vtenc_create_encoder(AVCodecContext   *avctx,
         }
     }
 
-    // low-latency mode: eliminate frame reordering, follow a one-in-one-out encoding mode
-    if ((avctx->flags & AV_CODEC_FLAG_LOW_DELAY) && avctx->codec_id == AV_CODEC_ID_H264) {
-        status = VTSessionSetProperty(vtctx->session,
-                                      compat_keys.kVTVideoEncoderSpecification_EnableLowLatencyRateControl,
-                                      kCFBooleanTrue);
+    if ((avctx->flags & AV_CODEC_FLAG_CLOSED_GOP) != 0) {
+        set_encoder_property_or_log(avctx,
+                                    compat_keys.kVTCompressionPropertyKey_AllowOpenGOP,
+                                    "AllowOpenGop",
+                                    kCFBooleanFalse);
+    }
 
-        if (status) {
-            av_log(avctx, AV_LOG_ERROR, "Error setting low latency property: %d\n", status);
+    if (avctx->qmin >= 0) {
+        status = set_encoder_int_property_or_log(avctx,
+                                                 compat_keys.kVTCompressionPropertyKey_MinAllowedFrameQP,
+                                                 "qmin",
+                                                 avctx->qmin);
+
+        if (status != 0) {
+            return status;
+        }
+    }
+
+    if (avctx->qmax >= 0) {
+        status = set_encoder_int_property_or_log(avctx,
+                                                 compat_keys.kVTCompressionPropertyKey_MaxAllowedFrameQP,
+                                                 "qmax",
+                                                 avctx->qmax);
+
+        if (status != 0) {
+            return status;
+        }
+    }
+
+    if (vtctx->max_slice_bytes >= 0 && avctx->codec_id == AV_CODEC_ID_H264) {
+        status = set_encoder_int_property_or_log(avctx,
+                                                 kVTCompressionPropertyKey_MaxH264SliceBytes,
+                                                 "max_slice_bytes",
+                                                 vtctx->max_slice_bytes);
+
+        if (status != 0) {
+            return status;
+        }
+    }
+
+    if (vtctx->power_efficient >= 0) {
+        set_encoder_property_or_log(avctx,
+                                    compat_keys.kVTCompressionPropertyKey_MaximizePowerEfficiency,
+                                    "power_efficient",
+                                    vtctx->power_efficient ? kCFBooleanTrue : kCFBooleanFalse);
+    }
+
+    if (vtctx->max_ref_frames > 0) {
+        status = set_encoder_int_property_or_log(avctx,
+                                                 compat_keys.kVTCompressionPropertyKey_ReferenceBufferCount,
+                                                 "max_ref_frames",
+                                                 vtctx->max_ref_frames);
+
+        if (status != 0) {
+            return status;
         }
     }
 
@@ -1515,12 +1633,12 @@ static int vtenc_configure_encoder(AVCodecContext *avctx)
         vtctx->get_param_set_func = CMVideoFormatDescriptionGetH264ParameterSetAtIndex;
 
         vtctx->has_b_frames = avctx->max_b_frames > 0;
-        if(vtctx->has_b_frames && vtctx->profile == H264_PROF_BASELINE){
+        if(vtctx->has_b_frames && (0xFF & vtctx->profile) == FF_PROFILE_H264_BASELINE){
             av_log(avctx, AV_LOG_WARNING, "Cannot use B-frames with baseline profile. Output will not contain B-frames.\n");
             vtctx->has_b_frames = 0;
         }
 
-        if (vtctx->entropy == VT_CABAC && vtctx->profile == H264_PROF_BASELINE) {
+        if (vtctx->entropy == VT_CABAC && (0xFF & vtctx->profile) == FF_PROFILE_H264_BASELINE) {
             av_log(avctx, AV_LOG_WARNING, "CABAC entropy requires 'main' or 'high' profile, but baseline was requested. Encode will not use CABAC entropy.\n");
             vtctx->entropy = VT_ENTROPY_NOT_SET;
         }
@@ -1560,6 +1678,13 @@ static int vtenc_configure_encoder(AVCodecContext *avctx)
                              kCFBooleanTrue);
     }
 #endif
+
+    // low-latency mode: eliminate frame reordering, follow a one-in-one-out encoding mode
+    if ((avctx->flags & AV_CODEC_FLAG_LOW_DELAY) && avctx->codec_id == AV_CODEC_ID_H264) {
+        CFDictionarySetValue(enc_info,
+                             compat_keys.kVTVideoEncoderSpecification_EnableLowLatencyRateControl,
+                             kCFBooleanTrue);
+    }
 
     if (avctx->pix_fmt != AV_PIX_FMT_VIDEOTOOLBOX) {
         status = create_cv_pixel_buffer_info(avctx, &pixel_buffer_info);
@@ -1617,6 +1742,9 @@ static av_cold int vtenc_init(AVCodecContext *avctx)
     pthread_mutex_init(&vtctx->lock, NULL);
     pthread_cond_init(&vtctx->cv_sample_sent, NULL);
 
+    // It can happen when user set avctx->profile directly.
+    if (vtctx->profile == FF_PROFILE_UNKNOWN)
+        vtctx->profile = avctx->profile;
     vtctx->session = NULL;
     status = vtenc_configure_encoder(avctx);
     if (status) return status;
@@ -2753,14 +2881,21 @@ static const enum AVPixelFormat prores_pix_fmts[] = {
         OFFSET(frames_after), AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE }, \
     { "prio_speed", "prioritize encoding speed", OFFSET(prio_speed), AV_OPT_TYPE_BOOL, \
         { .i64 = -1 }, -1, 1, VE }, \
+    { "power_efficient", "Set to 1 to enable more power-efficient encoding if supported.", \
+        OFFSET(power_efficient), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, 1, VE }, \
+    { "max_ref_frames", \
+        "Sets the maximum number of reference frames. This only has an effect when the value is less than the maximum allowed by the profile/level.", \
+        OFFSET(max_ref_frames), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VE },
 
 #define OFFSET(x) offsetof(VTEncContext, x)
 static const AVOption h264_options[] = {
-    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT64, { .i64 = H264_PROF_AUTO }, H264_PROF_AUTO, H264_PROF_COUNT, VE, "profile" },
-    { "baseline", "Baseline Profile", 0, AV_OPT_TYPE_CONST, { .i64 = H264_PROF_BASELINE }, INT_MIN, INT_MAX, VE, "profile" },
-    { "main",     "Main Profile",     0, AV_OPT_TYPE_CONST, { .i64 = H264_PROF_MAIN     }, INT_MIN, INT_MAX, VE, "profile" },
-    { "high",     "High Profile",     0, AV_OPT_TYPE_CONST, { .i64 = H264_PROF_HIGH     }, INT_MIN, INT_MAX, VE, "profile" },
-    { "extended", "Extend Profile",   0, AV_OPT_TYPE_CONST, { .i64 = H264_PROF_EXTENDED }, INT_MIN, INT_MAX, VE, "profile" },
+    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT, { .i64 = FF_PROFILE_UNKNOWN }, FF_PROFILE_UNKNOWN, INT_MAX, VE, "profile" },
+    { "baseline",             "Baseline Profile",             0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_BASELINE             }, INT_MIN, INT_MAX, VE, "profile" },
+    { "constrained_baseline", "Constrained Baseline Profile", 0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_CONSTRAINED_BASELINE }, INT_MIN, INT_MAX, VE, "profile" },
+    { "main",                 "Main Profile",                 0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_MAIN                 }, INT_MIN, INT_MAX, VE, "profile" },
+    { "high",                 "High Profile",                 0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_HIGH                 }, INT_MIN, INT_MAX, VE, "profile" },
+    { "constrained_high",     "Constrained High Profile",     0, AV_OPT_TYPE_CONST, { .i64 = H264_PROFILE_CONSTRAINED_HIGH        }, INT_MIN, INT_MAX, VE, "profile" },
+    { "extended",             "Extend Profile",               0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_H264_EXTENDED             }, INT_MIN, INT_MAX, VE, "profile" },
 
     { "level", "Level", OFFSET(level), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 52, VE, "level" },
     { "1.3", "Level 1.3, only available with Baseline Profile", 0, AV_OPT_TYPE_CONST, { .i64 = 13 }, INT_MIN, INT_MAX, VE, "level" },
@@ -2783,7 +2918,7 @@ static const AVOption h264_options[] = {
     { "a53cc", "Use A53 Closed Captions (if available)", OFFSET(a53_cc), AV_OPT_TYPE_BOOL, {.i64 = 1}, 0, 1, VE },
 
     { "constant_bit_rate", "Require constant bit rate (macOS 13 or newer)", OFFSET(constant_bit_rate), AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
-
+    { "max_slice_bytes", "Set the maximum number of bytes in an H.264 slice.", OFFSET(max_slice_bytes), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, INT_MAX, VE },
     COMMON_OPTIONS
     { NULL },
 };
@@ -2811,9 +2946,9 @@ const FFCodec ff_h264_videotoolbox_encoder = {
 };
 
 static const AVOption hevc_options[] = {
-    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT64, { .i64 = HEVC_PROF_AUTO }, HEVC_PROF_AUTO, HEVC_PROF_COUNT, VE, "profile" },
-    { "main",     "Main Profile",     0, AV_OPT_TYPE_CONST, { .i64 = HEVC_PROF_MAIN   }, INT_MIN, INT_MAX, VE, "profile" },
-    { "main10",   "Main10 Profile",   0, AV_OPT_TYPE_CONST, { .i64 = HEVC_PROF_MAIN10 }, INT_MIN, INT_MAX, VE, "profile" },
+    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT, { .i64 = FF_PROFILE_UNKNOWN }, FF_PROFILE_UNKNOWN, INT_MAX, VE, "profile" },
+    { "main",     "Main Profile",     0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_HEVC_MAIN    }, INT_MIN, INT_MAX, VE, "profile" },
+    { "main10",   "Main10 Profile",   0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_HEVC_MAIN_10 }, INT_MIN, INT_MAX, VE, "profile" },
 
     { "alpha_quality", "Compression quality for the alpha channel", OFFSET(alpha_quality), AV_OPT_TYPE_DOUBLE, { .dbl = 0.0 }, 0.0, 1.0, VE },
 
@@ -2848,7 +2983,7 @@ const FFCodec ff_hevc_videotoolbox_encoder = {
 };
 
 static const AVOption prores_options[] = {
-    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT64, { .i64 = FF_PROFILE_UNKNOWN }, FF_PROFILE_UNKNOWN, FF_PROFILE_PRORES_XQ, VE, "profile" },
+    { "profile", "Profile", OFFSET(profile), AV_OPT_TYPE_INT, { .i64 = FF_PROFILE_UNKNOWN }, FF_PROFILE_UNKNOWN, FF_PROFILE_PRORES_XQ, VE, "profile" },
     { "auto",     "Automatically determine based on input format", 0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_UNKNOWN },            INT_MIN, INT_MAX, VE, "profile" },
     { "proxy",    "ProRes 422 Proxy",                              0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_PRORES_PROXY },       INT_MIN, INT_MAX, VE, "profile" },
     { "lt",       "ProRes 422 LT",                                 0, AV_OPT_TYPE_CONST, { .i64 = FF_PROFILE_PRORES_LT },          INT_MIN, INT_MAX, VE, "profile" },
