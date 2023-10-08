@@ -81,7 +81,6 @@ cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelect
 copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
-	cp -r -v other/Mac/cdm_registration.cc ${CR_SRC_DIR}/chrome/common/media/ &&
 	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
 }

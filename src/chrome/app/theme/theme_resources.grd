@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
 <!-- This grd file contains images that are pre-scaled for device scale
      factors. The image returned by ui::ResourceBundle::GetImageNamed()
      will contain multiple gfx:ImageSkiaReps for each scale factors. The
@@ -129,6 +128,14 @@
         <structure type="chrome_scaled_image" name="IDR_NTP_FAVICON" file="common/favicon_ntp.png" />
         <structure type="chrome_scaled_image" name="IDR_PASSWORD_CHECK" file="common/password_check.png" />
         <structure type="chrome_scaled_image" name="IDR_PASSWORD_CHECK_DARK" file="common/password_check_dark.png" />
+        <if expr="_google_chrome">
+          <then>
+            <structure type="chrome_scaled_image" name="IDR_PASSWORD_MANAGER_FAVICON" file="google_chrome/favicon_chrome_password_manager.png" />
+          </then>
+          <else>
+            <structure type="chrome_scaled_image" name="IDR_PASSWORD_MANAGER_FAVICON" file="chromium/favicon_password_manager.png" />
+          </else>
+        </if>
       </if>
       <structure type="chrome_scaled_image" name="IDR_PLUGINS_FAVICON" file="common/favicon_plugins.png" />
       <if expr="not is_android">

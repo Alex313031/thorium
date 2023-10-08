@@ -336,12 +336,12 @@ BASE_FEATURE(kPlatformHEVCDecoderSupport,
              "PlatformHEVCDecoderSupport",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE)
-// Enables HEVC hardware accelerated encoding for Windows and Mac.
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_ANDROID)
+// Enables HEVC hardware accelerated encoding for Windows, Mac, and Android.
 BASE_FEATURE(kPlatformHEVCEncoderSupport,
              "PlatformHEVCEncoderSupport",
              base::FEATURE_ENABLED_BY_DEFAULT);
-#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE)
+#endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_ANDROID)
 #endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
 
 // Only decode preload=metadata elements upon visibility.
@@ -438,12 +438,7 @@ BASE_FEATURE(kContextMenuCopyVideoFrame,
 // playback going to a specific output device in the audio service.
 BASE_FEATURE(kChromeWideEchoCancellation,
              "ChromeWideEchoCancellation",
-#if BUILDFLAG(IS_CHROMEOS_DEVICE)
-    base::FEATURE_DISABLED_BY_DEFAULT
-#else
-    base::FEATURE_ENABLED_BY_DEFAULT
-#endif
-             );
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // When audio processing is done in the audio process, at the renderer side IPC
 // is set up to receive audio at the processing sample rate. This is a
@@ -510,7 +505,7 @@ BASE_FEATURE(kCrOSEnforceSystemAecAgc,
              base::FEATURE_DISABLED_BY_DEFAULT);
 BASE_FEATURE(kCrOSEnforceSystemAec,
              "CrOSEnforceSystemAec",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kCrOSDspBasedAecDeactivatedGroups,
              "CrOSDspBasedAecDeactivatedGroups",
@@ -538,6 +533,10 @@ BASE_FEATURE(kIgnoreUiGains,
 BASE_FEATURE(kShowForceRespectUiGainsToggle,
              "ShowForceRespectUiGainsToggle",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kCrOSSystemVoiceIsolationOption,
+             "CrOSSystemVoiceIsolationOption",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
 
 // Make MSE garbage collection algorithm more aggressive when we are under
@@ -562,7 +561,12 @@ BASE_FEATURE(kUseMultiPlaneFormatForHardwareVideo,
 // software video decoders.
 BASE_FEATURE(kUseMultiPlaneFormatForSoftwareVideo,
              "UseMultiPlaneFormatForSoftwareVideo",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_MAC)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
 
 // Enables binding software video NV12/P010 GMBs as separate shared images.
 BASE_FEATURE(kMultiPlaneSoftwareVideoSharedImages,
@@ -807,7 +811,7 @@ BASE_FEATURE(kVaapiVp9kSVCHWEncoding,
              "VaapiVp9kSVCHWEncoding",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif  // defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS)
-#if defined(ARCH_CPU_ARM_FAMILY) && BUILDFLAG(IS_CHROMEOS)
+#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)
 // Enables the new V4L2StatefulVideoDecoder instead of V4L2VideoDecoder.
 BASE_FEATURE(kV4L2FlatStatelessVideoDecoder,
              "V4L2FlatStatelessVideoDecoder",
@@ -955,6 +959,12 @@ BASE_FEATURE(kHardwareSecureDecryptionFallback,
              "HardwareSecureDecryptionFallback",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Whether disabling hardware secure Content Decryption Module
+// (CDM) after failures or crashes to fallback to software secure CDMs should
+// use per site logic.
+const base::FeatureParam<bool> kHardwareSecureDecryptionFallbackPerSite{
+    &kHardwareSecureDecryptionFallback, "per_site", false};
+
 // The minimum and maximum number of days to disable hardware secure Content
 // Decryption Module (CDM) as part of the fallback logic.
 const base::FeatureParam<int> kHardwareSecureDecryptionFallbackMinDisablingDays{
@@ -1029,7 +1039,12 @@ BASE_FEATURE(kAllowNonSecureOverlays,
              "AllowNonSecureOverlays",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// Enable a gesture to make the media controls expaned into the display cutout.
+// Allow FrameInfoHelper to guess coded size information for MediaCodec frames.
+BASE_FEATURE(kMediaCodecCodedSizeGuessing,
+             "MediaCodecCodedSizeGuessing",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Enable a gesture to make the media controls expanded into the display cutout.
 // TODO(beccahughes): Remove this.
 BASE_FEATURE(kMediaControlsExpandGesture,
              "MediaControlsExpandGesture",
@@ -1079,8 +1094,8 @@ BASE_FEATURE(kUseAudioLatencyFromHAL,
              "UseAudioLatencyFromHAL",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Enable pooling of SharedImageVideo objects for use by MCVD, to save a hop to
-// the GPU main thread during VideoFrame construction.
+// Enable pooling of AndroidVideoImageBacking objects for use by MCVD, to save a
+// hop to the GPU main thread during VideoFrame construction.
 BASE_FEATURE(kUsePooledSharedImageVideoProvider,
              "UsePooledSharedImageVideoProvider",
              base::FEATURE_ENABLED_BY_DEFAULT);
@@ -1145,6 +1160,14 @@ BASE_FEATURE(kUSeSequencedTaskRunnerForVEA,
 // frames. This flag enables an experimental GL-based conversion method.
 BASE_FEATURE(kPreferGLImageProcessor,
              "PreferGLImageProcessor",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+// Experimental support for software based MT21 conversion. On some (older)
+// architectures, the hardware video decoder outputs frames in a pixel format
+// known as MT21. Normally a hardware block performs to the conversion between
+// this pixel format and NV12, but this flag will use a software equivalent
+// instead.
+BASE_FEATURE(kPreferSoftwareMT21,
+             "PreferSoftwareMT21",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // defined(ARCH_CPU_ARM_FAMILY)
 #if BUILDFLAG(IS_CHROMEOS)
@@ -1338,6 +1361,21 @@ BASE_FEATURE(kUseTaskRunnerForMojoVEAService,
 #endif
 );
 
+// Feature flag to run the MojoAudioDecoderService in a sequence different than
+// the other mojo media services. On some Android devices, MediaCodec may block
+// the thread which leads to frequent audio decoder underrun in renderer.
+// Running the audio decoder in a separate sequence can improve the performance.
+// Note: running audio decoder in a separate thread/sequence will cause
+// multithread access to mojo media services. For Android audio decoder, the
+// thread safety is easier to guarantee because:
+//   1. The audio decoder and most of the other mojo media services don't cross
+//   reference each other.
+//   2. The only exception is CDM so we use a lock inside MojoCdmServiceContext
+//   for thread safety.
+BASE_FEATURE(kUseTaskRunnerForMojoAudioDecoderService,
+             "UseTaskRunnerForMojoAudioDecoderService",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
   // Return the autoplay policy set in the command line, if any.
   if (command_line.HasSwitch(switches::kAutoplayPolicy))
@@ -1449,13 +1487,11 @@ BASE_FEATURE(kAudioFocusLossSuspendMediaSession,
              "AudioFocusMediaSession",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-#if !BUILDFLAG(IS_ANDROID)
 // Hides the media metadata from the OS' media player if running in an Incognito
 // session.
 BASE_FEATURE(kHideIncognitoMediaMetadata,
              "HideIncognitoMediaMetadata",
              base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
 
 // Enables the internal Media Session logic without enabling the Media Session
 // service.
@@ -1496,7 +1532,7 @@ BASE_FEATURE(kCastStreamingAv1,
 
 BASE_FEATURE(kCastStreamingPerformanceOverlay,
              "CastStreamingPerformanceOverlay",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Controls whether mirroring negotiations will include the VP9 codec for video
 // encoding.
@@ -1522,14 +1558,6 @@ BASE_FEATURE(kVideoDecodeBatching,
 
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
-#if BUILDFLAG(IS_CHROMEOS_DEVICE)
-  if (base::FeatureList::IsEnabled(kCrOSEnforceSystemAecNsAgc) ||
-      base::FeatureList::IsEnabled(kCrOSEnforceSystemAecNs) ||
-      base::FeatureList::IsEnabled(kCrOSEnforceSystemAecAgc) ||
-      base::FeatureList::IsEnabled(kCrOSEnforceSystemAec)) {
-    return false;
-  }
-#endif
   return base::FeatureList::IsEnabled(kChromeWideEchoCancellation);
 #else
   return false;
