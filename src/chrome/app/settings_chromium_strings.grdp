@@ -108,7 +108,7 @@
       </then>
       <else>
         <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium is installed in side-by-side mode, which does not support setting as the default browser.">
-          This is a secondary installation of Chromium, and cannot be made your default browser.
+          This is a secondary installation of Thorium, and cannot be made your default browser.
         </message>
       </else>
     </if>
@@ -145,8 +145,8 @@
   <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_RADIO_SUBLABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device. In short, a site will remember your preferences, shopping cart content, etc. during this browser session. But once you close all open windows, and then visit the site again, it's as if you're coming to the site for the first time.">
     Sites will probably work as you expect but won't remember you after you close all Thorium windows
   </message>
-  <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_EXCEPTIONS_SUB_HEADING" desc="2 of 3. A label within 'Customized behaviors' that allows for exceptions to the 'On-device site data' setting. This label and the list of sites that can appear beneath it is only relevant if the user has chosen to allow 'on-device site data' as the default value above.">
-    Always clear site data from your device when you close Thorium
+  <message name="IDS_SETTINGS_SITE_DATA_PAGE_DELETE_ON_EXIT_EXCEPTIONS_SUB_HEADING" desc="2 of 3. A label within 'Customized behaviors' that allows for exceptions to the 'On-device site data' setting. This label and the list of sites that can appear beneath it is only relevant if the user has chosen to allow 'on-device site data' as the default value above.">
+    Always delete site data from your device when you close Thorium
   </message>
 
   <!-- Privacy Guide -->
@@ -165,8 +165,14 @@
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_COMPLETION_CARD_WAA_SUB_LABEL" desc="Text of the Web and App Activity sublabel in the completion card of the 'Privacy Guide'.">
     Choose whether to include Thorium history for more personalized experiences in Google services
   </message>
+  <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_FEATURE_DESCRIPTION3" desc="A part of the feature description of 'make searches and browsing better' in the 'Privacy Guide'.">
+    If you also save your bookmarks in your Google Account, you can track product prices in Thorium and get notified when the price drops
+  </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_PRIVACY_DESCRIPTION2" desc="A part of the privacy description of 'make searches and browsing better' in the 'Privacy Guide'.">
     If you also share Thorium usage reports, those reports include the URLs you visit
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SEARCH_SUGGESTIONS_PRIVACY_DESCRIPTION2" desc="A part of the privacy description of 'search suggestions' in the 'Privacy Guide'.">
+    Depending on your settings, Thorium may also send cookies and your current URL
   </message>
 
   <!-- Privacy Sandbox -->
@@ -330,4 +336,9 @@
       Information about how Thorium manages its root certificates
     </message>
   </if>
+
+  <!-- Safety Hub -->
+  <message name="IDS_SETTINGS_SAFETY_HUB_ENTRY_POINT_NOTHING_TO_DO" desc="This text describes what Safety Hub does (regularly checking whether Thorium settings are safe) and indicates whether the user should take action. This text is shown when Safety Hub has not identified any issues at this time. There is nothing to do for the user. As future checks of Safety Hub may identify issues, this state may change. This text is shown on a card in privacy settings next to a button that leads to Safety Hub.">
+    Thorium regularly checks to make sure your browser has the safest settings. We'll let you know if anything needs your review.
+  </message>
 </grit-part>

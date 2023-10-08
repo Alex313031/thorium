@@ -425,9 +425,18 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
           Not used in Thorium. Placeholder to keep resource maps in sync.
         </message>
       </if>
-      <message name="IDS_ABOUT_TERMS_OF_SERVICE" desc="The terms of service label in the About box." translateable="false">
-        Not used in Thorium. Placeholder to keep resource maps in sync.
-      </message>
+      <if expr="_is_chrome_for_testing_branded">
+        <then>
+          <message name="IDS_ABOUT_TERMS_OF_SERVICE" desc="The terms of service label in the About box.">
+            Terms of Service
+          </message>
+        </then>
+        <else>
+          <message name="IDS_ABOUT_TERMS_OF_SERVICE" desc="The terms of service label in the About box." translateable="false">
+            Not used in Thorium. Placeholder to keep resource maps in sync.
+          </message>
+        </else>
+      </if>
       <if expr="is_macosx">
         <message name="IDS_MAC_10_13_OBSOLETE" desc="A message displayed on an at-launch infobar and About (Help) page warning the user that the OS version they are using will soon be or is already unsupported.">
           To get future Thorium updates, you'll need macOS 10.15 or later. This computer is using macOS 10.13.
@@ -683,11 +692,9 @@ Permissions you've already given to websites and apps may apply to this account.
                        desc="Subpage summary of warning for Deep Scanning.">
         Thorium recommends scanning this file because it may be dangerous
       </message>
-
-      <!-- Tailored Warning in Download Bubble Items -->
-      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_SUSPICIOUS_ARCHIVE"
-               desc="Subpage summary for suspicious archive warning.">
-        Thorium blocked this archive file because it may hide malware
+      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_WARNING_BLOCKED_LEARN_MORE_LINK"
+               desc="Text for the link to the help page about why Thorium blocks some downloaded files. This string will be embedded in a longer sentence that makes up the whole label.">
+        Thorium blocks some downloads
       </message>
 
       <!-- Download Shelf Items -->
@@ -770,11 +777,14 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_MALWARE" desc="The text explaining the reason for disabling extension. The extension in question contains malware.">
         This extension contains malware and is unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
-       <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
-          This extension violates the Chrome Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
+        This extension violates the Thorium Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_UNPUBLISHED" desc="The text explaining the reason for disabling extension. The extension in question was unpublished by the developer.">
-          This extension was unpublished by its developer, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+        This extension was unpublished by its developer, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      </message>
+      <message name="IDS_EXTENSIONS_SAFETY_CHECK_PRIMARY_LABEL" desc="Alerts the user that the extension should be reviewed.">
+        Thorium recommends you review this extension
       </message>
 
       <!-- chrome://settings/extensions page -->
@@ -945,9 +955,18 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <!-- NTP strings -->
-      <message name="IDS_NTP_CUSTOMIZE_BUTTON_LABEL" desc="Label for button on the New Tab Page that opens dialog to customize Thorium browser.">
-        Customize Thorium
-      </message>
+      <if expr="_is_chrome_for_testing_branded">
+        <then>
+          <message name="IDS_NTP_CUSTOMIZE_BUTTON_LABEL" desc="Label for button on the New Tab Page that opens dialog to customize Thorium for Testing browser.">
+            Customize Thorium for Testing
+          </message>
+        </then>
+        <else>
+          <message name="IDS_NTP_CUSTOMIZE_BUTTON_LABEL" desc="Label for button on the New Tab Page that opens dialog to customize Thorium browser.">
+            Customize Thorium
+          </message>
+        </else>
+      </if>
 
       <!-- Signin Email Confirmation tab modal dialog -->
       <if expr="not chromeos_ash">
@@ -1057,17 +1076,19 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <if expr="not is_android">
         <!-- WebHID system tray icon -->
-        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TITLE_SINGLE_EXTENSION" desc="Title for the WebHID system tray icon when one or more HID devices are being accessed by an extension.">
+        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TITLE" desc="Title for the WebHID system tray icon">
             {NUM_DEVICES, plural,
-            =0 {A Thorium extension was accessing HID devices}
-            =1 {A Thorium extension is accessing 1 HID device}
-            other {A Thorium extension is accessing # HID devices}}
+              =0 {1 HID device was being accessed by one or more Thorium extensions}
+              =1 {1 HID device is being accessed by one or more Thorium extensions}
+            other {# HID devices are being accessed by one or more Thorium extensions}}
         </message>
-        <message name="IDS_WEBHID_SYSTEM_TRAY_ICON_TITLE_MULTIPLE_EXTENSIONS" desc="Title for the WebHID system tray icon when HID devices are being accessed by multiple extensions.">
+
+        <!-- WebUSB system tray icon -->
+         <message name="IDS_WEBUSB_SYSTEM_TRAY_ICON_TITLE" desc="Title for the WebUSB system tray icon">
             {NUM_DEVICES, plural,
-            =0 {Thorium extensions were accessing HID devices}
-            =1 {Thorium extensions are accessing HID devices}
-            other {Thorium extensions are accessing # HID devices}}
+              =0 {1 USB device was being accessed by one or more Thorium extensions}
+              =1 {1 USB device is being accessed by one or more Thorium extensions}
+            other {# USB devices are being accessed by one or more Thorium extensions}}
         </message>
       </if>
 
@@ -1473,8 +1494,8 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_IDLE_TIMEOUT_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to clear data automatically.">
           {COUNT, plural,
-          =1 {Your organization automatically deletes browsing data when Thorium isn't used for 1 minute. This could include history, autofill, and downloads. Your existing tabs will remain open.}
-          other {Your organization automatically deletes browsing data when Thorium isn't used for # minutes. This could include history, autofill, and downloads. Your existing tabs will remain open.}}
+          =1 {Your organization automatically deletes browsing data when Thorium isn't used for 1 minute. This could include history, autofill, and downloads. Your tabs will stay open.}
+          other {Your organization automatically deletes browsing data when Thorium isn't used for # minutes. This could include history, autofill, and downloads. Your tabs will stay open.}}
         </message>
         <message name="IDS_IDLE_TIMEOUT_CLOSE_AND_CLEAR_BODY" desc="First sentence in the Idle Timeout dialog, warning the user that Thorium is going to close and clear data automatically.">
           {COUNT, plural,
@@ -1491,13 +1512,11 @@ Permissions you've already given to websites and apps may apply to this account.
           Help us improve Thorium
         </message>
       </if>
+
       <!-- Thorium parent extension/app install blocking dialog. -->
       <if expr="enable_extensions and enable_supervised_users">
-        <message name="IDS_EXTENSION_INSTALL_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
-         Your parent has turned off "Permissions for sites, apps and extensions" for Thorium. Adding this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
-        </message>
-        <message name="IDS_EXTENSION_ENABLE_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
-         Your parent has turned off "Permissions for sites, apps and extensions" for Thorium. Enabling this <ph name="EXTENSION_TYPE_PARAMETER">$1<ex>extension</ex></ph> is not allowed.
+        <message name="IDS_EXTENSION_PERMISSIONS_BLOCKED_BY_PARENT_PROMPT_MESSAGE" desc="Text for the dialog indicating that a parent has blocked extensions and apps.">
+         Your parent has turned off "Permissions for sites, apps and extensions" for Thorium
         </message>
       </if>
 
@@ -1533,9 +1552,6 @@ Permissions you've already given to websites and apps may apply to this account.
         </if>
         <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_PROFILE_TYPE_CHOICE_TITLE" desc="Profile picker profile type choice title">
           Set up your new Thorium profile
-        </message>
-        <message name="IDS_PROFILE_PICKER_PROFILE_CREATION_FLOW_LOCAL_PROFILE_CREATION_TITLE" desc="Title for the local profile customiztion screen on the picker.">
-          Customize your Thorium profile
         </message>
         <message name="IDS_PROFILE_PICKER_IPH_FOR_PROFILES_TEXT" desc="Text of the IPH bubble for introducing profiles.">
           Each profile holds its own Thorium info like bookmarks, history, passwords, and more
@@ -1579,6 +1595,17 @@ Permissions you've already given to websites and apps may apply to this account.
             Do more with Thorium
           </message>
         </if>
+
+        <!-- Default Browser Promo -->
+        <message name="IDS_FRE_DEFAULT_BROWSER_TITLE" desc="Title for the page that prompts user to set Thorium as their default browser in the first run experience.">
+          Set Thorium as your default browser
+        </message>
+        <message name="IDS_FRE_DEFAULT_BROWSER_SUBTITLE_NEW" desc="Subtitle for the page that prompts user to set Thorium as their default browser in the first run experience.">
+          Use Thorium anytime you click links in messages, documents, and other apps
+        </message>
+        <message name="IDS_FRE_DEFAULT_BROWSER_ILLUSTRATION_ALT_TEXT" desc="Alt text for the illustration in the page that prompts user to set Thorium as their default browser.">
+          Thorium logo inside a computer screen.
+        </message>
 
         <!-- Profile switch IPH -->
         <message name="IDS_PROFILE_SWITCH_PROMO" desc="Text of the In-Product-Help bubble for profile switching.">
