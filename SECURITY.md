@@ -1,4 +1,4 @@
-# Security
+## Security
 
 ### Thorium Security Policy
 
@@ -7,6 +7,6 @@
 
 ### List of major vulnerabilities fixed in Thorium
 
-libwebp WebP bug [CVE-2023-4863](https://nvd.nist.gov/vuln/detail/CVE-2023-4863) - Fixed in M117
+ &ndash; libwebp WebP bug [CVE-2023-4863](https://nvd.nist.gov/vuln/detail/CVE-2023-4863) - Fixed in M117
 
-libvpx VP8 bug [CVE-2023-5217](https://nvd.nist.gov/vuln/detail/CVE-2023-5217) - Fixed in M117
+ &ndash; libvpx VP8 bug [CVE-2023-5217](https://nvd.nist.gov/vuln/detail/CVE-2023-5217) - Fixed in M117

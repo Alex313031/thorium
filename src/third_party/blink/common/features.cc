@@ -6,6 +6,7 @@
 
 #include "base/command_line.h"
 #include "base/feature_list.h"
+#include "base/features.h"
 #include "base/time/time.h"
 #include "build/build_config.h"
 #include "build/chromecast_buildflags.h"
@@ -31,6 +32,11 @@ namespace features {
 
 BASE_FEATURE(kAcceleratedStaticBitmapImageSerialization,
              "AcceleratedStaticBitmapImageSerialization",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Enable the Protected Audience's reporting with ad macro API.
+BASE_FEATURE(kAdAuctionReportingWithMacroApi,
+             "AdAuctionReportingWithMacroApi",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md
@@ -200,6 +206,10 @@ const base::FeatureParam<AutomaticLazyFrameLoadingToEmbedLoadingStrategy>
         &kAutomaticLazyFrameLoadingToEmbedUrls, "strategy",
         AutomaticLazyFrameLoadingToEmbedLoadingStrategy::kAllowList,
         &kAutomaticLazyFrameLoadingToEmbedLoadingStrategies};
+
+BASE_FEATURE(kAvifGainmapHdrImages,
+             "AvifGainmapHdrImages",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kBackForwardCacheDWCOnJavaScriptExecution,
              "BackForwardCacheDWCOnJavaScriptExecution",
@@ -385,10 +395,6 @@ BASE_FEATURE(kCORSErrorsIssueOnly,
              "CORSErrorsIssueOnly",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kCSPWildcardsInPermissionsPolicies,
-             "CSPWildcardsInPermissionsPolicies",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // When enabled, code cache is produced asynchronously from the script execution
 // (https://crbug.com/1260908).
 BASE_FEATURE(kCacheCodeOnIdle,
@@ -410,6 +416,12 @@ BASE_FEATURE(kCacheStorageCodeCacheHintHeader,
              base::FEATURE_DISABLED_BY_DEFAULT);
 const base::FeatureParam<std::string> kCacheStorageCodeCacheHintHeaderName{
     &kCacheStorageCodeCacheHintHeader, "name", "x-CacheStorageCodeCacheHint"};
+
+// Modifies the logic in `blink::CanChangeToUrlForHistoryApi()` to be more
+// spec-compliant.
+BASE_FEATURE(kCanChangeToUrlForHistoryApiUpdate,
+             "CanChangeToUrlForHistoryApiUpdate",
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(
     kCanvas2DHibernation,
@@ -472,6 +484,11 @@ BASE_FEATURE(kClientHintsDeviceMemory_DEPRECATED,
              "ClientHintsDeviceMemory_DEPRECATED",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Enable `form-factor` client hint.
+BASE_FEATURE(kClientHintsFormFactor,
+             "ClientHintsFormFactor",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // Enable `sec-ch-width` client hint.
 BASE_FEATURE(kClientHintsResourceWidth,
              "ClientHintsResourceWidth",
@@ -507,6 +524,12 @@ BASE_FEATURE(kClipboardUnsanitizedContent,
 BASE_FEATURE(kCompressParkableStrings,
              "CompressParkableStrings",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Limits maximum capacity of disk data allocator per renderer process.
+// DiskDataAllocator and its clients(ParkableString, ParkableImage) will try
+// to keep the limitation.
+const base::FeatureParam<int> kMaxDiskDataAllocatorCapacityMB{
+    &kCompressParkableStrings, "max_disk_capacity_mb", -1};
 
 // Controls off-thread code cache consumption.
 BASE_FEATURE(kConsumeCodeCacheOffThread,
@@ -566,7 +589,7 @@ BASE_FEATURE(kDecodeLossyWebPImagesToYUV,
 // Has no effect unless viewport handling is enabled.
 BASE_FEATURE(kDefaultViewportIsDeviceWidth,
              "DefaultViewportIsDeviceWidth",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kDelayAsyncScriptExecution,
              "DelayAsyncScriptExecution",
@@ -714,6 +737,30 @@ BASE_FEATURE(kEventTimingMatchPresentationIndex,
              "EventTimingMatchPresentationIndex",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+// Enables reporting Event Timing entries with a smaller presentation index on
+// resolved painted presentation.
+BASE_FEATURE(kEventTimingReportAllEarlyEntriesOnPaintedPresentation,
+             "EventTimingReportAllEarlyEntriesOnPaintedPresentation",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Enables unload handler deprecation via Permissions-Policy.
+// https://crbug.com/1324111
+BASE_FEATURE(kDeprecateUnload,
+             "DeprecateUnload",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+// If enabled, each user experiences the deprecation on a certain % of origins.
+// Which origins varies per user. This has no effect with DeprecateUnload.
+BASE_FEATURE(kDeprecateUnloadByUserAndOrigin,
+             "DeprecateUnloadByUserAndOrigin",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+// This controls what % of origins have the deprecation for this user.
+const base::FeatureParam<int> kDeprecateUnloadPercent{
+    &kDeprecateUnloadByUserAndOrigin, "rollout_percent", 0};
+// This buckets users, with users in each bucket having a consistent experience
+// of the unload deprecation rollout.
+const base::FeatureParam<int> kDeprecateUnloadBucket{
+    &kDeprecateUnloadByUserAndOrigin, "rollout_bucket", 0};
+
 // Controls whether LCP calculations should exclude low-entropy images. If
 // enabled, then the associated parameter sets the cutoff, expressed as the
 // minimum number of bits of encoded image data used to encode each rendered
@@ -729,10 +776,6 @@ const base::FeatureParam<double> kMinimumEntropyForLCP{
 BASE_FEATURE(kExtendScriptResourceLifetime,
              "ExtendScriptResourceLifetime",
              base::FEATURE_DISABLED_BY_DEFAULT);
-
-BASE_FEATURE(kFastPathPaintPropertyUpdates,
-             "FastPathPaintPropertyUpdates",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enable the <fencedframe> element; see crbug.com/1123606. Note that enabling
 // this feature does not automatically expose this element to the web, it only
@@ -782,6 +825,10 @@ BASE_FEATURE(kFledgeConsiderKAnonymity,
              base::FEATURE_DISABLED_BY_DEFAULT);
 BASE_FEATURE(kFledgeEnforceKAnonymity,
              "FledgeEnforceKAnonymity",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kFledgePassKAnonStatusToReportWin,
+             "FledgePassKAnonStatusToReportWin",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kFledgePassRecencyToGenerateBid,
@@ -893,6 +940,10 @@ BASE_FEATURE(kImageLoadingPrioritizationFix,
              "ImageLoadingPrioritizationFix",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+BASE_FEATURE(kIndexedDBCompressValuesWithSnappy,
+             "IndexedDBCompressValuesWithSnappy",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 BASE_FEATURE(kInputPredictorTypeChoice,
              "InputPredictorTypeChoice",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -981,6 +1032,27 @@ BASE_FEATURE(kLCPCriticalPathPredictor,
              "LCPCriticalPathPredictor",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+const base::FeatureParam<bool> kLCPCriticalPathPredictorDryRun{
+    &kLCPCriticalPathPredictor, "lcpp_dry_run", false};
+
+const base::FeatureParam<int> kLCPCriticalPathPredictorMaxElementLocatorLength{
+    &kLCPCriticalPathPredictor, "lcpp_max_element_locator_length", 1024};
+
+const base::FeatureParam<LcppImageLoadPriority>::Option
+    lcpp_image_load_priorities[] = {
+        {LcppImageLoadPriority::kMedium, "medium"},
+        {LcppImageLoadPriority::kHigh, "high"},
+        {LcppImageLoadPriority::kVeryHigh, "very_high"},
+};
+const base::FeatureParam<LcppImageLoadPriority>
+    kLCPCriticalPathPredictorImageLoadPriority{
+        &kLCPCriticalPathPredictor, "lcpp_image_load_priority",
+        LcppImageLoadPriority::kVeryHigh, &lcpp_image_load_priorities};
+
+BASE_FEATURE(kLCPScriptObserver,
+             "LCPScriptObserver",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // Enables reporting as LCP of the time the first frame of a video was painted.
 BASE_FEATURE(kLCPVideoFirstFrame,
              "LCPVideoFirstFrame",
@@ -995,6 +1067,8 @@ BASE_FEATURE(kLightweightNoStatePrefetch,
              base::FEATURE_DISABLED_BY_DEFAULT
 #endif
 );
+
+BASE_FEATURE(kLinkPreview, "LinkPreview", base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Makes network loading tasks unfreezable so that they can be processed while
 // the page is frozen.
@@ -1128,6 +1202,19 @@ BASE_FEATURE(kPaintHolding, "PaintHolding", base::FEATURE_ENABLED_BY_DEFAULT);
 BASE_FEATURE(kPaintHoldingCrossOrigin,
              "PaintHoldingCrossOrigin",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kParkableImagesToDisk,
+             "ParkableImagesToDisk",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+#if BUILDFLAG(IS_ANDROID)
+// A parameter to exclude or not exclude CanvasFontCache from
+// PartialLowModeOnMidRangeDevices. This is used to see how
+// CanvasFontCache affects graphics smoothness and renderer memory usage.
+const base::FeatureParam<bool> kPartialLowEndModeExcludeCanvasFontCache{
+    &base::features::kPartialLowEndModeOnMidRangeDevices,
+    "exclude-canvas-font-cache", false};
+#endif  // BUILDFLAG(IS_ANDROID)
 
 // Enables the use of the PaintCache for Path2D objects that are rasterized
 // out of process.  Has no effect when kCanvasOopRasterization is disabled.
@@ -1277,19 +1364,22 @@ BASE_FEATURE(kPrivateAggregationApi,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Selectively allows the JavaScript API to be disabled in just one of the
-// contexts.
+// contexts. The Protected Audience param's name has not been updated (from
+// "fledge") for consistency across versions
 constexpr base::FeatureParam<bool> kPrivateAggregationApiEnabledInSharedStorage{
     &kPrivateAggregationApi, "enabled_in_shared_storage",
     /*default_value=*/true};
-constexpr base::FeatureParam<bool> kPrivateAggregationApiEnabledInFledge{
-    &kPrivateAggregationApi, "enabled_in_fledge",
-    /*default_value=*/true};
+constexpr base::FeatureParam<bool>
+    kPrivateAggregationApiEnabledInProtectedAudience{&kPrivateAggregationApi,
+                                                     "enabled_in_fledge",
+                                                     /*default_value=*/true};
 
 // Selectively allows the Protected Audience-specific extensions to be disabled.
+// The name has not been updated (from "fledge") for consistency across versions
 constexpr base::FeatureParam<bool>
-    kPrivateAggregationApiFledgeExtensionsEnabled{&kPrivateAggregationApi,
-                                                  "fledge_extensions_enabled",
-                                                  /*default_value=*/true};
+    kPrivateAggregationApiProtectedAudienceExtensionsEnabled{
+        &kPrivateAggregationApi, "fledge_extensions_enabled",
+        /*default_value=*/true};
 
 BASE_FEATURE(kProcessHtmlDataImmediately,
              "ProcessHtmlDataImmediately",
@@ -1377,6 +1467,10 @@ const base::FeatureParam<int> kMaxFCPDelayMsForRenderBlockingFonts(
     "max-fcp-delay",
     100);
 
+BASE_FEATURE(kReportVisibleLineBounds,
+             "ReportVisibleLineBounds",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 BASE_FEATURE(kResamplingInputEvents,
              "ResamplingInputEvents",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1387,7 +1481,7 @@ BASE_FEATURE(kResamplingScrollEvents,
 
 BASE_FEATURE(kRetriggerPreloadingOnBFCacheRestoration,
              "RetriggerPreloadingOnBFCacheRestoration",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kRunTextInputUpdatePostLifecycle,
              "RunTextInputUpdatePostLifecycle",
@@ -1395,6 +1489,11 @@ BASE_FEATURE(kRunTextInputUpdatePostLifecycle,
 
 BASE_FEATURE(kRuntimeFeatureStateControllerApplyFeatureDiff,
              "RuntimeFeatureStateControllerApplyFeatureDiff",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+// https://html.spec.whatwg.org/multipage/system-state.html#safelisted-scheme
+BASE_FEATURE(kSafelistFTPToRegisterProtocolHandler,
+             "SafelistFTPToRegisterProtocolHandler",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSSVTrailerEnforceExposureAssertion,
@@ -1444,7 +1543,7 @@ BASE_FEATURE(kSendCnameAliasesToSubresourceFilterFromRenderer,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSerializeAccessibilityPostLifecycle,
-             "SerializeAccessibilityPostLifeycle",
+             "SerializeAccessibilityPostLifecycle",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Experiment of the delay from navigation to starting an update of a service
@@ -1516,6 +1615,10 @@ const base::FeatureParam<int>
     kSharedStorageSelectURLBitBudgetPerOriginPerPageLoad = {
         &kSharedStorageSelectURLLimit,
         "SharedStorageSelectURLBitBudgetPerOriginPerPageLoad", 6};
+
+BASE_FEATURE(kSharedStorageAPIM118,
+             "SharedStorageAPIM118",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSimulateClickOnAXFocus,
              "SimulateClickOnAXFocus",
@@ -1615,6 +1718,10 @@ const base::FeatureParam<int>
 const base::FeatureParam<bool> kSpeculativeServiceWorkerWarmUpOnVisible{
     &kSpeculativeServiceWorkerWarmUp, "sw_warm_up_on_visible", true};
 
+// Warms up service workers when the anchor is inserted into DOM.
+const base::FeatureParam<bool> kSpeculativeServiceWorkerWarmUpOnInsertedIntoDom{
+    &kSpeculativeServiceWorkerWarmUp, "sw_warm_up_on_inserted_into_dom", false};
+
 // Warms up service workers when a pointerover event is triggered on an anchor.
 const base::FeatureParam<bool> kSpeculativeServiceWorkerWarmUpOnPointerover{
     &kSpeculativeServiceWorkerWarmUp, "sw_warm_up_on_pointerover", true};
@@ -1657,6 +1764,14 @@ const base::FeatureParam<base::TimeDelta>
     kStorageAccessAPITopLevelUserInteractionBound{
         &kStorageAccessAPI,
         "storage_access_api_top_level_user_interaction_bound", base::Days(30)};
+const base::FeatureParam<base::TimeDelta>
+    kStorageAccessAPIImplicitPermissionLifetime{
+        &kStorageAccessAPI, "storage_access_api_implicit_permission_lifetime",
+        base::Hours(24)};
+const base::FeatureParam<base::TimeDelta>
+    kStorageAccessAPIExplicitPermissionLifetime{
+        &kStorageAccessAPI, "storage_access_api_explicit_permission_lifetime",
+        base::Days(30)};
 
 BASE_FEATURE(kStylusPointerAdjustment,
              "StylusPointerAdjustment",
@@ -1723,10 +1838,14 @@ BASE_FEATURE(kUACHOverrideBlank,
 
 BASE_FEATURE(kURLSetPortCheckOverflow,
              "URLSetPortCheckOverflow",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kUseBlinkSchedulerTaskRunnerWithCustomDeleter,
              "UseBlinkSchedulerTaskRunnerWithCustomDeleter",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kEnableFileBackedBlobFactory,
+             "EnableFileBackedBlobFactory",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Whether to use 'TexImage2D' instead of 'TexStorage2DEXT' when creating a
@@ -1757,12 +1876,6 @@ BASE_FEATURE(kUserLevelMemoryPressureSignal,
              "UserLevelMemoryPressureSignal",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-// Prevents workers from sending IsolateInBackgroundNotification to V8
-// and thus instructs V8 to favor performance over memory on workers.
-BASE_FEATURE(kV8OptimizeWorkersForPerformance,
-             "V8OptimizeWorkersForPerformance",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 BASE_FEATURE(kVSyncDecoding,
              "VSyncDecoding",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1773,7 +1886,12 @@ const base::FeatureParam<base::TimeDelta>
 // Enable borderless mode for desktop PWAs. go/borderless-mode
 BASE_FEATURE(kWebAppBorderless,
              "WebAppBorderless",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_CHROMEOS)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif  // BUILDFLAG(IS_CHROMEOS)
+);
 
 // Controls scope extensions feature in web apps. Controls parsing of
 // "scope_extensions" field in web app manifests. See explainer for more
@@ -1860,7 +1978,7 @@ BASE_FEATURE(kWebRtcIgnoreUnspecifiedColorSpace,
 
 BASE_FEATURE(kWebRtcInitializeEncoderOnFirstFrame,
              "WebRtcInitializeEncoderOnFirstFrame",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kWebRtcMetronome,
              "WebRtcMetronome",
@@ -1946,6 +2064,10 @@ bool IsNewBaseUrlInheritanceBehaviorEnabled() {
 bool IsParkableStringsToDiskEnabled() {
   // Always enabled as soon as compression is enabled.
   return base::FeatureList::IsEnabled(kCompressParkableStrings);
+}
+
+bool IsParkableImagesToDiskEnabled() {
+  return base::FeatureList::IsEnabled(kParkableImagesToDisk);
 }
 
 bool IsSetTimeoutWithoutClampEnabled() {
