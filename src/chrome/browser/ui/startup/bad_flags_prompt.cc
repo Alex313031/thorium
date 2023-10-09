@@ -110,8 +110,8 @@ static const char* kBadFlags[] = {
 
     // These flags control Blink feature state, which is not supported and is
     // intended only for use by Chromium developers.
-    switches::kDisableBlinkFeatures,
-    switches::kEnableBlinkFeatures,
+    // switches::kDisableBlinkFeatures, (Disabled by Alex313031)
+    // switches::kEnableBlinkFeatures, (Disabled by Alex313031)
 
     // This flag allows people to allowlist certain origins as secure, even
     // if they are not.
