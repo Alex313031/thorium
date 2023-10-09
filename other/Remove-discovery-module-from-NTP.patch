@@ -1,14 +1,3 @@
-From 9b56230adb566db99b9b6bab8fa4183cf66f213b Mon Sep 17 00:00:00 2001
-From: Ho Cheung <uioptt24@gmail.com>
-Date: Mon, 4 Sep 2023 20:56:29 +0800
-Subject: [PATCH] [Android] Remove discovery module from NTP
-
----
- .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
- .../java/res/layout/new_tab_page_multi_feed_header.xml       | 5 +++--
- components/feed/core/shared_prefs/pref_names.cc              | 4 ++--
- 3 files changed, 8 insertions(+), 6 deletions(-)
-
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 index ee1283cb9a6a0..c89b236330bf9 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
@@ -72,6 +61,3 @@ index 71586a65fcd92..e3397204d2b8b 100644
  }
  
  }  // namespace prefs
--- 
-2.42.0.windows.1
-
