@@ -723,7 +723,7 @@ config("compiler") {
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
         "-mllvm:-import-hot-multiplier=15",
-        "-mllvm:-import-cold-multiplier=4",
+        "-mllvm:-import-cold-multiplier=2",
         "-mllvm:-disable-auto-upgrade-debug-info",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
@@ -1117,10 +1117,9 @@ config("compiler_cpu_abi") {
         "-m64",
         "-O3",
         "-march=x86-64-v3",
-        "-mtune=x86-64-v3",
         "-ffp-contract=fast",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=4", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]

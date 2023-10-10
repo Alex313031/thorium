@@ -723,7 +723,7 @@ config("compiler") {
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
         "-mllvm:-import-hot-multiplier=15",
-        "-mllvm:-import-cold-multiplier=4",
+        "-mllvm:-import-cold-multiplier=2",
         "-mllvm:-disable-auto-upgrade-debug-info",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
