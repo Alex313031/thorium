@@ -484,6 +484,9 @@ static void h264_decode_flush(AVCodecContext *avctx)
 
     ff_h264_free_tables(h);
     h->context_initialized = 0;
+
+    if (avctx->hwaccel && avctx->hwaccel->flush)
+        avctx->hwaccel->flush(avctx);
 }
 
 static int get_last_needed_nal(H264Context *h)
@@ -1097,6 +1100,9 @@ const FFCodec ff_h264_decoder = {
 #endif
 #if CONFIG_H264_VIDEOTOOLBOX_HWACCEL
                                HWACCEL_VIDEOTOOLBOX(h264),
+#endif
+#if CONFIG_H264_VULKAN_HWACCEL
+                               HWACCEL_VULKAN(h264),
 #endif
                                NULL
                            },

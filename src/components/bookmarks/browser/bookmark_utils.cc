@@ -484,6 +484,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(prefs::kEditBookmarksEnabled, true);
   registry->RegisterBooleanPref(
+      // TODO: Alex313031 remove on M120
       prefs::kShowAppsShortcutInBookmarkBar, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(

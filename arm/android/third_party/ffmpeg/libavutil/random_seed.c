@@ -30,6 +30,11 @@
 #include <windows.h>
 #include <bcrypt.h>
 #endif
+#if CONFIG_GCRYPT
+#include <gcrypt.h>
+#elif CONFIG_OPENSSL
+#include <openssl/rand.h>
+#endif
 #include <fcntl.h>
 #include <math.h>
 #include <time.h>
@@ -46,20 +51,24 @@
 #define TEST 0
 #endif
 
-static int read_random(uint32_t *dst, const char *file)
+static int read_random(uint8_t *dst, size_t len, const char *file)
 {
 #if HAVE_UNISTD_H
-    int fd = avpriv_open(file, O_RDONLY);
-    int err = -1;
+    FILE *fp = avpriv_fopen_utf8(file, "r");
+    size_t err;
 
-    if (fd == -1)
-        return -1;
-    err = read(fd, dst, sizeof(*dst));
-    close(fd);
+    if (!fp)
+        return AVERROR_UNKNOWN;
+    setvbuf(fp, NULL, _IONBF, 0);
+    err = fread(dst, 1, len, fp);
+    fclose(fp);
 
-    return err;
+    if (err != len)
+        return AVERROR_UNKNOWN;
+
+    return 0;
 #else
-    return -1;
+    return AVERROR(ENOSYS);
 #endif
 }
 
@@ -118,29 +127,49 @@ static uint32_t get_generic_seed(void)
     return AV_RB32(digest) + AV_RB32(digest + 16);
 }
 
-uint32_t av_get_random_seed(void)
+int av_random_bytes(uint8_t* buf, size_t len)
 {
-    uint32_t seed;
+    int err;
 
 #if HAVE_BCRYPT
     BCRYPT_ALG_HANDLE algo_handle;
     NTSTATUS ret = BCryptOpenAlgorithmProvider(&algo_handle, BCRYPT_RNG_ALGORITHM,
                                                MS_PRIMITIVE_PROVIDER, 0);
     if (BCRYPT_SUCCESS(ret)) {
-        NTSTATUS ret = BCryptGenRandom(algo_handle, (UCHAR*)&seed, sizeof(seed), 0);
+        NTSTATUS ret = BCryptGenRandom(algo_handle, (PUCHAR)buf, len, 0);
         BCryptCloseAlgorithmProvider(algo_handle, 0);
         if (BCRYPT_SUCCESS(ret))
-            return seed;
+            return 0;
     }
 #endif
 
-#if HAVE_ARC4RANDOM
-    return arc4random();
+#if HAVE_ARC4RANDOM_BUF
+    arc4random_buf(buf, len);
+    return 0;
 #endif
 
-    if (read_random(&seed, "/dev/urandom") == sizeof(seed))
-        return seed;
-    if (read_random(&seed, "/dev/random")  == sizeof(seed))
-        return seed;
-    return get_generic_seed();
+    err = read_random(buf, len, "/dev/urandom");
+    if (!err)
+        return err;
+
+#if CONFIG_GCRYPT
+    gcry_randomize(buf, len, GCRY_VERY_STRONG_RANDOM);
+    return 0;
+#elif CONFIG_OPENSSL
+    if (RAND_bytes(buf, len) == 1)
+        return 0;
+    err = AVERROR_EXTERNAL;
+#endif
+
+    return err;
+}
+
+uint32_t av_get_random_seed(void)
+{
+    uint32_t seed;
+
+    if (av_random_bytes((uint8_t *)&seed, sizeof(seed)) < 0)
+        return get_generic_seed();
+
+    return seed;
 }

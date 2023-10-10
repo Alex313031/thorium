@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -31,6 +31,7 @@
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_WIN)
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 #include "base/no_destructor.h"
+#include "chrome/common/media/component_widevine_cdm_hint_file_linux.h"
 #include "components/cdm/common/cdm_manifest.h"
 #include "media/cdm/supported_audio_codecs.h"
 // Needed for WIDEVINE_CDM_MIN_GLIBC_VERSION. This file is in
@@ -41,9 +42,6 @@
 #include <gnu/libc-version.h>
 #include "base/version.h"
 #endif  // defined(WIDEVINE_CDM_MIN_GLIBC_VERSION)
-#if !BUILDFLAG(IS_CHROMEOS_ASH)
-#include "chrome/common/media/component_widevine_cdm_hint_file_linux.h"
-#endif  // !BUILDFLAG(IS_CHROMEOS_ASH)
 #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 #endif  // BUILDFLAG(ENABLE_WIDEVINE)
 
@@ -82,6 +80,7 @@ std::unique_ptr<content::CdmInfo> CreateCdmInfoFromWidevineDirectory(
       media::GetPlatformSpecificDirectory(cdm_base_path)
           .Append(base::GetNativeLibraryName(kWidevineCdmLibraryName));
   if (!base::PathExists(cdm_library_path)) {
+    DLOG(ERROR) << __func__ << " no directory: " << cdm_library_path;
     return nullptr;
   }
 
@@ -90,6 +89,7 @@ std::unique_ptr<content::CdmInfo> CreateCdmInfoFromWidevineDirectory(
   base::Version version;
   media::CdmCapability capability;
   if (!ParseCdmManifestFromPath(manifest_path, &version, &capability)) {
+    DLOG(ERROR) << __func__ << " no manifest: " << manifest_path;
     return nullptr;
   }
 
@@ -145,8 +145,8 @@ content::CdmInfo* GetComponentUpdatedWidevine() {
       }());
   return s_cdm_info->get();
 }
-#endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) && (BUILDFLAG(IS_LINUX) ||
-        // BUILDFLAG(IS_CHROMEOS))
+#endif  // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) &&
+        // (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
 
 void AddSoftwareSecureWidevine(std::vector<content::CdmInfo>* cdms) {
   DVLOG(1) << __func__;
@@ -207,7 +207,7 @@ void AddSoftwareSecureWidevine(std::vector<content::CdmInfo>* cdms) {
   } else {
     VLOG(1) << "Widevine enabled but no library found";
   }
-#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+#endif  // BUILDFLAG(IS_ANDROID)
 }
 
 void AddHardwareSecureWidevine(std::vector<content::CdmInfo>* cdms) {
@@ -276,7 +276,7 @@ void AddHardwareSecureWidevine(std::vector<content::CdmInfo>* cdms) {
   cdms->push_back(
       content::CdmInfo(kWidevineKeySystem, Robustness::kHardwareSecure,
                        std::move(capability), content::kChromeOsCdmType));
-#endif  // BUILDFLAG(USE_CHROMEOS_PROTECTED_MEDIA)
+#endif  // BUILDFLAG(IS_ANDROID)
 }
 
 void AddWidevine(std::vector<content::CdmInfo>* cdms) {

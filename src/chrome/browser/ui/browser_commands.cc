@@ -31,6 +31,7 @@
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.h"
 #include "chrome/browser/chained_back_navigation_tracker.h"
+#include "chrome/browser/content_settings/cookie_settings_factory.h"
 #include "chrome/browser/devtools/devtools_window.h"
 #include "chrome/browser/dom_distiller/tab_utils.h"
 #include "chrome/browser/download/download_prefs.h"
@@ -111,6 +112,10 @@
 #include "components/bookmarks/browser/bookmark_utils.h"
 #include "components/bookmarks/common/bookmark_pref_names.h"
 #include "components/browsing_data/content/browsing_data_helper.h"
+#include "components/content_settings/browser/page_specific_content_settings.h"
+#include "components/content_settings/core/browser/cookie_settings.h"
+#include "components/content_settings/core/common/content_settings.h"
+#include "components/content_settings/core/common/cookie_settings_base.h"
 #include "components/dom_distiller/core/url_utils.h"
 #include "components/embedder_support/user_agent_utils.h"
 #include "components/favicon/content/content_favicon_driver.h"
@@ -134,6 +139,7 @@
 #include "components/tab_groups/tab_group_visual_data.h"
 #include "components/translate/core/browser/language_state.h"
 #include "components/translate/core/browser/translate_manager.h"
+#include "components/translate/core/common/translate_constants.h"
 #include "components/user_education/common/feature_promo_controller.h"
 #include "components/web_modal/web_contents_modal_dialog_manager.h"
 #include "components/zoom/page_zoom.h"
@@ -146,13 +152,18 @@
 #include "content/public/browser/render_view_host.h"
 #include "content/public/browser/render_widget_host_view.h"
 #include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_contents_observer.h"
 #include "content/public/common/content_switches.h"
 #include "content/public/common/url_constants.h"
 #include "content/public/common/url_utils.h"
 #include "content/public/common/user_agent.h"
 #include "extensions/buildflags/buildflags.h"
+#include "net/cookies/cookie_util.h"
 #include "printing/buildflags/buildflags.h"
 #include "rlz/buildflags/buildflags.h"
+#include "services/metrics/public/cpp/ukm_builders.h"
+#include "services/metrics/public/cpp/ukm_recorder.h"
+#include "services/metrics/public/cpp/ukm_source_id.h"
 #include "ui/base/clipboard/clipboard_buffer.h"
 #include "ui/base/clipboard/scoped_clipboard_writer.h"
 #include "ui/base/models/list_selection_model.h"
@@ -183,6 +194,11 @@
 
 #if BUILDFLAG(ENABLE_RLZ)
 #include "components/rlz/rlz_tracker.h"  // nogncheck
+#endif
+
+#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
+#include "chrome/browser/accessibility/ax_screen_ai_annotator.h"
+#include "chrome/browser/accessibility/ax_screen_ai_annotator_factory.h"
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
@@ -364,6 +380,39 @@ WebContents* GetTabAndRevertIfNecessary(Browser* browser,
   return GetTabAndRevertIfNecessaryHelper(browser, disposition, activate_tab);
 }
 
+void RecordReloadWithCookieBlocking(const Browser* browser,
+                                    WebContents* web_contents) {
+  // Figure out if 3P cookies are blocked for this page.
+  scoped_refptr<const content_settings::CookieSettings> cookie_settings =
+      CookieSettingsFactory::GetForProfile(browser->profile());
+
+  // For this metric, we define "cookies blocked in settings" based on the
+  // global opt-in to third-party cookie blocking as well as no overriding
+  // content setting on the top-level site.
+  bool cookies_blocked_in_settings =
+      cookie_settings->ShouldBlockThirdPartyCookies() &&
+      !cookie_settings->IsThirdPartyAccessAllowed(
+          web_contents->GetLastCommittedURL(), nullptr);
+
+  // Also measure if 3P cookies were actually blocked on the site.
+  content_settings::PageSpecificContentSettings* pscs =
+      content_settings::PageSpecificContentSettings::GetForFrame(
+          web_contents->GetPrimaryMainFrame());
+  bool cookies_blocked =
+      pscs && (pscs->blocked_local_shared_objects().GetObjectCount() > 0 ||
+               pscs->blocked_browsing_data_model()->size() > 0U);
+
+  ukm::SourceId source_id =
+      web_contents->GetPrimaryMainFrame()->GetPageUkmSourceId();
+
+  ukm::builders::ThirdPartyCookies_BreakageIndicator(source_id)
+      .SetBreakageIndicatorType(static_cast<int>(
+          net::cookie_util::BreakageIndicatorType::USER_RELOAD))
+      .SetTPCBlocked(cookies_blocked)
+      .SetTPCBlockedInSettings(cookies_blocked_in_settings)
+      .Record(ukm::UkmRecorder::Get());
+}
+
 void ReloadInternal(Browser* browser,
                     WindowOpenDisposition disposition,
                     bool bypass_cache) {
@@ -383,6 +432,9 @@ void ReloadInternal(Browser* browser,
         !new_tab->FocusLocationBarByDefault()) {
       new_tab->Focus();
     }
+
+    // User reloads is a possible breakage indicator from blocking 3P cookies.
+    RecordReloadWithCookieBlocking(browser, selected_tab);
 
     DevToolsWindow* devtools =
         DevToolsWindow::GetInstanceForInspectedWebContents(new_tab);
@@ -1432,6 +1484,12 @@ void ShowTranslateBubble(Browser* browser) {
   chrome_translate_client->GetTranslateLanguages(web_contents, &source_language,
                                                  &target_language);
 
+  // If the source language matches the target language, we change the source
+  // language to unknown, so that we display "Detected Language".
+  if (source_language == target_language) {
+    source_language = translate::kUnknownLanguageCode;
+  }
+
   translate::TranslateStep step = translate::TRANSLATE_STEP_BEFORE_TRANSLATE;
   auto* language_state =
       chrome_translate_client->GetTranslateManager()->GetLanguageState();
@@ -1832,7 +1890,7 @@ void ToggleRequestTabletSite(Browser* browser) {
     entry->SetIsOverridingUserAgent(false);
   else
     SetAndroidOsForTabletSite(current_tab);
-  controller.Reload(content::ReloadType::ORIGINAL_REQUEST_URL, true);
+  controller.LoadOriginalRequestURL();
 }
 
 void SetAndroidOsForTabletSite(content::WebContents* current_tab) {
@@ -1847,6 +1905,8 @@ void SetAndroidOsForTabletSite(content::WebContents* current_tab) {
     ua_override.ua_metadata_override = embedder_support::GetUserAgentMetadata(
         g_browser_process->local_state());
     ua_override.ua_metadata_override->mobile = true;
+    ua_override.ua_metadata_override->form_factor =
+        embedder_support::kMobileFormFactor;
     ua_override.ua_metadata_override->platform =
         kChPlatformOverrideForTabletSite;
     ua_override.ua_metadata_override->platform_version = std::string();
@@ -2044,8 +2104,16 @@ void UnfollowSite(content::WebContents* web_contents) {
 }
 
 #if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
-void RunScreenAIVisualAnnotation(Browser* browser) {
-  browser->RunScreenAIAnnotator();
+void RunScreenAILayoutExtraction(Browser* browser) {
+  content::WebContents* web_contents =
+      browser->tab_strip_model()->GetActiveWebContents();
+  if (!web_contents) {
+    return;
+  }
+
+  screen_ai::AXScreenAIAnnotatorFactory::GetForBrowserContext(
+      browser->profile())
+      ->AnnotateScreenshot(web_contents);
 }
 #endif  // BUILDFLAG(ENABLE_SCREEN_AI_SERVICE)
 

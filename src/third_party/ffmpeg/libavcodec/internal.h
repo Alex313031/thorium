@@ -57,12 +57,6 @@ typedef struct AVCodecInternal {
     int is_copy;
 
     /**
-     * An audio frame with less than required samples has been submitted (and
-     * potentially padded with silence). Reject all subsequent frames.
-     */
-    int last_audio_frame;
-
-    /**
      * Audio encoders can set this flag during init to indicate that they
      * want the small last frame to be padded to a multiple of pad_samples.
      */
@@ -94,13 +88,6 @@ typedef struct AVCodecInternal {
      */
     uint8_t *byte_buffer;
     unsigned int byte_buffer_size;
-
-    /**
-     * This is set to AV_PKT_FLAG_KEY for encoders that encode intra-only
-     * formats (i.e. whose codec descriptor has AV_CODEC_PROP_INTRA_ONLY set).
-     * This is used to set said flag generically for said encoders.
-     */
-    int intra_only_flag;
 
     void *frame_thread_encoder;
 
@@ -148,15 +135,14 @@ typedef struct AVCodecInternal {
     AVFrame *buffer_frame;
     int draining_done;
 
-    /* to prevent infinite loop on errors when draining */
-    int nb_draining_errors;
-
+#if FF_API_DROPCHANGED
     /* used when avctx flag AV_CODEC_FLAG_DROPCHANGED is set */
     int changed_frames_dropped;
     int initial_format;
     int initial_width, initial_height;
     int initial_sample_rate;
     AVChannelLayout initial_ch_layout;
+#endif
 
 #if CONFIG_LCMS2
     FFIccContext icc; /* used to read and write embedded ICC profiles */

@@ -47,6 +47,10 @@
     <message name="IDS_SETTINGS_ABOUT_PAGE_REPORT_AN_ISSUE" desc="Text of the button which allows the user to report an issue with Thorium.">
       Report an issue
     </message>
+    <message name="IDS_SETTINGS_ABOUT_PAGE_PRIVACY_POLICY" desc="Text of the button which allows the user to open the privacy policy.">
+      Privacy policy
+    </message>
+
     <message name="IDS_SETTINGS_ABOUT_PAGE_SEND_FEEDBACK" desc="Text of the button which allows the user to send feedback with Thorium.">
       Send feedback
     </message>
@@ -128,21 +132,19 @@
     Automatically translates captions
   </message>
   <if expr="chromeos_ash">
-    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Thorium browser initially. Currently only works for English media.">
+    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_BROWSER_ONLY_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Thorium browser initially. Currently only works for English media.">
       Automatically creates captions for media in Thorium browser (currently available in English). Audio and captions are processed locally and never leave the device.
     </message>
-    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Thorium browser initially.">
+    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_BROWSER_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Only works in Thorium browser initially.">
       Automatically creates captions for media in Thorium browser. Audio and captions are processed locally and never leave the device.
     </message>
   </if>
-  <if expr="not chromeos_ash">
-    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Currently only works for English media.">
-      Automatically creates captions for English audio and video. Audio and captions never leave your device.
-    </message>
-    <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen.">
-      Automatically creates captions for audio and video. Audio and captions never leave your device.
-    </message>
-  </if>
+  <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE_ENGLISH_ONLY" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen. Currently only works for English media.">
+    Automatically creates captions for English audio and video. Audio and captions never leave your device.
+  </message>
+  <message name="IDS_SETTINGS_CAPTIONS_ENABLE_LIVE_CAPTION_SUBTITLE" desc="Description text for Live Caption feature. When audio or video is playing, the user will see captions on the screen.">
+    Automatically creates captions for audio and video. Audio and captions never leave your device.
+  </message>
   <message name="IDS_SETTINGS_CAPTIONS_LIVE_CAPTION_DOWNLOAD_PROGRESS" desc="Download progress indicator after Live Caption is enabled. The user needs to download certain files for the feature to work.">
     Downloading speech recognition files... <ph name="PERCENT">$1<ex>17</ex></ph>%
   </message>
@@ -154,6 +156,9 @@
   </message>
   <message name="IDS_SETTINGS_CAPTIONS_LIVE_CAPTION_DOWNLOAD_ERROR_REBOOT_REQUIRED" desc="Error message shown when a OS reboot is required to install the Live Caption files.">
     Can't install speech files. Your device needs to be updated. Restart your device and try again.
+  </message>
+  <message name="IDS_SETTINGS_CAPTIONS_MASK_OFFENSIVE_WORDS_TITLE" desc="Name of the setting to hide profanity (offensive words) for the Live Caption feature.">
+    Hide profanity
   </message>
   <message name="IDS_SETTINGS_ENABLE_CARET_BROWSING_TITLE" desc="Name of the setting to enable Caret Browsing, which allows you to move around any web page using a text caret.">
     Navigate pages with a text cursor
@@ -229,6 +234,9 @@
   </if>
   <message name="IDS_SETTINGS_CHROME_COLORS" desc="Text of the label describing 'Thorium Colors' theme.">
     Thorium Colors
+  </message>
+  <message name="IDS_SETTINGS_COLOR_SCHEME_MODE" desc="Text of the label for selecting a color scheme mode for the browser.">
+    Mode
   </message>
   <message name="IDS_SETTINGS_SHOW_HOME_BUTTON" desc="Label for the checkbox which enables or disables showing the home button in the toolbar.">
     Show home button
@@ -387,9 +395,6 @@
   <message name="IDS_SETTINGS_AUTOFILL_ADDRESS_HONORIFIC_LABEL" desc="This is the label for the field that lets the user modify the title that will be used when auto-filling forms on the web. A 'Title' field in a web form could be a prefix like Ms., Mx., or Dr. or a position held, like Captain or Rabbi." meaning="Honorific">
     Title
   </message>
-  <message name="IDS_SETTINGS_AUTOFILL_CREDIT_CARD_TYPE_COLUMN_LABEL" desc="Label for the column containing the type of credit card that is saved. The type is in the format: `Visa ****1234`.">
-    Type
-  </message>
   <message name="IDS_SETTINGS_AUTOFILL_DETAIL" desc="Description of what toggling the 'Autofill' setting does. Immediately underneath IDS_SETTINGS_AUTOFILL">
     Enable Autofill to fill out forms in a single click
   </message>
@@ -416,9 +421,6 @@
   </message>
   <message name="IDS_AUTOFILL_EDIT_SERVER_CREDIT_CARD" desc="The text shown in the secondary action menu button to direct users to pay.google.com to edit the information of credit cards stored in Google Payments.">
     Edit in Google Pay
-  </message>
-  <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENABLED_LABEL" desc="The text shown next to the card summary to indicate that a virtual card has been generated for the credit card and is enabled. Virtual cards are credit cards generated from the actual cards and provide extra security.">
-    (Virtual card enabled)
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_TURNED_ON_LABEL" desc="The text shown next to the card summary to indicate that a virtual card has been enabled for the credit card. Virtual cards are credit cards generated from the actual cards and provide extra security.">
     Virtual card turned on
@@ -684,8 +686,11 @@
   <message name="IDS_SETTINGS_PASSWORDS_AUTOSIGNIN_CHECKBOX_DESC" desc="Text that describes the 'Auto Sign-in' functionality to users.">
     Automatically sign in to sites and apps using saved credentials. If turned off, you'll be asked for confirmation every time before signing in to a site or app.
   </message>
-  <message name="IDS_SETTINGS_PASSWORDS_LEAK_DETECTION_LABEL" desc="Label for a checkbox that allows users to choose whether chrome should check that credentials have been part of a leak.">
+  <message name="IDS_SETTINGS_PASSWORDS_LEAK_DETECTION_LABEL" desc="Label for a checkbox that allows users to choose whether Thorium should check that credentials have been part of a leak.">
     Warn you if passwords are exposed in a data breach
+  </message>
+  <message name="IDS_SETTINGS_PASSWORDS_LEAK_DETECTION_LABEL_UPDATED" desc="Label for a checkbox that allows users to choose whether chrome should check that credentials have been part of a leak.">
+    Warn you if a password was compromised in a data breach
   </message>
   <message name="IDS_SETTINGS_PASSWORDS_LEAK_DETECTION_SIGNED_OUT_ENABLED_DESC" desc="Text that describes the 'Password Leak Detection' functionality to signed-out users who have not disabled the feature. This text always follows a sentence describing the feature.">
     When you sign in to your Google Account, this feature is turned on.
@@ -1408,7 +1413,7 @@
     Browsing history
   </message>
   <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the user out of most websites.">
-    Signs you out of most sites.
+    Signs you out of most sites
   </message>
   <message name="IDS_SETTINGS_CLEAR_COOKIES_AND_SITE_DATA_SUMMARY_BASIC_WITH_EXCEPTION" desc="A summary for the 'Cookies and site data' option in the 'Clear Browsing Data' screen, explaining that deleting cookies and site data will sign the user out of most websites but your Google sign in will stay.">
     Signs you out of most sites. You'll stay signed in to your Google Account so your synced data can be cleared.
@@ -1643,9 +1648,6 @@
     </message>
     <message name="IDS_SETTINGS_LANGUAGES_PREFERRED_LANGUAGES_DESC" desc="Explanatory message about the list of preferred languages.">
       Websites will show content in your preferred languages, when possible
-    </message>
-    <message name="IDS_SETTINGS_LANGUAGES_OFFER_TO_TRANSLATE_IN_THIS_LANGUAGE" desc="The label for a checkbox which indicates whether or not pages in this language should be translated by default.">
-      Offer to translate pages in this language
     </message>
     <message name="IDS_SETTINGS_LANGUAGES_OFFER_TO_ENABLE_TRANSLATE" desc="The label of the check-box that enables the prompt to translate a page.">
       Use Google Translate
@@ -2074,7 +2076,7 @@
     When on, a list of sites you visit that guess your interests appears here
   </message>
   <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_DESCRIPTION_EMPTY" desc="1 of 2 descriptions that appear if there are no sites in the list. This string is for the case that the Site-suggested ads setting IS on, but the user hasn't browsed any sites that have called the Site-suggested ads API.">
-    It can take up to a week for a list of sites to appear here based on your browsing history
+    No sites to show right now
   </message>
   <message name="IDS_SETTINGS_FLEDGE_PAGE_CURRENT_SITES_REGION_A11Y_DESCRIPTION" desc="Read by screen readers to describe a list of sites that appear on the page.">
     List of recent sites you visited that can suggest ads to other sites as you keep browsing
@@ -2225,10 +2227,10 @@
     You'll browse faster because content is proactively loaded based on your current webpage visit
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_FEATURE_DESCRIPTION2" desc="A part of the feature description of 'make searches and browsing better' in the 'Privacy Guide'.">
-    You'll get improved suggestions in the address bar
+    From the address bar, you can open page info to see additional info about the page you're visiting
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_PRIVACY_DESCRIPTION1" desc="A part of the privacy description of 'make searches and browsing better' in the 'Privacy Guide'.">
-    URLs you visit are sent to Google to predict what sites you might visit next
+    URLs you visit are sent to Google to predict what sites you might visit next and to show you additional info about the page you're visiting
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_HISTORY_SYNC_CARD_HEADER" desc="Header of the history sync card in the 'Privacy Guide'.">
     Choose whether to sync history
@@ -2289,6 +2291,15 @@
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_SAFE_BROWSING_CARD_STANDARD_PROTECTION_FEATURE_DESCRIPTION1" desc="A part of the feature description of the standard protection section of the safe browsing card in the 'Privacy guide'.">
     Detects and warns you about dangerous events when they happen
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_CARD_HEADER" desc="Header of the 'search suggestions' card in the 'Privacy Guide'.">
+    Choose whether to get additional search suggestions
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SEARCH_SUGGESTIONS_FEATURE_DESCRIPTION1" desc="A part of the feature description of 'search suggestions' in the 'Privacy Guide'.">
+    When you click or type in the address bar or search box, you'll see suggestions from your default search engine. This is off in Incognito.
+  </message>
+  <message name="IDS_SETTINGS_PRIVACY_SEARCH_SUGGESTIONS_PRIVACY_DESCRIPTION1" desc="A part of the privacy description of 'search suggestions' in the 'Privacy Guide'.">
+    What you type in the address bar or search box is sent to your default search engine
   </message>
 
   <!-- Safety check -->
@@ -2401,6 +2412,14 @@
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_TOAST_LABEL" desc="'Unused Site Permissions' shows unused websites for which permissions have been revoked. This label is shown after a user has taken action to allow some permissions again.">
     Permissions allowed again for <ph name="WEBSITE">$1<ex>www.example.com</ex></ph>
+  </message>
+  <!-- TODO(crbug/1443466): Change the string to translatable once it's final. -->
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_SETTING_LABEL" translateable="false" desc="By default Thorium auto-revokes (disables) permissions (e.g. Camera, Location, etc.) for websites that were not visited for a while. This label is for the toggle that allows users to switch off/on this functionality.">
+    Automatically remove permissions from unused sites
+  </message>
+  <!-- TODO(crbug/1443466): Change the string to translatable once it's final. -->
+  <message name="IDS_SETTINGS_SAFETY_CHECK_UNUSED_SITE_PERMISSIONS_SETTING_SUBLABEL" translateable="false" desc="By default Thorium auto-revokes (disables) permissions (e.g. Camera, Location, etc.) for websites that were not visited for a while. This sublabel is for the toggle that allows users to switch off/on this functionality.">
+    To protect your data, remove permissions from sites you haven't visited in 2 months. Doesn't stop notifications.
   </message>
   <message name="IDS_SETTINGS_SAFETY_CHECK_UPDATES_PRIMARY_LABEL" desc="'Updates' is an element in safety check that shows the update status of Thorium.">
     Updates
@@ -2584,6 +2603,9 @@
   </message>
   <message name="IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC" desc="Description for safe browsing standard protection mode">
     Standard protection against websites, downloads, and extensions that are known to be dangerous
+  </message>
+  <message name="IDS_SETTINGS_SAFEBROWSING_STANDARD_DESC_UPDATED" desc="Description for safe browsing standard protection mode">
+    Protects against sites, downloads, and extensions that are known to be dangerous. If a page does something suspicious, URLs and bits of page content are sent to Google Safe Browsing.
   </message>
   <message name="IDS_SETTINGS_SAFEBROWSING_STANDARD_EXPAND_ACCESSIBILITY_LABEL" desc="Label for the button that toggles showing the detailed description of safe browsing standard protection. Only visible by screen reader software.">
     Show standard protection details
@@ -3241,7 +3263,7 @@
     Not allowed to use your microphone
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_MIDI_DESCRIPTION" desc="Description of the MIDI devices content setting.">
-    Sites usually connect to MIDI devices for features for creating and editing music
+    Sites usually connect to MIDI devices for creating and editing music
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_MIDI_ALLOWED" desc="Label for the enabled option of the MIDI devices content setting.">
     Sites can ask to connect to MIDI devices
@@ -3722,7 +3744,7 @@
     Remove
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_SESSION_ONLY_MENU" desc="Label for the menu item to set cookies to be deleted on browser exit.">
-    Clear on exit
+    Delete on exit
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_USAGE" desc="The Usage header, used to group disk and battery usage information on the Site Details page.">
     Usage
@@ -3761,19 +3783,16 @@
     Reset permissions
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE" desc="The clear storage button label, used to delete non-cookie storage on the Site Details page.">
-    Clear data
-  </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_GROUP_DELETE" desc="The clear storage button label, used to delete storage data for a group of sites.">
-    Clear data
+    Delete data
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_THIRD_PARTY_COOKIES_EXCEPTION_LABEL" desc="Label for site exceptions that affect third party cookies.">
     Including third-party cookies on this site
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_ALL_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about deleting all site data.">
-    Clear all data?
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_ALL_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about deleting all site data.">
+    Delete all data?
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about deleting displayed site data.">
-    Clear displayed data?
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_DISPLAYED_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about deleting displayed site data.">
+    Delete displayed data?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_LEARN_MORE" desc="Label for first-party sets explainer with a learn more link shown when sites are filtered by first-party set owner">
      These sites are in a group defined by <ph name="FPS_OWNER">$1<ex>google.com</ex></ph>. Sites in a group can see your activity in the group.
@@ -3787,11 +3806,11 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_DESCRIPTION" desc="Label describing how much total disk space chrome is using from displayed sites, next to the clear displayed button">
     Total storage used by displayed sites: <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph>
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_ALL_STORAGE_LABEL" desc="Label for button to clear all site data">
-    Clear all data
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_ALL_STORAGE_LABEL" desc="Label for button to delete all site data">
+    Delete all data
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_LABEL" desc="Label for button to clear displayed site data">
-    Clear displayed data
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_DISPLAYED_STORAGE_LABEL" desc="Label for button to delete displayed site data">
+    Delete displayed data
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_DETAILS_SUBPAGE_ACCESSIBILITY_LABEL" desc="The (accessibility) label for subpage button that navigates to site details from all sites page.">
     Show site details for <ph name="SITE_GROUP">$1<ex>google.com</ex></ph>
@@ -3807,20 +3826,20 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_SHOW_RELATED_SITES_BUTTON" desc="Label for the button on the first-party sets more actions menu to allow users to filter sites by the first-party set owner.">
     Show sites in same group
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_SITE_CLEAR_STORAGE_BUTTON" desc="Label for the button on the first-party sets more actions menu to allow users to clear data and permissions for a specific site entry.">
-    Clear data and permissions
+  <message name="IDS_SETTINGS_SITE_SETTINGS_FIRST_PARTY_SETS_SITE_DELETE_STORAGE_BUTTON" desc="Label for the button on the first-party sets more actions menu to allow users to clear data and permissions for a specific site entry.">
+    Delete data and permissions
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_ALL_STORAGE_CONFIRMATION" desc="Text for the dialog that warns about clearing storage used by all sites.">
-    This will clear <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by sites
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_ALL_STORAGE_CONFIRMATION" desc="Text for the dialog that warns about deleting storage used by all sites.">
+    This will delete <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by sites
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_CONFIRMATION" desc="Text for the dialog that warns about clearing storage used by displayed sites.">
-    This will clear <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by displayed sites
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_DISPLAYED_STORAGE_CONFIRMATION" desc="Text for the dialog that warns about deleting storage used by displayed sites.">
+    This will delete <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by displayed sites
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_ALL_STORAGE_CONFIRMATION_INSTALLED" desc="Text for the dialog that warns about clearing storage used by all sites, shown when there are installed apps.">
-    This will clear <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by sites and installed apps
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_ALL_STORAGE_CONFIRMATION_INSTALLED" desc="Text for the dialog that warns about deleting storage used by all sites, shown when there are installed apps.">
+    This will delete <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by sites and installed apps
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_DISPLAYED_STORAGE_CONFIRMATION_INSTALLED" desc="Text for the dialog that warns about clearing storage used by displayed sites, shown when there are installed apps.">
-    This will clear <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by displayed sites and installed apps
+  <message name="IDS_SETTINGS_SITE_SETTINGS_DELETE_DISPLAYED_STORAGE_CONFIRMATION_INSTALLED" desc="Text for the dialog that warns about deleting storage used by displayed sites, shown when there are installed apps.">
+    This will delete <ph name="TOTAL_USAGE">$1<ex>8 GB</ex></ph> of data stored by displayed sites and installed apps
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_CLEAR_ALL_STORAGE_SIGN_OUT" desc="Text for the dialog that warns about being signed out when clearing storage used by all sites.">
     You'll be signed out of all sites, including in open tabs
@@ -3831,8 +3850,8 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_RESET_CONFIRMATION" desc="Text for the dialog that warns about resetting all permissions for a site.">
     Reset site permissions for <ph name="SITE">$1<ex>www.example.com</ex></ph>?
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about clearing storage used by a site.">
-    Clear site data?
+  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_DELETE_STORAGE_DIALOG_TITLE" desc="Title of the dialog that warns about deleting storage used by a site.">
+    Delete site data?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_CONFIRMATION" desc="Text for the dialog that warns about clearing storage used by a site.">
     All data stored by <ph name="SITE">$1<ex>www.example.com</ex></ph> will be deleted.
@@ -3843,32 +3862,32 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_SIGN_OUT" desc="Text for the dialog that warns about being signed out of site when clearing storage used by a site.">
     You’ll be signed out of this site, including in open tabs
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE_OFFLINE_DATA" desc="Text for the dialog that warns about loss of offline data when clearing all storage data.">
-    Any offline data will be cleared
+  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_DELETE_STORAGE_OFFLINE_DATA" desc="Text for the dialog that warns about loss of offline data when deleting all storage data.">
+    Any offline data will be deleted
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_AD_PERSONALIZATION" desc="A bullet in a list of data that gets deleted from the user's device when they choose 'Clear data' for a specific site. 1) Go to chrome://settings/content. 2) From the 'Recent activity' list, choose a site. 3) Click the 'Clear data' button. The 'Clear site data?' dialog appears. This string will appear as a new bullet at the bottom of the dialog.">
     Data that affects ad personalization is deleted
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_GROUP_DELETE_OFFLINE_DATA" desc="Text for the dialog that warns about loss of offline data when clearing all storage data.">
-    Any offline data will be cleared
+  <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_GROUP_DELETE_OFFLINE_DATA" desc="Text for the dialog that warns about loss of offline data when deleting all storage data.">
+    Any offline data will be deleted
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_ORIGIN_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a specific origin">
-    Clear site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>?
+    Delete site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_ORIGIN_APP_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a specific origin, and that origin also has an installed web app">
-    Clear site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph> and its installed app?
+    Delete site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph> and its installed app?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_ORIGIN_PARTITIONED_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a specific origins partitioned data. That data will be partitioned on a specific eTLD +1.">
-    Clear site data for <ph name="SITE_NAME">$1<ex>www.ad-tech.com</ex></ph> partitioned on <ph name="PARTITION_SITE_NAME">$2<ex>www.publisher.com</ex></ph>?
+    Delete site data for <ph name="SITE_NAME">$1<ex>www.ad-tech.com</ex></ph> partitioned on <ph name="PARTITION_SITE_NAME">$2<ex>www.publisher.com</ex></ph>?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_GROUP_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a group of sites">
-    Clear site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph> and all sites under it?
+    Delete site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph> and all sites under it?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_GROUP_APP_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a group of sites, and one of those sites has an installed web app">
-    Clear site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>, all sites under it, and its installed app?
+    Delete site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>, all sites under it, and its installed app?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_GROUP_APP_PLURAL_DIALOG_TITLE" desc="Title of the confirmation dialog when a user selects to remove a group of sites, and multiple of those sites have installed web apps">
-    Clear site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>, all sites under it, and installed apps?
+    Delete site data and permissions for <ph name="SITE_NAME">$1<ex>www.example.com</ex></ph>, all sites under it, and installed apps?
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_ORIGIN_LOGOUT" desc="Bullet point which indicates that the user will be signed out of the site they are remove">
     You'll be signed out of this site, including in open tabs
@@ -3877,13 +3896,13 @@
     You'll be signed out of these sites, including in open tabs
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_OFFLINE_DATA" desc="Bullet point which indicates that any offline data will be cleared when the users removes the site">
-    Any offline data will be cleared
+    Any offline data will be deleted
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_PERMISSIONS" desc="Bullet point which indicates that the users chosen permissions will be reset when they remove a site">
-    Your chosen permissions will be reset
+    Your chosen permissions will be removed
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_REMOVE_SITE_CONFIRM" desc="Text on the button to confirm removing a site">
-    Clear
+    Delete
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_COOKIE_REMOVE_SITE" desc="Label for the trashcan button to delete all cookies and site data for a specific site (ex: all the cookies set on google.com).">
     Remove <ph name="SITE">$1<ex>google.com</ex></ph>
@@ -3892,7 +3911,7 @@
     Reset
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_SITE_CLEAR_STORAGE" desc="Text for the button that clears the storage used by a site, excluding cookies.">
-    Clear
+    Delete
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_HANDLER_IS_DEFAULT" desc="A label showing that a certain handler for a given protocol is the default.">
     Default
@@ -3948,8 +3967,14 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_BLOCKED_SUB_LABEL" desc="2 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, sites have the least flexibility.">
     Sites aren't allowed to save data on your device
   </message>
-  <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_CLEAR_ON_EXIT_SUB_LABEL" desc="3 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, data stored on the user's device is deleted each time the user closes all Thorium windows.">
-    Site data is cleared from your device when you close all windows
+  <message name="IDS_SETTINGS_SITE_SETTINGS_PAGE_SITE_DATA_DELETE_ON_EXIT_SUB_LABEL" desc="3 of 3 possible states for the On-device site data setting. This text appears beneath the 'On-device site data' label and shows the user the state of the setting. With this status, data stored on the user's device is deleted each time the user closes all Thorium windows.">
+    Site data is deleted from your device when you close all windows
+  </message>
+  <message name="IDS_SETTINGS_EXPIRES_AFTER_TIME_LABEL" desc="Text after a url (e.g. google.com) that explains that that a website permission is allowed or blocked until a set date in the future.">
+    {COUNT, plural,
+                =0 {Expires today}
+                =1 {Expires tomorrow}
+                other {Expires in # days}}
   </message>
 
   <!-- Site Settings - Site Data Page-->
@@ -4006,21 +4031,38 @@
   </message>
 
   <!-- Site Settings - Storage Access Page -->
-  <!-- TODO(https://crbug.com/1433644): Replace with the final SAA strings.  -->
-  <message name="IDS_SETTINGS_STORAGE_ACCESS_DESCRIPTION" translateable="false" desc="It explains that an embedded site can request access to its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab).">
-    Sites you visit can embed content from other sites, for example images, ads, and text. These other sites can ask for permission to use info they’ve saved about you as you browse the site.
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_DESCRIPTION" desc="The body description on the Embedded content settings page.">
+    Sites you visit can embed content from other sites, for example images, ads, and text. These other sites can ask for permission to use info they've saved about you as you browse the site.
   </message>
-  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED" translateable="false" desc="It explains that an embedded site can request access to its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab).">
-    Sites can ask to use info they’ve saved about you
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED" desc="One of two radio buttons on the Embedded content settings page. If a user chooses this option, they're allowing a new permission prompt that may get shown as the user browses sites. In the description below, “Google Docs” is just used as an example. 1) “use info” means retrieve existing info and save additional info. 2) “they've' saved about you”: Google Docs can only prompt the user for permission on www.myfavoritesite.com if the user has previously used Google Docs.">
+    Sites can ask to use info they've saved about you
   </message>
-  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED" translateable="false" desc="It explains that an embedded site is blocked from accessing its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
-    Sites are blocked from asking you to use info they’ve saved about you
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED" desc="The second of two radio buttons on the Embedded content settings page. If a user chooses this option, they're not allowing a new permission prompt that may get shown as the user browses sites. In the description below, “www.myfavoritesite.com” and “Google Docs” are just used as examples. 1) “use info” means retrieve existing info and save additional info. 2) “they've' saved about you”: Google Docs can only prompt the user for permission on www.myfavoritesite.com if the user has previously used Google Docs.">
+    Sites are blocked from asking you to use info they've saved about you
   </message>
-  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED_EXCEPTIONS" translateable="false" desc="It explains that an embedded site is allowed to access its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
-    Allowed to access info they've about you while embedded in another site
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED_EXCEPTIONS" desc="A sub title on the Embedded content settings page. When a user grants a site permission, that site appears in this list of sites.">
+    You allowed these sites to use info they've saved about you
   </message>
-  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED_EXCEPTIONS" translateable="false" desc="It explains that an embedded site is blocked from accessing its unpartitioned cookies that it would normally only have access to in a first-party context (i.e. when loaded directly in a browser tab) ">
-    Not allowed to access info they've about you while embedded in another site
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED_EXCEPTIONS" desc="A sub title on the Embedded content settings page. When a user denies a site permission, that site appears in this list of sites.">
+    You blocked these sites from using info they've saved about you
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_RESET_ALL" desc="Label for the trashcan button to reset the permission for allowing or blocking a website to access its unpartitioned cookies while embedded in all other sites.">
+    Remove <ph name="SITE">$1<ex>google.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_RESET_SITE" desc="Label for the trashcan button to reset all the permissions for allowing or blocking a website (embedded.com) to “use their info“ while on another website (top-level.com).">
+    Remove <ph name="EMBEDDED_SITE">$1<ex>embedding.com</ex></ph> from <ph name="SITE">$2<ex>top-level.com</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_OPEN_EXPAND" desc="Label for an expand button to open a collapse row with the websites an origin website (top-level.com) is allowed or blocked to “use their info“ on">
+    Show sites
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_CLOSE_EXPAND" desc="Label for an expand button to close a collapse row with the websites an origin website (top-level.com) is allowed or blocked to “use their info“ on.">
+    Show less
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_ALLOWED_SITE_LABEL" desc="Text after a url (e.g. google.com) that explains that a webite is allowed to “use their info“ on one or more sites that follow this text. Previously, the user 1) visited a site, such as www.myfavoritesite.com 2)  www.myfavoritesite.com embeds content and services, such as Google Docs. 3) Google Docs prompted the user for permission to use data Google Docs has previously saved related to the user. 4) The user says yes. 5) Later in settings, the user sees the site exception with this text and can revoke its access.">
+    can use your info as you browse
+  </message>
+  <message name="IDS_SETTINGS_STORAGE_ACCESS_BLOCKED_SITE_LABEL" desc="Text after a url (e.g. google.com) that explains that a webite is not allowed to “use their info“ on one or more sites that follow this text. Previously, the user 1) visited a site, such as www.myfavoritesite.com 2)  www.myfavoritesite.com embeds content and services, such as Google Docs. 3) Google Docs prompted the user for permission to use data Google Docs has previously saved related to the user. 4) The user says yes. 5) Later in settings, the user sees the site exception with this text and can unblock the site.">
+    is blocked from using your info on
   </message>
 
   <message name="IDS_SETTINGS_NO_BLUETOOTH_DEVICES_FOUND" desc="Explanation for not showing Bluetooth devices in site settings.">
@@ -4603,5 +4645,22 @@
   </message>
   <message name="IDS_SETTINGS_EXTENSION_OR_APP_DISPLAY_NAME" desc="The title of a page containing site settings for an extension or Isolated Web App (IWA). The display name contains a human-readable extension/IWA name followed by the extension/IWA ID.">
     <ph name="EXTENSION_OR_APP_NAME">$1<ex>Google Docs Offline</ex></ph> (ID: <ph name="EXTENSION_OR_APP_ID">$2<ex>ghbmnnjooekpmoecnnnilnnbdlolhkhi</ex></ph>)
+  </message>
+
+  <!-- Safety Hub -->
+  <message name="IDS_SETTINGS_SAFETY_HUB" desc="Name of a page in settings that gives users an overview over their safety status and where users can take action to improve their safety.">
+    Safety Hub
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_ENTRY_POINT_BUTTON" desc="This is the label of a button that takes users to the Safety Hub page in Thorium settings. This button appears in a section in privacy settings next to a text that gives more details on Safety Hub.">
+    Go to Safety Hub
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_PAGE_CARD_SECTION_HEADER" desc="The title of the first section in the Safety Hub page. The 'Safety at a glance' section gives an overview about the current state of passwords, browser version and safe browsing setting of the browser. ">
+    Safety at a glance
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_PAGE_MODULE_SECTION_HEADER" desc="The title of the second section in the Safety Hub page. The 'Safety recommendation' section shows actionable modules about permissions and extensions based on the current state of the browser.">
+    Safety recommendation
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_PAGE_USER_EDU_SECTION_HEADER" desc="The title of the last section in the Safety Hub page. The 'Safety tips' section shows three safety related features to provide user education on how Thorium keeps the user safe.">
+    Safety tips
   </message>
 </grit-part>

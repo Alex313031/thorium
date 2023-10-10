@@ -15,6 +15,7 @@
 #include "base/trace_event/memory_dump_manager.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
+#include "cc/base/switches.h"
 #include "chrome/browser/infobars/simple_alert_infobar_creator.h"
 #include "chrome/browser/ui/simple_message_box.h"
 #include "chrome/browser/webauthn/webauthn_switches.h"
@@ -109,8 +110,8 @@ static const char* kBadFlags[] = {
 
     // These flags control Blink feature state, which is not supported and is
     // intended only for use by Chromium developers.
-    switches::kDisableBlinkFeatures,
-    switches::kEnableBlinkFeatures,
+    // switches::kDisableBlinkFeatures, (Disabled by Alex313031)
+    // switches::kEnableBlinkFeatures, (Disabled by Alex313031)
 
     // This flag allows people to allowlist certain origins as secure, even
     // if they are not.
@@ -163,6 +164,11 @@ static const char* kBadFlags[] = {
     // This flag disables protection against potentially unintentional user
     // interaction with certain UI elements.
     views::switches::kDisableInputEventActivationProtectionForTesting,
+
+    // This flag enables injecting synthetic input. It is meant to be used only
+    // in tests and performance benchmarks. Using it could allow faking user
+    // interaction across origins.
+    cc::switches::kEnableGpuBenchmarking,
 };
 #endif  // !BUILDFLAG(IS_ANDROID)
 
@@ -239,7 +245,7 @@ void MaybeShowInvalidUserDataDirWarningDialog() {
   if (user_data_dir.empty())
     return;
 
-  startup_metric_utils::SetNonBrowserUIDisplayed();
+  startup_metric_utils::GetBrowser().SetNonBrowserUIDisplayed();
 
   // Ensure there is an instance of ResourceBundle that is initialized for
   // localized string resource accesses.

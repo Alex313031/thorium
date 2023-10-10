@@ -60,22 +60,7 @@ cd ~/thorium &&
 cp -r -v thorium-libjxl/src/. ${CR_SRC_DIR}/ &&
 
 # Copy Thorium sources
-cp -r -v src/BUILD.gn ${CR_SRC_DIR}/ &&
-cp -r -v src/ash/. ${CR_SRC_DIR}/ash/ &&
-cp -r -v src/build/. ${CR_SRC_DIR}/build/ &&
-cp -r -v src/chrome/. ${CR_SRC_DIR}/chrome/ &&
-cp -r -v src/chromeos/. ${CR_SRC_DIR}/chromeos/ &&
-cp -r -v src/components/. ${CR_SRC_DIR}/components/ &&
-cp -r -v src/extensions/. ${CR_SRC_DIR}/extensions/ &&
-cp -r -v src/content/. ${CR_SRC_DIR}/content/ &&
-cp -r -v src/media/. ${CR_SRC_DIR}/media/ &&
-cp -r -v src/net/. ${CR_SRC_DIR}/net/ &&
-cp -r -v src/sandbox/. ${CR_SRC_DIR}/sandbox/ &&
-cp -r -v src/services/. ${CR_SRC_DIR}/services/ &&
-cp -r -v src/third_party/. ${CR_SRC_DIR}/third_party/ &&
-cp -r -v src/tools/. ${CR_SRC_DIR}/tools/ &&
-cp -r -v src/ui/. ${CR_SRC_DIR}/ui/ &&
-cp -r -v src/v8/. ${CR_SRC_DIR}/v8/ &&
+cp -r -v src/. ${CR_SRC_DIR}/ &&
 cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
@@ -96,7 +81,6 @@ cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelect
 copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
-	cp -r -v other/Mac/cdm_registration.cc ${CR_SRC_DIR}/chrome/common/media/ &&
 	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
 }
@@ -108,6 +92,7 @@ esac
 copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
+	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
@@ -176,6 +161,7 @@ copyAndroid () {
 	printf "\n" &&
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
 	cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
@@ -277,7 +263,7 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 
 printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 
-printf "${CYA}\n" &&
+printf "\n" &&
 
 cat logos/thorium_ascii_art.txt &&
 

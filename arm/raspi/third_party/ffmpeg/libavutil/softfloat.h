@@ -236,6 +236,10 @@ static av_always_inline SoftFloat av_sqrt_sf(SoftFloat val)
 
 /**
  * Rounding-to-nearest used.
+ *
+ * @param a angle in units of (1ULL<<30)/M_PI radians
+ * @param s pointer to where   sine in units of (1<<30) is returned
+ * @param c pointer to where cosine in units of (1<<30) is returned
  */
 static av_unused void av_sincos_sf(int a, int *s, int *c)
 {
@@ -281,7 +285,7 @@ static av_unused void av_sincos_sf(int a, int *s, int *c)
                 (int64_t)av_sintbl_4_sf[(idx & 0x1f) + 1] * (a & 0x7ff) +
                 0x400) >> 11);
 
-    *c = (int)(((int64_t)cv * ct + (int64_t)sv * st + 0x20000000) >> 30);
+    *c = (int)(((int64_t)cv * ct - (int64_t)sv * st + 0x20000000) >> 30);
 
     *s = (int)(((int64_t)cv * st + (int64_t)sv * ct + 0x20000000) >> 30);
 }

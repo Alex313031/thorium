@@ -133,6 +133,12 @@ typedef struct CodedBitstreamType {
                       CodedBitstreamUnit *unit,
                       PutBitContext *pbc);
 
+    // Return 1 when the unit should be dropped according to 'skip',
+    // 0 otherwise.
+    int (*discarded_unit)(CodedBitstreamContext *ctx,
+                          const CodedBitstreamUnit *unit,
+                          enum AVDiscard skip);
+
     // Read the data from all of frag->units and assemble it into
     // a bitstream for the whole fragment.
     int (*assemble_fragment)(CodedBitstreamContext *ctx,
@@ -245,6 +251,7 @@ int ff_cbs_write_signed(CodedBitstreamContext *ctx, PutBitContext *pbc,
 extern const CodedBitstreamType ff_cbs_type_av1;
 extern const CodedBitstreamType ff_cbs_type_h264;
 extern const CodedBitstreamType ff_cbs_type_h265;
+extern const CodedBitstreamType ff_cbs_type_h266;
 extern const CodedBitstreamType ff_cbs_type_jpeg;
 extern const CodedBitstreamType ff_cbs_type_mpeg2;
 extern const CodedBitstreamType ff_cbs_type_vp9;

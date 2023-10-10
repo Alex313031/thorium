@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -57,7 +57,7 @@ printf "\n" &&
 printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
-# Build Appimage
+# Build zip
 cd temp; zip -r ../out/zipped_thorium_win.zip * &&
 
 printf "\n" &&

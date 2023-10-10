@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -30,8 +30,6 @@ printf "\n" &&
 printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this directory before running.${c0}\n" &&
 printf "${bold}${RED}   AND you must have p7zip-full and zip installed.${c0}\n" &&
 printf "\n" &&
-printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
-printf "${YEL}\n" &&
 
 read -p "Press Enter to continue or Ctrl + C to abort."
 printf "\n" &&
@@ -40,6 +38,11 @@ printf "${YEL}Extracting & Copying files from Thorium .deb package...\n" &&
 printf "${c0}\n" &&
 
 sleep 2 &&
+
+BASENAME=$(basename -- *.deb) &&
+FILENAME="${BASENAME%.deb}" &&
+
+export FILENAME &&
 
 # Extract data.tar.xz
 mkdir -v -p ./temp &&
@@ -60,8 +63,8 @@ printf "\n" &&
 printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
-# Build Appimage
-cd temp; zip -r ../out/zipped_thorium.zip * &&
+# Build zip
+cd temp; zip -r ../out/${FILENAME}.zip * &&
 
 printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
@@ -80,6 +83,6 @@ rm -r -v ./debian-binary &&
 rm -r -v ./temp &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}Zip at //out/zipped_thorium.zip\n - Remember to rename it with the version before distributing it.\n" &&
+printf "${GRE}Done! ${YEL}Zip at //out/*.zip\n" &&
 printf "\n" &&
 tput sgr0

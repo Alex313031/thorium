@@ -537,7 +537,7 @@ void BaseFile::AnnotateWithSourceInformation(
     mojo::PendingRemote<quarantine::mojom::Quarantine> remote_quarantine,
     OnAnnotationDoneCallback on_annotation_done_callback) {
     std::move(on_annotation_done_callback)
-      .Run(DOWNLOAD_INTERRUPT_REASON_NONE);
+        .Run(DOWNLOAD_INTERRUPT_REASON_NONE);
 }
 
 }  // namespace download

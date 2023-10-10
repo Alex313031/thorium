@@ -46,8 +46,8 @@ def ConfigureAndBuildFFmpeg(robo_configuration, platform, architecture):
   robo_configuration.chdir_to_ffmpeg_home();
   # Include --fast so that we don't rebuild the same directory once we get it
   # right.  This saves time when only one platform is failing.
-  command = ["python3", "./chromium/scripts/build_ffmpeg.py", "--fast",
-             platform]
+  build_script = robo_configuration.get_script_path("build_ffmpeg.py")
+  command = ["python3", build_script, "--fast", platform]
   if architecture:
     command.append(architecture)
   if robo_configuration.Call(command, stdout=None, stderr=None):
@@ -64,13 +64,14 @@ def ImportFFmpegConfigsIntoChromium(robo_configuration, write_git_file = False):
   """
   robo_configuration.chdir_to_ffmpeg_home();
   shell.log("Copying FFmpeg configs")
-  if robo_configuration.Call(["./chromium/scripts/copy_config.sh"]):
+  copy_cmd = robo_configuration.get_script_path("copy_config.sh")
+  if robo_configuration.Call([copy_cmd]):
     raise Exception("FFmpeg copy_config.sh failed")
-  
+
   # TODO... seems like there are some auto-generated files that generate_gn.py
   # throws a nasty license check on, incorrectly. maybe they should be deleted
   shell.log("Generating GN config for all ffmpeg versions")
-  generate_cmd = ["./chromium/scripts/generate_gn.py"]
+  generate_cmd = [robo_configuration.get_script_path("generate_gn.py")]
   if write_git_file:
     generate_cmd += ["-i", robo_configuration.autorename_git_file()]
   if robo_configuration.Call(generate_cmd):
