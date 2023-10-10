@@ -1,4 +1,4 @@
-# Copyright 2014 The Chromium Authors
+# Copyright 2023 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -227,10 +227,8 @@ if (current_cpu == "arm64") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs += [ "//build/config/compiler:march-dotprod" ]
     configs += [ ":libaom_config" ]
-    if (!is_win || is_clang) {
-      cflags = [ "-march=armv8.2-a+dotprod" ]
-    }
     sources = aom_av1_common_intrin_neon_dotprod
     sources += aom_dsp_common_intrin_neon_dotprod
     sources += aom_av1_encoder_intrin_neon_dotprod
@@ -241,10 +239,8 @@ if (current_cpu == "arm64") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs += [ "//build/config/compiler:march-i8mm" ]
     configs += [ ":libaom_config" ]
-    if (!is_win || is_clang) {
-      cflags = [ "-march=armv8.2-a+dotprod+i8mm" ]
-    }
     sources = aom_av1_common_intrin_neon_i8mm
     sources += aom_dsp_common_intrin_neon_i8mm
   }
@@ -306,6 +302,8 @@ static_library("libaom") {
     sources += [ "source/libaom/aom_ports/aarch64_cpudetect.c" ]
     deps += [
       ":libaom_intrinsics_arm_crc32",
+      ":libaom_intrinsics_neon_dotprod",
+      ":libaom_intrinsics_neon_i8mm",
     ]
   }
   if (current_cpu == "arm") {

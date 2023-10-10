@@ -1414,6 +1414,18 @@ config("compiler_cpu_abi") {
   asmflags = cflags
 }
 
+config("march-dotprod") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod" ]
+  }
+}
+
+config("march-i8mm") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod+i8mm" ]
+  }
+}
+
 # This provides options to tweak code generation that are necessary
 # for particular Chromium code or for working around particular
 # compiler bugs (or the combination of the two).
