@@ -20,15 +20,15 @@
     Thorium supports Vorbis, Theora, WebM, AAC, H.264, MP3, and HTML5 audio and video standards.
     </p>
   </description>
-  <url type="homepage">https://github.com/Alex313031/Thorium</url>
+  <url type="homepage">https://github.com/Alex313031/thorium</url>
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/Thorium_Screenshot.png</image>
+      <image>https://github.com/Alex313031/thorium/blob/main/logos/STAGING/Thorium_Screenshot.png</image>
       <caption/>
     </screenshot>
   </screenshots>
   <translation/>
   <developer_name>The Chromium Authors and Alex313031</developer_name>
-  <url type="bugtracker">https://github.com/Alex313031/Thorium/issues</url>
+  <url type="bugtracker">https://github.com/Alex313031/thorium/issues</url>
   <url type="help">https://chromium.googlesource.com/chromium/src/+/main/docs/linux/debugging.md</url>
 </component>

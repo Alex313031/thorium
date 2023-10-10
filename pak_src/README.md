@@ -1,6 +1,6 @@
 ## Thorium Pak Customizer
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/STAGING/pak.png">
+<img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/pak.png">
 
 This contains the source code for pak.
 

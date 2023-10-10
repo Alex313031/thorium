@@ -1,6 +1,6 @@
-# Thorium Code of Conduct <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/COC_Light.png#gh-dark-mode-only" width="32"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/COC_Dark.png#gh-light-mode-only" width="32">
+# Thorium Code of Conduct <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/COC_Light.png#gh-dark-mode-only" width="32"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/COC_Dark.png#gh-light-mode-only" width="32">
 
-<img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC_Light.png#gh-dark-mode-only" width="256"> <img src="https://github.com/Alex313031/Thorium/blob/main/logos/NEW/Thorium_COC_Dark.png#gh-light-mode-only" width="256">
+<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Thorium_COC_Light.png#gh-dark-mode-only" width="256"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Thorium_COC_Dark.png#gh-light-mode-only" width="256">
 
 The Thorium Authors and the Chromium team are committed to preserving and fostering a
 diverse, welcoming community. Below is our community code of conduct, which

@@ -60,9 +60,9 @@ And place it in ~/chromium/win
 
 Now, lets download the Thorium tree, so run (in $HOME)
 
-git clone --recursive https://github.com/Alex313031/Thorium.git OR
+git clone --recursive https://github.com/Alex313031/thorium.git OR
 
-Download the latest .zip > https://github.com/Alex313031/Thorium/archive/refs/heads/main.zip
+Download the latest .zip > https://github.com/Alex313031/thorium/archive/refs/heads/main.zip
 
 Then cd ~/Thorium, and we need to make some files executable. So run
 
