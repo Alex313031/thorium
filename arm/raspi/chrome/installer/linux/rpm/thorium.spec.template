@@ -1,0 +1,233 @@
+#------------------------------------------------------------------------------
+#   Thorium RPM spec
+#   chrome.spec
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#   Prologue information
+#------------------------------------------------------------------------------
+Summary         : @@MENUNAME@@
+License         : Multiple, see @@PRODUCTURL@@
+Name            : @@PACKAGE_FILENAME@@
+Version         : @@VERSION@@
+Release         : @@PACKAGE_RELEASE@@
+Group           : Applications/Internet
+Vendor          : @@COMPANY_FULLNAME@@
+Url             : @@PRODUCTURL@@
+Packager        : @@MAINTNAME@@ <@@MAINTMAIL@@>
+
+Provides        : @@PROVIDES@@ = %{version}
+Requires        : ca-certificates,ld-linux-aarch64.so.1()(64bit),libX11.so.6()(64bit),libXcomposite.so.1()(64bit),libXdamage.so.1()(64bit),libXext.so.6()(64bit),libXfixes.so.3()(64bit),libXrandr.so.2()(64bit),libasound.so.2()(64bit),libasound.so.2(ALSA_0.9)(64bit),libasound.so.2(ALSA_0.9.0rc4)(64bit),libatk-1.0.so.0()(64bit),libatk-bridge-2.0.so.0()(64bit),libatspi.so.0()(64bit),libc.so.6()(64bit),libc.so.6(GLIBC_2.10)(64bit),libc.so.6(GLIBC_2.11)(64bit),libc.so.6(GLIBC_2.14)(64bit),libc.so.6(GLIBC_2.15)(64bit),libc.so.6(GLIBC_2.16)(64bit),libc.so.6(GLIBC_2.17)(64bit),libc.so.6(GLIBC_2.2.5)(64bit),libc.so.6(GLIBC_2.3)(64bit),libc.so.6(GLIBC_2.3.2)(64bit),libc.so.6(GLIBC_2.3.3)(64bit),libc.so.6(GLIBC_2.3.4)(64bit),libc.so.6(GLIBC_2.4)(64bit),libc.so.6(GLIBC_2.6)(64bit),libc.so.6(GLIBC_2.7)(64bit),libc.so.6(GLIBC_2.8)(64bit),libc.so.6(GLIBC_2.9)(64bit),libcairo.so.2()(64bit),libcups.so.2()(64bit),libcurl.so.4()(64bit),libdbus-1.so.3()(64bit),libdbus-1.so.3(LIBDBUS_1_3)(64bit),libdl.so.2()(64bit),libdl.so.2(GLIBC_2.2.5)(64bit),libdrm.so.2()(64bit),liberation-fonts,libexpat.so.1()(64bit),libgbm.so.1()(64bit),libgcc_s.so.1()(64bit),libgcc_s.so.1(GCC_3.0)(64bit),libgio-2.0.so.0()(64bit),libglib-2.0.so.0()(64bit),libgobject-2.0.so.0()(64bit),libgtk-3.so.0()(64bit),libm.so.6()(64bit),libm.so.6(GLIBC_2.2.5)(64bit),libnspr4.so()(64bit),libnss3.so()(64bit),libnss3.so(NSS_3.11)(64bit),libnss3.so(NSS_3.12)(64bit),libnss3.so(NSS_3.12.1)(64bit),libnss3.so(NSS_3.12.4)(64bit),libnss3.so(NSS_3.13)(64bit),libnss3.so(NSS_3.2)(64bit),libnss3.so(NSS_3.22)(64bit),libnss3.so(NSS_3.3)(64bit),libnss3.so(NSS_3.30)(64bit),libnss3.so(NSS_3.31)(64bit),libnss3.so(NSS_3.39)(64bit),libnss3.so(NSS_3.4)(64bit),libnss3.so(NSS_3.5)(64bit),libnss3.so(NSS_3.6)(64bit),libnss3.so(NSS_3.7)(64bit),libnss3.so(NSS_3.9.2)(64bit),libnssutil3.so()(64bit),libnssutil3.so(NSSUTIL_3.12.3)(64bit),libpango-1.0.so.0()(64bit),libpthread.so.0()(64bit),libpthread.so.0(GLIBC_2.12)(64bit),libpthread.so.0(GLIBC_2.2.5)(64bit),libpthread.so.0(GLIBC_2.3.2)(64bit),libpthread.so.0(GLIBC_2.3.3)(64bit),libpthread.so.0(GLIBC_2.3.4)(64bit),libsmime3.so()(64bit),libsmime3.so(NSS_3.10)(64bit),libsmime3.so(NSS_3.2)(64bit),libssl3.so()(64bit),libvulkan.so.1()(64bit),libxcb.so.1()(64bit),libxkbcommon.so.0()(64bit),libxkbcommon.so.0(V_0.5.0)(64bit),rpmlib(FileDigests) <= 4.6.0-1,rtld(GNU_HASH),wget,xdg-utils,
+Requires(post)  : %{_sbindir}/update-alternatives
+Requires(preun) : %{_sbindir}/update-alternatives
+Autoreqprov     : No
+
+BuildRoot       : %{_tmppath}/%{name}-%{version}-root
+
+# The prefix is pretty important; RPM uses this to figure out
+# how to make a package relocatable
+prefix          : /opt
+
+#------------------------------------------------------------------------------
+#   Description
+#------------------------------------------------------------------------------
+%Description
+@@SHORTDESC@@
+
+@@FULLDESC@@
+
+#------------------------------------------------------------------------------
+#   Build rule - How to make the package
+#------------------------------------------------------------------------------
+%build
+
+#------------------------------------------------------------------------------
+#   Ignore libffmpeg.so
+#------------------------------------------------------------------------------
+%global _privatelibs libffmpeg.so
+%global __provides_exclude ^(%{_privatelibs})$
+%global __requires_exclude ^(%{_privatelibs})$
+%global __requires_exclude ^libffmpeg\\((autotest|basetest)
+
+# %define __requires_exclude libffmpeg.so
+%define _requires_exceptions libffmpeg.so()(64bit)
+
+#------------------------------------------------------------------------------
+#       Installation rule - how to install it (note that it
+#   gets installed into a temp directory given by $RPM_BUILD_ROOT)
+#------------------------------------------------------------------------------
+%install
+rm -rf "$RPM_BUILD_ROOT"
+
+if [ -z "@@STAGEDIR@@" -o ! -d "@@STAGEDIR@@" ] ; then
+    echo "@@STAGEDIR@@ appears to be incorrectly set - aborting"
+    exit 1
+fi
+
+if [ -z "@@INSTALLDIR@@" -o ! -d "@@STAGEDIR@@/@@INSTALLDIR@@" ] ; then
+    echo "@@INSTALLDIR@@ appears to be incorrectly set - aborting"
+    exit 1
+fi
+
+install -m 755 -d \
+  "$RPM_BUILD_ROOT/etc" \
+  "$RPM_BUILD_ROOT/opt" \
+  "$RPM_BUILD_ROOT/usr"
+# This is hard coded for now
+cp -a "@@STAGEDIR@@/etc/" "$RPM_BUILD_ROOT/"
+cp -a "@@STAGEDIR@@/opt/" "$RPM_BUILD_ROOT/"
+cp -a "@@STAGEDIR@@/usr/" "$RPM_BUILD_ROOT/"
+
+#------------------------------------------------------------------------------
+#   Rule to clean up a build
+#------------------------------------------------------------------------------
+%clean
+rm -rf "$RPM_BUILD_ROOT"
+
+#------------------------------------------------------------------------------
+#   Files listing.
+#------------------------------------------------------------------------------
+%files
+%defattr(-,root,root)
+#%doc README
+
+# We cheat and just let RPM figure it out for us; everything we install
+# should go under this prefix anyways.
+@@INSTALLDIR@@
+
+# Be explicit about the files we scatter throughout the system we don't
+# accidentally "own" stuff that's not ours (crbug.com/123990).
+/etc/cron.daily/@@PACKAGE@@
+%ghost %attr(755,root,root) /usr/bin/@@PACKAGE_ORIG@@
+/usr/bin/@@USR_BIN_SYMLINK_NAME@@
+# Extra Thorium stuff
+/usr/bin/pak
+/usr/bin/thorium-shell
+/usr/share/applications/thorium-shell.desktop
+/usr/share/appdata/@@PACKAGE@@.appdata.xml
+/usr/share/applications/@@PACKAGE@@.desktop
+/usr/share/gnome-control-center/default-apps/@@PACKAGE@@.xml
+%docdir /usr/share/man/man1
+# These two files will be the same on non-stable channels.
+/usr/share/man/man1/@@PACKAGE@@.1.gz
+/usr/share/man/man1/@@USR_BIN_SYMLINK_NAME@@.1.gz
+
+#------------------------------------------------------------------------------
+#   Pre install script
+#------------------------------------------------------------------------------
+%pre
+
+exit 0
+
+
+
+
+#------------------------------------------------------------------------------
+#   Post install script
+#------------------------------------------------------------------------------
+%post
+
+@@include@@../common/variables.include
+
+@@include@@../common/postinst.include
+
+@@include@@../common/rpm.include
+
+@@include@@../common/symlinks.include
+
+remove_nss_symlinks
+add_nss_symlinks
+
+remove_udev_symlinks
+
+if [ ! -e "$DEFAULTS_FILE" ]; then
+  echo 'repo_add_once="true"' > "$DEFAULTS_FILE"
+fi
+
+. "$DEFAULTS_FILE"
+
+if [ "$repo_add_once" = "true" ]; then
+  determine_rpm_package_manager
+
+  for PACKAGEMANAGER in ${PACKAGEMANAGERS[*]}
+  do
+    case $PACKAGEMANAGER in
+    "yum")
+      install_yum
+      ;;
+    "zypp")
+      install_zypp
+      ;;
+    esac
+  done
+fi
+
+CHANNEL=@@CHANNEL@@
+case $CHANNEL in
+  stable )
+    PRIORITY=200
+    ;;
+  beta )
+    PRIORITY=150
+    ;;
+  unstable )
+    PRIORITY=120
+    ;;
+  * )
+    PRIORITY=0
+    ;;
+esac
+
+ln -sf /opt/chromium.org/thorium/thorium-browser /usr/bin/thorium-browser
+
+exit 0
+
+
+#------------------------------------------------------------------------------
+#   Pre uninstallation script
+#------------------------------------------------------------------------------
+%preun
+
+if [ "$1" -eq "0" ]; then
+  mode="uninstall"
+elif [ "$1" -eq "1" ]; then
+  mode="upgrade"
+fi
+
+@@include@@../common/rpm.include
+
+@@include@@../common/symlinks.include
+
+# Only remove menu items and symlinks on uninstall. When upgrading,
+# old_pkg's %preun runs after new_pkg's %post.
+if [ "$mode" = "uninstall" ]; then
+@@include@@../common/prerm.include
+  remove_nss_symlinks
+  remove_udev_symlinks
+fi
+
+# On Debian we only remove when we purge. However, RPM has no equivalent to
+# dpkg --purge, so this is all disabled.
+#
+#determine_rpm_package_manager
+#
+#for PACKAGEMANAGER in ${PACKAGEMANAGERS[*]}
+#do
+#  case $PACKAGEMANAGER in
+#  "yum")
+#    remove_yum
+#    ;;
+#  "zypp")
+#    remove_zypp
+#    ;;
+#  esac
+#done
+
+exit 0
+
+#------------------------------------------------------------------------------
+#   Post uninstallation script
+#------------------------------------------------------------------------------
+%postun
+
+exit 0
