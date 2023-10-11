@@ -1,3 +1,13 @@
+From 0b2e674959b1e59d890f0bb83a08351a5019239a Mon Sep 17 00:00:00 2001
+Date: Wed, 11 Oct 2023 10:25:20 +0800
+Subject: [PATCH] Remove-discovery-module-from-NTP
+
+---
+ .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
+ .../java/res/layout/new_tab_page_multi_feed_header.xml       | 5 +++--
+ components/feed/core/shared_prefs/pref_names.cc              | 4 ++--
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 index ee1283cb9a6a0..c89b236330bf9 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
