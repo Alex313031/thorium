@@ -989,7 +989,7 @@ config("compiler") {
     "-Zremap-cwd-prefix=.",
 
     # Full RUSTC optimizations.
-    "-Copt-level=3", "-Ctune-cpu=haswell", "-Ctarget-feature=+aes,+avx,+avx2",
+    "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2",
   ]
 
   if (!is_win || force_rustc_color_output) {
