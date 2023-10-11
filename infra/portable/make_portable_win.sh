@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -30,7 +30,7 @@ printf "\n" &&
 printf "${bold}${RED}NOTE: You must place the Thorium .exe file in this directory before running.${c0}\n" &&
 printf "${bold}${RED}   AND you must have p7zip-full and zip installed.${c0}\n" &&
 printf "\n" &&
-printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/Thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
+printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
 printf "${bold}${RED}   AND make sure to edit the THORIUM_SHELL.BAT to match the version number of this release.${c0}\n" &&
 printf "${YEL}\n" &&
 
@@ -57,7 +57,7 @@ printf "\n" &&
 printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
-# Build Appimage
+# Build zip
 cd temp; zip -r ../out/zipped_thorium_win.zip * &&
 
 printf "\n" &&

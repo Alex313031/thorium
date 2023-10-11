@@ -8,7 +8,7 @@ pkgver=111.0.5563.111
 pkgrel=2
 pkgdesc="Chromium fork focused on high performance and security."
 arch=('x86_64')
-url="https://github.com/Alex313031/Thorium"
+url="https://github.com/Alex313031/thorium"
 license=('GPLv3')
 depends=(
 	'alsa-lib'
@@ -28,7 +28,7 @@ optdepends=(
 )
 options=('!emptydirs' '!strip')
 install=$_pkgname.install
-source=("https://github.com/Alex313031/Thorium/releases/download/M${pkgver}/${_pkgname}_${pkgver}-1_amd64.deb"
+source=("https://github.com/Alex313031/thorium/releases/download/M${pkgver}/${_pkgname}_${pkgver}-1_amd64.deb"
 	"$_pkgname.sh")
 sha512sums=('b91554cc990241ed632c4a4abb14181b1598018716794ccf251d6baf77bca691722558cdcdbc5f88087ceb356a6cdfbf9095038189ecb7fa0777975a1ae13b4f'
             '91a532fde9e6e87d65b909a170d32808f1c05367104cdaab07043fef0de66bdfc307a4138584cd1eedc169a03207372df39c09268ab1ec741432e79e0dcc2dfb')

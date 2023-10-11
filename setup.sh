@@ -263,7 +263,7 @@ printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --tar
 
 printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 
-printf "${CYA}\n" &&
+printf "\n" &&
 
 cat logos/thorium_ascii_art.txt &&
 

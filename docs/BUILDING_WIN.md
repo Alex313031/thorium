@@ -162,14 +162,12 @@ to enable Sync.
 
 ##  Downloading the Thorium code
 
-You can either use git clone, or download a .zip from the repo. It should be placed side by side with the Chromium directory in *C:\src*. \
 Using Git:
+It should be placed side by side with the Chromium directory in *C:\src*. \
 
 ```shell
 git clone --recursive https://github.com/Alex313031/thorium.git
 ```
-Or download the .zip (Make sure to rename the extracted dir to just thorium, not thorium-main).
-[https://github.com/Alex313031/thorium/archive/refs/heads/main.zip](https://github.com/Alex313031/thorium/archive/refs/heads/main.zip)
 
 ## Setting up the build
 

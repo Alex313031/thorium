@@ -723,7 +723,7 @@ config("compiler") {
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
         "-mllvm:-import-hot-multiplier=15",
-        "-mllvm:-import-cold-multiplier=4",
+        "-mllvm:-import-cold-multiplier=2",
         "-mllvm:-disable-auto-upgrade-debug-info",
         # "/lldltocache:" +
         #    rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
@@ -1147,8 +1147,8 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=aarch64-linux-gnu" ]
-        ldflags += [ "--target=aarch64-linux-gnu" ]
+        cflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+crc", "-mcpu=cortex-a72", "-mtune=cortex-a72", ]
+        ldflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+crc", ]
       }
     } else if (current_cpu == "mipsel" && !is_nacl) {
       ldflags += [ "-Wl,--hash-style=sysv" ]
@@ -1412,6 +1412,18 @@ config("compiler_cpu_abi") {
   }
 
   asmflags = cflags
+}
+
+config("march-dotprod") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod" ]
+  }
+}
+
+config("march-i8mm") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod+i8mm" ]
+  }
 }
 
 # This provides options to tweak code generation that are necessary
@@ -2211,14 +2223,6 @@ if (is_win) {
 } else {
   common_optimize_on_cflags = [ "-O3", ]
   common_optimize_on_ldflags = [ "-Wl,-O3", ]
-  
-  if (current_cpu == "arm64") {
-    common_optimize_on_cflags += [ "-march=armv8-a+simd", "-mtune=cortex-a72", "-mfpu=neon-vfpv4", "-mfloat-abi=hard", ]
-    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
-    if (is_linux) {
-      common_optimize_on_cflags += [ "-Wno-unused-command-line-argument", ]
-    }
-  }
 
   if (is_android) {
     # TODO(jdduke) Re-enable on mips after resolving linking
