@@ -1117,6 +1117,7 @@ config("compiler_cpu_abi") {
         "-m64",
         "-O3",
         "-march=x86-64-v3",
+        "-mtune=x86-64-v3",
         "-ffp-contract=fast",
       ]
       ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
