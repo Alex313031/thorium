@@ -68,7 +68,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium content_shell_apk chrome_public_apk -j$@ &&
+autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
 
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
