@@ -5539,7 +5539,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Use Lite mode on Google Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_TITLE" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.">
-        Google recommends Thorium
+        Alex313031 recommends Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_DESCRIPTION" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.  Promotes data savings and relevant news.">
         Save up to 60% data, read today's news

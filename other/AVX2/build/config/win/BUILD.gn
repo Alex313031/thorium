@@ -129,7 +129,6 @@ config("compiler") {
     # "/fp:fast", enables FMA.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "/O2",
         "-mavx",
         "-mavx2",
         "-maes",

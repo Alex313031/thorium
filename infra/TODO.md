@@ -24,3 +24,13 @@
 
  - For ChromeOS only: If you plan on adding a new accelerator and want it
  displayed in the Shortcuts app, please follow the instructions at: `ash/webui/shortcut_customization_ui/backend/accelerator_layout_table.h`.
+
+### Notes
+
+Google recommends Thorium > Alex313031 recommends Thorium
+
+violates the Thorium > violates the Chrome 
+
+Google Thorium > Thorium
+
+made possible by Chromium
