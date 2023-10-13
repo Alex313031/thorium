@@ -1147,8 +1147,8 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+crc", "-mcpu=cortex-a72", "-mtune=cortex-a72", ]
-        ldflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+crc", ]
+        cflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+simd", "-mtune=cortex-a72", ]
+        ldflags += [ "--target=aarch64-linux-gnu", "-march=armv8-a+simd", ]
       }
     } else if (current_cpu == "mipsel" && !is_nacl) {
       ldflags += [ "-Wl,--hash-style=sysv" ]
@@ -1412,18 +1412,6 @@ config("compiler_cpu_abi") {
   }
 
   asmflags = cflags
-}
-
-config("march-dotprod") {
-  if (!is_win || is_clang) {
-    cflags = [ "-march=armv8.2-a+dotprod" ]
-  }
-}
-
-config("march-i8mm") {
-  if (!is_win || is_clang) {
-    cflags = [ "-march=armv8.2-a+dotprod+i8mm" ]
-  }
 }
 
 # This provides options to tweak code generation that are necessary
