@@ -20,7 +20,6 @@ displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium for Android.${c0}\n" &&
 	printf "${underline}${YEL}Usage:${c0} build.sh # (where # is number of jobs)${c0}\n" &&
-	printf "${YEL}Use the --arm32 flag to make an ARM32 Build.${c0}\n" &&
 	printf "${YEL}Use the --help flag to show this help.${c0}\n" &&
 	printf "\n"
 }
@@ -58,22 +57,5 @@ cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
 tput sgr0
-}
-case $1 in
-	--arm32) buildARM32; exit 0;;
-esac
-
-# Build Thorium for ARM64
-export NINJA_SUMMARIZE_BUILD=1 &&
-export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
-
-cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j$@ &&
-
-cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
-
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
-printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
-tput sgr0 &&
 
 exit 0

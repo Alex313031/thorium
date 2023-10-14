@@ -71,8 +71,8 @@ config("compiler") {
   ldflags += [ "--target=$android_abi_target$compile_api_level" ]
 
   if (current_cpu == "arm64") {
-    cflags += [ "-march=armv8-a+simd" ]
-    ldflags += [ "-march=armv8-a+simd" ]
+    cflags += [ "-march=armv8-a" ]
+    ldflags += [ "-march=armv8-a" ]
   }
 
   if (current_cpu == "arm") {
