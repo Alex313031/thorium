@@ -230,8 +230,8 @@ declare_args() {
   alternate_cdm_storage_id_key = ""
 }
 
-# assert(!enable_cdm_host_verification || is_mac || is_win,
-#       "CDM host verification is only supported on Mac and Windows.")
+assert(!enable_cdm_host_verification || is_mac || target_os == "win",
+       "CDM host verification is only supported on Mac and Windows.")
 
 # Default |mojo_media_services| and |mojo_media_host| on various platforms. See
 # comments below for valid values. Can be overridden by gn build arguments from
