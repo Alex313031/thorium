@@ -32,7 +32,6 @@ chrome_pwa_launcher.exe: %(VersionDir)s\
 chrome_wer.dll: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
 thorium_shell.ico: %(VersionDir)s\
-thorium_shell.png: %(VersionDir)s\
 content_resources.pak: %(VersionDir)s\
 content_shell.pak: %(VersionDir)s\
 d3dcompiler_47.dll: %(VersionDir)s\

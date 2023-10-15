@@ -58,6 +58,7 @@ bundle_widevine_cdm = true
 # enable_widevine_cdm_component = true
 # enable_media_foundation_widevine_cdm = true
 enable_cdm_host_verification = false
+enable_widevine_cdm_host_verification = true
 ignore_missing_widevine_signing_cert = true
 enable_media_drm_storage = true
 # enable_media_overlay = true
