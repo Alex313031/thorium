@@ -1197,17 +1197,9 @@ bool TabStrip::ShouldDrawStrokes() const {
 
   // Don't want to have to run a full feature query every time this function is
   // called.
-  static const bool tab_outlines_in_low_contrast = base::CommandLine::ForCurrentProcess()->HasSwitch("tab-outlines-in-low-contrast-themes");
-
+  static const bool force_enable_tab_outlines =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("force-enable-tab-outlines");
   if (tab_outlines_in_low_contrast) {
-    constexpr float kMinimumAbsoluteContrastForOutlines = 0.2f;
-    const float background_luminance =
-        color_utils::GetRelativeLuminance(background_color);
-    const float frame_luminance =
-        color_utils::GetRelativeLuminance(frame_color);
-    const float contrast_difference =
-        std::fabs(background_luminance - frame_luminance);
-    if (contrast_difference < kMinimumAbsoluteContrastForOutlines)
       return true;
   }
 
