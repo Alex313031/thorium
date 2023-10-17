@@ -527,10 +527,10 @@ TabStyle::TabColors GM2TabStyleViews::CalculateTargetColors() const {
 
 const gfx::FontList& GM2TabStyleViews::GetFontList() const {
   // Don't want to have to keep re-computing this value.
-  static const bool prominent_dark_mode_title = base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-dark-mode-active-tab-title");
+  static const bool prominent_dark_mode_titles =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-active-tab-titles");
 
-  if (prominent_dark_mode_title && tab_->IsActive() &&
-      color_utils::IsDark(GetCurrentTabBackgroundColor(TabStyle::TabSelectionState::kActive, false))) {
+  if (prominent_dark_mode_titles && tab_->IsActive()) {
     return heavy_font_;
   }
 
