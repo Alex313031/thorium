@@ -1199,7 +1199,7 @@ bool TabStrip::ShouldDrawStrokes() const {
   // called.
   static const bool force_enable_tab_outlines =
       base::CommandLine::ForCurrentProcess()->HasSwitch("force-enable-tab-outlines");
-  if (tab_outlines_in_low_contrast) {
+  if (force_enable_tab_outlines) {
       return true;
   }
 
