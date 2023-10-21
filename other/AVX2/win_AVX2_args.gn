@@ -32,6 +32,7 @@ v8_enable_fast_torque = true
 v8_enable_builtins_optimization = true
 v8_enable_maglev = true
 v8_enable_turbofan = true
+v8_enable_wasm_simd256_revec = true
 use_v8_context_snapshot = true
 enable_nacl = false
 blink_symbol_level = 0
