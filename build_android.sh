@@ -44,8 +44,7 @@ printf "${CYA}\n" &&
 cr_build_jobs="$2"
 export cr_build_jobs
 
-buildARM32 () {
-# Build Thorium for ARM32 and System WebView
+# Build Thorium and System WebView
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
