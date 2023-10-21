@@ -41,7 +41,7 @@ printf "${YEL}Building Thorium for Android...\n" &&
 printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
 printf "${CYA}\n" &&
 
-cr_build_jobs="$2"
+cr_build_jobs="$1"
 export cr_build_jobs
 
 # Build Thorium and System WebView
