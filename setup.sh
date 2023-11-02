@@ -199,36 +199,8 @@ printf "\n" &&
 
 printf "${YEL}Exporting variables and setting handy aliases...\n" &&
 
-export NINJA_SUMMARIZE_BUILD=1 &&
-export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
+. ~/thorium/aliases &&
 
-export EDITOR=nano &&
-
-export VISUAL=nano &&
-
-alias origin='git checkout -f origin/main' &&
-
-alias gfetch='git fetch --tags' &&
-
-alias rebase='git rebase-update' &&
-
-alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D' &&
-
-alias args='gn args out/thorium' &&
-
-alias gnls='gn ls out/thorium' &&
-
-alias show='git show-ref' &&
-
-alias runhooks='gclient runhooks' &&
-
-alias pgo='python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
-
-alias pgow='python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
-
-alias pgom='python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
-
-alias pgomac-arm='python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles' &&
 printf "\n" &&
 tput sgr0 &&
 
