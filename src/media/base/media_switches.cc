@@ -793,7 +793,7 @@ BASE_FEATURE(kVaapiVideoEncodeLinux,
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Ignore the non-intel driver blacklist for VaapiVideoDecoder implementations.
-// Intended for manual usage only in order to guage the status of newer driver
+// Intended for manual usage only in order to gauge the status of newer driver
 // implementations.
 BASE_FEATURE(kVaapiIgnoreDriverChecks,
              "VaapiIgnoreDriverChecks",

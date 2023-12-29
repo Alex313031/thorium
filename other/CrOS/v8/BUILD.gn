@@ -1380,7 +1380,7 @@ config("toolchain") {
       # Increase the initial stack size. The default is 1MB, this is 2MB. This
       # applies only to executables and shared libraries produced by V8 since
       # ldflags are not pushed to dependants.
-      cflags += [ "/O2", "/arch:SSE3" ]
+      cflags += [ "/O2", "-msse4.1" ]
       ldflags += [ "/STACK:2097152" ]
     }
     if (is_linux || is_chromeos) {
