@@ -60,4 +60,4 @@ exec > >(exec cat)
 exec 2> >(exec cat >&2)
 
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/thorium" "--user-data-dir=$(pwd)/.config/thorium" "--disable-machine-id" "--disable-encryption" "$@"
+exec -a "$0" "$HERE/thorium" "--user-data-dir=$(pwd)/.config/thorium" "--disk-cache-dir=$(pwd)/.config/cache" "--disable-machine-id" "--disable-encryption" "$@"
