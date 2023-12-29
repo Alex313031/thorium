@@ -1108,7 +1108,7 @@ class Browser : public TabStripModelObserver,
   // and the browser closed, false if the browser should stay open and the
   // downloads running.
   void InProgressDownloadResponse(bool cancel_downloads);
-  
+
   void MultitabResponse(chrome::MessageBoxResult result);
 
   // Called when all warnings have completed when attempting to close the

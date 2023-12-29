@@ -1,4 +1,4 @@
-# Copyright RobRich999 and Alex313031
+# Copyright 2023 RobRich999 and Alex313031
 # This file defines which warnings should be ignored while running clang's
 # control flow integrity sanitizer, as run by the cfi_flags build target.
 

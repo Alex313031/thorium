@@ -2939,7 +2939,6 @@ bool Browser::CanCloseWithMultipleTabs() {
   return false;
 }
 
-
 void Browser::InProgressDownloadResponse(bool cancel_downloads) {
   if (cancel_downloads) {
     cancel_download_confirmation_state_ = RESPONSE_RECEIVED;

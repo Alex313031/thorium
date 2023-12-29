@@ -21,7 +21,7 @@ about:version template page
 <if expr="is_android or is_ios">
     <link rel="stylesheet" href="about_version_mobile.css">
 </if>
-<if expr="chromeos_lacros or chromeos_ash">
+<if expr="is_chromeos">
     <link rel="stylesheet" href="chrome://resources/css/os_header.css">
 </if>
 
@@ -29,18 +29,16 @@ about:version template page
   </head>
 
   <body>
-<if expr="chromeos_lacros or chromeos_ash">
+<if expr="is_chromeos">
     <div class="os-link-container-container" id="os-link-container" hidden>
       <div class="os-link-container">
         <span class="os-link-icon"></span>
         <span aria-hidden="true" id="os-link-desc">$i18n{os-version-text1}</span>
-        <a href="#" id="os-link-href" aria-describedby="os-link-desc">
-          $i18n{os-version-link}
-        </a>
+        $i18nRaw{os-version-link}
         <span aria-hidden="true">$i18n{os-version-text2}</span>
       </div>
     </div>
-  </if>
+</if>
 
     <div id="outer">
       <div id="logo">
@@ -111,16 +109,23 @@ about:version template page
             <span>$i18n{cl}</span>
           </td>
         </tr>
-<if expr="not chromeos_ash and not chromeos_lacros">
+<if expr="not chromeos_ash">
         <tr>
           <td class="label">$i18n{os_name}</td>
           <td class="version" id="os_type">
-            <span>$i18n{os_type}</span>
+            <span id="copy-os-content">
+              <span>$i18n{os_type}</span>
 <if expr="is_android">
-            <span>$i18n{os_version}</span>
+              <span>$i18n{os_version}</span>
 </if>
-<if expr="is_win or is_macosx">
-            <span id="os_version"></span>
+<if expr="chromeos_lacros or is_win or is_macosx">
+              <span id="os_version"></span>
+</if>
+            </span>
+<if expr="chromeos_lacros">
+            <button id="copy-os-content-to-clipboard" aria-label="$i18n{copy_label}">
+              <div id="copy-to-clipboard-icon"></div>
+            </button>
 </if>
           </td>
         </tr>
@@ -145,12 +150,11 @@ about:version template page
           </td>
         </tr>
 </if>
-<!-- TODO(crbug.com/1339120): Unify and reuse between Ash and Lacros -->
-<if expr="chromeos_ash">
+<if expr="is_chromeos">
         <tr>
           <td class="label">$i18n{platform}</td>
-          <td class="version" id="os_type">
-            <span id="os_version"></span>
+          <td class="version" id="platform_type">
+            <span id="platform_version"></span>
           </td>
         </tr>
         <tr>
@@ -168,20 +172,6 @@ about:version template page
         <tr id="arc_holder"><td class="label">$i18n{arc_label}</td>
           <td class="version">
             <span id="arc_and_arc_android_sdk_versions"></span>
-          </td>
-        </tr>
-</if>
-<if expr="chromeos_lacros">
-        <tr>
-          <td class="label">$i18n{os_name}</td>
-          <td class="version" id="os_type">
-            <span id="copy-os-content">
-              <span>$i18n{os_type}</span>
-              (Ash <span>$i18n{ash_chrome_version}</span>)
-            </span>
-            <button id="copy-os-content-to-clipboard" aria-label="$i18n{copy_label}">
-              <div id="copy-to-clipboard-icon"></div>
-            </button>
           </td>
         </tr>
 </if>
@@ -230,6 +220,9 @@ about:version template page
           <td class="version" id="sanitizer">$i18n{sanitizer}</td>
         </tr>
       </table>
+    </div>
+
+    <div id="messages" role="alert" aria-live="polite" aria-relevant="additions">
     </div>
   </body>
 </html>

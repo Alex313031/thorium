@@ -223,7 +223,6 @@ bool IsFetchingEnabled() {
   return false;
 }
 
-
 // Returns the already downloaded first run seed, and clear the seed from the
 // native-side prefs. At this point, the seed has already been fetched from the
 // native seed storage, so it's no longer needed there. This is done regardless
@@ -419,6 +418,14 @@ void VariationsService::SetRestrictMode(const std::string& restrict_mode) {
   // builds that talk to the variations server - which don't enable DCHECKs.
   CHECK(variations_server_url_.is_empty());
   restrict_mode_ = restrict_mode;
+}
+
+bool VariationsService::IsLikelyDogfoodClient() const {
+  // The param is typically only set for dogfood clients, though in principle it
+  // could be set in other rare contexts as well.
+  const std::string restrict_mode = GetRestrictParameterValue(
+      restrict_mode_, client_.get(), policy_pref_service_);
+  return !restrict_mode.empty();
 }
 
 GURL VariationsService::GetVariationsServerURL(HttpOptions http_options) {
