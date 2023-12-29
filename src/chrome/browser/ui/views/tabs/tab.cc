@@ -90,6 +90,10 @@
 #include "ui/views/widget/widget.h"
 #include "ui/views/window/non_client_view.h"
 
+#if BUILDFLAG(IS_WIN)
+#include "ui/views/win/pen_event_handler_util.h"
+#endif
+
 #if defined(USE_AURA)
 #include "ui/aura/env.h"
 #endif
@@ -103,6 +107,12 @@ namespace {
 // tab. This is done to avoid having the title immediately disappear when
 // transitioning a tab from normal to pinned tab.
 constexpr int kPinnedTabExtraWidthToRenderAsNormal = 30;
+
+// Additional padding of close button to the right of the tab
+// indicator when `extra_alert_indicator_padding_` is true.
+constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI = 8;
+constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustment = 6;
+constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentRefresh = 4;
 
 bool g_show_hover_card_on_mouse_hover = true;
 
@@ -223,7 +233,8 @@ Tab::Tab(TabSlotController* controller)
   // onto opaque parts of a not-entirely-opaque layer.
   title_->SetSkipSubpixelRenderingOpacityCheck(true);
 
-  if (features::IsChromeRefresh2023()) {
+  if (features::IsChromeRefresh2023() &&
+      base::FeatureList::IsEnabled(features::kChromeRefresh2023TopChromeFont)) {
     title_->SetTextContext(views::style::CONTEXT_LABEL);
     title_->SetTextStyle(views::style::STYLE_BODY_4_EMPHASIS);
   }
@@ -368,8 +379,14 @@ void Tab::Layout() {
     int right = contents_rect.right();
     if (showing_close_button_) {
       right = close_x;
-      if (extra_alert_indicator_padding_)
-        right -= ui::TouchUiController::Get()->touch_ui() ? 8 : 6;
+      if (extra_alert_indicator_padding_) {
+        right -=
+            ui::TouchUiController::Get()->touch_ui()
+                ? kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI
+                : (features::IsChromeRefresh2023()
+                       ? kTabAlertIndicatorCloseButtonPaddingAdjustmentRefresh
+                       : kTabAlertIndicatorCloseButtonPaddingAdjustment);
+      }
     }
     const gfx::Size image_size = alert_indicator_button_->GetPreferredSize();
     gfx::Rect bounds(
@@ -667,8 +684,21 @@ void Tab::OnGestureEvent(ui::GestureEvent* event) {
       ui::GestureEvent cloned_event(event_in_parent, parent(),
                                     static_cast<View*>(this));
 
-      if (!closing())
+      if (!closing()) {
+#if BUILDFLAG(IS_WIN)
+        // If the pen is down on the tab, let pen events fall through to the
+        // default window handler until the pen is raised. This allows the
+        // default window handler to execute drag-drop on the window when it's
+        // moved by its tab, e.g., when the window has a single tab or when a
+        // tab is being detached.
+        const bool is_pen = event->details().primary_pointer_type() ==
+                            ui::EventPointerType::kPen;
+        if (is_pen) {
+          views::UseDefaultHandlerForPenEventsUntilPenUp();
+        }
+#endif
         controller_->MaybeStartDrag(this, cloned_event, original_selection);
+      }
       break;
     }
 
@@ -853,6 +883,14 @@ void Tab::SelectedStateChanged() {
 
 bool Tab::IsSelected() const {
   return controller_->IsTabSelected(this);
+}
+
+bool Tab::IsDiscarded() const {
+  return data().is_tab_discarded;
+}
+
+bool Tab::HasThumbnail() const {
+  return data().thumbnail && data().thumbnail->has_data();
 }
 
 void Tab::SetData(TabRendererData data) {

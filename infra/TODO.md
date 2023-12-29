@@ -31,6 +31,13 @@ Google recommends Thorium > Alex313031 recommends Thorium
 
 violates the Thorium > violates the Chrome 
 
-Google Thorium > Thorium
+## .grd text replacements (search with grep)
 
-made possible by Chromium
+Chromium > Thorium
+Chrome > Thorium
+Google Thorium > Thorium
+Thorium Web Store > Chrome Web Store (Except some UI elements)
+Thorium Remote Desktop > Chrome Remote Desktop
+ThoriumOS Flex > ThoriumOS
+made possible by Thorium > Chromium
+Experiments > Thorium Experiments

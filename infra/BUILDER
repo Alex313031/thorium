@@ -1,16 +1,3 @@
-## .grd text replacements (search with grep)
-
-Chromium > Thorium
-Chrome > Thorium
-Google Thorium > Thorium
-Thorium Web Store > Chrome Web Store (Except some UI elements)
-Thorium Remote Desktop > Chrome Remote Desktop
-ThoriumOS Flex > ThoriumOS
-Made possible by Thorium > Chromium
-Experiments > Thorium Experiments
-
----------------------------------------------------------------------------------------------
-
 ## sandbox perms
 
 30 55
