@@ -128,10 +128,19 @@
      kOsAll, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
 
 #if !BUILDFLAG(IS_ANDROID)
+    {"download-bubble",
+     "Enable/Disable Download Bubble",
+     "Enable or disable the download bubble. When disabled, the traditional download shelf is used. Thorium flag",
+     kOsDesktop, FEATURE_VALUE_TYPE(safe_browsing::kDownloadBubble)},
     {"media-router",
      "Enable/Disable Media Router",
      "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
      kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
+    {"storage-access-api",
+     "Storage Access API",
+     "Enables the Storage Access API, allowing websites to request storage "
+     "access when it would otherwise be restricted.",
+     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kStorageAccessAPI)},
 #endif // BUILDFLAG(IS_ANDROID)
 
     {"disable-encryption",
