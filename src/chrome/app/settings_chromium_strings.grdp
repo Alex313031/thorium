@@ -103,12 +103,12 @@
     <if expr="_is_chrome_for_testing_branded">
       <then>
         <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium for Testing is installed in side-by-side mode, which does not support setting as the default browser.">
-          Google Thorium for Testing cannot be made your default browser.
+          Thorium for Testing cannot be made your default browser.
         </message>
       </then>
       <else>
         <message name="IDS_SETTINGS_DEFAULT_BROWSER_SECONDARY" desc="The text displayed when Thorium is installed in side-by-side mode, which does not support setting as the default browser.">
-          This is a secondary installation of Thorium, and cannot be made your default browser.
+          This is a secondary installation of Chromium, and cannot be made your default browser.
         </message>
       </else>
     </if>

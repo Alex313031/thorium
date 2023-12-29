@@ -277,7 +277,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       </if>
 
       <!--
-        Even though Google Thorium for Testing is a separate brand, there is
+        Even though Thorium for Testing is a separate brand, there is
         no separate file for it. Instead, we use the same file as Thorium, with
         a few select overrides for the most prominent end-user strings.
 
@@ -286,7 +286,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <if expr="_is_chrome_for_testing_branded">
         <then>
           <message name="IDS_PRODUCT_NAME" desc="The Thorium for Testing application name" translateable="false">
-            Google Thorium for Testing
+            Thorium for Testing
           </message>
           <message name="IDS_SHORT_PRODUCT_NAME" desc="The Thorium for Testing application short name." translateable="false">
             Thorium for Testing
@@ -857,7 +857,7 @@ Permissions you've already given to websites and apps may apply to this account.
         <if expr="_is_chrome_for_testing_branded">
           <then>
             <message name="IDS_ABOUT" desc="In Title Case: The text label of the About Thorium for Testing menu item">
-              About &amp;Google Thorium for Testing
+              About &amp;Thorium for Testing
             </message>
           </then>
           <else>
@@ -874,7 +874,7 @@ Permissions you've already given to websites and apps may apply to this account.
         <if expr="_is_chrome_for_testing_branded">
           <then>
             <message name="IDS_ABOUT" desc="The text label of the About Thorium for Testing menu item">
-              About &amp;Google Thorium for Testing
+              About &amp;Thorium for Testing
             </message>
           </then>
           <else>
@@ -903,13 +903,13 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <if expr="is_macosx">
-        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Google Thorium." translateable="false">
+        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Thorium." translateable="false">
           Thorium
         </message>
-        <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Thorium application name (IDS_PRODUCT_NAME). Example: Google Thorium Helper.">
+        <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Thorium application name (IDS_PRODUCT_NAME). Example: Thorium Helper.">
           Thorium Helper
         </message>
-        <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Thorium Helper, not Google Thorium Helper.">
+        <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Thorium Helper, not Thorium Helper.">
           Thorium Helper
         </message>
       </if>

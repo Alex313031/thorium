@@ -1,41 +1,62 @@
-30 55
-## Contains notes for me about what to change when rebasing the main BUILD.gn ## Lines with # are for personal use.
-"-march=haswell",
-        "-mtune=x86-64",
-ldflags += [ "-m64", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", ]
+## .grd text replacements
 
+Chromium > Thorium
+Chrome > Thorium
+Google Thorium > Thorium
+Thorium Web Store > Chrome Web Store (Except some UI elements)
+ThoriumOS Flex > ThoriumOS
+Made possible by Thorium > Chromium
+Experiments > Thorium Experiments
+
+---------------------------------------------------------------------------------------------
+
+## sandbox perms
+
+30 55
 sudo chown root chrome-sandbox &&
 sudo chmod 4755 chrome-sandbox &&
 sudo chmod 4755 chrome_sandbox &&
 sudo chmod 4755 chrome_sandbox
 
-ldflags += [ "-m64", "-Wl,-mllvm,-mavx", "-Wl,-mllvm,-maes", ]
-lto_opt_level
-import_instr_limit
-cflags = [ "-O
-[ "-Xclang", "-O3" ]
-config("no_symbols") {
--Copt-level= -Ctarget-feature=+sse4,+avx
+---------------------------------------------------------------------------------------------
 
+## Misc
 Native Theme
 base::CommandLine::ForCurrentProcess()->HasSwitch("force-dark-mode");
 
 Media Switches
 base::CommandLine::ForCurrentProcess()->HasSwitch("no-autoplay");
 
-kShowHomeButton
+kShowHomeButton and kDoNotTrack
 
-const base::Feature kAutomaticLazyFrameLoadingToAds{
-const base::Feature kAutomaticLazyFrameLoadingToEmbeds{
-JPEG XL Image File Format
 CssSelectorFragmentAnchor
 Prefetchpri
 // Check if the CPU has the required instruction set to run the Speech
 
 kEnableTabMuting & PlatformHEVCDecoderSupport & kVaapiVideoDecode & kVaapiVideoEncode & Vp9kSVCHWDecoding & kD3D11Vp9kSVCHWDecoding & DeprecateLowUsageCodecs & kUseChromeOSDirectVideoDecoder
 
-linux above this > # TODO(jdduke) Re-enable on mips after resolving linking
-windows above this > # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
+---------------------------------------------------------------------------------------------
+
+## Disable AVX-512
+
+        "-mno-avx512f",
+        "-mno-avx512pf",
+        "-mno-avx512er",
+        "-mno-avx512cd",
+        "-mno-avx512vl",
+        "-mno-avx512bw",
+        "-mno-avx512dq",
+        "-mno-avx512ifma",
+        "-mno-avx512vbmi",
+        "-mno-avx512vbmi2",
+        "-mno-avx512bf16",
+        "-mno-avx512fp16",
+        "-mno-avx512bitalg",
+        "-mno-avx512vpopcntdq",
+        "-mno-avx512vp2intersect",
+        "-mno-avx512vnni",
+
+## Old RobRich999 notes
 
   common_optimize_on_cflags = [
     "-mllvm", "-extra-vectorizer-passes",
@@ -104,35 +125,3 @@ windows above this > # /OPT:ICF is not desirable in Debug builds, since code-fol
     "-mllvm:-unroll-runtime-multi-exit",
     "-mllvm:-aggressive-ext-opt",
   ]
-
-    # cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
-[...]
-       #  "/lldltocache:" +
-       #      rebase_path("$root_out_dir/thinlto-cache", root_build_dir),
-       #  "/lldltocachepolicy:$cache_policy",
-       
-    # cache_policy = "cache_size=10%:cache_size_bytes=40g:cache_size_files=100000"
-[...]
-        #     [ "-Wl,--thinlto-cache-dir=" +
-        #       rebase_path("$root_out_dir/thinlto-cache", root_build_dir) ]
-
-[...]
-      # ldflags += [ "-Wl,--thinlto-cache-policy=$cache_policy" ]
-
-
-        "-mno-avx512f",
-        "-mno-avx512pf",
-        "-mno-avx512er",
-        "-mno-avx512cd",
-        "-mno-avx512vl",
-        "-mno-avx512bw",
-        "-mno-avx512dq",
-        "-mno-avx512ifma",
-        "-mno-avx512vbmi",
-        "-mno-avx512vbmi2",
-        "-mno-avx512bf16",
-        "-mno-avx512fp16",
-        "-mno-avx512bitalg",
-        "-mno-avx512vpopcntdq",
-        "-mno-avx512vp2intersect",
-        "-mno-avx512vnni",
