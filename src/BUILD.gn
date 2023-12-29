@@ -122,8 +122,8 @@ group("gn_all") {
       "//tools/ipc_fuzzer:ipc_fuzzer_all",
       "//tools/metrics:metrics_metadata",
       "//ui/base:ui_base_unittests",
-      "//ui/color:color_unittests",
       "//ui/gfx:gfx_unittests",
+      "//ui/tests:ui_unittests",
       "//url:url_unittests",
     ]
 
@@ -145,6 +145,7 @@ group("gn_all") {
     if (!is_ios && !is_android && !is_castos) {
       deps += [
         "//chrome",
+        "//chrome/browser/ui/actions:dump_actions",
         "//chrome/browser/ui/color:dump_colors",
         "//chrome/test:browser_tests",
         "//components/subresource_filter/tools:subresource_filter_tools",
@@ -240,14 +241,6 @@ group("gn_all") {
         "//net:net_perftests",
         "//ui/events:events_unittests",
         "//url/ipc:url_ipc_unittests",
-      ]
-    }
-
-    if (is_android) {
-      deps += [
-        "//weblayer/browser/android/javatests:webengine_support_instrumentation_test_apk",
-        "//weblayer/browser/java:weblayer_junit_tests",
-        "//weblayer/test:weblayer_browsertests",
       ]
     }
 
@@ -372,7 +365,6 @@ group("gn_all") {
     if (is_android) {
       deps += [
         "//base:base_junit_tests",
-        "//base/android/jni_generator:jni_generator_tests",
         "//base/android/linker:chromium_android_linker",
         "//build/android/gyp/test:hello_world",
         "//build/android/stacktrace:java_deobfuscate",
@@ -384,6 +376,7 @@ group("gn_all") {
         "//chrome/android/webapk/shell_apk/prepare_upload_dir:prepare_webapk_shell_upload_dir",
         "//chrome/test:android_browsertests",
         "//components:components_junit_tests",
+        "//components/ip_protection_auth/javatests:ip_protection_auth_test_apk",
         "//content/public/android:content_junit_tests",
         "//content/shell/android:content_shell_apk",
         "//device:device_junit_tests",
@@ -394,6 +387,7 @@ group("gn_all") {
         "//third_party/android_build_tools/lint:custom_lint_java",
         "//third_party/androidx_javascriptengine",
         "//third_party/catapult/devil",
+        "//third_party/jni_zero/samples:jni_generator_tests",
         "//third_party/r8:custom_d8_java",
         "//tools/android:android_tools",
         "//tools/android:memconsumer",
@@ -413,6 +407,7 @@ group("gn_all") {
           "//android_webview:empty_group",
           "//android_webview/test",
           "//android_webview/tools/automated_ui_tests:webview_ui_test_app",
+          "//android_webview/tools/captured_sites_tests:captured_sites_test_app",
           "//android_webview/tools/system_webview_shell",
           "//chrome/android:chrome_junit_tests",
           "//chrome/android:chrome_public_apk",
@@ -856,6 +851,10 @@ group("gn_all") {
       deps += [ "//components/cronet:cronet_tests" ]
     }
   }
+
+  if (is_chrome_for_testing) {
+    deps += [ "//chrome/browser/chrome_for_testing:chrome_for_testing" ]
+  }
 }
 
 # All Rust targets. This is provided for convenience while developing Rust to
@@ -1057,7 +1056,7 @@ if (is_chromeos_ash) {
   }
 }
 
-if (!is_ios && !is_cronet_build) {
+if (use_blink && !is_cronet_build) {
   group("chromedriver_group") {
     testonly = true
 
@@ -1072,7 +1071,7 @@ if (!is_ios && !is_cronet_build) {
       if (is_android && !is_cast_android) {
         deps += [ "//chrome/test/chromedriver/test/webview_shell:chromedriver_webview_shell_apk" ]
       }
-    } else if (!is_castos) {
+    } else if (!is_castos && !is_ios) {
       deps = [
         "//chrome/test/chromedriver:chromedriver_server",
         "//chrome/test/chromedriver:chromedriver_unittests",
@@ -1107,24 +1106,7 @@ if (!is_ios && !is_cronet_build) {
   }
 
   if (!is_chromeos_ash && !is_ios && !is_fuchsia && !is_android && !is_castos) {
-    script_test("webdriver_wpt_tests") {
-      script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [
-        "--product=chrome",
-        "--no-show-results",
-        "--zero-tests-executed-ok",
-        "--test-type=wdspec",
-      ]
-      data_deps = [
-        "//chrome:chrome",
-        "//chrome/test/chromedriver:chromedriver_server",
-        "//third_party/blink/tools:wpt_tests_isolate",
-      ]
-      if (is_win) {
-        data_deps += [ "//build/win:copy_cdb_to_output" ]
-      }
-    }
-    script_test("chrome_wpt") {
+    script_test("chrome_wpt_tests") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
       args = [
         "--product=chrome",
@@ -1376,6 +1358,7 @@ if (!is_ios && !is_cronet_build) {
       "//third_party/blink/web_tests/overflow/",
       "//third_party/blink/web_tests/paint/",
       "//third_party/blink/web_tests/payments/",
+      "//third_party/blink/web_tests/performance_timeline/",
       "//third_party/blink/web_tests/permissionclient/",
       "//third_party/blink/web_tests/plugins/",
       "//third_party/blink/web_tests/pointer-lock/",

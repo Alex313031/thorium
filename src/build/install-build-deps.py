@@ -148,7 +148,7 @@ def check_distro(options):
   distro_id = subprocess.check_output(["lsb_release", "--id",
                                        "--short"]).decode().strip()
 
-  supported_codenames = ["bionic", "focal", "jammy", "kinetic", "lunar"]
+  supported_codenames = ["bionic", "focal", "jammy", "lunar", "mantic"]
   supported_ids = ["Debian"]
 
   if (distro_codename() not in supported_codenames
@@ -160,8 +160,8 @@ def check_distro(options):
         "\tUbuntu 18.04 LTS (bionic with EoL April 2028)",
         "\tUbuntu 20.04 LTS (focal with EoL April 2030)",
         "\tUbuntu 22.04 LTS (jammy with EoL April 2032)",
-        "\tUbuntu 22.10 (kinetic with EoL October 2023)\n" \
         "\tUbuntu 23.04 (lunar with EoL April 2024)\n" \
+        "\tUbuntu 23.10 (mantic)\n" \
         "\tDebian 10 (buster), 11 (bullseye) or 12 (bookworm)",
         sep="\n",
         file=sys.stderr,
@@ -624,13 +624,13 @@ def arm_list(options):
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
     ])
-  elif distro_codename() == "kinetic":
+  elif distro_codename() == "lunar":
     packages.extend([
         "gcc-arm-linux-gnueabihf",
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
     ])
-  elif distro_codename() == "lunar":
+  elif distro_codename() == "mantic":
     packages.extend([
         "gcc-arm-linux-gnueabihf",
         "g++-11-arm-linux-gnueabihf",
@@ -762,15 +762,16 @@ def missing_packages(packages):
         ["dpkg-query", "-W", "-f", " "] + packages,
         check=True,
         capture_output=True,
-    ).decode()
+    )
     return []
   except subprocess.CalledProcessError as e:
-    return [line.split(" ")[-1] for line in e.stderr.strip().splitlines()]
+    return [
+        line.split(" ")[-1] for line in e.stderr.decode().strip().splitlines()
+    ]
 
 
 def package_is_installable(package):
-  result = subprocess.run(["apt-cache", "show", package],
-                          capture_output=True).decode()
+  result = subprocess.run(["apt-cache", "show", package], capture_output=True)
   return result.returncode == 0
 
 
