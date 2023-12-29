@@ -32,6 +32,24 @@ BASE_FEATURE(kRefreshExpirationDate,
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
+BASE_FEATURE(kDownloadsMigrateToJobsAPI,
+             "DownloadsMigrateToJobsAPI",
+#if BUILDFLAG(IS_ANDROID)
+             base::FEATURE_DISABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
+
+BASE_FEATURE(kDownloadNotificationServiceUnifiedAPI,
+             "DownloadNotificationServiceUnifiedAPI",
+#if BUILDFLAG(IS_ANDROID)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
+
 BASE_FEATURE(kUseInProgressDownloadManagerForDownloadService,
              "UseInProgressDownloadManagerForDownloadService",
              base::FEATURE_DISABLED_BY_DEFAULT);

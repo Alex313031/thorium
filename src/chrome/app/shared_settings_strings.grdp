@@ -286,7 +286,7 @@
 
   <!-- Signout Subpage (strings used by the <settings-signout-dialog> element) -->
   <message name="IDS_SETTINGS_SYNC_DISCONNECT_CONFIRM" desc="The text to display on the button to confirm the user wishes to stop syncing.">
-    Clear and Sign Out
+    Delete and Sign Out
   </message>
   <message name="IDS_SETTINGS_PEOPLE_SIGN_OUT" desc="The label of the button that lets user sign-out of Thorium.">
     Sign out
@@ -317,7 +317,7 @@
     Apps
   </message>
   <message name="IDS_SETTINGS_APPS_CHECKBOX_SUBLABEL" desc="Sublabel for the checkbox which enables or disables syncing apps between multiple browser instances.">
-    Apps sync is set in system Settings
+    Apps sync is set in device Settings
   </message>
   <message name="IDS_SETTINGS_NON_PERSONALIZED_SERVICES_SECTION_LABEL" desc="Title for a section that shows options for various Google services">
     Other Google services
@@ -332,6 +332,9 @@
   <!-- Sync page (strings used by the <settings-sync-page> element) -->
   <message name="IDS_SETTINGS_PASSWORDS_CHECKBOX_LABEL" desc="Label for the checkbox which enables or disables syncing passwords between multiple browser instances.">
     Passwords
+  </message>
+  <message name="IDS_SETTINGS_PASSWORDS_AND_PASSKEYS_CHECKBOX_LABEL" desc="Label for the checkbox which enables or disables syncing passwords and passkey metadata (i.e. their username and sites) between multiple browser instances. See the glossary for a definition of 'passkey', do not translate 'passkey' as 'password'.">
+    Passwords and passkeys
   </message>
   <message name="IDS_SETTINGS_PASSPHRASE_PLACEHOLDER" desc="Placeholder for the passphrase field.">
     Passphrase
@@ -402,19 +405,6 @@
   <message name="IDS_SETTINGS_SYNC_SETUP_CANCEL_DIALOG_BODY" desc="The body text of the dialog to confirm the sync cancellation.">
     You can turn on sync anytime in settings
   </message>
-    <if expr="chromeos_ash">
-    <!-- TODO(crbug.com/1231500): Remove this string after Lacros side-by-side rollout stage. -->
-    <message name="IDS_SYNC_SETTINGS_SIDE_BY_SIDE_WARNING_ASH" desc="The warning message that is shown when lacros side-by-side mode is enabled.">
-      Changes you make here apply only to Thorium Browser. To make changes to your Lacros Thorium Browser settings, open Lacros Thorium Browser and go to settings.
-    </message>
-  </if>
-
-  <if expr="chromeos_lacros">
-    <!-- TODO(crbug.com/1231500): Remove this string after Lacros side-by-side rollout stage. -->
-    <message name="IDS_SYNC_SETTINGS_SIDE_BY_SIDE_WARNING_LACROS" desc="The warning message that is shown when lacros side-by-side mode is enabled.">
-      Changes you make here apply only to Lacros Thorium Browser. To make changes to your Thorium Browser settings, open Thorium Browser and go to settings.
-    </message>
-  </if>
 
   <if expr="is_chromeos">
     <message name="IDS_BROWSER_SETTINGS_SYNC_FEATURE_LABEL" desc="Label describing the browser sync feature.">
