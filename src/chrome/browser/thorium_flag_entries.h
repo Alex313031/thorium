@@ -21,7 +21,7 @@
     {"disable-aero",
      "Disable Aero Window Frame Compositing",
      "Use the classic Chromium theme designed to mimick \"Aero\" window controls. "
-     "Typically used when desktop composition is disabled or unavailable.";
+     "Typically used when desktop composition is disabled or unavailable.",
      kOsWin, SINGLE_VALUE_TYPE("disable-aero")},
 #endif // BUILDFLAG(IS_WIN)
 
@@ -39,7 +39,8 @@
      kOsAll, SINGLE_VALUE_TYPE("force-enable-tab-outlines")},
     {"custom-ntp",
      "Custom New Tab Page",
-     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). This applies for incognito windows as well when not set to a `chrome://` internal page.",
+     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
+     "This applies for incognito windows as well when not set to a `chrome://` internal page.",
      kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
     {"hide-sidepanel-button",
      "Hide Side Panel Button",
@@ -51,7 +52,8 @@
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
     {"autoplay-policy",
      "Disable/Enable AutoPlay",
-     "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio) to continue.",
+     "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay "
+     "and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio) to continue.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
     {"show-avatar-button",
      "Show/Hide the Avatar Button",
@@ -133,7 +135,8 @@
 
     {"disable-encryption",
      "Disable Encryption",
-     "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. This is used to enable portable user data directories. Enabled for Thorium Portable.",
+     "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. "
+     "This is used to enable portable user data directories. Enabled for Thorium Portable.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-encryption")},
     {"disable-machine-id",
      "Disable Machine ID",
