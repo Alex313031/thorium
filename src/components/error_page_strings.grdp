@@ -54,7 +54,6 @@
   </message>
   <message name="IDS_ERRORPAGES_SUGGESTION_CHECK_CONNECTION_BODY" desc="When a page fails to load, sometimes we suggest checking the network connections.  This contains details below the suggestion.">
     Check any cables and reboot any routers, modems, or other network
-    devices you may be using. Also check that any proxy server currently in use is reachable and configured correctly.
     devices you may be using.
   </message>
   <if expr="not is_ios">
@@ -319,8 +318,8 @@
   <message name="IDS_ERRORPAGES_SUGGESTION_LEARNMORE_SUMMARY_STANDALONE" desc="When a webpage fails to load, we provide a link to the help center to learn more about the failure.">
     <ph name="BEGIN_LINK">&lt;a jsvalues="href:learnMoreUrl"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph> about this problem.
   </message>
-  <message name="IDS_ERRORPAGES_SUGGESTION_CLEAR_COOKIES_SUMMARY" desc="The message displayed following a network error suggesting the user could try clearing their cookies. We also provide a link to the help center to learn more about the failure.">
-    <ph name="BEGIN_LINK">&lt;a jsvalues="href:learnMoreUrl"&gt;</ph>Try clearing your cookies<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex>.</ph>
+  <message name="IDS_ERRORPAGES_SUGGESTION_DELETE_COOKIES_SUMMARY" desc="The message displayed following a network error suggesting the user could try deleting their cookies. We also provide a link to the help center to learn more about the failure.">
+    <ph name="BEGIN_LINK">&lt;a jsvalues="href:learnMoreUrl"&gt;</ph>Try deleting your cookies<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex>.</ph>
   </message>
   <if expr="is_ios or is_android">
     <message name="IDS_ERRORPAGES_SUGGESTION_TURN_OFF_AIRPLANE_SUMMARY" desc="When a page fails to load and the device is offline, we provide a suggestion that the user try turning off airplane mode. The suggestions list is prefixed with 'Try:'.">
@@ -381,7 +380,7 @@
   </if>
   <if expr="is_android or is_ios">
     <message name="IDS_ERRORPAGES_GAME_INSTRUCTIONS" desc="Mobile: Instructions on how to start playing the offline game. 'dino' is an acceptable English nickname that refers to 'dinosaur'">
-      Tap the Dino to play
+      Tap the dino to play
     </message>
     <message name="IDS_ERRORPAGE_DINO_GAME_DESCRIPTION" desc="Message to be spoken by a screen reader to give the user context and instructions for playing the net error dino game. Tapping the screen activates the game and causes the dinosaur to jump. Mobile platforms only.">
       Dino game. A pixelated dinosaur dodges cacti and pterodactyls as it runs across a desolate landscape. When you hear an audio cue, tap to jump over obstacles.
@@ -389,7 +388,7 @@
   </if>
   <if expr="not is_android and not is_ios">
     <message name="IDS_ERRORPAGES_GAME_INSTRUCTIONS" desc="Instructions on how to start playing the offline game.">
-      Press Space or the Up Arrow to Play
+      Press space to play
     </message>
     <message name="IDS_ERRORPAGE_DINO_GAME_DESCRIPTION" desc="Message to be spoken by a screen reader to give the user context and instructions for playing the net error dino game. Pressing space activates the game and causes the dinosaur to jump. Desktop platforms only.">
       Dino game. A pixelated dinosaur dodges cacti and pterodactyls as it runs across a desolate landscape. When you hear an audio cue, press space to jump over obstacles.
@@ -411,6 +410,6 @@
     Jump!
   </message>
   <message name="IDS_ERRORPAGE_DINO_SLOW_SPEED_TOGGLE" desc="Label for a toggle which allows a user to select a slower speed for the dino game.">
-    Start slower&#63;
+    Start slower
   </message>
 </grit-part>

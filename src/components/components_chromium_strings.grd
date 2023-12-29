@@ -3,7 +3,7 @@
 <grit latest_public_release="0" current_release="1"
       output_all_resource_defines="false" source_lang_id="en" enc_check="möl">
   <outputs>
-    <output filename="grit/components_chromium_strings.h" type="rc_header">
+    <output filename="grit/components_branded_strings.h" type="rc_header">
       <emit emit_type='prepend'></emit>
     </output>
     <output filename="components_chromium_strings_af.pak" type="data_package" lang="af" />
@@ -298,7 +298,7 @@
       </message>
 
       <if expr="chromeos_ash">
-        <message name="IDS_VERSION_UI_LICENSE_CHROMIUM" desc="The label below the copyright message, containing the link to the Chromium project.">
+        <message name="IDS_VERSION_UI_LICENSE_CHROMIUM" desc="The label below the copyright message, containing the link to the Thorium project.">
           Thorium is made possible by the <ph name="BEGIN_LINK_CHROMIUM">&lt;a target="_blank" href="$1"&gt;</ph>Chromium<ph name="END_LINK_CHROMIUM">&lt;/a&gt;</ph> open source project.
         </message>
 

@@ -24,8 +24,8 @@
   </if>
 
   <if expr="is_android or is_ios">
-    <message name="IDS_AUTOFILL_CLEAR_LOCAL_COPY_BUTTON" desc="The label of the button that clears the local copy of a Wallet Credit Card." formatter_data="android_java">
-      Clear copy
+    <message name="IDS_AUTOFILL_REMOVE_LOCAL_COPY_BUTTON" desc="The label of the button that removes the local copy of a Wallet Credit Card." formatter_data="android_java">
+      Remove copy
     </message>
   </if>
 
@@ -59,6 +59,9 @@
   </if>
   <message name="IDS_AUTOFILL_DELETE_AUTOCOMPLETE_SUGGESTION_TOOLTIP" desc="Tooltip shown when hovering over a small button with a trash-can logo next to an Autocomplete entry in the Autofill popup.">
     Delete entry
+  </message>
+  <message name="IDS_AUTOFILL_AUTOCOMPLETE_ENTRY_DELETED_A11Y_HINT" desc="Voice over text that is read out when the delete button next to an Autocomplete entry is selected.">
+    Entry <ph name="ENTRY_VOICEOVER">$1<ex>Jane Doe</ex></ph> has been deleted
   </message>
   <message name="IDS_AUTOFILL_DELETE_AUTOCOMPLETE_SUGGESTION_A11Y_HINT" desc="Voice over text that is read out when the delete button next to an Autocomplete entry is selected.">
     Delete entry <ph name="ENTRY_VOICEOVER">$1<ex>Jane Doe</ex></ph>
@@ -109,7 +112,11 @@
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILLED_FORM" desc="Screen reader announcement indicating that current form was autofilled.">
     The form was filled in
   </message>
-  <!--TODO(crbug.com/1459990): Align with writers about this string and remove translateable=false-->
+  <!--TODO(crbug.com/1459990): Align with writers about related strings and remove translateable=false-->
+  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_EDIT_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that edit autofill profile option was selected." translateable="false">
+    The edit address option was selected
+  </message>
+
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_DELETE_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that delete autofill profile option was selected." translateable="false">
     The delete address option was selected
   </message>
@@ -118,7 +125,6 @@
     The autofilled info was cleared from the form
   </message>
 
-  <!--TODO(crbug.com/1459990): Align with writers about this string and remove translateable=false-->
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILL_ADDRESS_GROUP_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that filling address fields option was selected." translateable="false">
     The fill address fields option was selected
   </message>
@@ -135,7 +141,6 @@
     Fill full name
   </message>
 
-  <!--TODO(crbug.com/1459990): Align with writers about this string and remove translateable=false-->
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILL_EVERYTHING_FROM_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that the fill everything option was selected." translateable="false">
     The fill everything option was selected
   </message>
@@ -148,8 +153,28 @@
     Manage...
   </message>
 
+  <message name="IDS_AUTOFILL_EDIT_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="The text displayed at the bottom of the Autofill sub meny to open the edit address profile dialog." meaning="Entry point to address profile deletion." translateable="false">
+    Edit address
+  </message>
+
   <message name="IDS_AUTOFILL_DELETE_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="The text displayed at the bottom of the Autofill sub menu to open the delete address profile dialog." meaning="Entry point to address profile deletion." translateable="false">
     Delete address
+  </message>
+
+  <message name="IDS_AUTOFILL_HOUSE_NUMBER_SUGGESTION_SECONDARY_TEXT_OPTION_SELECTED" desc="The secondary text displayed on a house number suggestion was selected." meaning="The label for the house number field type store by autofill has been selected in the subpopup." translateable="false">
+    Building number option selected
+  </message>
+
+  <message name="IDS_AUTOFILL_STREET_NAME_SUGGESTION_SECONDARY_TEXT_OPTION_SELECTED" desc="The secondary text displayed on a street name suggestion was selected." meaning="The label for the street namefield type store by autofill has been selected in the subpopup." translateable="false">
+    Street option selected
+  </message>
+
+  <message name="IDS_AUTOFILL_HOUSE_NUMBER_SUGGESTION_SECONDARY_TEXT" desc="The secondary text displayed on a house number suggestion." meaning="The label for the house number field type store by autofill." translateable="false">
+    Building number
+  </message>
+
+  <message name="IDS_AUTOFILL_STREET_NAME_SUGGESTION_SECONDARY_TEXT" desc="The secondary text displayed on a street name suggestion." meaning="The label for the street namefield type store by autofill." translateable="false">
+    Street
   </message>
 
   <message name="IDS_AUTOFILL_FILL_EVERYTHING_FROM_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="The text displayed at the footer of the Autofill sub menu to fill everything from the address profile." meaning="Fill every available information from the address profile." translateable="false">
@@ -552,6 +577,21 @@
     </message>
     <message name="IDS_AUTOFILL_EDIT_ADDRESS_DIALOG_CANCEL_BUTTON_LABEL" desc="Label of the Cancel button in the dialog that edits an address before saving it.">
       Cancel
+    </message>
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_CONTROLL_A11Y_NAME" desc="Autofill desktop popup: the a11y name for the expandable suggestion controll." translateable="false">
+      Expand suggestion
+    </message>
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_FULL_ADDRESS_A11Y_ADDON" desc="Autofill desktop popup: additional screen reader info to distinguish the address top level suggestions from others.">
+      Fill address
+    </message>
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_EXPAND_SHORTCUT" desc="Autofill desktop popup: the shortcut used to focus the expanding control and effectively open the sub-menu, used in IDS_AUTOFILL_EXPANDABLE_SUGGESTION_SUBMENU_HINT.">
+      right key
+    </message>
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_EXPAND_SHORTCUT_RTL" desc="Autofill desktop popup: the shortcut used to focus the expanding control and effectively open the sub-menu, used in IDS_AUTOFILL_EXPANDABLE_SUGGESTION_SUBMENU_HINT, for RTL languages.">
+      left key
+    </message>
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_SUBMENU_HINT" desc="Autofill desktop popup: additional screen reader info to let the user know that the suggestion can be expanded into a sub-menu.">
+      Submenu available, use <ph name="SHORTCUT">$1<ex>right key</ex></ph> to navigate to additional options.
     </message>
   </if>
 </grit-part>

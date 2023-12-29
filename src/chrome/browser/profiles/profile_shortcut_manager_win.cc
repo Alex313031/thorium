@@ -18,8 +18,10 @@
 #include "base/files/file_util.h"
 #include "base/functional/bind.h"
 #include "base/logging.h"
+#include "base/memory/raw_ref.h"
 #include "base/path_service.h"
 #include "base/ranges/algorithm.h"
+#include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
@@ -39,7 +41,7 @@
 #include "chrome/common/chrome_paths_internal.h"
 #include "chrome/common/chrome_switches.h"
 #include "chrome/common/pref_names.h"
-#include "chrome/grit/chromium_strings.h"
+#include "chrome/grit/branded_strings.h"
 #include "chrome/installer/util/install_util.h"
 #include "chrome/installer/util/shell_util.h"
 #include "components/prefs/pref_service.h"
@@ -67,7 +69,7 @@ const char16_t kReservedCharacters[] =
     u"\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F";
 
 // The maximum number of characters allowed in profile shortcuts' file names.
-// Warning: migration code will be needed if this is changed later, since
+// Warning: Migration code will be needed if this is changed later, since
 // existing shortcuts might no longer be found if the name is generated
 // differently than it was when a shortcut was originally created.
 const int kMaxProfileShortcutFileNameLength = 64;
@@ -231,8 +233,8 @@ bool IsChromeShortcut(const base::FilePath& path,
 // that have the specified |command_line|. If |include_empty_command_lines| is
 // true Chrome desktop shortcuts with empty command lines will also be included.
 struct ChromeCommandLineFilter {
-  const base::FilePath& chrome_exe;
-  const std::wstring& command_line;
+  const raw_ref<const base::FilePath> chrome_exe;
+  const raw_ref<const std::wstring> command_line;
   bool include_empty_command_lines;
 
   ChromeCommandLineFilter(const base::FilePath& chrome_exe,
@@ -244,14 +246,15 @@ struct ChromeCommandLineFilter {
 
   bool operator()(const base::FilePath& path) const {
     std::wstring shortcut_command_line;
-    if (!IsChromeShortcut(path, chrome_exe, &shortcut_command_line))
+    if (!IsChromeShortcut(path, *chrome_exe, &shortcut_command_line)) {
       return false;
+    }
 
     // TODO(asvitkine): Change this to build a CommandLine object and ensure all
     // args from |command_line| are present in the shortcut's CommandLine. This
     // will be more robust when |command_line| contains multiple args.
     if ((shortcut_command_line.empty() && include_empty_command_lines) ||
-        (shortcut_command_line.find(command_line) != std::wstring::npos)) {
+        (shortcut_command_line.find(*command_line) != std::wstring::npos)) {
       return true;
     }
     return false;
@@ -762,13 +765,12 @@ bool ShortcutFilenameMatcher::IsCanonical(const std::wstring& filename) const {
 
 std::wstring CreateProfileShortcutFlags(const base::FilePath& profile_path,
                                         const bool incognito) {
-  std::wstring flags = base::StringPrintf(
-      L"--%ls=\"%ls\"", base::ASCIIToWide(switches::kProfileDirectory).c_str(),
-      profile_path.BaseName().value().c_str());
+  std::wstring flags =
+      base::StrCat({L"--", base::ASCIIToWide(switches::kProfileDirectory),
+                    L"=\"", profile_path.BaseName().value(), L"\""});
 
   if (incognito) {
-    flags.append(base::StringPrintf(
-        L" --%ls", base::ASCIIToWide(switches::kIncognito).c_str()));
+    flags.append(L" --" + base::ASCIIToWide(switches::kIncognito));
   }
 
   return flags;

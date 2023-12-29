@@ -17,18 +17,6 @@
      kOsLinux, SINGLE_VALUE_TYPE("auto-dark-mode")},
 #endif // BUILDFLAG(IS_LINUX)
 
-#if BUILDFLAG(IS_WIN)
-    {"disable-aero",
-     "Disable Aero Window Frame Compositing",
-     "Use the classic Chromium theme designed to mimick \"Aero\" window controls. "
-     "Typically used when desktop composition is disabled or unavailable.",
-     kOsWin, SINGLE_VALUE_TYPE("disable-aero")},
-#endif // BUILDFLAG(IS_WIN)
-
-    {"force-high-contrast",
-     "Enable High Contrast Mode",
-     "Enables high contrast mode for all Thorium instances.",
-     kOsAll, SINGLE_VALUE_TYPE("force-high-contrast")},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
@@ -37,6 +25,19 @@
      "Enable Tab Outlines",
      "Force enables tab outline strokes, improving accessiblity in dark mode, incognito mode, and low contrast themes.",
      kOsAll, SINGLE_VALUE_TYPE("force-enable-tab-outlines")},
+    {"force-high-contrast",
+     "Enable High Contrast Mode",
+     "Enables high contrast mode for all Thorium instances.",
+     kOsAll, SINGLE_VALUE_TYPE("force-high-contrast")},
+
+#if BUILDFLAG(IS_WIN)
+    {"disable-aero",
+     "Disable Aero Window Frame Compositing",
+     "Use the classic Chromium theme designed to mimick \"Aero\" window controls. "
+     "Typically used when desktop composition is disabled or unavailable.",
+     kOsWin, SINGLE_VALUE_TYPE("disable-aero")},
+#endif // BUILDFLAG(IS_WIN)
+
     {"custom-ntp",
      "Custom New Tab Page",
      "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "

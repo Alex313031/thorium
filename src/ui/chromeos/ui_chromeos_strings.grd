@@ -606,7 +606,7 @@
         Thoriumbox
       </message>
       <message name="IDS_REVEN_DEVICE_NAME" desc="The device name for a Reven Device">
-        ThoriumOS Flex device
+        ThoriumOS device
       </message>
       <message name="IDS_GENERIC_CHROMEOS_DEVICE_NAME" desc="The device name for a generic Thorium device">
         Thorium device
@@ -626,7 +626,7 @@
         Thoriumboxes
       </message>
       <message name="IDS_REVEN_DEVICE_NAME_IN_PLURAL" desc="The device name (plural) for a Reven Device">
-        ThoriumOS Flex devices
+        ThoriumOS devices
       </message>
       <message name="IDS_GENERIC_CHROMEOS_DEVICE_NAME_IN_PLURAL" desc="The device name (plural) for generic Thorium device">
         Thorium devices
@@ -1772,6 +1772,9 @@
       </message>
       <message name="IDS_SETTINGS_INTERNET_NETWORK_SETTING_MANAGED_BY_ADMIN_TOOLTIP" desc="Text displayed in the controlled settings bubble when a setting's value is managed by policy.">
         This setting is managed by your administrator.
+      </message>
+      <message name="IDS_SUPPRESS_TEXT_MESSAGES" desc="Text displayed for a toggle button allowing user to show or hide text messages">
+        Show text messages
       </message>
 
       <!-- Settings > Internet > SIM lock/unlock dialog -->

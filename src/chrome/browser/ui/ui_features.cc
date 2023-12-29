@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -9,6 +9,7 @@
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "components/flags_ui/feature_entry.h"
+#include "ui/base/ui_base_features.h"
 
 namespace features {
 
@@ -19,11 +20,15 @@ BASE_FEATURE(kAllowWindowDragUsingSystemDragDrop,
              "AllowWindowDragUsingSystemDragDrop",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-#if !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
-BASE_FEATURE(kDesktopPWAsAppHomePage,
-             "DesktopPWAsAppHomePage",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-#endif  // !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_ANDROID)
+// Enables the use of WGC for the Eye Dropper screen capture.
+BASE_FEATURE(kAllowEyeDropperWGCScreenCapture,
+             "AllowEyeDropperWGCScreenCapture",
+#if BUILDFLAG(IS_WIN)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif  // BUILDFLAG(IS_WIN)
+);
 
 // Enables Chrome Labs menu in the toolbar. See https://crbug.com/1145666
 BASE_FEATURE(kChromeLabs, "ChromeLabs", base::FEATURE_ENABLED_BY_DEFAULT);
@@ -50,6 +55,11 @@ BASE_FEATURE(kExtensionsMenuInAppMenu,
              "ExtensionsMenuInAppMenu",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+bool IsExtensionMenuInRootAppMenu() {
+  return base::FeatureList::IsEnabled(kExtensionsMenuInAppMenu) ||
+         features::IsChromeRefresh2023();
+}
+
 #if !defined(ANDROID)
 // Enables "Access Code Cast" UI.
 BASE_FEATURE(kAccessCodeCastUI,
@@ -65,7 +75,7 @@ BASE_FEATURE(kCameraMicPreview,
 #endif
 
 // Enables displaying the submenu to open a link with a different profile if
-// there is at least one other active profile.
+// there is at least one other active profile. Fully rolled out on Desktop.
 BASE_FEATURE(kDisplayOpenLinkAsProfile,
              "DisplayOpenLinkAsProfile",
              base::FEATURE_ENABLED_BY_DEFAULT);
@@ -150,6 +160,10 @@ BASE_FEATURE(kSidePanelJourneysQueryless,
 BASE_FEATURE(kSidePanelCompanionDefaultPinned,
              "SidePanelCompanionDefaultPinned",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSidePanelPinning,
+             "SidePanelPinning",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
 
 // Enables tabs to scroll in the tabstrip. https://crbug.com/951078
@@ -222,6 +236,15 @@ const char kTabHoverCardImagesCrossfadePreviewAtParameterName[] =
     "crossfade_preview_at";
 const char kTabHoverCardAdditionalMaxWidthDelay[] =
     "additional_max_width_delay";
+
+BASE_FEATURE(kTabOrganization,
+             "TabOrganization",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+bool IsTabOrganization() {
+  return IsChromeRefresh2023() &&
+         base::FeatureList::IsEnabled(features::kTabOrganization);
+}
 
 BASE_FEATURE(kTabSearchChevronIcon,
              "TabSearchChevronIcon",
