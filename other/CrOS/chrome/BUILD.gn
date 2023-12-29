@@ -177,13 +177,10 @@ if (!is_android && !is_mac) {
 
       if (is_chromeos_ash) {
         data_deps += [
-          "//components/variations/cros:evaluate_seed",
+          "//components/variations/cros_evaluate_seed:evaluate_seed",
           "//sandbox/linux:chrome_sandbox",
         ]
-        deps += [
-          "//components/exo/wayland:ui_controls_protocol_stub",
-          "//components/exo/wayland:weston_test_stub",
-        ]
+        deps += [ "//components/exo/wayland:ui_controls_protocol_stub" ]
       }
 
       if (also_build_lacros_chrome_for_architecture != "") {
@@ -293,6 +290,7 @@ if (!is_android && !is_mac) {
           # On Linux, link the dependencies (libraries) that make up actual
           # Chromium functionality directly into the executable.
           ":dependencies",
+          "//chrome/common:version_header",
 
           # For the sampling profiler.
           "//chrome/common/profiler",
@@ -440,6 +438,7 @@ if (is_win) {
       "//chrome/app/theme:chrome_unscaled_resources",
       "//chrome/chrome_elf",
       "//chrome/common:buildflags",
+      "//chrome/common:version_header",
       "//chrome/common/profiler",
       "//chrome/install_static:install_static_util",
       "//chrome/install_static:secondary_module",
@@ -538,7 +537,7 @@ if (is_win) {
       ":chrome_app_strings_bundle_data",
       ":chrome_resources",
       ":chrome_versioned_bundle_data",
-      "//base/allocator:early_zone_registration_mac",
+      "//base/allocator:early_zone_registration_apple",
       "//build:branding_buildflags",
       "//chrome/common:buildflags",
       "//chrome/common:version_header",
@@ -601,11 +600,7 @@ if (is_win) {
     outputs = []
 
     foreach(locale, platform_pak_locales) {
-      if (is_chrome_branded) {
-        _strings_file = "google_chrome_strings"
-      } else {
-        _strings_file = "chromium_strings"
-      }
+      _strings_file = "${branding_path_product}_strings"
 
       inputs += [ "$root_gen_dir/chrome/${_strings_file}_${locale}.pak" ]
     }
@@ -630,11 +625,7 @@ if (is_win) {
           "main",
         ] + platform_pak_locales
 
-    if (is_chrome_branded) {
-      deps = [ "//chrome/app:google_chrome_strings" ]
-    } else {
-      deps = [ "//chrome/app:chromium_strings" ]
-    }
+    deps = [ "//chrome/app:branded_strings" ]
   }
 
   foreach(locale, locales_as_apple_outputs) {
@@ -779,7 +770,7 @@ if (is_win) {
       defines = [ "HELPER_EXECUTABLE" ]
 
       deps = [
-        "//base/allocator:early_zone_registration_mac",
+        "//base/allocator:early_zone_registration_apple",
         "//build:branding_buildflags",
         "//chrome/common:version_header",
         "//sandbox/mac:seatbelt",
@@ -1191,6 +1182,7 @@ if (is_win) {
       "//chrome/app:command_ids",
       "//chrome/app:notification_metrics",
       "//chrome/common:buildflags",
+      "//chrome/common:version_header",
       "//chrome/common/profiler",
       "//components/crash/core/app",
       "//components/memory_system",
@@ -1656,9 +1648,8 @@ if (!is_android) {
 
 group("strings") {
   public_deps = [
-    "//chrome/app:chromium_strings",
+    "//chrome/app:branded_strings",
     "//chrome/app:generated_resources",
-    "//chrome/app:google_chrome_strings",
     "//chrome/app/resources:locale_settings",
   ]
 }
@@ -1710,6 +1701,7 @@ if (is_android) {
       "//chrome/browser/ui",
       "//chrome/child",
       "//chrome/common",
+      "//chrome/common:version_header",
       "//chrome/common/profiler",
       "//chrome/gpu",
       "//chrome/renderer",
