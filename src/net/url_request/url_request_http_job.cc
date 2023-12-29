@@ -360,7 +360,7 @@ void URLRequestHttpJob::OnGotFirstPartySetMetadata(
   // fields in the referrer.
   GURL referrer(request_->referrer());
 
-   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
+  if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS)) {
     // Our consumer should have made sure that this is a safe referrer (e.g. via
     // URLRequestJob::ComputeReferrerForPolicy).
     if (referrer.is_valid()) {
@@ -632,7 +632,7 @@ void URLRequestHttpJob::StartTransactionInternal() {
 void URLRequestHttpJob::AddExtraHeaders() {
   request_info_.extra_headers.SetAcceptEncodingIfMissing(
       request()->url(), request()->accepted_stream_types(),
-      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli());
+      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli()),
       !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_zstd());
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
