@@ -17,7 +17,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     # The ARM architecture. This will be a string like "armv6" or "armv7-a".
     # An empty string means to use the default for the arm_version.
-    arm_arch = "armv8.5-a"
+    arm_arch = "armv8.3-a"
 
     # The ARM floating point hardware. This will be a string like "neon" or
     # "vfpv3". An empty string means to use the default for the arm_version.
@@ -26,7 +26,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     # The ARM variant-specific tuning mode. This will be a string like "armv6"
     # or "cortex-a15". An empty string means to use the default for the
     # arm_version.
-    arm_tune = "generic-armv8.5-a"
+    arm_tune = "generic-armv8.3-a"
 
     # Whether to use the neon FPU instruction set or not.
     arm_use_neon = "true"
@@ -41,6 +41,8 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
   # For lacros build, we use ARM v8 by default.
   if (is_chromeos_lacros && arm_arch == "") {
+    # TODO(crbug.com/1467681) Enable i8mm and dotprod instructions for ffmpeg
+    # if ever we update to a version of arm that supports these instructions.
     arm_version = 8
     arm_arch = "armv8-a+crc"
   }
@@ -106,10 +108,10 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     }
   } else if (arm_version == 8) {
     if (arm_arch == "") {
-      arm_arch = "armv8.5-a"
+      arm_arch = "armv8.3-a"
     }
     if (arm_tune == "") {
-      arm_tune = "generic-armv8.5-a"
+      arm_tune = "generic-armv8.3-a"
     }
 
     if (arm_float_abi == "") {
@@ -141,12 +143,12 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     # The ARM64 architecture. This will be a string like "armv8-a" or "armv8.5-a.
     # An empty string means to use the default for the arm_version.
-    arm_arch = "armv8.5-a"
+    arm_arch = "armv8.3-a"
     
     # The ARM variant-specific tuning mode. This will be a string like "armv6"
     # or "cortex-a15". An empty string means to use the default for the
     # arm_version.
-    arm_tune = "generic-armv8.5-a"
+    arm_tune = "generic-armv8.3-a"
 
     # The ARM64 floating point hardware. This will be a string like "neon" or
     # "vfpv3-d16". An empty string means to use the default for the arm_version.
@@ -173,9 +175,9 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
   # Initial values from upstream.
   arm_version = 8
   arm_float_abi = "hard"
-  arm_arch = "armv8.5-a"
+  arm_arch = "armv8.3-a"
   arm_fpu = "neon"
-  arm_tune = "generic-armv8.5-a"
+  arm_tune = "generic-armv8.3-a"
   arm_use_neon = true
   arm_optionally_use_neon = false
   arm_use_thumb = true
