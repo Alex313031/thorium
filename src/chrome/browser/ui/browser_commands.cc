@@ -78,6 +78,7 @@
 #include "chrome/browser/ui/exclusive_access/fullscreen_controller.h"
 #include "chrome/browser/ui/find_bar/find_bar.h"
 #include "chrome/browser/ui/find_bar/find_bar_controller.h"
+#include "chrome/browser/ui/intent_picker_tab_helper.h"
 #include "chrome/browser/ui/location_bar/location_bar.h"
 #include "chrome/browser/ui/passwords/manage_passwords_ui_controller.h"
 #include "chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.h"
@@ -97,10 +98,11 @@
 #include "chrome/browser/ui/tabs/tab_strip_user_gesture_details.h"
 #include "chrome/browser/ui/ui_features.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
+#include "chrome/browser/ui/web_applications/web_app_launch_utils.h"
+#include "chrome/browser/ui/web_applications/web_app_tabbed_utils.h"
 #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #include "chrome/browser/web_applications/web_app_constants.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
-#include "chrome/browser/web_applications/web_app_id.h"
 #include "chrome/browser/web_applications/web_app_provider.h"
 #include "chrome/browser/web_applications/web_app_registrar.h"
 #include "chrome/common/chrome_features.h"
@@ -142,6 +144,7 @@
 #include "components/translate/core/common/translate_constants.h"
 #include "components/user_education/common/feature_promo_controller.h"
 #include "components/web_modal/web_contents_modal_dialog_manager.h"
+#include "components/webapps/common/web_app_id.h"
 #include "components/zoom/page_zoom.h"
 #include "components/zoom/zoom_controller.h"
 #include "content/public/browser/browsing_data_remover.h"
@@ -859,7 +862,7 @@ void NewWindow(Browser* browser) {
 #if BUILDFLAG(IS_MAC)
   // Web apps should open a window to their launch page.
   if (browser->app_controller()) {
-    const web_app::AppId app_id = browser->app_controller()->app_id();
+    const webapps::AppId app_id = browser->app_controller()->app_id();
 
     auto launch_container = apps::LaunchContainer::kLaunchContainerWindow;
 
@@ -1035,6 +1038,13 @@ void MoveActiveTabToNewWindow(Browser* browser) {
 }
 bool CanMoveTabsToNewWindow(Browser* browser,
                             const std::vector<int>& tab_indices) {
+  if (browser->is_type_app()) {
+    for (int index : tab_indices) {
+      if (web_app::IsPinnedHomeTab(browser->tab_strip_model(), index)) {
+        return false;
+      }
+    }
+  }
   return browser->tab_strip_model()->count() >
          static_cast<int>(tab_indices.size());
 }
@@ -1045,8 +1055,17 @@ void MoveTabsToNewWindow(Browser* browser,
   if (tab_indices.empty())
     return;
 
-  Browser* new_browser =
-      Browser::Create(Browser::CreateParams(browser->profile(), true));
+  Browser* new_browser;
+  if (browser->is_type_app() && browser->app_controller()->has_tab_strip()) {
+    new_browser = Browser::Create(Browser::CreateParams::CreateForApp(
+        browser->app_name(), browser->is_trusted_source(), gfx::Rect(),
+        browser->profile(), true));
+    web_app::MaybeAddPinnedHomeTab(new_browser,
+                                   new_browser->app_controller()->app_id());
+  } else {
+    new_browser =
+        Browser::Create(Browser::CreateParams(browser->profile(), true));
+  }
 
   if (group.has_value()) {
     SavedTabGroupKeyedService* const service =
@@ -1406,7 +1425,7 @@ void SaveCreditCard(Browser* browser) {
   controller->ReshowBubble();
 }
 
-void SaveIBAN(Browser* browser) {
+void SaveIban(Browser* browser) {
   WebContents* web_contents =
       browser->tab_strip_model()->GetActiveWebContents();
   autofill::IbanBubbleControllerImpl* controller =
@@ -1966,7 +1985,7 @@ Browser* OpenInChrome(Browser* hosted_app_browser) {
       true);
   auto* web_contents =
       target_browser->tab_strip_model()->GetActiveWebContents();
-  apps::MaybeShowIntentPicker(web_contents);
+  IntentPickerTabHelper::MaybeShowIntentPickerIcon(web_contents);
 #if BUILDFLAG(IS_CHROMEOS)
   apps::SupportedLinksInfoBarDelegate::RemoveSupportedLinksInfoBar(
       web_contents);

@@ -56,6 +56,13 @@ bool RichAutocompletionEitherNonPrefixEnabled() {
              kRichAutocompletionAutocompleteNonPrefixShortcutProvider.Get();
 }
 
+// Return true if the given match uses a vector icon with a background.
+bool HasVectorIconBackground(const AutocompleteMatch& match) {
+  return OmniboxFieldTrial::IsActionsUISimplificationEnabled() &&
+         (match.type == AutocompleteMatchType::HISTORY_CLUSTER ||
+          match.type == AutocompleteMatchType::PEDAL);
+}
+
 }  // namespace
 
 OmniboxView::State::State() = default;
@@ -182,6 +189,7 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
                                     SkColor color_current_page_icon,
                                     SkColor color_vectors,
                                     SkColor color_bright_vectors,
+                                    SkColor color_vectors_with_background,
                                     IconFetchedCallback on_icon_fetched,
                                     bool dark_mode) const {
 #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
@@ -203,6 +211,19 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
     // default search engine is google return the icon instead of favicon for
     // search queries with the chrome refresh feature.
     // (DISABLED BY Alex313031).
+  } else if (match.type != AutocompleteMatchType::HISTORY_CLUSTER) {
+    // The starter pack suggestions are a unique case. These suggestions
+    // normally use a favicon image that cannot be styled further by client
+    // code. In order to apply custom styling to the icon (e.g. colors), we
+    // ignore this favicon in favor of using a vector icon which has better
+    // styling support.
+    if (!AutocompleteMatch::IsStarterPackType(match.type)) {
+      // For site suggestions, display site's favicon.
+      favicon = controller_->client()->GetFaviconForPageUrl(
+          match.destination_url, std::move(on_icon_fetched));
+    }
+  }
+
   } else if (match.type != AutocompleteMatchType::HISTORY_CLUSTER) {
     // The starter pack suggestions are a unique case. These suggestions
     // normally use a favicon image that cannot be styled further by client
@@ -242,7 +263,10 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
                        match.type == AutocompleteMatchType::STARTER_PACK)
                           ? color_bright_vectors
                           : color_vectors;
-  return ui::ImageModel::FromVectorIcon(vector_icon, color, dip_size);
+  return ui::ImageModel::FromVectorIcon(
+      vector_icon,
+      HasVectorIconBackground(match) ? color_vectors_with_background : color,
+      dip_size);
 #endif  // BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
 }
 
@@ -256,25 +280,15 @@ void OmniboxView::SetUserText(const std::u16string& text, bool update_popup) {
 }
 
 void OmniboxView::RevertAll() {
-  // TODO(manukh): Remove this histogram when `kRedoCurrentMatch` &
-  //   `kRevertModelBeforeClosingPopup` launch or are abandoned.
-  SCOPED_UMA_HISTOGRAM_TIMER_MICROS("Omnibox.OmniboxViewRevertAll");
+  // This will clear the model's `user_input_in_progress_`.
+  model()->Revert();
 
-  if (base::FeatureList::IsEnabled(omnibox::kRevertModelBeforeClosingPopup)) {
-    // This will clear the model's `user_input_in_progress_`.
-    model()->Revert();
-
-    // This will stop the `AutocompleteController`. This should happen after
-    // `user_input_in_progress_` is cleared above; otherwise, closing the popup
-    // will trigger unnecessary `AutocompleteClassifier::Classify()` calls to
-    // try to update the views which are unnecessary since they'll be thrown
-    // away during the model revert anyways.
-    CloseOmniboxPopup();
-  } else {
-    // Same as above, but in reverse order.
-    CloseOmniboxPopup();
-    model()->Revert();
-  }
+  // This will stop the `AutocompleteController`. This should happen after
+  // `user_input_in_progress_` is cleared above; otherwise, closing the popup
+  // will trigger unnecessary `AutocompleteClassifier::Classify()` calls to
+  // try to update the views which are unnecessary since they'll be thrown
+  // away during the model revert anyways.
+  CloseOmniboxPopup();
 
   TextChanged();
 }
@@ -406,7 +420,7 @@ void OmniboxView::UpdateTextStyle(
 
   const bool is_extension_url =
 #if BUILDFLAG(ENABLE_EXTENSIONS)
-      url_scheme == base::UTF8ToUTF16(extensions::kExtensionScheme);
+      base::EqualsASCII(url_scheme, extensions::kExtensionScheme);
 #else
       false;
 #endif
