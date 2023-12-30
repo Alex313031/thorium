@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2023 Alex313031.
 
 program="Thorium Browser." # The program we are checking for.
 
@@ -22,7 +22,7 @@ script_name=${0##*/}
 check_result() { # Message calls
     local ret="$1"
     local msg="$2"
-    [ "$ret" -ne 0 ] && { printf "${RED}FAIL:" && tput sgr0 && echo " $msg"; exit 1; }
+    [ "$ret" -ne 0 ] && { printf "${RED}FAIL:" && tput sgr0 && echo " $msg"; }
     printf "${GRE}SUCCESS:" && tput sgr0 && echo " $msg"
 }
 
@@ -35,9 +35,25 @@ have_cpu_feature() {
     get_cpuinfo | egrep -q "^flags.*\<$feature\>"
 }
 
-have_sse42_cpu_feature () {
-    local feature="sse4_2"
-    local desc="Streaming SIMD Extensions v4.2"
+have_sse3_cpu_feature () {
+    local feature="pni"
+    local desc="Streaming SIMD Extensions 3"
+    local need="$desc ($feature)"
+    have_cpu_feature "$feature"
+    check_result "$?" "$need"
+}
+
+have_sse41_cpu_feature () {
+    local feature="sse4_1"
+    local desc="Streaming SIMD Extensions 4.1"
+    local need="$desc ($feature)"
+    have_cpu_feature "$feature"
+    check_result "$?" "$need"
+}
+
+have_aes_cpu_feature () {
+    local feature="aes"
+    local desc="Advanced Encryption Standard Extensions"
     local need="$desc ($feature)"
     have_cpu_feature "$feature"
     check_result "$?" "$need"
@@ -51,9 +67,9 @@ have_avx_cpu_feature () {
     check_result "$?" "$need"
 }
 
-have_aes_cpu_feature () {
-    local feature="aes"
-    local desc="Advanced Encryption Standard Extensions"
+have_avx2_cpu_feature () {
+    local feature="avx2"
+    local desc="Advanced Vector Extensions 2"
     local need="$desc ($feature)"
     have_cpu_feature "$feature"
     check_result "$?" "$need"
@@ -68,8 +84,8 @@ have_64bit_cpu() {
 }
 
 common_checks() {
-    have_64bit_cpu && \
-        have_sse42_cpu_feature && have_aes_cpu_feature && have_avx_cpu_feature
+    have_64bit_cpu && have_sse3_cpu_feature && have_sse41_cpu_feature && \
+    have_aes_cpu_feature && have_avx_cpu_feature && have_avx2_cpu_feature
 }
 
 check_host() {

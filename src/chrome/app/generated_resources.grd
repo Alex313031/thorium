@@ -14378,8 +14378,8 @@ Please help our engineers fix this problem. Tell us what happened right before y
       <message name="IDS_WIN10_TOAST_SWITCH_SMART_AND_SECURE" desc="Toast message variant: switch to a smart and secure browser.">
         Switch to a smart and secure browser
       </message>
-      <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Google recommends Thorium.">
-        Google recommends Thorium
+      <message name="IDS_WIN10_TOAST_RECOMMENDATION" desc="Toast header label noting Alex313031 recommends Thorium.">
+        Alex313031 recommends Thorium
       </message>
       <message name="IDS_WIN10_TOAST_OPEN_CHROME" desc="The label on the button to dismiss the toast and launch Thorium.">
         Open Thorium

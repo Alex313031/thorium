@@ -27,16 +27,18 @@
 
 ### Notes
 
+ - Do a full, manual, one by one file check rebase, to pick up any inconsistencies, and clean up code.
+
+## .grd text replacements (search with grep), because there are a few places we want to tweak some strings.
+
 Google recommends Thorium > Alex313031 recommends Thorium
 
 violates the Thorium > violates the Chrome 
 
-## .grd text replacements (search with grep)
-
 Chromium > Thorium
 Chrome > Thorium
 Google Thorium > Thorium
-Thorium Web Store > Chrome Web Store (Except some UI elements)
+Thorium Web Store > Chrome Web Store (Except some UI elements like NTP)
 Thorium Remote Desktop > Chrome Remote Desktop
 ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
