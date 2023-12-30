@@ -499,6 +499,12 @@ config("compiler") {
     ldflags += [ "-fPIC" ]
     rustflags += [ "-Crelocation-model=pic" ]
 
+    if (is_clang && chrome_pgo_phase == 2) {
+      asmflags += [ "-fbasic-block-sections=labels" ]
+      cflags += [ "-fbasic-block-sections=labels" ]
+      rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
+    }
+
     if (!is_clang) {
       # Use pipes for communicating between sub-processes. Faster.
       # (This flag doesn't do anything with Clang.)
