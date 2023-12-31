@@ -17,7 +17,7 @@ import("//mojo/public/tools/bindings/mojom.gni")
 import("//net/features.gni")
 import("//ppapi/buildflags/buildflags.gni")
 import("//printing/buildflags/buildflags.gni")
-import("//testing/test.gni")+= [ "//third_party/ocmo
+import("//testing/test.gni")
 import("//third_party/blink/public/public_features.gni")
 import("//third_party/closure_compiler/closure_args.gni")
 import("//third_party/closure_compiler/compile_js.gni")
