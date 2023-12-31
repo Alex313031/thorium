@@ -205,10 +205,10 @@ GM2TabStyleViews::GM2TabStyleViews(Tab* tab)
       hover_controller_((tab && gfx::Animation::ShouldRenderRichAnimation())
                             ? new GlowHoverController(tab)
                             : nullptr),
-      normal_font_(views::style::GetFont(views::style::CONTEXT_LABEL,
-                                         views::style::STYLE_PRIMARY)),
-      heavy_font_(views::style::GetFont(views::style::CONTEXT_BUTTON_MD,
-                                        views::style::STYLE_PRIMARY)) {
+      normal_font_(views::TypographyProvider::Get().GetFont(views::style::CONTEXT_LABEL,
+                                                           views::style::STYLE_PRIMARY)),
+      heavy_font_(views::TypographyProvider::Get().GetFont(views::style::CONTEXT_BUTTON_MD,
+                                                           views::style::STYLE_PRIMARY)) {
   // `tab_` must not be nullptr.
   CHECK(tab_);
   // TODO(dfried): create a new STYLE_PROMINENT or similar to use instead of
