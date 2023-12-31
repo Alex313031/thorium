@@ -86,5 +86,6 @@ enable_mse_mpeg2ts_stream_parser = true
 use_text_section_splitting = true
 use_thin_lto = true
 thin_lto_enable_optimizations = true
+enable_rust = false
 chrome_pgo_phase = 2
 pgo_data_path = "/Users/midzer/chromium/src/chrome/build/pgo_profiles/chrome-mac-arm-main-1696262306-aa817679d137e2e66b22994f417ba32dc413dc8a.profdata"
