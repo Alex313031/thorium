@@ -87,4 +87,4 @@ use_text_section_splitting = true
 use_thin_lto = true
 thin_lto_enable_optimizations = true
 chrome_pgo_phase = 2
-pgo_data_path = "/Users/midzer/chromium/src/chrome/build/pgo_profiles/chrome-mac-arm-main-1687283862-4a8e9e81d303429f3e96b1c992807345a075441d.profdata"
+pgo_data_path = "/Users/midzer/chromium/src/chrome/build/pgo_profiles/chrome-mac-arm-main-1696262306-aa817679d137e2e66b22994f417ba32dc413dc8a.profdata"
