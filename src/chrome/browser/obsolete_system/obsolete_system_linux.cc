@@ -1,4 +1,4 @@
-// Copyright 2022 The Chromium Authors
+// Copyright 2023 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,7 +6,7 @@
 
 #include "base/linux_util.h"
 #include "base/strings/string_util.h"
-#include "chrome/grit/chromium_strings.h"
+#include "chrome/grit/branded_strings.h"
 #include "ui/base/l10n/l10n_util.h"
 
 const char kLinuxObsoleteUrl[] =
@@ -19,27 +19,28 @@ const char* const kObsoleteDistros[] = {
     "Fedora 30",    "Fedora 31",    "openSUSE Leap 15.0", "openSUSE Leap 15.1",
 };
 
-// static
-bool ObsoleteSystem::IsObsoleteNowOrSoon() {
+namespace ObsoleteSystem {
+
+bool IsObsoleteNowOrSoon() {
   auto distro = base::GetLinuxDistro();
   for (const char* obsolete : kObsoleteDistros) {
-    if (base::StartsWith(distro, obsolete))
+    if (base::StartsWith(distro, obsolete)) {
       return true;
+    }
   }
   return false;
 }
 
-// static
-std::u16string ObsoleteSystem::LocalizedObsoleteString() {
+std::u16string LocalizedObsoleteString() {
   return l10n_util::GetStringUTF16(IDS_LINUX_OBSOLETE);
 }
 
-// static
-bool ObsoleteSystem::IsEndOfTheLine() {
+bool IsEndOfTheLine() {
   return false;
 }
 
-// static
-const char* ObsoleteSystem::GetLinkURL() {
+const char* GetLinkURL() {
   return kLinuxObsoleteUrl;
 }
+
+}  // namespace ObsoleteSystem

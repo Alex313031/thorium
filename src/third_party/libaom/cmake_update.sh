@@ -22,8 +22,8 @@
 # - gcc-aarch64-linux-gnu
 # - g++-aarch64-linux-gnu
 # 32bit build environment for cmake. Including but potentially not limited to:
-# - lib32gcc-12-dev
-# - lib32stdc++-12-dev
+# - lib32gcc-13-dev
+# - lib32stdc++-13-dev
 # Alternatively: treat 32bit builds like Windows and manually tweak aom_config.h
 
 set -eE
@@ -180,7 +180,7 @@ gen_config_files linux/arm \
 
 reset_dirs linux/arm-neon
 gen_config_files linux/arm-neon \
-  "${toolchain}/armv7-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=0 \
+  "${toolchain}/armv7-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=0 -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
    ${all_platforms}"
 
 reset_dirs linux/arm-neon-cpu-detect
@@ -193,19 +193,6 @@ gen_config_files linux/arm64-cpu-detect \
   "${toolchain}/arm64-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=1 -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
    ${all_platforms}"
 
-# CMAKE_INSTALL_NAME_TOOL is set to a non-empty/true value to allow this
-# configuration to complete on platforms without `install_name`. The build
-# commands are not invoked so the value doesn't matter.
-reset_dirs ios/arm-neon
-gen_config_files ios/arm-neon \
-  "${toolchain}/armv7-ios.cmake -DCMAKE_INSTALL_NAME_TOOL=no-such-command -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
-   ${all_platforms}"
-
-reset_dirs ios/arm64
-gen_config_files ios/arm64 \
-  "${toolchain}/arm64-ios.cmake -DCMAKE_INSTALL_NAME_TOOL=no-such-command -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
-   ${all_platforms}"
-
 # Copy linux configurations and modify for Windows.
 reset_dirs win/arm64-cpu-detect
 cp "${CFG}/linux/arm64-cpu-detect/config"/* \
@@ -216,6 +203,6 @@ convert_to_windows "${CFG}/win/arm64-cpu-detect/config/aom_config.h"
 update_readme
 
 # git cl format > /dev/null \
-#   || echo "WARNING: 'git cl format' failed. Please run 'git cl format' manually."
+#   || echo "ERROR: 'git cl format' failed. Please run 'git cl format' manually."
 
 cleanup
