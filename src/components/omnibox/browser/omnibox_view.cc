@@ -224,19 +224,6 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
     }
   }
 
-  } else if (match.type != AutocompleteMatchType::HISTORY_CLUSTER) {
-    // The starter pack suggestions are a unique case. These suggestions
-    // normally use a favicon image that cannot be styled further by client
-    // code. In order to apply custom styling to the icon (e.g. colors), we
-    // ignore this favicon in favor of using a vector icon which has better
-    // styling support.
-    if (!AutocompleteMatch::IsStarterPackType(match.type)) {
-      // For site suggestions, display site's favicon.
-      favicon = controller_->client()->GetFaviconForPageUrl(
-          match.destination_url, std::move(on_icon_fetched));
-    }
-  }
-
   if (!favicon.IsEmpty())
     return ui::ImageModel::FromImage(
         controller_->client()->GetSizedIcon(favicon));
