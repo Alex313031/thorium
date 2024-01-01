@@ -56,6 +56,14 @@
      "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay "
      "and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio) to continue.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
+
+#if !BUILDFLAG(IS_ANDROID)
+    {"download-bubble",
+     "Enable/Disable Download Bubble",
+     "Enable or disable the download bubble. When disabled, the traditional download shelf is used. Thorium flag",
+     kOsDesktop, FEATURE_VALUE_TYPE(safe_browsing::kDownloadBubble)},
+#endif // BUILDFLAG(IS_ANDROID)
+
     {"show-avatar-button",
      "Show/Hide the Avatar Button",
      "Show the Avatar/People/Profile button in the browser toolbar: Always, Incognito|Guest only, or Never.",
@@ -106,6 +114,14 @@
      "Double Click to Close Tab",
      "Enables double clicking a tab to close it.",
      kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")},
+
+#if !BUILDFLAG(IS_ANDROID)
+    {"media-router",
+     "Enable/Disable Media Router",
+     "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
+     kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
+#endif // BUILDFLAG(IS_ANDROID)
+
     {"show-fps-counter",
      "Show FPS Counter",
      "Draws a heads-up-display showing Frames Per Second as well as GPU memory usage.",
@@ -126,23 +142,6 @@
      "Disable Web Security",
      "Don't enforce the same-origin policy; meant for website testing only. See `https://web.dev/same-origin-policy/`",
      kOsAll, SINGLE_VALUE_TYPE(switches::kDisableWebSecurity)},
-
-#if !BUILDFLAG(IS_ANDROID)
-    {"download-bubble",
-     "Enable/Disable Download Bubble",
-     "Enable or disable the download bubble. When disabled, the traditional download shelf is used. Thorium flag",
-     kOsDesktop, FEATURE_VALUE_TYPE(safe_browsing::kDownloadBubble)},
-    {"media-router",
-     "Enable/Disable Media Router",
-     "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
-     kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
-    {"storage-access-api",
-     "Storage Access API",
-     "Enables the Storage Access API, allowing websites to request storage "
-     "access when it would otherwise be restricted.",
-     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kStorageAccessAPI)},
-#endif // BUILDFLAG(IS_ANDROID)
-
     {"disable-encryption",
      "Disable Encryption",
      "Disable encryption of cookies, passwords, and settings which normally uses a generated machine-specific encryption key. "
