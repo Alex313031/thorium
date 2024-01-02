@@ -39,6 +39,7 @@ v8_enable_fast_torque = true
 v8_enable_builtins_optimization = true
 v8_enable_maglev = true
 v8_enable_turbofan = true
+v8_enable_wasm_simd256_revec = true
 use_v8_context_snapshot = true
 blink_symbol_level = 0
 enable_precompiled_headers = false
@@ -52,7 +53,7 @@ enable_cros_media_app = false
 proprietary_codecs = true
 ffmpeg_branding = "Chrome"
 # Set to false for Polly build
-clang_use_chrome_plugins = false
+clang_use_chrome_plugins = true
 enable_ffmpeg_video_decoders = true
 is_component_ffmpeg = false
 use_webaudio_ffmpeg = false
