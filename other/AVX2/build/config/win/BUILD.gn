@@ -139,7 +139,7 @@ config("compiler") {
         "/clang:-maes",
         "/clang:-mpclmul",
         "-Xclang", "-O3",
-        "/clang:-march=x86-64-v3",
+        "/clang:-march=haswell",
         "/clang:-ffp-contract=fast",
         "/arch:AVX2",
         "-Wno-unused-command-line-argument",
@@ -211,7 +211,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:-march=x86-64-v3",
+      "-mllvm:-march=haswell",
     ]
 
     if (use_lld) {
