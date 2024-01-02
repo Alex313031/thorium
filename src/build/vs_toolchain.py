@@ -16,7 +16,7 @@ import sys
 
 from gn_helpers import ToGNString
 
-# VS 2022 17.7 with 10.0.22621.1778 SDK with ARM64 libraries and UWP support.
+# VS 2022 17.8.3 with 10.0.22621.2428 SDK with ARM64 libraries and UWP support.
 # See go/chromium-msvc-toolchain for instructions about how to update the
 # toolchain.
 #
