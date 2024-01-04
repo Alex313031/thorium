@@ -198,44 +198,27 @@ esac
 printf "${GRE}Done!\n" &&
 printf "\n" &&
 
-printf "${YEL}Exporting variables and setting handy aliases...\n" &&
+printf "${YEL}Exporting variables and setting handy aliases...${c0}\n" &&
 
 . ~/thorium/aliases &&
 
 printf "\n" &&
-tput sgr0 &&
-
 printf "export ${CYA}NINJA_SUMMARIZE_BUILD=1${c0}\n" &&
-
 printf "export ${CYA}EDITOR=nano${c0}\n" &&
-
 printf "export ${CYA}VISUAL=nano${c0}\n" &&
 printf "\n" &&
-
 printf "alias ${YEL}origin${c0} = ${CYA}git checkout -f origin/main${c0}\n" &&
-
 printf "alias ${YEL}gfetch${c0} = ${CYA}git fetch --tags${c0}\n" &&
-
 printf "alias ${YEL}rebase${c0} = ${CYA}git rebase-update${c0}\n" &&
-
 printf "alias ${YEL}gsync${c0} = ${CYA}gclient sync --with_branch_heads --with_tags -f -R -D${c0}\n" &&
-
 printf "alias ${YEL}args${c0} = ${CYA}gn args out/thorium${c0}\n" &&
-
 printf "alias ${YEL}gnls${c0} = ${CYA}gn ls out/thorium${c0}\n" &&
-
 printf "alias ${YEL}show${c0} = ${CYA}git show-ref${c0}\n" &&
-
 printf "alias ${YEL}runhooks${c0} = ${CYA}gclient runhooks${c0}\n" &&
-
 printf "alias ${YEL}pgo${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-
 printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-
 printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-
 printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-
 printf "\n" &&
 
 cat logos/thorium_ascii_art.txt &&
