@@ -114,6 +114,10 @@
      "Double Click to Close Tab",
      "Enables double clicking a tab to close it.",
      kOsDesktop, SINGLE_VALUE_TYPE("double-click-close-tab")},
+    {"tab-hover-cards",
+     "Tab Hover Cards",
+     "Allows removing the tab hover cards or using a tooltip as a replacement.",
+     kOsDesktop, MULTI_VALUE_TYPE(kTabHoverCardChoices)},
 
 #if !BUILDFLAG(IS_ANDROID)
     {"media-router",

@@ -100,6 +100,16 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
      "force-gpu-mem-available-mb", "1024"},
 };
 
+const FeatureEntry::Choice kTabHoverCardChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"None",
+     "tab-hover-cards",
+     "none"},
+    {"Tooltip",
+     "tab-hover-cards",
+     "tooltip"},
+};
+
 const FeatureEntry::Choice kCloseConfirmation[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Show confirmation with last window",

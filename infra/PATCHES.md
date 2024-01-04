@@ -175,7 +175,10 @@ Disable fetching Field Trials/Variations Patch - https://github.com/ungoogled-so
 
 Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
   - Found by @gz83, modified by me.
-  
+
+Enable disabling tab hover cards patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-tab-hover-cards.patch
+ - Credit win32ss for alerting me to this patch.
+
 Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
   - Modified by me.
 
