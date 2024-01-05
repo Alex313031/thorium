@@ -7,7 +7,7 @@
 
     {"force-dark-mode",
      "Enable Dark Mode",
-     "Enables dark mode for all Thorium instances.",
+     "Enables dark mode for all UI elements (but not web contents - turn on #enable-force-dark for darkening web contents).",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kForceDarkMode)},
 
 #if BUILDFLAG(IS_LINUX)
