@@ -1,6 +1,6 @@
-From 0b2e674959b1e59d890f0bb83a08351a5019239a Mon Sep 17 00:00:00 2001
+From 07b66ec144242cc9da34d682d5e34df08bc4ab11 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Wed, 11 Oct 2023 10:25:20 +0800
+Date: Sat, 6 Jan 2024 17:57:13 +0800
 Subject: [PATCH] Remove-discovery-module-from-NTP
 
 ---
@@ -54,7 +54,7 @@ index 483e954de0a49..15ca071b1d30f 100644
    <LinearLayout
        android:id="@+id/main_content"
 diff --git a/components/feed/core/shared_prefs/pref_names.cc b/components/feed/core/shared_prefs/pref_names.cc
-index 71586a65fcd92..e3397204d2b8b 100644
+index 7ac1995862d0b..fadb75f2031db 100644
 --- a/components/feed/core/shared_prefs/pref_names.cc
 +++ b/components/feed/core/shared_prefs/pref_names.cc
 @@ -1,4 +1,4 @@
@@ -63,12 +63,15 @@ index 71586a65fcd92..e3397204d2b8b 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -20,7 +20,7 @@ const char kArticlesListVisible[] = "ntp_snippets.list_visible";
+@@ -25,7 +25,7 @@ const char kEnableSnippetsByDse[] = "ntp_snippets_by_dse.enable";
  
  void RegisterFeedSharedProfilePrefs(PrefRegistrySimple* registry) {
    registry->RegisterBooleanPref(kEnableSnippets, true);
 -  registry->RegisterBooleanPref(kArticlesListVisible, true);
 +  registry->RegisterBooleanPref(kArticlesListVisible, false);
+   registry->RegisterBooleanPref(kEnableSnippetsByDse, true);
  }
  
- }  // namespace prefs
+-- 
+2.43.0
+
