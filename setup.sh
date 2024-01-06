@@ -96,7 +96,7 @@ copyRaspi () {
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
-	./infra/fix_libaom.sh &&
+	. ./infra/fix_libaom.sh &&
 	printf "\n"
 }
 # Display raspi ascii art
