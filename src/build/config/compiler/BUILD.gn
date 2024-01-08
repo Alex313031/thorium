@@ -499,7 +499,7 @@ config("compiler") {
     ldflags += [ "-fPIC" ]
     rustflags += [ "-Crelocation-model=pic" ]
 
-    if (is_clang && chrome_pgo_phase == 2) {
+    if (is_clang && chrome_pgo_phase == 2 && !is_android) {
       asmflags += [ "-fbasic-block-sections=labels" ]
       cflags += [ "-fbasic-block-sections=labels" ]
       rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
