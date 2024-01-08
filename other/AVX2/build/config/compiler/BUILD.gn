@@ -2286,7 +2286,7 @@ if (is_win) {
     "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
-    "/clang:-mavx",
+    "/clang:-mavx2",
     "/clang:-maes",
     "/clang:-mpclmul",
     "-Xclang", "-O3",
