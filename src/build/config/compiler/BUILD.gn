@@ -2477,7 +2477,7 @@ config("optimize") {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
       cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
-      rustflags = [ "-Copt-level=3" ]
+      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
