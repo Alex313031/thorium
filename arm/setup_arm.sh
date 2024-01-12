@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -35,7 +35,9 @@ printf "\n" &&
 printf "${YEL}Copying BUILD.gn...\n" &&
 tput sgr0 &&
 
-cp -r -v ./config/* $HOME/chromium/src/build/config/ &&
+cp -r -v ./build/* $HOME/chromium/src/build/ &&
+cp -r -v ./media/* $HOME/chromium/src/media/ &&
+cp -r -v ./third_party/* $HOME/chromium/src/third_party/ &&
 
 printf "${GRE}Done!\n" &&
 printf "\n" &&

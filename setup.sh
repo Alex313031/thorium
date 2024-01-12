@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2023 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -82,6 +82,7 @@ copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
 	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
+	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -93,6 +94,7 @@ copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
+	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
@@ -112,6 +114,7 @@ copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
 case $1 in
@@ -165,6 +168,7 @@ copyAndroid () {
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
 	cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&
@@ -178,6 +182,7 @@ copyAndroid () {
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
+	. ./infra/fix_libaom.sh &&
 	printf "\n"
 }
 case $1 in

@@ -95,6 +95,8 @@ sudo chmod -v +x pak_src/build.sh &&
 
 sudo chmod -v +x src/build/vs_toolchain.py &&
 
+sudo chmod -v +x arm/setup_arm.sh &&
+
 # sudo chmod -v +x src/tools/gn/bootstrap/bootstrap.py &&
 
 sudo chmod -v +x src/tools/clang/scripts/build.py &&
