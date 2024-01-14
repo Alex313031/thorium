@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2022 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 RED='\033[1;31m' # Red
@@ -21,7 +21,6 @@ displayHelp () {
 	printf "${bold}${YEL}Please run build_appimage.sh in this directory before running.${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -33,9 +32,8 @@ printf "${c0}\n" &&
 
 sleep 2 &&
 
-# Extract data.tar.xz
-cd out &&
-./*.AppImage --appimage-extract &&
+# Extract data.tar
+./Thorium_Browser_119.0.6045.214_AVX2.AppImage --appimage-extract &&
 
 printf "\n" &&
 printf "${YEL}Renaming squashfs-root to Thorium_squashfs-root...\n" &&

@@ -91,6 +91,8 @@ sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
 
 sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
 
+sudo chmod -v +x infra/APPIMAGE/extract_appimage.sh &&
+
 sudo chmod -v +x pak_src/build.sh &&
 
 sudo chmod -v +x src/build/vs_toolchain.py &&
