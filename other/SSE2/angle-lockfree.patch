@@ -1,0 +1,48 @@
+author: Andres Salomon <dilinger@debian.org>
+description: revert compile-time lockfree check; switch back to a runtime check.
+
+This reverts the following:
+
+"commit ce8ce6f81eff8a84e2ea59930cb995b1107181e2 (origin/chromium/5572)
+Author: Kimmo Kinnunen <kkinnunen@apple.com>
+Date:   Tue Jan 31 13:06:47 2023 +0200
+
+    Remove ASSERT from AtomicSerial, use static_assert
+    
+    ASSERT is not constexpr, while the AtomicSerial constructor was.
+    This would cause compile errors.
+    
+    Bug: angleproject:7989
+    Change-Id: Ib6a438d4c055378d4f2f667285b0d2e99f2522ad
+    Reviewed-on: https://chromium-review.googlesource.com/c/angle/angle/+/4205892
+"
+
+The problem is that this is a compile-time check to ensure that a std::atomic<uint64_t>
+doesn't require a mutex, but for i386 we can't guarantee that; instead, i386 checks
+at runtime for the relevant CPU instructions. So we need to revert back to a runtime
+assertion.
+
+Since this is in ANGLE rather than Chromium, hopefully there's a chance they'll take a
+fix upstream; probably a revert combined with dropping the "constexpr".
+
+--- a/third_party/angle/src/libANGLE/renderer/serial_utils.h
++++ b/third_party/angle/src/libANGLE/renderer/serial_utils.h
+@@ -119,6 +119,7 @@ class Serial final
+ class AtomicQueueSerial final
+ {
+   public:
++    constexpr AtomicQueueSerial() : mValue(kInvalid) { ASSERT(mValue.is_lock_free()); }
+     AtomicQueueSerial &operator=(const Serial &other)
+     {
+         mValue.store(other.mValue, std::memory_order_release);
+@@ -127,9 +128,8 @@ class AtomicQueueSerial final
+     Serial getSerial() const { return Serial(mValue.load(std::memory_order_consume)); }
+ 
+   private:
++    std::atomic<uint64_t> mValue;
+     static constexpr uint64_t kInvalid = 0;
+-    std::atomic<uint64_t> mValue       = kInvalid;
+-    static_assert(decltype(mValue)::is_always_lock_free, "Must always be lock free");
+ };
+ 
+ // Used as default/initial serial

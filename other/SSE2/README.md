@@ -1,6 +1,6 @@
-# Thorium SSE3
+# Thorium SSE2
 
-This directory contains build config files for compiling Thorium/Chromium with [SSE3](https://en.wikipedia.org/wiki/SSE3)
+This directory contains build config files for compiling Thorium/Chromium with [SSE2](https://en.wikipedia.org/wiki/SSE2)
 
 They can also be adapted (and I do exactly this for my occassional SSE4.1 builds) to make [SSE4](https://en.wikipedia.org/wiki/SSE4), [SSE4.1](https://en.wikipedia.org/wiki/SSE4#SSE4.1), or [SSE4.2](https://en.wikipedia.org/wiki/SSE4#SSE4.2) builds.
 

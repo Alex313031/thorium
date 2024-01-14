@@ -1,0 +1,25 @@
+author: Andres Salomon <dilinger@debian.org>
+description: don't disable i386 builds on linux
+
+https://chromium-review.googlesource.com/c/chromium/src/+/3583780
+
+Chromium upstream decided to kill off i386 builds on Linux. They were
+goin to add a 'force_x86_support' arg, but instead "[distributions that
+still support i386] can patch the file."
+
+At this point, i386 on linux is completely unsupported upstream, so
+we're on our own with bugs.
+
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -1626,9 +1626,7 @@ if (!is_ios) {
+ }
+ 
+ # TODO(cassew): Add more OS's that don't support x86.
+-is_valid_x86_target =
+-    target_os != "ios" && target_os != "mac" &&
+-    (target_os != "linux" || use_libfuzzer || !build_with_chromium)
++is_valid_x86_target = true
+ 
+ # Note: v8_target_cpu == arm allows using the V8 arm simulator on x86 for fuzzing.
+ assert(
