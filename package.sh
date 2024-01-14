@@ -43,7 +43,7 @@ printf "${CYA}\n" &&
 export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
-./depot_tools/autoninja -C ${CR_SRC_DIR}/out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j$@ &&
+autoninja -C ${CR_SRC_DIR}/out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j$@ &&
 
 printf "${GRE}Done! ${YEL}Installers at \'//out/thorium/thorium*.deb\' and \'//out/thorium/thorium*.rpm\'\n" &&
 tput sgr0
