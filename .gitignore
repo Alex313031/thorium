@@ -14,9 +14,11 @@ thorium_WIN32_mini_installer.exe
 thorium_SSE3_mini_installer.exe
 thorium_AVX_mini_installer.exe
 thorium_AVX2_mini_installer.exe
+thorium_ARM64_mini_installer.exe
 thorium_mini_installer_SSE2.exe
 thorium_mini_installer_WIN32.exe
 thorium_mini_installer_SSE3.exe
 thorium_mini_installer_AVX.exe
 thorium_mini_installer_AVX2.exe
+thorium_mini_installer_ARM64.exe
 Thorium_squashfs-root
