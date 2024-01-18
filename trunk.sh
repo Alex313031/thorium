@@ -18,9 +18,9 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo on Linux.${c0}\n" &&
-	printf "${bold}${YEL}Use the --shallow flag to do a shallow sync, if you have downloaded${c0}\n" &&
-	printf "${bold}${YEL}the Chromium repo with the --no-history flag.${c0}\n" &&
+	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo.${c0}\n" &&
+	# printf "${bold}${YEL}Use the --shallow flag to do a shallow sync, if you have downloaded${c0}\n" &&
+	# printf "${bold}${YEL}the Chromium repo with the --no-history flag.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -37,22 +37,22 @@ else
 fi
 
 printf "\n" &&
-printf "${bold}${GRE}Script to Rebase/Sync Chromium repo on Linux.${c0}\n" &&
+printf "${bold}${GRE}Script to Rebase/Sync Chromium repo.${c0}\n" &&
 printf "\n" &&
 printf "${YEL}Rebasing/Syncing and running hooks...\n" &&
 tput sgr0 &&
 
 cd ${CR_SRC_DIR}/v8/ &&
 
-git checkout -f origin/main &&
+git restore . && git clean -ffd &&
 
 cd ${CR_SRC_DIR}/third_party/devtools-frontend/src &&
 
-git checkout -f origin/main &&
+git restore . && git clean -ffd &&
 
 cd ${CR_SRC_DIR}/third_party/ffmpeg &&
 
-git checkout -f origin/master &&
+git restore . && git clean -ffd &&
 
 cd ${CR_SRC_DIR} &&
 
