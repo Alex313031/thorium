@@ -1217,6 +1217,7 @@ BASE_FEATURE(kUseChromeOSDirectVideoDecoder,
              "UseChromeOSDirectVideoDecoder",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #else
+// Disable on Linux since it interferes with VAAPI
 BASE_FEATURE(kUseChromeOSDirectVideoDecoder,
              "UseChromeOSDirectVideoDecoder",
              base::FEATURE_DISABLED_BY_DEFAULT);
