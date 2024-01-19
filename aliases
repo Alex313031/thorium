@@ -13,8 +13,6 @@ alias rebase='git rebase-update'
 
 alias gsync='gclient sync --with_branch_heads --with_tags -f -R -D'
 
-alias g='gn args out/thorium'
-
 alias gnls='gn ls out/thorium'
 
 alias show='git show-ref'
