@@ -159,6 +159,10 @@
      "Close Confirmation",
      "Show a warning prompt when closing browser window(s).",
      kOsDesktop, MULTI_VALUE_TYPE(kCloseConfirmation)},
+    {"close-window-with-last-tab",
+     "Close window with last tab",
+     "Determines whether a window should close once the last tab is closed.",
+     kOsDesktop, MULTI_VALUE_TYPE(kCloseWindowWithLastTab)},
 
 #if BUILDFLAG(IS_LINUX)
     {"password-store",

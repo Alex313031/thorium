@@ -120,6 +120,13 @@ const FeatureEntry::Choice kCloseConfirmation[] = {
      "multiple"},
 };
 
+const FeatureEntry::Choice kCloseWindowWithLastTab[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"Never",
+     "close-window-with-last-tab",
+     "never"},
+};
+
 #if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
