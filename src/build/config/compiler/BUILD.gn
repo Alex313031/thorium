@@ -1141,11 +1141,16 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
+        "-msse3",
+        "-mssse3",
+        "-msse4",
+        "-msse4.1",
+        "-msse4.2",
         "-mavx",
         "-maes",
         "-mpclmul",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-mavx", "-maes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-msse4.2", "-mavx", "-maes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -2286,6 +2291,11 @@ if (is_win) {
     "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
+    "/clang:-msse3",
+    "/clang:-mssse3",
+    "/clang:-msse4",
+    "/clang:-msse4.1",
+    "/clang:-msse4.2",
     "/clang:-mavx",
     "/clang:-maes",
     "/clang:-mpclmul",

@@ -129,10 +129,20 @@ config("compiler") {
     # "/fp:fast", enables FMA.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
+        "-msse3",
+        "-mssse3",
+        "-msse4",
+        "-msse4.1",
+        "-msse4.2",
         "-mavx",
         "-maes",
         "-mpclmul",
         "/clang:-O3",
+        "/clang:-msse3",
+        "/clang:-mssse3",
+        "/clang:-msse4",
+        "/clang:-msse4.1",
+        "/clang:-msse4.2",
         "/clang:-mavx",
         "/clang:-maes",
         "/clang:-mpclmul",
@@ -206,6 +216,7 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
+      "-mllvm:-march=sandybridge",
     ]
 
     if (use_lld) {
