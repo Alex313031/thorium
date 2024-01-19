@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2023 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -26,6 +26,8 @@ cd .. &&
 sudo chmod -v +x depot_tools/autoninja &&
 
 sudo chmod -v +x build.sh &&
+
+sudo chmod -v +x g &&
 
 sudo chmod -v +x build_android.sh &&
 
