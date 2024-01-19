@@ -148,8 +148,8 @@ config("compiler") {
         "/clang:-mavx2",
         "/clang:-maes",
         "/clang:-mpclmul",
-        "-Xclang", "-O3",
         "/clang:-ffp-contract=fast",
+        "-Xclang", "-O3",
         "/arch:AVX2",
         "-Wno-unused-command-line-argument",
       ]
