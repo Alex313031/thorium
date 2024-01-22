@@ -62,7 +62,7 @@ buildPollyPGO () {
 	printf "\n"
 	sleep 1 &&
 	
-	python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto --pgo $@ &&
+	python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --bootstrap --thinlto --pgo $@ &&
 	
 	printf "\n"
 	printf "${GRE}Done! You can now run ./build.sh\n" &&
@@ -88,7 +88,7 @@ printf "${GRE}Building LLVM and Polly...${c0}\n" &&
 printf "\n"
 sleep 1 &&
 
-python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --gcc-toolchain=/usr --bootstrap --thinlto $@ &&
+python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disable-asserts --bootstrap --thinlto $@ &&
 
 printf "\n"
 printf "${GRE}Done! You can now run ./build.sh\n" &&
