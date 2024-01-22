@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors, Alex313031, ltguillaume, and gz83
+# Copyright 2024 The Chromium Authors, Alex313031, ltguillaume, and gz83
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -40,9 +40,6 @@ icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
 mojo_core.dll: %(VersionDir)s\
-nacl64.exe: %(VersionDir)s\
-nacl_irt_x86_32.nexe: %(VersionDir)s\
-nacl_irt_x86_64.nexe: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
 optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
@@ -130,6 +127,18 @@ LogoDev.png: %(VersionDir)s\VisualElements\
 SmallLogoBeta.png: %(VersionDir)s\VisualElements\
 SmallLogoCanary.png: %(VersionDir)s\VisualElements\
 SmallLogoDev.png: %(VersionDir)s\VisualElements\
+
+#
+# Widevine CDM sub-dir
+#
+WidevineCdm\manifest.json: %(VersionDir)s\WidevineCdm\
+WidevineCdm\LICENSE: %(VersionDir)s\WidevineCdm\
+WidevineCdm\_platform_specific\win_x86\widevinecdm.dll: %(VersionDir)s\WidevineCdm\_platform_specific\win_x86\
+WidevineCdm\_platform_specific\win_x86\widevinecdm.dll.sig: %(VersionDir)s\WidevineCdm\_platform_specific\win_x86\
+WidevineCdm\_platform_specific\win_x64\widevinecdm.dll: %(VersionDir)s\WidevineCdm\_platform_specific\win_x64\
+WidevineCdm\_platform_specific\win_x64\widevinecdm.dll.sig: %(VersionDir)s\WidevineCdm\_platform_specific\win_x64\
+WidevineCdm\_platform_specific\win_arm64\widevinecdm.dll: %(VersionDir)s\WidevineCdm\_platform_specific\win_arm64\
+WidevineCdm\_platform_specific\win_arm64\widevinecdm.dll.sig: %(VersionDir)s\WidevineCdm\_platform_specific\win_arm64\
 
 [SNAPSHOTBLOB]
 # The snapshot_blob.bin V8 snapshot is needed in builds that don't use

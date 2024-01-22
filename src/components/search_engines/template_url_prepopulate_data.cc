@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1753,6 +1753,8 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterIntegerPref(prefs::kSearchProviderOverridesVersion, -1);
   registry->RegisterInt64Pref(
       prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed, 0);
+  registry->RegisterBooleanPref(
+      prefs::kDefaultSearchProviderKeywordsUseExtendedList, false);
 }
 
 int GetDataVersion(PrefService* prefs) {
@@ -1782,7 +1784,8 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
       // returned list if it's not already there.
       const TemplateURL* default_search_engine =
           template_url_service->GetDefaultSearchProvider();
-      if (!base::Contains(t_urls, default_search_engine->prepopulate_id(),
+      if (default_search_engine &&
+          !base::Contains(t_urls, default_search_engine->prepopulate_id(),
                           [](const std::unique_ptr<TemplateURLData>& engine) {
                             return engine->prepopulate_id;
                           })) {
