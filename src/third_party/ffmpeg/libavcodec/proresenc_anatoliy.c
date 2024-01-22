@@ -32,7 +32,6 @@
 #include "avcodec.h"
 #include "codec_internal.h"
 #include "encode.h"
-#include "internal.h"
 #include "profiles.h"
 #include "proresdata.h"
 #include "put_bits.h"
@@ -42,13 +41,13 @@
 #define DEFAULT_SLICE_MB_WIDTH 8
 
 static const AVProfile profiles[] = {
-    { FF_PROFILE_PRORES_PROXY,    "apco"},
-    { FF_PROFILE_PRORES_LT,       "apcs"},
-    { FF_PROFILE_PRORES_STANDARD, "apcn"},
-    { FF_PROFILE_PRORES_HQ,       "apch"},
-    { FF_PROFILE_PRORES_4444,     "ap4h"},
-    { FF_PROFILE_PRORES_XQ,       "ap4x"},
-    { FF_PROFILE_UNKNOWN }
+    { AV_PROFILE_PRORES_PROXY,    "apco"},
+    { AV_PROFILE_PRORES_LT,       "apcs"},
+    { AV_PROFILE_PRORES_STANDARD, "apcn"},
+    { AV_PROFILE_PRORES_HQ,       "apch"},
+    { AV_PROFILE_PRORES_4444,     "ap4h"},
+    { AV_PROFILE_PRORES_XQ,       "ap4x"},
+    { AV_PROFILE_UNKNOWN }
 };
 
 static const int qp_start_table[] = {  8, 3, 2, 1, 1, 1};
@@ -197,6 +196,35 @@ typedef struct {
 
     char *vendor;
 } ProresContext;
+
+/**
+ * Check if a value is in the list. If not, return the default value
+ *
+ * @param ctx                Context for the log msg
+ * @param val_name           Name of the checked value, for log msg
+ * @param array_valid_values Array of valid int, ended with INT_MAX
+ * @param default_value      Value return if checked value is not in the array
+ * @return                   Value or default_value.
+ */
+static int int_from_list_or_default(void *ctx, const char *val_name, int val,
+                                    const int *array_valid_values, int default_value)
+{
+    int i = 0;
+
+    while (1) {
+        int ref_val = array_valid_values[i];
+        if (ref_val == INT_MAX)
+            break;
+        if (val == ref_val)
+            return val;
+        i++;
+    }
+    /* val is not a valid value */
+    av_log(ctx, AV_LOG_DEBUG,
+           "%s %d are not supported. Set to default value : %d\n",
+           val_name, val, default_value);
+    return default_value;
+}
 
 static void encode_codeword(PutBitContext *pb, int val, int codebook)
 {
@@ -743,7 +771,7 @@ static int prores_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     bytestream_put_be16(&buf, avctx->width);
     bytestream_put_be16(&buf, avctx->height);
     frame_flags = 0x82; /* 422 not interlaced */
-    if (avctx->profile >= FF_PROFILE_PRORES_4444) /* 4444 or 4444 Xq */
+    if (avctx->profile >= AV_PROFILE_PRORES_4444) /* 4444 or 4444 Xq */
         frame_flags |= 0x40; /* 444 chroma */
     if (ctx->is_interlaced) {
         if ((pict->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST) || !(pict->flags & AV_FRAME_FLAG_INTERLACED)) {
@@ -761,10 +789,13 @@ static int prores_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     *buf++ = frame_flags;
     *buf++ = 0; /* reserved */
     /* only write color properties, if valid value. set to unspecified otherwise */
-    *buf++ = ff_int_from_list_or_default(avctx, "frame color primaries", pict->color_primaries, valid_primaries, 0);
-    *buf++ = ff_int_from_list_or_default(avctx, "frame color trc", pict->color_trc, valid_trc, 0);
-    *buf++ = ff_int_from_list_or_default(avctx, "frame colorspace", pict->colorspace, valid_colorspace, 0);
-    if (avctx->profile >= FF_PROFILE_PRORES_4444) {
+    *buf++ = int_from_list_or_default(avctx, "frame color primaries",
+                                      pict->color_primaries, valid_primaries, 0);
+    *buf++ = int_from_list_or_default(avctx, "frame color trc",
+                                      pict->color_trc, valid_trc, 0);
+    *buf++ = int_from_list_or_default(avctx, "frame colorspace",
+                                      pict->colorspace, valid_colorspace, 0);
+    if (avctx->profile >= AV_PROFILE_PRORES_4444) {
         if (avctx->pix_fmt == AV_PIX_FMT_YUV444P10) {
             *buf++ = 0xA0;/* src b64a and no alpha */
         } else {
@@ -840,40 +871,40 @@ static av_cold int prores_encode_init(AVCodecContext *avctx)
         return AVERROR(EINVAL);
     }
 
-    if (avctx->profile == FF_PROFILE_UNKNOWN) {
+    if (avctx->profile == AV_PROFILE_UNKNOWN) {
         if (avctx->pix_fmt == AV_PIX_FMT_YUV422P10) {
-            avctx->profile = FF_PROFILE_PRORES_STANDARD;
+            avctx->profile = AV_PROFILE_PRORES_STANDARD;
             av_log(avctx, AV_LOG_INFO,
                 "encoding with ProRes standard (apcn) profile\n");
         } else if (avctx->pix_fmt == AV_PIX_FMT_YUV444P10) {
-            avctx->profile = FF_PROFILE_PRORES_4444;
+            avctx->profile = AV_PROFILE_PRORES_4444;
             av_log(avctx, AV_LOG_INFO,
                    "encoding with ProRes 4444 (ap4h) profile\n");
         } else if (avctx->pix_fmt == AV_PIX_FMT_YUVA444P10) {
-            avctx->profile = FF_PROFILE_PRORES_4444;
+            avctx->profile = AV_PROFILE_PRORES_4444;
             av_log(avctx, AV_LOG_INFO,
                    "encoding with ProRes 4444+ (ap4h) profile\n");
         }
-    } else if (avctx->profile < FF_PROFILE_PRORES_PROXY
-            || avctx->profile > FF_PROFILE_PRORES_XQ) {
+    } else if (avctx->profile < AV_PROFILE_PRORES_PROXY
+            || avctx->profile > AV_PROFILE_PRORES_XQ) {
         av_log(
                 avctx,
                 AV_LOG_ERROR,
                 "unknown profile %d, use [0 - apco, 1 - apcs, 2 - apcn (default), 3 - apch, 4 - ap4h, 5 - ap4x]\n",
                 avctx->profile);
         return AVERROR(EINVAL);
-    } else if ((avctx->pix_fmt == AV_PIX_FMT_YUV422P10) && (avctx->profile > FF_PROFILE_PRORES_HQ)){
+    } else if ((avctx->pix_fmt == AV_PIX_FMT_YUV422P10) && (avctx->profile > AV_PROFILE_PRORES_HQ)){
         av_log(avctx, AV_LOG_ERROR,
                "encoding with ProRes 444/Xq (ap4h/ap4x) profile, need YUV444P10 input\n");
         return AVERROR(EINVAL);
     }  else if ((avctx->pix_fmt == AV_PIX_FMT_YUV444P10 || avctx->pix_fmt == AV_PIX_FMT_YUVA444P10)
-                && (avctx->profile < FF_PROFILE_PRORES_4444)){
+                && (avctx->profile < AV_PROFILE_PRORES_4444)){
         av_log(avctx, AV_LOG_ERROR,
                "encoding with ProRes Proxy/LT/422/422 HQ (apco, apcs, apcn, ap4h) profile, need YUV422P10 input\n");
         return AVERROR(EINVAL);
     }
 
-    if (avctx->profile < FF_PROFILE_PRORES_4444) { /* 422 versions */
+    if (avctx->profile < AV_PROFILE_PRORES_4444) { /* 422 versions */
         ctx->is_422 = 1;
         if ((avctx->height & 0xf) || (avctx->width & 0xf)) {
             ctx->fill_y = av_malloc(4 * (DEFAULT_SLICE_MB_WIDTH << 8));

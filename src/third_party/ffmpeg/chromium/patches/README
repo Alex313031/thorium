@@ -4,112 +4,6 @@
 
 
 ------------------------------------------------------------------
-commit 35a9efdd9ee40dff4a5e45f0039328cd893c1264
-Author: Dale Curtis <dalecurtis@chromium.org>
-Date:   Fri Feb 3 16:12:21 2012 -0800
-
-    Remove old patches, apply existing patches.
-
-    Deleted, since from upstream:
-           deleted:    from_upstream/36_theora_flush.patch
-           deleted:    from_upstream/38_webm_cues_before_first_cluster.patch
-           deleted:    from_upstream/51_vp3_coefficient_overflow.patch
-
-    Deleted, since non-working according to rbultje:
-           deleted:    to_upstream/15_webp_ffmpeg.patch
-
-    Deleted, since get_bits upstreamed:
-           deleted:    ugly/07_get_bits_overrun.patch
-           deleted:    ugly/08_enforce_theora_oob.patch
-           deleted:    ugly/09_enforce_vorbis_oob_divzero.patch
-           deleted:    ugly/10_aac_oob_read.patch
-           deleted:    ugly/30_enforce_mp3_oob.patch
-
-    Deleted, since upstreamed:
-           deleted:    to_upstream/14_vp8_encode_options.patch
-           deleted:    to_upstream/34_ogg_memcpy.patch
-           deleted:    to_upstream/37_VP8_armv6_optimizations.patch
-           deleted:    to_upstream/39_VP8_fix_oob_read_writes.patch
-           deleted:    to_upstream/40_MKV_fix_oob_write.patch
-           deleted:    to_upstream/42_vp8_fix_segmentation_maps.patch
-           deleted:    to_upstream/43_mkv_seekahead_revalidate.patch
-           deleted:    to_upstream/44_vorbis_oob_read.patch
-           deleted:    to_upstream/45_mkv_fix_segmap_cache_overflow.patch
-           deleted:    to_upstream/46_vp3_fix_double_free_invalid_read.patch
-           deleted:    to_upstream/47_vp3_fix_infloop_and_memleak.patch
-           deleted:    to_upstream/48_vorbis_residue_buffer.patch
-           deleted:    to_upstream/49_vorbis_buffer_defense.patch
-           deleted:    to_upstream/50_vp8_fix_frame_size_changes.patch
-           deleted:    to_upstream/52_vorbis_fix_floor1_vector_int_overflow.patch
-
-    Deleted, for now, but will be fixed w/ merge:
-           modified:   ugly/31_remove_attribute_deprecated.patch
-
-    Not applied, since no longer necessary (will be deleted after testing):
-           skipped:    to_upstream/01_static_pthread_O2.patch
-
-    Also disables unchecked bitstream reading per rbultje.
-
-    BUG=none
-    TEST=ffmpeg_regression_tests
-
-Affects:
-    libavformat/matroskadec.c
-
-------------------------------------------------------------------
-commit 87b9d8e5781b28ae6f27b454605d8dbdf325d7e9
-Merge: 3a9bce0eec c39916bc2f
-Author: Dale Curtis <dalecurtis@chromium.org>
-Date:   Mon Oct 1 10:30:25 2012 -0700
-
-    FFmpeg merge for M24.
-
-    Merges FFmpeg from c39916bc2f43eed86f9822b7d6802b8a4f2a86c8
-
-    Conflicts:
-            libavcodec/vorbisdec.c
-            libavformat/matroskadec.c
-            libavformat/mov.c
-            libavformat/oggdec.c
-
-Affects:
-    libavformat/matroskadec.c
-
-------------------------------------------------------------------
-commit 67a3d8459c78a653192631c84611cf300c0c9b19
-Merge: 82ae69cc47 d91388367f
-Author: Dale Curtis <dalecurtis@chromium.org>
-Date:   Mon Dec 3 14:22:52 2012 -0800
-
-    Merge FFmpeg from upstream for M25.
-
-    Merged from d91388367fa64b98a09b45e2b7fb8435a62b7609.
-
-    Conflicts:
-            configure
-            libavcodec/aacdec.c
-            libavcodec/ac3tab.h
-            libavcodec/dca.h
-            libavcodec/dnxhddata.h
-            libavcodec/mjpeg.h
-            libavcodec/mpeg4audio.h
-            libavcodec/mpegaudiodata.h
-            libavcodec/raw.h
-            libavformat/matroskadec.c
-            libavformat/mp3dec.c
-            libavutil/aes.h
-            libavutil/common.h
-            libavutil/intmath.h
-            libavutil/md5.h
-            libavutil/pixdesc.h
-            libavutil/sha.h
-            libavutil/tree.h
-            library.mak
-
-Affects:
-    libavformat/matroskadec.c
-
-------------------------------------------------------------------
 commit 3a43b481b78e54009e293c6c6172fc6c68990d8c
 Author: Will Harris <wfh@chromium.org>
 Date:   Wed Jan 21 20:33:15 2015 -0800
@@ -125,23 +19,6 @@ Date:   Wed Jan 21 20:33:15 2015 -0800
 
 Affects:
     libavutil/mem.c
-
-------------------------------------------------------------------
-commit 967e4da013f8997d4cc34f1008f082a9c55e191f
-Author: Dan Sanders <sandersd@chromium.org>
-Date:   Thu Jan 29 14:10:48 2015 -0800
-
-    Update patches and configs for M42.
-
-      - Adds ffversion.h.
-      - Fixes to build with win8.1 SDK and for linux-noasm.
-      - Removed ugly patches and replaced with descriptions;
-        the patches were not being kept up to date.
-
-    Change-Id: Ie0eab2bf3ab6c52cd088e54172792175ab7cb2de
-
-Affects:
-    libavformat/matroskadec.c
 
 ------------------------------------------------------------------
 commit f3299330654ac1b40c50b3cbcae619f42eb7d838
@@ -245,27 +122,6 @@ Date:   Fri Oct 21 15:49:44 2016 -0700
 
 Affects:
     configure
-
-------------------------------------------------------------------
-commit e4decbe7fd3f49d90f296e83bcbf2beb8edf202a
-Merge: b4d337e668 134233972e
-Author: Matt Wolenetz <wolenetz@chromium.org>
-Date:   Tue Oct 25 14:31:38 2016 -0700
-
-    Merge FFmpeg for M56.
-
-    Conflicts:
-            .gitignore
-            configure
-            libavcodec/h264.c
-            libavcodec/h264_parser.c
-            libavformat/matroskadec.c
-            libavformat/mov.c
-            libavformat/movenc.c
-            libavformat/utils.c
-
-Affects:
-    libavformat/matroskadec.c
 
 ------------------------------------------------------------------
 commit b281073a7b1ccff67b2cd8ec636facceeeb82327
@@ -434,19 +290,6 @@ Affects:
     libavutil/log.h
 
 ------------------------------------------------------------------
-commit 4a74bbe9c6a37e7cadd7fa3b4e9fb943b57e3f00
-Merge: bb424af97f 6a50a8f340
-Author: Dale Curtis <dalecurtis@chromium.org>
-Date:   Fri Nov 3 12:06:55 2017 -0700
-
-    Merge remote-tracking branch 'upstream/master' into merge-m64
-
-    Synced from upstream/6a50a8f340161a0b65feb3537591b0381a6a6b38
-
-Affects:
-    configure
-
-------------------------------------------------------------------
 commit 76b57e9f808de42f6f1bb7df97531aa4b5cb7bb0
 Author: Dale Curtis <dalecurtis@chromium.org>
 Date:   Mon Nov 6 17:37:45 2017 -0800
@@ -607,21 +450,6 @@ Date:   Thu Nov 8 10:55:58 2018 -0800
 
 Affects:
     libavutil/x86/x86inc.asm
-
-------------------------------------------------------------------
-commit d7ba23c23434eb938c6fcae4fe77ca1e2a2fbeff
-Author: liberato@chromium.org <liberato@chromium.org>
-Date:   Thu Aug 22 10:52:09 2019 -0700
-
-    Fail matroska parsing with an error rather than assert.
-
-    Bug: 995706
-    Change-Id: I6f9865e0fdf44def6cc40e369954e66a7e0ad1d1
-    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/1765951
-    Reviewed-by: Matthew Wolenetz <wolenetz@chromium.org>
-
-Affects:
-    libavformat/matroskadec.c
 
 ------------------------------------------------------------------
 commit 6a44f89787a6103bf85825aac5b7bcfdba0dde5f
@@ -849,7 +677,6 @@ Affects:
     libavcodec/mpeg4video_parser.c
     libavcodec/smacker.c
     libavcodec/utvideodec.c
-    libavformat/matroskadec.c
 
 ------------------------------------------------------------------
 commit 1bc7749f096fc98032fc3206217b4fc47047258f
@@ -954,17 +781,18 @@ Affects:
     libavutil/frame.h
 
 ------------------------------------------------------------------
-commit 881c5c3f6412020c37e97e178e0f5da9ddd2ae90
-Author: Frank Liberato <liberato@chromium.org>
-Date:   Thu Jun 1 18:20:23 2023 +0000
+commit 125536d78f103ff44efeb26c4d7c98413a5a618f
+Merge: 0d75f366d5 9240035c0e
+Author: John Rummell <jrummell@chromium.org>
+Date:   Wed Oct 4 10:12:40 2023 -0700
 
-    FFMpeg roll for M116
+    Merge remote-tracking branch 'upstream/master' into sushi-2023-10-04-10-06-42
 
-    Bug: 1449369
-    Change-Id: Icb1bf9347dcf6ec71e61f552ab060cd8ba7504d2
-    Reviewed-on: https://chromium-review.googlesource.com/c/chromium/third_party/ffmpeg/+/4581055
-    Reviewed-by: Thomas Guilbert <tguilbert@chromium.org>
+    Conflicts:
+        both modified:   configure
+        both modified:   libavformat/matroskadec.c
+        deleted by us:   libavutil/macos_kperf.c
 
 Affects:
-    libavcodec/vp8data.c
+    configure
 

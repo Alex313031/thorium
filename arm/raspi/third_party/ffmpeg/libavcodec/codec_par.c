@@ -47,8 +47,8 @@ static void codec_parameters_reset(AVCodecParameters *par)
     par->chroma_location     = AVCHROMA_LOC_UNSPECIFIED;
     par->sample_aspect_ratio = (AVRational){ 0, 1 };
     par->framerate           = (AVRational){ 0, 1 };
-    par->profile             = FF_PROFILE_UNKNOWN;
-    par->level               = FF_LEVEL_UNKNOWN;
+    par->profile             = AV_PROFILE_UNKNOWN;
+    par->level               = AV_LEVEL_UNKNOWN;
 }
 
 AVCodecParameters *avcodec_parameters_alloc(void)
@@ -253,8 +253,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
         break;
     }
 
+    av_freep(&codec->extradata);
     if (par->extradata) {
-        av_freep(&codec->extradata);
         codec->extradata = av_mallocz(par->extradata_size + AV_INPUT_BUFFER_PADDING_SIZE);
         if (!codec->extradata)
             return AVERROR(ENOMEM);

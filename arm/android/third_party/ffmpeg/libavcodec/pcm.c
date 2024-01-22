@@ -538,7 +538,6 @@ static int pcm_decode_frame(AVCodecContext *avctx, AVFrame *frame,
         s->vector_fmul_scalar((float *)frame->extended_data[0],
                               (const float *)frame->extended_data[0],
                               s->scale, FFALIGN(frame->nb_samples * avctx->ch_layout.nb_channels, 4));
-        emms_c();
     }
 
     *got_frame_ptr = 1;
@@ -578,7 +577,7 @@ const FFCodec ff_ ## name_ ## _decoder = {                                  \
     .priv_data_size = sizeof(PCMDecode),                                    \
     .init           = pcm_decode_init,                                      \
     FF_CODEC_DECODE_CB(pcm_decode_frame),                                    \
-    .p.capabilities = AV_CODEC_CAP_DR1,                                     \
+    .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_PARAM_CHANGE,         \
     .p.sample_fmts  = (const enum AVSampleFormat[]){ sample_fmt_,           \
                                                      AV_SAMPLE_FMT_NONE },  \
 }

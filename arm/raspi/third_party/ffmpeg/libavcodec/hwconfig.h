@@ -22,11 +22,6 @@
 #include "avcodec.h"
 #include "hwaccels.h"
 
-
-#define HWACCEL_CAP_ASYNC_SAFE      (1 << 0)
-#define HWACCEL_CAP_THREAD_SAFE     (1 << 1)
-
-
 typedef struct AVCodecHWConfigInternal {
     /**
      * This is the structure which will be returned to the user by
@@ -37,7 +32,7 @@ typedef struct AVCodecHWConfigInternal {
      * If this configuration uses a hwaccel, a pointer to it.
      * If not, NULL.
      */
-    const AVHWAccel *hwaccel;
+    const struct FFHWAccel *hwaccel;
 } AVCodecHWConfigInternal;
 
 void ff_hwaccel_uninit(AVCodecContext *avctx);

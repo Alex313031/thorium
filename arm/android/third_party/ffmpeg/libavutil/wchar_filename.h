@@ -21,7 +21,8 @@
 
 #ifdef _WIN32
 
-#define WIN32_LEAN_AND_MEAN
+#include <errno.h>
+#include <stddef.h>
 #include <windows.h>
 #include "mem.h"
 

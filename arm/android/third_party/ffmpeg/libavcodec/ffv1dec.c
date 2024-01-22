@@ -626,6 +626,9 @@ static int read_header(FFV1Context *f)
             } else if (f->avctx->bits_per_raw_sample == 12) {
                 f->packed_at_lsb = 1;
                 f->avctx->pix_fmt = AV_PIX_FMT_GRAY12;
+            } else if (f->avctx->bits_per_raw_sample == 14) {
+                f->packed_at_lsb = 1;
+                f->avctx->pix_fmt = AV_PIX_FMT_GRAY14;
             } else if (f->avctx->bits_per_raw_sample == 16) {
                 f->packed_at_lsb = 1;
                 f->avctx->pix_fmt = AV_PIX_FMT_GRAY16;
@@ -690,6 +693,12 @@ static int read_header(FFV1Context *f)
             case 0x10: f->avctx->pix_fmt = AV_PIX_FMT_YUV422P12; break;
             case 0x11: f->avctx->pix_fmt = AV_PIX_FMT_YUV420P12; break;
             }
+        } else if (f->avctx->bits_per_raw_sample == 12 && f->transparency) {
+            f->packed_at_lsb = 1;
+            switch(16 * f->chroma_h_shift + f->chroma_v_shift) {
+            case 0x00: f->avctx->pix_fmt = AV_PIX_FMT_YUVA444P12; break;
+            case 0x10: f->avctx->pix_fmt = AV_PIX_FMT_YUVA422P12; break;
+            }
         } else if (f->avctx->bits_per_raw_sample == 14 && !f->transparency) {
             f->packed_at_lsb = 1;
             switch(16 * f->chroma_h_shift + f->chroma_v_shift) {
@@ -734,6 +743,8 @@ static int read_header(FFV1Context *f)
             f->avctx->pix_fmt = AV_PIX_FMT_GBRAP12;
         else if (f->avctx->bits_per_raw_sample == 14 && !f->transparency)
             f->avctx->pix_fmt = AV_PIX_FMT_GBRP14;
+        else if (f->avctx->bits_per_raw_sample == 14 && f->transparency)
+            f->avctx->pix_fmt = AV_PIX_FMT_GBRAP14;
         else if (f->avctx->bits_per_raw_sample == 16 && !f->transparency) {
             f->avctx->pix_fmt = AV_PIX_FMT_GBRP16;
             f->use32bit = 1;
@@ -1061,26 +1072,19 @@ static int update_thread_context(AVCodecContext *dst, const AVCodecContext *src)
     if (dst == src)
         return 0;
 
-    {
-        ThreadFrame picture = fdst->picture, last_picture = fdst->last_picture;
-        uint8_t (*initial_states[MAX_QUANT_TABLES])[32];
-        struct FFV1Context *slice_context[MAX_SLICES];
-        memcpy(initial_states, fdst->initial_states, sizeof(fdst->initial_states));
-        memcpy(slice_context,  fdst->slice_context , sizeof(fdst->slice_context));
+    copy_fields(fdst, fsrc, fsrc);
+    fdst->use32bit     = fsrc->use32bit;
+    memcpy(fdst->state_transition, fsrc->state_transition,
+           sizeof(fdst->state_transition));
+    memcpy(fdst->quant_table, fsrc->quant_table, sizeof(fsrc->quant_table));
 
-        memcpy(fdst, fsrc, sizeof(*fdst));
-        memcpy(fdst->initial_states, initial_states, sizeof(fdst->initial_states));
-        memcpy(fdst->slice_context,  slice_context , sizeof(fdst->slice_context));
-        fdst->picture      = picture;
-        fdst->last_picture = last_picture;
-        for (i = 0; i<fdst->num_h_slices * fdst->num_v_slices; i++) {
-            FFV1Context *fssrc = fsrc->slice_context[i];
-            FFV1Context *fsdst = fdst->slice_context[i];
-            copy_fields(fsdst, fssrc, fsrc);
-        }
-        av_assert0(!fdst->plane[0].state);
-        av_assert0(!fdst->sample_buffer);
+    for (i = 0; i < fdst->num_h_slices * fdst->num_v_slices; i++) {
+        FFV1Context *fssrc = fsrc->slice_context[i];
+        FFV1Context *fsdst = fdst->slice_context[i];
+        copy_fields(fsdst, fssrc, fsrc);
     }
+    av_assert0(!fdst->plane[0].state);
+    av_assert0(!fdst->sample_buffer);
 
     av_assert1(fdst->max_slice_count == fsrc->max_slice_count);
 

@@ -157,15 +157,6 @@ int ff_match_2uint16(const uint16_t (*tab)[2], int size, int a, int b);
 
 unsigned int ff_toupper4(unsigned int x);
 
-void ff_color_frame(AVFrame *frame, const int color[4]);
-
-/**
- * Maximum size in bytes of extradata.
- * This value was chosen such that every bit of the buffer is
- * addressable by a 32-bit signed integer as used by get_bits.
- */
-#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
-
 /**
  * 2^(x) for integer x
  * @return correctly rounded float
@@ -190,11 +181,6 @@ int avpriv_h264_has_num_reorder_frames(AVCodecContext *avctx);
 int avpriv_codec_get_cap_skip_frame_fill_param(const AVCodec *codec);
 
 /**
- * Add a CPB properties side data to an encoding context.
- */
-AVCPBProperties *ff_add_cpb_side_data(AVCodecContext *avctx);
-
-/**
  * Check AVFrame for S12M timecode side data and allocate and fill TC SEI message with timecode info
  *
  * @param frame      Raw frame to get S12M timecode side data from
@@ -215,17 +201,5 @@ int ff_alloc_timecode_sei(const AVFrame *frame, AVRational rate, size_t prefix_l
  * bits per pixel.
  */
 int64_t ff_guess_coded_bitrate(AVCodecContext *avctx);
-
-/**
- * Check if a value is in the list. If not, return the default value
- *
- * @param ctx                Context for the log msg
- * @param val_name           Name of the checked value, for log msg
- * @param array_valid_values Array of valid int, ended with INT_MAX
- * @param default_value      Value return if checked value is not in the array
- * @return                   Value or default_value.
- */
-int ff_int_from_list_or_default(void *ctx, const char * val_name, int val,
-                                const int * array_valid_values, int default_value);
 
 #endif /* AVCODEC_INTERNAL_H */

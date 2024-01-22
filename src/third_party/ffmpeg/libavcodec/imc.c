@@ -176,10 +176,10 @@ static av_cold void imc_init_static(void)
         for (int j = 0; j < 4; j++) {
             huffman_vlc[i][j].table           = &vlc_tables[offset];
             huffman_vlc[i][j].table_allocated = VLC_TABLES_SIZE - offset;
-            ff_init_vlc_from_lengths(&huffman_vlc[i][j], IMC_VLC_BITS, imc_huffman_sizes[i],
+            ff_vlc_init_from_lengths(&huffman_vlc[i][j], IMC_VLC_BITS, imc_huffman_sizes[i],
                                      imc_huffman_lens[i][j], 1,
                                      imc_huffman_syms[i][j], 1, 1,
-                                     0, INIT_VLC_STATIC_OVERLONG, NULL);
+                                     0, VLC_INIT_STATIC_OVERLONG, NULL);
             offset += huffman_vlc[i][j].table_size;
         }
     }
@@ -1038,6 +1038,7 @@ const FFCodec ff_imc_decoder = {
     .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_CHANNEL_CONF,
     .p.sample_fmts  = (const enum AVSampleFormat[]) { AV_SAMPLE_FMT_FLTP,
                                                       AV_SAMPLE_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif
 #if CONFIG_IAC_DECODER
@@ -1054,5 +1055,6 @@ const FFCodec ff_iac_decoder = {
     .p.capabilities = AV_CODEC_CAP_DR1,
     .p.sample_fmts  = (const enum AVSampleFormat[]) { AV_SAMPLE_FMT_FLTP,
                                                       AV_SAMPLE_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif

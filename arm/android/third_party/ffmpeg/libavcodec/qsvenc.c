@@ -21,12 +21,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "config_components.h"
-
 #include <string.h>
 #include <sys/types.h>
 #include <mfxvideo.h>
 
+#include "libavutil/avassert.h"
 #include "libavutil/common.h"
 #include "libavutil/hwcontext.h"
 #include "libavutil/hwcontext_qsv.h"
@@ -34,9 +33,9 @@
 #include "libavutil/log.h"
 #include "libavutil/time.h"
 #include "libavutil/imgutils.h"
-#include "libavcodec/bytestream.h"
 
 #include "avcodec.h"
+#include "encode.h"
 #include "internal.h"
 #include "packet_internal.h"
 #include "qsv.h"
@@ -1506,7 +1505,7 @@ static int qsv_retrieve_enc_params(AVCodecContext *avctx, QSVEncContext *q)
     }
     memset(avctx->extradata + avctx->extradata_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
-    cpb_props = ff_add_cpb_side_data(avctx);
+    cpb_props = ff_encode_add_cpb_side_data(avctx);
     if (!cpb_props)
         return AVERROR(ENOMEM);
     cpb_props->max_bitrate = avctx->rc_max_rate;
@@ -1997,8 +1996,7 @@ static int submit_frame(QSVEncContext *q, const AVFrame *frame,
                 return ret;
             }
         } else {
-            av_frame_unref(qf->frame);
-            ret = av_frame_ref(qf->frame, frame);
+            ret = av_frame_replace(qf->frame, frame);
             if (ret < 0)
                 return ret;
         }
@@ -2586,7 +2584,7 @@ int ff_qsv_encode(AVCodecContext *avctx, QSVEncContext *q,
             pict_type = AV_PICTURE_TYPE_P;
         else if (qpkt.bs->FrameType & MFX_FRAMETYPE_B || qpkt.bs->FrameType & MFX_FRAMETYPE_xB)
             pict_type = AV_PICTURE_TYPE_B;
-        else if (qpkt.bs->FrameType == MFX_FRAMETYPE_UNKNOWN) {
+        else if (qpkt.bs->FrameType == MFX_FRAMETYPE_UNKNOWN && qpkt.bs->DataLength) {
             pict_type = AV_PICTURE_TYPE_NONE;
             av_log(avctx, AV_LOG_WARNING, "Unknown FrameType, set pict_type to AV_PICTURE_TYPE_NONE.\n");
         } else {

@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2024 The Chromium Authors and Alex313031. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -7,7 +7,7 @@ import("//build/config/chrome_build.gni")
 import("//build/config/chromecast_build.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 
-if (is_chrome_branded) {
+if (is_chrome_branded || is_chrome_for_testing_branded) {
   _default_ffmpeg_branding = "Chrome"
 } else {
   _default_ffmpeg_branding = "Chrome"

@@ -38,7 +38,7 @@ static void prng_shift(uint32_t *state)
 {
     // Primitive polynomial x^31 + x^3 + 1 (modulo 2)
     uint32_t x = *state;
-    uint8_t feedback = (x >> 2) ^ (x >> 30);
+    uint8_t feedback = 1u ^ (x >> 2) ^ (x >> 30);
     *state = (x << 1) | (feedback & 1u);
 }
 
@@ -59,13 +59,13 @@ static void init_slice_c(int8_t out[64][64], uint8_t h, uint8_t v,
     //
     // Note: To make the subsequent matrix multiplication cache friendlier, we
     // store each *column* of the starting image in a *row* of `out`
-    for (int y = 0; y <= freq_v; y++) {
-        for (int x = 0; x <= freq_h; x += 4) {
+    for (int l = 0; l <= freq_v; l++) {
+        for (int k = 0; k <= freq_h; k += 4) {
             uint16_t offset = seed % 2048;
-            out[x + 0][y] = Gaussian_LUT[offset + 0];
-            out[x + 1][y] = Gaussian_LUT[offset + 1];
-            out[x + 2][y] = Gaussian_LUT[offset + 2];
-            out[x + 3][y] = Gaussian_LUT[offset + 3];
+            out[l][k + 0] = Gaussian_LUT[offset + 0];
+            out[l][k + 1] = Gaussian_LUT[offset + 1];
+            out[l][k + 2] = Gaussian_LUT[offset + 2];
+            out[l][k + 3] = Gaussian_LUT[offset + 3];
             prng_shift(&seed);
         }
     }
@@ -74,9 +74,9 @@ static void init_slice_c(int8_t out[64][64], uint8_t h, uint8_t v,
 
     // 64x64 inverse integer transform
     for (int y = 0; y < 64; y++) {
-        for (int x = 0; x <= freq_h; x++) {
+        for (int x = 0; x <= freq_v; x++) {
             int32_t sum = 0;
-            for (int p = 0; p <= freq_v; p++)
+            for (int p = 0; p <= freq_h; p++)
                 sum += R64T[y][p] * out[x][p];
             tmp[y][x] = (sum + 128) >> 8;
         }
@@ -85,8 +85,8 @@ static void init_slice_c(int8_t out[64][64], uint8_t h, uint8_t v,
     for (int y = 0; y < 64; y++) {
         for (int x = 0; x < 64; x++) {
             int32_t sum = 0;
-            for (int p = 0; p <= freq_h; p++)
-                sum += tmp[y][p] * R64T[x][p]; // R64T^T = R64
+            for (int p = 0; p <= freq_v; p++)
+                sum += tmp[x][p] * R64T[y][p]; // R64T^T = R64
             // Renormalize and clip to [-127, 127]
             out[y][x] = av_clip((sum + 128) >> 8, -127, 127);
         }
@@ -110,7 +110,7 @@ static void init_slice(H274FilmGrainDatabase *database, uint8_t h, uint8_t v)
     init_slice_c(database->db[h][v], h, v, database->slice_tmp);
 }
 
-// Computes the average of an 8x8 block, right-shifted by 6
+// Computes the average of an 8x8 block
 static uint16_t avg_8x8_c(const uint8_t *in, int in_stride)
 {
     uint16_t avg[8] = {0}; // summing over an array vectorizes better
@@ -259,11 +259,11 @@ int ff_h274_apply_film_grain(AVFrame *out_frame, const AVFrame *in_frame,
         // only advanced in 16x16 blocks, so use a nested loop
         for (int y = 0; y < height; y += 16) {
             for (int x = 0; x < width; x += 16) {
-                uint16_t y_offset = (seed >> 16) % 52;
-                uint16_t x_offset = (seed & 0xFFFF) % 56;
+                uint16_t x_offset = (seed >> 16) % 52;
+                uint16_t y_offset = (seed & 0xFFFF) % 56;
                 const int invert = (seed & 0x1);
-                y_offset &= 0xFFFC;
-                x_offset &= 0xFFF8;
+                x_offset &= 0xFFFC;
+                y_offset &= 0xFFF8;
                 prng_shift(&seed);
 
                 for (int yy = 0; yy < 16 && y+yy < height; yy += 8) {

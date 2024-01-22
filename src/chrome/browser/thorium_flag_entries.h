@@ -98,6 +98,11 @@
      "Enable Native GPU Memory Buffers",
      "Enables native CPU-mappable GPU memory buffer support on Linux.",
      kOsLinux, SINGLE_VALUE_TYPE(switches::kEnableNativeGpuMemoryBuffers)},
+    {"vaapi-video-decode-linux-gl",
+     "GL Vaapi Video Decode",
+     "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
+     "Enabled by default, but may break some configurations. Thorium flag.",
+     kOsLinux, FEATURE_VALUE_TYPE(kVaapiVideoDecodeLinuxGL)},
 #endif // BUILDFLAG(IS_LINUX)
 
     {"gpu-no-context-lost",

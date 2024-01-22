@@ -43,3 +43,5 @@ Thorium Remote Desktop > Chrome Remote Desktop
 ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
+
+Make download warning blocker actually work

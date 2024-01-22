@@ -35,6 +35,7 @@
 
 #include <stdint.h>
 
+#include "libavutil/emms.h"
 #include "libavutil/internal.h"
 #include "libavutil/intmath.h"
 #include "libavutil/mathematics.h"
@@ -43,7 +44,6 @@
 #include "libavutil/opt.h"
 #include "libavutil/thread.h"
 #include "avcodec.h"
-#include "dct.h"
 #include "encode.h"
 #include "idctdsp.h"
 #include "mpeg12codecs.h"
@@ -973,7 +973,7 @@ av_cold int ff_mpv_encode_init(AVCodecContext *avctx)
         }
     }
 
-    cpb_props = ff_add_cpb_side_data(avctx);
+    cpb_props = ff_encode_add_cpb_side_data(avctx);
     if (!cpb_props)
         return AVERROR(ENOMEM);
     cpb_props->max_bitrate = avctx->rc_max_rate;

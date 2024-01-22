@@ -324,7 +324,7 @@ static int decode_rle(GetBitContext *gb, uint8_t *pal_dst, ptrdiff_t pal_stride,
     if (next_code != 1 << current_length)
         return AVERROR_INVALIDDATA;
 
-    if ((i = init_vlc(&vlc, 9, alphabet_size, bits, 1, 1, codes, 4, 4, 0)) < 0)
+    if ((i = vlc_init(&vlc, 9, alphabet_size, bits, 1, 1, codes, 4, 4, 0)) < 0)
         return i;
 
     /* frame decode */
@@ -371,7 +371,7 @@ static int decode_rle(GetBitContext *gb, uint8_t *pal_dst, ptrdiff_t pal_stride,
         prev_avail = 1;
     } while (--h);
 
-    ff_free_vlc(&vlc);
+    ff_vlc_free(&vlc);
     return 0;
 }
 
@@ -422,7 +422,7 @@ static int decode_wmv9(AVCodecContext *avctx, const uint8_t *buf, int buf_size,
     ff_vc1_decode_blocks(v);
 
     if (v->end_mb_x == s->mb_width && s->end_mb_y == s->mb_height) {
-        ff_er_frame_end(&s->er);
+        ff_er_frame_end(&s->er, NULL);
     } else {
         av_log(v->s.avctx, AV_LOG_WARNING,
                "disabling error correction due to block count mismatch %dx%d != %dx%d\n",
@@ -797,8 +797,7 @@ static int mss2_decode_frame(AVCodecContext *avctx, AVFrame *frame,
         av_log(avctx, AV_LOG_WARNING, "buffer not fully consumed\n");
 
     if (c->mvX < 0 || c->mvY < 0) {
-        av_frame_unref(ctx->last_pic);
-        ret = av_frame_ref(ctx->last_pic, frame);
+        ret = av_frame_replace(ctx->last_pic, frame);
         if (ret < 0)
             return ret;
     }

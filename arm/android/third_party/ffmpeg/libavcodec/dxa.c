@@ -45,8 +45,8 @@ typedef struct DxaDecContext {
     uint32_t pal[256];
 } DxaDecContext;
 
-static const int shift1[6] = { 0, 8, 8, 8, 4, 4 };
-static const int shift2[6] = { 0, 0, 8, 4, 0, 4 };
+static const uint8_t shift1[6] = { 0, 8, 8, 8, 4, 4 };
+static const uint8_t shift2[6] = { 0, 0, 8, 4, 0, 4 };
 
 static int decode_13(AVCodecContext *avctx, DxaDecContext *c, uint8_t* dst,
                      int stride, uint8_t *src, int srcsize, uint8_t *ref)
@@ -317,8 +317,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         return AVERROR_INVALIDDATA;
     }
 
-    av_frame_unref(c->prev);
-    if ((ret = av_frame_ref(c->prev, frame)) < 0)
+    if ((ret = av_frame_replace(c->prev, frame)) < 0)
         return ret;
 
     *got_frame = 1;

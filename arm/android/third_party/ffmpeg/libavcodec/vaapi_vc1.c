@@ -22,11 +22,10 @@
 
 #include "config_components.h"
 
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "mpegvideodec.h"
 #include "vaapi_decode.h"
 #include "vc1.h"
-#include "vc1data.h"
 
 /** Translate FFmpeg MV modes to VA API */
 static int get_VAMvModeVC1(enum MVModes mv_mode)
@@ -501,11 +500,11 @@ static int vaapi_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, 
 }
 
 #if CONFIG_WMV3_VAAPI_HWACCEL
-const AVHWAccel ff_wmv3_vaapi_hwaccel = {
-    .name                 = "wmv3_vaapi",
-    .type                 = AVMEDIA_TYPE_VIDEO,
-    .id                   = AV_CODEC_ID_WMV3,
-    .pix_fmt              = AV_PIX_FMT_VAAPI,
+const FFHWAccel ff_wmv3_vaapi_hwaccel = {
+    .p.name               = "wmv3_vaapi",
+    .p.type               = AVMEDIA_TYPE_VIDEO,
+    .p.id                 = AV_CODEC_ID_WMV3,
+    .p.pix_fmt            = AV_PIX_FMT_VAAPI,
     .start_frame          = &vaapi_vc1_start_frame,
     .end_frame            = &vaapi_vc1_end_frame,
     .decode_slice         = &vaapi_vc1_decode_slice,
@@ -518,11 +517,11 @@ const AVHWAccel ff_wmv3_vaapi_hwaccel = {
 };
 #endif
 
-const AVHWAccel ff_vc1_vaapi_hwaccel = {
-    .name                 = "vc1_vaapi",
-    .type                 = AVMEDIA_TYPE_VIDEO,
-    .id                   = AV_CODEC_ID_VC1,
-    .pix_fmt              = AV_PIX_FMT_VAAPI,
+const FFHWAccel ff_vc1_vaapi_hwaccel = {
+    .p.name               = "vc1_vaapi",
+    .p.type               = AVMEDIA_TYPE_VIDEO,
+    .p.id                 = AV_CODEC_ID_VC1,
+    .p.pix_fmt            = AV_PIX_FMT_VAAPI,
     .start_frame          = &vaapi_vc1_start_frame,
     .end_frame            = &vaapi_vc1_end_frame,
     .decode_slice         = &vaapi_vc1_decode_slice,

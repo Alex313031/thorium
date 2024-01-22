@@ -26,7 +26,7 @@
 #include "avcodec.h"
 #include "h264dec.h"
 #include "h264_ps.h"
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "mpegutils.h"
 #include "vdpau.h"
 #include "vdpau_internal.h"
@@ -219,35 +219,35 @@ static int vdpau_h264_init(AVCodecContext *avctx)
     VdpDecoderProfile profile;
     uint32_t level = avctx->level;
 
-    switch (avctx->profile & ~FF_PROFILE_H264_INTRA) {
-    case FF_PROFILE_H264_BASELINE:
+    switch (avctx->profile & ~AV_PROFILE_H264_INTRA) {
+    case AV_PROFILE_H264_BASELINE:
         profile = VDP_DECODER_PROFILE_H264_BASELINE;
         break;
-    case FF_PROFILE_H264_CONSTRAINED_BASELINE:
+    case AV_PROFILE_H264_CONSTRAINED_BASELINE:
 #ifdef VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE
         profile = VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE;
         break;
 #endif
-    case FF_PROFILE_H264_MAIN:
+    case AV_PROFILE_H264_MAIN:
         profile = VDP_DECODER_PROFILE_H264_MAIN;
         break;
-    case FF_PROFILE_H264_HIGH:
+    case AV_PROFILE_H264_HIGH:
         profile = VDP_DECODER_PROFILE_H264_HIGH;
         break;
 #ifdef VDP_DECODER_PROFILE_H264_EXTENDED
-    case FF_PROFILE_H264_EXTENDED:
+    case AV_PROFILE_H264_EXTENDED:
         profile = VDP_DECODER_PROFILE_H264_EXTENDED;
         break;
 #endif
-    case FF_PROFILE_H264_HIGH_10:
+    case AV_PROFILE_H264_HIGH_10:
         /* XXX: High 10 can be treated as High so long as only 8 bits per
          * format are supported. */
         profile = VDP_DECODER_PROFILE_H264_HIGH;
         break;
 #ifdef VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE
-    case FF_PROFILE_H264_HIGH_422:
-    case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
-    case FF_PROFILE_H264_CAVLC_444:
+    case AV_PROFILE_H264_HIGH_422:
+    case AV_PROFILE_H264_HIGH_444_PREDICTIVE:
+    case AV_PROFILE_H264_CAVLC_444:
         profile = VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE;
         break;
 #endif
@@ -255,17 +255,17 @@ static int vdpau_h264_init(AVCodecContext *avctx)
         return AVERROR(ENOTSUP);
     }
 
-    if ((avctx->profile & FF_PROFILE_H264_INTRA) && avctx->level == 11)
+    if ((avctx->profile & AV_PROFILE_H264_INTRA) && avctx->level == 11)
         level = VDP_DECODER_LEVEL_H264_1b;
 
     return ff_vdpau_common_init(avctx, profile, level);
 }
 
-const AVHWAccel ff_h264_vdpau_hwaccel = {
-    .name           = "h264_vdpau",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = AV_CODEC_ID_H264,
-    .pix_fmt        = AV_PIX_FMT_VDPAU,
+const FFHWAccel ff_h264_vdpau_hwaccel = {
+    .p.name         = "h264_vdpau",
+    .p.type         = AVMEDIA_TYPE_VIDEO,
+    .p.id           = AV_CODEC_ID_H264,
+    .p.pix_fmt      = AV_PIX_FMT_VDPAU,
     .start_frame    = vdpau_h264_start_frame,
     .end_frame      = vdpau_h264_end_frame,
     .decode_slice   = vdpau_h264_decode_slice,

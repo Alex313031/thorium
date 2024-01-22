@@ -37,6 +37,7 @@
 #include "codec_internal.h"
 #include "decode.h"
 #include "get_bits.h"
+#include "hwaccel_internal.h"
 #include "hwconfig.h"
 #include "idctdsp.h"
 #include "profiles.h"
@@ -140,27 +141,27 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     switch (avctx->codec_tag) {
     case MKTAG('a','p','c','o'):
-        avctx->profile = FF_PROFILE_PRORES_PROXY;
+        avctx->profile = AV_PROFILE_PRORES_PROXY;
         break;
     case MKTAG('a','p','c','s'):
-        avctx->profile = FF_PROFILE_PRORES_LT;
+        avctx->profile = AV_PROFILE_PRORES_LT;
         break;
     case MKTAG('a','p','c','n'):
-        avctx->profile = FF_PROFILE_PRORES_STANDARD;
+        avctx->profile = AV_PROFILE_PRORES_STANDARD;
         break;
     case MKTAG('a','p','c','h'):
-        avctx->profile = FF_PROFILE_PRORES_HQ;
+        avctx->profile = AV_PROFILE_PRORES_HQ;
         break;
     case MKTAG('a','p','4','h'):
-        avctx->profile = FF_PROFILE_PRORES_4444;
+        avctx->profile = AV_PROFILE_PRORES_4444;
         avctx->bits_per_raw_sample = 12;
         break;
     case MKTAG('a','p','4','x'):
-        avctx->profile = FF_PROFILE_PRORES_XQ;
+        avctx->profile = AV_PROFILE_PRORES_XQ;
         avctx->bits_per_raw_sample = 12;
         break;
     default:
-        avctx->profile = FF_PROFILE_UNKNOWN;
+        avctx->profile = AV_PROFILE_UNKNOWN;
         av_log(avctx, AV_LOG_WARNING, "Unknown prores profile %d\n", avctx->codec_tag);
     }
 
@@ -171,7 +172,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     }
 
     ff_blockdsp_init(&ctx->bdsp);
-    ret = ff_proresdsp_init(&ctx->prodsp, avctx);
+    ret = ff_proresdsp_init(&ctx->prodsp, avctx->bits_per_raw_sample);
     if (ret < 0) {
         av_log(avctx, AV_LOG_ERROR, "Fail to init proresdsp for bits per raw sample %d\n", avctx->bits_per_raw_sample);
         return ret;
@@ -277,7 +278,7 @@ static int decode_frame_header(ProresContext *ctx, const uint8_t *buf,
         *fmtp++ = ctx->pix_fmt;
         *fmtp = AV_PIX_FMT_NONE;
 
-        if ((ret = ff_thread_get_format(avctx, pix_fmts)) < 0)
+        if ((ret = ff_get_format(avctx, pix_fmts)) < 0)
             return ret;
 
         avctx->pix_fmt = ret;
@@ -804,13 +805,14 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *frame,
     ff_thread_finish_setup(avctx);
 
     if (avctx->hwaccel) {
-        ret = avctx->hwaccel->start_frame(avctx, NULL, 0);
+        const FFHWAccel *hwaccel = ffhwaccel(avctx->hwaccel);
+        ret = hwaccel->start_frame(avctx, NULL, 0);
         if (ret < 0)
             return ret;
-        ret = avctx->hwaccel->decode_slice(avctx, avpkt->data, avpkt->size);
+        ret = hwaccel->decode_slice(avctx, avpkt->data, avpkt->size);
         if (ret < 0)
             return ret;
-        ret = avctx->hwaccel->end_frame(avctx);
+        ret = hwaccel->end_frame(avctx);
         if (ret < 0)
             return ret;
         goto finish;

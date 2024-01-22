@@ -467,6 +467,10 @@ typedef struct CodedBitstreamAV1Context {
 
     // AVOptions
     int operating_point;
+    // When writing, fix the length in bytes of the obu_size field.
+    // Writing will fail with an error if an OBU larger than can be
+    // represented by the fixed size is encountered.
+    int fixed_obu_size_length;
 } CodedBitstreamAV1Context;
 
 

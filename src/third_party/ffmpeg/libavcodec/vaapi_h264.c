@@ -22,7 +22,7 @@
 
 #include "h264dec.h"
 #include "h264_ps.h"
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "vaapi_decode.h"
 
 /**
@@ -385,11 +385,11 @@ static int vaapi_h264_decode_slice(AVCodecContext *avctx,
     return 0;
 }
 
-const AVHWAccel ff_h264_vaapi_hwaccel = {
-    .name                 = "h264_vaapi",
-    .type                 = AVMEDIA_TYPE_VIDEO,
-    .id                   = AV_CODEC_ID_H264,
-    .pix_fmt              = AV_PIX_FMT_VAAPI,
+const FFHWAccel ff_h264_vaapi_hwaccel = {
+    .p.name               = "h264_vaapi",
+    .p.type               = AVMEDIA_TYPE_VIDEO,
+    .p.id                 = AV_CODEC_ID_H264,
+    .p.pix_fmt            = AV_PIX_FMT_VAAPI,
     .start_frame          = &vaapi_h264_start_frame,
     .end_frame            = &vaapi_h264_end_frame,
     .decode_slice         = &vaapi_h264_decode_slice,

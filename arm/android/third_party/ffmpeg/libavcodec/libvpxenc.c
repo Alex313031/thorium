@@ -1145,7 +1145,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
     /* 0-3: For non-zero values the encoder increasingly optimizes for reduced
        complexity playback on low powered devices at the expense of encode
        quality. */
-    if (avctx->profile != FF_PROFILE_UNKNOWN)
+    if (avctx->profile != AV_PROFILE_UNKNOWN)
         enccfg.g_profile = avctx->profile;
 
     enccfg.g_error_resilient = ctx->error_resilient || ctx->flags & VP8F_ERROR_RESILIENT;
@@ -1273,7 +1273,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
         ctx->rawimg.bit_depth = enccfg.g_bit_depth;
 #endif
 
-    cpb_props = ff_add_cpb_side_data(avctx);
+    cpb_props = ff_encode_add_cpb_side_data(avctx);
     if (!cpb_props)
         return AVERROR(ENOMEM);
 
@@ -1830,7 +1830,7 @@ static int vpx_encode(AVCodecContext *avctx, AVPacket *pkt,
         duration = frame->duration;
     else if (avctx->framerate.num > 0 && avctx->framerate.den > 0)
         duration = av_rescale_q(1, av_inv_q(avctx->framerate), avctx->time_base);
-    else
+    else {
 FF_DISABLE_DEPRECATION_WARNINGS
         duration =
 #if FF_API_TICKS_PER_FRAME
@@ -1838,6 +1838,7 @@ FF_DISABLE_DEPRECATION_WARNINGS
 #endif
             1;
 FF_ENABLE_DEPRECATION_WARNINGS
+    }
 
     res = vpx_codec_encode(&ctx->encoder, rawimg, timestamp,
                            duration, flags, ctx->deadline);

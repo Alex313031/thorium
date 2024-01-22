@@ -31,6 +31,7 @@
 #include "avcodec_internal.h"
 #include "codec_internal.h"
 #include "decode.h"
+#include "hwaccel_internal.h"
 #include "hwconfig.h"
 #include "internal.h"
 #include "pthread_internal.h"
@@ -50,21 +51,11 @@
 #include "libavutil/thread.h"
 
 enum {
-    ///< Set when the thread is awaiting a packet.
+    /// Set when the thread is awaiting a packet.
     STATE_INPUT_READY,
-    ///< Set before the codec has called ff_thread_finish_setup().
+    /// Set before the codec has called ff_thread_finish_setup().
     STATE_SETTING_UP,
-    /**
-     * Set when the codec calls get_buffer().
-     * State is returned to STATE_SETTING_UP afterwards.
-     */
-    STATE_GET_BUFFER,
-     /**
-      * Set when the codec calls get_format().
-      * State is returned to STATE_SETTING_UP afterwards.
-      */
-    STATE_GET_FORMAT,
-    ///< Set after the codec has called ff_thread_finish_setup().
+    /// Set after the codec has called ff_thread_finish_setup().
     STATE_SETUP_FINISHED,
 };
 
@@ -150,7 +141,7 @@ typedef struct FrameThreadContext {
 
 static int hwaccel_serial(const AVCodecContext *avctx)
 {
-    return avctx->hwaccel && !(avctx->hwaccel->caps_internal & HWACCEL_CAP_THREAD_SAFE);
+    return avctx->hwaccel && !(ffhwaccel(avctx->hwaccel)->caps_internal & HWACCEL_CAP_THREAD_SAFE);
 }
 
 static void async_lock(FrameThreadContext *fctx)
@@ -245,7 +236,7 @@ static attribute_align_arg void *frame_worker_thread(void *arg)
             pthread_mutex_unlock(&p->parent->hwaccel_mutex);
         }
         av_assert0(!avctx->hwaccel ||
-                   (avctx->hwaccel->caps_internal & HWACCEL_CAP_THREAD_SAFE));
+                   (ffhwaccel(avctx->hwaccel)->caps_internal & HWACCEL_CAP_THREAD_SAFE));
 
         if (p->async_serializing) {
             p->async_serializing = 0;
@@ -274,7 +265,7 @@ static attribute_align_arg void *frame_worker_thread(void *arg)
  * @param for_user 0 if the destination is a codec thread, 1 if the destination is the user's thread
  * @return 0 on success, negative error code on failure
  */
-static int update_context_from_thread(AVCodecContext *dst, AVCodecContext *src, int for_user)
+static int update_context_from_thread(AVCodecContext *dst, const AVCodecContext *src, int for_user)
 {
     const FFCodec *const codec = ffcodec(dst->codec);
     int err = 0;
@@ -367,12 +358,13 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
         // propagate hwaccel state for threadsafe hwaccels
         if (p_src->hwaccel_threadsafe) {
+            const FFHWAccel *hwaccel = ffhwaccel(src->hwaccel);
             if (!dst->hwaccel) {
-                if (src->hwaccel->priv_data_size) {
-                    av_assert0(src->hwaccel->update_thread_context);
+                if (hwaccel->priv_data_size) {
+                    av_assert0(hwaccel->update_thread_context);
 
                     dst->internal->hwaccel_priv_data =
-                            av_mallocz(src->hwaccel->priv_data_size);
+                            av_mallocz(hwaccel->priv_data_size);
                     if (!dst->internal->hwaccel_priv_data)
                         return AVERROR(ENOMEM);
                 }
@@ -380,8 +372,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
             }
             av_assert0(dst->hwaccel == src->hwaccel);
 
-            if (src->hwaccel->update_thread_context) {
-                err = src->hwaccel->update_thread_context(dst, src);
+            if (hwaccel->update_thread_context) {
+                err = hwaccel->update_thread_context(dst, src);
                 if (err < 0) {
                     av_log(dst, AV_LOG_ERROR, "Error propagating hwaccel state\n");
                     ff_hwaccel_uninit(dst);
@@ -402,7 +394,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
  * @param src The source context.
  * @return 0 on success, negative error code on failure
  */
-static int update_context_from_user(AVCodecContext *dst, AVCodecContext *src)
+static int update_context_from_user(AVCodecContext *dst, const AVCodecContext *src)
 {
     int err;
 
@@ -431,22 +423,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
 #if FF_API_REORDERED_OPAQUE
 FF_DISABLE_DEPRECATION_WARNINGS
     dst->reordered_opaque = src->reordered_opaque;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
-#if FF_API_SLICE_OFFSET
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (src->slice_count && src->slice_offset) {
-        if (dst->slice_count < src->slice_count) {
-            int err = av_reallocp_array(&dst->slice_offset, src->slice_count,
-                                        sizeof(*dst->slice_offset));
-            if (err < 0)
-                return err;
-        }
-        memcpy(dst->slice_offset, src->slice_offset,
-               src->slice_count * sizeof(*dst->slice_offset));
-    }
-    dst->slice_count = src->slice_count;
 FF_ENABLE_DEPRECATION_WARNINGS
 #endif
 
@@ -652,12 +628,14 @@ void ff_thread_await_progress(const ThreadFrame *f, int n, int field)
 }
 
 void ff_thread_finish_setup(AVCodecContext *avctx) {
-    PerThreadContext *p = avctx->internal->thread_ctx;
+    PerThreadContext *p;
 
     if (!(avctx->active_thread_type&FF_THREAD_FRAME)) return;
 
+    p = avctx->internal->thread_ctx;
+
     p->hwaccel_threadsafe = avctx->hwaccel &&
-                            (avctx->hwaccel->caps_internal & HWACCEL_CAP_THREAD_SAFE);
+                            (ffhwaccel(avctx->hwaccel)->caps_internal & HWACCEL_CAP_THREAD_SAFE);
 
     if (hwaccel_serial(avctx) && !p->hwaccel_serializing) {
         pthread_mutex_lock(&p->parent->hwaccel_mutex);
@@ -666,7 +644,7 @@ void ff_thread_finish_setup(AVCodecContext *avctx) {
 
     /* this assumes that no hwaccel calls happen before ff_thread_finish_setup() */
     if (avctx->hwaccel &&
-        !(avctx->hwaccel->caps_internal & HWACCEL_CAP_ASYNC_SAFE)) {
+        !(ffhwaccel(avctx->hwaccel)->caps_internal & HWACCEL_CAP_ASYNC_SAFE)) {
         p->async_serializing = 1;
 
         async_lock(p->parent);
@@ -761,12 +739,6 @@ void ff_frame_thread_free(AVCodecContext *avctx, int thread_count)
                     av_opt_free(ctx->priv_data);
                 av_freep(&ctx->priv_data);
             }
-
-#if FF_API_SLICE_OFFSET
-FF_DISABLE_DEPRECATION_WARNINGS
-            av_freep(&ctx->slice_offset);
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
             av_buffer_unref(&ctx->internal->pool);
             av_packet_free(&ctx->internal->last_pkt_props);
@@ -964,11 +936,12 @@ void ff_thread_flush(AVCodecContext *avctx)
 
 int ff_thread_can_start_frame(AVCodecContext *avctx)
 {
-    PerThreadContext *p = avctx->internal->thread_ctx;
-
-    if ((avctx->active_thread_type&FF_THREAD_FRAME) && atomic_load(&p->state) != STATE_SETTING_UP &&
+    if ((avctx->active_thread_type & FF_THREAD_FRAME) &&
         ffcodec(avctx->codec)->update_thread_context) {
-        return 0;
+        PerThreadContext *p = avctx->internal->thread_ctx;
+
+        if (atomic_load(&p->state) != STATE_SETTING_UP)
+            return 0;
     }
 
     return 1;

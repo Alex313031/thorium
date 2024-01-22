@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libavutil/avassert.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/mem_internal.h"
 
@@ -45,18 +44,28 @@ typedef struct SliceContext {
 
 typedef struct VMIXContext {
     int nb_slices;
+    int lshift;
 
     int16_t factors[64];
     uint8_t scan[64];
 
-    SliceContext slices[255];
+    SliceContext *slices;
+    unsigned int slices_size;
 
     IDCTDSPContext idsp;
 } VMIXContext;
 
-static const uint8_t quality[25] = {
-     1,  2,  3,  4,  5,  6,  7,  8, 10, 12, 14, 16,
-    18, 20, 22, 24, 28, 32, 36, 40, 44, 48, 52, 56, 64,
+static const uint8_t quality[] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1,64,63,62,61,
+   60,59,58,57,56,55,54,53,52,51,
+   50,49,48,47,46,45,44,43,42,41,
+   40,39,38,37,36,35,34,33,32,31,
+   30,29,28,27,26,25,24,23,22,21,
+   20,19,18,17,16,15,14,13,12,11,
+   10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
 };
 
 static const uint8_t quant[64] = {
@@ -107,6 +116,7 @@ static int decode_dcac(AVCodecContext *avctx,
     const uint8_t *scan = s->scan;
     const int add = plane ? 0 : 1024;
     int i, dc_v = 0, ac_v = 0, dc = 0;
+    const int lshift = s->lshift;
 
     for (int y = 0; y < 2; y++) {
         for (int x = 0; x < width; x += 8) {
@@ -115,8 +125,10 @@ static int decode_dcac(AVCodecContext *avctx,
             if (dc_run > 0) {
                 dc_run--;
             } else {
+                if (get_bits_left(dc_gb) < 1)
+                    return AVERROR_INVALIDDATA;
                 dc_v = get_se_golomb_vmix(dc_gb);
-                dc += dc_v;
+                dc += (unsigned)dc_v;
                 if (!dc_v)
                     dc_run = get_ue_golomb_long(dc_gb);
             }
@@ -127,14 +139,16 @@ static int decode_dcac(AVCodecContext *avctx,
                     continue;
                 }
 
+                if (get_bits_left(ac_gb) < 1)
+                    return AVERROR_INVALIDDATA;
                 ac_v = get_se_golomb_vmix(ac_gb);
                 i = scan[n];
-                block[i] = (ac_v * factors[i]) >> 4;
+                block[i] = ((unsigned)ac_v * factors[i]) >> 4;
                 if (!ac_v)
                     ac_run = get_ue_golomb_long(ac_gb);
             }
 
-            block[0] = ((dc + add) * 16) >> 4;
+            block[0] = ((unsigned)dc << lshift) + (unsigned)add;
             s->idsp.idct_put(dst + x, linesize, block);
         }
 
@@ -208,22 +222,27 @@ static int decode_frame(AVCodecContext *avctx,
                         AVPacket *avpkt)
 {
     VMIXContext *s = avctx->priv_data;
-    unsigned offset = 3, q;
+    unsigned offset, q;
     int ret;
 
     if (avpkt->size <= 7)
         return AVERROR_INVALIDDATA;
 
-    if (avpkt->data[0] != 0x01)
+    s->lshift = 0;
+    offset = 2 + avpkt->data[0];
+    if (offset == 5)
+        s->lshift = avpkt->data[1];
+    else if (offset != 3)
         return AVERROR_INVALIDDATA;
 
-    q = av_clip(99 - av_clip(avpkt->data[1], 0, 99), 0, FF_ARRAY_ELEMS(quality) - 1);
+    q = quality[FFMIN(avpkt->data[offset - 2], FF_ARRAY_ELEMS(quality)-1)];
     for (int n = 0; n < 64; n++)
-        s->factors[n] = quant[n] * quality[q];
+        s->factors[n] = quant[n] * q;
 
-    s->nb_slices = avpkt->data[2];
-    if (!s->nb_slices || s->nb_slices > (avctx->height + 15) / 16)
-        return AVERROR_INVALIDDATA;
+    s->nb_slices = (avctx->height + 15) / 16;
+    av_fast_mallocz(&s->slices, &s->slices_size, s->nb_slices * sizeof(*s->slices));
+    if (!s->slices)
+        return AVERROR(ENOMEM);
 
     for (int n = 0; n < s->nb_slices; n++) {
         unsigned slice_size;
@@ -275,6 +294,13 @@ static int decode_frame(AVCodecContext *avctx,
     return avpkt->size;
 }
 
+static av_cold int decode_end(AVCodecContext *avctx)
+{
+    VMIXContext *s = avctx->priv_data;
+    av_freep(&s->slices);
+    return 0;
+}
+
 const FFCodec ff_vmix_decoder = {
     .p.name           = "vmix",
     CODEC_LONG_NAME("vMix Video"),
@@ -282,6 +308,7 @@ const FFCodec ff_vmix_decoder = {
     .p.id             = AV_CODEC_ID_VMIX,
     .priv_data_size   = sizeof(VMIXContext),
     .init             = decode_init,
+    .close            = decode_end,
     FF_CODEC_DECODE_CB(decode_frame),
     .p.capabilities   = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_FRAME_THREADS |
                         AV_CODEC_CAP_SLICE_THREADS,

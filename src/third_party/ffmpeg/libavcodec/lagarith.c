@@ -27,6 +27,8 @@
 
 #include <inttypes.h>
 
+#include "libavutil/thread.h"
+
 #include "avcodec.h"
 #include "codec_internal.h"
 #include "get_bits.h"
@@ -34,6 +36,8 @@
 #include "lagarithrac.h"
 #include "lossless_videodsp.h"
 #include "thread.h"
+
+#define VLC_BITS 7
 
 enum LagarithFrameType {
     FRAME_RAW           = 1,    /**< uncompressed */
@@ -55,6 +59,35 @@ typedef struct LagarithContext {
     int zeros;                  /**< number of consecutive zero bytes encountered */
     int zeros_rem;              /**< number of zero bytes remaining to output */
 } LagarithContext;
+
+static VLC lag_tab;
+
+static const uint8_t lag_bits[] = {
+    7, 7, 2, 7, 3, 4, 5, 6, 7, 7, 7, 7, 7, 6, 7, 4, 5, 7, 7, 7, 7,
+    5, 6, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+};
+
+static const uint8_t lag_codes[] = {
+    0x01, 0x02, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x04, 0x05,
+    0x08, 0x09, 0x0A, 0x0B, 0x0B, 0x0B, 0x0B, 0x10, 0x11, 0x12, 0x13,
+    0x13, 0x13, 0x14, 0x15, 0x20, 0x21, 0x22, 0x23, 0x23, 0x24, 0x25,
+    0x28, 0x29, 0x2A, 0x2B, 0x2B, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45,
+    0x48, 0x49, 0x4A, 0x4B, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55,
+};
+
+static const uint8_t lag_symbols[] = {
+    20, 12, 0, 12, 1, 2, 4, 7, 7, 28, 4, 25, 17,
+    10, 17, 3, 6, 2, 23, 15, 15, 5, 9, 10, 31, 1, 22,
+    14, 14, 8, 9, 30, 6, 27, 19, 11, 19, 0, 21, 13, 13,
+    8, 29, 5, 26, 18, 18, 3, 24, 16, 16, 11, 32,
+};
+
+static av_cold void lag_init_static_data(void)
+{
+    VLC_INIT_SPARSE_STATIC(&lag_tab, VLC_BITS, FF_ARRAY_ELEMS(lag_bits),
+                           lag_bits, 1, 1, lag_codes, 1, 1, lag_symbols, 1, 1, 128);
+}
 
 /**
  * Compute the 52-bit mantissa of 1/(double)denom.
@@ -101,23 +134,10 @@ static uint8_t lag_calc_zero_run(int8_t x)
 
 static int lag_decode_prob(GetBitContext *gb, uint32_t *value)
 {
-    static const uint8_t series[] = { 1, 2, 3, 5, 8, 13, 21 };
-    int i;
-    int bit     = 0;
-    int bits    = 0;
-    int prevbit = 0;
-    unsigned val;
+    unsigned val, bits;
 
-    for (i = 0; i < 7; i++) {
-        if (prevbit && bit)
-            break;
-        prevbit = bit;
-        bit = get_bits1(gb);
-        if (bit && !prevbit)
-            bits += series[i];
-    }
-    bits--;
-    if (bits < 0 || bits > 31) {
+    bits = get_vlc2(gb, lag_tab.table, VLC_BITS, 1);
+    if (bits > 31) {
         *value = 0;
         return AVERROR_INVALIDDATA;
     } else if (bits == 0) {
@@ -146,17 +166,17 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
     /* Read probabilities from bitstream */
     for (i = 1; i < 257; i++) {
         if (lag_decode_prob(gb, &rac->prob[i]) < 0) {
-            av_log(rac->avctx, AV_LOG_ERROR, "Invalid probability encountered.\n");
+            av_log(rac->logctx, AV_LOG_ERROR, "Invalid probability encountered.\n");
             return AVERROR_INVALIDDATA;
         }
         if ((uint64_t)cumul_prob + rac->prob[i] > UINT_MAX) {
-            av_log(rac->avctx, AV_LOG_ERROR, "Integer overflow encountered in cumulative probability calculation.\n");
+            av_log(rac->logctx, AV_LOG_ERROR, "Integer overflow encountered in cumulative probability calculation.\n");
             return AVERROR_INVALIDDATA;
         }
         cumul_prob += rac->prob[i];
         if (!rac->prob[i]) {
             if (lag_decode_prob(gb, &prob)) {
-                av_log(rac->avctx, AV_LOG_ERROR, "Invalid probability run encountered.\n");
+                av_log(rac->logctx, AV_LOG_ERROR, "Invalid probability run encountered.\n");
                 return AVERROR_INVALIDDATA;
             }
             if (prob > 256 - i)
@@ -169,7 +189,7 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
     }
 
     if (!cumul_prob) {
-        av_log(rac->avctx, AV_LOG_ERROR, "All probabilities are 0!\n");
+        av_log(rac->logctx, AV_LOG_ERROR, "All probabilities are 0!\n");
         return AVERROR_INVALIDDATA;
     }
 
@@ -187,7 +207,7 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
             scaled_cumul_prob += rac->prob[i];
         }
         if (scaled_cumul_prob <= 0) {
-            av_log(rac->avctx, AV_LOG_ERROR, "Scaled probabilities invalid\n");
+            av_log(rac->logctx, AV_LOG_ERROR, "Scaled probabilities invalid\n");
             return AVERROR_INVALIDDATA;
         }
         for (; i < 257; i++) {
@@ -201,7 +221,7 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
         cumulative_target = 1U << scale_factor;
 
         if (scaled_cumul_prob > cumulative_target) {
-            av_log(rac->avctx, AV_LOG_ERROR,
+            av_log(rac->logctx, AV_LOG_ERROR,
                    "Scaled probabilities are larger than target!\n");
             return AVERROR_INVALIDDATA;
         }
@@ -443,7 +463,7 @@ static int lag_decode_arith_plane(LagarithContext *l, uint8_t *dst,
     const uint8_t *src_end = src + src_size;
     int ret;
 
-    rac.avctx = l->avctx;
+    rac.logctx = l->avctx;
     l->zeros = 0;
 
     if(src_size < 2)
@@ -720,10 +740,12 @@ static int lag_decode_frame(AVCodecContext *avctx, AVFrame *p,
 
 static av_cold int lag_decode_init(AVCodecContext *avctx)
 {
+    static AVOnce init_static_once = AV_ONCE_INIT;
     LagarithContext *l = avctx->priv_data;
     l->avctx = avctx;
 
     ff_llviddsp_init(&l->llviddsp);
+    ff_thread_once(&init_static_once, lag_init_static_data);
 
     return 0;
 }

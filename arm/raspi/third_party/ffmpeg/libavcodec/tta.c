@@ -211,7 +211,7 @@ static av_cold int tta_decode_init(AVCodecContext * avctx)
         av_log(avctx, AV_LOG_DEBUG, "data_length: %d frame_length: %d last: %d total: %d\n",
             s->data_length, s->frame_length, s->last_frame_length, total_frames);
 
-        if(s->frame_length >= UINT_MAX / (s->channels * sizeof(int32_t))){
+        if (s->frame_length >= UINT_MAX / (s->channels * sizeof(int32_t))) {
             av_log(avctx, AV_LOG_ERROR, "frame_length too large\n");
             return AVERROR_INVALIDDATA;
         }
@@ -306,14 +306,14 @@ static int tta_decode_frame(AVCodecContext *avctx, AVFrame *frame,
             rice->sum1 += value - (rice->sum1 >> 4);
             if (rice->k1 > 0 && rice->sum1 < ff_tta_shift_16[rice->k1])
                 rice->k1--;
-            else if(rice->sum1 > ff_tta_shift_16[rice->k1 + 1])
+            else if (rice->sum1 > ff_tta_shift_16[rice->k1 + 1])
                 rice->k1++;
             value += ff_tta_shift_1[rice->k0];
         default:
             rice->sum0 += value - (rice->sum0 >> 4);
             if (rice->k0 > 0 && rice->sum0 < ff_tta_shift_16[rice->k0])
                 rice->k0--;
-            else if(rice->sum0 > ff_tta_shift_16[rice->k0 + 1])
+            else if (rice->sum0 > ff_tta_shift_16[rice->k0 + 1])
                 rice->k0++;
         }
 
@@ -342,7 +342,7 @@ static int tta_decode_frame(AVCodecContext *avctx, AVFrame *frame,
             if (s->channels > 1) {
                 int32_t *r = p - 1;
                 for (*p += *r / 2; r > (int32_t*)p - s->channels; r--)
-                    *r = *(r + 1) - *r;
+                    *r = *(r + 1) - (unsigned)*r;
             }
             cur_chan = 0;
             i++;
@@ -399,7 +399,8 @@ error:
     return ret;
 }
 
-static av_cold int tta_decode_close(AVCodecContext *avctx) {
+static av_cold int tta_decode_close(AVCodecContext *avctx)
+{
     TTAContext *s = avctx->priv_data;
 
     if (s->bps < 3)

@@ -617,8 +617,7 @@ function ff_hevc_idct_16x16_\bitdepth\()_neon, export=1
 
         add              sp,  sp,  #640
 
-        mov             x30, x15
-        ret
+        ret             x15
 endfunc
 .endm
 
@@ -791,7 +790,7 @@ function func_tr_32x4_\name
         add             x3, x11, #(32 + 3 * 64)
         scale_store     \shift
 
-        br               x10
+        ret             x10
 endfunc
 .endm
 
@@ -814,8 +813,7 @@ function ff_hevc_idct_32x32_\bitdepth\()_neon, export=1
 .endr
 
         add             sp,  sp,  #2432
-        mov             x30, x15
-        ret
+        ret             x15
 endfunc
 .endm
 

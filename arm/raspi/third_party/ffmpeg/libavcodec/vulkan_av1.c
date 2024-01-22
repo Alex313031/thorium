@@ -104,12 +104,9 @@ static int vk_av1_fill_pict(AVCodecContext *avctx, const AV1Frame **ref_src,
 
 static int vk_av1_create_params(AVCodecContext *avctx, AVBufferRef **buf)
 {
-    VkResult ret;
-
     const AV1DecContext *s = avctx->priv_data;
     FFVulkanDecodeContext *dec = avctx->internal->hwaccel_priv_data;
     FFVulkanDecodeShared *ctx = (FFVulkanDecodeShared *)dec->shared_ref->data;
-    FFVulkanFunctions *vk = &ctx->s.vkfn;
 
     const AV1RawSequenceHeader *seq = s->raw_seq;
 
@@ -118,10 +115,7 @@ static int vk_av1_create_params(AVCodecContext *avctx, AVBufferRef **buf)
     VkVideoDecodeAV1SessionParametersCreateInfoMESA av1_params;
     VkVideoSessionParametersCreateInfoKHR session_params_create;
 
-    AVBufferRef *tmp;
-    VkVideoSessionParametersKHR *par = av_malloc(sizeof(*par));
-    if (!par)
-        return AVERROR(ENOMEM);
+    int err;
 
     av1_sequence_header = (StdVideoAV1MESASequenceHeader) {
         .flags = (StdVideoAV1MESASequenceHeaderFlags) {
@@ -189,25 +183,11 @@ static int vk_av1_create_params(AVCodecContext *avctx, AVBufferRef **buf)
         .videoSessionParametersTemplate = NULL,
     };
 
-    /* Create session parameters */
-    ret = vk->CreateVideoSessionParametersKHR(ctx->s.hwctx->act_dev, &session_params_create,
-                                              ctx->s.hwctx->alloc, par);
-    if (ret != VK_SUCCESS) {
-        av_log(avctx, AV_LOG_ERROR, "Unable to create Vulkan video session parameters: %s!\n",
-               ff_vk_ret2str(ret));
-        return AVERROR_EXTERNAL;
-    }
-
-    tmp = av_buffer_create((uint8_t *)par, sizeof(*par), ff_vk_decode_free_params,
-                           ctx, 0);
-    if (!tmp) {
-        ff_vk_decode_free_params(ctx, (uint8_t *)par);
-        return AVERROR(ENOMEM);
-    }
+    err = ff_vk_decode_create_params(buf, avctx, ctx, &session_params_create);
+    if (err < 0)
+        return err;
 
     av_log(avctx, AV_LOG_DEBUG, "Created frame parameters\n");
-
-    *buf = tmp;
 
     return 0;
 }
@@ -572,11 +552,11 @@ static void vk_av1_free_frame_priv(void *_hwctx, uint8_t *data)
     av_free(ap);
 }
 
-const AVHWAccel ff_av1_vulkan_hwaccel = {
-    .name                  = "av1_vulkan",
-    .type                  = AVMEDIA_TYPE_VIDEO,
-    .id                    = AV_CODEC_ID_AV1,
-    .pix_fmt               = AV_PIX_FMT_VULKAN,
+const FFHWAccel ff_av1_vulkan_hwaccel = {
+    .p.name                = "av1_vulkan",
+    .p.type                = AVMEDIA_TYPE_VIDEO,
+    .p.id                  = AV_CODEC_ID_AV1,
+    .p.pix_fmt             = AV_PIX_FMT_VULKAN,
     .start_frame           = &vk_av1_start_frame,
     .decode_slice          = &vk_av1_decode_slice,
     .end_frame             = &vk_av1_end_frame,

@@ -111,7 +111,7 @@ static av_cold int wavarc_init(AVCodecContext *avctx)
     }
 
     s->max_framesize = s->nb_samples * 16;
-    s->bitstream = av_calloc(s->max_framesize, sizeof(*s->bitstream));
+    s->bitstream = av_calloc(s->max_framesize + AV_INPUT_BUFFER_PADDING_SIZE, sizeof(*s->bitstream));
     if (!s->bitstream)
         return AVERROR(ENOMEM);
 
@@ -154,11 +154,11 @@ static void do_stereo(WavArcContext *s, int ch, int correlated, int len)
     } else {
         if (correlated) {
             for (int n = 0; n < nb_samples; n++)
-                s->samples[1][n + len] += s->samples[0][n + len];
+                s->samples[1][n + len] += (unsigned)s->samples[0][n + len];
         }
         for (int n = 0; n < len; n++) {
             s->pred[0][n] = s->samples[1][nb_samples + n];
-            s->pred[1][n] = s->pred[0][n] - s->samples[0][nb_samples + n];
+            s->pred[1][n] = s->pred[0][n] - (unsigned)s->samples[0][nb_samples + n];
         }
     }
 }
@@ -205,7 +205,7 @@ static int decode_1dif(AVCodecContext *avctx,
         if (block_type < 4 && block_type >= 0) {
             k = 1 + (avctx->sample_fmt == AV_SAMPLE_FMT_S16P);
             k = get_urice(gb, k) + 1;
-            if (k > 32)
+            if (k >= 32)
                 return AVERROR_INVALIDDATA;
         }
 
@@ -218,6 +218,10 @@ static int decode_1dif(AVCodecContext *avctx,
             continue;
         case 6:
             s->shift = get_urice(gb, 2);
+            if ((unsigned)s->shift > 31) {
+                s->shift = 0;
+                return AVERROR_INVALIDDATA;
+            }
             continue;
         case 5:
             if (avctx->sample_fmt == AV_SAMPLE_FMT_U8P) {
@@ -239,18 +243,18 @@ static int decode_1dif(AVCodecContext *avctx,
             break;
         case 3:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 4] = get_srice(gb, k) + (samples[n + 3] - samples[n + 2]) * 3 +
+                samples[n + 4] = get_srice(gb, k) + (samples[n + 3] - (unsigned)samples[n + 2]) * 3 +
                                           samples[n + 1];
             finished = 1;
             break;
         case 2:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 4] = get_srice(gb, k) + (samples[n + 3] * 2 - samples[n + 2]);
+                samples[n + 4] = get_srice(gb, k) + (samples[n + 3] * 2U - samples[n + 2]);
             finished = 1;
             break;
         case 1:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 4] = get_srice(gb, k) + samples[n + 3];
+                samples[n + 4] = get_srice(gb, k) + (unsigned)samples[n + 3];
             finished = 1;
             break;
         case 0:
@@ -297,7 +301,7 @@ static int decode_2slp(AVCodecContext *avctx,
         if (block_type < 5 && block_type >= 0) {
             k = 1 + (avctx->sample_fmt == AV_SAMPLE_FMT_S16P);
             k = get_urice(gb, k) + 1;
-            if (k > 32)
+            if (k >= 32)
                 return AVERROR_INVALIDDATA;
         }
 
@@ -307,13 +311,17 @@ static int decode_2slp(AVCodecContext *avctx,
             return AVERROR_EOF;
         case 8:
             s->nb_samples = get_urice(gb, 8);
-            if (s->nb_samples > 570) {
+            if (s->nb_samples > 570U) {
                 s->nb_samples = 570;
                 return AVERROR_INVALIDDATA;
             }
             continue;
         case 7:
             s->shift = get_urice(gb, 2);
+            if ((unsigned)s->shift > 31) {
+                s->shift = 0;
+                return AVERROR_INVALIDDATA;
+            }
             continue;
         case 6:
             if (avctx->sample_fmt == AV_SAMPLE_FMT_U8P) {
@@ -335,13 +343,13 @@ static int decode_2slp(AVCodecContext *avctx,
             break;
         case 4:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = get_srice(gb, k) + (samples[n + 69] - samples[n + 68]) * 3 +
+                samples[n + 70] = get_srice(gb, k) + (samples[n + 69] - (unsigned)samples[n + 68]) * 3 +
                                            samples[n + 67];
             finished = 1;
             break;
         case 3:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = get_srice(gb, k) + (samples[n + 69] * 2 - samples[n + 68]);
+                samples[n + 70] = get_srice(gb, k) + (samples[n + 69] * 2U - samples[n + 68]);
             finished = 1;
             break;
         case 2:
@@ -351,7 +359,7 @@ static int decode_2slp(AVCodecContext *avctx,
             break;
         case 1:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = get_srice(gb, k) + samples[n + 69];
+                samples[n + 70] = get_srice(gb, k) + (unsigned)samples[n + 69];
             finished = 1;
             break;
         case 0:
@@ -404,13 +412,13 @@ static int ac_init(AVCodecContext *avctx,
     return 0;
 }
 
-static unsigned ac_get_prob(WavArcContext *s)
+static uint16_t ac_get_prob(WavArcContext *s)
 {
-    return ((s->freq_range - 1) + ((unsigned)s->ac_value - (unsigned)s->ac_low) *
-            (unsigned)s->freq_range) / (((unsigned)s->ac_high - (unsigned)s->ac_low) + 1) & 0xffffu;
+    return ((s->freq_range - 1) + (s->ac_value - s->ac_low) * s->freq_range) /
+           ((s->ac_high - s->ac_low) + 1U);
 }
 
-static unsigned ac_map_symbol(WavArcContext *s, unsigned prob)
+static uint8_t ac_map_symbol(WavArcContext *s, uint16_t prob)
 {
     int idx = 255;
 
@@ -427,33 +435,43 @@ static int ac_normalize(AVCodecContext *avctx, WavArcContext *s, GetBitContext *
 {
     int range;
 
-    range = (unsigned)s->ac_high - (unsigned)s->ac_low + 1;
-    s->ac_high = (int16_t)((range * (unsigned)s->range_high) / (unsigned)s->freq_range) + -1 + s->ac_low;
-    s->ac_low += (int16_t)((range * (unsigned)s->range_low)  / (unsigned)s->freq_range);
+    if (s->ac_high < s->ac_low)
+        goto fail;
+
+    range = (s->ac_high - s->ac_low) + 1;
+    s->ac_high = (range * s->range_high) / s->freq_range + s->ac_low - 1;
+    s->ac_low += (range * s->range_low)  / s->freq_range;
+
+    if (s->ac_high < s->ac_low)
+        goto fail;
 
     for (;;) {
         if ((s->ac_high & 0x8000) != (s->ac_low & 0x8000)) {
-            if ((s->ac_low & 0x4000) == 0 || (s->ac_high & 0x4000) != 0)
+            if (((s->ac_low & 0x4000) == 0) || ((s->ac_high & 0x4000) != 0))
                 return 0;
             s->ac_value ^= 0x4000;
             s->ac_low   &= 0x3fff;
             s->ac_high  |= 0x4000;
         }
 
-        s->ac_low = s->ac_low << 1;
-        s->ac_high = s->ac_high * 2 + 1;
-        if (s->ac_high < s->ac_low) {
-            av_log(avctx, AV_LOG_ERROR, "invalid state\n");
-            return AVERROR_INVALIDDATA;
-        }
+        s->ac_low = s->ac_low * 2;
+        s->ac_high = s->ac_high * 2 | 1;
+        if (s->ac_high < s->ac_low)
+            goto fail;
 
         if (get_bits_left(gb) <= 0) {
             av_log(avctx, AV_LOG_ERROR, "overread in arithmetic coder\n");
-            return AVERROR_INVALIDDATA;
+            goto fail;
         }
 
         s->ac_value = s->ac_value * 2 + get_bits1(gb);
+        if (s->ac_low > s->ac_value || s->ac_high < s->ac_value)
+            goto fail;
     }
+
+fail:
+    av_log(avctx, AV_LOG_ERROR, "invalid state\n");
+    return AVERROR_INVALIDDATA;
 }
 
 static void ac_init_model(WavArcContext *s)
@@ -476,11 +494,11 @@ static int ac_read_model(AVCodecContext *avctx,
     end = get_bits(gb, 8);
 
     for (;;) {
-        while (start <= end)
+        while (start <= end) {
+            if (get_bits_left(gb) < 8)
+                return AVERROR_INVALIDDATA;
             s->model[start++] = get_bits(gb, 8);
-
-        if (get_bits_left(gb) < 8)
-            return AVERROR_INVALIDDATA;
+        }
 
         if (get_bits_left(gb) < 8)
             return AVERROR_INVALIDDATA;
@@ -521,6 +539,8 @@ static int decode_5elp(AVCodecContext *avctx,
         if (block_type >= 0 && block_type <= 7) {
             k = 1 + (avctx->sample_fmt == AV_SAMPLE_FMT_S16P);
             k = get_urice(gb, k) + 1;
+            if (k >= 32)
+                return AVERROR_INVALIDDATA;
         }
 
         if (block_type <=  2 || block_type ==  6 || block_type == 13 ||
@@ -560,9 +580,9 @@ static int decode_5elp(AVCodecContext *avctx,
             }
 
             for (int n = 0; n < s->nb_samples; n++) {
-                unsigned prob = ac_get_prob(s);
-                prob = ac_map_symbol(s, prob);
-                ac_out[n] = prob - 0x80;
+                uint16_t prob = ac_get_prob(s);
+                int ac = ac_map_symbol(s, prob);
+                ac_out[n] = ac - 0x80;
                 if ((ret = ac_normalize(avctx, s, &ac_gb)) < 0)
                     return ret;
             }
@@ -579,13 +599,17 @@ static int decode_5elp(AVCodecContext *avctx,
             return AVERROR_EOF;
         case 11:
             s->nb_samples = get_urice(gb, 8);
-            if (s->nb_samples > 570) {
+            if (s->nb_samples > 570U) {
                 s->nb_samples = 570;
                 return AVERROR_INVALIDDATA;
             }
             continue;
         case 10:
             s->shift = get_urice(gb, 2);
+            if ((unsigned)s->shift > 31) {
+                s->shift = 0;
+                return AVERROR_INVALIDDATA;
+            }
             continue;
         case 9:
             if (avctx->sample_fmt == AV_SAMPLE_FMT_U8P) {
@@ -608,11 +632,16 @@ static int decode_5elp(AVCodecContext *avctx,
         case 20:
         case 7:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = ac_out[n] + samples[n + 69] * 3 - samples[n + 68] * 3 + samples[n + 67];
+                samples[n + 70] += ac_out[n] + samples[n + 69] * 3U - samples[n + 68] * 3U + samples[n + 67];
             finished = 1;
             break;
         case 19:
         case 6:
+            for (int n = 0; n < 70; n++) {
+                ac_pred[n] = samples[n];
+                samples[n] = 0;
+            }
+
             for (int n = 0; n < s->nb_samples; n++) {
                 int sum = 15;
 
@@ -621,24 +650,31 @@ static int decode_5elp(AVCodecContext *avctx,
 
                 samples[n + 70] += ac_out[n] + (sum >> 4);
             }
+
+            for (int n = 0; n < 70; n++)
+                samples[n] = ac_pred[n];
+
+            for (int n = 0; n < s->nb_samples; n++)
+                samples[n + 70] += ac_out[n] + samples[n + 69] * 3U - samples[n + 68] * 3U + samples[n + 67];
+
             finished = 1;
             break;
         case 18:
         case 5:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = ac_out[n] + samples[n + 69] * 2 - samples[n + 68];
+                samples[n + 70] += ac_out[n] + samples[n + 69] * 2U - samples[n + 68];
             finished = 1;
             break;
         case 17:
         case 4:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = ac_out[n];
+                samples[n + 70] += ac_out[n];
             finished = 1;
             break;
         case 16:
         case 3:
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] = ac_out[n] + samples[n + 69];
+                samples[n + 70] += ac_out[n] + (unsigned)samples[n + 69];
             finished = 1;
             break;
         case 15:
@@ -661,7 +697,7 @@ static int decode_5elp(AVCodecContext *avctx,
                 samples[n] = ac_pred[n];
 
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] += samples[n + 69] * 2 - samples[n + 68];
+                samples[n + 70] += samples[n + 69] * 2U - samples[n + 68];
 
             finished = 1;
             break;
@@ -678,14 +714,14 @@ static int decode_5elp(AVCodecContext *avctx,
                 for (int o = 0; o < order; o++)
                     sum += s->filter[ch][o] * (unsigned)samples[n + 70 - o - 1];
 
-                samples[n + 70] += ac_out[n] + (sum >> 4);
+                samples[n + 70] += (unsigned)ac_out[n] + (sum >> 4);
             }
 
             for (int n = 0; n < 70; n++)
                 samples[n] = ac_pred[n];
 
             for (int n = 0; n < s->nb_samples; n++)
-                samples[n + 70] += samples[n + 69];
+                samples[n + 70] += (unsigned)samples[n + 69];
 
             finished = 1;
             break;
@@ -697,7 +733,7 @@ static int decode_5elp(AVCodecContext *avctx,
                 for (int o = 0; o < order; o++)
                     sum += s->filter[ch][o] * (unsigned)samples[n + 70 - o - 1];
 
-                samples[n + 70] += ac_out[n] + (sum >> 4);
+                samples[n + 70] += (unsigned)ac_out[n] + (sum >> 4);
             }
             finished = 1;
             break;

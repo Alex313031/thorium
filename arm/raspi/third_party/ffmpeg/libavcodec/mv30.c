@@ -643,8 +643,7 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *frame,
             return ret;
     }
 
-    av_frame_unref(s->prev_frame);
-    if ((ret = av_frame_ref(s->prev_frame, frame)) < 0)
+    if ((ret = av_frame_replace(s->prev_frame, frame)) < 0)
         return ret;
 
     *got_frame = 1;
@@ -658,7 +657,7 @@ static const uint8_t cbp_bits[] = {
 
 static av_cold void init_static_data(void)
 {
-    INIT_VLC_STATIC_FROM_LENGTHS(&cbp_tab, CBP_VLC_BITS, FF_ARRAY_ELEMS(cbp_bits),
+    VLC_INIT_STATIC_FROM_LENGTHS(&cbp_tab, CBP_VLC_BITS, FF_ARRAY_ELEMS(cbp_bits),
                                  cbp_bits, 1, NULL, 0, 0, 0, 0, 1 << CBP_VLC_BITS);
 }
 

@@ -26,7 +26,7 @@ ROBO_CONFIGURATION = config.RoboConfiguration()
 FFMPEG_DIR = ROBO_CONFIGURATION.ffmpeg_home()
 CHROMIUM_ROOT_DIR = ROBO_CONFIGURATION.chrome_src()
 NDK_ROOT_DIR = os.path.abspath(
-    os.path.join(CHROMIUM_ROOT_DIR, 'third_party', 'android_toolchain'))
+    os.path.join(CHROMIUM_ROOT_DIR, 'third_party', 'android_toolchain', 'ndk'))
 # Token to indicate that a build has completed successfully, so that we can
 # skip it with `--fast`.
 SUCCESS_TOKEN = 'THIS_BUILD_WORKED'
@@ -683,8 +683,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-avcodec',
       '--enable-avformat',
       '--enable-avutil',
-      '--enable-fft',
-      '--enable-rdft',
       '--enable-static',
       '--enable-libopus',
 

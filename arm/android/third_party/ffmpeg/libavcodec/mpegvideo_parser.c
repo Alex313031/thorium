@@ -105,22 +105,23 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
 {
     struct MpvParseContext *pc = s->priv_data;
     const uint8_t *buf_end = buf + buf_size;
-    uint32_t start_code;
-    int frame_rate_index, ext_type, bytes_left;
-    int frame_rate_ext_n, frame_rate_ext_d;
-    int top_field_first, repeat_first_field, progressive_frame;
-    int horiz_size_ext, vert_size_ext, bit_rate_ext;
+    int bytes_left;
     int did_set_size=0;
     int set_dim_ret = 0;
     int bit_rate = 0;
     int vbv_delay = 0;
-    int chroma_format;
     enum AVPixelFormat pix_fmt = AV_PIX_FMT_NONE;
-//FIXME replace the crap with get_bits()
-    s->repeat_pict = 0;
 
+    // number of picture coding extensions (i.e. MPEG2 pictures)
+    // in this packet - should be 1 or 2
+    int nb_pic_ext = 0;
+    // when there are two pictures in the packet this indicates
+    // which field is in the first of them
+    int first_field = AV_FIELD_UNKNOWN;
+
+//FIXME replace the crap with get_bits()
     while (buf < buf_end) {
-        start_code= -1;
+        uint32_t start_code = -1;
         buf= avpriv_find_start_code(buf, buf_end, &start_code);
         bytes_left = buf_end - buf;
         switch(start_code) {
@@ -129,11 +130,12 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                 s->pict_type = (buf[1] >> 3) & 7;
                 if (bytes_left >= 4)
                     vbv_delay = ((buf[1] & 0x07) << 13) | (buf[2] << 5) | (buf[3] >> 3);
-                s->repeat_pict = 1;
             }
             break;
         case SEQ_START_CODE:
             if (bytes_left >= 7) {
+                int frame_rate_index;
+
                 pc->width  = (buf[0] << 4) | (buf[1] >> 4);
                 pc->height = ((buf[1] & 0x0f) << 8) | buf[2];
                 if(!avctx->width || !avctx->height || !avctx->coded_width || !avctx->coded_height){
@@ -154,20 +156,18 @@ FF_ENABLE_DEPRECATION_WARNINGS
             break;
         case EXT_START_CODE:
             if (bytes_left >= 1) {
-                ext_type = (buf[0] >> 4);
-                switch(ext_type) {
+                switch (buf[0] >> 4) { // ext_type
                 case 0x1: /* sequence extension */
                     if (bytes_left >= 6) {
-                        horiz_size_ext = ((buf[1] & 1) << 1) | (buf[2] >> 7);
-                        vert_size_ext = (buf[2] >> 5) & 3;
-                        bit_rate_ext = ((buf[2] & 0x1F)<<7) | (buf[3]>>1);
-                        frame_rate_ext_n = (buf[5] >> 5) & 3;
-                        frame_rate_ext_d = (buf[5] & 0x1f);
+                        int horiz_size_ext   = ((buf[1] & 1) << 1) | (buf[2] >> 7);
+                        int  vert_size_ext   = (buf[2] >> 5) & 3;
+                        int   bit_rate_ext   = ((buf[2] & 0x1F)<<7) | (buf[3]>>1);
+                        int frame_rate_ext_n = (buf[5] >> 5) & 3;
+                        int frame_rate_ext_d = (buf[5] & 0x1f);
                         pc->progressive_sequence = buf[1] & (1 << 3);
                         avctx->has_b_frames= !(buf[5] >> 7);
 
-                        chroma_format = (buf[1] >> 1) & 3;
-                        switch (chroma_format) {
+                        switch ((buf[1] >> 1) & 3) { // chroma_format
                         case 1: pix_fmt = AV_PIX_FMT_YUV420P; break;
                         case 2: pix_fmt = AV_PIX_FMT_YUV422P; break;
                         case 3: pix_fmt = AV_PIX_FMT_YUV444P; break;
@@ -190,11 +190,12 @@ FF_ENABLE_DEPRECATION_WARNINGS
                     break;
                 case 0x8: /* picture coding extension */
                     if (bytes_left >= 5) {
-                        top_field_first = buf[3] & (1 << 7);
-                        repeat_first_field = buf[3] & (1 << 1);
-                        progressive_frame = buf[4] & (1 << 7);
+                        int    top_field_first = buf[3] & (1 << 7);
+                        int repeat_first_field = buf[3] & (1 << 1);
+                        int  progressive_frame = buf[4] & (1 << 7);
 
                         /* check if we must repeat the frame */
+                        s->repeat_pict = 1;
                         if (repeat_first_field) {
                             if (pc->progressive_sequence) {
                                 if (top_field_first)
@@ -213,6 +214,19 @@ FF_ENABLE_DEPRECATION_WARNINGS
                                 s->field_order = AV_FIELD_BB;
                         } else
                             s->field_order = AV_FIELD_PROGRESSIVE;
+
+                        s->picture_structure = buf[2] & 3;
+
+                        if (!nb_pic_ext) {
+                            // remember parity of the first field for the case
+                            // when there are 2 fields in packet
+                            switch (s->picture_structure) {
+                            case AV_PICTURE_STRUCTURE_BOTTOM_FIELD: first_field = AV_FIELD_BB; break;
+                            case AV_PICTURE_STRUCTURE_TOP_FIELD:    first_field = AV_FIELD_TT; break;
+                            }
+                        }
+
+                        nb_pic_ext++;
                     }
                     break;
                 }
@@ -233,7 +247,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
     if (set_dim_ret < 0)
         av_log(avctx, AV_LOG_ERROR, "Failed to set dimensions\n");
 
-    if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && bit_rate) {
+    if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && bit_rate && bit_rate != 0x3FFFF) {
         avctx->rc_max_rate = 400LL*bit_rate;
     }
     if (bit_rate &&
@@ -247,6 +261,12 @@ FF_ENABLE_DEPRECATION_WARNINGS
         s->height = pc->height;
         s->coded_width  = FFALIGN(pc->width,  16);
         s->coded_height = FFALIGN(pc->height, 16);
+    }
+
+    if (avctx->codec_id == AV_CODEC_ID_MPEG1VIDEO || nb_pic_ext > 1) {
+        s->repeat_pict       = 1;
+        s->picture_structure = AV_PICTURE_STRUCTURE_FRAME;
+        s->field_order       = nb_pic_ext > 1 ? first_field : AV_FIELD_PROGRESSIVE;
     }
 }
 

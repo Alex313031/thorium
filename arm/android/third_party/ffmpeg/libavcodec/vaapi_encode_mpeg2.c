@@ -458,12 +458,12 @@ static int vaapi_encode_mpeg2_init_picture_params(AVCodecContext *avctx,
         break;
     case PICTURE_TYPE_P:
         vpic->picture_type = VAEncPictureTypePredictive;
-        vpic->forward_reference_picture = pic->refs[0]->recon_surface;
+        vpic->forward_reference_picture = pic->refs[0][0]->recon_surface;
         break;
     case PICTURE_TYPE_B:
         vpic->picture_type = VAEncPictureTypeBidirectional;
-        vpic->forward_reference_picture  = pic->refs[0]->recon_surface;
-        vpic->backward_reference_picture = pic->refs[1]->recon_surface;
+        vpic->forward_reference_picture  = pic->refs[0][0]->recon_surface;
+        vpic->backward_reference_picture = pic->refs[1][0]->recon_surface;
         break;
     default:
         av_assert0(0 && "invalid picture type");
@@ -558,9 +558,9 @@ static av_cold int vaapi_encode_mpeg2_configure(AVCodecContext *avctx)
 }
 
 static const VAAPIEncodeProfile vaapi_encode_mpeg2_profiles[] = {
-    { FF_PROFILE_MPEG2_MAIN,   8, 3, 1, 1, VAProfileMPEG2Main   },
-    { FF_PROFILE_MPEG2_SIMPLE, 8, 3, 1, 1, VAProfileMPEG2Simple },
-    { FF_PROFILE_UNKNOWN }
+    { AV_PROFILE_MPEG2_MAIN,   8, 3, 1, 1, VAProfileMPEG2Main   },
+    { AV_PROFILE_MPEG2_SIMPLE, 8, 3, 1, 1, VAProfileMPEG2Simple },
+    { AV_PROFILE_UNKNOWN }
 };
 
 static const VAAPIEncodeType vaapi_encode_type_mpeg2 = {
@@ -595,9 +595,9 @@ static av_cold int vaapi_encode_mpeg2_init(AVCodecContext *avctx)
 
     ctx->codec = &vaapi_encode_type_mpeg2;
 
-    if (avctx->profile == FF_PROFILE_UNKNOWN)
+    if (avctx->profile == AV_PROFILE_UNKNOWN)
         avctx->profile = priv->profile;
-    if (avctx->level == FF_LEVEL_UNKNOWN)
+    if (avctx->level == AV_LEVEL_UNKNOWN)
         avctx->level = priv->level;
 
     // Reject unknown levels (these are required to set f_code for
@@ -644,12 +644,12 @@ static const AVOption vaapi_encode_mpeg2_options[] = {
 
     { "profile", "Set profile (in profile_and_level_indication)",
       OFFSET(profile), AV_OPT_TYPE_INT,
-      { .i64 = FF_PROFILE_UNKNOWN }, FF_PROFILE_UNKNOWN, 7, FLAGS, "profile" },
+      { .i64 = AV_PROFILE_UNKNOWN }, AV_PROFILE_UNKNOWN, 7, FLAGS, "profile" },
 
 #define PROFILE(name, value)  name, NULL, 0, AV_OPT_TYPE_CONST, \
       { .i64 = value }, 0, 0, FLAGS, "profile"
-    { PROFILE("simple", FF_PROFILE_MPEG2_SIMPLE) },
-    { PROFILE("main",   FF_PROFILE_MPEG2_MAIN)   },
+    { PROFILE("simple", AV_PROFILE_MPEG2_SIMPLE) },
+    { PROFILE("main",   AV_PROFILE_MPEG2_MAIN)   },
 #undef PROFILE
 
     { "level", "Set level (in profile_and_level_indication)",

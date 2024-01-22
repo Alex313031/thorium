@@ -24,7 +24,7 @@
 #include <vdpau/vdpau.h>
 
 #include "avcodec.h"
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "mpeg4videodec.h"
 #include "vdpau.h"
 #include "vdpau_internal.h"
@@ -95,13 +95,13 @@ static int vdpau_mpeg4_init(AVCodecContext *avctx)
     VdpDecoderProfile profile;
 
     switch (avctx->profile) {
-    case FF_PROFILE_MPEG4_SIMPLE:
+    case AV_PROFILE_MPEG4_SIMPLE:
         profile = VDP_DECODER_PROFILE_MPEG4_PART2_SP;
         break;
     // As any ASP decoder must be able to decode SP, this
     // should be a safe fallback if profile is unknown/unspecified.
-    case FF_PROFILE_UNKNOWN:
-    case FF_PROFILE_MPEG4_ADVANCED_SIMPLE:
+    case AV_PROFILE_UNKNOWN:
+    case AV_PROFILE_MPEG4_ADVANCED_SIMPLE:
         profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
         break;
     default:
@@ -111,11 +111,11 @@ static int vdpau_mpeg4_init(AVCodecContext *avctx)
     return ff_vdpau_common_init(avctx, profile, avctx->level);
 }
 
-const AVHWAccel ff_mpeg4_vdpau_hwaccel = {
-    .name           = "mpeg4_vdpau",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = AV_CODEC_ID_MPEG4,
-    .pix_fmt        = AV_PIX_FMT_VDPAU,
+const FFHWAccel ff_mpeg4_vdpau_hwaccel = {
+    .p.name         = "mpeg4_vdpau",
+    .p.type         = AVMEDIA_TYPE_VIDEO,
+    .p.id           = AV_CODEC_ID_MPEG4,
+    .p.pix_fmt      = AV_PIX_FMT_VDPAU,
     .start_frame    = vdpau_mpeg4_start_frame,
     .end_frame      = ff_vdpau_mpeg_end_frame,
     .decode_slice   = vdpau_mpeg4_decode_slice,

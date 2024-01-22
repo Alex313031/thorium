@@ -334,8 +334,8 @@ static av_cold void rv10_build_vlc(VLC *vlc, const uint16_t len_count[15],
         for (unsigned tmp = nb_lens + len_count[i]; nb_lens < tmp; nb_lens++)
             lens[nb_lens] = i + 2;
     av_assert1(nb_lens == nb_syms);
-    ff_init_vlc_from_lengths(vlc, DC_VLC_BITS, nb_lens, lens, 1,
-                             syms, 2, 2, 0, INIT_VLC_STATIC_OVERLONG, NULL);
+    ff_vlc_init_from_lengths(vlc, DC_VLC_BITS, nb_lens, lens, 1,
+                             syms, 2, 2, 0, VLC_INIT_STATIC_OVERLONG, NULL);
 }
 
 static av_cold void rv10_init_static(void)
@@ -477,7 +477,7 @@ static int rv10_decode_packet(AVCodecContext *avctx, const uint8_t *buf,
     if ((s->mb_x == 0 && s->mb_y == 0) || !s->current_picture_ptr) {
         // FIXME write parser so we always have complete frames?
         if (s->current_picture_ptr) {
-            ff_er_frame_end(&s->er);
+            ff_er_frame_end(&s->er, NULL);
             ff_mpv_frame_end(s);
             s->mb_x = s->mb_y = s->resync_mb_x = s->resync_mb_y = 0;
         }
@@ -649,7 +649,7 @@ static int rv10_decode_frame(AVCodecContext *avctx, AVFrame *pict,
     }
 
     if (s->current_picture_ptr && s->mb_y >= s->mb_height) {
-        ff_er_frame_end(&s->er);
+        ff_er_frame_end(&s->er, NULL);
         ff_mpv_frame_end(s);
 
         if (s->pict_type == AV_PICTURE_TYPE_B || s->low_delay) {

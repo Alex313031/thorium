@@ -130,21 +130,22 @@ static int dnxhd_init_vlc(DNXHDContext *ctx, uint32_t cid, int bitdepth)
         ctx->cid_table = cid_table;
         av_log(ctx->avctx, AV_LOG_VERBOSE, "Profile cid %"PRIu32".\n", cid);
 
-        ff_free_vlc(&ctx->ac_vlc);
-        ff_free_vlc(&ctx->dc_vlc);
-        ff_free_vlc(&ctx->run_vlc);
+        ff_vlc_free(&ctx->ac_vlc);
+        ff_vlc_free(&ctx->dc_vlc);
+        ff_vlc_free(&ctx->run_vlc);
 
-        if ((ret = init_vlc(&ctx->ac_vlc, DNXHD_VLC_BITS, 257,
+        if ((ret = vlc_init(&ctx->ac_vlc, DNXHD_VLC_BITS, 257,
                  ctx->cid_table->ac_bits, 1, 1,
                  ctx->cid_table->ac_codes, 2, 2, 0)) < 0)
             goto out;
-        if ((ret = init_vlc(&ctx->dc_vlc, DNXHD_DC_VLC_BITS, bitdepth > 8 ? 14 : 12,
+        if ((ret = vlc_init(&ctx->dc_vlc, DNXHD_DC_VLC_BITS, bitdepth > 8 ? 14 : 12,
                  ctx->cid_table->dc_bits, 1, 1,
                  ctx->cid_table->dc_codes, 1, 1, 0)) < 0)
             goto out;
-        if ((ret = init_vlc(&ctx->run_vlc, DNXHD_VLC_BITS, 62,
+        if ((ret = ff_vlc_init_sparse(&ctx->run_vlc, DNXHD_VLC_BITS, 62,
                  ctx->cid_table->run_bits, 1, 1,
-                 ctx->cid_table->run_codes, 2, 2, 0)) < 0)
+                 ctx->cid_table->run_codes, 2, 2,
+                 ctx->cid_table->run, 1, 1, 0)) < 0)
             goto out;
 
         ctx->cid = cid;
@@ -152,7 +153,7 @@ static int dnxhd_init_vlc(DNXHDContext *ctx, uint32_t cid, int bitdepth)
     ret = 0;
 out:
     if (ret < 0)
-        av_log(ctx->avctx, AV_LOG_ERROR, "init_vlc failed\n");
+        av_log(ctx->avctx, AV_LOG_ERROR, "vlc_init failed\n");
     return ret;
 }
 
@@ -160,17 +161,17 @@ static int dnxhd_get_profile(int cid)
 {
     switch(cid) {
     case 1270:
-        return FF_PROFILE_DNXHR_444;
+        return AV_PROFILE_DNXHR_444;
     case 1271:
-        return FF_PROFILE_DNXHR_HQX;
+        return AV_PROFILE_DNXHR_HQX;
     case 1272:
-        return FF_PROFILE_DNXHR_HQ;
+        return AV_PROFILE_DNXHR_HQ;
     case 1273:
-        return FF_PROFILE_DNXHR_SQ;
+        return AV_PROFILE_DNXHR_SQ;
     case 1274:
-        return FF_PROFILE_DNXHR_LB;
+        return AV_PROFILE_DNXHR_LB;
     }
-    return FF_PROFILE_DNXHD;
+    return AV_PROFILE_DNXHD;
 }
 
 static int dnxhd_decode_header(DNXHDContext *ctx, AVFrame *frame,
@@ -262,7 +263,7 @@ static int dnxhd_decode_header(DNXHDContext *ctx, AVFrame *frame,
         ctx->decode_dct_block = dnxhd_decode_dct_block_12;
         ctx->pix_fmt = AV_PIX_FMT_YUV422P12;
     } else if (bitdepth == 10) {
-        if (ctx->avctx->profile == FF_PROFILE_DNXHR_HQX)
+        if (ctx->avctx->profile == AV_PROFILE_DNXHR_HQX)
             ctx->decode_dct_block = dnxhd_decode_dct_block_10_444;
         else
             ctx->decode_dct_block = dnxhd_decode_dct_block_10;
@@ -358,7 +359,7 @@ static av_always_inline int dnxhd_decode_dct_block(const DNXHDContext *ctx,
                                                    int level_shift,
                                                    int dc_shift)
 {
-    int i, j, index1, index2, len, flags;
+    int i, j, index1, len, flags;
     int level, component, sign;
     const int *scale;
     const uint8_t *weight_matrix;
@@ -425,10 +426,11 @@ static av_always_inline int dnxhd_decode_dct_block(const DNXHDContext *ctx,
         }
 
         if (flags & 2) {
+            int run;
             UPDATE_CACHE(bs, &row->gb);
-            GET_VLC(index2, bs, &row->gb, ctx->run_vlc.table,
+            GET_VLC(run, bs, &row->gb, ctx->run_vlc.table,
                     DNXHD_VLC_BITS, 2);
-            i += ctx->cid_table->run[index2];
+            i += run;
         }
 
         if (++i > 63) {
@@ -716,9 +718,9 @@ static av_cold int dnxhd_decode_close(AVCodecContext *avctx)
 {
     DNXHDContext *ctx = avctx->priv_data;
 
-    ff_free_vlc(&ctx->ac_vlc);
-    ff_free_vlc(&ctx->dc_vlc);
-    ff_free_vlc(&ctx->run_vlc);
+    ff_vlc_free(&ctx->ac_vlc);
+    ff_vlc_free(&ctx->dc_vlc);
+    ff_vlc_free(&ctx->run_vlc);
 
     av_freep(&ctx->rows);
 

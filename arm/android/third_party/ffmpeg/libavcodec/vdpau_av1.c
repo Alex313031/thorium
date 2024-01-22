@@ -25,7 +25,7 @@
 #include "avcodec.h"
 #include "internal.h"
 #include "av1dec.h"
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "vdpau.h"
 #include "vdpau_internal.h"
 
@@ -337,13 +337,13 @@ static int vdpau_av1_init(AVCodecContext *avctx)
     uint32_t level = avctx->level;
 
     switch (avctx->profile) {
-    case FF_PROFILE_AV1_MAIN:
+    case AV_PROFILE_AV1_MAIN:
         profile = VDP_DECODER_PROFILE_AV1_MAIN;
         break;
-    case FF_PROFILE_AV1_HIGH:
+    case AV_PROFILE_AV1_HIGH:
         profile = VDP_DECODER_PROFILE_AV1_HIGH;
         break;
-    case FF_PROFILE_AV1_PROFESSIONAL:
+    case AV_PROFILE_AV1_PROFESSIONAL:
         profile = VDP_DECODER_PROFILE_AV1_PROFESSIONAL;
         break;
     default:
@@ -353,11 +353,11 @@ static int vdpau_av1_init(AVCodecContext *avctx)
     return ff_vdpau_common_init(avctx, profile, level);
 }
 
-const AVHWAccel ff_av1_vdpau_hwaccel = {
-    .name           = "av1_vdpau",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = AV_CODEC_ID_AV1,
-    .pix_fmt        = AV_PIX_FMT_VDPAU,
+const FFHWAccel ff_av1_vdpau_hwaccel = {
+    .p.name         = "av1_vdpau",
+    .p.type         = AVMEDIA_TYPE_VIDEO,
+    .p.id           = AV_CODEC_ID_AV1,
+    .p.pix_fmt      = AV_PIX_FMT_VDPAU,
     .start_frame    = vdpau_av1_start_frame,
     .end_frame      = vdpau_av1_end_frame,
     .decode_slice   = vdpau_av1_decode_slice,

@@ -439,7 +439,9 @@ int ff_tx_decompose_length(int dst[TX_MAX_DECOMPOSITIONS], enum AVTXType type,
 
             /* Check direction for non-orthogonal codelets */
             if (((cd->flags & FF_TX_FORWARD_ONLY) && inv) ||
-                ((cd->flags & (FF_TX_INVERSE_ONLY | AV_TX_FULL_IMDCT)) && !inv))
+                ((cd->flags & (FF_TX_INVERSE_ONLY | AV_TX_FULL_IMDCT)) && !inv) ||
+                ((cd->flags & (FF_TX_FORWARD_ONLY | AV_TX_REAL_TO_REAL)) && inv) ||
+                ((cd->flags & (FF_TX_FORWARD_ONLY | AV_TX_REAL_TO_IMAGINARY)) && inv))
                 continue;
 
             /* Check if the CPU supports the required ISA */
@@ -562,6 +564,10 @@ static void print_flags(AVBPrint *bp, uint64_t f)
         av_bprintf(bp, "%spreshuf", prev > 1 ? sep : "");
     if ((f & AV_TX_FULL_IMDCT) && ++prev)
         av_bprintf(bp, "%simdct_full", prev > 1 ? sep : "");
+    if ((f & AV_TX_REAL_TO_REAL) && ++prev)
+        av_bprintf(bp, "%sreal_to_real", prev > 1 ? sep : "");
+    if ((f & AV_TX_REAL_TO_IMAGINARY) && ++prev)
+        av_bprintf(bp, "%sreal_to_imaginary", prev > 1 ? sep : "");
     if ((f & FF_TX_ASM_CALL) && ++prev)
         av_bprintf(bp, "%sasm_call", prev > 1 ? sep : "");
     av_bprintf(bp, "]");
@@ -574,18 +580,24 @@ static void print_type(AVBPrint *bp, enum AVTXType type)
                type == AV_TX_FLOAT_FFT   ? "fft_float"   :
                type == AV_TX_FLOAT_MDCT  ? "mdct_float"  :
                type == AV_TX_FLOAT_RDFT  ? "rdft_float"  :
+               type == AV_TX_FLOAT_DCT_I ? "dctI_float"  :
+               type == AV_TX_FLOAT_DST_I ? "dstI_float"  :
                type == AV_TX_DOUBLE_FFT  ? "fft_double"  :
                type == AV_TX_DOUBLE_MDCT ? "mdct_double" :
                type == AV_TX_DOUBLE_RDFT ? "rdft_double" :
+               type == AV_TX_DOUBLE_DCT_I ? "dctI_double" :
+               type == AV_TX_DOUBLE_DST_I ? "dstI_double" :
                type == AV_TX_INT32_FFT   ? "fft_int32"   :
                type == AV_TX_INT32_MDCT  ? "mdct_int32"  :
                type == AV_TX_INT32_RDFT  ? "rdft_int32"  :
+               type == AV_TX_INT32_DCT_I ? "dctI_int32" :
+               type == AV_TX_INT32_DST_I ? "dstI_int32" :
                "unknown");
 }
 
 static void print_cd_info(const FFTXCodelet *cd, int prio, int len, int print_prio)
 {
-    AVBPrint bp = { 0 };
+    AVBPrint bp;
     av_bprint_init(&bp, 0, AV_BPRINT_SIZE_AUTOMATIC);
 
     av_bprintf(&bp, "%s - type: ", cd->name);
@@ -708,7 +720,7 @@ av_cold int ff_tx_init_subtx(AVTXContext *s, enum AVTXType type,
     int codelet_list_idx = codelet_list_num;
     int nb_cd_matches = 0;
 #if !CONFIG_SMALL
-    AVBPrint bp = { 0 };
+    AVBPrint bp;
 #endif
 
     /* We still accept functions marked with SLOW, even if the CPU is
@@ -719,7 +731,11 @@ av_cold int ff_tx_init_subtx(AVTXContext *s, enum AVTXType type,
     uint64_t req_flags = flags;
 
     /* Flags the codelet may require to be present */
-    uint64_t inv_req_mask = AV_TX_FULL_IMDCT | FF_TX_PRESHUFFLE | FF_TX_ASM_CALL;
+    uint64_t inv_req_mask = AV_TX_FULL_IMDCT |
+                            AV_TX_REAL_TO_REAL |
+                            AV_TX_REAL_TO_IMAGINARY |
+                            FF_TX_PRESHUFFLE |
+                            FF_TX_ASM_CALL;
 
     /* Unaligned codelets are compatible with the aligned flag */
     if (req_flags & FF_TX_ALIGNED)
@@ -744,7 +760,9 @@ av_cold int ff_tx_init_subtx(AVTXContext *s, enum AVTXType type,
 
             /* Check direction for non-orthogonal codelets */
             if (((cd->flags & FF_TX_FORWARD_ONLY) && inv) ||
-                ((cd->flags & (FF_TX_INVERSE_ONLY | AV_TX_FULL_IMDCT)) && !inv))
+                ((cd->flags & (FF_TX_INVERSE_ONLY | AV_TX_FULL_IMDCT)) && !inv) ||
+                ((cd->flags & (FF_TX_FORWARD_ONLY | AV_TX_REAL_TO_REAL)) && inv) ||
+                ((cd->flags & (FF_TX_FORWARD_ONLY | AV_TX_REAL_TO_IMAGINARY)) && inv))
                 continue;
 
             /* Check if the requested flags match from both sides */

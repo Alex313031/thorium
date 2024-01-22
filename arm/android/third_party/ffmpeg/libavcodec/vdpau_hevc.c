@@ -25,7 +25,7 @@
 #include "avcodec.h"
 #include "hevc_data.h"
 #include "hevcdec.h"
-#include "hwconfig.h"
+#include "hwaccel_internal.h"
 #include "vdpau.h"
 #include "vdpau_internal.h"
 #include "h265_profile_level.h"
@@ -519,16 +519,16 @@ static int vdpau_hevc_init(AVCodecContext *avctx)
     int ret;
 
     switch (avctx->profile) {
-    case FF_PROFILE_HEVC_MAIN:
+    case AV_PROFILE_HEVC_MAIN:
         profile = VDP_DECODER_PROFILE_HEVC_MAIN;
         break;
-    case FF_PROFILE_HEVC_MAIN_10:
+    case AV_PROFILE_HEVC_MAIN_10:
         profile = VDP_DECODER_PROFILE_HEVC_MAIN_10;
         break;
-    case FF_PROFILE_HEVC_MAIN_STILL_PICTURE:
+    case AV_PROFILE_HEVC_MAIN_STILL_PICTURE:
         profile = VDP_DECODER_PROFILE_HEVC_MAIN_STILL;
         break;
-    case FF_PROFILE_HEVC_REXT:
+    case AV_PROFILE_HEVC_REXT:
         ret = vdpau_hevc_parse_rext_profile(avctx, &profile);
         if (ret)
             return AVERROR(ENOTSUP);
@@ -540,11 +540,11 @@ static int vdpau_hevc_init(AVCodecContext *avctx)
     return ff_vdpau_common_init(avctx, profile, level);
 }
 
-const AVHWAccel ff_hevc_vdpau_hwaccel = {
-    .name           = "hevc_vdpau",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = AV_CODEC_ID_HEVC,
-    .pix_fmt        = AV_PIX_FMT_VDPAU,
+const FFHWAccel ff_hevc_vdpau_hwaccel = {
+    .p.name         = "hevc_vdpau",
+    .p.type         = AVMEDIA_TYPE_VIDEO,
+    .p.id           = AV_CODEC_ID_HEVC,
+    .p.pix_fmt      = AV_PIX_FMT_VDPAU,
     .start_frame    = vdpau_hevc_start_frame,
     .end_frame      = vdpau_hevc_end_frame,
     .decode_slice   = vdpau_hevc_decode_slice,

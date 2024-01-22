@@ -21,8 +21,6 @@
 #include "libavutil/log.h"
 #include "libavutil/thread.h"
 #include "avcodec.h"
-#include "decode.h"
-#include "encode.h"
 #include "snow_dwt.h"
 #include "snow.h"
 #include "snowdata.h"
@@ -59,36 +57,6 @@ void ff_snow_inner_add_yblock(const uint8_t *obmc, const int obmc_stride, uint8_
             }
         }
     }
-}
-
-int ff_snow_get_buffer(SnowContext *s, AVFrame *frame)
-{
-    int ret, i;
-    int edges_needed = av_codec_is_encoder(s->avctx->codec);
-
-    frame->width  = s->avctx->width ;
-    frame->height = s->avctx->height;
-    if (edges_needed) {
-        frame->width  += 2 * EDGE_WIDTH;
-        frame->height += 2 * EDGE_WIDTH;
-
-        ret = ff_encode_alloc_frame(s->avctx, frame);
-    } else
-        ret = ff_get_buffer(s->avctx, frame, AV_GET_BUFFER_FLAG_REF);
-    if (ret < 0)
-        return ret;
-    if (edges_needed) {
-        for (i = 0; frame->data[i]; i++) {
-            int offset = (EDGE_WIDTH >> (i ? s->chroma_v_shift : 0)) *
-                            frame->linesize[i] +
-                            (EDGE_WIDTH >> (i ? s->chroma_h_shift : 0));
-            frame->data[i] += offset;
-        }
-        frame->width  = s->avctx->width;
-        frame->height = s->avctx->height;
-    }
-
-    return 0;
 }
 
 void ff_snow_reset_contexts(SnowContext *s){ //FIXME better initial contexts
@@ -433,35 +401,9 @@ av_cold int ff_snow_common_init(AVCodecContext *avctx){
     s->max_ref_frames=1; //just make sure it's not an invalid value in case of no initial keyframe
     s->spatial_decomposition_count = 1;
 
-    ff_hpeldsp_init(&s->hdsp, avctx->flags);
     ff_videodsp_init(&s->vdsp, 8);
     ff_dwt_init(&s->dwt);
     ff_h264qpel_init(&s->h264qpel, 8);
-
-#define mcf(dx,dy)\
-    s->qdsp.put_qpel_pixels_tab       [0][dy+dx/4]=\
-    s->qdsp.put_no_rnd_qpel_pixels_tab[0][dy+dx/4]=\
-        s->h264qpel.put_h264_qpel_pixels_tab[0][dy+dx/4];\
-    s->qdsp.put_qpel_pixels_tab       [1][dy+dx/4]=\
-    s->qdsp.put_no_rnd_qpel_pixels_tab[1][dy+dx/4]=\
-        s->h264qpel.put_h264_qpel_pixels_tab[1][dy+dx/4];
-
-    mcf( 0, 0)
-    mcf( 4, 0)
-    mcf( 8, 0)
-    mcf(12, 0)
-    mcf( 0, 4)
-    mcf( 4, 4)
-    mcf( 8, 4)
-    mcf(12, 4)
-    mcf( 0, 8)
-    mcf( 4, 8)
-    mcf( 8, 8)
-    mcf(12, 8)
-    mcf( 0,12)
-    mcf( 4,12)
-    mcf( 8,12)
-    mcf(12,12)
 
 #define mcfh(dx,dy)\
     s->hdsp.put_pixels_tab       [0][dy/4+dx/8]=\
@@ -507,25 +449,13 @@ av_cold int ff_snow_common_init(AVCodecContext *avctx){
 int ff_snow_common_init_after_header(AVCodecContext *avctx) {
     SnowContext *s = avctx->priv_data;
     int plane_index, level, orientation;
-    int ret, emu_buf_size;
 
     if(!s->scratchbuf) {
-        if (av_codec_is_decoder(avctx->codec)) {
-            if ((ret = ff_get_buffer(s->avctx, s->mconly_picture,
-                                     AV_GET_BUFFER_FLAG_REF)) < 0)
-                return ret;
-        }
-
+        int emu_buf_size;
         emu_buf_size = FFMAX(s->mconly_picture->linesize[0], 2*avctx->width+256) * (2 * MB_SIZE + HTAPS_MAX - 1);
         if (!FF_ALLOCZ_TYPED_ARRAY(s->scratchbuf,      FFMAX(s->mconly_picture->linesize[0], 2*avctx->width+256) * 7 * MB_SIZE) ||
             !FF_ALLOCZ_TYPED_ARRAY(s->emu_edge_buffer, emu_buf_size))
             return AVERROR(ENOMEM);
-    }
-
-    if (av_codec_is_decoder(avctx->codec) &&
-        s->mconly_picture->format != avctx->pix_fmt) {
-        av_log(avctx, AV_LOG_ERROR, "pixel format changed\n");
-        return AVERROR_INVALIDDATA;
     }
 
     for(plane_index=0; plane_index < s->nb_planes; plane_index++){
@@ -589,20 +519,21 @@ void ff_snow_release_buffer(AVCodecContext *avctx)
     }
 }
 
-int ff_snow_frame_start(SnowContext *s){
+int ff_snow_frames_prepare(SnowContext *s)
+{
    AVFrame *tmp;
-   int i, ret;
 
     ff_snow_release_buffer(s->avctx);
 
     tmp= s->last_picture[s->max_ref_frames-1];
-    for(i=s->max_ref_frames-1; i>0; i--)
+    for (int i = s->max_ref_frames - 1; i > 0; i--)
         s->last_picture[i] = s->last_picture[i-1];
     s->last_picture[0] = s->current_picture;
     s->current_picture = tmp;
 
     if(s->keyframe){
         s->ref_frames= 0;
+        s->current_picture->flags |= AV_FRAME_FLAG_KEY;
     }else{
         int i;
         for(i=0; i<s->max_ref_frames && s->last_picture[i]->data[0]; i++)
@@ -613,14 +544,8 @@ int ff_snow_frame_start(SnowContext *s){
             av_log(s->avctx,AV_LOG_ERROR, "No reference frames\n");
             return AVERROR_INVALIDDATA;
         }
-    }
-    if ((ret = ff_snow_get_buffer(s, s->current_picture)) < 0)
-        return ret;
-
-    if (s->keyframe)
-        s->current_picture->flags |= AV_FRAME_FLAG_KEY;
-    else
         s->current_picture->flags &= ~AV_FRAME_FLAG_KEY;
+    }
 
     return 0;
 }
@@ -635,18 +560,11 @@ av_cold void ff_snow_common_end(SnowContext *s)
     av_freep(&s->temp_idwt_buffer);
     av_freep(&s->run_buffer);
 
-    s->m.me.temp= NULL;
-    av_freep(&s->m.me.scratchpad);
-    av_freep(&s->m.me.map);
-    av_freep(&s->m.sc.obmc_scratchpad);
-
     av_freep(&s->block);
     av_freep(&s->scratchbuf);
     av_freep(&s->emu_edge_buffer);
 
     for(i=0; i<MAX_REF_FRAMES; i++){
-        av_freep(&s->ref_mvs[i]);
-        av_freep(&s->ref_scores[i]);
         if(s->last_picture[i] && s->last_picture[i]->data[0]) {
             av_assert0(s->last_picture[i]->data[0] != s->current_picture->data[0]);
         }

@@ -666,6 +666,9 @@ typedef struct H266RawPredWeightTable {
     int8_t   luma_offset_l1[15];
     int8_t   delta_chroma_weight_l1[15][2];
     int16_t  delta_chroma_offset_l1[15][2];
+
+    uint8_t num_weights_l0;         ///< NumWeightsL0
+    uint8_t num_weights_l1;         ///< NumWeightsL1
 } H266RawPredWeightTable;
 
 typedef struct  H266RawPictureHeader {
@@ -827,6 +830,10 @@ typedef struct  H266RawSliceHeader {
 
     uint8_t  sh_entry_offset_len_minus1;
     uint32_t sh_entry_point_offset_minus1[VVC_MAX_ENTRY_POINTS];
+
+    // derived values
+    uint32_t num_entry_points;              ///< NumEntryPoints
+    uint8_t  num_ref_idx_active[2];         ///< NumRefIdxActive[]
 
 } H266RawSliceHeader;
 

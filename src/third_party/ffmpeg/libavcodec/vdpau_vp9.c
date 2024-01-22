@@ -23,9 +23,8 @@
 #include <vdpau/vdpau.h>
 #include "libavutil/pixdesc.h"
 #include "avcodec.h"
-#include "vp9data.h"
+#include "hwaccel_internal.h"
 #include "vp9dec.h"
-#include "hwconfig.h"
 #include "vdpau.h"
 #include "vdpau_internal.h"
 
@@ -204,16 +203,16 @@ static int vdpau_vp9_init(AVCodecContext *avctx)
     uint32_t level = avctx->level;
 
     switch (avctx->profile) {
-    case FF_PROFILE_VP9_0:
+    case AV_PROFILE_VP9_0:
         profile = VDP_DECODER_PROFILE_VP9_PROFILE_0;
         break;
-    case FF_PROFILE_VP9_1:
+    case AV_PROFILE_VP9_1:
         profile = VDP_DECODER_PROFILE_VP9_PROFILE_1;
         break;
-    case FF_PROFILE_VP9_2:
+    case AV_PROFILE_VP9_2:
         profile = VDP_DECODER_PROFILE_VP9_PROFILE_2;
         break;
-    case FF_PROFILE_VP9_3:
+    case AV_PROFILE_VP9_3:
         profile = VDP_DECODER_PROFILE_VP9_PROFILE_3;
         break;
     default:
@@ -223,11 +222,11 @@ static int vdpau_vp9_init(AVCodecContext *avctx)
     return ff_vdpau_common_init(avctx, profile, level);
 }
 
-const AVHWAccel ff_vp9_vdpau_hwaccel = {
-    .name           = "vp9_vdpau",
-    .type           = AVMEDIA_TYPE_VIDEO,
-    .id             = AV_CODEC_ID_VP9,
-    .pix_fmt        = AV_PIX_FMT_VDPAU,
+const FFHWAccel ff_vp9_vdpau_hwaccel = {
+    .p.name         = "vp9_vdpau",
+    .p.type         = AVMEDIA_TYPE_VIDEO,
+    .p.id           = AV_CODEC_ID_VP9,
+    .p.pix_fmt      = AV_PIX_FMT_VDPAU,
     .start_frame    = vdpau_vp9_start_frame,
     .end_frame      = vdpau_vp9_end_frame,
     .decode_slice   = vdpau_vp9_decode_slice,

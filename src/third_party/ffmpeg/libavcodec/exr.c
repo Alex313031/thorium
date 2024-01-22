@@ -404,8 +404,8 @@ static int huf_build_dec_table(const EXRContext *s,
     td->he[j].code = td->freq[iM] >> 6;
     j++;
 
-    ff_free_vlc(&td->vlc);
-    return ff_init_vlc_sparse(&td->vlc, 12, j,
+    ff_vlc_free(&td->vlc);
+    return ff_vlc_init_sparse(&td->vlc, 12, j,
                               &td->he[0].len, sizeof(td->he[0]), sizeof(td->he[0].len),
                               &td->he[0].code, sizeof(td->he[0]), sizeof(td->he[0].code),
                               &td->he[0].sym, sizeof(td->he[0]), sizeof(td->he[0].sym), 0);
@@ -760,8 +760,8 @@ static int pxr24_uncompress(const EXRContext *s, const uint8_t *src,
 
 static void unpack_14(const uint8_t b[14], uint16_t s[16])
 {
-    unsigned short shift = (b[ 2] >> 2) & 15;
-    unsigned short bias = (0x20 << shift);
+    uint16_t shift = (b[ 2] >> 2) & 15;
+    uint16_t bias = (0x20 << shift);
     int i;
 
     s[ 0] = (b[0] << 8) | b[1];
@@ -1870,7 +1870,7 @@ static int decode_header(EXRContext *s, AVFrame *frame)
             continue;
         } else if ((var_size = check_header_variable(s, "tiles",
                                                      "tiledesc", 22)) >= 0) {
-            char tileLevel;
+            uint8_t tileLevel;
 
             if (!s->is_tile)
                 av_log(s->avctx, AV_LOG_WARNING,
@@ -2088,6 +2088,8 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *picture,
 
     if (s->apply_trc_type != AVCOL_TRC_UNSPECIFIED)
         avctx->color_trc = s->apply_trc_type;
+    else if (s->gamma > 0.9999f && s->gamma < 1.0001f)
+        avctx->color_trc = AVCOL_TRC_LINEAR;
 
     switch (s->compression) {
     case EXR_RAW:
@@ -2282,7 +2284,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
         av_freep(&td->dc_data);
         av_freep(&td->rle_data);
         av_freep(&td->rle_raw_data);
-        ff_free_vlc(&td->vlc);
+        ff_vlc_free(&td->vlc);
     }
 
     av_freep(&s->thread_data);
