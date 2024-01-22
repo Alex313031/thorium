@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -43,6 +43,7 @@
 #include "net/base/network_isolation_key.h"
 #include "net/base/privacy_mode.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
+#include "net/base/schemeful_site.h"
 #include "net/base/trace_constants.h"
 #include "net/base/tracing.h"
 #include "net/base/url_util.h"
@@ -208,6 +209,45 @@ enum class ContentEncodingType {
   kMaxValue = kZstd,
 };
 
+bool IsSameSiteIgnoringWebSocketProtocol(const net::SchemefulSite& initiator,
+                                         const GURL& request_url) {
+  net::SchemefulSite request_site = net::SchemefulSite(
+      request_url.SchemeIsHTTPOrHTTPS()
+          ? request_url
+          : net::ChangeWebSocketSchemeToHttpScheme(request_url));
+  return initiator == request_site;
+}
+
+// These values are persisted to logs. Entries should not be renumbered and
+// numeric values should never be reused.
+enum class HttpRequestStsState {
+  kUnknown = 0,
+  kUnprotectedHttps = 1,
+  kProtectedHttps = 2,
+  kUnprotectedHttp = 3,
+  kProtectedHttp = 4,
+  kMaxValue = kProtectedHttp,
+};
+
+void RecordSTSHistogram(bool sts_enabled, bool is_secure, int load_flags) {
+  // Embrace the layering violation and only record the histogram for main frame
+  // navigations. It's possible to record this outside of net/, but the code is
+  // a lot more complicated, and while this flag is deprecated, there are no
+  // current plans to remove it. See crbug.com/516499 .
+  if (!(load_flags & net::LOAD_MAIN_FRAME_DEPRECATED)) {
+    return;
+  }
+  HttpRequestStsState sts_state = HttpRequestStsState::kUnknown;
+  if (is_secure) {
+    sts_state = (sts_enabled ? HttpRequestStsState::kProtectedHttps
+                             : HttpRequestStsState::kUnprotectedHttps);
+  } else {
+    sts_state = (sts_enabled ? HttpRequestStsState::kProtectedHttp
+                             : HttpRequestStsState::kUnprotectedHttp);
+  }
+  UMA_HISTOGRAM_ENUMERATION("Net.HttpRequestStsState", sts_state);
+}
+
 }  // namespace
 
 namespace net {
@@ -219,17 +259,32 @@ std::unique_ptr<URLRequestJob> URLRequestHttpJob::Create(URLRequest* request) {
   DCHECK(request->context()->http_transaction_factory());
   DCHECK(url.SchemeIsHTTPOrHTTPS() || url.SchemeIsWSOrWSS());
 
+  TransportSecurityState* hsts = request->context()->transport_security_state();
+  bool should_upgrade_to_ssl =
+      hsts && hsts->ShouldUpgradeToSSL(url.host(), request->net_log());
+
   // Check for reasons not to return a URLRequestHttpJob. These don't apply to
   // https and wss requests.
   if (!url.SchemeIsCryptographic()) {
-    // Check for HSTS upgrade.
-    TransportSecurityState* hsts =
-        request->context()->transport_security_state();
-    if (hsts && hsts->ShouldUpgradeToSSL(url.host(), request->net_log())) {
-      return std::make_unique<URLRequestRedirectJob>(
-          request, UpgradeSchemeToCryptographic(url),
-          // Use status code 307 to preserve the method, so POST requests work.
-          RedirectUtil::ResponseCode::REDIRECT_307_TEMPORARY_REDIRECT, "HSTS");
+    // If the request explicitly has been marked to bypass HSTS, ensure that
+    // the request is in no-credential mode so that the http site can't read
+    // or set cookies which are shared across http/https, then skip the
+    // upgrade.
+    if (((request->load_flags() & net::LOAD_SHOULD_BYPASS_HSTS) ==
+         net::LOAD_SHOULD_BYPASS_HSTS)) {
+      CHECK(request->allow_credentials() == false);
+    } else {
+      // Check for HSTS upgrade.
+      if (should_upgrade_to_ssl) {
+        RecordSTSHistogram(/*sts_enabled=*/true, /*is_secure=*/false,
+                           request->load_flags());
+        return std::make_unique<URLRequestRedirectJob>(
+            request, UpgradeSchemeToCryptographic(url),
+            // Use status code 307 to preserve the method, so POST requests
+            // work.
+            RedirectUtil::ResponseCode::REDIRECT_307_TEMPORARY_REDIRECT,
+            "HSTS");
+      }
     }
 
 #if BUILDFLAG(IS_ANDROID)
@@ -237,12 +292,16 @@ std::unique_ptr<URLRequestJob> URLRequestHttpJob::Create(URLRequest* request) {
     // ERR_CLEARTEXT_NOT_PERMITTED if not.
     if (request->context()->check_cleartext_permitted() &&
         !android::IsCleartextPermitted(url.host_piece())) {
+      RecordSTSHistogram(/*sts_enabled=*/false, /*is_secure=*/false,
+                         request->load_flags());
       return std::make_unique<URLRequestErrorJob>(request,
                                                   ERR_CLEARTEXT_NOT_PERMITTED);
     }
 #endif
   }
 
+  RecordSTSHistogram(should_upgrade_to_ssl, url.SchemeIsCryptographic(),
+                     request->load_flags());
   return base::WrapUnique<URLRequestJob>(new URLRequestHttpJob(
       request, request->context()->http_user_agent_settings()));
 }
@@ -304,8 +363,8 @@ void URLRequestHttpJob::Start() {
   request()->cookie_setting_overrides().PutOrRemove(
       net::CookieSettingOverride::kStorageAccessGrantEligible,
       request()->has_storage_access() && request_initiator_site().has_value() &&
-          request_initiator_site().value() ==
-              net::SchemefulSite(request()->url()));
+          IsSameSiteIgnoringWebSocketProtocol(request_initiator_site().value(),
+                                              request()->url()));
 
   UMA_HISTOGRAM_BOOLEAN("Net.HttpJob.CanIncludeCookies",
                         ShouldAddCookieHeader());
@@ -632,7 +691,7 @@ void URLRequestHttpJob::StartTransactionInternal() {
 void URLRequestHttpJob::AddExtraHeaders() {
   request_info_.extra_headers.SetAcceptEncodingIfMissing(
       request()->url(), request()->accepted_stream_types(),
-      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli(),
+      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli()),
       !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_zstd());
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {
@@ -685,10 +744,6 @@ bool ShouldBlockAllCookies(const PrivacyMode& privacy_mode) {
          privacy_mode == PRIVACY_MODE_ENABLED_WITHOUT_CLIENT_CERTS;
 }
 
-bool ShouldBlockUnpartitionedCookiesOnly(const PrivacyMode& privacy_mode) {
-  return privacy_mode == PRIVACY_MODE_ENABLED_PARTITIONED_STATE_ALLOWED;
-}
-
 }  // namespace
 
 void URLRequestHttpJob::SetCookieHeaderAndStart(
@@ -714,95 +769,68 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
       cookie.access_result.status.AddExclusionReason(
           CookieInclusionStatus::EXCLUDE_USER_PREFERENCES);
     }
+  } else {
+    // Consult the delegate to ensure that they have the correct exclusion
+    // reason.
+    AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
   }
-  // TODO(https://crbug.com/1469135): Consolidate the following `if` blocks so
-  // that all the cookies should be passed into
-  // `AnnotateAndMoveUserBlockedCookies` to be associated with the correct
-  // inclusion status.
-  if (ShouldBlockUnpartitionedCookiesOnly(request_info_.privacy_mode)) {
-    auto partition_it = base::ranges::stable_partition(
-        maybe_included_cookies, [](const CookieWithAccessResult& el) {
-          return el.cookie.IsPartitioned();
-        });
-    for (auto it = partition_it; it < maybe_included_cookies.end(); ++it) {
-      if (!cookie_util::IsForceThirdPartyCookieBlockingEnabled()) {
-        it->access_result.status.AddExclusionReason(
-            CookieInclusionStatus::EXCLUDE_USER_PREFERENCES);
-      } else {
-        it->access_result.status.AddExclusionReason(
-            CookieInclusionStatus::EXCLUDE_THIRD_PARTY_PHASEOUT);
+
+  if (!maybe_included_cookies.empty()) {
+    std::string cookie_line =
+        CanonicalCookie::BuildCookieLine(maybe_included_cookies);
+    request_info_.extra_headers.SetHeader(HttpRequestHeaders::kCookie,
+                                          cookie_line);
+
+    size_t n_partitioned_cookies = 0;
+    bool may_set_sec_cookie_deprecation_header =
+        !request_->context()->cookie_deprecation_label().value_or("").empty();
+
+    // TODO(crbug.com/1031664): Reduce the number of times the cookie list
+    // is iterated over. Get metrics for every cookie which is included.
+    for (const auto& c : maybe_included_cookies) {
+      bool request_is_secure = request_->url().SchemeIsCryptographic();
+      net::CookieSourceScheme cookie_scheme = c.cookie.SourceScheme();
+      CookieRequestScheme cookie_request_schemes;
+
+      switch (cookie_scheme) {
+        case net::CookieSourceScheme::kSecure:
+          cookie_request_schemes =
+              request_is_secure
+                  ? CookieRequestScheme::kSecureSetSecureRequest
+                  : CookieRequestScheme::kSecureSetNonsecureRequest;
+          break;
+
+        case net::CookieSourceScheme::kNonSecure:
+          cookie_request_schemes =
+              request_is_secure
+                  ? CookieRequestScheme::kNonsecureSetSecureRequest
+                  : CookieRequestScheme::kNonsecureSetNonsecureRequest;
+          break;
+
+        case net::CookieSourceScheme::kUnset:
+          cookie_request_schemes = CookieRequestScheme::kUnsetCookieScheme;
+          break;
       }
-      if (first_party_set_metadata_.AreSitesInSameFirstPartySet()) {
-        it->access_result.status.AddExclusionReason(
-            CookieInclusionStatus::
-                EXCLUDE_THIRD_PARTY_BLOCKED_WITHIN_FIRST_PARTY_SET);
+
+      UMA_HISTOGRAM_ENUMERATION("Cookie.CookieSchemeRequestScheme",
+                                cookie_request_schemes);
+      if (c.cookie.IsPartitioned()) {
+        ++n_partitioned_cookies;
+
+        if (may_set_sec_cookie_deprecation_header &&
+            c.cookie.Name() == "receive-cookie-deprecation" &&
+            c.cookie.IsHttpOnly() && c.cookie.IsSecure()) {
+          request_info_.extra_headers.SetHeader(
+              "Sec-Cookie-Deprecation",
+              *request_->context()->cookie_deprecation_label());
+          may_set_sec_cookie_deprecation_header = false;
+        }
       }
     }
-    excluded_cookies.insert(
-        excluded_cookies.end(), std::make_move_iterator(partition_it),
-        std::make_move_iterator(maybe_included_cookies.end()));
-    maybe_included_cookies.erase(partition_it, maybe_included_cookies.end());
-  }
-  if (request_info_.privacy_mode == PRIVACY_MODE_DISABLED ||
-      !maybe_included_cookies.empty()) {
-    AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
-    if (!maybe_included_cookies.empty()) {
-      std::string cookie_line =
-          CanonicalCookie::BuildCookieLine(maybe_included_cookies);
-      request_info_.extra_headers.SetHeader(HttpRequestHeaders::kCookie,
-                                            cookie_line);
 
-      size_t n_partitioned_cookies = 0;
-      bool may_set_sec_cookie_deprecation_header =
-          !request_->context()->cookie_deprecation_label().value_or("").empty();
-
-      // TODO(crbug.com/1031664): Reduce the number of times the cookie list
-      // is iterated over. Get metrics for every cookie which is included.
-      for (const auto& c : maybe_included_cookies) {
-        bool request_is_secure = request_->url().SchemeIsCryptographic();
-        net::CookieSourceScheme cookie_scheme = c.cookie.SourceScheme();
-        CookieRequestScheme cookie_request_schemes;
-
-        switch (cookie_scheme) {
-          case net::CookieSourceScheme::kSecure:
-            cookie_request_schemes =
-                request_is_secure
-                    ? CookieRequestScheme::kSecureSetSecureRequest
-                    : CookieRequestScheme::kSecureSetNonsecureRequest;
-            break;
-
-          case net::CookieSourceScheme::kNonSecure:
-            cookie_request_schemes =
-                request_is_secure
-                    ? CookieRequestScheme::kNonsecureSetSecureRequest
-                    : CookieRequestScheme::kNonsecureSetNonsecureRequest;
-            break;
-
-          case net::CookieSourceScheme::kUnset:
-            cookie_request_schemes = CookieRequestScheme::kUnsetCookieScheme;
-            break;
-        }
-
-        UMA_HISTOGRAM_ENUMERATION("Cookie.CookieSchemeRequestScheme",
-                                  cookie_request_schemes);
-        if (c.cookie.IsPartitioned()) {
-          ++n_partitioned_cookies;
-
-          if (may_set_sec_cookie_deprecation_header &&
-              c.cookie.Name() == "receive-cookie-deprecation" &&
-              c.cookie.IsHttpOnly() && c.cookie.IsSecure()) {
-            request_info_.extra_headers.SetHeader(
-                "Sec-Cookie-Deprecation",
-                *request_->context()->cookie_deprecation_label());
-            may_set_sec_cookie_deprecation_header = false;
-          }
-        }
-      }
-
-      if (IsPartitionedCookiesEnabled()) {
-        base::UmaHistogramCounts100("Cookie.PartitionedCookiesInRequest",
-                                    n_partitioned_cookies);
-      }
+    if (IsPartitionedCookiesEnabled()) {
+      base::UmaHistogramCounts100("Cookie.PartitionedCookiesInRequest",
+                                  n_partitioned_cookies);
     }
   }
 
@@ -835,13 +863,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
 void URLRequestHttpJob::AnnotateAndMoveUserBlockedCookies(
     CookieAccessResultList& maybe_included_cookies,
     CookieAccessResultList& excluded_cookies) const {
-  DCHECK(request_info_.privacy_mode == PrivacyMode::PRIVACY_MODE_DISABLED ||
-         (request_info_.privacy_mode ==
-              PrivacyMode::PRIVACY_MODE_ENABLED_PARTITIONED_STATE_ALLOWED &&
-          base::ranges::all_of(maybe_included_cookies,
-                               [](const CookieWithAccessResult& el) {
-                                 return el.cookie.IsPartitioned();
-                               })))
+  DCHECK(!ShouldBlockAllCookies(request_info_.privacy_mode))
       << request_info_.privacy_mode;
 
   bool can_get_cookies = URLRequest::DefaultCanUseCookies();
@@ -1075,7 +1097,7 @@ void URLRequestHttpJob::OnStartCompleted(int result) {
   }
 
   if (transaction_ && transaction_->GetResponseInfo()) {
-    SetProxyServer(transaction_->GetResponseInfo()->proxy_server);
+    SetProxyChain(transaction_->GetResponseInfo()->proxy_chain);
   }
 
   if (result == OK) {
@@ -1226,7 +1248,7 @@ void URLRequestHttpJob::SetExtraRequestHeaders(
     const HttpRequestHeaders& headers) {
   DCHECK(!transaction_.get() && !override_response_info_)
       << "cannot change once started";
-  request_info_.extra_headers.CopyFrom(headers);
+  request_info_.extra_headers = headers;
 }
 
 LoadState URLRequestHttpJob::GetLoadState() const {

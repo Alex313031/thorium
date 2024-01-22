@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -19,6 +19,7 @@
 
 #if BUILDFLAG(ENABLE_LIBRARY_CDMS)
 #include "base/command_line.h"
+#include "components/cdm/common/cdm_manifest.h"
 #include "media/base/media_switches.h"
 #include "media/cdm/cdm_paths.h"  // nogncheck
 #endif
@@ -32,7 +33,6 @@
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
 #include "base/no_destructor.h"
 #include "chrome/common/media/component_widevine_cdm_hint_file_linux.h"
-#include "components/cdm/common/cdm_manifest.h"
 #include "media/cdm/supported_audio_codecs.h"
 // Needed for WIDEVINE_CDM_MIN_GLIBC_VERSION. This file is in
 // SHARED_INTERMEDIATE_DIR.

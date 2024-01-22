@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -85,7 +85,15 @@ ResultExpr AudioProcessPolicy::EvaluateSyscall(int system_call_number) const {
     {
       const Arg<int> op(1);
 #if defined(USE_PULSEAUDIO)
-      return Allow();
+      return Switch(op & ~(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME))
+          .Cases({FUTEX_CMP_REQUEUE,
+                  FUTEX_LOCK_PI,
+                  FUTEX_UNLOCK_PI,
+                  FUTEX_WAIT,
+                  FUTEX_WAIT_BITSET,
+                  FUTEX_WAKE},
+                 Allow())
+          .Default(Error(EPERM));
 #else
       return RestrictFutex();
 #endif
