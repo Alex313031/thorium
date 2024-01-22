@@ -1,7 +1,6 @@
 //Microsoft Visual C++ generated resource script.
 //
 #include "content/shell/app/resource.h"
-#include "build/branding_buildflags.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////

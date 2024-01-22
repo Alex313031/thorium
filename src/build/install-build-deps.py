@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031 and gz83
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -148,7 +148,7 @@ def check_distro(options):
   distro_id = subprocess.check_output(["lsb_release", "--id",
                                        "--short"]).decode().strip()
 
-  supported_codenames = ["bionic", "focal", "jammy", "lunar", "mantic"]
+  supported_codenames = ["bionic", "focal", "jammy", "mantic"]
   supported_ids = ["Debian"]
 
   if (distro_codename() not in supported_codenames
@@ -160,8 +160,7 @@ def check_distro(options):
         "\tUbuntu 18.04 LTS (bionic with EoL April 2028)",
         "\tUbuntu 20.04 LTS (focal with EoL April 2030)",
         "\tUbuntu 22.04 LTS (jammy with EoL April 2032)",
-        "\tUbuntu 23.04 (lunar with EoL April 2024)\n" \
-        "\tUbuntu 23.10 (mantic)\n" \
+        "\tUbuntu 23.10 (mantic)\n",
         "\tDebian 10 (buster), 11 (bullseye) or 12 (bookworm)",
         sep="\n",
         file=sys.stderr,
@@ -624,12 +623,6 @@ def arm_list(options):
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
     ])
-  elif distro_codename() == "lunar":
-    packages.extend([
-        "gcc-arm-linux-gnueabihf",
-        "g++-11-arm-linux-gnueabihf",
-        "gcc-11-arm-linux-gnueabihf",
-    ])
   elif distro_codename() == "mantic":
     packages.extend([
         "gcc-arm-linux-gnueabihf",
@@ -893,7 +886,7 @@ def install_chromeos_fonts(options):
 def install_locales():
   print("Installing locales.", file=sys.stderr)
   CHROMIUM_LOCALES = [
-      "da_DK.UTF-8", "fr_FR.UTF-8", "he_IL.UTF-8", "zh_TW.UTF-8"
+      "da_DK.UTF-8", "en_US.utf8", "fr_FR.UTF-8", "he_IL.UTF-8", "zh_TW.UTF-8"
   ]
   LOCALE_GEN = "/etc/locale.gen"
   if os.path.exists(LOCALE_GEN):

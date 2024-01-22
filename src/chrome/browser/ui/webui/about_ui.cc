@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -793,7 +793,7 @@ bool AboutUI::OverrideHandleWebUIMessage(const GURL& source_url,
     return false;
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
-  lacros_url_handling::NavigateInAsh(GURL(chrome::kOsUIAboutURL));
+  lacros_url_handling::NavigateInAsh(GURL(chrome::kChromeUIAboutURL));
 #else
   // Note: This will only be called by the UI when Lacros is available.
   DCHECK(crosapi::BrowserManager::Get());

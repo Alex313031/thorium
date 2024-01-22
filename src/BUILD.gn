@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -42,8 +42,8 @@ if (is_android) {
 
 if (is_fuchsia) {
   import("//build/config/fuchsia/generate_runner_scripts.gni")
-  import("//third_party/fuchsia-sdk/sdk/build/component.gni")
-  import("//third_party/fuchsia-sdk/sdk/build/package.gni")
+  import("//third_party/fuchsia-gn-sdk/src/component.gni")
+  import("//third_party/fuchsia-gn-sdk/src/package.gni")
 }
 
 if (is_linux) {
@@ -113,6 +113,7 @@ group("gn_all") {
       "//services/service_manager/public/cpp",
       "//skia:skia_unittests",
       "//sql:sql_unittests",
+      "//testing/libfuzzer/tests",
       "//third_party/angle/src/tests:angle_end2end_tests",
       "//third_party/angle/src/tests:angle_unittests",
       "//third_party/angle/src/tests:angle_white_box_tests",
@@ -178,10 +179,7 @@ group("gn_all") {
     }
 
     if (is_chromeos_lacros) {
-      deps += [
-        "//chrome/test:lacros_chrome_browsertests",
-        "//chrome/test:lacros_chrome_unittests",
-      ]
+      deps += [ "//chrome/test:lacros_chrome_unittests" ]
     }
 
     if (!is_ios && !is_castos) {
@@ -779,13 +777,6 @@ group("gn_all") {
       if (is_chromeos_ash) {
         deps += [ "//chrome/services/ipp_parser/public/cpp:fuzzers" ]
       }
-
-      # TODO(crbug.com/906751): Get the libFuzzer tests working on Windows.
-      # Disable them for now because they cause the Windows clang ToT builder to
-      # fail.
-      if (!is_win) {
-        deps += [ "//testing/libfuzzer/tests:libfuzzer_tests" ]
-      }
     }
 
     # TODO(https://crbug.com/1299021): Remove the special case for arm64.
@@ -830,8 +821,8 @@ group("gn_all") {
         "//third_party/dawn/src/dawn/fuzzers:fuzzers",
         "//third_party/dawn/src/dawn/tests:dawn_end2end_tests",
         "//third_party/dawn/src/dawn/tests:dawn_unittests",
-        "//third_party/dawn/src/tint:tint_unittests",
-        "//third_party/dawn/src/tint/fuzzers",
+        "//third_party/dawn/src/tint:fuzzers",
+        "//third_party/dawn/src/tint:tests",
       ]
     }
 
@@ -1616,6 +1607,10 @@ if (use_blink && !is_cronet_build) {
       "//tools/idl_parser/",
     ]
 
+    if (is_ios) {
+      data += [ "//third_party/blink/web_tests/IOSTestExpectations" ]
+    }
+
     data_deps = [ "//ui/base:goldctl" ]
   }
 }
@@ -1713,7 +1708,7 @@ if (!is_ios && !is_android && !is_castos && !is_cronet_build) {
     }
 
     if (build_dawn_tests) {
-      deps += [ "//third_party/dawn/src/tint/fuzzers:fuzzers" ]
+      deps += [ "//third_party/dawn/src/tint:fuzzers" ]
     }
   }
 }

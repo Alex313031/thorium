@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -29,8 +29,8 @@ if (is_android) {
   import("//v8/gni/v8.gni")
 } else if (is_fuchsia) {
   import("//build/config/fuchsia/generate_runner_scripts.gni")
-  import("//third_party/fuchsia-sdk/sdk/build/component.gni")
-  import("//third_party/fuchsia-sdk/sdk/build/package.gni")
+  import("//third_party/fuchsia-gn-sdk/src/component.gni")
+  import("//third_party/fuchsia-gn-sdk/src/package.gni")
 } else if (is_ios) {
   import("//build/config/ios/config.gni")
 }
@@ -123,6 +123,9 @@ static_library("content_shell_app") {
       "app/ios/web_tests_support_ios.h",
       "app/ios/web_tests_support_ios.mm",
     ]
+  }
+  if (is_chromeos) {
+    deps += [ "//ui/gfx/linux:gbm" ]
   }
   defines = [
     "CONTENT_SHELL_VERSION=\"$content_shell_version\"",
@@ -607,12 +610,7 @@ if (is_android) {
   declare_args() {
     # The bundle identifier. Overriding this will affect the provisioning profile
     # used, and hence will affect the app's capabilities.
-    if (ios_use_shared_bundle_id_for_test_apps) {
-      ios_content_shell_bundle_identifier = shared_bundle_id_for_test_apps
-    } else {
-      ios_content_shell_bundle_identifier =
-          "$ios_app_bundle_id_prefix.ios-content-shell"
-    }
+    ios_content_shell_bundle_identifier = shared_bundle_id_for_test_apps
 
     # Path to an entitlements file used in ios_content_shell. Can be overridden
     # to provide an alternative.
