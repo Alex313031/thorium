@@ -165,7 +165,8 @@ Allow all HEVC Video Profiles to Play Patch - https://github.com/StaZhu/enable-c
 Enable multi-threaded HEVC decoding - https://github.com/RobRich999/Chromium_Clang/blob/649f66dc041a72467c02d76e8d1fe00ee06d8276/Linux/linux64-avx.patch#L295
 
 Enable AC3 and EAC3 for HEVC Patch - https://github.com/Muril-o/electron-chromium-codecs
-  - https://github.com/Alex313031/thorium/commit/46893f326c42b08a56769f3de6743aec049b2091#diff-09b3d55a8198fc42186bfd6bf5869fe78b8edad6f67e75b78228446f1d7cf66f
+  - Modified by Midzer.
+  - https://github.com/Alex313031/thorium/commit/a2e49dd2fe00e4c6fa882a41e8a1a27f93bedfff
 
 Show the Apps button in Bookmarks Bar by Default Patch - Made by me.
 
