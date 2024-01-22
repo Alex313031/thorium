@@ -1,8 +1,8 @@
 #!/bin/bash
 
-## Copyright (c) 2023 Alex313031/
+## Copyright (c) 2024 Alex313031.
 
-## Clones latest LLVM being used by the Chromium Project, and builds a local LLVM toolchain with Polly to use the Polly optimizations in the main Thorium BUILD.gn
+## Clones current LLVM being used by the Chromium Project, and builds a local LLVM toolchain with Polly to use the Polly optimizations in the main Thorium BUILD.gn
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -67,7 +67,6 @@ buildPollyPGO () {
 	printf "\n"
 	printf "${GRE}Done! You can now run ./build.sh\n" &&
 	printf "\n" &&
-
 	tput sgr0
 }
 case $1 in
@@ -94,7 +93,4 @@ python3 tools/clang/scripts/build.py --without-android --without-fuchsia --disab
 printf "\n"
 printf "${GRE}Done! You can now run ./build.sh\n" &&
 printf "\n" &&
-
-tput sgr0 &&
-
-exit 0
+tput sgr0
