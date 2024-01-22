@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -8,8 +8,8 @@ import("//build/config/chromeos/ui_mode.gni")
 import("//media/media_options.gni")
 
 declare_args() {
-  # Enables Widevine key system support. Enabled by default in Google Chrome and
-  # on Android. For Fuchsia, see crbug.com/1354347.
+  # Enables Widevine key system support. Enabled by default in Google Chrome,
+  # Google Chrome for Testing and Android. For Fuchsia, see crbug.com/1354347.
   # Can be optionally enabled in Chromium on non-Android platforms. Please see
   # //src/third_party/widevine/LICENSE file for details.
   enable_widevine = !is_fuchsia
@@ -52,7 +52,8 @@ assert(!enable_media_foundation_widevine_cdm || is_win)
 assert(!enable_media_foundation_widevine_cdm || enable_widevine)
 
 declare_args() {
-  # Widevine CDM is bundled as part of Google Chrome builds.
+  # Widevine CDM is bundled as part of Google Chrome and
+  # Google Chrome for Testing builds.
   bundle_widevine_cdm = false
 
   # Relative root directory to //third_party/widevine/cdm for CDM files.
@@ -63,7 +64,8 @@ declare_args() {
 declare_args() {
   # Enable Widevine CDM host verification, which will sign additional binaries
   # with Widevine certs and copy signature files as needed.
-  enable_widevine_cdm_host_verification = enable_library_widevine_cdm && enable_cdm_host_verification
+  enable_widevine_cdm_host_verification =
+      enable_library_widevine_cdm && enable_cdm_host_verification
 
   # If set, and Widevine CDM host verification signing failed due to no signing
   # cert, the failure will be ignored. Otherwise the build process will fail.

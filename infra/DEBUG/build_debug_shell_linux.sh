@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2023 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -22,7 +22,6 @@ displayHelp () {
 	printf "${underline}Usage: ${c0}build_debug_shell.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -76,4 +75,3 @@ cp -r -f -v ~/chromium/src/out/thorium/ClearKeyCdm/_platform_specific/linux_x64/
 
 printf "${GRE}Thorium UI Debug Shell Build Completed.\n" &&
 tput sgr0
-exit 0

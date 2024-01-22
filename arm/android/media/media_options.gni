@@ -71,6 +71,10 @@ declare_args() {
   # on-device decoding and bitstream passthrough as supported by device.
   enable_platform_ac3_eac3_audio = proprietary_codecs && is_cast_media_device
 
+  # Enables AC4 audio handling in chromium. This includes demuxing,
+  # on-device decoding and bitstream passthrough as supported by device.
+  enable_platform_ac4_audio = false
+
   enable_platform_mpeg_h_audio = proprietary_codecs && is_cast_media_device
 
   # Enables DTS/DTSX audio handling in chromium. This includes demuxing,
@@ -150,6 +154,8 @@ assert(!enable_hls_demuxer || proprietary_codecs,
        "proprietary_codecs required for enable_hls_demuxer")
 assert(!enable_platform_ac3_eac3_audio || proprietary_codecs,
        "proprietary_codecs required for enable_platform_ac3_eac3_audio")
+assert(!enable_platform_ac4_audio || proprietary_codecs,
+       "proprietary_codecs required for enable_platform_ac4_audio")
 assert(!enable_platform_mpeg_h_audio || proprietary_codecs,
        "proprietary_codecs required for enable_platform_mpeg_h_audio")
 assert(!enable_mse_mpeg2ts_stream_parser || proprietary_codecs,
@@ -228,7 +234,8 @@ declare_args() {
   # Enables host verification for CDMs.
   # Windows and Mac.
   enable_cdm_host_verification =
-      enable_library_cdms && (is_mac || is_win) && is_chrome_branded
+      enable_library_cdms && (is_mac || is_win) && is_chrome_branded &&
+      !is_chrome_for_testing_branded
 
   # Enable Storage ID which is used by CDMs. This is only available with chrome
   # branding, but may be overridden by other embedders.
@@ -245,6 +252,10 @@ declare_args() {
 assert(!enable_cdm_host_verification || is_mac || is_win,
        "CDM host verification is only supported on Mac and Windows.")
 
+# https://crbug.com/1475137#c37
+assert(!is_chrome_for_testing_branded || !enable_cdm_host_verification,
+       "Chrome for Testing is incompatible with CDM Host Verification.")
+
 # Default |mojo_media_services| and |mojo_media_host| on various platforms. See
 # comments below for valid values. Can be overridden by gn build arguments from
 # the --args command line flag.
@@ -258,6 +269,7 @@ if (is_cast_media_device) {
   _default_mojo_media_services = [
     "cdm",
     "audio_decoder",
+    "audio_encoder",
     "video_decoder",
   ]
   _default_mojo_media_host = "gpu"

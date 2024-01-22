@@ -2499,12 +2499,12 @@ if (current_toolchain == default_toolchain) {
 
   chrome_public_apk_or_module_tmpl("chrome_public_apk") {
     target_type = "android_apk"
-    apk_name = "ThoriumPublic"
+    apk_name = "Thorium_Public"
     art_profile_path = "//chrome/android/baseline_profiles/profile.txt"
   }
 
   chrome_public_bundle("chrome_public_bundle") {
-    bundle_name = "ThoriumPublic"
+    bundle_name = "Thorium_Public"
   }
 
   android_library("monochrome_java") {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2023 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 # Simply uses wget to fetch Thorium API Keys.
 # This is to keep them out of the main repo, in the case Google
@@ -32,5 +32,3 @@ printf "${GRE}Done.\n" &&
 printf "${YEL}- Use the three lines therein at the atop of your args.gn\n" &&
 printf "${YEL}  (Replacing the ones already in there that have blank values)\n" &&
 tput sgr0
-
-exit 0

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2023 Alex313031.
+# Copyright (c) 2024 Alex313031.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -44,5 +44,3 @@ printf "\n" &&
 printf "${GRE}Done.\n" &&
 printf "\n" &&
 tput sgr0
-
-exit 0
