@@ -68,6 +68,4 @@ source ~/.bashrc &&
 printf "\n" &&
 
 printf "${GRE}Completed. ${YEL}You can now run \'./trunk.sh\'\n"
-tput sgr0 &&
-
-exit 0
+tput sgr0

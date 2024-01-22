@@ -29,5 +29,3 @@ set NINJA_SUMMARIZE_BUILD=1 &&
 echo "Dropping you to C:\src\chromium\src" &&
 
 cd C:\src\chromium\src
-
-exit 0

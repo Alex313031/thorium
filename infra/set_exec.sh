@@ -25,6 +25,8 @@ cd .. &&
 
 sudo chmod -v +x depot_tools/autoninja &&
 
+sudo chmod -v +x depot_tools/win_toolchain/package_from_installed.py &&
+
 sudo chmod -v +x build.sh &&
 
 sudo chmod -v +x g &&
@@ -100,6 +102,10 @@ sudo chmod -v +x infra/APPIMAGE/extract_appimage.sh &&
 sudo chmod -v +x pak_src/build.sh &&
 
 sudo chmod -v +x src/build/vs_toolchain.py &&
+
+sudo chmod -v +x src/build/install-build-deps.py &&
+
+sudo chmod -v +x src/build/win/reorder-imports.py &&
 
 sudo chmod -v +x arm/setup_arm.sh &&
 

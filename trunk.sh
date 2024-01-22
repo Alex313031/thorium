@@ -117,6 +117,5 @@ tput sgr0 &&
 
 printf "\n" &&
 cat ~/thorium/logos/chromium_logo_ascii_art.txt &&
-printf "\n"
-
-exit 0
+printf "\n" &&
+tput sgr0

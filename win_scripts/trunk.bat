@@ -37,6 +37,4 @@ gclient runhooks &&
 
 echo "Downloading PGO Profile for Win64..." &&
 
-python tools\update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
-
-exit 0
+python tools\update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles

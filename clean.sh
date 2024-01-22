@@ -60,5 +60,3 @@ find ${CR_SRC_DIR}/out/thorium -name "*TOC*" -delete &&
 
 printf "${GRE}Done cleaning artifacts.\n" &&
 tput sgr0
-
-exit 0

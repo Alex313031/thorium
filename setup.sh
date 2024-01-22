@@ -231,5 +231,3 @@ cat logos/thorium_ascii_art.txt &&
 printf "${GRE}Enjoy Thorium!\n" &&
 printf "\n" &&
 tput sgr0
-
-exit 0

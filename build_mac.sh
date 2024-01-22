@@ -71,5 +71,4 @@ autoninja -C out/thorium chrome chromedriver -j$@ &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\'\n" &&
-
-exit 0
+tput sgr0

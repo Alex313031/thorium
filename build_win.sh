@@ -51,6 +51,4 @@ mv -v -f ${CR_SRC_DIR}/out/thorium/mini_installer.exe ${CR_SRC_DIR}/out/thorium/
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}Installer at \'//out/thorium/thorium_mini_installer.exe\'\n" &&
-tput sgr0 &&
-
-exit 0
+tput sgr0

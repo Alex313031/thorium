@@ -49,6 +49,4 @@ autoninja -C out/thorium thorium chrome_sandbox chromedriver clear_key_cdm thori
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 
 printf "${GRE}${bold}Build Completed! ${YEL}${bold}You can now run \'./package.sh\' to build installation packages.\n" &&
-tput sgr0 &&
-
-exit 0
+tput sgr0

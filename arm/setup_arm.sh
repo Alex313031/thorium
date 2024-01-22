@@ -20,7 +20,6 @@ displayHelp () {
 	printf "${bold}${GRE}Script to copy Thorium ARM BUILD.gn file over the Chromium source tree.${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
@@ -44,8 +43,4 @@ printf "\n" &&
 
 printf "${GRE}Enjoy Thorium on ARM!\n" &&
 printf "\n" &&
-tput sgr0 &&
-
-cd ~/chromium/src &&
-
-exit 0
+tput sgr0

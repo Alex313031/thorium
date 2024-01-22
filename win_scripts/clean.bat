@@ -23,5 +23,3 @@ rmdir /s /q thinlto-cache &&
 rmdir /s /q fontconfig_caches &&
 
 echo "Done!"
-
-exit 0
