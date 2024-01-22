@@ -162,13 +162,11 @@ AS_IF([test "$enable_custom_modes" = "yes"],[
 
 AM_CONDITIONAL([CUSTOM_MODES], [test "$enable_custom_modes" = "yes"])
 
-has_float_approx=yes
-enable_float_approx=yes
-#case "$host_cpu" in
-#i[[3456]]86 | x86_64 | powerpc64 | powerpc32 | ia64)
-#  has_float_approx=yes
-#  ;;
-#esac
+case "$host_cpu" in
+i[[3456]]86 | x86_64 | powerpc64 | powerpc32 | ia64)
+  has_float_approx=yes
+  ;;
+esac
 
 AC_ARG_ENABLE([float-approx],
     [AS_HELP_STRING([--enable-float-approx], [enable fast approximations for floating point])],

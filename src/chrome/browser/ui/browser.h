@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -756,6 +756,7 @@ class Browser : public TabStripModelObserver,
       content::EyeDropperListener* listener) override;
   void InitiatePreview(content::WebContents& web_contents,
                        const GURL& url) override;
+  bool ShouldUseInstancedSystemMediaControls() const override;
 
   bool is_type_normal() const { return type_ == TYPE_NORMAL; }
   bool is_type_popup() const { return type_ == TYPE_POPUP; }
@@ -886,6 +887,7 @@ class Browser : public TabStripModelObserver,
                          bool proceed,
                          bool* proceed_to_fire_unload) override;
   bool ShouldFocusLocationBarByDefault(content::WebContents* source) override;
+  bool ShouldFocusPageAfterCrash(content::WebContents* source) override;
   void ShowRepostFormWarningDialog(content::WebContents* source) override;
   bool IsWebContentsCreationOverridden(
       content::SiteInstance* source_site_instance,
@@ -935,6 +937,13 @@ class Browser : public TabStripModelObserver,
   void EnumerateDirectory(content::WebContents* web_contents,
                           scoped_refptr<content::FileSelectListener> listener,
                           const base::FilePath& path) override;
+  bool CanUseWindowingControls(
+      content::RenderFrameHost* requesting_frame) override;
+  void SetCanResizeFromWebAPI(absl::optional<bool> can_resize) override;
+  bool GetCanResize() override;
+  void MinimizeFromWebAPI() override;
+  void MaximizeFromWebAPI() override;
+  void RestoreFromWebAPI() override;
   bool CanEnterFullscreenModeForTab(
       content::RenderFrameHost* requesting_frame,
       const blink::mojom::FullscreenOptions& options) override;
@@ -1100,7 +1109,7 @@ class Browser : public TabStripModelObserver,
   // Returns true if the window can close, false otherwise.
   bool CanCloseWithInProgressDownloads();
 
-  // Called when the window is closing to check if more than one tabs are open
+  // Called when the window is closing to check if more than one tab is open
   bool CanCloseWithMultipleTabs();
 
   // Called when the user has decided whether to proceed or not with the browser

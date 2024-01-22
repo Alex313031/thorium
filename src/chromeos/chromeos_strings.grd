@@ -314,11 +314,39 @@
       </message>
 
       <!-- Editor Menu -->
-      <message name="IDS_EDITOR_MENU_PROMO_CARD_VIEW_DISMISS_BUTTON" desc="Label on the dismiss button in the dialog that is shown to introduce the Editor Menu feature.">
+      <!-- TODO(b/286268215): Finalize these strings and make them translatable. -->
+      <message name="IDS_EDITOR_MENU_PROMO_CARD_TITLE" desc="Title text in the dialog that is shown to introduce the Editor Menu feature." translateable="false">
+        Write faster and with more confidence
+      </message>
+      <message name="IDS_EDITOR_MENU_PROMO_CARD_DESC" desc="Description text in the dialog that is shown to introduce the Editor Menu feature." translateable="false">
+        Use Orca to create a draft or refine existing work, powered by Google AI
+      </message>
+      <message name="IDS_EDITOR_MENU_PROMO_CARD_DISMISS_BUTTON" desc="Label on the dismiss button in the dialog that is shown to introduce the Editor Menu feature." translateable="false">
         Dismiss
       </message>
-      <message name="IDS_EDITOR_MENU_PROMO_CARD_VIEW_TELL_ME_MORE_BUTTON" desc="Label on the tell me more button in the dialog that is shown to introduce the Editor Menu feature.">
-        Tell me more
+      <message name="IDS_EDITOR_MENU_PROMO_CARD_TRY_IT_BUTTON" desc="Label on the try it button in the dialog that is shown to introduce the Editor Menu feature." translateable="false">
+        Try it
+      </message>
+      <message name="IDS_EDITOR_MENU_WRITE_CARD_TITLE" desc="Title text in the Editor Menu when shown in write mode." translateable="false">
+        Writing help
+      </message>
+      <message name="IDS_EDITOR_MENU_WRITE_CARD_FREEFORM_PLACEHOLDER" desc="Placeholder text in the freeform textfield of the Editor Menu when shown in write mode." translateable="false">
+        For example, "write a thank you note"
+      </message>
+      <message name="IDS_EDITOR_MENU_REWRITE_CARD_TITLE" desc="Title text in the Editor Menu when shown in rewrite mode." translateable="false">
+        Rewrite
+      </message>
+      <message name="IDS_EDITOR_MENU_REWRITE_CARD_FREEFORM_PLACEHOLDER" desc="Placeholder text in the freeform textfield of the Editor Menu when shown in rewrite mode." translateable="false">
+        Custom (for example, "sound more confident")
+      </message>
+      <message name="IDS_EDITOR_MENU_SETTINGS_TOOLTIP" desc="Tooltip text for the settings button in the Editor Menu." translateable="false">
+        Settings
+      </message>
+      <message name="IDS_EDITOR_MENU_FREEFORM_TEXTFIELD_ARROW_BUTTON_TOOLTIP" desc="Tooltip text for the arrow button in the freeform textfield in the Editor Menu." translateable="false">
+        Submit
+      </message>
+      <message name="IDS_EDITOR_MENU_EXPERIMENT_BADGE" desc="Label on the badge shown next to the Editor Menu title to indicate that it is an experimental feature." translateable="false">
+        Experiment
       </message>
 
       <!-- Multitask Menu -->
@@ -2502,22 +2530,19 @@
           Off
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_DURATION_TITLE" desc="Label for the drop down menu of ambient mode duration settings.">
-         Show screen saver
+          While charging, show screen saver for
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_DURATION_MINUTES" desc="Label for the screen saver duration option in minutes.">
-         for <ph name="MINUTES">$1<ex>10</ex></ph> minutes
+          <ph name="MINUTES">$1<ex>10</ex></ph> minutes
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_DURATION_ONE_HOUR" desc="Label for the screen saver duration option 1 hour.">
-         for 1 hour
+          1 hour
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_DURATION_FOREVER" desc="Label for the screen saver duration option forever.">
-         forever
-        </message>
-        <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_DURATION_DESCRIPTION" desc="Label for the screen saver duration description.">
-         To conserve battery, screen saver works only while charging.
+          forever
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_TOPIC_SOURCE_TITLE" desc="Label for the radio button group of ambient mode topic source, where the screen contents come from.">
-         Image source
+          Image source
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_TOPIC_SOURCE_GOOGLE_PHOTOS" desc="Label for the radio button to choose the topic source from Google Photos. The radio button allows the user to set Google Photos for ambient mode, which shows photos to the user when their device is idle.">
           Google Photos
@@ -2579,10 +2604,10 @@
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_ALBUMS_SUBPAGE_ALBUM_UNSELECTED" desc="A11y label of an unselected album in ambient mode.">
           Select album <ph name="TITLE">$1<ex>Recent highlights</ex></ph> <ph name="DESC">$2<ex>Your best auto selected photos</ex></ph>
         </message>
-        <message name="IDS_PERONSONALIZATION_APP_AMBIENT_MODE_LAST_ART_ALBUM_MESSAGE" desc="A message shown when deselecting the last art album.">
+        <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_LAST_ART_ALBUM_MESSAGE" desc="A message shown when deselecting the last art album.">
           A minimum of one Art gallery album needs to be selected
         </message>
-        <message name="IDS_PERONSONALIZATION_APP_AMBIENT_MODE_ART_ALBUM_DIALOG_CLOSE_BUTTON_LABEL" desc="Label on the close button in the art album dialog.">
+        <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_ART_ALBUM_DIALOG_CLOSE_BUTTON_LABEL" desc="Label on the close button in the art album dialog.">
           Got it
         </message>
         <message name="IDS_PERSONALIZATION_APP_AMBIENT_MODE_ANIMATION_TITLE" desc="Label for the ambient mode animation section.">
@@ -3916,6 +3941,9 @@
         <message name="IDS_FEEDBACK_TOOL_ATTACH_FILES_LABEL" desc="Label for adding a screenshot and/or a filename.">
           Attach files
         </message>
+        <message name="IDS_FEEDBACK_TOOL_ATTACH_FILES_LABEL_LOGGED_OUT" desc="Label for adding a screenshot. Shown to loggout users.">
+          Add screenshot
+        </message>
         <message name="IDS_FEEDBACK_TOOL_REPLACE_FILE_LABEL" desc="Label of the replace file button">
           Replace file
         </message>
@@ -3961,7 +3989,7 @@
           Google Assistance captures recent history and information such as your identity and location to help us better understand your issue.&#10;&#10;The information is stored for up to 90 days and access is restricted to the team working on this issue.
         </message>
         <message name="IDS_FEEDBACK_TOOL_PRIVACY_NOTE" desc="Text for the privacy note included in the feedback app">
-          Go to the <ph name="BEGIN_LINK1">&lt;a id="legalHelpPageUrl"&gt;</ph>Legal Help page<ph name="END_LINK1">&lt;/a&gt;</ph> to request content changes for legal reasons. Some account and system information may be sent to Google. We will use the information you give us to help address technical issues and to improve our services, subject to our <ph name="BEGIN_LINK2">&lt;a id="privacyPolicyUrl"&gt;</ph>Privacy Policy<ph name="END_LINK2">&lt;/a&gt;</ph> and <ph name="BEGIN_LINK3">&lt;a id="termsOfServiceUrl"&gt;</ph>Terms of Service<ph name="END_LINK3">&lt;/a&gt;</ph>.
+          Some account and system information may be sent to Google. We use this information to help address technical issues and improve our services, subject to our <ph name="BEGIN_LINK2">&lt;a id="privacyPolicyUrl"&gt;</ph>Privacy Policy<ph name="END_LINK2">&lt;/a&gt;</ph> and <ph name="BEGIN_LINK3">&lt;a id="termsOfServiceUrl"&gt;</ph>Terms of Service<ph name="END_LINK3">&lt;/a&gt;</ph>. To request content changes, go to <ph name="BEGIN_LINK1">&lt;a id="legalHelpPageUrl"&gt;</ph>Legal Help<ph name="END_LINK1">&lt;/a&gt;</ph>.
         </message>
         <message name="IDS_FEEDBACK_TOOL_PRIVACY_NOTE_LOGGED_OUT" desc="Text for the privacy note included in the feedback app when users are logged out">
           Some account and system information may be sent to Google. We use this information to help address technical issues and improve our services, subject to our Privacy Policy (<ph name="privacyPolicyUrl">$1<ex>https://policies.google.com/privacy</ex></ph>) and Terms of Service (<ph name="termsOfServiceUrl">$2<ex>https://policies.google.com/terms</ex></ph>). To request content changes, go to Legal Help (<ph name="legalHelpPageUrl">$3<ex>https://support.google.com/legal/answer/3110420</ex></ph>).
@@ -4066,9 +4094,13 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_CANCEL" desc="Used to cancel action in various modals">
           Cancel
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT" desc="Used to edit action in various modals" translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT" desc="Used to edit action in various modals">
           Edit
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CUSTOMIZATION_DISABLED_BY_POLICY_MESSAGE"
+            desc="The message shown to indicate that a user policy is in place
+            to prevent the user from customizing the system shortcut">
+          This app is managed by your administrator
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT_VIEW_STATUS_MESSAGE" desc="Instructions to user when they're inputting a new shortcut">
           Press 1-4 modifiers and 1 other key on your keyboard. To exit editing mode, press alt + esc.
@@ -4117,9 +4149,13 @@
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_SEACH_WITH_FUNCTION_KEY_NOT_ALLOWED_STATUS_MESSAGE"
             desc="The status message that displays when user press a key combination
-            that includes the search key with a function key."
-            translateable="false">
-          Shortcut with function keys and search are not allowed. Press a new shortcut.
+            that includes the search key with a function key.">
+          Shortcut not available. Press a new shortcut without using function and search keys.
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_RESERVED_KEY_NOT_ALLOWED_STATUS_MESSAGE"
+            desc="The status message that displays when user press a key combination
+            that includes a reserved key.">
+          Shortcut not available. Press a new shortcut without <ph name="key">$1<ex>CapsLock</ex></ph>.
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_NON_SEARCH_SHORTCUT_WARNING"
             desc="The status (warning) message that displays when user attempts to input a shortcut that does not include the search/meta key.">
@@ -4134,11 +4170,34 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_SEARCH_PLACEHOLDER_LABEL" desc="Placeholder text shown in search input field before user has typed anything.">
           Search shortcuts
         </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_INPUT_KEY_PLACEHOLDER"
+            desc="The placeholder text that appears in the input box where the
+            user is required to press a key combination for a shortcut.">
+          key
+        </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ACCELERATOR_TEXT_DIVIDER" desc="The text shown between multiple shortcut keys.">
           or
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ACCELERATOR_ROW_A11Y" desc="Accessibility text for the selected accelerator row.">
           <ph name="DESCRIPTION">$1<ex>Open notifications</ex></ph>, <ph name="ACCELERATOR_INFO">$2<ex>ctrl T</ex></ph>.
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT_BUTTON_A11Y" desc="Accessibility text for the edit button.">
+          Edit shortcut
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_CANCEL_BUTTON_A11Y" desc="Accessibility text for the cancel button.">
+          Cancel shortcut editing
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_DELETE_BUTTON_A11Y" desc="Accessibility text for the delete button.">
+          Delete shortcut
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_EDIT_DIALOG_A11Y" desc="The text read by the screen reader when edit dialog is open.">
+          Edit dialog for <ph name="DESCRIPTION">$1<ex>Open notifications</ex></ph> is open.
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SHORTCUT_ADDED_A11Y" desc="The text read by the screen reader when shortcut is added successfully.">
+          Shortcut added
+        </message>
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_SHORTCUT_EDITED_A11Y" desc="The text read by the screen reader when shortcut is edited successfully.">
+          Shortcut edited
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_SEARCH_RESULT_ROW_A11Y_RESULT_SELECTED" desc="ThoriumVox alert to indicate the position number of a selected result in a list of search results and the selected result text itself, and that the user can press enter to navigate to section described by the search result.">
           Search result <ph name="LIST_POSITION">$1<ex>1</ex></ph> of <ph name="LIST_SIZE">$2<ex>2</ex></ph>: <ph name="SEARCH_RESULT_TEXT">$3<ex>Open new tab, ctrl T</ex></ph>. Press Enter to navigate to shortcut.
@@ -4254,8 +4313,7 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_BACK" desc="The text read aloud by the screen reader describing the keyboard icon 'back'.">
           back
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_FORWARD" desc="The text read aloud by the screen reader describing the keyboard icon 'forward'." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_FORWARD" desc="The text read aloud by the screen reader describing the keyboard icon 'forward'.">
           forward
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_REFRESH" desc="The text read aloud by the screen reader describing the keyboard icon 'refresh'.">
@@ -4306,20 +4364,16 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MEDIA_TRACK_PREVIOUS" desc="The text read aloud by the screen reader describing the keyboard icon 'previous track'.">
           previous track
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_HOME" desc="The text read aloud by the screen reader describing the keyboard icon 'browser home'." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_BROWSER_HOME" desc="The text read aloud by the screen reader describing the keyboard icon 'browser home'.">
           browser home
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_LAUNCH_MAIL" desc="The text read aloud by the screen reader describing the keyboard icon 'launch mail'." translateable="false">
-          launch mail
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_LAUNCH_MAIL" desc="The text read aloud by the screen reader describing the keyboard icon 'email'.">
+          email
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_STAND_BY" desc="The text read aloud by the screen reader describing the keyboard icon 'lock'." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_STAND_BY" desc="The text read aloud by the screen reader describing the keyboard icon 'lock'.">
           lock
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_CONTEXT_MENU" desc="The text read aloud by the screen reader describing the keyboard icon 'context menu." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_CONTEXT_MENU" desc="The text read aloud by the screen reader describing the keyboard icon 'menu'.">
           menu
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MICROPHONE_MUTE_TOGGLE" desc="The text read aloud by the screen reader describing the keyboard icon 'toggle microphone mute'.">
@@ -4328,16 +4382,13 @@
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_MODE_CHANGE" desc="The text read aloud by the screen reader describing the keyboard icon 'mode change'.">
           mode change
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_OPEN_LAUNCHER" desc="The text read aloud by the screen reader describing the keyboard icon 'meta launcher'." translateable="false">
-          meta launcher
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_OPEN_LAUNCHER" desc="The text read aloud by the screen reader describing the keyboard icon 'launcher'.">
+          launcher
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_OPEN_SEARCH" desc="The text read aloud by the screen reader describing the keyboard icon 'meta search'." translateable="false">
-          meta search
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_OPEN_SEARCH" desc="The text read aloud by the screen reader describing the keyboard icon 'search'.">
+          search
         </message>
-        <!-- TODO(b/286268215): Translate this string -->
-        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_POWER" desc="The text read aloud by the screen reader describing the keyboard icon 'power'." translateable="false">
+        <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_POWER" desc="The text read aloud by the screen reader describing the keyboard icon 'power'.">
           power
         </message>
         <message name="IDS_SHORTCUT_CUSTOMIZATION_ICON_LABEL_PRINT_SCREEN" desc="The text read aloud by the screen reader describing the keyboard icon 'take screenshot'.">
@@ -4463,6 +4514,9 @@
         <message name="IDS_SETTINGS_APN_DIALOG_DEFAULT_APN_REQUIRED" desc="Error message that is shown whenever a default APN type is required">
           A default APN is required
         </message>
+        <message name="IDS_SETTINGS_APN_NAME_MODEM" desc="Label for APNs that are selected by the modem">
+          Modem APN
+        </message>
         <message name="IDS_SETTINGS_APN_AUTO_DETECTED" desc="Statement that the APN is automatically detected">
           Automatically detected
         </message>
@@ -4477,6 +4531,18 @@
         </message>
         <message name="IDS_SETTINGS_APN_DIALOG_SAVE" desc="Text used to save a modified APN.">
           Save
+        </message>
+        <message name="IDS_SETTINGS_APN_DIALOG_A11Y_ADD_ENABLED" desc="A11y announcement when 'Add' button becomes enabled in the APN detail dialog.">
+          Add APN button is now enabled
+        </message>
+        <message name="IDS_SETTINGS_APN_DIALOG_A11Y_SAVE_ENABLED" desc="A11y announcement when 'Save' button becomes enabled in the APN detail dialog.">
+          Save APN button is now enabled
+        </message>
+        <message name="IDS_SETTINGS_APN_DIALOG_A11Y_ADD_DISABLED" desc="A11y announcement when 'Add' button becomes disabled in the APN detail dialog.">
+          Add APN button is now disabled
+        </message>
+        <message name="IDS_SETTINGS_APN_DIALOG_A11Y_SAVE_DISABLED" desc="A11y announcement when 'Save' button becomes disabled in the APN detail dialog.">
+          Save APN button is now disabled
         </message>
         <message name="IDS_SETTINGS_APN_DIALOG_CANCEL" desc="Text used to cancel the APN dialog.">
           Cancel
@@ -4523,26 +4589,32 @@
         <!-- End of Arc Input Overlay -->
       </if>
 
-       <!-- Strings for WebAppSettings -->
-    <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_MESSAGE" desc="This is the message of the notification when an application is automatically started on OS login.[ICU Syntax]">
-      {NUM_ROOL_APPS, plural, offset:2
-      =1 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph> to start automatically every time you log in.}
-      =2 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph> and <ph name="APP_NAME_2">{APP_NAME_2}</ph> to start automatically every time you log in.}
-      =3 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph>, <ph name="APP_NAME_2">{APP_NAME_2}</ph> and <ph name="APP_NAME_3">{APP_NAME_3}</ph> to start automatically every time you log in.}
-      other {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph>, <ph name="APP_NAME_2">{APP_NAME_2}</ph> and # other apps to start automatically every time you log in.}
-      }
+      <!-- Strings for WebAppSettings -->
+      <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_MESSAGE" desc="This is the message of the notification when an application is automatically started on OS login.[ICU Syntax]">
+        {NUM_ROOL_APPS, plural, offset:2
+          =1 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph> to start automatically every time you log in.}
+          =2 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph> and <ph name="APP_NAME_2">{APP_NAME_2}</ph> to start automatically every time you log in.}
+          =3 {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph>, <ph name="APP_NAME_2">{APP_NAME_2}</ph> and <ph name="APP_NAME_3">{APP_NAME_3}</ph> to start automatically every time you log in.}
+          other {Your administrator has set <ph name="APP_NAME_1">{APP_NAME_1}</ph>, <ph name="APP_NAME_2">{APP_NAME_2}</ph> and # other apps to start automatically every time you log in.}
+        }
       </message>
 
-       <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_TITLE" desc="This is the title of the notification when an application is automatically started on OS login. [ICU Syntax]">
-      {NUM_ROOL_APPS, plural,
-      =1 {<ph name="APP_NAME_1">{APP_NAME_1}</ph> was started automatically}
-      other {# apps were started automatically}
-      }
+      <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_TITLE" desc="This is the title of the notification when an application is automatically started on OS login. [ICU Syntax]">
+        {NUM_ROOL_APPS, plural,
+          =1 {<ph name="APP_NAME_1">{APP_NAME_1}</ph> was started automatically}
+          other {# apps were started automatically}
+        }
       </message>
 
-       <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_LEARN_MORE" desc="This is the button-text of the notification when an application is automatically started on OS login.">
-      Learn more
+      <message name="IDS_RUN_ON_OS_LOGIN_ENABLED_LEARN_MORE" desc="This is the button-text of the notification when an application is automatically started on OS login.">
+        Learn more
       </message>
+
+      <message name="IDS_APP_CLOSE_BUTTON_DISABLED_BY_ADMIN" desc="Text for the close button when prevent close is enabled by the administrator">
+        Your administrator doesn't allow closing this app
+      </message>
+      <!-- End of Strings for WebAppSettings -->
+
     </messages>
   </release>
 </grit>

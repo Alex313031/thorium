@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -199,8 +199,6 @@
 #include "content/public/browser/navigation_controller.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/browser/navigation_handle.h"
-#include "content/public/browser/notification_details.h"
-#include "content/public/browser/notification_service.h"
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/render_view_host.h"
@@ -209,6 +207,7 @@
 #include "content/public/browser/site_instance.h"
 #include "content/public/browser/ssl_status.h"
 #include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_exposed_isolation_level.h"
 #include "content/public/common/content_constants.h"
 #include "content/public/common/content_features.h"
 #include "content/public/common/page_zoom.h"
@@ -939,7 +938,7 @@ Browser* Browser::GetBrowserForOpeningWebUi() {
     // We should always have an opener web contents if the current browser is a
     // picture-in-picture type.
     DCHECK(opener_web_contents);
-    opener_browser_ = chrome::FindBrowserWithWebContents(opener_web_contents);
+    opener_browser_ = chrome::FindBrowserWithTab(opener_web_contents);
   }
 
   return opener_browser_;
@@ -1881,6 +1880,13 @@ bool Browser::ShouldFocusLocationBarByDefault(WebContents* source) {
   return search::NavEntryIsInstantNTP(source, entry);
 }
 
+bool Browser::ShouldFocusPageAfterCrash(WebContents* source) {
+  // Focus only the active page when reloading after a crash, otherwise
+  // return false. This is to ensure background reloads via hovercard
+  // don't end up causing a focus loss which results in its dismissal.
+  return source == tab_strip_model_->GetActiveWebContents();
+}
+
 void Browser::ShowRepostFormWarningDialog(WebContents* source) {
   TabModalConfirmDialog::Create(
       std::make_unique<RepostFormWarningController>(source), source);
@@ -2007,6 +2013,10 @@ void Browser::InitiatePreview(content::WebContents& web_contents,
 #endif
 }
 
+bool Browser::ShouldUseInstancedSystemMediaControls() const {
+  return is_type_app() || is_type_app_popup();
+}
+
 void Browser::DidFinishNavigation(
     content::WebContents* web_contents,
     content::NavigationHandle* navigation_handle) {
@@ -2032,6 +2042,37 @@ void Browser::EnumerateDirectory(
     scoped_refptr<content::FileSelectListener> listener,
     const base::FilePath& path) {
   FileSelectHelper::EnumerateDirectory(web_contents, std::move(listener), path);
+}
+
+bool Browser::CanUseWindowingControls(
+    content::RenderFrameHost* requesting_frame) {
+  if (!web_app::AppBrowserController::IsWebApp(this)) {
+    requesting_frame->AddMessageToConsole(
+        blink::mojom::ConsoleMessageLevel::kWarning,
+        "API called from something else than a web_app.");
+    return false;
+  }
+  return true;
+}
+
+void Browser::SetCanResizeFromWebAPI(absl::optional<bool> can_resize) {
+  window_->SetCanResizeFromWebAPI(can_resize);
+}
+
+bool Browser::GetCanResize() {
+  return window_->GetCanResize();
+}
+
+void Browser::MinimizeFromWebAPI() {
+  window_->Minimize();
+}
+
+void Browser::MaximizeFromWebAPI() {
+  window_->Maximize();
+}
+
+void Browser::RestoreFromWebAPI() {
+  window_->Restore();
 }
 
 bool Browser::CanEnterFullscreenModeForTab(
@@ -2102,8 +2143,11 @@ blink::mojom::DisplayMode Browser::GetDisplayMode(
 blink::ProtocolHandlerSecurityLevel Browser::GetProtocolHandlerSecurityLevel(
     content::RenderFrameHost* requesting_frame) {
   // WARNING: This must match the logic of
-  // ChromeExtensionsRendererClient::GetProtocolHandlerSecurityLevel().
-
+  // ChromeContentRendererClient::GetProtocolHandlerSecurityLevel().
+  if (requesting_frame->GetLastCommittedOrigin().scheme() ==
+      chrome::kIsolatedAppScheme) {
+    return blink::ProtocolHandlerSecurityLevel::kSameOrigin;
+  }
   content::BrowserContext* context = requesting_frame->GetBrowserContext();
   extensions::ProcessMap* process_map = extensions::ProcessMap::Get(context);
   const Extension* owner_extension =

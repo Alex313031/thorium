@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -52,10 +52,10 @@ if (is_ios) {
     bundle_data("components_tests_distiller_bundle_data") {
       testonly = true
       sources = [
-        "//third_party/chaijs/chai.js",
         "//third_party/dom_distiller_js/dist/test/data/out/domdistillerjstest.js",
         "//third_party/dom_distiller_js/dist/test/data/war/test.html",
-        "//third_party/mocha/mocha.js",
+        "//third_party/node/node_modules/chai/chai.js",
+        "//third_party/node/node_modules/mocha/mocha.js",
         "dom_distiller/core/javascript/dom_distiller_viewer.js",
         "dom_distiller/core/javascript/domdistiller.js",
         "dom_distiller/core/javascript/extract_features.js",
@@ -209,6 +209,7 @@ test("components_unittests") {
     "//components/cross_device/logging:unit_tests",
     "//components/crx_file:unit_tests",
     "//components/device_event_log:unit_tests",
+    "//components/device_reauth:unit_tests",
     "//components/device_signals/core:unit_tests",
     "//components/dom_distiller/core:unit_tests",
     "//components/download:unit_tests",
@@ -261,6 +262,8 @@ test("components_unittests") {
     "//components/password_manager/core/browser/features:unit_tests",
     "//components/password_manager/core/browser/generation:unit_tests",
     "//components/password_manager/core/browser/sharing:unit_tests",
+    "//components/password_manager/core/browser/sync:unit_tests",
+    "//components/password_manager/core/browser/ui:unit_tests",
     "//components/password_manager/core/browser/well_known_change_password:unit_tests",
     "//components/password_manager/core/common:unit_tests",
     "//components/payments/core:unit_tests",
@@ -410,6 +413,7 @@ test("components_unittests") {
       "//components/captive_portal/content:unit_tests",
       "//components/cast_receiver:unit_tests",
       "//components/cast_streaming:unit_tests",
+      "//components/certificate_transparency:unit_tests",
       "//components/content_capture/browser:unit_tests",
       "//components/content_relationship_verification:unit_tests",
       "//components/contextual_search/core/browser:unit_tests",
@@ -445,6 +449,7 @@ test("components_unittests") {
       "//components/mirroring:mirroring_tests",
       "//components/navigation_interception:unit_tests",
       "//components/no_state_prefetch/browser:unit_tests",
+      "//components/no_state_prefetch/common:unit_tests",
       "//components/optimization_guide/content/browser:unit_tests",
       "//components/optimization_guide/content/renderer:unit_tests",
       "//components/origin_trials:unit_tests",
@@ -521,7 +526,6 @@ test("components_unittests") {
     deps += [
       "//components/background_sync:unit_tests",
       "//components/blocked_content:unit_tests",
-      "//components/certificate_transparency:unit_tests",
       "//components/content_settings/browser:unit_tests",
       "//components/content_settings/browser/ui:unit_tests",
       "//components/feed/core/v2:core_unit_tests",
@@ -639,6 +643,7 @@ test("components_unittests") {
   } else {  #!is_android
     deps += [
       "//components/keep_alive_registry:unit_tests",
+      "//components/manta:unit_tests",
       "//components/trusted_vault:unit_tests",
     ]
   }
@@ -708,11 +713,12 @@ test("components_unittests") {
     deps += [ "//components/constrained_window:unit_tests" ]
   }
 
+  if (is_win || is_linux || is_chromeos) {
+    deps += [ "//components/stability_report:unit_tests" ]
+  }
+
   if (is_win) {
-    deps += [
-      "//components/stability_report:unit_tests",
-      "//components/winhttp:unit_tests",
-    ]
+    deps += [ "//components/winhttp:unit_tests" ]
   }
 
   if (enable_printing) {
@@ -896,6 +902,7 @@ if (use_blink) {
 
     sources = [
       "autofill/content/browser/risk/fingerprint_browsertest.cc",
+      "autofill/content/renderer/a11y_utils_browsertest.cc",
       "autofill/content/renderer/autofill_agent_browsertest.cc",
       "autofill/content/renderer/form_autofill_issues_browsertest.cc",
       "autofill/content/renderer/form_autofill_util_browsertest.cc",
@@ -932,9 +939,9 @@ if (use_blink) {
       "dom_distiller/core/javascript/",
       "security_state/content/testdata/",
       "//content/test/data/",
-      "//third_party/chaijs",
+      "//third_party/node/node_modules/chai",
       "//third_party/dom_distiller_js/dist/test/data/",
-      "//third_party/mocha",
+      "//third_party/node/node_modules/mocha/mocha.js",
     ]
 
     deps = [
@@ -1023,6 +1030,7 @@ if (use_blink) {
     if (enable_screen_ai_service) {
       deps += [
         "//components/services/screen_ai",
+        "//components/services/screen_ai:test_support",
         "//components/services/screen_ai/public/mojom",
         "//skia",
       ]

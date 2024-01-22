@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -56,12 +56,14 @@ bool RichAutocompletionEitherNonPrefixEnabled() {
              kRichAutocompletionAutocompleteNonPrefixShortcutProvider.Get();
 }
 
+#if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_IOS)
 // Return true if the given match uses a vector icon with a background.
 bool HasVectorIconBackground(const AutocompleteMatch& match) {
   return OmniboxFieldTrial::IsActionsUISimplificationEnabled() &&
          (match.type == AutocompleteMatchType::HISTORY_CLUSTER ||
           match.type == AutocompleteMatchType::PEDAL);
 }
+#endif
 
 }  // namespace
 

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -54,9 +54,6 @@ void CloneBookmarkNodeImpl(BookmarkModel* model,
                            bool reset_node_times) {
   // Make sure to not copy non clonable keys.
   BookmarkNode::MetaInfoMap meta_info_map = element.meta_info_map;
-  for (const std::string& key : model->non_cloned_keys())
-    meta_info_map.erase(key);
-
   if (element.is_url) {
     Time date_added = reset_node_times ? Time::Now() : element.date_added;
     DCHECK(!date_added.is_null());
@@ -487,8 +484,8 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(prefs::kEditBookmarksEnabled, true);
   registry->RegisterBooleanPref(
-      // TODO: Alex313031 remove on M120
-      prefs::kShowAppsShortcutInBookmarkBar, true,
+      // Alex313031 removed in M120
+      prefs::kShowAppsShortcutInBookmarkBar, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(
       prefs::kShowManagedBookmarksInBookmarkBar, true,

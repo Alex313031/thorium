@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors, Alex313031, and Shane Fournier
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 //
@@ -374,6 +374,7 @@ bool ContainsUnsupportedSwitch(const base::CommandLine& cmd_line) {
 
 bool IsProcessorSupported() {
 #if defined(ARCH_CPU_X86_FAMILY)
+  // Allow SSE2 builds
   return base::CPU().has_sse2();
 #elif defined(ARCH_CPU_ARM64)
   return true;
