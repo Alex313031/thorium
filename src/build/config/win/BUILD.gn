@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -134,20 +134,20 @@ config("compiler") {
         "-msse4",
         "-msse4.1",
         "-msse4.2",
-        "-mavx",
         "-maes",
         "-mpclmul",
+        "-mavx",
         "/clang:-O3",
         "/clang:-msse3",
         "/clang:-mssse3",
         "/clang:-msse4",
         "/clang:-msse4.1",
         "/clang:-msse4.2",
-        "/clang:-mavx",
         "/clang:-maes",
         "/clang:-mpclmul",
+        "/clang:-mavx",
         "-Xclang", "-O3",
-        "-Wno-unused-command-line-argument",
+        # Possibly re-enable "-Wno-unused-command-line-argument",
       ]
     }
 
@@ -639,17 +639,9 @@ config("static_crt") {
 # Subsystem --------------------------------------------------------------------
 
 # This is appended to the subsystem to specify a minimum version.
-if (current_cpu == "x64") {
-  # The number after the comma is the minimum required OS version.
-  # 5.02 = Windows Server 2003.
-  subsystem_version_suffix = ",10.0"
-} else if (current_cpu == "arm64") {
-  # Windows ARM64 requires Windows 10.
-  subsystem_version_suffix = ",10.0"
-} else {
-  # 5.01 = Windows XP.
-  subsystem_version_suffix = ",10.0"
-}
+# The number after the comma is the minimum required OS version.
+# Set to 10.0 since we only support >= Win10 since M110.
+subsystem_version_suffix = ",10.0"
 
 config("console") {
   ldflags = [ "/SUBSYSTEM:CONSOLE$subsystem_version_suffix" ]
