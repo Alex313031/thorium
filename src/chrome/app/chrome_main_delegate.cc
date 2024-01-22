@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -153,6 +153,7 @@
 #if BUILDFLAG(IS_CHROMEOS)
 #include "chromeos/dbus/constants/dbus_paths.h"
 #include "components/crash/core/app/breakpad_linux.h"
+#include "ui/gfx/linux/gbm_util.h"  // nogncheck
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -461,8 +462,8 @@ void AddFeatureFlagsToCommandLine(
     const chromeos::BrowserParamsProxy& init_params) {
   base::ScopedAddFeatureFlags flags(base::CommandLine::ForCurrentProcess());
 
-  if (init_params.IsVariableRefreshRateEnabled()) {
-    flags.EnableIfNotSet(features::kEnableVariableRefreshRate);
+  if (init_params.IsVariableRefreshRateAlwaysOn()) {
+    flags.EnableIfNotSet(features::kEnableVariableRefreshRateAlwaysOn);
   }
 
   if (init_params.IsPdfOcrEnabled()) {
@@ -569,6 +570,12 @@ struct MainFunction {
 
 // Initializes the user data dir. Must be called before InitializeLocalState().
 void InitializeUserDataDir(base::CommandLine* command_line) {
+#if BUILDFLAG(IS_CHROMEOS_LACROS) && DCHECK_IS_ON()
+  // In debug builds of Lacros, we keep track of when the user data dir
+  // is initialized, to ensure the cryptohome is not accessed before login
+  // when prelaunching at login screen.
+  chromeos::lacros_paths::SetInitializedUserDataDir();
+#endif
 #if BUILDFLAG(IS_WIN)
   // Reach out to chrome_elf for the truth on the user data directory.
   // Note that in tests, this links to chrome_elf_test_stubs.
@@ -669,7 +676,6 @@ void InitLogging(const std::string& process_type) {
                    << "Bugs are likely and should be reported to Alex313031.";
   }
 #endif
-
 }
 #endif  // !BUILDFLAG(IS_ANDROID)
 
@@ -757,6 +763,15 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
   const auto* invoked_in_browser =
       absl::get_if<InvokedInBrowserProcess>(&invoked_in);
   if (!invoked_in_browser) {
+#if BUILDFLAG(IS_CHROMEOS)
+    // At this point, the base::FeatureList has been initialized and the process
+    // should still be single threaded. Additionally, minigbm shouldn't have
+    // been used yet by this process. Therefore, it's a good time to ensure the
+    // Intel media compression environment flag for minigbm is correctly set
+    // (it's possible this environment variable wasn't inherited from the
+    // browser process).
+    ui::EnsureIntelMediaCompressionEnvVarIsSet();
+#endif  // BUILDFLAG(IS_CHROMEOS)
     CommonEarlyInitialization(invoked_in);
     return absl::nullopt;
   }
@@ -804,8 +819,16 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
   // be scheduled in the main browser after taking the process singleton. They
   // cannot be scheduled immediately after InstantiatePersistentHistograms()
   // because ThreadPool is not ready at that time yet.
+  bool immediate_histogram_cleanup = true;
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  // When prelaunching Lacros at login screen, we want to postpone the
+  // cleanup of persistent histograms to when the user has logged in
+  // and the cryptohome is accessible.
+  immediate_histogram_cleanup = !chromeos::IsLaunchedWithPostLoginParams();
+#endif
   base::FilePath metrics_dir;
-  if (base::PathService::Get(chrome::DIR_USER_DATA, &metrics_dir)) {
+  if (immediate_histogram_cleanup &&
+      base::PathService::Get(chrome::DIR_USER_DATA, &metrics_dir)) {
     PersistentHistogramsCleanup(metrics_dir);
   }
 #endif  // !BUILDFLAG(IS_FUCHSIA)
@@ -845,6 +868,14 @@ absl::optional<int> ChromeMainDelegate::PostEarlyInitialization(
       chrome_content_browser_client_->startup_data()
           ->chrome_feature_list_creator();
   chrome_feature_list_creator->CreateFeatureList();
+
+#if BUILDFLAG(IS_CHROMEOS)
+  // At this point, the base::FeatureList has been initialized and the process
+  // should still be single threaded. Additionally, minigbm shouldn't have been
+  // used yet by this process. Therefore, it's a good time to ensure the Intel
+  // media compression environment flag for minigbm is correctly set.
+  ui::EnsureIntelMediaCompressionEnvVarIsSet();
+#endif  // BUILDFLAG(IS_CHROMEOS)
 
   content::InitializeMojoCore();
 
@@ -1064,7 +1095,12 @@ void ChromeMainDelegate::SetupTracing() {
   // sampler profiler because it can support java frames which is essential for
   // the main thread.
   base::RepeatingCallback tracing_factory =
+#if BUILDFLAG(IS_ANDROID)
+      base::BindRepeating(&CreateCoreUnwindersFactory,
+                          /*is_java_name_hashing_enabled=*/false);
+#else
       base::BindRepeating(&CreateCoreUnwindersFactory);
+#endif  // BUILDFLAG(IS_ANDROID)
   tracing::TracingSamplerProfiler::UnwinderType unwinder_type =
       tracing::TracingSamplerProfiler::UnwinderType::kCustomAndroid;
 #if BUILDFLAG(IS_ANDROID)
@@ -1381,6 +1417,9 @@ void ChromeMainDelegate::PreSandboxStartup() {
 
     // NOTE: When launching Lacros at login screen, after this point,
     // the user should have logged in. The cryptohome is now accessible.
+    if (chrome::ProcessNeedsProfileDir(process_type)) {
+      InitializeUserDataDir(base::CommandLine::ForCurrentProcess());
+    }
 
     // Redirect logs from system directory to cryptohome.
     RedirectLacrosLogging();
@@ -1407,8 +1446,16 @@ void ChromeMainDelegate::PreSandboxStartup() {
 #endif
 
   // Initialize the user data dir for any process type that needs it.
-  if (chrome::ProcessNeedsProfileDir(process_type))
+  bool initialize_user_data_dir = chrome::ProcessNeedsProfileDir(process_type);
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  // In Lacros, when prelaunching at login screen, we postpone the
+  // initialization of the user data directory.
+  // We verify that no access happens before login via DCHECKs.
+  initialize_user_data_dir &= !chromeos::IsLaunchedWithPostLoginParams();
+#endif
+  if (initialize_user_data_dir) {
     InitializeUserDataDir(base::CommandLine::ForCurrentProcess());
+  }
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
   // Generate shared resource file only on browser process. This is to avoid
@@ -1668,7 +1715,14 @@ void ChromeMainDelegate::SandboxInitialized(const std::string& process_type) {
   // Note: this is done before field trial initialization, so the values of
   // `kPersistentHistogramsFeature` and `kPersistentHistogramsStorage` will
   // not be used. Persist histograms to a memory-mapped file.
-  if (process_type.empty()) {
+  bool immediate_histogram_init = true;
+#if BUILDFLAG(IS_CHROMEOS_LACROS)
+  // For Lacros, when prelaunching at login screen, we want to postpone the
+  // instantiation of persistent histograms to when the user has logged in
+  // and the cryptohome is accessible.
+  immediate_histogram_init = !chromeos::IsLaunchedWithPostLoginParams();
+#endif
+  if (immediate_histogram_init && process_type.empty()) {
     base::FilePath metrics_dir;
     if (base::PathService::Get(chrome::DIR_USER_DATA, &metrics_dir)) {
       InstantiatePersistentHistograms(
