@@ -19,6 +19,8 @@ this build script on Mac:
 3. sudo xcode-select --switch /Applications/Xcode.app
 """
 
+from __future__ import print_function
+
 import argparse
 import glob
 import io
@@ -84,7 +86,7 @@ def GetWinSDKDir():
     return win_sdk_dir
 
   # Don't let vs_toolchain overwrite our environment.
-  environ_bak = dict(os.environ)
+  environ_bak = os.environ
 
   sys.path.append(os.path.join(CHROMIUM_DIR, 'build'))
   import vs_toolchain
@@ -100,8 +102,7 @@ def GetWinSDKDir():
       vs_path = os.environ['GYP_MSVS_OVERRIDE_PATH']
     dia_path = os.path.join(vs_path, 'DIA SDK', 'bin', 'amd64')
 
-  os.environ.clear()
-  os.environ.update(environ_bak)
+  os.environ = environ_bak
   return win_sdk_dir
 
 
@@ -161,10 +162,9 @@ def CheckoutGitRepo(name, git_url, commit, dir):
   # Try updating the current repo if it exists and has no local diff.
   if os.path.isdir(dir):
     os.chdir(dir)
-    # git diff-index --exit-code returns 0 when there is no diff.
+    # git diff-index --quiet returns success when there is no diff.
     # Also check that the first commit is reachable.
-    if (RunCommand(['git', 'diff-index', '--exit-code', 'HEAD'],
-                   fail_hard=False)
+    if (RunCommand(['git', 'diff-index', '--quiet', 'HEAD'], fail_hard=False)
         and RunCommand(['git', 'fetch'], fail_hard=False)
         and RunCommand(['git', 'checkout', commit], fail_hard=False)
         and RunCommand(['git', 'clean', '-f'], fail_hard=False)):
@@ -702,8 +702,9 @@ def main():
                       type=gn_arg,
                       nargs='?',
                       const=True,
-                      help='build the Fuchsia runtimes (linux only)',
-                      default=sys.platform.startswith('linux'))
+                      help='build the Fuchsia runtimes (linux and mac only)',
+                      default=sys.platform.startswith('linux')
+                      or sys.platform.startswith('darwin'))
   parser.add_argument('--without-android', action='store_false',
                       help='don\'t build Android ASan runtime (linux only)',
                       dest='with_android')
@@ -853,7 +854,8 @@ def main():
   if sys.platform == 'darwin':
     isysroot = subprocess.check_output(['xcrun', '--show-sdk-path'],
                                        universal_newlines=True).rstrip()
-  base_cmake_args += ['-DLLVM_ENABLE_UNWIND_TABLES=OFF']
+  else:
+    base_cmake_args += ['-DLLVM_ENABLE_UNWIND_TABLES=OFF']
 
   # See https://crbug.com/1302636#c49 - #c56 -- intercepting crypt_r() does not
   # work with the sysroot for not fully understood reasons. Disable it.
@@ -1287,8 +1289,10 @@ def main():
       target_triple = target_arch
       if target_arch == 'arm':
         target_triple = 'armv7'
-      api_level = '21'
-      if target_arch == 'riscv64':
+      api_level = '19'
+      if target_arch == 'aarch64' or target_arch == 'x86_64':
+        api_level = '21'
+      elif target_arch == 'riscv64':
         api_level = '35'
         toolchain_dir = ANDROID_NDK_CANARY_TOOLCHAIN_DIR
       target_triple += '-linux-android' + api_level
@@ -1516,9 +1520,7 @@ def main():
           # fstat and sunrpc tests fail due to sysroot/host mismatches
           # (crbug.com/1459187).
           '^MemorySanitizer-.* f?stat(at)?(64)?.cpp$',
-          '^.*Sanitizer-.*sunrpc.*cpp$',
-          # sysroot/host glibc version mismatch, crbug.com/1506551
-          '^.*Sanitizer.*mallinfo2.cpp$'
+          '^.*Sanitizer-.*sunrpc.*cpp$'
       ]
       env['LIT_FILTER_OUT'] = '|'.join(lit_excludes)
     RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'check-all'],
