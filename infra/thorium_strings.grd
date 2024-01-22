@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2023 Alex313031. -->
+<!-- Copyright (c) 2024 Alex313031. -->
 <!-- This file contains definitions of strings that are distribution specific.
 If you update this file, be sure also to update google_chrome_strings.grd. -->
 
@@ -683,15 +683,11 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_UNKNOWN_SOURCE"
                desc="Summary of dangerous warning for a file (like an extension) from an unknown source.">
-        Extensions, apps, and themes from unknown sources can harm your device. Thorium recommends only installing them from the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph>
+        Extensions, apps, and themes from unknown sources can harm your device. Thorium recommends only installing them from the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph>
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_MALWARE"
                desc="Subpage summary for malware warning for the user.">
         Thorium blocked this file because it has malware
-      </message>
-      <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_DEEP_SCANNING_PROMPT"
-                       desc="Subpage summary of warning for Deep Scanning.">
-        Thorium recommends scanning this file because it may be dangerous
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_WARNING_BLOCKED_LEARN_MORE_LINK"
                desc="Text for the link to the help page about why Thorium blocks some downloaded files.">
@@ -804,7 +800,7 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_MALWARE" desc="The text explaining the reason for disabling extension. The extension in question contains malware.">
         This extension contains malware and is unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
-      <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
+      <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Chrome Web Store policy.">
         This extension violates the Chrome Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_UNPUBLISHED" desc="The text explaining the reason for disabling extension. The extension in question was unpublished by the developer.">
@@ -830,10 +826,10 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <if expr="enable_extensions">
         <message name="IDS_EXTENSIONS_MULTIPLE_UNSUPPORTED_DISABLED_BODY" desc="Body of the dialog shown when multiple unsupported extensions have been disabled.">
-          To make Thorium safer, we disabled some extensions that aren't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph> and may have been added without your knowledge.
+          To make Thorium safer, we disabled some extensions that aren't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph> and may have been added without your knowledge.
         </message>
         <message name="IDS_EXTENSIONS_SINGLE_UNSUPPORTED_DISABLED_BODY" desc="Body of the dialog shown when a single unsupported extension has been disabled.">
-          To make Thorium safer, we disabled the following extension that isn't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph> and may have been added without your knowledge.
+          To make Thorium safer, we disabled the following extension that isn't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph> and may have been added without your knowledge.
         </message>
       </if>
 
@@ -1024,6 +1020,15 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CONSUMER_BUBBLE_DESC_V2" desc="Body of the web signin interception bubble. It is shown when the user signs in on the web while they already have another account present in the current profile.">
           Another account is already signed in. To keep your browsing separate, Thorium can create your own profile for you.
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Get the most out of Thorium
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_SUBTITLE" desc="Subtitle of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Sign in to get your Thorium stuff across devices
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT" desc="Label of the Decline button of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Use Thorium without an account
         </message>
       </if>
 
@@ -1802,6 +1807,69 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_BUNDLE_INSTALLED_SUCCESSFULLY" desc="Installation complete message.">
           Installation complete.
+        </message>
+
+        <!--Network errors.-->
+        <message name="IDS_NO_NETWORK_PRESENT_ERROR"
+                 desc="Error message displayed in the main dialog when the Updater is unable to connect to the network.">
+          Unable to connect to the Internet. If you use a firewall, please allowlist <ph name="PRODUCT_EXE_NAME">$1<ex>ThoriumUpdater.exe</ex></ph>.
+        </message>
+        <message name="IDS_ERROR_HTTPSTATUS_UNAUTHORIZED"
+                 desc="Error message displayed in the main dialog when an update check or download fails due to unauthorized access, usually due to proxy problems.">
+          Unable to connect to the Internet. HTTP 401 Unauthorized. Please check your proxy configuration.
+        </message>
+        <message name="IDS_ERROR_HTTPSTATUS_FORBIDDEN"
+                 desc="Error message displayed in the main dialog when an update check or download fails due to forbidden access, usually due to proxy problems.">
+          Unable to connect to the Internet. HTTP 403 Forbidden. Please check your proxy configuration.
+        </message>
+        <message name="IDS_ERROR_HTTPSTATUS_PROXY_AUTH_REQUIRED"
+                 desc="Error message displayed in the main dialog when an update check or download fails due to a need for proxy authentication.">
+          Unable to connect to the Internet. Proxy server requires authentication.
+        </message>
+
+        <!--Update server response errors.-->
+        <message name="IDS_UNKNOWN_APPLICATION"
+                 desc="Error message displayed in the main dialog when the server responds with an error of unknown application.">
+          Unable to install, the application is unknown to the server.
+        </message>
+        <message name="IDS_RESTRICTED_RESPONSE_FROM_SERVER"
+                 desc="Error message displayed in the main dialog when the user is in a export-restricted country.">
+          Installation failed because access is restricted in this country.
+        </message>
+        <message name="IDS_GENERIC_UPDATE_CHECK_ERROR"
+                 desc="Error message displayed in the main dialog when the update client returns an error in the update check.">
+          Update check error: <ph name="UPDATE_CHECK_ERROR">$1<ex>error-internal</ex></ph>.
+        </message>
+
+        <!--Download errors.-->
+        <message name="IDS_DOWNLOAD_HASH_MISMATCH"
+                 desc="Error message displayed in the main dialog when the downloaded file fails hash verification.">
+          The downloaded file failed verification.
+        </message>
+        <message name="IDS_GENERIC_DOWNLOAD_ERROR"
+                 desc="Error message displayed in the main dialog when the update client returns an error while downloading.">
+          Download error: <ph name="DOWNLOAD_ERROR">$1<ex>error-internal</ex></ph>.
+        </message>
+
+        <!--Unpack errors.-->
+        <message name="IDS_UNPACK_CACHING_ERROR"
+                 desc="Error message displayed in the main dialog when the update client fails to cache the installer.">
+          Failed to cache the downloaded installer. Error: <ph name="UNPACK_CACHING_ERROR_CODE">$1<ex>0x80070005</ex></ph>.
+        </message>
+        <message name="IDS_GENERIC_UNPACK_ERROR"
+                 desc="Error message displayed in the main dialog when the update client returns an error while unpacking.">
+          Unpack error: <ph name="UNPACK_ERROR">$1<ex>error-internal</ex></ph>.
+        </message>
+
+        <!--Service errors.-->
+        <message name="IDS_GENERIC_SERVICE_ERROR"
+                 desc="Error message displayed in the main dialog for runtime errors that occur in the update client service.">
+          Service error: <ph name="SERVICE_ERROR">$1<ex>error-internal</ex></ph>.
+        </message>
+        <!--Install errors.-->
+        <message name="IDS_GENERIC_INSTALL_ERROR"
+                 desc="Error message displayed in the main dialog for runtime errors that occur while installing.">
+          Install error: <ph name="INSTALL_ERROR">$1<ex>error-internal</ex></ph>
         </message>
       </if>
       <!-- High Efficiency Chip strings -->
