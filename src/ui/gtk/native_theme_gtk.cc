@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors, Alex313031, qcasey and icepie
+// Copyright 2024 The Chromium Authors, Alex313031, qcasey and icepie
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -188,7 +188,7 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
     ui::NativeTheme::GetInstanceForNativeUi()->set_preferred_color_scheme(CalculatePreferredColorScheme());
     ui::NativeTheme::GetInstanceForNativeUi()->NotifyOnNativeThemeUpdated();
 
-    // Brute force Web to update
+    // Brute force Web Contents to update
     ui::NativeTheme::GetInstanceForWeb()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
     ui::NativeTheme::GetInstanceForWeb()->set_preferred_color_scheme(CalculatePreferredColorScheme());
     ui::NativeTheme::GetInstanceForWeb()->NotifyOnNativeThemeUpdated();

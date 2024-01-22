@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors, Alex313031, and Midzer
+// Copyright 2024 The Chromium Authors, Alex313031, and Midzer
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -425,10 +425,10 @@ bool AVCodecContextToAudioDecoderConfig(const AVCodecContext* codec_context,
   }
 #endif
 
-  // Verify that AudioConfig.bits_per_channel was calculated correctly for
+  // Verify that AudioConfig.bytes_per_channel was calculated correctly for
   // codecs that have |sample_fmt| set by FFmpeg.
-  DCHECK_EQ(av_get_bytes_per_sample(codec_context->sample_fmt) * 8,
-            config->bits_per_channel());
+  DCHECK_EQ(av_get_bytes_per_sample(codec_context->sample_fmt),
+            config->bytes_per_channel());
   return true;
 }
 

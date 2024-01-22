@@ -1,4 +1,4 @@
-# Copyright 2023 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -172,6 +172,10 @@ template("chrome_common_apk_or_module_tmpl") {
     _version_code = MONOCHROME_VERSION_MAP["${android_64bit_target_cpu}_${_is_64_bit_browser}_${_include_64_bit_webview}_${_include_32_bit_webview}"]
   } else {
     _version_code = chrome_version_code
+  }
+
+  if (defined(invoker.version_code)) {
+    _version_code = invoker.version_code
   }
 
   # Need to apply override explicitly to have it apply to library version.

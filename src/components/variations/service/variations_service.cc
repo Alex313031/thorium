@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -37,6 +37,7 @@
 #include "components/variations/pref_names.h"
 #include "components/variations/proto/variations_seed.pb.h"
 #include "components/variations/seed_response.h"
+#include "components/variations/variations_safe_seed_store_local_state.h"
 #include "components/variations/variations_seed_simulator.h"
 #include "components/variations/variations_switches.h"
 #include "components/variations/variations_url_constants.h"
@@ -336,7 +337,8 @@ VariationsService::VariationsService(
           std::make_unique<VariationsSeedStore>(
               local_state,
               MaybeImportFirstRunSeed(client_.get(), local_state),
-              /*signature_verification_enabled=*/true),
+              /*signature_verification_enabled=*/true,
+              std::make_unique<VariationsSafeSeedStoreLocalState>(local_state)),
           ui_string_overrider) {
   DCHECK(client_);
   DCHECK(resource_request_allowed_notifier_);

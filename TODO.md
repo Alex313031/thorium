@@ -39,4 +39,4 @@ ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
 
-Make download warning blocker actually work
+Make download warning blocker actually work!
