@@ -256,10 +256,10 @@
     </message>
   </if>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_TOOLTIP" desc="The tooltip hover text that explains why credit card upload to Google Payments is being offered.">
-    ThoriumOS is offering to save your cards in your Google Account because you are signed in. You can change this behavior in settings.
+    Thorium is offering to save your cards in your Google Account because you are signed in. You can change this behavior in settings.
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_AND_CARDHOLDER_NAME_TOOLTIP" desc="The tooltip hover text that explains why credit card upload to Google Account is being offered and where the suggested cardholder name came from.">
-    ThoriumOS is offering to save your cards in your Google Account because you are signed in. You can change this behavior in settings. The cardholder name comes from your account.
+    Thorium is offering to save your cards in your Google Account because you are signed in. You can change this behavior in settings. The cardholder name comes from your account.
   </message>
 
   <!-- Autofill Local card migration bubble or dialog -->
@@ -327,7 +327,7 @@
     <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_LABEL_INVALID_CARDS" desc="The label text shown when a card is invalid and could not be migrated.">
       Invalid
     </message>
-    <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_TRASH_CAN_BUTTON_TOOLTIP" desc="The tooltip for the trash can button in the card list that allows user to delete this particular credit card from ThoriumOS.">
+    <message name="IDS_AUTOFILL_LOCAL_CARD_MIGRATION_DIALOG_TRASH_CAN_BUTTON_TOOLTIP" desc="The tooltip for the trash can button in the card list that allows user to delete this particular credit card from Thorium.">
       Remove card
     </message>
   </if>
@@ -473,12 +473,12 @@
   <if expr="is_ios">
     <if expr="_google_chrome">
       <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_STORAGE_TOOLTIP" desc="Text that provides further explanation on iOS for the option in the card unmasking dialog that allows user to store a Wallet card on their local device.">
-        If enabled, ThoriumOS will store a copy of your card on this device for faster form filling.
+        If enabled, Thorium will store a copy of your card on this device for faster form filling.
       </message>
     </if>
     <if expr="not _google_chrome">
       <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_STORAGE_TOOLTIP" desc="Text that provides further explanation on iOS for the option in the card unmasking dialog that allows user to store a Wallet card on their local device.">
-        If enabled, ThoriumOS will store a copy of your card on this device for faster form filling.
+        If enabled, Thorium will store a copy of your card on this device for faster form filling.
       </message>
     </if>
   </if>
@@ -538,13 +538,13 @@
 
   <!-- DeviceAuthentication titles-->
   <if expr="is_macosx">
-    <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling. Please note that on macOS the string 'ThoriumOS is trying to' will always come before this string.">
+    <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling. Please note that on macOS the string 'Google Thorium is trying to' will always come before this string.">
       verify it's you so it can fill in your payment info.
     </message>
   </if>
   <if expr="is_win">
     <message name="IDS_PAYMENTS_AUTOFILL_FILLING_MANDATORY_REAUTH" desc="Text that appears in the payments autofill mandatory re-authentication popup, asking the user to authenticate using biometric or device unlock before filling.">
-      ThoriumOS is trying to verify it's you so it can fill in your payment info.
+      Google Thorium is trying to verify it's you so it can fill in your payment info.
     </message>
   </if>
 
@@ -674,7 +674,7 @@
     You're all set
   </message>
   <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_EXPLANATION" desc="Explanation text for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
-    ThoriumOS will now verify it's you before filling in payment methods. You can update this at any time in <ph name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK">$1<ex>settings</ex></ph>.
+    Thorium will now verify it's you before filling in payment methods. You can update this at any time in <ph name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK">$1<ex>settings</ex></ph>.
   </message>
   <message name="IDS_AUTOFILL_MANDATORY_REAUTH_CONFIRMATION_SETTINGS_LINK" desc="A link to the settings page for the mandatory reauth confirmation prompt that is displayed to the user after opting into mandatory reauth. Mandatory reauth requires the user to unlock their device or pass a biometric auth when autofilling payment method information.">
     settings
