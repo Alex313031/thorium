@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031 and not-lucky
+// Copyright 2024 The Chromium Authors and Alex313031 and not-lucky
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 

@@ -1,4 +1,4 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -36,18 +36,6 @@ const char kChromeLabsActivationParameterName[] =
     "chrome_labs_activation_percentage";
 const base::FeatureParam<int> kChromeLabsActivationPercentage{
     &kChromeLabs, kChromeLabsActivationParameterName, 99};
-
-// Enables "Chrome What's New" UI.
-// TODO: Alex313031 Test Mock UI
-BASE_FEATURE(kChromeWhatsNewUI,
-             "ChromeWhatsNewUI",
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING) && !defined(ANDROID) && \
-    !BUILDFLAG(IS_CHROMEOS_LACROS) && !BUILDFLAG(IS_CHROMEOS_ASH)
-             base::FEATURE_ENABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
-);
 
 // Create new Extensions app menu option (removing "More Tools -> Extensions")
 // with submenu to manage extensions and visit chrome web store.
@@ -106,11 +94,6 @@ BASE_FEATURE(kLightweightExtensionOverrideConfirmations,
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
-// Enables Bookmarks++ Side Panel UI.
-BASE_FEATURE(kPowerBookmarksSidePanel,
-             "PowerBookmarksSidePanel",
-             base::FEATURE_ENABLED_BY_DEFAULT);
-
 // Enables the QuickCommands UI surface. See https://crbug.com/1014639
 BASE_FEATURE(kQuickCommands,
              "QuickCommands",
@@ -164,6 +147,21 @@ BASE_FEATURE(kSidePanelCompanionDefaultPinned,
 BASE_FEATURE(kSidePanelPinning,
              "SidePanelPinning",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+BASE_FEATURE(kSidePanelMinimumWidth,
+             "SidePanelMinimumWidth",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const base::FeatureParam<int> kSidePanelMinimumWidthParameter{
+    &kSidePanelMinimumWidth, "minPanelWidth", 360};
+int GetSidePanelMinimumWidth() {
+  if (base::FeatureList::IsEnabled(kSidePanelMinimumWidth)) {
+    return kSidePanelMinimumWidthParameter.Get();
+  }
+
+  // This is the default value used without this feature.
+  return 320;
+}
+
 #endif
 
 // Enables tabs to scroll in the tabstrip. https://crbug.com/951078
@@ -214,7 +212,12 @@ BASE_FEATURE(kTabGroupsSave,
 // Enables configuring tab hover card image previews in the settings.
 BASE_FEATURE(kTabHoverCardImageSettings,
              "TabHoverCardImageSettings",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_MAC)
+             base::FEATURE_DISABLED_BY_DEFAULT
+#else
+             base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+);
 
 // Enables preview images in tab-hover cards.
 // https://crbug.com/928954
@@ -319,11 +322,11 @@ BASE_FEATURE(kTopChromeWebUIUsesSpareRenderer,
 // button, menu item and confirmation dialog.
 BASE_FEATURE(kUpdateTextOptions,
              "UpdateTextOptions",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 // Used to present different flavors of update strings in browser app menu
 // button.
 const base::FeatureParam<int> kUpdateTextOptionNumber{
-    &kUpdateTextOptions, "UpdateTextOptionNumber", 1};
+    &kUpdateTextOptions, "UpdateTextOptionNumber", 2};
 #endif
 
 // This enables enables persistence of a WebContents in a 1-to-1 association

@@ -64,6 +64,9 @@ Disable Google API Key Warning Infobar Patch > https://github.com/Eloston/ungoog
 Disable Default Browser Infobar Patch
   - Made by me.
 
+Always Lazy Load Advertisement iFrames
+  - Made by me.
+
 Search Engines Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/additional-search-engines.patch
   - Modified by me. Adds DuckDuckGo, Brave Search, Ecosia, Ask, and Yandex, with DuckDuckGo being set to "canonical" so that canonical gets a small amount of money when using it.
 

@@ -691,7 +691,7 @@ void URLRequestHttpJob::StartTransactionInternal() {
 void URLRequestHttpJob::AddExtraHeaders() {
   request_info_.extra_headers.SetAcceptEncodingIfMissing(
       request()->url(), request()->accepted_stream_types(),
-      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli()),
+      !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_brotli(),
       !(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && request()->context()->enable_zstd());
 
   if (!(request_info_.load_flags & LOAD_MINIMAL_HEADERS) && http_user_agent_settings_) {

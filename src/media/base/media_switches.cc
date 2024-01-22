@@ -453,7 +453,7 @@ BASE_FEATURE(kCdmProcessSiteIsolation,
 // Enables the "Save Video Frame As" context menu item.
 BASE_FEATURE(kContextMenuSaveVideoFrameAs,
              "ContextMenuSaveVideoFrameAs",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables the "Copy Video Frame" context menu item.
 BASE_FEATURE(kContextMenuCopyVideoFrame,

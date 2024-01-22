@@ -1,8 +1,9 @@
-// Copyright 2023 The Chromium Authors and Alex313031
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "chrome/browser/profiles/profile_shortcut_manager_win.h"
+#include "blah.h"
 
 #include <shlobj.h>  // For SHChangeNotify().
 #include <stddef.h>
