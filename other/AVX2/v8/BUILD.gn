@@ -1398,8 +1398,8 @@ config("toolchain") {
     }
     if (is_linux || is_chromeos) {
       # Full optimization for V8.
-      cflags += [ "-O3", "-mavx2" ]
-      ldflags += [ "-Wl,-O3", "-mavx2" ]
+      cflags += [ "-O3", "-mavx2", "-maes" ]
+      ldflags += [ "-Wl,-O3", "-mavx2", "-maes" ]
     }
   }
   if (is_android && v8_android_log_stdout) {
