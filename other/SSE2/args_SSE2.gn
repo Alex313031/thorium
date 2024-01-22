@@ -90,4 +90,3 @@ enable_rust = true
 enable_all_rust_features = true
 # init_stack_vars_zero = true
 chrome_pgo_phase = 0
-# pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-6045-1698773863-4971413bb000a6c36ce91149e324af631a09cee8.profdata"
