@@ -65,6 +65,8 @@ sudo chmod -v +x infra/install_deps.sh &&
 
 sudo chmod -v +x infra/build_dmg_cr.sh &&
 
+sudo chmod -v +x infra/build_ffmpeg.sh &&
+
 sudo chmod -v +x infra/build_polly.sh &&
 
 sudo chmod -v +x infra/DEBUG/build_debug_linux.sh &&
