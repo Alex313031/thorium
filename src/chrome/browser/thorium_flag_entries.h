@@ -102,7 +102,7 @@
      "GL Vaapi Video Decode",
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
-     kOsLinux, FEATURE_VALUE_TYPE(kVaapiVideoDecodeLinuxGL)},
+     kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
 #endif // BUILDFLAG(IS_LINUX)
 
     {"gpu-no-context-lost",
