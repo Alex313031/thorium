@@ -2330,7 +2330,6 @@ if (is_win) {
     "/clang:-O3",
     "/clang:-msse3",
     "/clang:-mssse3",
-    "/clang:-msse4",
     "/clang:-msse4.1",
     "/clang:-msse4.2",
     "/clang:-mavx",
