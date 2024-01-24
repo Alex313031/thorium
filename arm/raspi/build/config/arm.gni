@@ -1,9 +1,8 @@
-# Copyright 2023 The Chromium Authors and Alex313031.
+# Copyright 2024 The Chromium Authors and Alex313031.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
 # ONLY FOR RASPBERRY PI 4!!
-# This should go in //chromium/src/config/arm.gni
 
 import("//build/config/chromeos/ui_mode.gni")
 import("//build/config/v8_target_cpu.gni")

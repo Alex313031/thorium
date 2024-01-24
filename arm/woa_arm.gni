@@ -21,7 +21,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     # The ARM floating point hardware. This will be a string like "neon" or
     # "vfpv3". An empty string means to use the default for the arm_version.
-    arm_fpu = "vfpv3-d16"
+    arm_fpu = "neon"
 
     # The ARM variant-specific tuning mode. This will be a string like "armv6"
     # or "cortex-a15". An empty string means to use the default for the
@@ -29,7 +29,7 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
     arm_tune = "generic-armv8-a"
 
     # Whether to use the neon FPU instruction set or not.
-    arm_use_neon = "false"
+    arm_use_neon = "true"
 
     # Whether to enable optional NEON code paths.
     arm_optionally_use_neon = false
@@ -152,10 +152,10 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
 
     # The ARM64 floating point hardware. This will be a string like "neon" or
     # "vfpv3-d16". An empty string means to use the default for the arm_version.
-    arm_fpu = "vfpv3-d16"
+    arm_fpu = "neon"
 
     # Whether to use the neon FPU instruction set or not.
-    arm_use_neon = "false"
+    arm_use_neon = "true"
 
     # Whether to enable optional NEON code paths.
     arm_optionally_use_neon = false
@@ -176,9 +176,9 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
   arm_version = 8
   arm_float_abi = "hard"
   arm_arch = "armv8-a"
-  arm_fpu = "vfpv3-d16"
+  arm_fpu = "neon"
   arm_tune = "generic-armv8-a"
-  arm_use_neon = false
+  arm_use_neon = true
   arm_optionally_use_neon = false
   arm_use_thumb = true
   

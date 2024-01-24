@@ -96,23 +96,26 @@ copyRaspi () {
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
-	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
 	./infra/fix_libaom.sh &&
+	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	printf "\n" &&
+	cp -r -v arm/raspi/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	printf "\n" &&
 	# Display raspi ascii art
 	cat logos/raspi_ascii_art.txt
 }
 case $1 in
-	--raspi) copyRaspi; displayRaspi;
+	--raspi) copyRaspi;
 esac
 
-# Windows on ARM files
+# Windows on ARM64 files
 copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v arm/woa_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
 }
 case $1 in
