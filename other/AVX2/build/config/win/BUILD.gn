@@ -135,6 +135,7 @@ config("compiler") {
         "-msse4.2",
         "-maes",
         "-mpclmul",
+        "-mfma",
         "-mavx",
         "-mavx2",
         "/clang:-O3",
@@ -144,12 +145,13 @@ config("compiler") {
         "/clang:-msse4.2",
         "/clang:-maes",
         "/clang:-mpclmul",
+        "/clang:-mfma",
         "/clang:-mavx",
         "/clang:-mavx2",
         "/clang:-ffp-contract=fast",
         "-Xclang", "-O3",
         "/arch:AVX2",
-        "-Wno-unused-command-line-argument",
+        # Possibly re-enable "-Wno-unused-command-line-argument",
       ]
     }
 

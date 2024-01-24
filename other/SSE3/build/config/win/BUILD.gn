@@ -133,7 +133,7 @@ config("compiler") {
         "/clang:-O3",
         "/clang:-msse3",
         "-Xclang", "-O3",
-        "-Wno-unused-command-line-argument",
+        # Possibly re-enable "-Wno-unused-command-line-argument",
       ]
     }
 
