@@ -4,3 +4,7 @@
 
 #ifndef BLAH_H_
 #define BLAH_H_
+
+extern const char kBlahName[];
+
+#endif  // BLAH_H_
