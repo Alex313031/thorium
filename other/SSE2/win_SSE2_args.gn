@@ -50,7 +50,7 @@ ffmpeg_branding = "Chrome"
 # Set to false for Polly build
 clang_use_chrome_plugins = true
 enable_ffmpeg_video_decoders = true
-is_component_ffmpeg = false
+is_component_ffmpeg = true
 use_webaudio_ffmpeg = false
 use_webaudio_pffft = true
 # enable_av1_decoder = true
