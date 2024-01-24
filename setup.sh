@@ -98,11 +98,9 @@ copyRaspi () {
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	rm -v ${CR_SRC_DIR}/out/thorium/pak &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
-	. ./infra/fix_libaom.sh &&
-	printf "\n"
-}
-# Display raspi ascii art
-displayRaspi () {
+	./infra/fix_libaom.sh &&
+	printf "\n" &&
+	# Display raspi ascii art
 	cat logos/raspi_ascii_art.txt
 }
 case $1 in
@@ -182,7 +180,7 @@ copyAndroid () {
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
-	. ./infra/fix_libaom.sh &&
+	./infra/fix_libaom.sh &&
 	printf "\n"
 }
 case $1 in
