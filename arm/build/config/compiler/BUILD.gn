@@ -2452,6 +2452,18 @@ if (is_win) {
   common_optimize_on_cflags += [ "-fno-math-errno" ]
 }
 
+config("march-dotprod") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod" ]
+  }
+}
+
+config("march-i8mm") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+i8mm" ]
+  }
+}
+
 config("default_stack_frames") {
   if (!is_win) {
     if (enable_frame_pointers) {
