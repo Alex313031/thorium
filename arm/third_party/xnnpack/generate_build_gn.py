@@ -1,4 +1,8 @@
-# Copyright 2022 The Chromium Authors
+# Copyright 2024 The Chromium Authors and Alex313031
+
+# IMPORTANT: YOU MUST RENAME depot_tools/bazel OR CHANGE YOUR PATH
+# OTHERWISE IT TRIES TO PULL IN A GOOGLE INTERNAL BAZEL BINARY
+
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 #
