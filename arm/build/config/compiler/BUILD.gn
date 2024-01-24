@@ -513,7 +513,7 @@ config("compiler") {
     ldflags += [ "-fPIC" ]
     rustflags += [ "-Crelocation-model=pic" ]
 
-    if (is_clang && chrome_pgo_phase == 2 && !is_android) {
+    if (is_clang && chrome_pgo_phase == 2 && !is_android && !(target_cpu == "arm64" || target_cpu == "arm")) {
       asmflags += [ "-fbasic-block-sections=labels" ]
       cflags += [ "-fbasic-block-sections=labels" ]
       rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
@@ -853,7 +853,7 @@ config("compiler") {
     }
 
     if (is_win && target_cpu == "arm64") {
-      cflags += [ "-Wno-error", "-Wno-unreachable-code", "-Wno-unused-command-line-argument", ]
+      cflags += [ "-Wno-error", "-Wno-unreachable-code", ]
     }
 
     # This flag causes LTO to create an .ARM.attributes section with the correct
@@ -1206,16 +1206,11 @@ config("compiler_cpu_abi") {
           "-mmmx",
         ]
       }
-    } else if (target_cpu == "arm64") {
-      if (!is_android && !is_nacl) {
-        cflags += [ "-O3", "-Wno-unused-command-line-argument", ]
-        ldflags += [ "-Wl,-O3", "-Wno-unused-command-line-argument", ]
-      }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=arm-linux-gnueabihf", "-O3", "-Wno-unused-command-line-argument", ]
-        ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=arm-linux-gnueabihf", "-O3", ]
+        ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", ]
       }
       if (!is_nacl) {
         cflags += [
@@ -1229,8 +1224,8 @@ config("compiler_cpu_abi") {
     } else if (current_cpu == "arm64") {
       if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
           !(is_chromeos_lacros && is_chromeos_device)) {
-        cflags += [ "--target=aarch64-linux-gnu", "-O3", "-Wno-unused-command-line-argument", ]
-        ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", "-Wno-unused-command-line-argument", ]
+        cflags += [ "--target=aarch64-linux-gnu", "-O3", ]
+        ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", ]
       }
       if (is_android) {
         cflags += [ "-O3", ]
