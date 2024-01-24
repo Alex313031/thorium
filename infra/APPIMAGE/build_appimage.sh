@@ -21,7 +21,6 @@ displayHelp () {
 	printf "${bold}${YEL}Please place the Thorium .deb file in this directory before running.${c0}\n" &&
 	printf "\n"
 }
-
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
