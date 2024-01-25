@@ -1,6 +1,6 @@
-From 07b66ec144242cc9da34d682d5e34df08bc4ab11 Mon Sep 17 00:00:00 2001
+From 6d9b50008f8e3a27396cf7e2936f2ad6ce882dc8 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Sat, 6 Jan 2024 17:57:13 +0800
+Date: Thu, 25 Jan 2024 11:07:21 +0800
 Subject: [PATCH] Remove-discovery-module-from-NTP
 
 ---
