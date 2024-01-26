@@ -296,7 +296,7 @@ if (current_cpu == "arm64") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
-    configs += [ "//build/config/compiler:march-dotprod" ]
+    configs += [ "//build/config/compiler:march_dotprod" ]
     configs += [ ":libvpx_config" ]
     if (cpu_arch_full == "arm64") {
       sources = libvpx_srcs_arm64_neon_dotprod
@@ -311,7 +311,7 @@ if (current_cpu == "arm64") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
-    configs += [ "//build/config/compiler:march-i8mm" ]
+    configs += [ "//build/config/compiler:march_i8mm" ]
     configs += [ ":libvpx_config" ]
     if (cpu_arch_full == "arm64") {
       sources = libvpx_srcs_arm64_neon_i8mm

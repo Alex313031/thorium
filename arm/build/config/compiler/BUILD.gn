@@ -2452,13 +2452,19 @@ if (is_win) {
   common_optimize_on_cflags += [ "-fno-math-errno" ]
 }
 
-config("march-dotprod") {
+config("march_crc") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8-a+crc" ]
+  }
+}
+
+config("march_dotprod") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+dotprod" ]
   }
 }
 
-config("march-i8mm") {
+config("march_i8mm") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+i8mm" ]
   }
