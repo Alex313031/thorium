@@ -1106,11 +1106,11 @@ config("thinlto_optimize_default") {
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
-      # ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
+      ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
-      # ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
     }
 
     if (toolchain_supports_rust_thin_lto) {
@@ -1144,11 +1144,11 @@ config("thinlto_optimize_max") {
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
-      # ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
+      ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
-      # ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
     }
 
     if (toolchain_supports_rust_thin_lto) {
