@@ -82,6 +82,7 @@ copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
 	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
+	cp -r -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
