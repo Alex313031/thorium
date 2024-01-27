@@ -97,7 +97,7 @@ copyRaspi () {
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
-	./infra/fix_libaom.sh &&
+	#./infra/fix_libaom.sh &&
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	printf "\n" &&
 	cp -r -v arm/raspi/build/config/* ${CR_SRC_DIR}/build/config/ &&
@@ -183,7 +183,7 @@ copyAndroid () {
 	#rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
 	#rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
-	./infra/fix_libaom.sh &&
+	#./infra/fix_libaom.sh &&
 	printf "\n"
 }
 case $1 in
