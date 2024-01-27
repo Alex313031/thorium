@@ -1183,7 +1183,7 @@ config("compiler_cpu_abi") {
         "-ffp-contract=fast",
       ]
       ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
-    } else if (current_cpu == "x64" && !target_os == "win) {
+    } else if (current_cpu == "x64" && !target_os == "win") {
       cflags += [
         "-m64",
         "-O3",
