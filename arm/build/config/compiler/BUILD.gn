@@ -2326,12 +2326,7 @@ if (is_win) {
     "-Xclang", "-O3",
   ]
 
-  if (current_cpu == "arm64") {
-    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
-  }
-
-  common_optimize_on_ldflags += [
-  ]
+  common_optimize_on_ldflags += [ "-mllvm:-enable-interleaved-mem-accesses" ]
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
