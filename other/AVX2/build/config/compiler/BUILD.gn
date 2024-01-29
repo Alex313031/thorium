@@ -1174,7 +1174,7 @@ config("compiler_cpu_abi") {
   if ((is_posix && !is_apple) || is_fuchsia) {
     # CPU architecture. We may or may not be doing a cross compile now, so for
     # simplicity we always explicitly set the architecture.
-    if (current_cpu == "x64" && target_os == "win") {
+    if (current_cpu == "x64") {
       cflags += [
         "-m64",
         "-O3",
@@ -1183,15 +1183,6 @@ config("compiler_cpu_abi") {
         "-ffp-contract=fast",
       ]
       ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=haswell", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
-    } else if (current_cpu == "x64" && !target_os == "win") {
-      cflags += [
-        "-m64",
-        "-O3",
-        "-march=x86-64-v3",
-        "-mtune=x86-64-v3",
-        "-ffp-contract=fast",
-      ]
-      ldflags += [ "-m64", "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
