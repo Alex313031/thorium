@@ -5,6 +5,7 @@
 // Modified, Originally from https://github.com/brave/brave-core/blob/master/vector_icons/chrome/app/vector_icons/browser_tools.icon
 
 CANVAS_DIMENSIONS, 32,
+PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
 MOVE_TO, 25, 26.5f,
 CUBIC_TO, 25, 25.67f, 24.33f, 25, 23.5f, 25,
 LINE_TO, 8.5f, 25,
@@ -29,6 +30,7 @@ CUBIC_TO, 25, 5.33f, 24.33f, 6, 23.5f, 6,
 CLOSE
 
 CANVAS_DIMENSIONS, 16,
+PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
 MOVE_TO, 12.75f, 13,
 R_ARC_TO, 0.75f, 0.75f, 0, 0, 0, -0.75f, -0.75f,
 H_LINE_TO, 4,
