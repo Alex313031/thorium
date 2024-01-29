@@ -27,7 +27,7 @@
      kOsDesktop, SINGLE_VALUE_TYPE("force-enable-tab-outlines")},
     {"disable-thorium-icons",
      "Disable Thorium Top Bar Icons",
-     "Disables the custom blue top bar icons in Thorium, and restores the default grey Chromium color.",
+     "Disables the custom blue top bar icons in Thorium, and restores the default grey Chromium icon colors.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
     {"force-high-contrast",
      "Enable High Contrast Mode",
