@@ -10,3 +10,7 @@
  &ndash; libwebp WebP bug [CVE-2023-4863](https://nvd.nist.gov/vuln/detail/CVE-2023-4863) - Fixed in M117
 
  &ndash; libvpx VP8 bug [CVE-2023-5217](https://nvd.nist.gov/vuln/detail/CVE-2023-5217) - Fixed in M117
+
+ &ndash; USB data validation bug [CVE-2023-5482](https://github.com/advisories/GHSA-7cjp-92p9-vr97) - Fixed in M120
+
+ &ndash; USB integer overflow bug [CVE-2023-5849](https://github.com/advisories/GHSA-pq78-6h8h-rcf4) - Fixed in M120
