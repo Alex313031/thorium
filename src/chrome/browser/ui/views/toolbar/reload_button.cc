@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 #include "base/strings/utf_string_conversions.h"
-#include "build/build_config.h"
 #include "base/command_line.h"
+#include "build/build_config.h"
 #include "chrome/app/chrome_command_ids.h"
 #include "chrome/app/vector_icons/vector_icons.h"
 #include "chrome/browser/command_updater.h"
@@ -40,7 +40,8 @@ ReloadButton::ReloadButton(CommandUpdater* command_updater)
       command_updater_(command_updater),
       reload_icon_(features::IsChromeRefresh2023()
                        ? vector_icons::kReloadChromeRefreshIcon
-                       : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? vector_icons::kReloadIcon : kReloadThoriumIcon),
+                       : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? vector_icons::kReloadIcon
+                       : kReloadThoriumIcon),
       reload_touch_icon_(kReloadTouchIcon),
       stop_icon_(features::IsChromeRefresh2023()
                      ? kNavigateStopChromeRefreshIcon
