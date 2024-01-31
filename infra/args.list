@@ -8,22 +8,14 @@ action_pool_depth
 
 added_rust_stdlib_libs
     Current value (from the default) = []
-      From //build/config/rust.gni:60
+      From //build/config/rust.gni:82
 
     Any extra std rlibs in your Rust toolchain, relative to the standard
     Rust toolchain. Typically used with 'rust_sysroot_absolute'
 
-aida_endpoint
-    Current value (from the default) = ""
-      From //chrome/browser/devtools/buildflags.gni:3
-
-aida_scope
-    Current value (from the default) = ""
-      From //chrome/browser/devtools/buildflags.gni:4
-
 allow_critical_memory_pressure_handling_in_foreground
     Current value (from the default) = false
-      From //content/common/features.gni:15
+      From //content/common/features.gni:16
 
 allow_jni_multiplexing
     Current value (from the default) = false
@@ -67,7 +59,7 @@ also_build_lacros_chrome_for_architecture
 
 alternate_cdm_storage_id_key
     Current value (from the default) = ""
-      From //media/media_options.gni:249
+      From //media/media_options.gni:252
 
     If |enable_cdm_storage_id| is set, then an implementation specific key
     must also be provided. It can be provided by defining CDM_STORAGE_ID_KEY
@@ -113,17 +105,17 @@ angle_build_capture_replay_tests
 
 angle_build_mesa
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:289
+      From //third_party/angle/gni/angle.gni:293
 
 angle_build_tests
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:302
+      From //third_party/angle/gni/angle.gni:306
 
     True if we want to build the ANGLE test suites. On by default in most configs.
 
 angle_build_vulkan_system_info
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:283
+      From //third_party/angle/gni/angle.gni:287
 
 angle_capture_replay_composite_file_id
     Current value (from the default) = 1
@@ -150,6 +142,10 @@ angle_delegate_workers
     embedder API. In Chromium code base, it results in sending tasks to the
     worker thread pool.
 
+angle_dump_pipeline_cache_graph
+    Current value (from the default) = false
+      From //third_party/angle/gni/angle.gni:241
+
 angle_egl_extension
     Current value (from the default) = ""
       From //third_party/angle/BUILD.gn:64
@@ -171,11 +167,11 @@ angle_enable_annotator_run_time_checks
 
 angle_enable_apple_translator_workarounds
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:297
+      From //third_party/angle/gni/angle.gni:301
 
 angle_enable_cgl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:294
+      From //third_party/angle/gni/angle.gni:298
 
     TODO(jdarpinian): Support enabling CGL and EAGL at the same time using the soft linking code. Also support disabling both for Metal-only builds.
 
@@ -238,7 +234,7 @@ angle_enable_d3d11
 
 angle_enable_d3d11_compositor_native_window
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:261
+      From //third_party/angle/gni/angle.gni:265
 
 angle_enable_d3d9
     Current value (from the default) = false
@@ -246,19 +242,19 @@ angle_enable_d3d9
 
 angle_enable_desktop_glsl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:229
+      From //third_party/angle/gni/angle.gni:232
 
     Translator frontend support:
 
 angle_enable_eagl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:267
+      From //third_party/angle/gni/angle.gni:271
 
     We should use EAGL (ES) on iOS except on Mac Catalyst on Intel CPUs, which uses CGL (desktop GL).
 
 angle_enable_essl
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:233
+      From //third_party/angle/gni/angle.gni:236
 
 angle_enable_gl
     Current value (from the default) = true
@@ -288,17 +284,17 @@ angle_enable_global_mutex_recursion
 
 angle_enable_glsl
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:234
+      From //third_party/angle/gni/angle.gni:237
 
 angle_enable_hlsl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:232
+      From //third_party/angle/gni/angle.gni:235
 
     Translator backend support:
 
 angle_enable_memory_alloc_logging
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:245
+      From //third_party/angle/gni/angle.gni:249
 
     Memory allocation logging support. This feature is for debugging only.
     Disabled by default.
@@ -317,44 +313,44 @@ angle_enable_null
 
 angle_enable_overlay
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:287
+      From //third_party/angle/gni/angle.gni:291
 
     Enable overlay by default when debug layers are enabled.  This is currently only implemented on
     Vulkan.
 
 angle_enable_perf_counter_output
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:264
+      From //third_party/angle/gni/angle.gni:268
 
     Disable performance counter output by default
 
 angle_enable_renderdoc
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:306
+      From //third_party/angle/gni/angle.gni:310
 
 angle_enable_share_context_lock
     Current value (from the default) = false
-      From //third_party/angle/BUILD.gn:70
+      From //third_party/angle/BUILD.gn:69
 
 angle_enable_swiftshader
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:226
+      From //third_party/angle/gni/angle.gni:229
 
 angle_enable_trace
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:235
+      From //third_party/angle/gni/angle.gni:238
 
 angle_enable_trace_android_logcat
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:236
+      From //third_party/angle/gni/angle.gni:239
 
 angle_enable_trace_events
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:237
+      From //third_party/angle/gni/angle.gni:240
 
 angle_enable_unwind_backtrace_support
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:241
+      From //third_party/angle/gni/angle.gni:245
 
     Unwind backtrace support. This feature is currently only implemented
     on Android for debugging purposes. Disabled by default.
@@ -383,7 +379,13 @@ angle_enable_vulkan_system_info
 
 angle_enable_vulkan_validation_layers
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:254
+      From //third_party/angle/gni/angle.gni:258
+
+angle_enable_wgpu
+    Current value (from the default) = true
+      From //third_party/angle/gni/angle.gni:200
+
+    Disable WGPU backend.
 
 angle_expose_glx_entry_points
     Current value (from the default) = false
@@ -424,7 +426,7 @@ angle_glesv2_extension
 
 angle_has_astc_encoder
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:202
+      From //third_party/angle/gni/angle.gni:205
 
     ASTC emulation is only built on standalone non-android builds
 
@@ -436,7 +438,7 @@ angle_has_frame_capture
 
 angle_has_histograms
     Current value (from the default) = true
-      From //third_party/angle/gni/angle.gni:299
+      From //third_party/angle/gni/angle.gni:303
 
 angle_has_rapidjson
     Current value (from the default) = true
@@ -482,7 +484,7 @@ angle_standalone
 
 angle_test_enable_system_egl
     Current value (from the default) = false
-      From //third_party/angle/gni/angle.gni:206
+      From //third_party/angle/gni/angle.gni:209
 
 angle_use_custom_libvulkan
     Current value (from the default) = true
@@ -521,29 +523,29 @@ angle_vulkan_headers_dir
     Current value = "//third_party/vulkan-deps/vulkan-headers/src"
       From //.gn:58
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-headers/src"
-      From //third_party/angle/gni/angle.gni:275
+      From //third_party/angle/gni/angle.gni:279
 
 angle_vulkan_loader_dir
     Current value = "//third_party/vulkan-deps/vulkan-loader/src"
       From //.gn:59
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-loader/src"
-      From //third_party/angle/gni/angle.gni:277
+      From //third_party/angle/gni/angle.gni:281
 
 angle_vulkan_tools_dir
     Current value = "//third_party/vulkan-deps/vulkan-tools/src"
       From //.gn:60
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-tools/src"
-      From //third_party/angle/gni/angle.gni:279
+      From //third_party/angle/gni/angle.gni:283
 
 angle_vulkan_validation_layers_dir
     Current value = "//third_party/vulkan-deps/vulkan-validation-layers/src"
       From //.gn:62
     Overridden from the default = "//third_party/angle/third_party/vulkan-deps/vulkan-validation-layers/src"
-      From //third_party/angle/gni/angle.gni:281
+      From //third_party/angle/gni/angle.gni:285
 
 angle_wayland_dir
     Current value (from the default) = "//third_party/angle/third_party/wayland"
-      From //third_party/angle/gni/angle.gni:272
+      From //third_party/angle/gni/angle.gni:276
 
     Directory where to find wayland source files
 
@@ -578,7 +580,7 @@ auto_profile_path
 
 backup_ref_ptr_poison_oob_ptr
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:200
+      From //base/allocator/partition_allocator/partition_alloc.gni:220
 
     Set to `enable_backup_ref_ptr_support && has_64_bit_pointers` when enabling.
 
@@ -618,6 +620,14 @@ blink_gc_plugin_option_warn_unneeded_finalizer
     a class has an empty destructor which would be unnecessarily invoked
     when finalized.
 
+blink_heap_inside_shared_library
+    Current value (from the default) = true
+      From //third_party/blink/renderer/platform/heap/BUILD.gn:17
+
+    Whether the blink heap code is compiled into a shared library.
+    Embedders like CEF use this flag to include blink in a shared library under
+    non-component build.
+
 blink_symbol_level
     Current value (from the default) = -1
       From //third_party/blink/renderer/config.gni:40
@@ -637,17 +647,17 @@ blink_symbol_level
 
 branding_file_path
     Current value (from the default) = "//chrome/app/theme/chromium/BRANDING"
-      From //build/config/chrome_build.gni:65
+      From //build/config/chrome_build.gni:76
 
     The path to the BRANDING file in chrome/app/theme.
 
 branding_path_component
     Current value (from the default) = "chromium"
-      From //build/config/chrome_build.gni:58
+      From //build/config/chrome_build.gni:69
 
 branding_path_product
     Current value (from the default) = "chromium"
-      From //build/config/chrome_build.gni:59
+      From //build/config/chrome_build.gni:70
 
 build_allocation_stack_trace_recorder
     Current value (from the default) = false
@@ -672,19 +682,19 @@ build_angle_deqp_tests
 
 build_angle_gles1_conform_tests
     Current value (from the default) = false
-      From //third_party/angle/src/tests/BUILD.gn:11
+      From //third_party/angle/src/tests/BUILD.gn:10
 
 build_angle_perftests
     Current value (from the default) = true
-      From //third_party/angle/src/tests/BUILD.gn:14
+      From //third_party/angle/src/tests/BUILD.gn:13
 
 build_angle_trace_perf_tests
     Current value (from the default) = false
-      From //third_party/angle/src/tests/BUILD.gn:12
+      From //third_party/angle/src/tests/BUILD.gn:11
 
 build_angle_trace_tests
     Current value (from the default) = false
-      From //third_party/angle/src/tests/BUILD.gn:18
+      From //third_party/angle/src/tests/BUILD.gn:17
 
 build_contextual_search
     Current value (from the default) = false
@@ -714,16 +724,19 @@ build_tflite_with_xnnpack
     Current value (from the default) = true
       From //third_party/tflite/features.gni:11
 
-build_webnn_on_cros
+build_webnn_with_tflite_model_loader
     Current value (from the default) = false
-      From //third_party/blink/renderer/modules/ml/webnn/features.gni:14
+      From //third_party/blink/renderer/modules/ml/webnn/features.gni:15
 
-    This build flag enables WebNN on ChromeOS platform to access hardware
-    acceleration by using ModelLoader mojo interface.
+    This build flag enables WebNN to access hardware acceleration using TFLite
+    via the ModelLoader mojo interface.
 
 build_webnn_with_xnnpack
     Current value (from the default) = true
-      From //third_party/blink/renderer/modules/ml/webnn/features.gni:10
+      From //third_party/blink/renderer/modules/ml/webnn/features.gni:9
+
+    This enables building WebNN with XNNPACK. Currently only available for
+    Windows, macOS and Linux on x64, x86 and arm64.
 
 build_with_internal_optimization_guide
     Current value (from the default) = false
@@ -782,6 +795,21 @@ cc_wrapper
 
     Set to "ccache", "icecc" or "distcc".  Probably doesn't work on windows.
 
+chrome_certificate_policies_supported
+    Current value (from the default) = true
+      From //chrome/common/features.gni:46
+
+    Platforms where Chrome x509 server certificate enterprise policies are
+    supported. This must must match the supported_on/future_on list of the
+    policy in the following policies stored in
+    components/policy/resources/templates/policy_definitions/:
+   
+    * CertificateManagement/CACertificates.yaml
+    * CertificateManagement/CADistrustedCertificates.yaml
+    * CertificateManagement/CAHintCertificates.yaml
+    * CertificateManagement/CAPlatformIntegrationEnabled.yaml
+   
+
 chrome_enable_logging_by_default
     Current value (from the default) = true
       From //chrome/common/features.gni:34
@@ -821,24 +849,13 @@ chrome_root_store_optional
     builtin verifier using platform roots, depending on the platform.
     See https://crbug.com/1216547 for status.
 
-chrome_root_store_policy_supported
-    Current value (from the default) = false
-      From //chrome/common/features.gni:42
-
-    Platforms where the ChromeRootStoreEnabled enterprise policy is
-    supported. This must must match the supported_on/future_on list of the
-    policy in policy_templates.json and be a subset of the
-    chrome_root_store_optional platforms.
-    See https://crbug.com/1228958. This can be removed when the Chrome Root
-    Store is unconditionally enabled on all platforms.
-
 chrome_root_store_supported
     Current value (from the default) = true
       From //net/features.gni:68
 
 chrome_wide_echo_cancellation_supported
     Current value (from the default) = true
-      From //media/media_options.gni:342
+      From //media/media_options.gni:345
 
     Currently it is available on Win, Mac and Linux, since it requires the audio
     service to run in a separate process.
@@ -916,11 +933,13 @@ clang_use_default_sample_profile
 
 clang_version
     Current value (from the default) = "18"
-      From //build/toolchain/toolchain.gni:50
+      From //build/toolchain/toolchain.gni:53
+
+    TODO(crbug.com/1517549): Remove in the next Clang roll.
 
 com_init_check_hook_disabled
     Current value (from the default) = false
-      From //base/BUILD.gn:62
+      From //base/BUILD.gn:63
 
     Set to true to disable COM init check hooks.
 
@@ -975,6 +994,13 @@ concurrent_links
     The default to use varies by platform and by the amount of memory
     available, so we call out to a script to get the right value.
 
+content_enable_legacy_ipc
+    Current value (from the default) = false
+      From //content/common/features.gni:24
+
+    We allow legacy IPC to be enabled for Android (GIN Java bridge), and
+    Pepper usage.
+
 content_shell_major_version
     Current value (from the default) = "999"
       From //content/shell/BUILD.gn:45
@@ -1007,7 +1033,7 @@ cppgc_allow_allocations_in_prefinalizers
 
 cppgc_enable_2gb_cage
     Current value (from the default) = false
-      From //v8/gni/v8.gni:127
+      From //v8/gni/v8.gni:132
 
     Enable 2gb cage for fast compression/decompression. Currently disabled
     due to an increased number of OOMs.
@@ -1018,25 +1044,25 @@ cppgc_enable_caged_heap
 
 cppgc_enable_larger_cage
     Current value (from the default) = false
-      From //v8/gni/v8.gni:130
+      From //v8/gni/v8.gni:135
 
     Enable support for larger cages, up to 16GB.
 
 cppgc_enable_object_names
     Current value (from the default) = false
-      From //v8/gni/v8.gni:111
+      From //v8/gni/v8.gni:116
 
     Enable object names in cppgc for profiling purposes.
 
 cppgc_enable_pointer_compression
     Current value (from the default) = false
-      From //v8/gni/v8.gni:123
+      From //v8/gni/v8.gni:128
 
     Enable pointer compression in cppgc.
 
 cppgc_enable_slim_write_barrier
     Current value (from the default) = true
-      From //v8/gni/v8.gni:120
+      From //v8/gni/v8.gni:125
 
     Enables a slim write barrier that only performs a single check in the fast
     path and delegates all further checks to a slow path call. This is fast
@@ -1051,13 +1077,13 @@ cppgc_enable_verify_heap
 
 cppgc_enable_young_generation
     Current value (from the default) = false
-      From //v8/gni/v8.gni:114
+      From //v8/gni/v8.gni:119
 
     Enable young generation in cppgc.
 
 cppgc_is_standalone
     Current value (from the default) = false
-      From //v8/gni/v8.gni:108
+      From //v8/gni/v8.gni:113
 
 crashpad_dependencies
     Current value = "chromium"
@@ -1112,13 +1138,13 @@ custom_vulkan_loader_library_name
 
 dawn_always_assert
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:71
+      From //third_party/dawn/scripts/dawn_features.gni:66
 
     Enable Dawn's ASSERTs even in release builds
 
 dawn_complete_static_libs
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:76
+      From //third_party/dawn/scripts/dawn_features.gni:71
 
     Should the Dawn static libraries be fully linked vs. GN's default of
     treating them as source sets. This is useful for people using Dawn
@@ -1126,79 +1152,73 @@ dawn_complete_static_libs
 
 dawn_enable_d3d11
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:79
+      From //third_party/dawn/scripts/dawn_features.gni:74
 
     Enables the compilation of Dawn's D3D11 backend
 
 dawn_enable_d3d12
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:82
+      From //third_party/dawn/scripts/dawn_features.gni:77
 
     Enables the compilation of Dawn's D3D12 backend
 
 dawn_enable_desktop_gl
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:93
+      From //third_party/dawn/scripts/dawn_features.gni:88
 
     Enables the compilation of Dawn's OpenGL backend
     (best effort, non-conformant)
 
 dawn_enable_error_injection
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:108
+      From //third_party/dawn/scripts/dawn_features.gni:103
 
 dawn_enable_metal
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:85
+      From //third_party/dawn/scripts/dawn_features.gni:80
 
     Enables the compilation of Dawn's Metal backend
 
 dawn_enable_null
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:89
+      From //third_party/dawn/scripts/dawn_features.gni:84
 
     Enables the compilation of Dawn's Null backend
     (required for unittests, obviously non-conformant)
 
 dawn_enable_opengles
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:99
+      From //third_party/dawn/scripts/dawn_features.gni:94
 
 dawn_enable_spirv_validation
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:126
+      From //third_party/dawn/scripts/dawn_features.gni:121
 
     Disable SPIR-V validation on Android because it adds a significant amount
     to the binary size, and Tint's output should be well-formed.
 
 dawn_enable_vulkan
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:103
+      From //third_party/dawn/scripts/dawn_features.gni:98
 
     Enables the compilation of Dawn's Vulkan backend
     Disables vulkan when compiling for UWP, since UWP only supports d3d
 
 dawn_enable_vulkan_loader
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:122
+      From //third_party/dawn/scripts/dawn_features.gni:117
 
 dawn_enable_vulkan_validation_layers
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:117
+      From //third_party/dawn/scripts/dawn_features.gni:112
 
-dawn_use_angle
+dawn_tests_use_angle
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:55
-
-    TODO(dawn:1545): Re-enable dawn_use_angle on Android. In non-component
-    builds, this is adding a dependency on ANGLE's libEGL.so and
-    libGLESv2.so, apparently without regard for the use_static_angle=true
-    GN variable. Chromium's linker on Android disallows production of more
-    than one shared object per target (?).
+      From //third_party/dawn/scripts/dawn_features.gni:50
 
 dawn_use_built_dxc
     Current value (from the default) = false
-      From //third_party/dawn/scripts/dawn_features.gni:66
+      From //third_party/dawn/scripts/dawn_features.gni:61
 
     Whether we allow building DXC.
     DXC requires SM6.0+ which is blocklisted on x86,
@@ -1207,7 +1227,7 @@ dawn_use_built_dxc
 
 dawn_use_swiftshader
     Current value (from the default) = true
-      From //third_party/dawn/scripts/dawn_features.gni:60
+      From //third_party/dawn/scripts/dawn_features.gni:55
 
     Enables SwiftShader as the fallback adapter. Requires dawn_swiftshader_dir
     to be set to take effect.
@@ -1287,7 +1307,7 @@ devtools_root_location
 
 devtools_skip_typecheck
     Current value (from the default) = true
-      From //third_party/devtools-frontend/src/third_party/typescript/typescript.gni:15
+      From //third_party/devtools-frontend/src/third_party/typescript/typescript.gni:16
 
 devtools_third_party_visibility
     Current value (from the default) = ["*"]
@@ -1299,7 +1319,7 @@ devtools_ui_legacy_visibility
 
 devtools_use_remoteexec
     Current value (from the default) = false
-      From //third_party/devtools-frontend/src/third_party/typescript/typescript.gni:13
+      From //third_party/devtools-frontend/src/third_party/typescript/typescript.gni:14
 
     Set to true to enable remote compilation of TypeScript using reclient.
     This flag is temporarily until DevTools reclient support has stabilized.
@@ -1365,13 +1385,9 @@ enable_accessibility_service_internal
     Current value (from the default) = false
       From //services/accessibility/buildflags.gni:20
 
-enable_aida
-    Current value (from the default) = false
-      From //chrome/browser/devtools/buildflags.gni:2
-
 enable_all_rust_features
     Current value (from the default) = false
-      From //build/config/rust.gni:38
+      From //build/config/rust.gni:50
 
     As we incrementally enable Rust on mainstream builders, we want to enable
     the toolchain (by switching 'enable_rust' to true) while still disabling
@@ -1380,7 +1396,7 @@ enable_all_rust_features
 
 enable_arcore
     Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:23
+      From //device/vr/buildflags/buildflags.gni:21
 
 enable_assistant_integration_tests
     Current value (from the default) = false
@@ -1393,24 +1409,24 @@ enable_assistant_integration_tests
 
 enable_av1_decoder
     Current value (from the default) = true
-      From //media/media_options.gni:130
+      From //media/media_options.gni:133
 
     If overriding this to false, possibly via its component values,
     `enable_libaom` should likely also be overriddent to false.
 
 enable_background_contents
     Current value (from the default) = true
-      From //chrome/common/features.gni:45
+      From //chrome/common/features.gni:49
 
     Enables support for background apps.
 
 enable_background_mode
     Current value (from the default) = true
-      From //chrome/common/features.gni:46
+      From //chrome/common/features.gni:50
 
 enable_backup_ref_ptr_feature_flag
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:174
+      From //base/allocator/partition_allocator/partition_alloc.gni:194
 
     Enable the feature flag required to activate backup ref pointers. That is to
     say `PartitionAllocBackupRefPtr`.
@@ -1419,13 +1435,17 @@ enable_backup_ref_ptr_feature_flag
     the feature flags using a binary flag instead of updating multiple bots's
     scripts to pass command line arguments.
 
+enable_backup_ref_ptr_instance_tracer
+    Current value (from the default) = false
+      From //base/allocator/partition_allocator/partition_alloc.gni:222
+
 enable_backup_ref_ptr_slow_checks
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:166
+      From //base/allocator/partition_allocator/partition_alloc.gni:186
 
 enable_backup_ref_ptr_support
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:122
+      From //base/allocator/partition_allocator/partition_alloc.gni:144
 
 enable_base_tracing
     Current value (from the default) = true
@@ -1439,21 +1459,21 @@ enable_base_tracing
 
 enable_basic_print_dialog
     Current value (from the default) = true
-      From //printing/buildflags/buildflags.gni:33
+      From //printing/buildflags/buildflags.gni:34
 
     Enables the printing system dialog for platforms that support printing
     and have a system dialog.
 
 enable_basic_printing
     Current value (from the default) = true
-      From //printing/buildflags/buildflags.gni:24
+      From //printing/buildflags/buildflags.gni:25
 
     TODO(awscreen)  Safety net to avoid revert for a flag rename which affects
     many locations.  Remove this once `enable_printing` has landed.
 
 enable_blink_bindings_tracing
     Current value (from the default) = false
-      From //third_party/blink/renderer/platform/BUILD.gn:228
+      From //third_party/blink/renderer/platform/BUILD.gn:229
 
     Enable TRACE_EVENT instrumentation for Blink bindings.
     Disabled by default as it increases binary size.
@@ -1479,11 +1499,11 @@ enable_browser_speech_service
 
 enable_call_graph_profile_sort
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:244
+      From //build/config/compiler/BUILD.gn:246
 
 enable_callgrind
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:59
+      From //third_party/pdfium/pdfium.gni:66
 
     Enable callgrind for performance profiling
 
@@ -1493,11 +1513,11 @@ enable_captive_portal_detection
 
 enable_cardboard
     Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:21
+      From //device/vr/buildflags/buildflags.gni:19
 
 enable_cast_audio_renderer
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:26
+      From //build/config/cast.gni:24
 
     True to enable the cast audio renderer.
    
@@ -1505,22 +1525,22 @@ enable_cast_audio_renderer
 
 enable_cast_receiver
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:44
+      From //build/config/cast.gni:42
 
     Set this true for a Chromecast build. Chromecast builds are supported on
     Linux, Android, ChromeOS, and Fuchsia.
 
 enable_cast_renderer
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:53
+      From //build/config/cast.gni:51
 
 enable_cdm_host_verification
     Current value (from the default) = false
-      From //media/media_options.gni:237
+      From //media/media_options.gni:240
 
 enable_cdm_storage_id
     Current value (from the default) = false
-      From //media/media_options.gni:242
+      From //media/media_options.gni:245
 
     Enable Storage ID which is used by CDMs. This is only available with chrome
     branding, but may be overridden by other embedders.
@@ -1545,19 +1565,34 @@ enable_check_raw_ref_fields
 
 enable_chrome_notifications
     Current value (from the default) = true
-      From //chrome/common/features.gni:49
+      From //chrome/common/features.gni:53
 
     Enables usage of notifications via Chrome's MessageCenter.
 
+enable_chromium_prelude
+    Current value (from the default) = true
+      From //build/config/rust.gni:44
+
+    The chromium prelude crate provides the `chromium::import!` macro which
+    is needed to depend on first-party rust libraries. Third-party libraries
+    are specified with cargo_crate and do not get imported through this macro.
+   
+    The macro requires //third_party/rust for syn, quote, and proc_macro2.
+    Downstream projects that want to use //build for the rust GN templates but
+    don't want to enable the chromium prelude can disable it here, and should
+    specify a globally unique `crate_name` in their rust library GN rules
+    instead. Note that using a `crate_name` is strongly discouraged inside
+    Chromium, and is also discouraged for downstream projects when possible.
+
 enable_click_to_call
     Current value (from the default) = true
-      From //chrome/common/features.gni:52
+      From //chrome/common/features.gni:56
 
     Disable Click to Call on Fuchsia.
 
 enable_component_updater
     Current value (from the default) = true
-      From //chrome/common/features.gni:56
+      From //chrome/common/features.gni:60
 
     Whether to enable the component updater. Code is in
     //components/component_updater.
@@ -1585,13 +1620,6 @@ enable_cros_media_app
     Whether to enable the "real" ChromeOS Media App. When false, a mock app is
     bundled for testing integration points.
 
-enable_cross_trusted
-    Current value (from the default) = true
-      From //native_client_sdk/src/BUILD.gn:10
-
-    Set to true if cross compiling trusted (e.g. building sel_ldr_arm on x86)
-    binaries is supported.
-
 enable_cxx
     Current value (from the default) = true
       From //build/config/rust.gni:32
@@ -1602,11 +1630,11 @@ enable_cxx
 
 enable_dangling_raw_ptr_checks
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:179
+      From //base/allocator/partition_allocator/partition_alloc.gni:199
 
 enable_dangling_raw_ptr_feature_flag
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:187
+      From //base/allocator/partition_allocator/partition_alloc.gni:207
 
     Enable the feature flag required to check for dangling pointers. That is to
     say `PartitionAllocDanglingPtr`.
@@ -1617,7 +1645,7 @@ enable_dangling_raw_ptr_feature_flag
 
 enable_dangling_raw_ptr_perf_experiment
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:197
+      From //base/allocator/partition_allocator/partition_alloc.gni:217
 
     Enables the dangling raw_ptr checks feature for the performance experiment.
     Not every dangling pointers have been fixed or annotated yet. To avoid
@@ -1630,7 +1658,7 @@ enable_dangling_raw_ptr_perf_experiment
 
 enable_dav1d_decoder
     Current value (from the default) = true
-      From //media/media_options.gni:105
+      From //media/media_options.gni:108
 
 enable_discovery
     Current value (from the default) = false
@@ -1667,10 +1695,6 @@ enable_extensions
     Current value (from the default) = true
       From //extensions/buildflags/buildflags.gni:8
 
-enable_extensions_legacy_ipc
-    Current value (from the default) = false
-      From //extensions/buildflags/buildflags.gni:9
-
 enable_extractors
     Current value (from the default) = true
       From //chrome/services/file_util/public/features.gni:11
@@ -1694,7 +1718,7 @@ enable_feed_v2
 
 enable_ffmpeg_video_decoders
     Current value (from the default) = true
-      From //media/media_options.gni:221
+      From //media/media_options.gni:224
 
     On Android, FFMpeg is built without video decoders by default.
     This flag gives the option to override that decision in case there are no
@@ -1713,7 +1737,7 @@ enable_full_stack_frames_for_profiling
 
 enable_fuzztest_fuzz
     Current value (from the default) = false
-      From //build/config/sanitizers/sanitizers.gni:138
+      From //build/config/sanitizers/sanitizers.gni:140
 
 enable_gpu_client_logging
     Current value (from the default) = false
@@ -1734,10 +1758,6 @@ enable_grpc_ares
 
     Compiles with ares.
 
-enable_gvr_services
-    Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:19
-
 enable_gwp_asan
     Current value (from the default) = true
       From //components/gwp_asan/buildflags/buildflags.gni:27
@@ -1757,14 +1777,14 @@ enable_gwp_asan_partitionalloc
 
 enable_hangout_services_extension
     Current value (from the default) = false
-      From //chrome/common/features.gni:60
+      From //chrome/common/features.gni:64
 
     Hangout services is an extension that adds extra features to Hangouts.
     It is enableable separately to facilitate testing.
 
 enable_hevc_parser_and_hw_decoder
     Current value (from the default) = false
-      From //media/media_options.gni:118
+      From //media/media_options.gni:121
 
 enable_hidpi
     Current value (from the default) = true
@@ -1772,7 +1792,7 @@ enable_hidpi
 
 enable_hls_demuxer
     Current value (from the default) = false
-      From //media/media_options.gni:112
+      From //media/media_options.gni:115
 
     Enable HLS manifest parser and demuxer.
 
@@ -1816,18 +1836,10 @@ enable_iterator_debugging
 
 enable_js_protobuf
     Current value (from the default) = true
-      From //third_party/protobuf/proto_library.gni:141
+      From //third_party/protobuf/proto_library.gni:146
 
     Allows subprojects to omit javascript dependencies (e.g.) closure_compiler
     and google-closure-library.
-
-enable_keystone_registration_framework
-    Current value (from the default) = true
-      From //chrome/BUILD.gn:61
-
-    Indicates whether keystone registration framework should be enabled (see
-    action("keystone_registration_framework") below).  There are some tests
-    where we'd like for it to be disabled. (https://crbug.com/909080)
 
 enable_kythe_annotations
     Current value (from the default) = false
@@ -1860,7 +1872,7 @@ enable_libaom_decoder
 
 enable_library_cdms
     Current value (from the default) = true
-      From //media/media_options.gni:229
+      From //media/media_options.gni:232
 
     Enables the use of library CDMs that implements the interface defined at
     media/cdm/api/content_decryption_module.h. If true, the actually library CDM
@@ -1873,11 +1885,11 @@ enable_linux_installer
 
 enable_log_error_not_reached
     Current value (from the default) = false
-      From //build/config/logging.gni:12
+      From //build/config/logging.gni:11
 
 enable_logging_override
     Current value (from the default) = false
-      From //media/media_options.gni:103
+      From //media/media_options.gni:106
 
     Enable logging override, e.g. enable DVLOGs through level 2 at build time.
     On Cast devices, these are logged as INFO.
@@ -1901,7 +1913,7 @@ enable_media_control_logging_override
 
 enable_media_drm_storage
     Current value (from the default) = false
-      From //media/media_options.gni:109
+      From //media/media_options.gni:112
 
     Enable browser managed persistent metadata storage for EME persistent
     session and persistent usage record session.
@@ -1912,7 +1924,7 @@ enable_media_foundation_widevine_cdm
 
 enable_media_remoting
     Current value (from the default) = true
-      From //media/media_options.gni:330
+      From //media/media_options.gni:333
 
     This switch defines whether the Media Remoting implementation will be built.
     When enabled, media is allowed to be renderer and played back on remote
@@ -1920,7 +1932,7 @@ enable_media_remoting
 
 enable_media_remoting_rpc
     Current value (from the default) = true
-      From //media/media_options.gni:336
+      From //media/media_options.gni:339
 
     Media Remoting RPC is disabled on Android since it's unused but increases
     the native binary size by ~70Kb.
@@ -1931,13 +1943,11 @@ enable_message_center
 
 enable_ml_internal
     Current value (from the default) = false
-      From //services/on_device_model/on_device_model.gni:7
-
-    If true //third_party/ml will be enabled.
+      From //services/on_device_model/on_device_model.gni:10
 
 enable_modular_updater
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:21
+      From //build/config/cast.gni:19
 
     Set true to enable modular_updater.
 
@@ -1947,23 +1957,24 @@ enable_mojo_tracing
 
 enable_mojom_fuzzer
     Current value (from the default) = false
-      From //mojo/public/tools/bindings/mojom.gni:45
+      From //mojo/public/tools/bindings/mojom.gni:47
 
     Enables generating javascript fuzzing-related code and the bindings for the
     MojoLPM fuzzer targets. Off by default.
 
 enable_mojom_message_id_scrambling
-    Current value (from the default) = true
-      From //mojo/public/tools/bindings/mojom.gni:41
+    Current value (from the default) = false
+      From //mojo/public/tools/bindings/mojom.gni:43
 
     Controls message ID scrambling behavior. If |true|, message IDs are
     scrambled (i.e. randomized based on the contents of //chrome/VERSION) on
-    non-Chrome OS desktop platforms. Set to |false| to disable message ID
-    scrambling on all platforms.
+    non-Chrome OS desktop platforms. Enabled on official builds by default.
+    Set to |true| to enable message ID scrambling on a specific build.
+    See also `enable_scrambled_message_ids` below for more details.
 
 enable_mojom_typemapping
     Current value (from the default) = true
-      From //mojo/public/tools/bindings/mojom.gni:35
+      From //mojo/public/tools/bindings/mojom.gni:36
 
     Indicates whether typemapping should be supported in this build
     configuration. This may be disabled when building external projects which
@@ -1976,31 +1987,27 @@ enable_mojom_typemapping
 
 enable_mse_mpeg2ts_stream_parser
     Current value (from the default) = false
-      From //media/media_options.gni:141
+      From //media/media_options.gni:144
 
 enable_mutex_priority_inheritance
     Current value (from the default) = false
-      From //base/BUILD.gn:67
+      From //base/BUILD.gn:68
 
     Set to true to enable mutex priority inheritance. See the comments in
     LockImpl::PriorityInheritanceAvailable() in lock_impl_posix.cc for the
     platform requirements to safely enable priority inheritance.
 
 enable_nacl
-    Current value (from the default) = true
+    Current value (from the default) = false
       From //components/nacl/features.gni:27
 
     Enables Native Client support.
    
-    Intentionally and permanently disable nacl on Windows and Mac.
+    NaCl is only supported on ChromeOS.
 
 enable_nocompile_tests
     Current value (from the default) = true
       From //build/nocompile.gni:58
-
-enable_nocompile_tests_new
-    Current value (from the default) = true
-      From //build/nocompile.gni:60
 
 enable_offline_pages
     Current value (from the default) = false
@@ -2030,10 +2037,9 @@ enable_oop_printing
     Current value (from the default) = true
       From //printing/buildflags/buildflags.gni:47
 
-    Enables out-of-process printing. While this definition matches
-    `enable_print_preview`, do not base this definition upon that.  This
-    feature could still be appropriate for some build configurations which
-    explicitly disable print preview.
+    Enables out-of-process printing.  Do not have this definition just be
+    based on `enable_print_preview`; this feature could still be appropriate
+    for some build configurations which explicitly disable print preview.
 
 enable_oop_printing_no_oop_basic_print_dialog
     Current value (from the default) = true
@@ -2060,7 +2066,7 @@ enable_openscreen_protocol
 
 enable_openxr
     Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:29
+      From //device/vr/buildflags/buildflags.gni:27
 
     To build with OpenXR support, the OpenXR Loader needs to be pulled to
     third_party/openxr.
@@ -2090,7 +2096,7 @@ enable_perfetto_fuzzers
 
 enable_perfetto_grpc
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:319
+      From //third_party/perfetto/gn/perfetto.gni:322
 
     Enables gRPC in the Perfetto codebase. gRPC significantly increases build
     times and the general footprint of Perfetto. As it only required for
@@ -2111,7 +2117,7 @@ enable_perfetto_ipc
 
 enable_perfetto_llvm_demangle
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:313
+      From //third_party/perfetto/gn/perfetto.gni:316
 
 enable_perfetto_platform_services
     Current value (from the default) = false
@@ -2119,7 +2125,7 @@ enable_perfetto_platform_services
 
 enable_perfetto_site
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:336
+      From //third_party/perfetto/gn/perfetto.gni:339
 
     Allows to build the perfetto.dev website.
     WARNING: if this flag is enabled, the build performs globbing at generation
@@ -2143,8 +2149,8 @@ enable_perfetto_trace_processor
       From //third_party/perfetto/gn/perfetto.gni:173
 
 enable_perfetto_trace_processor_httpd
-    Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:300
+    Current value (from the default) = true
+      From //third_party/perfetto/gn/perfetto.gni:302
 
 enable_perfetto_trace_processor_json
     Current value (from the default) = true
@@ -2164,7 +2170,7 @@ enable_perfetto_trace_processor_sqlite
 
 enable_perfetto_traceconv
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:325
+      From //third_party/perfetto/gn/perfetto.gni:328
 
 enable_perfetto_traced_perf
     Current value (from the default) = false
@@ -2191,7 +2197,7 @@ enable_perfetto_traced_relay
 
 enable_perfetto_ui
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:329
+      From //third_party/perfetto/gn/perfetto.gni:332
 
 enable_perfetto_unittests
     Current value (from the default) = true
@@ -2211,44 +2217,40 @@ enable_perfetto_x64_cpu_opt
 
 enable_perfetto_zlib
     Current value (from the default) = true
-      From //third_party/perfetto/gn/perfetto.gni:307
+      From //third_party/perfetto/gn/perfetto.gni:310
 
 enable_pkeys
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:322
-
-    pkeys support is explicitly disabled in all Cronet builds, as some test
-    dependencies that use partition_allocator are compiled in AOSP against a
-    version of glibc that does not include pkeys syscall numbers.
+      From //base/allocator/partition_allocator/partition_alloc.gni:344
 
 enable_platform_ac3_eac3_audio
     Current value (from the default) = false
-      From //media/media_options.gni:72
+      From //media/media_options.gni:71
 
     Enables AC3/EAC3 audio handling in chromium. This includes demuxing,
     on-device decoding and bitstream passthrough as supported by device.
 
 enable_platform_ac4_audio
     Current value (from the default) = false
-      From //media/media_options.gni:76
+      From //media/media_options.gni:75
 
     Enables AC4 audio handling in chromium. This includes demuxing,
     on-device decoding and bitstream passthrough as supported by device.
 
 enable_platform_dolby_vision
     Current value (from the default) = false
-      From //media/media_options.gni:91
+      From //media/media_options.gni:94
 
 enable_platform_dts_audio
     Current value (from the default) = false
-      From //media/media_options.gni:82
+      From //media/media_options.gni:81
 
     Enables DTS/DTSX audio handling in chromium. This includes demuxing,
     on-device decoding and bitstream passthrough as supported by device.
 
 enable_platform_encrypted_dolby_vision
     Current value (from the default) = false
-      From //media/media_options.gni:98
+      From //media/media_options.gni:101
 
     Enable platform support of encrypted Dolby Vision. The actual support
     depends on platform capability and is controlled by the run time feature
@@ -2258,22 +2260,29 @@ enable_platform_encrypted_dolby_vision
 
 enable_platform_hevc
     Current value (from the default) = false
-      From //media/media_options.gni:137
+      From //media/media_options.gni:140
+
+enable_platform_iamf_audio
+    Current value (from the default) = false
+      From //media/media_options.gni:85
+
+    Enables IAMF audio handling in chromium. This includes demuxing,
+    on-device decoding and bitstream passthrough as supported by device.
 
 enable_platform_mpeg_h_audio
     Current value (from the default) = false
-      From //media/media_options.gni:78
+      From //media/media_options.gni:77
 
 enable_platform_vvc
     Current value (from the default) = false
-      From //media/media_options.gni:123
+      From //media/media_options.gni:126
 
     Enable inclusion of VVC/H.266 parser/demuxer, and also enable VVC/H.266 decoding
     with hardware acceleration provided by platform. Disabled by default for all builds.
 
 enable_plugins
     Current value (from the default) = true
-      From //ppapi/buildflags/buildflags.gni:14
+      From //ppapi/buildflags/buildflags.gni:15
 
     Enables basic plugin support. This enables support for registering and
     looking up plugins, but does not include support for loading plugins using a
@@ -2284,7 +2293,7 @@ enable_plugins
 
 enable_pointer_arithmetic_trait_check
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:107
+      From //base/allocator/partition_allocator/partition_alloc.gni:124
 
     Enables a compile-time check that all raw_ptrs to which arithmetic
     operations are to be applied are annotated with the AllowPtrArithmetic
@@ -2292,7 +2301,7 @@ enable_pointer_arithmetic_trait_check
 
 enable_pointer_compression_support
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:98
+      From //base/allocator/partition_allocator/partition_alloc.gni:115
 
     Introduces pointer compression support in PA. These are 4-byte
     pointers that can point within the core pools (regular and BRP).
@@ -2303,16 +2312,18 @@ enable_pointer_compression_support
 
 enable_pointer_subtraction_check
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:102
+      From //base/allocator/partition_allocator/partition_alloc.gni:119
 
     Enables a bounds check when two pointers (at least one being raw_ptr) are
     subtracted (if supported by the underlying implementation).
 
 enable_ppapi
-    Current value (from the default) = true
-      From //ppapi/buildflags/buildflags.gni:19
+    Current value (from the default) = false
+      From //ppapi/buildflags/buildflags.gni:22
 
     Enables Pepper API (PPAPI) plugin support.
+    The only remaining PPAPI plugin supported is NaCl and if is disabled
+    we can disable PPAPI.
 
 enable_precompiled_headers
     Current value (from the default) = false
@@ -2335,7 +2346,7 @@ enable_print_media_l10n
 
 enable_print_preview
     Current value (from the default) = true
-      From //printing/buildflags/buildflags.gni:29
+      From //printing/buildflags/buildflags.gni:30
 
     Enables printing with print preview.
     Print preview requires PDF per //printing/BUILD.gn.
@@ -2347,12 +2358,13 @@ enable_printing
 
     Enables printing support.
 
-enable_printing_unittests
+enable_printing_tests
     Current value (from the default) = false
-      From //printing/buildflags/buildflags.gni:18
+      From //printing/buildflags/buildflags.gni:19
 
-    TODO(crbug.com/1432082): iOS blink port only enables printing_unittests for
-    now because the port does not enable the printing feature yet.
+    TODO(crbug.com/1432082): iOS blink port only enables printing_tests to run
+    unit tests and web tests for now because the port does not enable the
+    printing feature yet.
 
 enable_profiling
     Current value (from the default) = false
@@ -2402,7 +2414,7 @@ enable_reporting
 
 enable_resource_allowlist_generation
     Current value (from the default) = false
-      From //build/toolchain/gcc_toolchain.gni:28
+      From //build/toolchain/gcc_toolchain.gni:29
 
 enable_rlz
     Current value (from the default) = false
@@ -2422,45 +2434,39 @@ enable_rust
 
 enable_rust_base_conversions
     Current value (from the default) = true
-      From //build/config/rust.gni:87
+      From //build/config/rust.gni:109
 
     Conversions between Rust types and C++ types.
 
 enable_rust_boringssl
-    Current value (from the default) = false
-      From //build/config/rust.gni:105
+    Current value (from the default) = true
+      From //build/config/rust.gni:124
 
     Enable Boringssl Rust bindings generation
 
 enable_rust_crash
     Current value (from the default) = true
-      From //build/config/rust.gni:93
+      From //build/config/rust.gni:115
 
     Support for chrome://crash-rust to check crash dump collection works.
 
 enable_rust_gtest_interop
     Current value (from the default) = true
-      From //build/config/rust.gni:102
+      From //build/config/rust.gni:121
 
     Rust gtest interop.
 
 enable_rust_json
     Current value (from the default) = false
-      From //build/config/rust.gni:90
+      From //build/config/rust.gni:112
 
     The base::JSONReader implementation. Requires base conversions.
 
 enable_rust_mojo
     Current value (from the default) = false
-      From //build/config/rust.gni:99
+      From //build/config/rust.gni:118
 
     Support for Rust mojo bindings.
-
-enable_rust_qr
-    Current value (from the default) = true
-      From //build/config/rust.gni:96
-
-    Support for QR code generation - see https://crbug.com/1431991.
 
 enable_screen_ai_service
     Current value (from the default) = true
@@ -2481,18 +2487,18 @@ enable_server_based_recognition
 
 enable_service_discovery
     Current value (from the default) = true
-      From //chrome/common/features.gni:62
+      From //chrome/common/features.gni:66
 
 enable_session_service
     Current value (from the default) = true
-      From //chrome/common/features.gni:66
+      From //chrome/common/features.gni:70
 
     Enables use of the session service, which is enabled by default.
     Android stores them separately on the Java side.
 
 enable_shadow_call_stack
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:193
+      From //build/config/compiler/BUILD.gn:195
 
     Enable ShadowCallStack for compiled binaries. SCS stores a pointer to a
     shadow call stack in register x18. Hence, x18 must not be used by the OS
@@ -2502,14 +2508,14 @@ enable_shadow_call_stack
 
 enable_shadow_metadata
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:206
+      From //base/allocator/partition_allocator/partition_alloc.gni:228
 
     Shadow metadata is still under development and only supports Linux
     for now.
 
 enable_skia_graphite_gtests
     Current value (from the default) = false
-      From //skia/features.gni:18
+      From //skia/features.gni:21
 
     Enable gtests using SkiaRenderer on Skia Graphite.
 
@@ -2531,7 +2537,7 @@ enable_speech_service
 
 enable_stack_trace_line_numbers
     Current value (from the default) = false
-      From //build/config/logging.gni:13
+      From //build/config/logging.gni:12
 
 enable_stripping
     Current value (from the default) = false
@@ -2551,7 +2557,7 @@ enable_supervised_users
 
 enable_swiftshader
     Current value (from the default) = true
-      From //ui/gl/features.gni:36
+      From //ui/gl/features.gni:37
 
 enable_swiftshader_vulkan
     Current value (from the default) = true
@@ -2563,7 +2569,7 @@ enable_swiftshader_vulkan
 
 enable_system_notifications
     Current value (from the default) = true
-      From //chrome/common/features.gni:70
+      From //chrome/common/features.gni:74
 
 enable_trace_logging
     Current value (from the default) = true
@@ -2591,7 +2597,7 @@ enable_validating_command_decoder
 
 enable_vr
     Current value (from the default) = true
-      From //device/vr/buildflags/buildflags.gni:37
+      From //device/vr/buildflags/buildflags.gni:35
 
 enable_vulkan
     Current value (from the default) = true
@@ -2601,7 +2607,7 @@ enable_vulkan
 
 enable_wayland_server
     Current value (from the default) = false
-      From //chrome/common/features.gni:73
+      From //chrome/common/features.gni:77
 
     Indicates if Wayland display server support is enabled.
 
@@ -2614,7 +2620,7 @@ enable_websockets
 
 enable_webui_certificate_viewer
     Current value (from the default) = true
-      From //chrome/common/features.gni:76
+      From //chrome/common/features.gni:80
 
     Enables the webui certificate viewer dialog.
 
@@ -2640,26 +2646,38 @@ enable_widevine
     Can be optionally enabled in Chromium on non-Android platforms. Please see
     //src/third_party/widevine/LICENSE file for details.
 
+enterprise_client_certificates
+    Current value (from the default) = false
+      From //components/enterprise/buildflags/buildflags.gni:26
+
+    Indicates support for client certificates provisioning.
+
 enterprise_cloud_content_analysis
     Current value (from the default) = true
-      From //components/enterprise/buildflags/buildflags.gni:15
+      From //components/enterprise/buildflags/buildflags.gni:16
 
 enterprise_content_analysis
     Current value (from the default) = true
-      From //components/enterprise/buildflags/buildflags.gni:31
+      From //components/enterprise/buildflags/buildflags.gni:38
 
 enterprise_data_controls
     Current value (from the default) = true
-      From //components/enterprise/buildflags/buildflags.gni:22
+      From //components/enterprise/buildflags/buildflags.gni:23
 
     Indicates support for Data Control rules.
 
 enterprise_local_content_analysis
     Current value (from the default) = true
-      From //components/enterprise/buildflags/buildflags.gni:19
+      From //components/enterprise/buildflags/buildflags.gni:20
 
     Indicates support for content analysis against a cloud agent for Enterprise
     Connector policies.
+
+enterprise_watermark
+    Current value (from the default) = true
+      From //components/enterprise/buildflags/buildflags.gni:29
+
+    The watermark is currently implemented using the views framework
 
 exclude_unwind_tables
     Current value (from the default) = false
@@ -2686,7 +2704,7 @@ extended_tracing_enabled
 
 extra_sysroot_libs
     Current value (from the default) = []
-      From //build/config/rust.gni:68
+      From //build/config/rust.gni:90
 
     Non-rlib libs provided in the toolchain sysroot. Usually this is empty, but
     e.g. the Android Rust Toolchain provides a libunwind.a that rustc expects.
@@ -2747,18 +2765,26 @@ force_enable_fieldtrial_testing_config
 
 force_enable_raw_ptr_exclusion
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:126
+      From //base/allocator/partition_allocator/partition_alloc.gni:148
 
     RAW_PTR_EXCLUSION macro is disabled on official builds because it increased
     binary size. This flag can be used to enable it for official builds too.
 
 force_rustc_color_output
     Current value (from the default) = false
-      From //build/config/rust.gni:78
+      From //build/config/rust.gni:100
 
     Force-enable `--color=always` for rustc, even when it would be disabled for
     a platform. Mostly applicable to Windows, where new versions can handle ANSI
     escape sequences but it's not reliable in general.
+
+forward_through_malloc
+    Current value (from the default) = false
+      From //base/allocator/partition_allocator/partition_alloc.gni:129
+
+    Forwards all the allocation/freeing calls in shim (e.g. operator new)
+    through malloc. Useful for using with tools that intercept malloc, e.g.
+    heaptrack.
 
 fuzztest_supported
     Current value (from the default) = true
@@ -2784,7 +2810,7 @@ gcc_target_rpath
 
 generate_fuzzer_owners
     Current value (from the default) = false
-      From //build/config/sanitizers/sanitizers.gni:214
+      From //build/config/sanitizers/sanitizers.gni:215
 
     Generates an owners file for each fuzzer test.
     TODO(crbug.com/1194183): Remove this arg when finding OWNERS is faster.
@@ -2797,7 +2823,7 @@ generate_linker_map
 
 glue_core_pools
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:90
+      From //base/allocator/partition_allocator/partition_alloc.gni:107
 
     Puts the regular and BRP pools right next to each other, so that we can
     check "belongs to one of the two pools" with a single bitmask operation.
@@ -2850,7 +2876,7 @@ grpc_use_static_linking
 
 gtest_enable_absl_printers
     Current value (from the default) = true
-      From //build_overrides/build.gni:53
+      From //build_overrides/build.gni:54
 
     Allows googletest to pretty-print various absl types.  Disabled for nacl due
     to lack of toolchain support.
@@ -3008,7 +3034,7 @@ include_ash_ambient_animation_resources
 
 include_branded_entitlements
     Current value (from the default) = true
-      From //chrome/BUILD.gn:67
+      From //chrome/BUILD.gn:64
 
     On macOS, `is_chrome_branded` builds that have been signed locally will not
     launch because certain entitlements are tied to the official Google code
@@ -3026,12 +3052,6 @@ include_transport_security_state_preload_list
     willing to take the responsibility to make sure that all important
     connections use HTTPS.
 
-include_vr_data
-    Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:42
-
-    Whether to include VR extras like test APKs in non-VR-specific targets
-
 incremental_install
     Current value (from the default) = false
       From //build/config/android/config.gni:12
@@ -3041,7 +3061,7 @@ incremental_install
 
 init_stack_vars
     Current value (from the default) = true
-      From //build/config/compiler/BUILD.gn:149
+      From //build/config/compiler/BUILD.gn:151
 
     Initialize all local variables with a pattern. This flag will fill
     uninitialized floating-point types (and 32-bit pointers) with 0xFF and the
@@ -3049,12 +3069,14 @@ init_stack_vars
     recognizable in the debugger, and crashes on memory accesses through
     uninitialized pointers.
    
+    Flag discussion: https://crbug.com/977230
+   
     TODO(crbug.com/1131993): This regresses binary size by ~1MB on Android and
     needs to be evaluated before enabling it there as well.
 
 init_stack_vars_zero
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:153
+      From //build/config/compiler/BUILD.gn:155
 
     Zero init has favorable performance/size tradeoffs for Chrome OS
     but was not evaluated for other platforms.
@@ -3069,10 +3091,6 @@ internal_khronos_glcts_tests
     Current value (from the default) = false
       From //gpu/khronos_glcts_support/BUILD.gn:8
 
-invert_fieldtrials
-    Current value (from the default) = false
-      From //components/variations/field_trial_config/BUILD.gn:8
-
 ios_deployment_target
     Current value (from the default) = "15.0"
       From //build/config/ios/ios_sdk_overrides.gni:10
@@ -3081,7 +3099,7 @@ ios_deployment_target
 
 ios_stack_profiler_enabled
     Current value (from the default) = true
-      From //base/BUILD.gn:72
+      From //base/BUILD.gn:73
 
     Control whether the ios stack sampling profiler is enabled. This flag is
     only supported on iOS 64-bit architecture, but some project build //base
@@ -3095,22 +3113,22 @@ is_asan
 
 is_cast_android
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:34
+      From //build/config/cast.gni:32
 
     Set this to true to build for Android-based Cast devices.
     Set this to false to use the defaults for Android.
 
 is_cast_audio_only
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:14
+      From //build/config/cast.gni:12
 
     Set this true for an audio-only Chromecast build.
-    TODO(crbug.com/1293538): Replace with a buildflag for speaker-only builds not
-    specific to Cast.
+    TODO(https://crbug.com/1516671): Remove this arg as CastOS builds are no
+    longer supported.
 
 is_castos
     Current value (from the default) = false
-      From //build/config/chromecast_build.gni:30
+      From //build/config/cast.gni:28
 
     Set this to true to build for Nest hardware running Linux (aka "CastOS").
     Set this to false to use the defaults for Linux.
@@ -3241,10 +3259,19 @@ is_ggp
 
 is_high_end_android
     Current value (from the default) = false
-      From //build/config/chrome_build.gni:25
+      From //build/config/chrome_build.gni:27
 
     Set to true to enable settings for high end Android devices, typically
     enhancing speed at the expense of resources such as binary sizes and memory.
+    Non-official builds should ignore this argument so that arm64 builders
+    remain fast and independent from PGO without having to set the value to false.
+
+is_high_end_android_secondary_toolchain
+    Current value (from the default) = false
+      From //build/config/chrome_build.gni:44
+
+    Whether to apply size->speed trade-offs to the secondary toolchain.
+    Relevant only for 64-bit target_cpu.
 
 is_hwasan
     Current value (from the default) = false
@@ -3385,7 +3412,7 @@ is_ubsan_vptr
 
 is_unsafe_developer_build
     Current value (from the default) = true
-      From //base/BUILD.gn:59
+      From //base/BUILD.gn:60
 
     Unsafe developer build. Has developer-friendly features that may weaken or
     disable security measures like sandboxing or ASLR.
@@ -3434,7 +3461,7 @@ libcxx_natvis_include
     http://crbug.com/966687.
 
 libcxx_revision
-    Current value (from the default) = "a12821e5f87e0054c1885dc8982cbe53f2c24899"
+    Current value (from the default) = "28aa23ffb4c7344914a5b4ac7169f12e5a12333f"
       From //buildtools/deps_revisions.gni:8
 
     Used to cause full rebuilds on libc++ rolls. This should be kept in sync
@@ -3480,7 +3507,7 @@ libyuv_use_neon
 
 limit_android_deps
     Current value (from the default) = false
-      From //build_overrides/build.gni:49
+      From //build_overrides/build.gni:50
 
     Limits the defined //third_party/android_deps targets to only "buildCompile"
     and "buildCompileNoDeps" targets. This is useful for third-party
@@ -3490,7 +3517,7 @@ limit_android_deps
 
 link_pulseaudio
     Current value (from the default) = false
-      From //media/media_options.gni:43
+      From //media/media_options.gni:42
 
     Allows distributions to link pulseaudio directly (DT_NEEDED) instead of
     using dlopen. This helps with automated detection of ABI mismatches and
@@ -3502,12 +3529,6 @@ lld_emit_indexes_and_imports
 
     Set to true to enable output of ThinLTO index and import files used for
     creating a Chromium MLGO corpus in the ThinLTO case.
-
-lld_path
-    Current value (from the default) = "../../third_party/llvm-build/Release+Asserts/bin"
-      From //build/config/compiler/BUILD.gn:52
-
-    This allows overriding the location of lld.
 
 llvm_android_mainline
     Current value (from the default) = false
@@ -3534,14 +3555,14 @@ mac_sdk_min
 
 mbi_mode
     Current value (from the default) = true
-      From //content/common/features.gni:19
+      From //content/common/features.gni:20
 
     Whether or not MBI mode (Multiple Blink Isolates) should be enabled,
     depending on the build argument.
 
 media_use_ffmpeg
     Current value (from the default) = true
-      From //media/media_options.gni:48
+      From //media/media_options.gni:47
 
     Enable usage of FFmpeg within the media library. Used for most software
     based decoding, demuxing, and sometimes optimized FFTs. If disabled,
@@ -3549,14 +3570,14 @@ media_use_ffmpeg
 
 media_use_libvpx
     Current value (from the default) = true
-      From //media/media_options.gni:52
+      From //media/media_options.gni:51
 
     Enable usage of libvpx within the media library. Used for software based
     decoding of VP9 and VP8A type content.
 
 media_use_openh264
     Current value (from the default) = false
-      From //media/media_options.gni:64
+      From //media/media_options.gni:63
 
 mediapipe_build_with_gpu_support
     Current value (from the default) = false
@@ -3570,7 +3591,7 @@ mips_use_mmi
 
 mojo_media_host
     Current value (from the default) = "gpu"
-      From //media/media_options.gni:323
+      From //media/media_options.gni:326
 
     The process that the mojo MediaService runs in. By default, all services
     registered in |mojo_media_services| are hosted in the MediaService, with the
@@ -3585,7 +3606,7 @@ mojo_media_host
 
 mojo_media_services
     Current value (from the default) = ["video_decoder", "cdm"]
-      From //media/media_options.gni:311
+      From //media/media_options.gni:314
 
     A list of mojo media services that should be used in the media pipeline.
     Valid entries in the list are:
@@ -3600,13 +3621,6 @@ mojo_use_apple_channel
     Current value (from the default) = false
       From //mojo/features.gni:8
 
-mojom_message_id_salt_path
-    Current value (from the default) = "//chrome/VERSION"
-      From //mojo/public/tools/bindings/mojom.gni:135
-
-    The path to a file whose contents can be used as the basis for a message
-    ID scrambling salt.
-
 monolithic_binaries
     Current value (from the default) = false
       From //third_party/perfetto/gn/perfetto.gni:214
@@ -3615,7 +3629,7 @@ monolithic_binaries
     are monolithic and don't use a common shared library. This is mainly to
     avoid LD_LIBRARY_PATH dances when testing locally.
     On Windows we default to monolithic executables, because pairing
-    dllexport/import adds extra complexity for little benefit. Te only reason
+    dllexport/import adds extra complexity for little benefit. The only reason
     for monolithic_binaries=false is saving binary size, which matters mainly on
     Android. See also comments on PERFETTO_EXPORT_ENTRYPOINT in compiler.h.
 
@@ -3629,16 +3643,9 @@ msan_track_origins
 
 msvc_use_sse2
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:77
+      From //third_party/pdfium/pdfium.gni:84
 
     Enable SSE2 for MSVC builds. Ignored if it's not a MSVC build.
-
-nacl_sdk_untrusted
-    Current value (from the default) = false
-      From //native_client_sdk/src/BUILD.gn:14
-
-    Build the nacl SDK untrusted components.  This is disabled by default since
-    not all NaCl untrusted compilers are in goma (e.g arm-nacl-glibc)
 
 ndk_api_level_at_least_26
     Current value (from the default) = false
@@ -3733,7 +3740,7 @@ ozone_platform_x11
 
 partition_alloc_optimized_debug
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:64
+      From //base/allocator/partition_allocator/partition_alloc.gni:81
 
     Turns on compiler optimizations in PartitionAlloc in Debug build.
     If enabling PartitionAlloc-Everywhere in Debug build for tests in Debug
@@ -3746,7 +3753,7 @@ partition_alloc_optimized_debug
 
 pdf_bundle_freetype
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:16
+      From //third_party/pdfium/pdfium.gni:17
 
     Build PDFium either:
     1) When set to true, with a bundled FreeType, built from FreeType source
@@ -3757,62 +3764,71 @@ pdf_bundle_freetype
 
 pdf_enable_click_logging
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:19
+      From //third_party/pdfium/pdfium.gni:20
 
     Generate logging messages for click events that reach PDFium
 
+pdf_enable_fontations
+    Current value (from the default) = false
+      From //third_party/pdfium/pdfium.gni:56
+
+    Build PDFium with experimental Fontations library support.
+    If enabled, coexists in build with FreeType library and the default font
+    library is selectable at runtime.
+    Note that Fontations requires Skia and Rust support.
+
 pdf_enable_v8
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:22
+      From //third_party/pdfium/pdfium.gni:23
 
     Build PDFium either with or without v8 support.
 
 pdf_enable_xfa
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:25
+      From //third_party/pdfium/pdfium.gni:26
 
     Build PDFium either with or without XFA Forms support.
 
 pdf_enable_xfa_bmp
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:28
+      From //third_party/pdfium/pdfium.gni:29
 
     If XFA, also support bmp codec. Ignored if not XFA.
 
 pdf_enable_xfa_gif
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:31
+      From //third_party/pdfium/pdfium.gni:32
 
     If XFA, also support gif codec. Ignored if not XFA.
 
 pdf_enable_xfa_png
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:34
+      From //third_party/pdfium/pdfium.gni:35
 
     If XFA, also support png codec. Ignored if not XFA.
 
 pdf_enable_xfa_tiff
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:37
+      From //third_party/pdfium/pdfium.gni:38
 
     If XFA, also support tiff codec. Ignored if not XFA.
 
 pdf_is_complete_lib
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:56
+      From //third_party/pdfium/pdfium.gni:63
 
     Build a complete static library
 
 pdf_is_standalone
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:53
+      From //third_party/pdfium/pdfium.gni:60
 
     Build PDFium standalone. Now only controls whether the test binaries
     are built. Most logic is conditioned by build_with_chromium.
 
 pdf_use_partition_alloc
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:44
+      From //third_party/pdfium/pdfium.gni:45
 
     Build PDFium against PartitionAlloc. When false, PDFium must build without
     requiring any PartitionAlloc headers or code to be present. When true,
@@ -3822,7 +3838,7 @@ pdf_use_partition_alloc
 
 pdf_use_skia
     Current value (from the default) = true
-      From //third_party/pdfium/pdfium.gni:49
+      From //third_party/pdfium/pdfium.gni:50
 
     Build PDFium to use Skia (experimental) for all PDFium graphics.
     If enabled, coexists in build with AGG graphics and the default
@@ -3864,7 +3880,7 @@ perfetto_force_dlog
 
 perfetto_use_pkgconfig
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:346
+      From //third_party/perfetto/gn/perfetto.gni:349
 
     Used by CrOS builds. Uses pkg-config to determine the appropriate flags
     for including and linking system libraries.
@@ -3874,21 +3890,21 @@ perfetto_use_pkgconfig
 
 perfetto_use_system_protobuf
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:350
+      From //third_party/perfetto/gn/perfetto.gni:353
 
     Used by CrOS system builds. Uses the system version of protobuf
     from /usr/include instead of the hermetic one.
 
 perfetto_use_system_sqlite
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:354
+      From //third_party/perfetto/gn/perfetto.gni:357
 
     Used by CrOS system builds. Uses the system version of sqlite
     from /usr/include instead of the hermetic one.
 
 perfetto_use_system_zlib
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:356
+      From //third_party/perfetto/gn/perfetto.gni:359
 
 perfetto_verbose_logs_enabled
     Current value (from the default) = false
@@ -3912,7 +3928,11 @@ pkg_config
 
 platform_has_optional_hevc_support
     Current value (from the default) = false
-      From //media/media_options.gni:147
+      From //media/media_options.gni:150
+
+plus_addresses_use_internal_android_resources
+    Current value (from the default) = false
+      From //components/plus_addresses/buildflags.gni:11
 
 print_unsymbolized_stack_traces
     Current value (from the default) = false
@@ -3945,21 +3965,17 @@ proprietary_codecs
     TODO(crbug.com/1314528): Remove chromecast-related conditions and force
     builds to explicitly specify this.
 
-put_ref_count_in_previous_slot
-    Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:163
-
 raw_ptr_zero_on_construct
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:353
+      From //base/allocator/partition_allocator/partition_alloc.gni:375
 
 raw_ptr_zero_on_destruct
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:355
+      From //base/allocator/partition_allocator/partition_alloc.gni:377
 
 raw_ptr_zero_on_move
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:354
+      From //base/allocator/partition_allocator/partition_alloc.gni:376
 
 rbe_bin_dir
     Current value (from the default) = "../../buildtools/reclient"
@@ -4027,7 +4043,7 @@ remoting_webrtc_verbose_logging
 
 removed_rust_stdlib_libs
     Current value (from the default) = []
-      From //build/config/rust.gni:64
+      From //build/config/rust.gni:86
 
     Any removed std rlibs in your Rust toolchain, relative to the standard
     Rust toolchain. Typically used with 'rust_sysroot_absolute'
@@ -4040,7 +4056,7 @@ restricted_traces_outside_of_apk
 
 root_extra_deps
     Current value (from the default) = []
-      From //BUILD.gn:61
+      From //BUILD.gn:64
 
     A list of extra dependencies to add to the root target. This allows a
     checkout to add additional targets without explicitly changing any checked-
@@ -4470,14 +4486,13 @@ rtc_win_undef_unicode
 
 runtime_call_stats_count_everything
     Current value (from the default) = false
-      From //third_party/blink/renderer/platform/BUILD.gn:224
+      From //third_party/blink/renderer/platform/BUILD.gn:225
 
 rust_sysroot_absolute
     Current value (from the default) = ""
-      From //build/config/rust.gni:46
+      From //build/config/rust.gni:57
 
-    Chromium provides a Rust toolchain in //third_party/rust-toolchain when
-    checkout_rust is True (which is being rolled out by default over time).
+    Chromium provides a Rust toolchain in //third_party/rust-toolchain.
    
     To use a custom toolchain instead, specify an absolute path to the root of
     a Rust sysroot, which will have a 'bin' directory and others. Commonly
@@ -4485,14 +4500,14 @@ rust_sysroot_absolute
 
 rust_toolchain_supports_nacl
     Current value (from the default) = false
-      From //build/config/rust.gni:56
+      From //build/config/rust.gni:67
 
     If you're using a Rust toolchain as specified by rust_sysroot_absolute,
     you can specify whether it supports nacl here.
 
 rustc_version
     Current value (from the default) = ""
-      From //build/config/rust.gni:52
+      From //build/config/rust.gni:63
 
     If you're using a Rust toolchain as specified by rust_sysroot_absolute,
     set this to the output of `rustc -V`. Changing this string will cause all
@@ -4527,25 +4542,25 @@ sanitizer_coverage_flags
 
 save_reproducers_on_lld_crash
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:186
+      From //build/config/compiler/BUILD.gn:188
 
     If true, linker crashes will be rerun with `--reproduce` which causes
     a reproducer file to be saved.
 
 seed_corpus_dir
-    Current value (from the default) = "//out/trunk/gen/components/viz/service/compositor_frame_fuzzer/binary_seed_corpus"
+    Current value (from the default) = "//out/test/gen/components/viz/service/compositor_frame_fuzzer/binary_seed_corpus"
       From //components/viz/service/compositor_frame_fuzzer/BUILD.gn:9
 
 show_includes
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:177
+      From //build/config/compiler/BUILD.gn:179
 
     Enable -H, which prints the include tree during compilation.
     For use by tools/clang/scripts/analyze_includes.py
 
 simple_template_names
     Current value (from the default) = true
-      From //build/config/compiler/BUILD.gn:205
+      From //build/config/compiler/BUILD.gn:207
 
     Use DWARF simple template names, with the following exceptions:
    
@@ -4567,22 +4582,23 @@ skia_enable_skshaper_tests
       From //third_party/skia/modules/skshaper/skshaper.gni:41
 
 skia_use_dawn
-    Current value (from the default) = false
-      From //skia/features.gni:11
+    Current value (from the default) = true
+      From //skia/features.gni:12
 
-    Enable experimental Skia Graphite Dawn backend. Currently enabled for Mac
-    and Windows only.
+    Enable experimental Skia Graphite Dawn backend. Enabled on platforms where
+    the team has verified that at least basic rendering to the screen is
+    working.
 
 skia_use_metal
     Current value (from the default) = false
-      From //skia/features.gni:15
+      From //skia/features.gni:18
 
     Enable experimental Skia Graphite Metal backend. Intended only for debugging
     on non-official developer builds.
 
 skip_buildtools_check
     Current value (from the default) = false
-      From //third_party/perfetto/gn/perfetto.gni:339
+      From //third_party/perfetto/gn/perfetto.gni:342
 
     Skip buildtools dependency checks (needed for ChromeOS).
 
@@ -4662,10 +4678,13 @@ sysroot
 
 system_headers_in_deps
     Current value (from the default) = false
-      From //build/toolchain/gcc_toolchain.gni:34
+      From //build/toolchain/gcc_toolchain.gni:38
 
     Use -MD instead of -MMD for compiler commands. This is useful for tracking
-    the comprehensive set of dependencies.
+    the comprehensive set of dependencies.  It's also required when building
+    without the sysroot so that updates to system header files trigger a
+    rebuild (when using the sysroot, the CR_SYSROOT_KEY define takes care of
+    this already).
 
 system_libdir
     Current value (from the default) = "lib"
@@ -4697,7 +4716,7 @@ target_environment
 
 target_is_ios_device
     Current value (from the default) = false
-      From //v8/gni/v8.gni:142
+      From //v8/gni/v8.gni:147
 
     iOS device does not support executable code pages. Not we
     use target_os == "ios" here because it isn't equivalent
@@ -4709,7 +4728,7 @@ target_os
 
 target_rpath
     Current value (from the default) = ""
-      From //build/config/chromecast_build.gni:18
+      From //build/config/cast.gni:16
 
     If non empty, rpath of executables is set to this.
     If empty, default value is used.
@@ -4750,43 +4769,47 @@ thin_lto_enable_optimizations
 
 tint_build_benchmarks
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:128
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:134
 
 tint_build_cmds
     Current value (from the default) = false
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:73
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:74
 
 tint_build_glsl_validator
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:113
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:114
 
 tint_build_glsl_writer
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:108
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:109
 
 tint_build_hlsl_writer
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:103
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:104
+
+tint_build_ir_binary
+    Current value (from the default) = true
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:124
 
 tint_build_msl_writer
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:98
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:99
 
 tint_build_syntax_tree_writer
     Current value (from the default) = false
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:118
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:119
 
 tint_build_unittests
     Current value (from the default) = true
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:123
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:129
 
 tint_glslang_dir
     Current value (from the default) = "//third_party/vulkan-deps/glslang/src"
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:59
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:60
 
 tint_src_dir
     Current value (from the default) = "//third_party/dawn/src/tint"
-      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:135
+      From //third_party/dawn/scripts/tint_overrides_with_defaults.gni:141
 
 toolchain_for_rust_host_build_tools
     Current value (from the default) = false
@@ -4795,6 +4818,20 @@ toolchain_for_rust_host_build_tools
     Whether this toolchain is to be used for building host tools that are
     consumed during the build process. That includes proc macros and Cargo build
     scripts.
+
+toolchain_supports_rust_thin_lto
+    Current value (from the default) = true
+      From //build/config/rust.gni:78
+
+    Whether artifacts produced by the Rust compiler can participate in ThinLTO.
+   
+    One important consideration is whether the linker uses the same LLVM
+    version as `rustc` (i.e. if it can understand the LLVM-IR from the
+    compilation artifacts produced by `rustc`).  In LaCrOS and ash builds this
+    may not be true - see b/299483903.
+   
+    TODO(https://crbug.com/1482525): Re-enable ThinLTO for Rust on LaCrOS
+    TODO(b/300937673): Re-enable ThinLTO for Rust on ash-chrome
 
 toolkit_views
     Current value (from the default) = true
@@ -4819,7 +4856,7 @@ use_afl
 
 use_allocator_shim
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:31
+      From //base/allocator/partition_allocator/partition_alloc.gni:39
 
     Causes all the allocations to be routed via allocator_shim.cc. Usually,
     the allocator shim will, in turn, route them to Partition Alloc, but
@@ -4827,7 +4864,7 @@ use_allocator_shim
 
 use_alsa
     Current value (from the default) = true
-      From //media/media_options.gni:198
+      From //media/media_options.gni:201
 
 use_amdgpu_minigbm
     Current value (from the default) = false
@@ -4841,18 +4878,18 @@ use_android_unwinder_v2
 
 use_arc_protected_media
     Current value (from the default) = false
-      From //media/gpu/args.gni:39
+      From //media/gpu/args.gni:34
 
     Indicates if the ChromeOS protected media functionality should also be
     utilized by HW video decoding for ARC.
 
 use_asan_backup_ref_ptr
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:141
+      From //base/allocator/partition_allocator/partition_alloc.gni:163
 
 use_asan_unowned_ptr
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:145
+      From //base/allocator/partition_allocator/partition_alloc.gni:167
 
     Use probe-on-destruct unowned ptr detection with ASAN.
 
@@ -4862,6 +4899,12 @@ use_aura
 
     Indicates if Aura is enabled. Aura is a low-level windowing library, sort
     of a replacement for GDI or GTK.
+
+use_av1_hw_decoder
+    Current value (from the default) = true
+      From //media/gpu/args.gni:42
+
+    A platform that is capable of hardware av1 decoding.
 
 use_base_test_suite
     Current value (from the default) = true
@@ -4875,7 +4918,7 @@ use_blink
 
 use_blink_extensions_chromeos
     Current value (from the default) = false
-      From //third_party/blink/renderer/config.gni:49
+      From //third_party/blink/renderer/config.gni:46
 
     If true, the experimental renderer extensions library will be used.
 
@@ -4927,7 +4970,7 @@ use_cfi_recover
 
 use_chromeos_protected_av1
     Current value (from the default) = false
-      From //media/gpu/args.gni:44
+      From //media/gpu/args.gni:39
 
     Indicates if ChromeOS protected media supports the AV1 codec. By default
     H.264, VP9 and HEVC are enabled if protected media is enabled; AV1 is
@@ -4935,7 +4978,7 @@ use_chromeos_protected_av1
 
 use_chromeos_protected_media
     Current value (from the default) = false
-      From //media/gpu/args.gni:35
+      From //media/gpu/args.gni:30
 
     Indicates if ChromeOS protected media support exists. This is used
     to enable the CDM daemon in Chrome OS as well as support for
@@ -4952,15 +4995,15 @@ use_clang_profiling
 
 use_clang_profiling_inside_sandbox
     Current value (from the default) = false
-      From //build/config/sanitizers/sanitizers.gni:228
+      From //build/config/sanitizers/sanitizers.gni:229
 
 use_command_buffer
     Current value (from the default) = false
-      From //device/vr/buildflags/buildflags.gni:25
+      From //device/vr/buildflags/buildflags.gni:23
 
 use_cras
     Current value (from the default) = false
-      From //media/media_options.gni:68
+      From //media/media_options.gni:67
 
     Override to dynamically link the cras (ChromeOS audio) library.
 
@@ -4972,7 +5015,7 @@ use_crash_key_stubs
 
 use_cups
     Current value (from the default) = true
-      From //printing/buildflags/buildflags.gni:39
+      From //printing/buildflags/buildflags.gni:40
 
 use_cups_ipp
     Current value (from the default) = false
@@ -5011,7 +5054,7 @@ use_custom_libunwind
 
 use_cxx17
     Current value (from the default) = false
-      From //build_overrides/build.gni:57
+      From //build_overrides/build.gni:58
 
     Allow projects that wish to stay on C++17 to override Chromium's default.
     TODO(crbug.com/1402249): evaluate removing this end of 2023
@@ -5043,12 +5086,12 @@ use_debug_fission
     been set, e.g. by a toolchain_args() block.
 
 use_dummy_lastchange
-    Current value (from the default) = false
+    Current value (from the default) = true
       From //build/util/lastchange.gni:9
 
 use_dwarf5
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:165
+      From //build/config/compiler/BUILD.gn:167
 
     Enable DWARF v5.
 
@@ -5070,7 +5113,7 @@ use_external_fuzzing_engine
 
 use_external_popup_menu
     Current value (from the default) = false
-      From //content/common/features.gni:10
+      From //content/common/features.gni:11
 
     Whether or not to use external popup menu.
 
@@ -5080,11 +5123,11 @@ use_exynos_minigbm
 
 use_freeslot_bitmap
     Current value (from the default) = false
-      From //base/allocator/partition_allocator/partition_alloc.gni:86
+      From //base/allocator/partition_allocator/partition_alloc.gni:103
 
 use_full_pdb_paths
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:173
+      From //build/config/compiler/BUILD.gn:175
 
     Override this to put full paths to PDBs in Windows PE files. This helps
     windbg and Windows Performance Analyzer with finding the PDBs in some local-
@@ -5129,7 +5172,7 @@ use_goma
 
 use_goma_rust
     Current value (from the default) = false
-      From //build/config/rust.gni:73
+      From //build/config/rust.gni:95
 
     Use goma for Rust builds. Experimental. The only known problem is
     b/193072381, but then again, we don't expect a build speedup before much
@@ -5155,7 +5198,7 @@ use_hashed_jni_names
 
 use_icf
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:218
+      From //build/config/compiler/BUILD.gn:220
 
     Set to true to use icf, Identical Code Folding.
    
@@ -5166,13 +5209,6 @@ use_icf
     other architectures.
    
     lld doesn't have the bug.
-
-use_inner_html_parser_fast_path
-    Current value (from the default) = true
-      From //third_party/blink/renderer/config.gni:53
-
-    TODO(https://crbug.com/1407201): temporarily disabled on platforms that
-    are concerned about binary size. Figure out way to use everywhere.
 
 use_intel_minigbm
     Current value (from the default) = false
@@ -5189,7 +5225,7 @@ use_internal_autofill_patterns
 
 use_internal_isolated_origins
     Current value (from the default) = false
-      From //components/site_isolation/BUILD.gn:18
+      From //components/site_isolation/BUILD.gn:21
 
     Normally, only Google Chrome Android and some Fuchsia WebEngine builds will
     use a Google-internal list of isolated origins defined below.
@@ -5242,7 +5278,7 @@ use_libfuzzer
 
 use_libgav1_parser
     Current value (from the default) = true
-      From //third_party/libgav1/options.gni:10
+      From //third_party/libgav1/options.gni:9
 
 use_libinput
     Current value (from the default) = false
@@ -5332,7 +5368,7 @@ use_nss_certs
 
 use_official_enterprise_connectors_api_keys
     Current value (from the default) = false
-      From //chrome/browser/BUILD.gn:70
+      From //chrome/browser/BUILD.gn:71
 
     You can set the variable 'use_official_enterprise_connectors_api_keys' to
     true to use the Google-internal file containing official API keys
@@ -5377,7 +5413,7 @@ use_pangocairo
 
 use_partition_alloc
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:52
+      From //base/allocator/partition_allocator/partition_alloc.gni:58
 
     Whether PartitionAlloc should be available for use or not.
     true makes PartitionAlloc linked to the executable or shared library and
@@ -5399,7 +5435,7 @@ use_partition_alloc
 
 use_partition_alloc_as_malloc
     Current value (from the default) = true
-      From //base/allocator/partition_allocator/partition_alloc.gni:68
+      From //base/allocator/partition_allocator/partition_alloc.gni:85
 
     PartitionAlloc-Everywhere (PA-E). Causes allocator_shim.cc to route
     calls to PartitionAlloc, rather than some other platform allocator.
@@ -5410,7 +5446,7 @@ use_perfetto_client_library
 
 use_perfetto_trace_processor
     Current value (from the default) = true
-      From //build_overrides/build.gni:64
+      From //build_overrides/build.gni:65
 
     Use Perfetto's trace processor for converting protobuf-encoded traces to
     the legacy JSON format in base::TraceLog.
@@ -5424,7 +5460,7 @@ use_platform_icu_alternatives
 
 use_profi
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:182
+      From //build/config/compiler/BUILD.gn:184
 
     Enable Profi algorithm. Profi can infer block and edge counts.
     https://clang.llvm.org/docs/UsersManual.html#using-sampling-profilers
@@ -5432,7 +5468,7 @@ use_profi
 
 use_pulseaudio
     Current value (from the default) = true
-      From //media/media_options.gni:209
+      From //media/media_options.gni:212
 
 use_qt
     Current value (from the default) = true
@@ -5487,27 +5523,6 @@ use_rtti
     but some sanitizers are known to require it, like CFI diagnostics
     and UBsan variants.
 
-use_runtime_vlog
-    Current value (from the default) = true
-      From //build/config/logging.gni:31
-
-    Use runtime vlog everywhere except for ash-chrome.
-    When `use_runtime_vlog` is true,
-      command line switch `--vmodule=xxx` or `--v=x` could be used to
-      control vlog level at runtime.
-    when `use_runtime_volog` is false,
-      verbose log level is controlled by `ENABLE_VLOG_LEVEL` macro. VLOG(n)
-      is kept and generate output if `n` is less than or equal to the vlog
-      level defined by the macro.
-      Command line switch `--vmodule=xxx`, or `--v=x` would have no effect.
-   
-    Runtime vlog is used everywhere except on ash-chrome.
-    Ash-chrome has a few vmodule patterns that need to be used indefinitely
-    to investigate problems from logs in feedback reports. These vmodule
-    patterns are using too much cpu cycles (see http://crbug/489441). Turning
-    off runtime vlog and using build time vlog would avoid paying that cpu tax
-    and have a nice side effect of a smaller production binary.
-
 use_sanitizer_configs_without_instrumentation
     Current value (from the default) = false
       From //build/config/sanitizers/sanitizers.gni:102
@@ -5518,7 +5533,7 @@ use_sanitizer_configs_without_instrumentation
 
 use_sanitizer_coverage
     Current value (from the default) = false
-      From //build/config/sanitizers/sanitizers.gni:217
+      From //build/config/sanitizers/sanitizers.gni:218
 
 use_siso
     Current value (from the default) = false
@@ -5572,7 +5587,7 @@ use_system_harfbuzz
 
 use_system_lcms2
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:62
+      From //third_party/pdfium/pdfium.gni:69
 
     Don't build against bundled lcms2.
 
@@ -5602,13 +5617,13 @@ use_system_libjpeg
 
 use_system_libopenjpeg2
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:65
+      From //third_party/pdfium/pdfium.gni:72
 
     Don't build against bundled libopenjpeg2.
 
 use_system_libpng
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:68
+      From //third_party/pdfium/pdfium.gni:75
 
     Don't build against bundled libpng.
 
@@ -5623,7 +5638,7 @@ use_system_libsync
 
 use_system_libtiff
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:71
+      From //third_party/pdfium/pdfium.gni:78
 
     Don't build against bundled libtiff.
 
@@ -5637,7 +5652,7 @@ use_system_minigbm
 
 use_system_zlib
     Current value (from the default) = false
-      From //third_party/pdfium/pdfium.gni:74
+      From //third_party/pdfium/pdfium.gni:81
 
     Don't build against bundled zlib.
 
@@ -5647,7 +5662,7 @@ use_tegra_minigbm
 
 use_text_section_splitting
     Current value (from the default) = false
-      From //build/config/compiler/BUILD.gn:162
+      From //build/config/compiler/BUILD.gn:164
 
     This argument is to control whether enabling text section splitting in the
     final binary. When enabled, the separated text sections with prefix
@@ -5663,7 +5678,7 @@ use_thin_lto
 
 use_typeface_fontations
     Current value (from the default) = true
-      From //build/config/rust.gni:108
+      From //build/config/rust.gni:127
 
     Enable experimental Fontations Rust font stack.
 
@@ -5675,15 +5690,15 @@ use_udev
 
 use_unofficial_version_number
     Current value (from the default) = true
-      From //components/version_info/BUILD.gn:10
+      From //base/version_info/use_unofficial_version_number.gni:8
 
 use_v4l2_codec
     Current value (from the default) = false
-      From //media/gpu/args.gni:22
+      From //media/gpu/args.gni:15
 
 use_v4lplugin
     Current value (from the default) = false
-      From //media/gpu/args.gni:17
+      From //media/gpu/args.gni:10
 
     Indicates if V4L plugin is used.
 
@@ -5693,26 +5708,19 @@ use_v8_context_snapshot
 
 use_vaapi
     Current value (from the default) = true
-      From //media/gpu/args.gni:28
+      From //media/gpu/args.gni:21
 
     Indicates if VA-API-based hardware acceleration is to be used. This
     is typically the case on x86-based ChromeOS devices.
-    VA-API should also be compiled by default on x11-using linux devices
+    VA-API should also be compiled by default on x11/wayland linux devices
     using x86/x64.
 
 use_vaapi_image_codecs
     Current value (from the default) = false
-      From //media/gpu/args.gni:64
+      From //media/gpu/args.gni:62
 
     VA-API also allows decoding of images, but we don't want to use this
     outside of chromeos, even if video decoding is enabled.
-
-use_vaapi_x11
-    Current value (from the default) = true
-      From //media/gpu/args.gni:11
-
-    Indicates if X11 VA-API-based hardware acceleration is to be used.
-    See also the comment near the |use_vaapi| arg.
 
 use_vc4_minigbm
     Current value (from the default) = false
@@ -5733,12 +5741,6 @@ use_wayland_gbm
 
     Checks if Wayland must be compiled with dmabuf/gbm feature, which allows a
     multi-process hardware accelerated mode.
-
-use_webaudio_ffmpeg
-    Current value (from the default) = false
-      From //third_party/blink/renderer/config.gni:46
-
-    If true, ffmpeg will be used for computing FFTs for WebAudio
 
 use_webaudio_pffft
     Current value (from the default) = true
@@ -5767,14 +5769,14 @@ using_mismatched_sample_profile
 
 v8_advanced_bigint_algorithms
     Current value (from the default) = true
-      From //v8/gni/v8.gni:134
+      From //v8/gni/v8.gni:139
 
     Enable advanced BigInt algorithms, costing about 10-30 KB binary size
     depending on platform. Disabled on Android to save binary size.
 
 v8_allocation_site_tracking
     Current value (from the default) = true
-      From //v8/BUILD.gn:377
+      From //v8/BUILD.gn:382
 
     Enable global allocation site tracking.
 
@@ -5901,7 +5903,7 @@ v8_enable_31bit_smis_on_64bit_arch
 
 v8_enable_allocation_folding
     Current value (from the default) = true
-      From //v8/BUILD.gn:371
+      From //v8/BUILD.gn:376
 
     Enable allocation folding globally (sets -dV8_ALLOCATION_FOLDING).
     When it's disabled, the --turbo-allocation-folding runtime flag will be ignored.
@@ -5921,7 +5923,7 @@ v8_enable_backtrace
 
 v8_enable_builtin_jump_table_switch
     Current value (from the default) = true
-      From //v8/BUILD.gn:417
+      From //v8/BUILD.gn:422
 
     Enable jump table switch for built-in.
 
@@ -5949,15 +5951,21 @@ v8_enable_builtins_profiling_verbose
     used builtins.
 
 v8_enable_builtins_reordering
-    Current value (from the default) = false
+    Current value (from the default) = true
       From //v8/BUILD.gn:199
 
     This build flag is used to control whether reorder builtins acoording to
     the call graph with C3 algorithm based builtin PGO profiling.
 
+v8_enable_cet_ibt
+    Current value (from the default) = false
+      From //v8/gni/v8.gni:160
+
+    Emit CET IBT landing pad instructions in JIT generated code (experimental).
+
 v8_enable_cet_shadow_stack
     Current value (from the default) = false
-      From //v8/gni/v8.gni:152
+      From //v8/gni/v8.gni:157
 
     Change code emission and runtime features to be CET shadow-stack compliant
     (incomplete and experimental).
@@ -5971,9 +5979,17 @@ v8_enable_concurrent_marking
 
 v8_enable_conservative_stack_scanning
     Current value (from the default) = false
-      From //v8/gni/v8.gni:95
+      From //v8/gni/v8.gni:100
 
     Scan the call stack conservatively during garbage collection.
+
+v8_enable_continuation_preserved_embedder_data
+    Current value (from the default) = true
+      From //v8/BUILD.gn:372
+
+    Allow embedder data to be saved on continuations. Used to support
+    TaskAttribution and `scheduler.yield()`.
+    The flag enables disabling the feature, to test this data's overhead.
 
 v8_enable_debug_code
     Current value (from the default) = ""
@@ -5992,13 +6008,13 @@ v8_enable_debugging_features
 
 v8_enable_direct_handle
     Current value (from the default) = ""
-      From //v8/gni/v8.gni:98
+      From //v8/gni/v8.gni:103
 
     Use direct pointers in internal (direct) handles.
 
 v8_enable_direct_local
     Current value (from the default) = false
-      From //v8/gni/v8.gni:101
+      From //v8/gni/v8.gni:106
 
     Use direct pointers in local handles.
 
@@ -6016,7 +6032,7 @@ v8_enable_etw_stack_walking
 
 v8_enable_extensible_ro_snapshot
     Current value (from the default) = true
-      From //v8/BUILD.gn:423
+      From //v8/BUILD.gn:428
 
     Whether custom embedder snapshots may extend (= allocate new objects in)
     ReadOnlySpace.
@@ -6055,7 +6071,7 @@ v8_enable_gdbjit
 
 v8_enable_google_benchmark
     Current value (from the default) = false
-      From //v8/gni/v8.gni:106
+      From //v8/gni/v8.gni:111
 
 v8_enable_handle_zapping
     Current value (from the default) = true
@@ -6065,7 +6081,7 @@ v8_enable_handle_zapping
 
 v8_enable_heap_snapshot_verify
     Current value (from the default) = ""
-      From //v8/BUILD.gn:374
+      From //v8/BUILD.gn:379
 
     Enable runtime verification of heap snapshots produced for devtools.
 
@@ -6108,7 +6124,7 @@ v8_enable_lazy_source_positions
 
 v8_enable_lite_mode
     Current value (from the default) = false
-      From //v8/gni/v8.gni:66
+      From //v8/gni/v8.gni:70
 
     Lite mode disables a number of performance optimizations to reduce memory
     at the cost of performance.
@@ -6116,20 +6132,20 @@ v8_enable_lite_mode
 
 v8_enable_local_off_stack_check
     Current value (from the default) = false
-      From //v8/gni/v8.gni:104
+      From //v8/gni/v8.gni:109
 
     Check for off-stack allocated local handles.
 
 v8_enable_maglev
     Current value (from the default) = ""
-      From //v8/gni/v8.gni:74
+      From //v8/gni/v8.gni:78
 
     Enable the Maglev compiler.
     Sets -dV8_ENABLE_MAGLEV
 
 v8_enable_maglev_graph_printer
     Current value (from the default) = false
-      From //v8/BUILD.gn:410
+      From //v8/BUILD.gn:415
 
     Enable Maglev's graph printer.
     Sets -DV8_ENABLE_MAGLEV_GRAPH_PRINTER.
@@ -6154,7 +6170,7 @@ v8_enable_pointer_compression
 
 v8_enable_pointer_compression_8gb
     Current value (from the default) = ""
-      From //v8/BUILD.gn:387
+      From //v8/BUILD.gn:392
 
     Enables pointer compression for 8GB heaps.
     Sets -DV8_COMPRESS_POINTERS_8GB.
@@ -6193,11 +6209,7 @@ v8_enable_regexp_interpreter_threaded_dispatch
 
 v8_enable_runtime_call_stats
     Current value (from the default) = true
-      From //v8/gni/v8.gni:89
-
-    Enable runtime call stats.
-    TODO(liviurau): Remove old name after Chromium config update
-    https://crbug.com/1476977.
+      From //v8/gni/v8.gni:94
 
 v8_enable_sandbox
     Current value (from the default) = ""
@@ -6235,7 +6247,7 @@ v8_enable_slow_dchecks
 
 v8_enable_slow_tracing
     Current value (from the default) = true
-      From //v8/BUILD.gn:414
+      From //v8/BUILD.gn:419
 
     Enable slow tracing, e.g., tracing on every instruction or Turbofan node.
     Sets -DV8_ENABLE_SLOW_TRACING.
@@ -6262,7 +6274,7 @@ v8_enable_snapshot_native_code_counters
 
 v8_enable_sparkplug
     Current value (from the default) = ""
-      From //v8/BUILD.gn:406
+      From //v8/BUILD.gn:411
 
     Enable Sparkplug
     Sets -DV8_ENABLE_SPARKPLUG.
@@ -6333,7 +6345,7 @@ v8_enable_trace_unoptimized
 
 v8_enable_turbofan
     Current value (from the default) = ""
-      From //v8/gni/v8.gni:70
+      From //v8/gni/v8.gni:74
 
     Enable the Turbofan compiler.
     Sets -dV8_ENABLE_TURBOFAN.
@@ -6383,19 +6395,19 @@ v8_enable_vtunetracemark
 
 v8_enable_wasm_gdb_remote_debugging
     Current value (from the default) = false
-      From //v8/gni/v8.gni:61
+      From //v8/gni/v8.gni:65
 
     Enable WebAssembly debugging via GDB-remote protocol.
 
 v8_enable_wasm_simd256_revec
     Current value (from the default) = false
-      From //v8/gni/v8.gni:84
+      From //v8/gni/v8.gni:88
 
     Enable 256-bit long vector re-vectorization pass in WASM compilation pipeline.
 
 v8_enable_webassembly
     Current value (from the default) = ""
-      From //v8/gni/v8.gni:81
+      From //v8/gni/v8.gni:85
 
     Include support for WebAssembly. If disabled, the 'WebAssembly' global
     will not be available, and embedder APIs to generate WebAssembly modules
@@ -6424,15 +6436,22 @@ v8_expose_memory_corruption_api
     WARNING This will expose builtins that (by design) cause memory corruption.
     Sets -DV8_EXPOSE_MEMORY_CORRUPTION_API
 
+v8_expose_public_symbols
+    Current value (from the default) = ""
+      From //v8/gni/v8.gni:53
+
+    Expose public symbols for native modules of Node.js and Electron. Default
+    is false.
+
 v8_expose_symbols
     Current value (from the default) = false
-      From //v8/gni/v8.gni:52
+      From //v8/gni/v8.gni:56
 
-    Expose symbols for dynamic linking.
+    Deprecated for v8_expose_public_symbols.
 
 v8_fuzzilli
     Current value (from the default) = false
-      From //v8/gni/v8.gni:92
+      From //v8/gni/v8.gni:97
 
     Add fuzzilli fuzzer support.
 
@@ -6458,7 +6477,7 @@ v8_has_valgrind
 
 v8_icu_path
     Current value (from the default) = "//third_party/icu"
-      From //v8/gni/v8.gni:145
+      From //v8/gni/v8.gni:150
 
     Location of icu.
 
@@ -6476,7 +6495,7 @@ v8_is_on_release_branch
 
 v8_jitless
     Current value (from the default) = false
-      From //v8/BUILD.gn:402
+      From //v8/BUILD.gn:407
 
     Enable jitless mode, including compile-time optimizations. Note that even
     when this is set to 'false', one can run V8 in jitless mode at runtime by
@@ -6539,7 +6558,7 @@ v8_promise_internal_field_count
 
 v8_scriptormodule_legacy_lifetime
     Current value (from the default) = false
-      From //v8/BUILD.gn:383
+      From //v8/BUILD.gn:388
 
     TODO(cbruni, v8:12302): Remove once API is migrated
     Enable legacy mode for ScriptOrModule's lifetime. By default it's a
@@ -6548,7 +6567,7 @@ v8_scriptormodule_legacy_lifetime
 
 v8_shortcut_strings_in_minor_ms
     Current value (from the default) = false
-      From //v8/BUILD.gn:419
+      From //v8/BUILD.gn:424
 
 v8_snapshot_toolchain
     Current value (from the default) = ""
@@ -6566,7 +6585,7 @@ v8_static_library
 
 v8_symbol_level
     Current value (from the default) = 2
-      From //v8/gni/v8.gni:58
+      From //v8/gni/v8.gni:62
 
     Override global symbol level setting for v8.
 
@@ -6627,7 +6646,7 @@ v8_use_external_startup_data
 
 v8_use_libm_trig_functions
     Current value (from the default) = true
-      From //v8/gni/v8.gni:137
+      From //v8/gni/v8.gni:142
 
     TODO: macros for determining endian type are clang specific.
 
@@ -6639,7 +6658,7 @@ v8_use_mips_abi_hardfloat
 
 v8_use_perfetto
     Current value (from the default) = false
-      From //v8/gni/v8.gni:55
+      From //v8/gni/v8.gni:59
 
     Implement tracing using Perfetto (https://perfetto.dev).
 
@@ -6651,14 +6670,14 @@ v8_use_siphash
 
 v8_use_zlib
     Current value (from the default) = true
-      From //v8/BUILD.gn:391
+      From //v8/BUILD.gn:396
 
     Compile V8 using zlib as dependency.
     Sets -DV8_USE_ZLIB
 
 v8_value_deserializer_hard_fail
     Current value (from the default) = false
-      From //v8/BUILD.gn:394
+      From //v8/BUILD.gn:399
 
     Make ValueDeserializer crash if the data to deserialize is invalid.
 
@@ -6689,7 +6708,7 @@ v8_win64_unwinding_info
 
 v8_zlib_path
     Current value (from the default) = "//third_party/zlib"
-      From //v8/gni/v8.gni:148
+      From //v8/gni/v8.gni:153
 
     Location of zlib.
 
@@ -6715,7 +6734,7 @@ win_console_app
 
 zlib_symbols_visible
     Current value (from the default) = false
-      From //third_party/zlib/BUILD.gn:10
+      From //third_party/zlib/BUILD.gn:11
 
     Expose zlib's symbols, used by Node.js to provide zlib APIs for its native
     modules.
