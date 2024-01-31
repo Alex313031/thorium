@@ -27,6 +27,7 @@ rm -f ./API_KEYS.txt &&
 rm -f ../API_KEYS.txt &&
 
 wget --directory-prefix=../ https://raw.githubusercontent.com/cr-bucket/thor-bucket/main/API_KEYS.txt &&
+wget --directory-prefix=../other https://raw.githubusercontent.com/cr-bucket/thor-bucket/main/API_KEYS.txt &&
 
 printf "${GRE}Done.\n" &&
 printf "${YEL}- Use the three lines therein at the atop of your args.gn\n" &&
