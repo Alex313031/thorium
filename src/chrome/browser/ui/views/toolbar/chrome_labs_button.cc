@@ -35,7 +35,7 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
   SetProperty(views::kElementIdentifierKey, kToolbarChromeLabsButtonElementId);
   SetVectorIcons(features::IsChromeRefresh2023() ? kChromeLabsChromeRefreshIcon
                                                  : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kChromeLabsIcon
-                                                 : KChromeLabsThoriumIcon,
+                                                 : kChromeLabsThoriumIcon,
                  kChromeLabsTouchIcon);
   SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_CHROMELABS_BUTTON));

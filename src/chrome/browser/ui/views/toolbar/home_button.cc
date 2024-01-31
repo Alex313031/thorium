@@ -138,7 +138,7 @@ HomeButton::HomeButton(PressedCallback callback, PrefService* prefs)
   SetVectorIcons(features::IsChromeRefresh2023()
                      ? kNavigateHomeChromeRefreshIcon
                      : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kNavigateHomeIcon
-                     : KNavigateHomeThoriumIcon,
+                     : kNavigateHomeThoriumIcon,
                  kNavigateHomeTouchIcon);
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_HOME));
   SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_HOME));

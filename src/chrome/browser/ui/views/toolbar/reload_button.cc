@@ -41,7 +41,7 @@ ReloadButton::ReloadButton(CommandUpdater* command_updater)
       reload_icon_(features::IsChromeRefresh2023()
                        ? vector_icons::kReloadChromeRefreshIcon
                        : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? vector_icons::kReloadIcon
-                       : kReloadThoriumIcon),
+                       : vector_icons::kReloadThoriumIcon),
       reload_touch_icon_(kReloadTouchIcon),
       stop_icon_(features::IsChromeRefresh2023()
                      ? kNavigateStopChromeRefreshIcon
