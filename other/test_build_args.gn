@@ -4,6 +4,7 @@ google_default_client_secret = ""
 target_os = "linux"
 target_cpu = "x64"
 is_debug = false
+thin_lto_enable_cache = true
 disable_fieldtrial_testing_config = true
 enable_reporting = false
 is_component_build = true

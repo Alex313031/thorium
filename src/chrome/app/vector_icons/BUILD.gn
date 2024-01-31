@@ -292,7 +292,9 @@ aggregate_vector_icons("chrome_vector_icons") {
       "thorium/chrome_labs_thorium.icon",
       "thorium/navigate_home_thorium.icon",
       "thorium/side_panel_left_thorium.icon",
+      "thorium/side_panel_left_touch_thorium.icon",
       "thorium/side_panel_thorium.icon",
+      "thorium/side_panel_touch_thorium.icon",
     ]
   }
 

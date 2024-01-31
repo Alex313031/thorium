@@ -8,6 +8,7 @@ use_system_xcode = true
 is_official_build = true
 is_debug = false
 enable_stripping = true
+thin_lto_enable_cache = false
 dcheck_always_on = false
 exclude_unwind_tables = true
 # enable_debugallocation = false

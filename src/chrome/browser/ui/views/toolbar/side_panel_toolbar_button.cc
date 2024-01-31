@@ -63,15 +63,22 @@ void SidePanelToolbarButton::ButtonPressed() {
 void SidePanelToolbarButton::UpdateToolbarButtonIcon() {
   const bool is_right_aligned = browser_->profile()->GetPrefs()->GetBoolean(
       prefs::kSidePanelHorizontalAlignment);
-  if (is_right_aligned) {
-    SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshIcon
-                                                   : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kSidePanelIcon, kSidePanelTouchIcon
-                                                   : kSidePanelThoriumIcon, kSidePanelTouchIcon);
+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons")) {
+    if (is_right_aligned) {
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshIcon
+                                                     : kSidePanelIcon, kSidePanelTouchIcon);
+    } else {
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelLeftChromeRefreshIcon
+                                                     : kSidePanelLeftIcon, kSidePanelLeftTouchIcon);
+    }
   } else {
-    SetVectorIcons(features::IsChromeRefresh2023()
-                       ? kSidePanelLeftChromeRefreshIcon
-                       : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kSidePanelLeftIcon, kSidePanelLeftTouchIcon
-                       : kSidePanelLeftThoriumIcon, kSidePanelLeftTouchIcon);
+    if (is_right_aligned) {
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshIcon
+                                                     : kSidePanelThoriumIcon, kSidePanelTouchThoriumIcon);
+    } else {
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelLeftChromeRefreshIcon
+                                                     : kSidePanelLeftThoriumIcon, kSidePanelLeftTouchThoriumIcon);
+    }
   }
 }
 

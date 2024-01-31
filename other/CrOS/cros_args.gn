@@ -8,6 +8,7 @@ target_cpu = "x64"
 is_official_build = true
 is_debug = false
 enable_stripping = true
+thin_lto_enable_cache = true
 dcheck_always_on = false
 exclude_unwind_tables = true
 # enable_debugallocation = false
