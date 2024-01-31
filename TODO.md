@@ -39,4 +39,4 @@ ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
 
-Make download warning blocker actually work!
+ - Add https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
