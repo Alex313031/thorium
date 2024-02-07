@@ -1175,7 +1175,7 @@ bool TabStrip::ShouldDrawStrokes() const {
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   if (chromeos::features::IsJellyrollEnabled()) {
-    return false;
+    return true;
   }
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
