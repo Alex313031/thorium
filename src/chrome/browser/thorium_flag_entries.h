@@ -111,6 +111,11 @@
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
+    {"vaapi-on-nvidia-gpus",
+     "VAAPI on Nvidia GPUs",
+     "Toggle whether VAAPI is enabled when proprietary Nvidia Drivers are installed. "
+     "Requires `vdpau-va-driver` to be installed, and can be buggy. Thorium flag.",
+     kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiOnNvidiaGPUs)},
 #endif // BUILDFLAG(IS_LINUX)
 
     {"gpu-no-context-lost",
