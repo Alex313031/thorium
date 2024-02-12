@@ -111,6 +111,10 @@
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
+    {"gtk-version",
+     "Choose the GTK Version",
+     "Choose whether to use the GTK3 or GTK4 backend. It should match the default GTK used by the system.",
+     kOsLinux, MULTI_VALUE_TYPE(kGtkVersionChoices)},
     {"vaapi-on-nvidia-gpus",
      "VAAPI on Nvidia GPUs",
      "Toggle whether VAAPI is enabled when proprietary Nvidia Drivers are installed. "

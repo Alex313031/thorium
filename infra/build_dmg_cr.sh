@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031 and Midzer.
+# Copyright (c) 2024 Alex313031 and midzer.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
