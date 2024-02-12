@@ -29,7 +29,6 @@
 #include "base/process/kill.h"
 #include "base/process/process_iterator.h"
 #include "base/logging.h"
-#include "base/metrics/histogram_functions.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/version.h"
@@ -941,9 +940,6 @@ void AddInstallWorkItems(const InstallParams& install_params,
                   CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE);
               success = success_target && success_temp;
             }
-
-            base::UmaHistogramBoolean("Setup.Install.AddAppContainerAce",
-                                      success);
             return success;
           },
           target_path, temp_path),
