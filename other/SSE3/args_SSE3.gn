@@ -91,4 +91,4 @@ enable_rust = true
 enable_all_rust_features = true
 init_stack_vars_zero = true
 chrome_pgo_phase = 2
-pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-6099-1701798922-d4c2e2b63ef7ac7755f4bcd1deb8e214078c9410.profdata"
+pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-6167-1706004111-41f78c57fb3a1fe49a5c549b16f0221465339af9.profdata"
