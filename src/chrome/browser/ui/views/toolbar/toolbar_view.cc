@@ -176,10 +176,6 @@ auto& GetViewCommandMap() {
   return kViewCommandMap;
 }
 
-constexpr int kToolbarDividerWidth = 2;
-constexpr int kToolbarDividerHeight = 16;
-constexpr int kToolbarDividerCornerRadius = 1;
-constexpr int kToolbarDividerSpacing = 9;
 constexpr int kBrowserAppMenuRefreshExpandedMargin = 5;
 constexpr int kBrowserAppMenuRefreshCollapsedMargin = 2;
 
@@ -282,7 +278,7 @@ void ToolbarView::Init() {
   size_animation_.Reset(1);
 
   std::unique_ptr<DownloadToolbarButtonView> download_button;
-  if (download::IsDownloadBubbleEnabled(browser_->profile())) {
+  if (download::IsDownloadBubbleEnabled()) {
     download_button =
         std::make_unique<DownloadToolbarButtonView>(browser_view_);
   }
@@ -397,10 +393,11 @@ void ToolbarView::Init() {
     toolbar_divider_ =
         container_view_->AddChildView(std::move(toolbar_divider));
     toolbar_divider_->SetPreferredSize(
-        gfx::Size(kToolbarDividerWidth, kToolbarDividerHeight));
+        gfx::Size(GetLayoutConstant(TOOLBAR_DIVIDER_WIDTH),
+                  GetLayoutConstant(TOOLBAR_DIVIDER_HEIGHT)));
   }
 
-  if (base::FeatureList::IsEnabled(features::kSidePanelPinning)) {
+  if (features::IsSidePanelPinningEnabled()) {
     pinned_toolbar_actions_container_ = container_view_->AddChildView(
         std::make_unique<PinnedToolbarActionsContainer>(browser_view_));
   }
@@ -446,7 +443,7 @@ void ToolbarView::Init() {
     send_tab_to_self_button_ =
         container_view_->AddChildView(std::move(send_tab_to_self_button));
 
-  if (!base::FeatureList::IsEnabled(features::kSidePanelPinning) &&
+  if (!features::IsSidePanelPinningEnabled() &&
       !base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button")) {
     if (companion::IsCompanionFeatureEnabled()) {
       side_panel_container_ = container_view_->AddChildView(
@@ -967,7 +964,8 @@ void ToolbarView::InitLayout() {
   if (pinned_toolbar_actions_container_) {
     const views::FlexSpecification toolbar_actions_flex_rule =
         views::FlexSpecification(
-            pinned_toolbar_actions_container_->GetAnimatingLayoutManager()
+            static_cast<views::FlexLayout*>(
+                pinned_toolbar_actions_container_->GetLayoutManager())
                 ->GetDefaultFlexRule())
             .WithOrder(kToolbarActionsFlexOrder);
 
@@ -985,23 +983,19 @@ void ToolbarView::InitLayout() {
   }
 
   if (toolbar_divider_) {
-    toolbar_divider_->SetProperty(views::kMarginsKey,
-                                  gfx::Insets::VH(0, kToolbarDividerSpacing));
+    toolbar_divider_->SetProperty(
+        views::kMarginsKey,
+        gfx::Insets::VH(0, GetLayoutConstant(TOOLBAR_DIVIDER_SPACING)));
   }
 
   if (base::FeatureList::IsEnabled(features::kResponsiveToolbar)) {
-    // Order 1 is reserved for transient buttons.
-    constexpr int kToolbarFlexOrderStart = 2;
+    constexpr int kToolbarFlexOrderStart = 1;
 
     // TODO(crbug.com/1479588): Ignore containers till issue addressed.
     toolbar_controller_ = std::make_unique<ToolbarController>(
-        std::vector<ui::ElementIdentifier>{
-            kToolbarAvatarButtonElementId, kToolbarNewTabButtonElementId,
-            kToolbarForwardButtonElementId, kToolbarDownloadButtonElementId,
-            kToolbarMediaButtonElementId, kToolbarHomeButtonElementId,
-            kToolbarChromeLabsButtonElementId},
-        ToolbarController::GetDefaultElementInfoMap(), kToolbarFlexOrderStart,
-        container_view_, overflow_button_);
+        ToolbarController::GetDefaultResponsiveElements(browser_),
+        ToolbarController::GetDefaultOverflowOrder(), kToolbarFlexOrderStart,
+        container_view_, overflow_button_, pinned_toolbar_actions_container_);
 
     overflow_button_->set_create_menu_model_callback(
         base::BindRepeating(&ToolbarController::CreateOverflowMenuModel,
@@ -1063,7 +1057,8 @@ void ToolbarView::LayoutCommon() {
     const SkColor toolbar_extension_separator_color =
         GetColorProvider()->GetColor(kColorToolbarExtensionSeparatorEnabled);
     toolbar_divider_->SetBackground(views::CreateRoundedRectBackground(
-        toolbar_extension_separator_color, kToolbarDividerCornerRadius));
+        toolbar_extension_separator_color,
+        GetLayoutConstant(TOOLBAR_DIVIDER_CORNER_RADIUS)));
   }
   // Cast button visibility is controlled externally.
 }
