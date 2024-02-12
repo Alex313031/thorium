@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031 and not-lucky
+// Copyright 2024 The Chromium Authors, Alex313031, and not-lucky
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -15,7 +15,8 @@ bool ShouldDisplayInExtensionSettings(Manifest::Type type,
                                       mojom::ManifestLocation location) {
   // Don't show for themes since the settings UI isn't really useful for them.
   if (type == Manifest::TYPE_THEME)
-    return false;
+    // TODO: Alex313031: Possibly re-disable?
+    return true;
 
   // Hide component extensions because they are only extensions as an
   // implementation detail of Chrome.

@@ -391,7 +391,7 @@ body .hidden {
 /* Iframe sizing. */
 .youtubeContainer {
   height: 0;
-  /* This is the perecnt height of a standard HD video. */
+  /* This is the percent height of a standard HD video. */
   padding-bottom: 56.25%;
   position: relative;
   width: 100%;

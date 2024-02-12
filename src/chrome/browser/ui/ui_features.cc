@@ -37,6 +37,12 @@ const char kChromeLabsActivationParameterName[] =
 const base::FeatureParam<int> kChromeLabsActivationPercentage{
     &kChromeLabs, kChromeLabsActivationParameterName, 99};
 
+// When enabled, clicks outside the omnibox and its popup will close an open
+// omnibox popup.
+BASE_FEATURE(kCloseOmniboxPopupOnInactiveAreaClick,
+             "CloseOmniboxPopupOnInactiveAreaClick",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Create new Extensions app menu option (removing "More Tools -> Extensions")
 // with submenu to manage extensions and visit chrome web store.
 BASE_FEATURE(kExtensionsMenuInAppMenu,
@@ -55,7 +61,7 @@ BASE_FEATURE(kAccessCodeCastUI,
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
-#if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_CHROMEOS)
+#if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_FUCHSIA)
 // Enables camera preview in permission bubble and site settings.
 BASE_FEATURE(kCameraMicPreview,
              "CameraMicPreview",
@@ -103,15 +109,15 @@ BASE_FEATURE(kQuickCommands,
 // the browser width is resized smaller than normal.
 BASE_FEATURE(kResponsiveToolbar,
              "ResponsiveToolbar",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables the side search feature for Google Search. Presents recent Google
 // search results in a browser side panel.
-BASE_FEATURE(kSideSearch, "SideSearch", base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kSideSearch, "SideSearch", base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kSideSearchFeedback,
              "SideSearchFeedback",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Displays right-click search results of a highlighted text in side panel,
 // So users are not forced to switch to a new tab to view the search results
@@ -147,6 +153,11 @@ BASE_FEATURE(kSidePanelCompanionDefaultPinned,
 BASE_FEATURE(kSidePanelPinning,
              "SidePanelPinning",
              base::FEATURE_DISABLED_BY_DEFAULT);
+
+bool IsSidePanelPinningEnabled() {
+  return (IsChromeRefresh2023() &&
+          base::FeatureList::IsEnabled(kSidePanelPinning));
+}
 
 BASE_FEATURE(kSidePanelMinimumWidth,
              "SidePanelMinimumWidth",
@@ -192,7 +203,7 @@ const char kScrollableTabStripOverflowModeName[] = "tabScrollOverflow";
 
 // Splits pinned and unpinned tabs into separate TabStrips.
 // https://crbug.com/1346019
-// TODO: Alex313031 Re-Enable after feedback
+// TODO: Alex313031 Possibly Re-Enable after feedback
 BASE_FEATURE(kSplitTabStrip,
              "SplitTabStrip",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -248,6 +259,25 @@ bool IsTabOrganization() {
   return IsChromeRefresh2023() &&
          base::FeatureList::IsEnabled(features::kTabOrganization);
 }
+
+const base::FeatureParam<base::TimeDelta> kTabOrganizationTriggerPeriod{
+    &kTabOrganization, "trigger_period", base::Hours(6)};
+
+const base::FeatureParam<double> kTabOrganizationTriggerBackoffBase{
+    &kTabOrganization, "backoff_base", 2.0};
+
+const base::FeatureParam<double> kTabOrganizationTriggerThreshold{
+    &kTabOrganization, "trigger_threshold", 7.0};
+
+const base::FeatureParam<double> kTabOrganizationTriggerSensitivityThreshold{
+    &kTabOrganization, "trigger_sensitivity_threshold", 0.5};
+
+const base::FeatureParam<bool> KTabOrganizationTriggerDemoMode{
+    &kTabOrganization, "trigger_demo_mode", false};
+
+BASE_FEATURE(kTabOrganizationRefreshButton,
+             "TabOrganizationRefreshButton",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kTabSearchChevronIcon,
              "TabSearchChevronIcon",
