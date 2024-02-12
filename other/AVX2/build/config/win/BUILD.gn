@@ -151,7 +151,6 @@ config("compiler") {
         "/clang:-ffp-contract=fast",
         "-Xclang", "-O3",
         "/arch:AVX2",
-        # Possibly re-enable "-Wno-unused-command-line-argument",
       ]
     }
 
@@ -463,6 +462,7 @@ config("delayloads") {
     "/DELAYLOAD:ncrypt.dll",
     "/DELAYLOAD:ole32.dll",
     "/DELAYLOAD:oleacc.dll",
+    "/DELAYLOAD:pdh.dll",
     "/DELAYLOAD:propsys.dll",
     "/DELAYLOAD:psapi.dll",
     "/DELAYLOAD:rpcrt4.dll",

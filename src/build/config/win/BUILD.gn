@@ -145,7 +145,6 @@ config("compiler") {
         "/clang:-mpclmul",
         "/clang:-mavx",
         "-Xclang", "-O3",
-        # Possibly re-enable "-Wno-unused-command-line-argument",
       ]
     }
 
@@ -457,6 +456,7 @@ config("delayloads") {
     "/DELAYLOAD:ncrypt.dll",
     "/DELAYLOAD:ole32.dll",
     "/DELAYLOAD:oleacc.dll",
+    "/DELAYLOAD:pdh.dll",
     "/DELAYLOAD:propsys.dll",
     "/DELAYLOAD:psapi.dll",
     "/DELAYLOAD:rpcrt4.dll",

@@ -56,7 +56,7 @@ Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/bl
 
 Show full URLs by Default Patch > https://github.com/Alex313031/thorium/blob/74219f27911e133483c3ab85c70ba4360ea98423/src/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc#L292
 
-Disable FLOC Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-floc.patch
+Disable Privacy Sandbox Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
 
 Disable Google API Key Warning Infobar Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/disable/google-api-warning.patch & https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0013-disable-missing-key-warning.patch
   - Modified by me.
@@ -91,6 +91,9 @@ GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromiu
 
 V8 SEGV Patch > https://github.com/FydeOS/chromium_os-raspberry_pi/blob/84ad1a83388bd57a9f1bc318c3057b10eb3101d2/project-cros-pi/chromeos-base/chromeos-chrome/files/patches/001-workaround-for-v8-SEGV-issue.patch
   - Modified by me.
+
+Disable Vulkan GPU Log warnings > https://github.com/RobRich999/Chromium_Clang/blob/e2af0594fb73b482864980551bc0ceb14a349986/Linux/linux64-avx.patch#L303
+  - Made by RobRich999
 
 Widevine CDM CU Patch > https://launchpad.net/ubuntu/bionic/+source/chromium-browser
 
