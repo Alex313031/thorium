@@ -165,7 +165,7 @@ const int kMaxRedirectCount = 32;
 
 // The number of days old a history entry can be before it is considered "old"
 // and is deleted.
-const int kExpireDaysThreshold = 120;
+constexpr int kExpireDaysThreshold = 120;
 
 // The maximum number of days for which domain visit metrics are computed
 // each time HistoryBackend::GetDomainDiversity() is called.
@@ -945,6 +945,7 @@ OriginCountAndLastVisitMap HistoryBackend::GetCountsAndLastVisitForOrigins(
 
 void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
   TRACE_EVENT0("browser", "HistoryBackend::AddPage");
+  DCHECK(request.url.is_valid());
 
   if (!db_)
     return;
@@ -1070,7 +1071,8 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
       // case we don't need to reconnect the new redirect with the existing
       // chain.
       if (request.referrer.is_valid()) {
-        DCHECK_EQ(request.referrer, redirects[0]);
+        // redirects.begin() should equal request.referrer, but sometimes it
+        // doesn't for an unknown reason. See crbug.com/1502514.
         redirects.erase(redirects.begin());
 
         // If the navigation entry for this visit has replaced that for the
@@ -1117,6 +1119,8 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
 
     for (size_t redirect_index = 0; redirect_index < redirects.size();
          redirect_index++) {
+      DCHECK(redirects[redirect_index].is_valid());
+
       constexpr int kRedirectQualifiers = ui::PAGE_TRANSITION_CHAIN_START |
                                           ui::PAGE_TRANSITION_CHAIN_END |
                                           ui::PAGE_TRANSITION_IS_REDIRECT_MASK;
@@ -1313,8 +1317,9 @@ void HistoryBackend::InitImpl(
   db_->GetStartDate(&first_recorded_time_);
 
   // Start expiring old stuff if flag is unset.
-  if (!base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history"))
+  if (!base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history")) {
     expirer_.StartExpiringOldStuff(base::Days(kExpireDaysThreshold));
+  }
 }
 
 void HistoryBackend::OnMemoryPressure(
@@ -1362,6 +1367,7 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
     absl::optional<VisitID> originator_referring_visit,
     absl::optional<VisitID> originator_opener_visit,
     bool is_known_to_sync) {
+  DCHECK(url.is_valid());
   // See if this URL is already in the DB.
   URLRow url_info(url);
   URLID url_id = db_->GetRowForURL(url, &url_info);
@@ -1596,6 +1602,7 @@ void HistoryBackend::SetPageTitle(const GURL& url,
 void HistoryBackend::AddPageNoVisitForBookmark(const GURL& url,
                                                const std::u16string& title) {
   TRACE_EVENT0("browser", "HistoryBackend::AddPageNoVisitForBookmark");
+  DCHECK(url.is_valid());
 
   if (!db_)
     return;
@@ -1691,6 +1698,8 @@ VisitID HistoryBackend::AddSyncedVisit(
   if (!CanAddURL(url)) {
     return kInvalidVisitID;
   }
+
+  DCHECK(url.is_valid());
 
   auto [url_id, visit_id] = AddPageVisit(
       url, visit.visit_time, visit.referring_visit, visit.external_referrer_url,
@@ -2798,8 +2807,6 @@ MostVisitedURLList HistoryBackend::QueryMostVisitedURLs(int result_count) {
   if (!db_)
     return {};
 
-  base::TimeTicks begin_time = base::TimeTicks::Now();
-
   auto url_filter =
       backend_client_
           ? base::BindRepeating(&HistoryBackendClient::IsWebSafe,
@@ -2815,10 +2822,6 @@ MostVisitedURLList HistoryBackend::QueryMostVisitedURLs(int result_count) {
     result.back().last_visit_time = current_data->GetLastVisitTimeslot();
     result.back().score = current_data->GetScore();
   }
-
-  UMA_HISTOGRAM_TIMES("History.QueryMostVisitedURLsTime",
-                      base::TimeTicks::Now() - begin_time);
-
   return result;
 }
 
@@ -3102,6 +3105,7 @@ void HistoryBackend::SetImportedFavicons(
         // url is bookmarked. The same is applicable to the saved credential's
         // URLs.
         if (backend_client_ && backend_client_->IsPinnedURL(url)) {
+          DCHECK(url.is_valid());
           URLRow url_info(url);
           url_info.set_visit_count(0);
           url_info.set_typed_count(0);
@@ -3259,8 +3263,6 @@ void HistoryBackend::BeginSingletonTransaction() {
     // start another transaction again at the next commit interval. Clear out
     // the `singleton_transaction_` pointer, because it's only kept around if
     // it was successfully begun.
-    sql::UmaHistogramSqliteResult("History.Backend.TransactionBeginError",
-                                  diagnostics_.reported_sqlite_error_code);
     singleton_transaction_.reset();
   }
 }
