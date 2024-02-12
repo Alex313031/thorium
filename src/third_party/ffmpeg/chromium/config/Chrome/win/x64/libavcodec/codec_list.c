@@ -17,8 +17,5 @@ static const FFCodec * const codec_list[] = {
     &ff_pcm_s32le_decoder,
     &ff_pcm_u8_decoder,
     &ff_libopus_decoder,
-    &ff_ac3_decoder,
-    &ff_eac3_decoder,
-    &ff_ac3_fixed_decoder,
     &ff_hevc_decoder,
     NULL };
