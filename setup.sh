@@ -169,7 +169,7 @@ copyAndroid () {
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
-	cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	#cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&

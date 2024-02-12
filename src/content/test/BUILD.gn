@@ -2152,7 +2152,7 @@ test("content_browsertests") {
       "//mojo/public/mojom/base",
     ]
     data_deps += [
-      "//content/shell:content_shell",
+      "//content/shell:thorium_shell",
       "//mojo/core:shared_library",
     ]
     if (use_ozone) {

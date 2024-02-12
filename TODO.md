@@ -38,5 +38,3 @@ Thorium Remote Desktop > Chrome Remote Desktop
 ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
-
- - Add https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
