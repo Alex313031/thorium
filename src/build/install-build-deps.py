@@ -160,7 +160,7 @@ def check_distro(options):
         "\tUbuntu 18.04 LTS (bionic with EoL April 2028)",
         "\tUbuntu 20.04 LTS (focal with EoL April 2030)",
         "\tUbuntu 22.04 LTS (jammy with EoL April 2032)",
-        "\tUbuntu 23.10 (mantic)\n",
+        "\tUbuntu 23.10 (mantic)",
         "\tDebian 10 (buster), 11 (bullseye) or 12 (bookworm)",
         sep="\n",
         file=sys.stderr,
@@ -377,6 +377,7 @@ def lib_list():
       "libxrender1",
       "libxtst6",
       "x11-utils",
+      "xorg", # TODO(crbug.com/1417069): Experimental.
       "xvfb",
       "zlib1g",
   ]
@@ -450,6 +451,7 @@ def lib32_list(options):
       "libxtst6:i386",
       "zlib1g:i386",
       # 32-bit libraries needed e.g. to compile V8 snapshot for Android or armhf
+      "linux-libc-dev:i386",
       "linux-libc-dev-i386-cross",
       "libpci3:i386",
   ]
@@ -886,7 +888,7 @@ def install_chromeos_fonts(options):
 def install_locales():
   print("Installing locales.", file=sys.stderr)
   CHROMIUM_LOCALES = [
-      "da_DK.UTF-8", "en_US.utf8", "fr_FR.UTF-8", "he_IL.UTF-8", "zh_TW.UTF-8"
+      "da_DK.UTF-8", "en_US.UTF-8", "fr_FR.UTF-8", "he_IL.UTF-8", "zh_TW.UTF-8"
   ]
   LOCALE_GEN = "/etc/locale.gen"
   if os.path.exists(LOCALE_GEN):
