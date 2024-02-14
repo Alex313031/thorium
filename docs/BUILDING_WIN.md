@@ -276,6 +276,9 @@ git pull --recurse-submodules origin main
 ### Debugging <a name="debugging"></a>
 *   See the [Thorium DEBUG](https://github.com/Alex313031/thorium/tree/main/infra/DEBUG#readme) dir, including the [More Info](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/README.md#more-info-) section, and [DEBUGGING.md](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/DEBUGGING.md).
 
+If you have problems building, join us in the Thorium IRC Channel at 
+`#thorium` on `irc.libera.chat` and ask there.
+
 If you suspect that Windows Defender is slowing your build then you can try Microsoft's
 [Performance analyzer for Microsoft Defender Antivirus](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/tune-performance-defender-antivirus?view=o365-worldwide)
 to investigate in detail.

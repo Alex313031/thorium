@@ -276,6 +276,9 @@ $ autoninja -C out/Default unit_tests
 ### Debugging <a name="debugging"></a>
 *   See the [Thorium DEBUG](https://github.com/Alex313031/thorium/tree/main/infra/DEBUG#readme) dir, including the [More Info](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/README.md#more-info-) section, and [DEBUGGING.md](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/DEBUGGING.md).
 
+If you have problems building, join us in the Thorium IRC Channel at 
+`#thorium` on `irc.libera.chat` and ask there.
+
 ## Notes for other distros <a name="notes"></a>
 
 ### Arch Linux
