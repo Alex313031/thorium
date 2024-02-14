@@ -171,13 +171,13 @@ Once it is built, you can simply run the browser:
 $ out/thorium/Thorium.app/Contents/MacOS/Thorium
 ```
 
-To generate a .dmg installation package, run (from within the Thorium repo):
+To generate a *.dmg* installation package, run (from within the Thorium repo):
 
 ```shell
 $ ./build_dmg.sh
 ```
 
-## Avoiding repetitive system permissions dialogs after each build
+### Avoiding repetitive system permissions dialogs after each build
 
 Every time you start a new developer build, you may get two system dialogs:
 `Thorium wants to use your confidential information stored in "Thorium Safe
@@ -193,7 +193,7 @@ course beware that they will change the behavior of certain subsystems, like pas
 
 ## Debugging
 
-Good debugging tips can be found [here](mac/debugging.md).
+Good debugging tips can be found [here](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/mac/debugging.md).
 
 If you have problems building, join us in the Thorium IRC Channel at 
 `#thorium` on `irc.libera.chat` and ask there.
