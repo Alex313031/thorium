@@ -1,6 +1,6 @@
-## <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/GN_Light.svg#gh-dark-mode-only" width="36"> <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/GN_Dark.svg#gh-light-mode-only" width="36"> &nbsp;When building Chromium/Thorium, you run gn args out/$DIR, where $DIR can be any name; in Thorium it is named out/thorium. These set build arguments for ninja (the Chromium build system) to parse and apply. Thorium has many set, and they vary from platform to platform, and whether or not it is a Debug build. This document explains what they do, why they are set a certain way in Thorium, and options available.
+## <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/GN_Light.svg#gh-dark-mode-only" width="36"> <img src="https://raw.githubusercontent.com/Alex313031/Thorium/main/logos/NEW/GN_Dark.svg#gh-light-mode-only" width="36"> &nbsp;__When building Chromium/Thorium, you run gn args out/$DIR, where $DIR can be any name; in Thorium it is named out/thorium. These set build arguments for ninja (the Chromium build system) to parse and apply. Thorium has many set, and they vary from platform to platform, and whether or not it is a Debug build. This document explains what they do, why they are set a certain way in Thorium, and options available.__
 
-## API Keys
+## __API Keys__
 
 __google_api_key__ "" &#35; Set Google API Key. Unset in public Thorium repository.
 
@@ -8,15 +8,15 @@ __google_default_client_id__ "" &#35; Set the Client ID. Unset in public Thorium
 
 __google_default_client_secret__ "" &#35; Set the Client Secret. All three must be set to use Google Sync, Translate, etc. Unset in public Thorium repository. You can make and set your own by following https://www.chromium.org/developers/how-tos/api-keys/. &#35; NOTE: Thorium contributers, contact me for access to the private API_KEYS repo.
 
-## Experimental
+## __Experimental__
 
 __is_chancie_wancie_build__ &#35; Build the CrOS version of ffmpeg. Used for testing, I.E. to enable HEVC on Linux. Will break Windows/Android/Fuchsia builds. Contact me for info on usage cases and testing.
 
-## MacOS
+## __MacOS__
 
 __use_system_xcode__ &#35; Whether to use the local XCode. Only applicable on Mac, and must be enabled, as only internal Chrome builds have this set to false to use an internal checkout of XCode.
 
-## Cross-Building
+## __Cross-Building__
 
 __target_os__ &#35; Set the target Operating System. I.E. linux, win, mac, chromeos, fuchsia.
 
@@ -24,7 +24,7 @@ __target_cpu__ &#35; Set the target CPU. I.E. x86, x64, arm, arm64, mipsel, mips
 
 __v8_target_cpu__ &#35; What CPU architecture we are building V8 with. Should normally always match target_cpu above.
 
-## Special
+## __Special__
 
 __use_polly__ &#35; Whether to use Polly optimizations during the linking stage. Disabled by default.
 
@@ -32,7 +32,7 @@ __is_raspi__ &#35; Whether to enable Raspberry Pi specific optimizations. Only v
 
 __is_thorium__ &#35; Whether this is a Thorium build or Chromium build. Set to true in Thorium. When set to false, it does not build the custom top bar icons and other icons used throughout the UI. The main logo is unaffected by this arg.
 
-## Main
+## __Main__
 
 __enable_linux_installer__ &#35; Enable making a linux .deb, .rpm, or .snap installer. (Linux Only) Disabled in Debug builds.
 
@@ -162,7 +162,7 @@ __enable_rust__ &#35; Whether to enable the Rust toolchain during compilation. S
 
 __enable_all_rust_features__ &#35; Whether to enable all Rust features during compilation. Set to false for all platforms except Linux.
 
-## Optimizations
+## __Optimizations__
 
 __use_text_section_splitting__ &#35; Whether to split text sections into their own section in the binary, which can increase performance when using thinLTO and PGO together. Set to true in Thorium.
 
