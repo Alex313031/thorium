@@ -1,5 +1,7 @@
 # Checking out and Building Thorium for Windows &nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_light.svg#gh-dark-mode-only" width="48"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/build_dark.svg#gh-light-mode-only" width="48">
 
+There are instructions for other platforms here in the Thorium Docs directory.
+
 ## System Requirements
 
 * A 64-bit machine with at least 8GB of RAM. More than 16GB is highly
@@ -33,7 +35,7 @@ VisualStudioSetup.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add 
 
  - You must have the version 10.1.22621.2428 [Windows 11 SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/)
 installed. This can be installed separately or by checking the appropriate box
-in the Visual Studio Installer __(Note that MSVS 2022 will try to install the 22000 version by default, uncheck this and check the 22621 version)__.
+in the Visual Studio Installer. __(Note that MSVS 2022 will try to install the 22000 version by default, uncheck this and check the 22621 version)__.
 
 The 10.1.22621.2428 SDK Debugging Tools must also be installed. This
 version of the Debugging tools is needed in order to support reading the
@@ -83,7 +85,7 @@ Studio (by default, depot_tools will try to use a google-internal version).
 You should also set the variable `vs2022_install` to your installation path of Visual Studio 22, like 
 `vs2022_install` = __C:\Program Files\Microsoft Visual Studio\2022\Community__
 
-Once all of this is done, we will download some infra archives using `gclient`. \
+Once all of this is done, we will download some infra archives using `gclient`.  
 From a __cmd.exe__ shell, run:
 ```shell
 gclient
@@ -111,7 +113,7 @@ these for 'python.exe' and 'python3.exe' by opening 'App execution aliases'
 section of Control Panel and unticking the boxes next to both of these
 that point to 'App Installer'.
 
-## Downloading the Chromium code
+## Downloading the Chromium code <a name="get-the-code"></a>
 
 First, configure Git (you may want to backup your current .gitconfig file if it exists):
 
@@ -160,7 +162,7 @@ to enable Sync.
 ##  Downloading the Thorium code
 
 Using Git:
-It should be placed in $HOME, i.e. C:\Users\$USERNAME. \
+It should be placed in $HOME, i.e. C:\Users\$USERNAME.  
 
 ```shell
 git clone --recursive https://github.com/Alex313031/thorium.git
@@ -172,7 +174,7 @@ To use the build scripts, we need bash on Windows. It is recommended to use Git 
 All the following script instructions assume that Chromium is in *C:\src\chromium\src* and that you have changed to the thorium repo in bash.
 
 First, we need to make sure we have all the tags/branches and are on Tip of Tree.
-For this, run:
+For this, run (from within the Thorium repo):
 
 ```shell
 ./trunk.sh
@@ -185,18 +187,19 @@ For this, run:
 ./version.sh
 ```
 
-Secondly, we need to copy the Thorium source files over the Chromium tree. \
+At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. 
+The file for Windows will be downloaded to *C:\src\chromium\src\chrome\build\pgo_profiles\&#42;.profdata* with the actual file name looking something like 
+'chrome-win64-6167-1706032279-97e63d82a0938b7701d8cdf028299c39d523a3c6.profdata', which should be added to the end of args.gn as per below.
+Take note of this, as we will be using it in the `args.gn` below.
+
+Lastly, we need to copy the Thorium source files over the Chromium tree.
 For this, run:
 
 ```shell
 ./setup.sh
 ```
+This will copy all the files and patches to the needed locations.  
 - NOTE: To build for AVX2, use `./setup.sh --avx2`. To build SSE3, use `./setup.sh --sse3`. Use `./setup.sh --help` to see all options/platforms.
-
-At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. 
-The file for Windows will be downloaded to *C:\src\chromium\src\chrome\build\pgo_profiles\&#42;.profdata* with the actual file name looking something like 
-'chrome-win64-6167-1706032279-97e63d82a0938b7701d8cdf028299c39d523a3c6.profdata', which should be added to the end of args.gn as per below.
-Take note of this, as we will be using it in the `args.gn` below.
 
 ### Creating the build directory
 Chromium & Thorium use [Ninja](https://ninja-build.org) as its main build tool along with
@@ -212,7 +215,7 @@ gn args out\thorium
 
 This will open up notepad.exe, and this is where we will specify build arguments ("args") which direct Ninja on how to lay out the build directory tree.
 We will be copy/pasting the contents of the [win_args.gn](https://github.com/Alex313031/thorium/blob/main/win_args.gn) file (from *C:\src\Thorium\win_args.gn*) into notepad.
-Notice the three lines at the top, related to API Keys. It is fine to leave them blank, or add the ones you have made. \
+Notice the three lines at the top, related to API Keys. It is fine to leave them blank, or add the ones you have made.  
 __At the bottom__, though, notice the line that says *pgo_data_path = ""*. This is where we will put the full path to the PGO profile data file we downloaded earlier.
 
 That line should look something like:
@@ -224,7 +227,7 @@ That line should look something like:
 
 ## Build Thorium <a name="build"></a>
 
-Build Thorium, and the other things like [chromedriver](https://chromedriver.chromium.org/home) and [thorium_shell](https://github.com/Alex313031/thorium/tree/main/thorium_shell#readme) with Ninja using the command:
+Build Thorium (the "chrome" target), and the other things like [chromedriver](https://chromedriver.chromium.org/home) and [thorium_shell](https://github.com/Alex313031/thorium/tree/main/thorium_shell#readme) with Ninja using the command:
 
 ```shell
 autoninja -C out\thorium thorium chromedriver thorium_shell setup mini_installer -j8

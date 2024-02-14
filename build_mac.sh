@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031.
+# Copyright (c) 2024 Alex313031 and midzer.
 
 YEL='\033[1;33m' # Yellow
 CYA='\033[1;96m' # Cyan
@@ -37,7 +37,7 @@ buildShell () {
 	export NINJA_SUMMARIZE_BUILD=1 &&
 	
 	cd ${CR_SRC_DIR} &&
-	autoninja -C out/thorium chrome chromedriver thorium_shell -j$@ &&
+	autoninja -C out/thorium thorium chromedriver thorium_shell -j$@ &&
 	
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 	
@@ -66,7 +66,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium chrome chromedriver -j$@ &&
+autoninja -C out/thorium thorium chromedriver -j$@ &&
 
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 

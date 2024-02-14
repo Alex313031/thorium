@@ -2,6 +2,7 @@
 
 There are instructions for other platforms here in the Thorium Docs directory.
 You can also read the [old building instructions](https://github.com/Alex313031/thorium/blob/main/infra/BUILDING.md).
+
 #### Windows
 For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2), I made new dedicated instructions. If you are building on Windows use [BUILDING_WIN.md](https://github.com/Alex313031/thorium/blob/main/docs/BUILDING_WIN.md) and if you are building for Windows on Linux, use [WIN_CROSS_BUILD_INSTRUCTIONS](https://github.com/Alex313031/thorium/blob/main/docs/WIN_CROSS_BUILD_INSTRUCTIONS.txt)
 
@@ -120,7 +121,7 @@ to enable Sync.
 
 ## Setting up the build <a name="setup"></a>
 
-First, we need to run `./trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium. \
+First, we need to run `./trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium.  
 It should be used before every seperate build. See the [Updating](#updating) section.
 
 __IMPORTANT__
@@ -128,13 +129,13 @@ This will update and sync the sources to the latest revision (tip of tree) and e
 
 - Then, to check out the current Chromium revision that Thorium is using, run `./version.sh`. At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-6167-1706004111-41f78c57fb3a1fe49a5c549b16f0221465339af9.profdata', which should be added to the end of args.gn as per below.
 Take note of this, as we will be using it in the `args.gn` below.
-- Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
+- Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations.
 - NOTE: To build for MacOS, use `./setup.sh --mac`. To build for Raspberry Pi, use `./setup.sh --raspi`. Use `./setup.sh --help` to see all options/platforms.
 
 Chromium and Thorium use [Ninja](https://ninja-build.org) as their main build tool, along with
 a tool called [GN](https://gn.googlesource.com/gn/+/refs/heads/main/README.md)
 to generate `.ninja` files in the build output directory. You can create any number of *build directories*
-with different configurations. To create a build directory:
+with different configurations. Create the build output directory by running:
 - Run `gn args out/thorium` and the contents of '[args.gn](https://github.com/Alex313031/thorium/blob/main/args.gn)' in the root of this repo should be copy/pasted into the editor. Note that for Windows, Mac, ChromiumOS, or Android there are seperate &#42;_args.gn files for those platforms. *--Include your api keys here at the top or leave blank, and edit the last line to point to the actual path and file name of '&#42;.profdata'* 
 - For more info about args.gn, read the [ABOUT_GN_ARGS.md](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/ABOUT_GN_ARGS.md) file.
 - '[infra/args.list](https://github.com/Alex313031/thorium/blob/main/infra/args.list)' contains an alphabetical list with descriptions of all possible build arguments; [gn_args.list](https://github.com/Alex313031/thorium/blob/main/infra/gn_args.list) gives a similar list but with the flags in args.gn added.
@@ -243,6 +244,7 @@ Simply run `trunk.sh` in the root of the Thorium repo or execute the commands in
 ```shell
 $ ./trunk.sh
 ```
+
 ## Running test targets
 
 Tests are split into multiple test targets based on their type and where they
