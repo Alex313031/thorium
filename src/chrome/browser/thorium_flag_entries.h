@@ -69,7 +69,7 @@
     {"download-bubble",
      "Enable/Disable Download Bubble",
      "Enable or disable the download bubble. When disabled, the traditional download shelf is used. Thorium flag",
-     kOsDesktop, FEATURE_VALUE_TYPE(safe_browsing::kDownloadBubble)},
+     kOsDesktop, SINGLE_VALUE_TYPE("download-bubble")},
 #endif // BUILDFLAG(IS_ANDROID)
 
     {"show-avatar-button",
