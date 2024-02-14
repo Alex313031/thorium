@@ -32,6 +32,7 @@
 #include "chrome/browser/reading_list/reading_list_model_factory.h"
 #include "chrome/browser/resource_coordinator/tab_helper.h"
 #include "chrome/browser/send_tab_to_self/send_tab_to_self_util.h"
+#include "chrome/browser/sessions/tab_restore_service_factory.h"
 #include "chrome/browser/ui/bookmarks/bookmark_utils.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_commands.h"
@@ -64,6 +65,7 @@
 #include "components/feature_engagement/public/feature_constants.h"
 #include "components/reading_list/core/reading_list_model.h"
 #include "components/saved_tab_groups/saved_tab_group_model.h"
+#include "components/sessions/core/tab_restore_service.h"
 #include "components/tab_groups/tab_group_id.h"
 #include "components/tab_groups/tab_group_visual_data.h"
 #include "components/web_modal/web_contents_modal_dialog_manager.h"
@@ -1276,6 +1278,14 @@ bool TabStripModel::IsContextMenuCommandEnabled(
     case CommandCloseTab:
       return true;
 
+    case CommandRestoreTab: {
+      raw_ptr<sessions::TabRestoreService> trs =
+        TabRestoreServiceFactory::GetForProfile(profile());
+      DCHECK(trs);
+      trs->LoadTabsFromLastSession();
+      return !trs->entries().empty();
+    }
+
     case CommandReload:
       return delegate_->CanReload();
 
@@ -1430,6 +1440,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       CloseTabs(GetWebContentsesByIndices(GetIndicesForCommand(context_index)),
                 TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB |
                     TabCloseTypes::CLOSE_USER_GESTURE);
+      break;
+    }
+
+    case CommandRestoreTab: {
+      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
+
+      base::RecordAction(UserMetricsAction("TabContextMenu_RestoreTab"));
+      raw_ptr<Browser> const browser =
+          chrome::FindBrowserWithTab(GetWebContentsAt(context_index));
+      chrome::RestoreTab(browser);
       break;
     }
 
@@ -1687,6 +1707,9 @@ bool TabStripModel::ContextMenuCommandToBrowserCommand(int cmd_id,
       break;
     case CommandCloseTab:
       *browser_cmd = IDC_CLOSE_TAB;
+      break;
+    case CommandRestoreTab:
+      *browser_cmd = IDC_RESTORE_TAB;
       break;
     case CommandOrganizeTabs:
       *browser_cmd = IDC_ORGANIZE_TABS;
