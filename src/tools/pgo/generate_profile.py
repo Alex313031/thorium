@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2024 The Chromium Authors
+# Copyright 2024 The Chromium Authors, Midzer, and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 '''Runs benchmarks as described in docs/pgo.md, and similar to the PGO bots.
@@ -95,7 +95,7 @@ def main():
     # See also https://crbug.com/1478279
     builddir = os.path.realpath(args.builddir)
     if sys.platform == 'darwin':
-        chrome_path = f'{builddir}/Chromium.app/Contents/MacOS/Chromium'
+        chrome_path = f'{builddir}/Thorium.app/Contents/MacOS/Thorium'
     elif args.android_browser:
         chrome_path = None
         if not args.android_device_path:
@@ -108,7 +108,7 @@ def main():
             args.android_device_path = (
                 f'/data/data/{package}/cache/pgo_profiles')
     else:
-        chrome_path = f'{builddir}/chrome' + exe_ext
+        chrome_path = f'{builddir}/thorium' + exe_ext
     profiledir = f'{builddir}/profile'
 
     def run_benchmark(benchmark_args):

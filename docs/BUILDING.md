@@ -122,6 +122,7 @@ to enable Sync.
 ## Setting up the build <a name="setup"></a>
 
 First, we need to run `./trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium.  
+It will also fetch all the tags/branches, which is needed for the version.sh script.
 It should be used before every seperate build. See the [Updating](#updating) section.
 
 __IMPORTANT__

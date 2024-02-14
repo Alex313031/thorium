@@ -310,9 +310,10 @@ const base::FeatureParam<int> kBoostImagePriorityTightMediumLimit{
 
 // https://github.com/patcg-individual-drafts/topics
 // Kill switch for the Topics API.
+// Disabled by Alex313031
 BASE_FEATURE(kBrowsingTopics,
              "BrowsingTopics",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // If enabled, the check for whether the IP address is publicly routable will be
 // bypassed when determining the eligibility for a page to be included in topics
@@ -1010,9 +1011,10 @@ const char kIntensiveWakeUpThrottling_GracePeriodSeconds_Name[] =
 
 // Kill switch for the Interest Group API, i.e. if disabled, the
 // API exposure will be disabled regardless of the OT config.
+// Disabled by Alex313031
 BASE_FEATURE(kInterestGroupStorage,
              "InterestGroupStorage",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 // TODO(crbug.com/1197209): Adjust these limits in response to usage.
 const base::FeatureParam<int> kInterestGroupStorageMaxOwners{
     &kInterestGroupStorage, "max_owners", 1000};
@@ -1492,9 +1494,10 @@ BASE_FEATURE(kPrivacySandboxAdsAPIs,
 // Enables the Private Aggregation API. Note that this API also requires the
 // `kPrivacySandboxAggregationService` to be enabled to successfully send
 // reports.
+// Disabled by Alex313031
 BASE_FEATURE(kPrivateAggregationApi,
              "PrivateAggregationApi",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Selectively allows the JavaScript API to be disabled in just one of the
 // contexts. The Protected Audience param's name has not been updated (from

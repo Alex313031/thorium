@@ -203,6 +203,6 @@ convert_to_windows "${CFG}/win/arm64-cpu-detect/config/aom_config.h"
 update_readme
 
 # git cl format > /dev/null \
-     echo "ERROR: 'git cl format' failed. Please run 'git cl format' manually."
-
+#   || echo "WARNING: 'git cl format' failed. Please run 'git cl format' manually."
+       echo "NOTE: 'You may want to run \`git cl format\` manually."
 cleanup
