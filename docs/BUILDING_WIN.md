@@ -153,7 +153,7 @@ assume you have switched to this directory (i.e. *C:\src\chromium\src*):
 cd src
 ```
 
-*Optional*: You can also [build with API
+*Optional:* You can also [build with API
 keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
 build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
 you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)

@@ -79,7 +79,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
 // Incrementing this number will cause profile icons to be regenerated on
 // profile startup (it should be incremented whenever the product/avatar icons
 // change, etc).
-const char kBlahName[] = "11"
+const char kBlahName[] = "11";
 const int kCurrentProfileIconVersion = 12;
 
 bool disabled_for_unit_tests = false;
