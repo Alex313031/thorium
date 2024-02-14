@@ -15,13 +15,13 @@ For Windows and Windows [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Ext
     Depot_tools bundles an appropriate version of Python in `$depot_tools/python-bin`, 
     if you don't have an appropriate version already on your system.
 
-Most development is done on [Ubuntu 22.04](https://ubuntu.com/download), Jammy Jellyfish (This is what Chromium's build infrastructure currently runs). 
+Most development is done on Ubuntu 22.04, Jammy Jellyfish (This is what Chromium's build infrastructure currently runs). 
 Ubuntu 16.04/18.04 no longer works. 20.04 and Debian 10/11/12 will work.
 There are some instructions for other distros below, but they are mostly unsupported.
 
 __The scripts to build Thorium assume that depot_tools, thorium and chromium are both in $HOME!__
 
-## Install *depot_tools* <a name="depot-tools"></a>
+## Install `depot_tools` <a name="depot-tools"></a>
 
 Clone the `depot_tools` repository:
 
@@ -112,7 +112,8 @@ things like LLVM and a Debian Sysroot.:
 $ gclient runhooks
 ```
 
-*Optional*: You can also [build with API keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
+*Optional*: You can also [build with API
+keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
 build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
 you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
 to enable Sync.
@@ -120,12 +121,13 @@ to enable Sync.
 ## Setting up the build <a name="setup"></a>
 
 First, we need to run `./trunk.sh` (in the root of the Thorium repo.) This will Rebase/Sync the Chromium repo, and revert it to stock Chromium. \
-It will also fetch all the tags/branches, which is needed for the version.sh script. It should be used before every seperate build. See the [Updating](#updating) section.
+It should be used before every seperate build. See the [Updating](#updating) section.
 
 __IMPORTANT__
 This will update and sync the sources to the latest revision (tip of tree) and ensure you have all the version tags.
 
-- Then, to check out the current Chromium revision that Thorium is using, run `./version.sh`. At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-main-1632505958-ddbb37bcdfa7dbd7b10cf3a9b6a5bc45e7a958a6.profdata', which should be added to the end of args.gn as per below.
+- Then, to check out the current Chromium revision that Thorium is using, run `./version.sh`. At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. The file will be downloaded to *//chromium/src/chrome/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 'chrome-linux-6167-1706004111-41f78c57fb3a1fe49a5c549b16f0221465339af9.profdata', which should be added to the end of args.gn as per below.
+Take note of this, as we will be using it in the `args.gn` below.
 - Then, (from where you cloned this repo) run `./setup.sh`. This will copy all the files and patches to the needed locations and drop you to *//chromium/src*.
 - NOTE: To build for MacOS, use `./setup.sh --mac`. To build for Raspberry Pi, use `./setup.sh --raspi`. Use `./setup.sh --help` to see all options/platforms.
 
