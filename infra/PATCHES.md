@@ -161,7 +161,8 @@ Enable Native UI Inspection in DevTools chrome://flags Patch - Made by me.
 
 Enable High Contrast mode Patch - Made by me.
 
-Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Security chrome://flags Patches - Made by me.
+Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Security chrome://flags Patches
+  - Made by me.
 
 Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/add-hevc-ffmpeg-decoder-parser.patch
   - Modified by me.
@@ -169,6 +170,7 @@ Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hev
 Allow all HEVC Video Profiles to Play Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/remove-main-main10-profile-limit.patch
 
 Enable multi-threaded HEVC decoding - https://github.com/RobRich999/Chromium_Clang/blob/649f66dc041a72467c02d76e8d1fe00ee06d8276/Linux/linux64-avx.patch#L295
+  - Made by RobRich999
 
 Enable AC3 and EAC3 for HEVC Patch - https://github.com/Muril-o/electron-chromium-codecs/tree/main/v25.1.0
   - Modified by midzer and me.
@@ -184,16 +186,19 @@ Disable fetching Field Trials/Variations Patch - https://github.com/ungoogled-so
 Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
   - Found by @gz83, modified by me.
 
-Enable disabling tab hover cards patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-tab-hover-cards.patch
- - Credit win32ss for alerting me to this patch.
+Enable disabling tab hover cards flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-tab-hover-cards.patch
+  - Credit to win32ss for alerting me to this patch.
 
-Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
+Enable close confirmation flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
   - Modified by me.
 
-Disable window exit on closing last tab patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-close-window-with-last-tab.patch
- - Modified by me.
+Disable window exit on closing last tab flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-close-window-with-last-tab.patch
+  - Modified by me.
 
-Allow Insecure (All) Downloads > https://github.com/Alex313031/thorium/commit/333a2154d6066b1243a7a02d24001e166fd78002
+Disable Download Bubble Flag > https://github.com/Alex313031/thorium/commit/e2ed50459d9f27e705ba9d3b6ae2106e260b5ac2
+  - Made by me.
+
+Allow Insecure Downloads > https://github.com/Alex313031/thorium/commit/333a2154d6066b1243a7a02d24001e166fd78002
   - Made by me.
 
 Block annoying Promo Toasts > https://github.com/Alex313031/thorium/commit/2abe24c0db83c3cb5884535830036abe61953c46
@@ -227,7 +232,7 @@ Installer patches to include unstripped and RPATH binaries, with chrome_sandbox 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 
 "Ctrl+Shift+Q" to close all windows (exit) "Ctrl+Shift+K" to open a new tab to the right "Ctrl+Shift+D" to duplicate the current tab "Ctrl+Shift+P" to pop out the current tab into a new window
- - https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/ui/views/accelerator_table.cc
+  - https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/ui/views/accelerator_table.cc
 
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, and Experimental Canvas2D.
   - Modified by me.
