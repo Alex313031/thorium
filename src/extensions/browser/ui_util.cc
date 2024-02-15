@@ -14,9 +14,9 @@ namespace ui_util {
 bool ShouldDisplayInExtensionSettings(Manifest::Type type,
                                       mojom::ManifestLocation location) {
   // Don't show for themes since the settings UI isn't really useful for them.
-  if (type == Manifest::TYPE_THEME)
-    // TODO: Alex313031: Possibly re-disable?
-    return true;
+  if (type == Manifest::TYPE_THEME) {
+    return false;
+  }
 
   // Hide component extensions because they are only extensions as an
   // implementation detail of Chrome.
