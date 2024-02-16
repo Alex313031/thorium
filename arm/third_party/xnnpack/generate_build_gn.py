@@ -93,8 +93,9 @@ config("xnnpack_config") {
 
   if (current_cpu == "arm64") {
     defines += [
-      "XNN_ENABLE_ARM_DOTPROD=0",
-      "XNN_ENABLE_ARM_I8MM=0",
+      "XNN_ENABLE_ARM_DOTPROD=1",
+      "XNN_ENABLE_ARM_FP16_VECTOR=1",
+      "XNN_ENABLE_ARM_I8MM=1",
     ]
   }
 }
