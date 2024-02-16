@@ -234,6 +234,9 @@ Patches for mini_installer and abseil when using AVX on Windows. Credit goes to 
 "Ctrl+Shift+Q" to close all windows (exit) "Ctrl+Shift+K" to open a new tab to the right "Ctrl+Shift+D" to duplicate the current tab "Ctrl+Shift+P" to pop out the current tab into a new window
   - https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/ui/views/accelerator_table.cc
 
+Use Super + Arrow Keys to manage Windows on ThoriumOS > https://github.com/Alex313031/thorium/blob/main/src/ash/public/cpp/accelerators.cc
+  - Made by me
+
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, and Experimental Canvas2D.
   - Modified by me.
 
