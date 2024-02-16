@@ -2482,6 +2482,42 @@ if (is_win) {
   common_optimize_on_cflags += [ "-fno-math-errno" ]
 }
 
+config("march_crc") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8-a+crc" ]
+    asmflags = cflags
+  }
+}
+
+config("march_dotprod") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod" ]
+    asmflags = cflags
+  }
+}
+
+config("march_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16" ]
+    asmflags = cflags
+  }
+}
+
+config("march_dotprod_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16+dotprod" ]
+    asmflags = cflags
+  }
+}
+
+config("march_i8mm") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+i8mm" ]
+    asmflags = cflags
+  }
+}
+
+
 config("default_stack_frames") {
   if (!is_win) {
     if (enable_frame_pointers) {
