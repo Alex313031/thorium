@@ -155,8 +155,9 @@ config("compiler") {
         "/clang:-mlzcnt",
         "/clang:-mbmi2",
         "/clang:-ffp-contract=fast",
+        "/clang:-w",
         "-Xclang", "-O3",
-        "/arch:AVX2",
+        # "/arch:AVX2",
       ]
     }
 
