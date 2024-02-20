@@ -1113,10 +1113,10 @@ BASE_FEATURE(kAutoplayIgnoreWebAudio,
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Whether we should show a setting to disable autoplay policy.
-// TODO: Alex313031 Possibly re-disable? Causes Profile picker crash
+// TODO: Alex313031 Possibly re-enable? Causes Profile picker crash
 BASE_FEATURE(kAutoplayDisableSettings,
              "AutoplayDisableSettings",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Whether we should allow color space changes to flush AcceleratedVideoDecoder.
 BASE_FEATURE(kAVDColorSpaceChanges,
