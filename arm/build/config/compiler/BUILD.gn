@@ -1049,8 +1049,11 @@ config("compiler") {
 
     # Full RUSTC optimizations.
     "-Copt-level=3",
-    "-Cllvm-args=-fp-contract=fast",
   ]
+
+  if (current_cpu == "arm64") {
+    rustflags += [ "-Cllvm-args=-fp-contract=fast", ]
+  }
 
   if (!is_win || force_rustc_color_output) {
     # Colorize error output. The analogous flag is passed for clang. This must
