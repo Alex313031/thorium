@@ -5,8 +5,8 @@
   "ghbmnnjooekpmoecnnnilnnbdlolhkhi" : {
     "external_update_url": "https://clients2.google.com/service/update2/crx"
   },
-  // uBlock Origin extension
-  "cjpalhdlnbpafiamejdnhcphjbkeiagm" : {
+  // uBlock Origin Dev extension
+  "cgbcahbpdhpcegmbfconppldiemgcoii" : {
     "external_update_url": "https://clients2.google.com/service/update2/crx"
   }
 }
