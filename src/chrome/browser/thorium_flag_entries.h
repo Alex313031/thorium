@@ -55,6 +55,14 @@
      "Scroll Switches Active Tab",
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
+
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+    {"middle-button-autoscroll",
+     "Middle Button Autoscroll",
+     "Enables autoscrolling when the middle mouse button is pressed.",
+     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kMiddleButtonClickAutoscroll)},
+#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+
     {"autoplay-policy",
      "Disable/Enable AutoPlay",
      "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay "
