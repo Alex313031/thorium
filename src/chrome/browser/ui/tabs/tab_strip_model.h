@@ -278,7 +278,7 @@ class TabStripModel : public TabGroupController {
 
   // Returns the WebContents at the specified index, or NULL if there is
   // none.
-  content::WebContents* GetWebContentsAt(int index) const override;
+  content::WebContents* GetWebContentsAt(int index) const;
 
   // Returns the index of the specified WebContents, or TabStripModel::kNoTab
   // if the WebContents is not in this TabStripModel.
@@ -382,6 +382,9 @@ class TabStripModel : public TabGroupController {
   // Returns true if the tab at |index| is selected.
   bool IsTabSelected(int index) const;
 
+  // Returns the timestamp at which the tab was last accessed.
+  absl::optional<base::Time> GetLastAccessed(int index) const;
+
   // Sets the selection to match that of |source|.
   void SetSelectionFromModel(ui::ListSelectionModel source);
 
@@ -476,7 +479,6 @@ class TabStripModel : public TabGroupController {
   void UnfollowSites(const std::vector<int>& indices);
 
   // TabGroupController:
-  Profile* GetProfile() override;
   void CreateTabGroup(const tab_groups::TabGroupId& group) override;
   void OpenTabGroupEditor(const tab_groups::TabGroupId& group) override;
   void ChangeTabGroupContents(const tab_groups::TabGroupId& group) override;
@@ -485,6 +487,7 @@ class TabStripModel : public TabGroupController {
       const TabGroupChange::VisualsChange& visuals) override;
   void MoveTabGroup(const tab_groups::TabGroupId& group) override;
   void CloseTabGroup(const tab_groups::TabGroupId& group) override;
+  std::u16string GetTitleAt(int index) const override;
   // The same as count(), but overridden for TabGroup to access.
   int GetTabCount() const override;
 

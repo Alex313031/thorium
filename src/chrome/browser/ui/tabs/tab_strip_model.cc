@@ -1286,20 +1286,20 @@ bool TabStripModel::IsContextMenuCommandEnabled(
     case CommandCloseTab:
       return true;
 
-    case CommandRestoreTab: {
-      raw_ptr<sessions::TabRestoreService> trs =
-        TabRestoreServiceFactory::GetForProfile(profile());
-      DCHECK(trs);
-      trs->LoadTabsFromLastSession();
-      return !trs->entries().empty();
-    }
-
     case CommandReload:
       return delegate_->CanReload();
 
     case CommandCloseOtherTabs:
     case CommandCloseTabsToRight:
       return !GetIndicesClosedByCommand(context_index, command_id).empty();
+
+    case CommandRestoreTab: {
+      raw_ptr<sessions::TabRestoreService> const trs =
+        TabRestoreServiceFactory::GetForProfile(profile());
+      DCHECK(trs);
+      trs->LoadTabsFromLastSession();
+      return !trs->entries().empty();
+    }
 
     case CommandDuplicate: {
       std::vector<int> indices = GetIndicesForCommand(context_index);
@@ -1451,16 +1451,6 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       break;
     }
 
-    case CommandRestoreTab: {
-      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
-
-      base::RecordAction(UserMetricsAction("TabContextMenu_RestoreTab"));
-      raw_ptr<Browser> const browser =
-          chrome::FindBrowserWithTab(GetWebContentsAt(context_index));
-      chrome::RestoreTab(browser);
-      break;
-    }
-
     case CommandCloseOtherTabs: {
       ReentrancyCheck reentrancy_check(&reentrancy_guard_);
 
@@ -1486,6 +1476,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       base::RecordAction(UserMetricsAction("TabContextMenu_CloseTabsToRight"));
       CloseTabs(GetWebContentsesByIndices(indices),
                 TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB);
+      break;
+    }
+
+    case CommandRestoreTab: {
+      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
+
+      base::RecordAction(UserMetricsAction("TabContextMenu_RestoreTab"));
+      raw_ptr<Browser> const browser =
+          chrome::FindBrowserWithTab(GetWebContentsAt(context_index));
+      chrome::RestoreTab(browser);
       break;
     }
 
