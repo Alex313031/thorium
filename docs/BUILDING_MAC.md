@@ -124,7 +124,7 @@ For this, run:
 ./setup.sh --mac
 ```
 This will copy all the files and patches to the needed locations.  
-- NOTE: To build for arm64, use `./setup.sh --mac-arm`. Use `./setup.sh --help` to see all options/platforms.
+- NOTE: To build for arm64, use `./setup.sh --mac` as well. Use `./setup.sh --help` to see all options/platforms.
 
 Chromium uses [Ninja](https://ninja-build.org) as its main build tool along with
 a tool called [GN](https://gn.googlesource.com/gn/+/main/docs/quick_start.md)
