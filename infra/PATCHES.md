@@ -48,15 +48,15 @@ REMOVED ~~VDPAU Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blo
 
 Audio Sandbox Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-audio-sandbox.patch
 
-DNS Over HTTPS (DoH) Secure Mode Patch > https://github.com/bromite/bromite/blob/master/build/patches/DoH-improvements.patch
+DNS Over HTTPS (DoH) Secure Mode Patch > https://github.com/uazo/cromite/blob/master/build/patches/DoH-improvements.patch
 
-DNS Over HTTPS (DoH) Bare Minimum HTTP Headers Patch > https://github.com/bromite/bromite/blob/master/build/patches/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
+DNS Over HTTPS (DoH) Bare Minimum HTTP Headers Patch > https://github.com/uazo/cromite/blob/master/build/patches/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
 
 Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
 Show full URLs by Default Patch > https://github.com/Alex313031/thorium/blob/74219f27911e133483c3ab85c70ba4360ea98423/src/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc#L292
 
-Disable FLOC Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-floc.patch
+Disable Privacy Sandbox Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
 
 Disable Google API Key Warning Infobar Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/disable/google-api-warning.patch & https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0013-disable-missing-key-warning.patch
   - Modified by me.
@@ -91,6 +91,9 @@ GN Respect number of --jobs patch > https://github.com/Eloston/ungoogled-chromiu
 
 V8 SEGV Patch > https://github.com/FydeOS/chromium_os-raspberry_pi/blob/84ad1a83388bd57a9f1bc318c3057b10eb3101d2/project-cros-pi/chromeos-base/chromeos-chrome/files/patches/001-workaround-for-v8-SEGV-issue.patch
   - Modified by me.
+
+Disable Vulkan GPU Log warnings > https://github.com/RobRich999/Chromium_Clang/blob/e2af0594fb73b482864980551bc0ceb14a349986/Linux/linux64-avx.patch#L303
+  - Made by RobRich999
 
 Widevine CDM CU Patch > https://launchpad.net/ubuntu/bionic/+source/chromium-browser
 
@@ -158,7 +161,8 @@ Enable Native UI Inspection in DevTools chrome://flags Patch - Made by me.
 
 Enable High Contrast mode Patch - Made by me.
 
-Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Security chrome://flags Patches - Made by me.
+Enable Local File Accesses, Allow File URI Access from Files, and Disable Web Security chrome://flags Patches
+  - Made by me.
 
 Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/add-hevc-ffmpeg-decoder-parser.patch
   - Modified by me.
@@ -166,9 +170,10 @@ Enable HEVC/H.265 Decoding Patch - https://github.com/StaZhu/enable-chromium-hev
 Allow all HEVC Video Profiles to Play Patch - https://github.com/StaZhu/enable-chromium-hevc-hardware-decoding/blob/main/remove-main-main10-profile-limit.patch
 
 Enable multi-threaded HEVC decoding - https://github.com/RobRich999/Chromium_Clang/blob/649f66dc041a72467c02d76e8d1fe00ee06d8276/Linux/linux64-avx.patch#L295
+  - Made by RobRich999
 
 Enable AC3 and EAC3 for HEVC Patch - https://github.com/Muril-o/electron-chromium-codecs/tree/main/v25.1.0
-  - Modified by Midzer and me.
+  - Modified by midzer and me.
   - https://github.com/Alex313031/thorium/commit/a2e49dd2fe00e4c6fa882a41e8a1a27f93bedfff AND
   - https://github.com/Alex313031/thorium/commit/7d0b4f045ce0e16ea9edb05a4dc056a1d4583752#diff-09b3d55a8198fc42186bfd6bf5869fe78b8edad6f67e75b78228446f1d7cf66f
 
@@ -181,16 +186,19 @@ Disable fetching Field Trials/Variations Patch - https://github.com/ungoogled-so
 Enable double click to close tab flag - https://github.com/bigfoxtail/brave-core/commit/acec5efcbaa98722611f551712f051fb343af120
   - Found by @gz83, modified by me.
 
-Enable disabling tab hover cards patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-tab-hover-cards.patch
- - Credit win32ss for alerting me to this patch.
+Enable disabling tab hover cards flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-tab-hover-cards.patch
+  - Credit to win32ss for alerting me to this patch.
 
-Enable close confirmation patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
+Enable close confirmation flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-for-close-confirmation.patch
   - Modified by me.
 
-Disable window exit on closing last tab patch - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-close-window-with-last-tab.patch
- - Modified by me.
+Disable window exit on closing last tab flag - https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/extra/ungoogled-chromium/add-flag-to-close-window-with-last-tab.patch
+  - Modified by me.
 
-Allow Insecure (All) Downloads > https://github.com/Alex313031/thorium/commit/333a2154d6066b1243a7a02d24001e166fd78002
+Disable Download Bubble Flag > https://github.com/Alex313031/thorium/commit/e2ed50459d9f27e705ba9d3b6ae2106e260b5ac2
+  - Made by me.
+
+Allow Insecure Downloads > https://github.com/Alex313031/thorium/commit/333a2154d6066b1243a7a02d24001e166fd78002
   - Made by me.
 
 Block annoying Promo Toasts > https://github.com/Alex313031/thorium/commit/2abe24c0db83c3cb5884535830036abe61953c46
@@ -224,7 +232,10 @@ Installer patches to include unstripped and RPATH binaries, with chrome_sandbox 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 
 "Ctrl+Shift+Q" to close all windows (exit) "Ctrl+Shift+K" to open a new tab to the right "Ctrl+Shift+D" to duplicate the current tab "Ctrl+Shift+P" to pop out the current tab into a new window
- - https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/ui/views/accelerator_table.cc
+  - https://github.com/Alex313031/thorium/blob/main/src/chrome/browser/ui/views/accelerator_table.cc
+
+Use Super + Arrow Keys to manage Windows on ThoriumOS > https://github.com/Alex313031/thorium/blob/main/src/ash/public/cpp/accelerators.cc
+  - Made by me
 
 The Thorium .desktop file and content-shell .desktop file have flags added for experimental and useful features, namely: Disabling the Default Browser check and InfoBar, Experimental web platform features, and Experimental Canvas2D.
   - Modified by me.

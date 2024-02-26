@@ -100,6 +100,14 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
      "force-gpu-mem-available-mb", "1024"},
 };
 
+const FeatureEntry::Choice kGtkVersionChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"3",
+     "gtk-version", "3"},
+    {"4",
+     "gtk-version", "4"},
+};
+
 const FeatureEntry::Choice kTabHoverCardChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"None",

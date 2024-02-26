@@ -1041,7 +1041,8 @@ config("compiler") {
     "-Zremap-cwd-prefix=.",
 
     # Full RUSTC optimizations.
-    "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2",
+    "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma",
+    "-Cllvm-args=-fp-contract=fast",
   ]
 
   if (!is_win || force_rustc_color_output) {
@@ -1058,7 +1059,7 @@ config("compiler") {
     rustflags += [ "-Cembed-bitcode=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
   }
   if (!rust_prebuilt_stdlib) {
     # When building against the Chromium Rust stdlib (which we compile) always
@@ -1085,8 +1086,10 @@ config("compiler") {
     if (is_nacl_saigo) {
       defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
     } else {
-      defines += [ "_LIBCPP_ENABLE_SAFE_MODE=1" ]
+      defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
     }
+  } else {
+    defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
   }
 }
 
@@ -1178,7 +1181,18 @@ config("compiler_cpu_abi") {
       cflags += [
         "-m64",
         "-O3",
-        "-march=haswell",
+        "-msse3",
+        "-mssse3",
+        "-msse4.1",
+        "-msse4.2",
+        "-mpclmul",
+        "-maes",
+        "-mavx",
+        "-mavx2",
+        "-mfma",
+        "-mf16c",
+        "-mlzcnt",
+        "-mbmi2",
         "-mtune=haswell",
         "-ffp-contract=fast",
       ]
@@ -1910,9 +1924,6 @@ config("default_warnings") {
 
           # TODO(https://crbug.com/1490607): Fix and re-enable.
           "-Wno-thread-safety-reference-return",
-
-          # TODO(crbug.com/1495100): Evaluate and possibly enable.
-          "-Wno-delayed-template-parsing-in-cxx20",
         ]
       }
     }
@@ -2313,9 +2324,6 @@ if (is_win) {
     "-Xclang", "-freroll-loops",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loop-distribute",
@@ -2332,19 +2340,21 @@ if (is_win) {
     "/clang:-mssse3",
     "/clang:-msse4.1",
     "/clang:-msse4.2",
+    "/clang:-mpclmul",
+    "/clang:-maes",
     "/clang:-mavx",
     "/clang:-mavx2",
-    "/clang:-maes",
-    "/clang:-mpclmul",
+    "/clang:-mfma",
+    "/clang:-mf16c",
+    "/clang:-mlzcnt",
+    "/clang:-mbmi2",
+    "/clang:-ffp-contract=fast",
     "-Xclang", "-O3",
   ]
 
   common_optimize_on_ldflags += [
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-adce-remove-loops",
-    "-mllvm:-enable-cse-in-irtranslator",
-    "-mllvm:-enable-cse-in-legalizer",
     "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm:-loop-rotate-multi",
     "-mllvm:-enable-loop-distribute",
@@ -2390,9 +2400,6 @@ if (is_win) {
     "-freroll-loops",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loop-distribute",
@@ -2410,9 +2417,6 @@ if (is_win) {
     "-freroll-loops",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
-    "-Wl,-mllvm,-adce-remove-loops",
-    "-Wl,-mllvm,-enable-cse-in-irtranslator",
-    "-Wl,-mllvm,-enable-cse-in-legalizer",
     "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
     "-Wl,-mllvm,-loop-rotate-multi",
     "-Wl,-mllvm,-enable-loop-distribute",
@@ -2494,18 +2498,35 @@ if (is_win) {
 config("march_crc") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8-a+crc" ]
+    asmflags = cflags
   }
 }
 
 config("march_dotprod") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+dotprod" ]
+    asmflags = cflags
+  }
+}
+
+config("march_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16" ]
+    asmflags = cflags
+  }
+}
+
+config("march_dotprod_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16+dotprod" ]
+    asmflags = cflags
   }
 }
 
 config("march_i8mm") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+i8mm" ]
+    asmflags = cflags
   }
 }
 
@@ -2541,17 +2562,17 @@ config("optimize") {
     if (chrome_pgo_phase != 2) {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
-      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx2" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
+      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
 
       # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
       # suggests not using an explicit `-Copt-level` at all, and the default is
       # to optimize for performance like `/O2` for clang.
-      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx2" ]
+      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma" ]
     }
   } else if (optimize_for_size) {
     # Favor size over speed.
@@ -2570,7 +2591,7 @@ config("optimize") {
 
     # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
     # vectorization.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx2" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma" ]
   } else if (is_chromeos) {
     # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
     # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
@@ -2582,14 +2603,14 @@ config("optimize") {
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx2" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma" ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx2" ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma" ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2657,7 +2678,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
   }
 }
 
@@ -2690,13 +2711,13 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
   }
 }
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2970,7 +2991,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
 }
 
 # Minimal symbols.
@@ -3055,7 +3076,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2", ]
+  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
 }
 
 # This configuration contains function names only. That is, the compiler is

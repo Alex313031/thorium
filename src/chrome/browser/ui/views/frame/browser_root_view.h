@@ -82,6 +82,7 @@ class BrowserRootView : public views::internal::RootView {
   DropCallback GetDropCallback(const ui::DropTargetEvent& event) override;
   bool OnMouseWheel(const ui::MouseWheelEvent& event) override;
   void OnMouseExited(const ui::MouseEvent& event) override;
+  gfx::Size CalculatePreferredSize() const override;
 
  protected:
   // views::View:
@@ -107,9 +108,6 @@ class BrowserRootView : public views::internal::RootView {
     // TODO(sangwoo108) Try removing this memeber.
     bool file_supported = true;
   };
-
-  // ui::EventProcessor:
-  void OnEventProcessingStarted(ui::Event* event) override;
 
   // Converts the event from the hosts coordinate system to the view's
   // coordinate system.

@@ -55,6 +55,14 @@
      "Scroll Switches Active Tab",
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
+
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+    {"middle-button-autoscroll",
+     "Middle Button Autoscroll",
+     "Enables autoscrolling when the middle mouse button is pressed.",
+     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kMiddleButtonClickAutoscroll)},
+#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+
     {"autoplay-policy",
      "Disable/Enable AutoPlay",
      "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay "
@@ -66,10 +74,10 @@
      kOsAll, SINGLE_VALUE_TYPE("allow-insecure-downloads")},
 
 #if !BUILDFLAG(IS_ANDROID)
-    {"download-bubble",
-     "Enable/Disable Download Bubble",
-     "Enable or disable the download bubble. When disabled, the traditional download shelf is used. Thorium flag",
-     kOsDesktop, FEATURE_VALUE_TYPE(safe_browsing::kDownloadBubble)},
+    {"disable-download-bubble",
+     "Disable Download Bubble",
+     "When enabled, the traditional download shelf is used instead of the download bubble. Thorium flag",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-download-bubble")},
 #endif // BUILDFLAG(IS_ANDROID)
 
     {"show-avatar-button",
@@ -111,6 +119,15 @@
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
+    {"gtk-version",
+     "Choose the GTK Version",
+     "Choose whether to use the GTK3 or GTK4 backend. It should match the default GTK used by the system.",
+     kOsLinux, MULTI_VALUE_TYPE(kGtkVersionChoices)},
+    {"vaapi-on-nvidia-gpus",
+     "VAAPI on Nvidia GPUs",
+     "Toggle whether VAAPI is enabled when proprietary Nvidia Drivers are installed. "
+     "Requires `vdpau-va-driver` to be installed, and can be buggy. Thorium flag.",
+     kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiOnNvidiaGPUs)},
 #endif // BUILDFLAG(IS_LINUX)
 
     {"gpu-no-context-lost",

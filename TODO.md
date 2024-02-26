@@ -8,10 +8,6 @@
 
  - https://github.com/ungoogled-software/ungoogled-chromium/pull/2314/files
 
-&#45; Update build instructions and add Mac build instructions (also merge to website)
-
- - https://github.com/Alex313031/thorium/blob/main/trunk.sh
-
 &#45; Update win scripts to work seamlessly
 
  - https://github.com/Alex313031/thorium/tree/main/win_scripts
@@ -39,4 +35,6 @@ ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
 
- - Add https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
+Add captive portals patch > https://github.com/uazo/cromite/blob/master/build/patches/Remove-detection-of-captive-portals.patch
+
+Restore JXL support on Android.

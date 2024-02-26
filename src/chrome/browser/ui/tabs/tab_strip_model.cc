@@ -39,6 +39,7 @@
 #include "chrome/browser/ui/browser_finder.h"
 #include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/send_tab_to_self/send_tab_to_self_bubble.h"
+#include "chrome/browser/ui/tab_ui_helper.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_service.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_service_factory.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_session.h"
@@ -901,6 +902,13 @@ bool TabStripModel::IsTabSelected(int index) const {
   return selection_model_.IsSelected(index);
 }
 
+absl::optional<base::Time> TabStripModel::GetLastAccessed(int index) const {
+  if (ContainsIndex(index)) {
+    return selection_model_.GetLastAccessed(index);
+  }
+  return absl::nullopt;
+}
+
 void TabStripModel::SetSelectionFromModel(ui::ListSelectionModel source) {
   CHECK(source.active().has_value());
   SetSelection(std::move(source), TabStripModelObserver::CHANGE_REASON_NONE,
@@ -1191,10 +1199,6 @@ void TabStripModel::AddToReadLater(const std::vector<int>& indices) {
   AddToReadLaterImpl(indices);
 }
 
-Profile* TabStripModel::GetProfile() {
-  return profile();
-}
-
 void TabStripModel::CreateTabGroup(const tab_groups::TabGroupId& group) {
   if (!group_model_)
     return;
@@ -1250,6 +1254,10 @@ void TabStripModel::CloseTabGroup(const tab_groups::TabGroupId& group) {
   TabGroupChange change(this, group, TabGroupChange::kClosed);
   for (auto& observer : observers_)
     observer.OnTabGroupChanged(change);
+}
+
+std::u16string TabStripModel::GetTitleAt(int index) const {
+  return TabUIHelper::FromWebContents(GetWebContentsAt(index))->GetTitle();
 }
 
 void TabStripModel::FollowSites(const std::vector<int>& indices) {
@@ -1589,7 +1597,12 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
           chrome::FindBrowserWithTab(GetWebContentsAt(context_index));
       TabOrganizationService* const service =
           TabOrganizationServiceFactory::GetForProfile(profile_);
-      service->StartRequest(browser);
+      CHECK(service);
+      UMA_HISTOGRAM_BOOLEAN("Tab.Organization.AllEntrypoints.Clicked", true);
+      UMA_HISTOGRAM_BOOLEAN("Tab.Organization.TabContextMenu.Clicked", true);
+
+      service->RestartSessionAndShowUI(browser,
+                                       GetWebContentsAt(context_index));
       break;
     }
 

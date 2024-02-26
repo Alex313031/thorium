@@ -438,35 +438,6 @@ CHAR_LIMIT guidelines:
         Automatically sends usage statistics and crash reports to Google
       </message>
 
-      <!-- Metrics settings -->
-      <message name="IDS_PREFS_METRICS_SETTINGS" desc="Title for the page that allows the user to control how much usage data Thorium uploads. [CHAR_LIMIT=32]">
-        Usage data
-      </message>
-      <message name="IDS_MANAGE_METRICS_SETTINGS" desc="The text for a preferences row to open metrics settings.">
-        Manage usage data sharing
-      </message>
-      <message name="IDS_METRICS_SETTINGS_DESCRIPTION" desc="The text describing what the metrics settings page controls.">
-        Choose what you’re comfortable to share with Thorium. The metrics you share will be used to help improve Thorium’s features, performance, and stability.
-      </message>
-      <message name="IDS_METRICS_SETTINGS_EXTENDED_TITLE" desc="Title for the extended metrics option.">
-        Extended usage data
-      </message>
-      <message name="IDS_METRICS_SETTINGS_EXTENDED_SUMMARY" desc="Description text for 'Extended usage data' option in Usage data settings that enables extended metrics collection. Other options are 'Basic usage data' and 'No usage data'.">
-        Basic data plus information about the websites you visit and apps you use
-      </message>
-      <message name="IDS_METRICS_SETTINGS_BASIC_TITLE" desc="Title for the basic metrics option.">
-        Basic usage data
-      </message>
-      <message name="IDS_METRICS_SETTINGS_BASIC_SUMMARY" desc="Description text for 'Basic usage data' option in Usage data settings that enables basic metrics collection. Other options are 'Extended usage data' and 'No usage data'.">
-        How you interact with Thorium, settings you’ve selected, details of Thorium crashes
-      </message>
-      <message name="IDS_METRICS_SETTINGS_NONE_TITLE" desc="Title for no metrics option.">
-        No usage data
-      </message>
-      <message name="IDS_METRICS_SETTINGS_NONE_SUMMARY" desc="Description text for 'No usage data' option in Usage data settings that disables metrics collection. Other options are 'Extended usage data' and 'Basic usage data'.">
-        No statistics or crash reports are sent to Google
-      </message>
-
       <!-- Search engine settings -->
       <message name="IDS_SEARCH_ENGINE_SETTINGS" desc="Title for Search Engine settings. [CHAR_LIMIT=32]">
         Search engine
@@ -594,6 +565,15 @@ CHAR_LIMIT guidelines:
       <!-- TODO(crbug.com/1425882): Use finalized string.-->
       <message translateable="false" name="IDS_AUTOFILL_OPTIONS_TITLE" desc="Description below switch toggling the use of third-party autofill in Thorium." formatter_data="android_java">
         Autofill Options
+      </message>
+      <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_TITLE" desc="Title for the dialog where the user confirms their intention to delete their saved CVCs.">
+        Delete saved security codes?
+      </message>
+      <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_MESSAGE" desc="Message for the dialog where the user confirms their intention to delete their saved CVCs.">
+        All security codes saved on your device and in your Google Account will be deleted
+      </message>
+      <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_DELETE_BUTTON_LABEL" desc="Label shown on the button that the user clicks on to delete their saved CVCs.">
+        Delete
       </message>
 
        <!-- Payment Request section preview strings -->
@@ -961,88 +941,11 @@ For example, some websites may respond to this request by showing you ads that a
       <message name="IDS_SETTINGS_AD_PRIVACY_RESTRICTED_LINK_ROW_SUB_LABEL" desc="A string that describes 'Ad privacy', the label that appears just above it. This is the version of IDS_SETTINGS_AD_PRIVACY_PAGE_TOPICS_LINK_ROW_LABEL for restricted users.">
         Manage info used by sites to measure ad performance
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_TOPICS_1" desc="TOPICS API Bullet 1 of 3 that appear beneath the “Your interests as estimated by Thorium” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “What data is used:” is bold and serves as a label to help people skimming the page. * “Your browsing history”: The user’s browsing history is available beneath the “History” menu at Thorium’s top level. The Topics API estimates topics of interest based on sites in the user’s browsing history that are participating in the trials.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>What data is used:<ph name="END_BOLD">&lt;/b&gt;</ph> Your browsing history, a record of sites you’ve visited using Thorium on this device.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_TOPICS_2" desc="TOPICS API Bullet 2 of 3 that appear beneath the “Your interests as estimated by Thorium” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How we use this data:” is bold and serves as a label to help people skimming the page. * “estimate your interests”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”).">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How we use this data:<ph name="END_BOLD">&lt;/b&gt;</ph> Thorium can estimate your interests. Later, a site you visit can ask Thorium to see your interests in order to personalize the ads you see.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_TOPICS_3" desc="TOPICS API Bullet 3 of 3 that appear beneath the “Your interests as estimated by Thorium” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How you can manage your data:” is bold and serves as a label to help people skimming the page. * “To protect your privacy”: Today, most data is kept for long periods of time. This new Topics API doesn’t retain estimated topics for more than 3 weeks. The only reason for this feature is to protect the user’s privacy. * “auto”: isn’t strictly necessary, but it conveys that this feature is an ongoing part of the service. This isn’t describing, for example, a one-time deletion. * “older than 4 weeks”: We’re trying to convey a rolling delete. Imagine a user opens a browser for the very first time. As the user browses, Thorium will estimate up to 5 topics of interest in the first week. In the second week, Thorium will estimate up to 5 additional topics of interest. The same for the third week, for a total of 15 potential interests. In week 4, Thorium will automatically delete the 5 interests from week 1 so that there aren’t ever more than 15 topics associated with a user at any given time. * “interests can refresh”: If a user loves horror films and reads about them for months on end, the interest “Horror movies” might get deleted and refreshed in the same week, so that “Horror movies” doesn’t ever disappear from the user’s list of interests. * “Or you can…”: A user might love horror movies but can’t stand the idea of seeing ads about horror movies (because even the visuals will ruin the surprise of opening night). In this case, the user can remove “Horror movies” from the list of interests Thorium will consider. This removal remains in place indefinitely. Note that the user might still see ads about Horror movies from different ad networks or by other means than Thorium’s “Browser-based ad personalization” setting.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How you can manage your data:<ph name="END_BOLD">&lt;/b&gt;</ph> To protect your privacy, we auto-delete your interests that are older than 4 weeks. As you keep browsing, an interest might appear on the list again. Or you can remove interests you don’t want Thorium to consider.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_FLEDGE_1" desc="FLEDGE APIBullet 1 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “What data is used:” is bold and serves as a label to help people skimming the page. * “Your browsing history”: The user’s browsing history is available beneath the “History” menu at Thorium’s top level. This content taken in isolation is somewhat misleading. With FLEDGE, a site can store information in Thorium about the user’s visit to their site. For example, the site might store “running_shoes_red_size_35” to indicate that the user showed interest in a particular shoe. We’re OK with the simplification in this bullet because 1) we explain it in the next bullet and 2) we want the user to understand that at the top level, both Topics &amp; Fledge are based on the same thing and that is the user’s browsing history.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>What data is used:<ph name="END_BOLD">&lt;/b&gt;</ph> Your browsing history, a record of sites you’ve visited using Thorium on this device.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_FLEDGE_2" desc="FLEDGE API Bullet 2 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How we use this data:” is bold and serves as a label to help people skimming the page.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How we use this data:<ph name="END_BOLD">&lt;/b&gt;</ph> Sites can store information with Thorium about your interests. For example, if you visit a site to buy shoes for a marathon, the site might define your interest as running marathons. Later, if you visit a different site to register for a race, that site can show you an ad for running shoes based on your interests.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_LEARN_MORE_DESCRIPTION_FLEDGE_3"  desc="FLEDGE API Bullet 3 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How you can manage your data:” is bold and serves as a label to help people skimming the page. * “To protect your privacy”: Today, most data is kept for long periods of time. This new Topics API doesn’t retain estimated topics for more than 3 weeks. The only reason for this feature is to protect the user’s privacy. * “auto”: isn’t strictly necessary, but it conveys that this feature is an ongoing part of the service. This isn’t describing, for example, a one-time deletion. * “older than 4 weeks”: We’re trying to convey a rolling delete. Imagine a user opens a browser for the very first time. As the user browses, sites can store info with Thorium for up to 4 weeks. So in week 1, the user visits site A. When week 5 starts, site A is removed from the list of sites. * “a site you visit…”: If a user visits site A every week for months on end, that site will remain on the user’s list of sites for months on end. * “Or you can…”: Say a user strongly dislikes www.siteB.com. But that user might visit siteB.com as part of their job, or just to see how bad it really is. The user can stop siteB from defining interests for them. This block lasts indefinitely.">
-        <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How you can manage your data:<ph name="END_BOLD">&lt;/b&gt;</ph> To protect your privacy, we auto-delete sites from the list that are older than 4 weeks. A site you visit again might appear on the list again. Or you can remove a site if you don’t want that site to ever define interests for you.
-      </message>
       <message name="IDS_PRIVACY_SANDBOX_ADD_INTEREST_BUTTON_DESCRIPTION" desc="Content description for button that adds an ad interest for the Topics API of the Privacy Sandbox.">
         Add <ph name="INTEREST">%1$s<ex>Acting and Theater</ex></ph>
       </message>
       <message name="IDS_PRIVACY_SANDBOX_REMOVE_INTEREST_BUTTON_DESCRIPTION" desc="Content description for button that removes an ad interest for the Topics API of the Privacy Sandbox.">
         Remove <ph name="INTEREST">%1$s<ex>Acting and Theater</ex></ph>
-      </message>
-
-      <!-- Privacy Sandbox dialog. -->
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_NO_BUTTON" desc="A button that allows the user to decline joining the Privacy Sandbox trials. If the user chooses “No thanks” this consent page disappears and the flow is complete.">
-        No thanks
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_YES_BUTTON" desc="A button that allows the user to accept joining the Privacy Sandbox trials. If the user chooses “Yes, I’m in”: 1)  this consent page disappears and the flow is complete 2) The Privacy Sandbox trials are turned on for this user. These features include everything described above. The page that hosts the settings will appear at chrome://settings/privacySandbox. Saying “Yes, I’m in” is like turning the toggle on. “No thanks” is like keeping the toggle off.">
-        Yes, I’m in
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_ACKNOWLEDGE_BUTTON" desc="The user can acknowledge the changes with “Got it”. This consent page disappears and the flow is complete.">
-        Got it
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_SETTINGS_BUTTON" desc="The user can choose “Settings” to visit chrome://settings/privacySandbox. If they do, they’ll find the toggle on for Sandbox trials, which include everything they’ve read above. They can leave trials on or turn them off on this page. Choosing “Settings”, the user will navigate away from this page and won’t be able to return here.">
-        Settings
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_TITLE" desc="CONTEXT: there are updates to the Thorium browser each month. Just after the user accepts the latest update, this message will appear. The user must make a choice, and this page can’t be dismissed until they do. The title of the page. * The title needs to be framed so that clicking the accept button makes sense * “Help us” is intended to convey a sense of collaboration. Privacy Sandbox is an ongoing multi-year effort. There are sites participating to help us and we also need users to agree to these trials so that we can measure the effectiveness of the features we're building. * “build” is intended to convey that this is a process. The user is agreeing to an effort rather than a stable set of features. Something like “make” doesn't have the same nuance. * “private web” is the promise of privacy sandbox.">
-        Help us build a more private web
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_SUBTITLE" desc="A subtitle on the consent page. Consider this a tagline for the Privacy Sandbox project. * “exploring” conveys that this is a work in progress. * “new features” include settings that the user can turn on/off and also backend features that change the way Thorium works for everyone * “allow sites to deliver”: Privacy Sandbox is proposed by Google as a collaborative effort with the browser industry. We’re building and testing functionality that will live in the Thorium browser. In order to land the full promise of Privacy Sandbox, websites &amp; advertisers need to adopt the new APIs / functionality that we’re developing. So “allow sites…” makes it clear to the user that we’re building something for the ecosystem. Typically a Google product builds something for the user, and that’s true in this case, but it’s bigger than that. * “same browsing experience using less of your info”: Another definition of the promise of Privacy Sandbox. Third-party cookies are going away. In this new world, the user will have essentially the same browsing experience but it’s more private because it doesn’t expose so much of the user’s info.">
-        Thorium is exploring new features that allow sites to deliver the same browsing experience using less of your info
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_HEADING_ONE" desc="1 of 2 subtitles on the page. We want to write for users who skim the page. That means that the page title, the sub titles, and the button label all work well together as a mini story: 1) Help us build a more private web How? 2) Limit sharing between sites 3) More control over the ads you see 4) Yes, I’ll try it">
-        Limited sharing between sites
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DESCRIPTION_ONE" desc="The description beneath the “Limited sharing between sites” subtitle. * “exploring” conveys that this is a work in progress. * “restrict” means to lessen. We don’t want to suggest that we’re “eliminating” cross-site tracking. * “tracking”: An example: a user visits site A and then site B. Based on how third-party cookies work today, when that user later visits site C, site C can be aware that the user visited sites A and B, and can even have some sense for what they did on those sites. * “stop ad spam and fraud”:  This feature isn’t really related to restricting cross-site tracking but we combined these features in the same sentence / section for structural reasons.">
-        We’re exploring ways to restrict tracking while enabling sites to stop ad spam and fraud.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_HEADING_TWO" desc="2 of 2 subtitles on the page. We want to write for users who skim the page. That means that the page title, the sub titles, and the button label all work well together as a mini story: 1) Help us build a more private web How? 2) Limit sharing between sites 3) More control over the ads you see 4) Yes, I’ll try it">
-        More control over the ads you see
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DESCRIPTION_TWO" desc="A paragraph beneath the “More control over the ads you see” subtitle. * “see and remove topics of interests”: we want to stress the element of control * “estimate topics”: Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). * “recent browsing history”: Later in the UI, we define this as “a record of sites you’ve visited using Thorium on this device.” By “recent”, we mean the last 3 weeks (also defined later in the UI).">
-        You can see and remove topics of interest sites use to show you ads. Thorium estimates your interests based on your recent browsing history.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DROPDOWN_BUTTON" desc="Learn more link * Unfolds content within the page * The text that appears describes 2 ways in which a site can target ads: the “Topics API” and the “FLEDGE API”. You can see what those are at www.privacysanbox.com or they’re described for the user’s benefit in other text. * “ad personalization” can mean different things in different contexts. Here, we’re using it as a simple noun. In other words, it’s not the name of a control but a descriptive term used to describe the personalization of ads in the Thorium browser. This “ad personalization” shouldn’t be confused with the setting in the Google Account called “Ad personalization”.">
-        Learn more about ad personalization in Thorium
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DROPDOWN_TOPICS_HEADING" desc="TOPICS API A sub title that describes the first of 2 ways a site can get info from Thorium in order to target ads to the user. Topics of interest include things like “Live comedy” and “Rock music”. Thorium estimates these interests based on the sites users visit. * “Your”: we need to convey a sense of ownership, even if the user didn’t explicitly choose the interests we’re talking about. Without the “your”, it could sound like Thorium is simply building a generic library of interests. * “estimated”: It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). * “by Thorium”: This is new behavior for a browser (Thorium) to take an active role in processing user data for the purposes of showing ads. It’s important to convey “chrome”, the actor in this case.">
-        Your interests as estimated by Thorium
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DROPDOWN_FLEDGE_HEADING"  desc="FLEDGE API. A sub title that describes the second of 2 ways a site can get info from Thorium in order to target ads to the user.">
-      Sites you visit that define your interests
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_CONSENT_DESCRIPTION_THREE" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”. * “You can change your mind”: When writing a consent moment, we have a legal obligation to inform the user how they can “revoke their consent” or “opt out”. A friendlier way to say this is “change your mind”. * “in Thorium settings”: The URL is chrome://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice. * “The trials run alongside…”: The trials happen in addition to today’s current system based on third-party cookies. In other words, even by accepting in this consent moment, the user’s core experience doesn’t change much. This is an experiment, and we need the user to understand as much.">
-        You can change your mind at any time in Thorium settings. The trials run alongside the current way ads get served, so you won’t see changes right away.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_NOTICE_DESCRIPTION_THREE" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”.* “in Thorium settings”: The URL is chrome://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice.">
-        You can learn more about these features in Thorium settings.
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_NOTICE_SHEET_OPENED_HALF" desc="The accessibility string read when the Privacy Sandbox prompt bottom sheet is half opened.">
-        Privacy Sandbox prompt opened at half height
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_NOTICE_SHEET_OPENED_FULL" desc="The accessibility string read when the Privacy Sandbox prompt bottom sheet is fully opened.">
-        Privacy Sandbox prompt opened at full height
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_NOTICE_SHEET_CLOSED_DESCRIPTION" desc="The accessibility string read when the Privacy Sandbox prompt bottom sheet is closed.">
-        Privacy Sandbox prompt closed
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_NOTICE_SHEET_TITLE" desc="CONTEXT: there are updates to the Thorium browser each month. Just after the user accepts the latest update, this message will appear. The title of the page. * “Help us” is intended to convey a sense of collaboration. Privacy Sandbox is an ongoing multi-year effort. There are sites participating to help us and we also need users to agree to these trials so that we can measure the effectiveness of the features we're building. * “build” is intended to convey that this is a process. The user is agreeing to an effort rather than a stable set of features. Something like “make” doesn't have the same nuance. * See www.privacysandbox.com for more context.">
-        Help us build a better web
       </message>
 
       <!-- Privacy Sandbox v4 - Consent & Notice Flow -->
@@ -1557,7 +1460,7 @@ Your Google account may have other forms of browsing history like searches and a
 
       <!-- Tracking protection -->
       <message name="IDS_TRACKING_PROTECTION_TITLE" desc="Tracking Protection preference item title.">
-        Tracking protection
+        Tracking Protection
       </message>
       <message name="IDS_TRACKING_PROTECTION_SUMMARY" desc="Tracking Protection preference item summary.">
         Manage third-party cookies and tracking protections
@@ -2882,26 +2785,26 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_DOWNLOAD_MANAGER_UI_OTHER" desc="Indicates that clicking on this button shows any downloads that don't fit in the other categories.">
         Other
       </message>
-      <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_GENERIC" desc="Content description for the All chip, clicking on which will show all of your downloads.">
-        {FILE_COUNT, plural, =1 {# File} other {# Files}}
+      <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_ALL" desc="Content description for the All chip, clicking on which will show all of your downloads.">
+        {FILE_COUNT, plural, =1 {All files, 1 file in list} other {All files, # files in list}}
+      </message>
+      <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_OTHER" desc="Content description for the Other chip, clicking on which will show all the downloaded files that aren't images, videos, audios or offline pages.">
+        {FILE_COUNT, plural, =1 {Other 1 file in list} other {Other # files in list}}
       </message>
       <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_IMAGES" desc="Content description for the Images chip, clicking on which will show all the downloaded images.">
-        {FILE_COUNT, plural, =1 {# Image} other {# Images}}
+        {FILE_COUNT, plural, =1 {Images, 1 image in list} other {Images, # images in list}}
       </message>
       <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_VIDEO" desc="Content description for the Video chip, clicking on which will show all the downloaded videos.">
-        {FILE_COUNT, plural, =1 {# Video} other {# Videos}}
+        {FILE_COUNT, plural, =1 {Videos, 1 video in list} other {Videos, # videos in list}}
       </message>
       <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_AUDIO" desc="Content description for the Audio chip, clicking on which will show all the downloaded audio files.">
-        {FILE_COUNT, plural, =1 {# Audio file} other {# Audio files}}
+        {FILE_COUNT, plural, =1 {Audio files, 1 audio file in list} other {Audio files, # audio files in list}}
       </message>
       <message name="IDS_ACCESSIBILITY_DOWNLOAD_MANAGER_UI_PAGES" desc="Content description for the Pages chip, clicking on which will show all the downloaded offline pages.">
-        {FILE_COUNT, plural, =1 {# Page} other {# Pages}}
+        {FILE_COUNT, plural, =1 {Pages, 1 page in list} other {Pages, # pages in list}}
       </message>
       <message name="IDS_DOWNLOAD_PAGE" desc="Download this page.">
         Download this page
-      </message>
-      <message name="IDS_DOWNLOAD_MANAGER_NO_DOWNLOADS" desc="Text appearing on an empty tab that indicates that downloaded files appear on this tab.">
-        Files that you download appear here
       </message>
       <message name="IDS_DOWNLOAD_MANAGER_NO_DOWNLOADS_EMPTY_STATE" desc="Text appearing on an empty tab that indicates that downloaded files appear on this tab.">
         You’ll find your downloads here
@@ -3076,20 +2979,8 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_SIGNIN_FRE_UMA_DIALOG_SECOND_SECTION_BODY" desc="Text with info about the data that users share with Google if they turn on the metric sharing option.">
         Info is sent to Google about your Thorium usage, but it isn\u2019t tied to you\n\nIf Thorium crashes, details about the crash may include some personal info\n\nIf you turn on sync, metrics may also include info about URLs you visit
       </message>
-      <message name="IDS_SIGNIN_FRE_SUBTITLE_VARIATION_1" desc="Subtitle shown below a welcoming title on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to use additional features that are only available to signed-in users. Try to limit translations to 50 characters. Do not exceed 75 characters.">
-        Sign in to get the most out of Thorium
-      </message>
-      <message name="IDS_SIGNIN_FRE_SUBTITLE_VARIATION_2" desc="Subtitle shown below a welcoming title on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to use additional features that are only available to signed-in users. Try to limit translations to 50 characters. Do not exceed 75 characters.">
-        Sign in for additional features
-      </message>
-      <message name="IDS_SIGNIN_FRE_SUBTITLE_VARIATION_3" desc="Subtitle shown below a welcoming title on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to get more useful features when they're signed in across multiple devices (like phones and computers). Try to limit translations to 50 characters. Do not exceed 75 characters.">
+      <message name="IDS_SIGNIN_FRE_SUBTITLE" desc="Subtitle shown below a welcoming title on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to get more useful features when they're signed in across multiple devices (like phones and computers). Try to limit translations to 50 characters. Do not exceed 75 characters.">
         Sign in to browse easier across devices
-      </message>
-      <message name="IDS_SIGNIN_FRE_TITLE_VARIATION_1" desc="Title shown on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to use additional features that are only available to signed-in users. Try to limit translations to 40 characters. Do not exceed 50 characters.">
-        Sign in to get the most out of Thorium
-      </message>
-      <message name="IDS_SIGNIN_FRE_TITLE_VARIATION_2" desc="Title shown on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account, so they can personalize and customize Thorium and remember their settings in their Google Account. Try to limit translations to 40 characters. Do not exceed 50 characters.">
-        Sign in to make Thorium your own
       </message>
       <message name="IDS_FRE_SIGNING_IN" desc="Text to show below a progress spinner in the signin FRE to notify the user that signing in is in progress.">
         Signing in\u2026
@@ -3188,6 +3079,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SIGNIN_ACCEPT_BUTTON" desc="Text for the confirmation button in the sign-in screen. By clicking this button users signs in and turns on Sync. [CHAR_LIMIT=20]">
         Yes, I'm in
+      </message>
+      <message name="IDS_SIGNIN_SYNC_DECLINE_BUTTON" desc="Text for the decline button in the sign-in and sync screen. By clicking this button the user refuses to sign in and turn on Sync. [CHAR_LIMIT=20]" meaning= "This text means that the user refuses to sign in and turn on sync by clicking on this button.">
+        No thanks
       </message>
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_DIALOG_TITLE" desc="The title for the dialog that shows the list of accounts on the device and asks the user to select one of these accounts. [CHAR_LIMIT=27]">
         Choose an account
@@ -3790,9 +3684,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_BOOKMARKS" desc="Title of the bookmarks page, which shows a list of the user's bookmarks. [CHAR_LIMIT=18]">
         Bookmarks
       </message>
-      <message name="IDS_BOOKMARKS_FOLDER_EMPTY" desc="Text explaining that the currently selected bookmarks folder is empty.">
-        Pages that you bookmark appear here
-      </message>
       <message name="IDS_NO_BOOKMARKS" desc="Text describing that there is no bookmarks in a bookmark folder.">
         No bookmarks
       </message>
@@ -4053,9 +3944,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_READING_LIST_FIND_IN_BOOKMARKS" desc="The text to inform the user to find the reading list in bookmarks UI.">
         Find your reading list in Bookmarks
       </message>
-      <message name="IDS_READING_LIST_EMPTY_LIST_TITLE" desc="The text on reading list page when there are no reading list items informing user that reading list is supposed to appear on this surface.">
-        You’ll find your reading list here
-      </message>
 
       <!-- Offline pages -->
       <message name="IDS_OFFLINE_PAGES_VIEWING_OFFLINE_PAGE" desc="Text explaining that the user is viewing an offline copy of a web page.">
@@ -4286,6 +4174,12 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_ACCESSIBILITY_OMNIBOX_MOST_VISITED_TILE_NAVIGATE" desc="Announces that interacting with a Tile takes the user to specific website.">
         Navigate: <ph name="WEBSITE_TITLE">%1$s<ex>Crater Lake National Park (U.S. National Park Service)</ex></ph>: <ph name="WEBSITE_URL">%2$s<ex>https://www.nps.gov/crla</ex></ph>
       </message>
+      <message name="IDS_ACCESSIBILITY_OMNIBOX_MOST_VISITED_LIST" desc="Category name of the most visited sites. Announced as: 'amazon.com, 1 of 10 in list Most Visited Sites, 10 items.'">
+        Most visited sites
+      </message>
+      <message name="IDS_ACCESSIBILITY_OMNIBOX_QUERY_TILES_LIST" desc="Category name of the most visited sites. Announced as: 'News, 1 of 10 in list Query Tiles, 10 items.'">
+        Query tiles
+      </message>
 
       <message name="IDS_ACCESSIBILITY_SHARE_SELECTED_ITEMS" desc="Content description for the button to share selected items. [ICU Syntax]">
         {NUM_SELECTED, plural,
@@ -4473,7 +4367,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Page insights Loading Indicator
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_PRIVACY_NOTICE" desc="Text that displays privacy notice for page insights hub">
-        Your activity is saved in your <ph name="BEGIN_LINK">&lt;link&gt;</ph>Google Account<ph name="END_LINK">&lt;/link&gt;</ph>.
+        Your activity in Page Insights is saved in your <ph name="BEGIN_LINK">&lt;link&gt;</ph>Google Account<ph name="END_LINK">&lt;/link&gt;</ph>.
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_MY_ACTIVITY_LOGO" desc="Logo of privacy notice for page insights hub">
 	Logo of privacy notice for page insights hub which redirects to my activity page.
@@ -4635,9 +4529,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_WEBAPP_TAP_TO_COPY_URL" desc="Message on the notification that indicates that taping it will copy a Web App's URL into the clipboard.">
         Tap to copy the URL for this app
-      </message>
-      <message name="IDS_WEBAPK_OFFLINE_DIALOG" desc="The message on the dialog shown when launching a WebAPK needs network connection.">
-        To use <ph name="APP_NAME">%1$s<ex>PWA List</ex></ph> for the first time, please connect to the internet.
       </message>
       <message name="IDS_WEBAPK_NOTIFICATION_CHANNEL_NAME" desc="The visible name of the notification channel of WebAPKs on Android O+.">
         General
@@ -6012,6 +5903,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <!-- Plus Address accessibility strings: TODO(crbug.com/1467623): Replace with final versions  -->
       <message name="IDS_PLUS_ADDRESS_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the plus address bottom sheet is opened." is_accessibility_with_no_ui="true">
         Lorem Ipsum
+      </message>
+
+      <message name="IDS_READALOUD_VOICE_PREVIEW_MESSAGE" desc="String to be read aloud when a voice's preview button is clicked as a demonstration of how that voice sounds. It also explains how to select the voice by clicking the menu item.">
+        Here are the voices you can pick for reading out your web pages. If you like this voice and want me to keep using it just tap the voice name.
       </message>
     </messages>
   </release>

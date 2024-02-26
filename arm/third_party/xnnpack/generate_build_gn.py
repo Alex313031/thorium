@@ -93,8 +93,9 @@ config("xnnpack_config") {
 
   if (current_cpu == "arm64") {
     defines += [
-      "XNN_ENABLE_ARM_DOTPROD=0",
-      "XNN_ENABLE_ARM_I8MM=0",
+      "XNN_ENABLE_ARM_DOTPROD=1",
+      "XNN_ENABLE_ARM_FP16_VECTOR=1",
+      "XNN_ENABLE_ARM_I8MM=1",
     ]
   }
 }
@@ -511,17 +512,7 @@ def GenerateObjectBuilds(cpu):
   obs = []
   aquery_json = json.loads(logs)
 
-  # TODO: b/305060707 - This can be removed when the submodule is updated past:
-  #   2007bc117 BUILD.bazel,:operators: depend on :jit conditionally
-  jit_target_id = -1
-  for target in aquery_json["targets"]:
-    if target["label"] == "@XNNPACK//:jit":
-      jit_target_id = target["id"]
-      break
-
   for action in aquery_json["actions"]:
-    if action["targetId"] == jit_target_id:
-      continue
     ob = _objectbuild_from_bazel_log(action)
     if ob:
       obs.append(ob)

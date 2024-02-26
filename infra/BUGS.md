@@ -15,7 +15,7 @@ FIXED | Nov. 30, Bug that shows starting with M98.0.4738.0; bookmark folders in 
 
 FIXED | Dec. 2, The Google API Keys InfoBar patch doesn't work following an upstream update to startup_browser_creator_impl.cc, will evaluate a fix. - Me | Fixed by me on Dec. 5.
 
-FIXED | Dec. 6, The Default Browser InfoBar persists even after setting Thorium as the default browser. Until this is fixed upstream, it will be mitigated with the --no-default-browser-check cmdline flag in the .desktop file. - Midzer on GitHub | Fixed by me May. 2022
+FIXED | Dec. 6, The Default Browser InfoBar persists even after setting Thorium as the default browser. Until this is fixed upstream, it will be mitigated with the --no-default-browser-check cmdline flag in the .desktop file. - midzer on GitHub | Fixed by me May. 2022
 
 **2022**
 

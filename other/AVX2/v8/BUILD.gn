@@ -366,6 +366,11 @@ declare_args() {
   # Allow for JS promise hooks (instead of just C++).
   v8_enable_javascript_promise_hooks = false
 
+  # Allow embedder data to be saved on continuations. Used to support
+  # TaskAttribution and `scheduler.yield()`.
+  # The flag enables disabling the feature, to test this data's overhead.
+  v8_enable_continuation_preserved_embedder_data = true
+
   # Enable allocation folding globally (sets -dV8_ALLOCATION_FOLDING).
   # When it's disabled, the --turbo-allocation-folding runtime flag will be ignored.
   v8_enable_allocation_folding = true
@@ -718,6 +723,10 @@ if (v8_enable_single_generation == true) {
 assert(!v8_enable_snapshot_compression || v8_use_zlib,
        "Snapshot compression requires zlib")
 
+if (v8_expose_public_symbols == "") {
+  v8_expose_public_symbols = v8_expose_symbols
+}
+
 v8_random_seed = "314159265"
 v8_toolset_for_shell = "host"
 
@@ -735,7 +744,6 @@ config("internal_config_base") {
     ".",
     "include",
     "$target_gen_dir",
-    "$target_gen_dir/include",
   ]
 }
 
@@ -753,6 +761,8 @@ config("internal_config") {
   ]
 
   if (is_component_build) {
+    defines += [ "BUILDING_V8_SHARED_PRIVATE" ]
+  } else if (v8_expose_public_symbols) {
     defines += [ "BUILDING_V8_SHARED" ]
   }
 
@@ -791,7 +801,6 @@ config("libbase_config") {
   if (is_android && current_toolchain != host_toolchain) {
     libs += [ "log" ]
   }
-  include_dirs = [ "$target_gen_dir/include" ]
 }
 
 # Standalone cppgc cannot be built within chrome or with perfetto.
@@ -815,10 +824,7 @@ config("headers_config") {
     ":v8_header_features",
     ":cppgc_header_features",
   ]
-  include_dirs = [
-    "include",
-    "$target_gen_dir/include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 # This config should only be applied to code using V8 and not any V8 code
@@ -827,7 +833,10 @@ config("external_config") {
   configs = [ ":headers_config" ]
   defines = []
   if (is_component_build) {
-    defines += [ "USING_V8_SHARED" ]
+    defines += [
+      "USING_V8_SHARED",
+      "USING_V8_SHARED_PRIVATE",
+    ]
   }
 
   if (current_cpu == "riscv64" || current_cpu == "riscv32") {
@@ -847,6 +856,8 @@ config("external_startup_data") {
 
 # List of defines that can appear in externally visible header files and that
 # are controlled by args.gn.
+# Make sure the |v8_generate_features_json| action is also updated when adding
+# or removing defines below.
 external_v8_defines = [
   "V8_ENABLE_CHECKS",
   "V8_COMPRESS_POINTERS",
@@ -857,7 +868,6 @@ external_v8_defines = [
   "V8_ENABLE_SANDBOX",
   "V8_DEPRECATION_WARNINGS",
   "V8_IMMINENT_DEPRECATION_WARNINGS",
-  "V8_NO_ARGUMENTS_ADAPTOR",
   "V8_USE_PERFETTO",
   "V8_MAP_PACKING",
   "V8_IS_TSAN",
@@ -1127,6 +1137,9 @@ config("features") {
   if (v8_enable_cet_shadow_stack) {
     defines += [ "V8_ENABLE_CET_SHADOW_STACK" ]
   }
+  if (v8_enable_cet_ibt) {
+    defines += [ "V8_ENABLE_CET_IBT" ]
+  }
   if (v8_enable_wasm_gdb_remote_debugging) {
     defines += [ "V8_ENABLE_WASM_GDB_REMOTE_DEBUGGING" ]
   }
@@ -1174,6 +1187,9 @@ config("features") {
   }
   if (v8_enable_javascript_promise_hooks) {
     defines += [ "V8_ENABLE_JAVASCRIPT_PROMISE_HOOKS" ]
+  }
+  if (v8_enable_continuation_preserved_embedder_data) {
+    defines += [ "V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA" ]
   }
   if (v8_enable_allocation_folding) {
     defines += [ "V8_ALLOCATION_FOLDING" ]
@@ -1398,8 +1414,8 @@ config("toolchain") {
     }
     if (is_linux || is_chromeos) {
       # Full optimization for V8.
-      cflags += [ "-O3", "-mavx2", "-maes" ]
-      ldflags += [ "-Wl,-O3", "-mavx2", "-maes" ]
+      cflags += [ "-O3", "-msse3", "-mssse3", "-msse4.1", "-msse4.2", "-mavx", "-maes", "-mavx2", "-mfma" ]
+      ldflags += [ "-Wl,-O3", "-msse3", "-mssse3", "-msse4.1", "-msse4.2", "-mavx", "-maes", "-mavx2", "-mfma" ]
     }
   }
   if (is_android && v8_android_log_stdout) {
@@ -1436,16 +1452,13 @@ config("toolchain") {
   # TODO(infra): Support v8_enable_prof on Windows.
   # TODO(infra): Add support for compiling with simulators.
 
-  if (v8_enable_debugging_features) {
-    if ((is_linux || is_chromeos) && v8_enable_backtrace) {
-      ldflags += [ "-rdynamic" ]
-    }
-  }
   if (v8_enable_debugging_features || dcheck_always_on) {
     defines += [ "DEBUG" ]
     if (v8_enable_slow_dchecks) {
       defines += [ "ENABLE_SLOW_DCHECKS" ]
     }
+  } else {
+    defines += [ "NDEBUG" ]
   }
 
   if (v8_enable_verify_csa) {
@@ -1745,7 +1758,7 @@ if (v8_postmortem_support) {
     script = "tools/gen-postmortem-metadata.py"
 
     # NOSORT
-    sources = [
+    inputs = [
       "$target_gen_dir/torque-generated/instance-types.h",
       "src/objects/allocation-site.h",
       "src/objects/allocation-site-inl.h",
@@ -1831,7 +1844,7 @@ if (v8_postmortem_support) {
     outputs = [ "$target_gen_dir/debug-support.cc" ]
 
     args = rebase_path(outputs, root_build_dir) +
-           rebase_path(sources, root_build_dir)
+           rebase_path(inputs, root_build_dir)
 
     deps = [ ":run_torque" ]
   }
@@ -1848,6 +1861,7 @@ torque_files = [
   "src/builtins/array-findindex.tq",
   "src/builtins/array-findlast.tq",
   "src/builtins/array-findlastindex.tq",
+  "src/builtins/array-flat.tq",
   "src/builtins/array-foreach.tq",
   "src/builtins/array-from-async.tq",
   "src/builtins/array-from.tq",
@@ -1958,6 +1972,7 @@ torque_files = [
   "src/builtins/string-substring.tq",
   "src/builtins/string-towellformed.tq",
   "src/builtins/string-trim.tq",
+  "src/builtins/suppressed-error.tq",
   "src/builtins/symbol.tq",
   "src/builtins/torque-internal.tq",
   "src/builtins/typed-array-at.tq",
@@ -2353,6 +2368,7 @@ template("run_mksnapshot") {
                                         "root_out_dir") + "/mksnapshot",
                          root_build_dir),
       "--turbo_instruction_scheduling",
+      "--stress-turbo-late-spilling",
 
       # In cross builds, the snapshot may be generated for both the host and
       # target toolchains.  The same host binary is used to generate both, so
@@ -2678,6 +2694,46 @@ action("v8_dump_build_config") {
     "verify_heap=$v8_enable_verify_heap",
     "verify_predictable=$v8_enable_verify_predictable",
   ]
+}
+
+# Generate a json file containing essential V8 build flags.
+# This json file is consumed by embedders like Node.js and Electron to provide
+# information for building third party modules. There is currently no exact
+# rules on which build flags should be outputed in the json file, but anything
+# affecting the |external_v8_defines| list must be listed here and added to
+# the common.gypi file in Node.js repo.
+generated_file("v8_generate_features_json") {
+  outputs = [ "$root_out_dir/v8_features.json" ]
+  output_conversion = "json"
+  contents = {
+    v8_deprecation_warnings = v8_deprecation_warnings
+    v8_enable_31bit_smis_on_64bit_arch = v8_enable_31bit_smis_on_64bit_arch
+    v8_enable_conservative_stack_scanning =
+        v8_enable_conservative_stack_scanning
+    v8_enable_direct_local = v8_enable_direct_local
+    v8_enable_extensible_ro_snapshot = v8_enable_extensible_ro_snapshot
+    v8_enable_gdbjit = v8_enable_gdbjit
+    v8_enable_hugepage = v8_enable_hugepage
+    v8_enable_i18n_support = v8_enable_i18n_support
+    v8_enable_javascript_promise_hooks = v8_enable_javascript_promise_hooks
+    v8_enable_lite_mode = v8_enable_lite_mode
+    v8_enable_map_packing = v8_enable_map_packing
+    v8_enable_object_print = v8_enable_object_print
+    v8_enable_pointer_compression = v8_enable_pointer_compression
+    v8_enable_pointer_compression_shared_cage =
+        v8_enable_pointer_compression_shared_cage
+    v8_enable_sandbox = v8_enable_sandbox
+    v8_enable_shared_ro_heap = v8_enable_shared_ro_heap
+    v8_enable_short_builtin_calls = v8_enable_short_builtin_calls
+    v8_enable_v8_checks = v8_enable_v8_checks
+    v8_enable_webassembly = v8_enable_webassembly
+    v8_enable_zone_compression = v8_enable_zone_compression
+    v8_imminent_deprecation_warnings = v8_imminent_deprecation_warnings
+    v8_optimized_debug = v8_optimized_debug
+    v8_random_seed = v8_random_seed
+    v8_use_perfetto = v8_use_perfetto
+    v8_use_siphash = v8_use_siphash
+  }
 }
 
 ###############################################################################
@@ -3089,6 +3145,8 @@ v8_header_set("v8_flags") {
 v8_header_set("v8_internal_headers") {
   configs = [ ":internal_config" ]
 
+  public_configs = [ "src/inspector:inspector_config" ]
+
   sources = [
     ### gcmole(all) ###
     "$target_gen_dir/builtins-generated/bytecodes-builtins-list.h",
@@ -3122,11 +3180,13 @@ v8_header_set("v8_internal_headers") {
     "src/builtins/builtins-constructor.h",
     "src/builtins/builtins-definitions.h",
     "src/builtins/builtins-descriptors.h",
+    "src/builtins/builtins-inl.h",
     "src/builtins/builtins-promise.h",
     "src/builtins/builtins-utils-inl.h",
     "src/builtins/builtins-utils.h",
     "src/builtins/builtins.h",
     "src/builtins/constants-table-builder.h",
+    "src/builtins/data-view-ops.h",
     "src/builtins/profile-data-reader.h",
     "src/codegen/aligned-slot-allocator.h",
     "src/codegen/assembler-arch.h",
@@ -3207,7 +3267,6 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/backend/instruction-selector.h",
     "src/compiler/backend/instruction.h",
     "src/compiler/backend/jump-threading.h",
-    "src/compiler/backend/mid-tier-register-allocator.h",
     "src/compiler/backend/move-optimizer.h",
     "src/compiler/backend/register-allocation.h",
     "src/compiler/backend/register-allocator-verifier.h",
@@ -3318,9 +3377,11 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/analyzer-iterator.h",
     "src/compiler/turboshaft/assembler.h",
     "src/compiler/turboshaft/assert-types-reducer.h",
+    "src/compiler/turboshaft/branch-condition-duplication-reducer.h",
     "src/compiler/turboshaft/branch-elimination-reducer.h",
     "src/compiler/turboshaft/build-graph-phase.h",
     "src/compiler/turboshaft/builtin-call-descriptors.h",
+    "src/compiler/turboshaft/copying-phase.h",
     "src/compiler/turboshaft/dataview-reducer.h",
     "src/compiler/turboshaft/dead-code-elimination-phase.h",
     "src/compiler/turboshaft/dead-code-elimination-reducer.h",
@@ -3330,7 +3391,6 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/decompression-optimization.h",
     "src/compiler/turboshaft/define-assembler-macros.inc",
     "src/compiler/turboshaft/deopt-data.h",
-    "src/compiler/turboshaft/doubly-threaded-list.h",
     "src/compiler/turboshaft/explicit-truncation-reducer.h",
     "src/compiler/turboshaft/fast-api-call-reducer.h",
     "src/compiler/turboshaft/fast-hash.h",
@@ -3342,7 +3402,10 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/late-escape-analysis-reducer.h",
     "src/compiler/turboshaft/late-load-elimination-reducer.h",
     "src/compiler/turboshaft/layered-hash-map.h",
+    "src/compiler/turboshaft/load-store-simplification-reducer.h",
     "src/compiler/turboshaft/loop-finder.h",
+    "src/compiler/turboshaft/loop-peeling-phase.h",
+    "src/compiler/turboshaft/loop-peeling-reducer.h",
     "src/compiler/turboshaft/loop-unrolling-phase.h",
     "src/compiler/turboshaft/loop-unrolling-reducer.h",
     "src/compiler/turboshaft/machine-lowering-phase.h",
@@ -3351,7 +3414,7 @@ v8_header_set("v8_internal_headers") {
     "src/compiler/turboshaft/memory-optimization-reducer.h",
     "src/compiler/turboshaft/operation-matcher.h",
     "src/compiler/turboshaft/operations.h",
-    "src/compiler/turboshaft/optimization-phase.h",
+    "src/compiler/turboshaft/opmasks.h",
     "src/compiler/turboshaft/optimize-phase.h",
     "src/compiler/turboshaft/phase.h",
     "src/compiler/turboshaft/pretenuring-propagation-reducer.h",
@@ -3479,6 +3542,7 @@ v8_header_set("v8_internal_headers") {
     "src/handles/maybe-handles.h",
     "src/handles/persistent-handles.h",
     "src/handles/shared-object-conveyor-handles.h",
+    "src/handles/traced-handles-inl.h",
     "src/handles/traced-handles.h",
     "src/heap/allocation-observer.h",
     "src/heap/allocation-result.h",
@@ -3797,6 +3861,8 @@ v8_header_set("v8_internal_headers") {
     "src/objects/objects.h",
     "src/objects/oddball-inl.h",
     "src/objects/oddball.h",
+    "src/objects/off-heap-hash-table-inl.h",
+    "src/objects/off-heap-hash-table.h",
     "src/objects/option-utils.h",
     "src/objects/ordered-hash-table-inl.h",
     "src/objects/ordered-hash-table.h",
@@ -3955,6 +4021,8 @@ v8_header_set("v8_internal_headers") {
     "src/sandbox/indirect-pointer-inl.h",
     "src/sandbox/indirect-pointer-tag.h",
     "src/sandbox/indirect-pointer.h",
+    "src/sandbox/isolate-inl.h",
+    "src/sandbox/isolate.h",
     "src/sandbox/sandbox.h",
     "src/sandbox/sandboxed-pointer-inl.h",
     "src/sandbox/sandboxed-pointer.h",
@@ -4536,6 +4604,7 @@ v8_header_set("v8_internal_headers") {
       "src/codegen/riscv/base-constants-riscv.h",
       "src/codegen/riscv/base-riscv-i.h",
       "src/codegen/riscv/constant-riscv-a.h",
+      "src/codegen/riscv/constant-riscv-b.h",
       "src/codegen/riscv/constant-riscv-c.h",
       "src/codegen/riscv/constant-riscv-d.h",
       "src/codegen/riscv/constant-riscv-f.h",
@@ -4545,6 +4614,7 @@ v8_header_set("v8_internal_headers") {
       "src/codegen/riscv/constant-riscv-zifencei.h",
       "src/codegen/riscv/constants-riscv.h",
       "src/codegen/riscv/extension-riscv-a.h",
+      "src/codegen/riscv/extension-riscv-b.h",
       "src/codegen/riscv/extension-riscv-c.h",
       "src/codegen/riscv/extension-riscv-d.h",
       "src/codegen/riscv/extension-riscv-f.h",
@@ -4561,7 +4631,7 @@ v8_header_set("v8_internal_headers") {
       "src/execution/riscv/frame-constants-riscv.h",
       "src/execution/riscv/simulator-riscv.h",
       "src/regexp/riscv/regexp-macro-assembler-riscv.h",
-      "src/wasm/baseline/riscv64/liftoff-assembler-riscv64-inl.h",
+      "src/wasm/baseline/riscv/liftoff-assembler-riscv64-inl.h",
     ]
     if (v8_enable_sparkplug) {
       sources += [
@@ -4578,6 +4648,7 @@ v8_header_set("v8_internal_headers") {
       "src/codegen/riscv/base-constants-riscv.h",
       "src/codegen/riscv/base-riscv-i.h",
       "src/codegen/riscv/constant-riscv-a.h",
+      "src/codegen/riscv/constant-riscv-b.h",
       "src/codegen/riscv/constant-riscv-c.h",
       "src/codegen/riscv/constant-riscv-d.h",
       "src/codegen/riscv/constant-riscv-f.h",
@@ -4588,6 +4659,7 @@ v8_header_set("v8_internal_headers") {
       "src/codegen/riscv/constant-riscv-zifencei.h",
       "src/codegen/riscv/constants-riscv.h",
       "src/codegen/riscv/extension-riscv-a.h",
+      "src/codegen/riscv/extension-riscv-b.h",
       "src/codegen/riscv/extension-riscv-c.h",
       "src/codegen/riscv/extension-riscv-d.h",
       "src/codegen/riscv/extension-riscv-f.h",
@@ -4626,6 +4698,7 @@ v8_header_set("v8_internal_headers") {
     ":cppgc_headers",
     ":generate_bytecode_builtins_list",
     ":run_torque",
+    ":v8_abseil",
     ":v8_heap_base_headers",
     ":v8_libbase",
   ]
@@ -4645,7 +4718,6 @@ v8_compiler_sources = [
   "src/compiler/backend/instruction-selector.cc",
   "src/compiler/backend/instruction.cc",
   "src/compiler/backend/jump-threading.cc",
-  "src/compiler/backend/mid-tier-register-allocator.cc",
   "src/compiler/backend/move-optimizer.cc",
   "src/compiler/backend/register-allocator-verifier.cc",
   "src/compiler/backend/register-allocator.cc",
@@ -4942,6 +5014,7 @@ v8_source_set("v8_turboshaft") {
     "src/compiler/turboshaft/analyzer-iterator.cc",
     "src/compiler/turboshaft/assembler.cc",
     "src/compiler/turboshaft/build-graph-phase.cc",
+    "src/compiler/turboshaft/copying-phase.cc",
     "src/compiler/turboshaft/dead-code-elimination-phase.cc",
     "src/compiler/turboshaft/debug-feature-lowering-phase.cc",
     "src/compiler/turboshaft/decompression-optimization-phase.cc",
@@ -4953,12 +5026,12 @@ v8_source_set("v8_turboshaft") {
     "src/compiler/turboshaft/late-escape-analysis-reducer.cc",
     "src/compiler/turboshaft/late-load-elimination-reducer.cc",
     "src/compiler/turboshaft/loop-finder.cc",
+    "src/compiler/turboshaft/loop-peeling-phase.cc",
     "src/compiler/turboshaft/loop-unrolling-phase.cc",
     "src/compiler/turboshaft/loop-unrolling-reducer.cc",
     "src/compiler/turboshaft/machine-lowering-phase.cc",
     "src/compiler/turboshaft/memory-optimization-reducer.cc",
     "src/compiler/turboshaft/operations.cc",
-    "src/compiler/turboshaft/optimization-phase.cc",
     "src/compiler/turboshaft/optimize-phase.cc",
     "src/compiler/turboshaft/phase.cc",
     "src/compiler/turboshaft/pretenuring-propagation-reducer.cc",
@@ -5830,6 +5903,7 @@ v8_source_set("v8_base_without_compiler") {
       "src/codegen/riscv/base-riscv-i.cc",
       "src/codegen/riscv/cpu-riscv.cc",
       "src/codegen/riscv/extension-riscv-a.cc",
+      "src/codegen/riscv/extension-riscv-b.cc",
       "src/codegen/riscv/extension-riscv-c.cc",
       "src/codegen/riscv/extension-riscv-d.cc",
       "src/codegen/riscv/extension-riscv-f.cc",
@@ -5854,6 +5928,7 @@ v8_source_set("v8_base_without_compiler") {
       "src/codegen/riscv/base-riscv-i.cc",
       "src/codegen/riscv/cpu-riscv.cc",
       "src/codegen/riscv/extension-riscv-a.cc",
+      "src/codegen/riscv/extension-riscv-b.cc",
       "src/codegen/riscv/extension-riscv-c.cc",
       "src/codegen/riscv/extension-riscv-d.cc",
       "src/codegen/riscv/extension-riscv-f.cc",
@@ -6127,6 +6202,7 @@ v8_component("v8_libbase") {
     "src/base/discriminated-union.h",
     "src/base/division-by-constant.cc",
     "src/base/division-by-constant.h",
+    "src/base/doubly-threaded-list.h",
     "src/base/emulated-virtual-address-subspace.cc",
     "src/base/emulated-virtual-address-subspace.h",
     "src/base/enum-set.h",
@@ -6902,8 +6978,6 @@ if (current_toolchain == v8_generator_toolchain) {
 
 if (current_toolchain == v8_snapshot_toolchain) {
   v8_executable("mksnapshot") {
-    visibility = [ ":*" ]  # Only targets in this file can depend on this.
-
     sources = [
       "src/snapshot/embedded/embedded-empty.cc",
       "src/snapshot/embedded/embedded-file-writer.cc",

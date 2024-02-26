@@ -37,8 +37,7 @@ struct FileGrowth;
 namespace content {
 class PepperFileSystemBrowserHost;
 
-class PepperFileIOHost : public ppapi::host::ResourceHost,
-                         public base::SupportsWeakPtr<PepperFileIOHost> {
+class PepperFileIOHost final : public ppapi::host::ResourceHost {
  public:
   PepperFileIOHost(BrowserPpapiHostImpl* host,
                    PP_Instance instance,
@@ -145,6 +144,8 @@ class PepperFileIOHost : public ppapi::host::ResourceHost,
   bool check_quota_;
 
   ppapi::FileIOStateManager state_manager_;
+
+  base::WeakPtrFactory<PepperFileIOHost> weak_ptr_factory_{this};
 };
 
 }  // namespace content

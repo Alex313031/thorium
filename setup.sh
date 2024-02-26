@@ -168,9 +168,11 @@ copyAndroid () {
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
 	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
-	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
-	cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	printf "\n" &&
+	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
+	printf "\n" &&
+	#cp -r -v arm/android/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher.xml &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_base/drawable-v26/ic_launcher_round.xml &&
 	rm -v -r -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-mdpi/layered_app_icon_background.png &&

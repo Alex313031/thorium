@@ -1085,8 +1085,10 @@ config("compiler") {
     if (is_nacl_saigo) {
       defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
     } else {
-      defines += [ "_LIBCPP_ENABLE_SAFE_MODE=1" ]
+      defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
     }
+  } else {
+    defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
   }
 }
 
@@ -1908,9 +1910,6 @@ config("default_warnings") {
 
           # TODO(https://crbug.com/1490607): Fix and re-enable.
           "-Wno-thread-safety-reference-return",
-
-          # TODO(crbug.com/1495100): Evaluate and possibly enable.
-          "-Wno-delayed-template-parsing-in-cxx20",
         ]
       }
     }
@@ -2311,9 +2310,6 @@ if (is_win) {
     "-Xclang", "-freroll-loops",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loop-distribute",
@@ -2333,9 +2329,6 @@ if (is_win) {
   common_optimize_on_ldflags += [
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-adce-remove-loops",
-    "-mllvm:-enable-cse-in-irtranslator",
-    "-mllvm:-enable-cse-in-legalizer",
     "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm:-loop-rotate-multi",
     "-mllvm:-enable-loop-distribute",
@@ -2381,9 +2374,6 @@ if (is_win) {
     "-freroll-loops",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loop-distribute",
@@ -2401,9 +2391,6 @@ if (is_win) {
     "-freroll-loops",
     "-Wl,-mllvm,-enable-cond-stores-vec",
     "-Wl,-mllvm,-slp-vectorize-hor-store",
-    "-Wl,-mllvm,-adce-remove-loops",
-    "-Wl,-mllvm,-enable-cse-in-irtranslator",
-    "-Wl,-mllvm,-enable-cse-in-legalizer",
     "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
     "-Wl,-mllvm,-loop-rotate-multi",
     "-Wl,-mllvm,-enable-loop-distribute",
@@ -2514,12 +2501,12 @@ config("optimize") {
     if (chrome_pgo_phase != 2) {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
       rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
 
       # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
       # suggests not using an explicit `-Copt-level` at all, and the default is

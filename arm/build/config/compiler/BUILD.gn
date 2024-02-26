@@ -1051,6 +1051,10 @@ config("compiler") {
     "-Copt-level=3",
   ]
 
+  if (current_cpu == "arm64") {
+    rustflags += [ "-Cllvm-args=-fp-contract=fast", ]
+  }
+
   if (!is_win || force_rustc_color_output) {
     # Colorize error output. The analogous flag is passed for clang. This must
     # be platform-gated since rustc will unconditionally output ANSI escape
@@ -1092,8 +1096,10 @@ config("compiler") {
     if (is_nacl_saigo) {
       defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
     } else {
-      defines += [ "_LIBCPP_ENABLE_SAFE_MODE=1" ]
+      defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
     }
+  } else {
+    defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
   }
 }
 
@@ -1917,9 +1923,6 @@ config("default_warnings") {
 
           # TODO(https://crbug.com/1490607): Fix and re-enable.
           "-Wno-thread-safety-reference-return",
-
-          # TODO(crbug.com/1495100): Evaluate and possibly enable.
-          "-Wno-delayed-template-parsing-in-cxx20",
         ]
       }
     }
@@ -2450,18 +2453,35 @@ if (is_win) {
 config("march_crc") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8-a+crc" ]
+    asmflags = cflags
   }
 }
 
 config("march_dotprod") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+dotprod" ]
+    asmflags = cflags
+  }
+}
+
+config("march_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16" ]
+    asmflags = cflags
+  }
+}
+
+config("march_dotprod_fp16") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+fp16+dotprod" ]
+    asmflags = cflags
   }
 }
 
 config("march_i8mm") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+i8mm" ]
+    asmflags = cflags
   }
 }
 
@@ -2497,12 +2517,12 @@ config("optimize") {
     if (chrome_pgo_phase != 2) {
       # Favor size over speed, /O1 must be before the common flags.
       # /O1 implies /Os and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
       rustflags = [ "-Copt-level=3" ]
     } else {
       # PGO requires all translation units to be compiled with /O2. The actual
       # optimization level will be decided based on the profiling data.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags + [ "/Oi" ]
+      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
 
       # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
       # suggests not using an explicit `-Copt-level` at all, and the default is

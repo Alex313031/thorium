@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright 2023 The Chromium Authors, Alex313031, and Midzer. All rights reserved.
+# Copyright 2024 The Chromium Authors, Alex313031, and midzer. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -20,12 +20,15 @@ import signal
 import subprocess
 import sys
 import tempfile
+from robo_lib import config
 
-SCRIPTS_DIR = os.path.abspath(os.path.dirname(__file__))
-FFMPEG_DIR = os.path.abspath(os.path.join(SCRIPTS_DIR, '..', '..'))
-CHROMIUM_ROOT_DIR = os.path.abspath(os.path.join(FFMPEG_DIR, '..', '..'))
+ROBO_CONFIGURATION = config.RoboConfiguration()
+FFMPEG_DIR = ROBO_CONFIGURATION.ffmpeg_home()
+CHROMIUM_ROOT_DIR = ROBO_CONFIGURATION.chrome_src()
 NDK_ROOT_DIR = os.path.abspath(
-    os.path.join(CHROMIUM_ROOT_DIR, 'third_party', 'android_ndk'))
+    os.path.join(CHROMIUM_ROOT_DIR, 'third_party', 'android_toolchain', 'ndk'))
+# Token to indicate that a build has completed successfully, so that we can
+# skip it with `--fast`.
 SUCCESS_TOKEN = 'THIS_BUILD_WORKED'
 
 sys.path.append(os.path.join(CHROMIUM_ROOT_DIR, 'build'))
@@ -283,9 +286,9 @@ def SetupAndroidToolchain(target_arch):
 
   return [
       '--enable-pic',
-      '--cc=' + clang_toolchain_dir + 'bin/clang',
-      '--cxx=' + clang_toolchain_dir + 'bin/clang++',
-      '--ld=' + clang_toolchain_dir + 'bin/clang',
+      '--cc=clang',
+      '--cxx=clang++',
+      '--ld=clang',
       '--enable-cross-compile',
       '--sysroot=' + clang_toolchain_dir + 'sysroot',
       '--extra-cflags=-I' + clang_toolchain_dir + 'sysroot/usr/include',
@@ -537,7 +540,7 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
   if target_os == 'mac' and host_os == 'linux':
     RewriteFile(
         os.path.join(config_dir, 'ffbuild/config.mak'), [(r'LD=ld64.lld',
-        r'LD=' + os.path.join(SCRIPTS_DIR, 'fake_linker.py'))])
+        r'LD=' + ROBO_CONFIGURATION.get_script_path('fake_linker.py'))])
 
   # The FFMPEG roll build hits a bug in lld-link that does not impact the
   # overall Chromium build.
@@ -545,7 +548,7 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
   if target_os == 'win' and target_arch == 'arm64' and host_os == 'linux':
     RewriteFile(
         os.path.join(config_dir, 'ffbuild/config.mak'), [(r'LD=lld-link',
-        r'LD=' + os.path.join(SCRIPTS_DIR, 'fake_linker.py'))])
+        r'LD=' + ROBO_CONFIGURATION.get_script_path('fake_linker.py'))])
 
   if target_os in (host_os, host_os + '-noasm', 'android',
                    'win', 'mac') and not config_only:
@@ -571,7 +574,13 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
   if target_arch in ('arm', 'arm-neon', 'arm64'):
     post_make_rewrites += [
         (r'(#define HAVE_VFP_ARGS [01])',
-         r'/* \1 -- softfp/hardfp selection is done by the chrome build */')
+         r'/* \1 -- softfp/hardfp selection is done by the chrome build */'),
+        (r'(#define HAVE_VFP_INLINE [01])',
+         r'#define HAVE_VFP_INLINE 1'),
+        (r'(#define HAVE_VFP_EXTERNAL [01])',
+         r'#define HAVE_VFP_EXTERNAL 1'),
+        (r'(#define HAVE_VFP [01])',
+         r'#define HAVE_VFP 1')
     ]
 
   RewriteFile(os.path.join(config_dir, 'config.h'), post_make_rewrites)
@@ -674,8 +683,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-avcodec',
       '--enable-avformat',
       '--enable-avutil',
-      '--enable-fft',
-      '--enable-rdft',
       '--enable-static',
       '--enable-libopus',
 
@@ -731,10 +738,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
     configure_flags['Common'].extend([
         # --optflags doesn't append multiple entries, so set all at once.
         '--optflags="-O3"',
-        '--extra-cflags=-mavx',
-        '--extra-cflags=-maes',
-        '--extra-cflags=-mpclmul',
-        '--extra-cflags=-O3',
         '--enable-decoder=theora,vp8',
         '--enable-parser=vp3,vp8',
     ])
@@ -748,10 +751,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       else:
         configure_flags['Common'].extend([
           '--enable-lto',
-          '--extra-cflags=-O3',
-          '--extra-cflags=-mavx',
-          '--extra-cflags=-maes',
-          '--extra-cflags=-mpclmul',
           '--arch=x86_64',
           '--target-os=linux',
         ])
@@ -857,6 +856,9 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
             '--target-os=linux',
             '--sysroot=' + os.path.join(CHROMIUM_ROOT_DIR,
                                         'build/linux/debian_bullseye_arm64-sysroot'),
+            # See crbug.com/1467681. These could be removed eventually
+            '--disable-dotprod',
+            '--disable-i8mm',
         ])
       configure_flags['Common'].extend([
           '--arch=aarch64',
@@ -1012,8 +1014,8 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
   # Google Chrome & ChromeOS specific configuration.
   configure_flags['Chrome'].extend([
       '--enable-decoder=aac,h264,mp3,eac3,ac3,hevc,mpeg4,mpegvideo,mp2,mp1,flac',
-      '--enable-demuxer=aac,mp3,mov,dtshd,dts,avi,mpegvideo,m4v,h264,vc1,flac',
-      '--enable-parser=aac,h264,hevc,mpegaudio,mpeg4video,mpegvideo,ac3,h261,vc1,h263,flac',
+      '--enable-demuxer=aac,mp3,mov,dtshd,dts,avi,mpegvideo,m4v,eac3,ac3,h264,vc1,flac',
+      '--enable-parser=aac,h264,hevc,mpegaudio,mpeg4video,mpegvideo,eac3,ac3,h261,vc1,h263,flac',
   ])
 
   # Google ChromeOS specific configuration.
@@ -1024,12 +1026,6 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-decoder=mpeg4',
       '--enable-parser=h263,mpeg4video',
       '--enable-demuxer=avi',
-      # Enable playing Android 3gp files.
-      '--enable-demuxer=amr',
-      '--enable-decoder=amrnb,amrwb',
-      # Wav files for playing phone messages.
-      '--enable-decoder=gsm_ms',
-      '--enable-parser=gsm',
   ])
 
   configure_flags['ChromeAndroid'].extend([

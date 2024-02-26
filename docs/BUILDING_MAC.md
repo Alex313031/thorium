@@ -1,19 +1,12 @@
 # Checking out and building Thorium for Mac
 
-There are instructions for other platforms linked from the
-[get the code](get_the_code.md) page.
-
-## Instructions for Google Employees
-
-Are you a Google employee? See
-[go/building-chrome](https://goto.google.com/building-chrome) instead.
-
-[TOC]
+There are instructions for other platforms here in the Thorium Docs directory.
 
 ## System requirements
 
 *   A Mac, Intel or Arm.
     ([More details about Arm Macs](https://chromium.googlesource.com/chromium/src.git/+/main/docs/mac_arm64.md).)
+*   MacOS 10.15 or higher.
 *   [Xcode](https://developer.apple.com/xcode/). Xcode comes with...
 *   The macOS SDK. Run
 
@@ -38,7 +31,7 @@ Are you a Google employee? See
     version of the macOS SDK on it.
 *   An APFS-formatted volume (this is the default format for macOS volumes).
 
-##  Downloading the Thorium code
+##  Downloading the Thorium code <a name="get-the-code"></a>
 Using Git:
 
 ```shell
@@ -62,7 +55,7 @@ not be able to find infra tools):
 $ export PATH="$PATH:/path/to/depot_tools"
 ```
 
-## Get the code
+## Get the Chromium code
 
 Create a `chromium` directory for the checkout and change to it (you can call
 this whatever you like and put it wherever you like, as long as the full path
@@ -98,110 +91,112 @@ assume you have switched to the `src` directory:
 $ cd src
 ```
 
-*Optional*: You can also [install API
-keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
-build to talk to some Google services, but this is not necessary for most
-development and testing purposes.
+*Optional:* You can also [build with API keys](https://www.chromium.org/developers/how-tos/api-keys) if you want your
+build to talk to some Google services like Google Sync, Translate, and GeoLocation.&nbsp;<img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Light.svg#gh-dark-mode-only" width="26"> <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/Key_Dark.svg#gh-light-mode-only" width="26">&nbsp;Thorium has its own keys in a private repository, if you are a builder or would like access to them, contact me. Otherwise, for personal or development builds, 
+you can create your own keys and add yourself to [google-browser-signin-testaccounts](https://groups.google.com/u/1/a/chromium.org/g/google-browser-signin-testaccounts)
+to enable Sync.
 
 ## Setting up the build
+
+First, we need to make sure we have all the tags/branches and are on Tip of Tree.
+For this, run (from within the Thorium repo):
+
+```shell
+./trunk.sh
+```
+
+Secondly, we need to check out the revision that Thorium is currently using. 
+For this, run:
+
+```shell
+./version.sh
+```
+
+At the end it will download the [PGO profiles](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/pgo.md) for Chromium for all platforms. 
+The file for MacOS will be downloaded to */Users/$USERNAME/chromium/src/build/pgo_profiles/&#42;.profdata* with the actual file name looking something like 
+'chrome-mac-6167-1706032279-25144dc1c87be275c5981becbafed7785e2f39f2.profdata', which should be added to the end of args.gn as per below.
+Take note of this, as we will be using it in the `args.gn` below.
+
+Lastly, we need to copy the Thorium source files over the Chromium tree.
+For this, run:
+
+```shell
+./setup.sh --mac
+```
+This will copy all the files and patches to the needed locations.  
+- NOTE: To build for arm64, use `./setup.sh --mac-arm`. Use `./setup.sh --help` to see all options/platforms.
 
 Chromium uses [Ninja](https://ninja-build.org) as its main build tool along with
 a tool called [GN](https://gn.googlesource.com/gn/+/main/docs/quick_start.md)
 to generate `.ninja` files. You can create any number of *build directories*
-with different configurations. To create a build directory:
+with different configurations. Create the build output directory by running:
 
 ```shell
-$ gn gen out/Default
+$ gn args out/thorium
 ```
+The contents of '[mac_args.gn](https://github.com/Alex313031/thorium/blob/other/Mac/mac_args.gn)' in the root of this repo should be copy/pasted into the editor.
+*and edit the last line to point to the actual path and file name of the '&#42;.profdata' it*  
+Use the '[mac_ARM_args.gn](https://github.com/Alex313031/thorium/blob/other/Mac/mac_ARM_args.gn)' for arm64 builds.
 
-* You only have to run this once for each new build directory, Ninja will
-  update the build files as needed.
-* You can replace `Default` with another name, but
-  it should be a subdirectory of `out`.
 * For other build arguments, including release settings, see [GN build
   configuration](https://www.chromium.org/developers/gn-build-configuration).
   The default will be a debug component build matching the current host
   operating system and CPU.
 * For more info on GN, run `gn help` on the command line or read the
   [quick start guide](https://gn.googlesource.com/gn/+/main/docs/quick_start.md).
-* Building Chromium for arm Macs requires [additional setup](mac_arm64.md).
+* Building Thorium for arm64 Macs requires [additional setup](mac_arm64.md).
 
 
-### Faster builds
+## Build Thorium <a name="build"></a>
 
-Full rebuilds are about the same speed in Debug and Release, but linking is a
-lot faster in Release builds.
-
-Put
-
-```
-is_debug = false
-```
-
-in your `args.gn` to do a release build.
-
-Put
-
-```
-is_component_build = true
-```
-
-in your `args.gn` to build many small dylibs instead of a single large
-executable. This makes incremental builds much faster, at the cost of producing
-a binary that opens less quickly. Component builds work in both debug and
-release.
-
-Put
-
-```
-symbol_level = 0
-```
-
-in your args.gn to disable debug symbols altogether.  This makes both full
-rebuilds and linking faster (at the cost of not getting symbolized backtraces
-in gdb).
-
-#### CCache
-
-You might also want to [install ccache](ccache_mac.md) to speed up the build.
-
-## Build Chromium
-
-Build Chromium (the "chrome" target) with Ninja using the command:
+Build Thorium (the "chrome" target) with Ninja using the command:
 
 ```shell
-$ autoninja -C out/Default chrome
+$ autoninja -C out/thorium thorium chromedriver
 ```
 
 (`autoninja` is a wrapper that automatically provides optimal values for the
 arguments passed to `ninja`.)
 
 You can get a list of all of the other build targets from GN by running `gn ls
-out/Default` from the command line. To compile one, pass the GN label to Ninja
+out/thorium` from the command line. To compile one, pass the GN label to Ninja
 with no preceding "//" (so, for `//chrome/test:unit_tests` use `autoninja -C
-out/Default chrome/test:unit_tests`).
+out/thorium chrome/test:unit_tests`).
 
-## Run Chromium
+## Run/Install Thorium
 
 Once it is built, you can simply run the browser:
 
 ```shell
-$ out/Default/Chromium.app/Contents/MacOS/Chromium
+$ out/thorium/Thorium.app/Contents/MacOS/Thorium
 ```
 
-## Avoiding system permissions dialogs after each build
+To generate a *.dmg* installation package, run (from within the Thorium repo):
+
+```shell
+$ ./build_dmg.sh
+```
+
+### Avoiding repetitive system permissions dialogs after each build
 
 Every time you start a new developer build, you may get two system dialogs:
-`Chromium wants to use your confidential information stored in "Chromium Safe
-Storage" in your keychain.`, and `Do you want the application "Chromium.app" to
+`Thorium wants to use your confidential information stored in "Thorium Safe
+Storage" in your keychain.`, and `Do you want the application "Thorium.app" to
 accept incoming network connections?`.
 
-To avoid them, you can run Chromium with these command-line flags (but of
-course beware that they will change the behavior of certain subsystems):
+To avoid them, you can run Thorium with these command-line flags (but of
+course beware that they will change the behavior of certain subsystems, like password storage):
 
 ```shell
 --use-mock-keychain --disable-features=DialMediaRouteProvider
 ```
+
+## Debugging
+
+Good debugging tips can be found [here](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/mac/debugging.md).
+
+If you have problems building, join us in the Thorium IRC Channel at 
+`#thorium` on `irc.libera.chat` and ask there.
 
 ## Build and run test targets
 
@@ -210,7 +205,7 @@ exist in the directory structure. To see what target a given unit test or
 browser test file corresponds to, the following command can be used:
 
 ```shell
-$ gn refs out/Default --testonly=true --type=executable --all chrome/browser/ui/browser_list_unittest.cc
+$ gn refs out/thorium --testonly=true --type=executable --all chrome/browser/ui/browser_list_unittest.cc
 //chrome/test:unit_tests
 ```
 
@@ -218,76 +213,28 @@ In the example above, the target is unit_tests. The unit_tests binary can be
 built by running the following command:
 
 ```shell
-$ autoninja -C out/Default unit_tests
+$ autoninja -C out/thorium unit_tests
 ```
 
 You can run the tests by running the unit_tests binary. You can also limit which
 tests are run using the `--gtest_filter` arg, e.g.:
 
 ```shell
-$ out/Default/unit_tests --gtest_filter="BrowserListUnitTest.*"
+$ out/thorium/unit_tests --gtest_filter="BrowserListUnitTest.*"
 ```
 
 You can find out more about GoogleTest at its
 [GitHub page](https://github.com/google/googletest).
 
-## Debugging
-
-Good debugging tips can be found [here](mac/debugging.md).
-
 ## Update your checkout
 
-To update an existing checkout, you can run
+To update an existing checkout, you can run (from within the Thorium repo):
 
 ```shell
-$ git rebase-update
-$ gclient sync
+$ ./trunk.sh
 ```
-
-The first command updates the primary Chromium source repository and rebases
-any of your local branches on top of tip-of-tree (aka the Git branch
-`origin/main`). If you don't want to use this script, you can also just use
-`git pull` or other common Git commands to update the repo.
-
-The second command syncs dependencies to the appropriate versions and re-runs
-hooks as needed.
 
 ## Tips, tricks, and troubleshooting
-
-### Using Xcode-Ninja Hybrid
-
-While using Xcode is unsupported, GN supports a hybrid approach of using Ninja
-for building, but Xcode for editing and driving compilation.  Xcode is still
-slow, but it runs fairly well even **with indexing enabled**.  Most people
-build in the Terminal and write code with a text editor, though.
-
-With hybrid builds, compilation is still handled by Ninja, and can be run from
-the command line (e.g. `autoninja -C out/gn chrome`) or by choosing the `chrome`
-target in the hybrid project and choosing Build.
-
-To use Xcode-Ninja Hybrid pass `--ide=xcode` to `gn gen`:
-
-```shell
-$ gn gen out/gn --ide=xcode
-```
-
-Open it:
-
-```shell
-$ open out/gn/all.xcodeproj
-```
-
-You may run into a problem where http://YES is opened as a new tab every time
-you launch Chrome. To fix this, open the scheme editor for the Run scheme,
-choose the Options tab, and uncheck "Allow debugging when using document
-Versions Browser". When this option is checked, Xcode adds
-`--NSDocumentRevisionsDebugMode YES` to the launch arguments, and the `YES`
-gets interpreted as a URL to open.
-
-If you have problems building, join us in `#chromium` on `irc.freenode.net` and
-ask there. Be sure that the
-[waterfall](https://build.chromium.org/buildbot/waterfall/) is green and the
-tree is open before checking out. This will increase your chances of success.
 
 ### Improving performance of `git status`
 

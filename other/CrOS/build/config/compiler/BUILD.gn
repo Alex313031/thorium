@@ -1085,8 +1085,10 @@ config("compiler") {
     if (is_nacl_saigo) {
       defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
     } else {
-      defines += [ "_LIBCPP_ENABLE_SAFE_MODE=1" ]
+      defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
     }
+  } else {
+    defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
   }
 }
 
@@ -1911,9 +1913,6 @@ config("default_warnings") {
 
           # TODO(https://crbug.com/1490607): Fix and re-enable.
           "-Wno-thread-safety-reference-return",
-
-          # TODO(crbug.com/1495100): Evaluate and possibly enable.
-          "-Wno-delayed-template-parsing-in-cxx20",
         ]
       }
     }
@@ -2314,9 +2313,6 @@ if (is_win) {
     "-Xclang", "-freroll-loops",
     "-mllvm", "-enable-cond-stores-vec",
     "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-adce-remove-loops",
-    "-mllvm", "-enable-cse-in-irtranslator",
-    "-mllvm", "-enable-cse-in-legalizer",
     "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm", "-loop-rotate-multi",
     "-mllvm", "-enable-loop-distribute",
@@ -2339,9 +2335,6 @@ if (is_win) {
   common_optimize_on_ldflags += [
     "-mllvm:-enable-cond-stores-vec",
     "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-adce-remove-loops",
-    "-mllvm:-enable-cse-in-irtranslator",
-    "-mllvm:-enable-cse-in-legalizer",
     "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
     "-mllvm:-loop-rotate-multi",
     "-mllvm:-enable-loop-distribute",

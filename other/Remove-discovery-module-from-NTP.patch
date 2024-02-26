@@ -1,6 +1,6 @@
-From 6d9b50008f8e3a27396cf7e2936f2ad6ce882dc8 Mon Sep 17 00:00:00 2001
+From ce88a53607ea21bbfadea732ba5d9ae54a14309e Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Thu, 25 Jan 2024 11:07:21 +0800
+Date: Sun, 18 Feb 2024 14:36:32 +0800
 Subject: [PATCH] Remove-discovery-module-from-NTP
 
 ---
@@ -10,14 +10,14 @@ Subject: [PATCH] Remove-discovery-module-from-NTP
  3 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
-index ee1283cb9a6a0..c89b236330bf9 100644
+index 31f70ed8cc655..cf9e2978e634d 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 @@ -1,6 +1,6 @@
  <?xml version="1.0" encoding="utf-8"?>
  <!--
 -Copyright 2020 The Chromium Authors
-+Copyright 2023 The Chromium Authors, Alex313031 and gz83
++Copyright 2024 The Chromium Authors, Alex313031 and gz83
  Use of this source code is governed by a BSD-style license that can be
  found in the LICENSE file.
  -->
@@ -32,14 +32,14 @@ index ee1283cb9a6a0..c89b236330bf9 100644
      <RelativeLayout
          tools:ignore="RelativeOverlap"
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
-index 483e954de0a49..15ca071b1d30f 100644
+index febb918f29570..8a8ee82be9842 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 @@ -1,6 +1,6 @@
  <?xml version="1.0" encoding="utf-8"?>
  <!--
 -Copyright 2021 The Chromium Authors
-+Copyright 2023 The Chromium Authors, Alex313031 and gz83
++Copyright 2024 The Chromium Authors, Alex313031 and gz83
  Use of this source code is governed by a BSD-style license that can be
  found in the LICENSE file.
  -->
@@ -59,7 +59,7 @@ index 7ac1995862d0b..fadb75f2031db 100644
 +++ b/components/feed/core/shared_prefs/pref_names.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2020 The Chromium Authors
-+// Copyright 2023 The Chromium Authors, Alex313031 and gz83
++// Copyright 2024 The Chromium Authors, Alex313031 and gz83
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
@@ -73,5 +73,5 @@ index 7ac1995862d0b..fadb75f2031db 100644
  }
  
 -- 
-2.43.0
+2.44.0.rc0.windows.1
 

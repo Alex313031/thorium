@@ -26,7 +26,6 @@
 > - Enable [Live Caption](https://support.google.com/chrome/answer/10538231?hl) (SODA) on all builds.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
 > - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD support patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
-> - VAAPI on Wayland Patch (Thanks AUR and @pierro78)
 > - Audio Sandbox patch.
 > - [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (DNS over HTTPS) patches from Bromite.
 > - Enable [Do Not Track](https://allaboutdnt.com/) by default patch from Vanadium.

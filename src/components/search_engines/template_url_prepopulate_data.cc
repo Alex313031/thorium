@@ -11,6 +11,7 @@
 #include "base/containers/contains.h"
 #include "base/feature_list.h"
 #include "base/logging.h"
+#include "base/metrics/histogram_functions.h"
 #include "base/rand_util.h"
 #include "base/ranges/algorithm.h"
 #include "build/build_config.h"
@@ -23,6 +24,7 @@
 #include "components/search_engines/template_url_data.h"
 #include "components/search_engines/template_url_data_util.h"
 #include "components/search_engines/template_url_service.h"
+#include "components/version_info/version_info.h"
 
 namespace TemplateURLPrepopulateData {
 
@@ -32,8 +34,11 @@ namespace {
 // NOTE: You should probably not change the data in this file without changing
 // |kCurrentDataVersion| in prepopulated_engines.json. See comments in
 // GetDataVersion() below!
-// Also run tools/search_engine_choice/generate_search_engine_icons.py to update
-// favicons.
+
+// Also see if the config at
+// tools/search_engine_choice/generate_search_engine_icons_config.json needs to
+// be updated, and then run
+// tools/search_engine_choice/generate_search_engine_icons.py to refresh icons.
 
 // Search engine tier per country.
 // SearchEngineTier will be equal to kTopEngines for the top 5 engines,
@@ -872,6 +877,7 @@ constexpr EngineAndTier engines_MX[] = {
   {SearchEngineTier::kTopEngines, &yahoo_mx},
   {SearchEngineTier::kTopEngines, &duckduckgo},
   {SearchEngineTier::kTopEngines, &ecosia},
+  {SearchEngineTier::kTopEngines, &brave},
 };
 
 // Malaysia
@@ -1238,6 +1244,7 @@ constexpr EngineAndTier engines_US[] = {
   {SearchEngineTier::kTopEngines, &duckduckgo},
   {SearchEngineTier::kTopEngines, &brave},
   {SearchEngineTier::kTopEngines, &ask},
+  {SearchEngineTier::kTopEngines, &ecosia},
   {SearchEngineTier::kTopEngines, &yandex_com},
 };
 
@@ -1257,6 +1264,8 @@ constexpr EngineAndTier engines_VE[] = {
   {SearchEngineTier::kTopEngines, &yahoo_es},
   {SearchEngineTier::kTopEngines, &duckduckgo},
   {SearchEngineTier::kTopEngines, &yandex_com},
+  {SearchEngineTier::kTopEngines, &brave},
+  {SearchEngineTier::kTopEngines, &ecosia},
 };
 
 // Vietnam
@@ -1660,11 +1669,18 @@ GetPrepopulatedEnginesForEeaRegionCountries(int country_id,
 
   uint64_t profile_seed = prefs->GetInt64(
       prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed);
-  // Ensure that the generated seed is not 0 to avoid accidental re-seeding.
-  while (profile_seed == 0) {
+  int seed_version_number = prefs->GetInteger(
+      prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone);
+  int current_version_number = version_info::GetMajorVersionNumberAsInt();
+  // Ensure that the generated seed is not 0 to avoid accidental re-seeding and
+  // re-shuffle on every chrome update.
+  while (profile_seed == 0 || current_version_number != seed_version_number) {
     profile_seed = base::RandUint64();
     prefs->SetInt64(prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed,
                     profile_seed);
+    prefs->SetInteger(prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone,
+                      current_version_number);
+    seed_version_number = current_version_number;
   }
 
   // Randomize all vectors using the generated seed.
@@ -1723,6 +1739,23 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedTemplateURLData(
   return t_urls;
 }
 
+// These values are persisted to logs. Entries should not be renumbered and
+// numeric values should never be reused.
+enum class SearchProviderOverrideStatus {
+  // No preferences are available for `prefs::kSearchProviderOverrides`.
+  kNoPref = 0,
+
+  // The preferences for `prefs::kSearchProviderOverrides` do not contain valid
+  // template URLs.
+  kEmptyPref = 1,
+
+  // The preferences for `prefs::kSearchProviderOverrides` contain valid
+  // template URL(s).
+  kPrefHasValidUrls = 2,
+
+  kMaxValue = kPrefHasValidUrls
+};
+
 std::vector<std::unique_ptr<TemplateURLData>> GetOverriddenTemplateURLData(
     PrefService* prefs) {
   std::vector<std::unique_ptr<TemplateURLData>> t_urls;
@@ -1740,6 +1773,14 @@ std::vector<std::unique_ptr<TemplateURLData>> GetOverriddenTemplateURLData(
       }
     }
   }
+
+  base::UmaHistogramEnumeration(
+      "Search.SearchProviderOverrideStatus",
+      !t_urls.empty() ? SearchProviderOverrideStatus::kPrefHasValidUrls
+                      : (prefs->HasPrefPath(prefs::kSearchProviderOverrides)
+                             ? SearchProviderOverrideStatus::kEmptyPref
+                             : SearchProviderOverrideStatus::kNoPref));
+
   return t_urls;
 }
 
@@ -1753,8 +1794,12 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterIntegerPref(prefs::kSearchProviderOverridesVersion, -1);
   registry->RegisterInt64Pref(
       prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed, 0);
+  registry->RegisterIntegerPref(
+      prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone, 0);
   registry->RegisterBooleanPref(
       prefs::kDefaultSearchProviderKeywordsUseExtendedList, false);
+  registry->RegisterBooleanPref(prefs::kDefaultSearchProviderChoicePending,
+                                false);
 }
 
 int GetDataVersion(PrefService* prefs) {
