@@ -151,11 +151,13 @@ void BrowserAppMenuButton::UpdateThemeBasedState() {
 }
 
 void BrowserAppMenuButton::UpdateIcon() {
+  static const bool disable_thorium_icons =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
   const gfx::VectorIcon& icon =
       ui::TouchUiController::Get()->touch_ui()
           ? kBrowserToolsTouchIcon
           : (features::IsChromeRefresh2023() ? kBrowserToolsChromeRefreshIcon
-                                             : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kBrowserToolsIcon
+                                             : disable_thorium_icons ? kBrowserToolsIcon
                                              : kBrowserToolsThoriumIcon);
   for (auto state : kButtonStates) {
     // `app_menu_icon_controller()->GetIconColor()` set different colors based

@@ -32,6 +32,9 @@
 
 // ReloadButton ---------------------------------------------------------------
 
+static const bool disable_thorium_icons =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+
 ReloadButton::ReloadButton(CommandUpdater* command_updater)
     : ToolbarButton(base::BindRepeating(&ReloadButton::ButtonPressed,
                                         base::Unretained(this)),
@@ -40,7 +43,7 @@ ReloadButton::ReloadButton(CommandUpdater* command_updater)
       command_updater_(command_updater),
       reload_icon_(features::IsChromeRefresh2023()
                        ? vector_icons::kReloadChromeRefreshIcon
-                       : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? vector_icons::kReloadIcon
+                       : disable_thorium_icons ? vector_icons::kReloadIcon
                        : vector_icons::kReloadThoriumIcon),
       reload_touch_icon_(kReloadTouchIcon),
       stop_icon_(features::IsChromeRefresh2023()

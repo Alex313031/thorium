@@ -63,7 +63,9 @@ void SidePanelToolbarButton::ButtonPressed() {
 void SidePanelToolbarButton::UpdateToolbarButtonIcon() {
   const bool is_right_aligned = browser_->profile()->GetPrefs()->GetBoolean(
       prefs::kSidePanelHorizontalAlignment);
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons")) {
+  static const bool disable_thorium_icons =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+  if (disable_thorium_icons) {
     if (is_right_aligned) {
       SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshIcon
                                                      : kSidePanelIcon, kSidePanelTouchIcon);

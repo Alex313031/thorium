@@ -73,7 +73,7 @@ declare_args() {
 
   # Enables AC4 audio handling in chromium. This includes demuxing,
   # on-device decoding and bitstream passthrough as supported by device.
-  enable_platform_ac4_audio = proprietary_codecs
+  enable_platform_ac4_audio = false
 
   enable_platform_mpeg_h_audio = proprietary_codecs
 

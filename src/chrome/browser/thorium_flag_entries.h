@@ -57,10 +57,10 @@
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
 
 #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
-    {"middle-button-autoscroll",
+    {"middle-click-autoscroll",
      "Middle Button Autoscroll",
      "Enables autoscrolling when the middle mouse button is pressed.",
-     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kMiddleButtonClickAutoscroll)},
+     kOsDesktop, SINGLE_VALUE_TYPE("middle-click-autoscroll")},
 #endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 
     {"autoplay-policy",

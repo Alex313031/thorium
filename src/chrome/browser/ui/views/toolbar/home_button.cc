@@ -132,12 +132,14 @@ HomeButton::HomeButton(PressedCallback callback, PrefService* prefs)
     : ToolbarButton(std::move(callback)),
       prefs_(prefs),
       coordinator_(this, prefs) {
+  static const bool disable_thorium_icons =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
   SetProperty(views::kElementIdentifierKey, kToolbarHomeButtonElementId);
   SetTriggerableEventFlags(ui::EF_LEFT_MOUSE_BUTTON |
                            ui::EF_MIDDLE_MOUSE_BUTTON);
   SetVectorIcons(features::IsChromeRefresh2023()
                      ? kNavigateHomeChromeRefreshIcon
-                     : base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons") ? kNavigateHomeIcon
+                     : disable_thorium_icons ? kNavigateHomeIcon
                      : kNavigateHomeThoriumIcon,
                  kNavigateHomeTouchIcon);
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_HOME));
