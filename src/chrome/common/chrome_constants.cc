@@ -10,6 +10,7 @@
 
 #define FPL FILE_PATH_LITERAL
 
+#if BUILDFLAG(IS_MAC)
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 #define PRODUCT_STRING "Google Chrome"
 #elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
@@ -19,6 +20,7 @@
 #else
 #error Unknown branding
 #endif
+#endif  // BUILDFLAG(IS_MAC)
 
 namespace chrome {
 
