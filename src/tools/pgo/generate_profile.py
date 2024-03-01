@@ -28,12 +28,12 @@ import subprocess
 import sys
 
 _SRC_DIR = pathlib.Path(__file__).parents[2]
-_TELEMETRY_DIR = _SRC_DIR / 'third_party/catapult/telemetry'
-if str(_TELEMETRY_DIR) not in sys.path:
-    sys.path.append(str(_TELEMETRY_DIR))
-from telemetry.internal.backends import android_browser_backend_settings
+#_TELEMETRY_DIR = _SRC_DIR / 'third_party/catapult/telemetry'
+#if str(_TELEMETRY_DIR) not in sys.path:
+#    sys.path.append(str(_TELEMETRY_DIR))
+#from telemetry.internal.backends import android_browser_backend_settings
 
-ANDROID_SETTINGS = android_browser_backend_settings.ANDROID_BACKEND_SETTINGS
+#ANDROID_SETTINGS = android_browser_backend_settings.ANDROID_BACKEND_SETTINGS
 
 exe_ext = '.exe' if sys.platform == 'win32' else ''
 
