@@ -36,7 +36,7 @@ else
     export CR_SRC_DIR
 fi
 
-THOR_VER="121.0.6167.212"
+THOR_VER="122.0.6261.117"
 
 export THOR_VER &&
 
