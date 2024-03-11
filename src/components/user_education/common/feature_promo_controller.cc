@@ -12,6 +12,8 @@
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_forward.h"
+#include "base/metrics/histogram_functions.h"
+#include "base/metrics/user_metrics.h"
 #include "components/feature_engagement/public/feature_constants.h"
 #include "components/strings/grit/components_strings.h"
 #include "components/user_education/common/feature_promo_data.h"
@@ -22,6 +24,7 @@
 #include "components/user_education/common/feature_promo_storage_service.h"
 #include "components/user_education/common/help_bubble_factory_registry.h"
 #include "components/user_education/common/help_bubble_params.h"
+#include "components/user_education/common/product_messaging_controller.h"
 #include "components/user_education/common/tutorial.h"
 #include "components/user_education/common/tutorial_service.h"
 #include "ui/accessibility/ax_mode.h"
@@ -54,7 +57,8 @@ FeaturePromoControllerCommon::FeaturePromoControllerCommon(
     HelpBubbleFactoryRegistry* help_bubble_registry,
     FeaturePromoStorageService* storage_service,
     FeaturePromoSessionPolicy* session_policy,
-    TutorialService* tutorial_service)
+    TutorialService* tutorial_service,
+    ProductMessagingController* messaging_controller)
     : in_iph_demo_mode_(
           base::FeatureList::IsEnabled(feature_engagement::kIPHDemoMode)),
       registry_(registry),
@@ -62,7 +66,8 @@ FeaturePromoControllerCommon::FeaturePromoControllerCommon(
       bubble_factory_registry_(help_bubble_registry),
       storage_service_(storage_service),
       session_policy_(session_policy),
-      tutorial_service_(tutorial_service) {
+      tutorial_service_(tutorial_service),
+      messaging_controller_(messaging_controller) {
   DCHECK(feature_engagement_tracker_);
   DCHECK(bubble_factory_registry_);
   DCHECK(storage_service_);
@@ -88,7 +93,13 @@ FeaturePromoResult FeaturePromoControllerCommon::CanShowPromo(
 
 FeaturePromoResult FeaturePromoControllerCommon::MaybeShowPromo(
     FeaturePromoParams params) {
-  return MaybeShowPromoCommon(std::move(params), /* for_demo =*/false);
+  const char* feature_name = params.feature.get().name;
+  auto result = MaybeShowPromoCommon(std::move(params), /* for_demo =*/false);
+  auto failure = result.failure();
+  if (failure.has_value()) {
+    RecordPromoNotShown(feature_name, failure.value());
+  }
+  return result;
 }
 
 bool FeaturePromoControllerCommon::MaybeShowStartupPromo(
@@ -287,6 +298,8 @@ bool FeaturePromoControllerCommon::HasPromoBeenDismissed(
   switch (spec->promo_subtype()) {
     case user_education::FeaturePromoSpecification::PromoSubtype::kNormal:
     case user_education::FeaturePromoSpecification::PromoSubtype::kLegalNotice:
+    case user_education::FeaturePromoSpecification::PromoSubtype::
+        kActionableAlert:
       return data->is_dismissed;
     case user_education::FeaturePromoSpecification::PromoSubtype::kPerApp:
       return base::Contains(data->shown_for_apps, GetAppId());
@@ -469,6 +482,11 @@ FeaturePromoResult FeaturePromoControllerCommon::CanShowPromoCommon(
     current_promo = last_promo_info_;
   } else if (bubble_factory_registry_->is_any_bubble_showing()) {
     current_promo = FeaturePromoSessionPolicy::PromoInfo();
+  }
+
+  // Promos are blocked if some other critical user messaging is queued.
+  if (messaging_controller_->has_pending_notices()) {
+    return FeaturePromoResult::kBlockedByPromo;
   }
 
   // Defer to the session policy to determine if the promo can show.
@@ -836,6 +854,70 @@ FeaturePromoControllerCommon::CreateTutorialButtons(
 const base::Feature* FeaturePromoControllerCommon::GetCurrentPromoFeature()
     const {
   return current_promo_ ? current_promo_->iph_feature() : nullptr;
+}
+
+void FeaturePromoControllerCommon::RecordPromoNotShown(
+    const char* feature_name,
+    FeaturePromoResult::Failure failure) const {
+  // Record Promo not shown.
+  std::string action_name = "UserEducation.MessageNotShown";
+  base::RecordComputedAction(action_name);
+
+  // Record Failure as histogram.
+  base::UmaHistogramEnumeration(action_name, failure);
+
+  // Record Promo feature ID.
+  action_name.append(".");
+  action_name.append(feature_name);
+  base::RecordComputedAction(action_name);
+
+  // Record Failure as histogram with feature ID.
+  base::UmaHistogramEnumeration(action_name, failure);
+
+  // Record Failure as user action
+  std::string failure_action_name = "UserEducation.MessageNotShown";
+  failure_action_name.append(".");
+  switch (failure) {
+    case FeaturePromoResult::kCanceled:
+      failure_action_name.append("Canceled");
+      break;
+    case FeaturePromoResult::kError:
+      failure_action_name.append("Error");
+      break;
+    case FeaturePromoResult::kBlockedByUi:
+      failure_action_name.append("BlockedByUi");
+      break;
+    case FeaturePromoResult::kBlockedByPromo:
+      failure_action_name.append("BlockedByPromo");
+      break;
+    case FeaturePromoResult::kBlockedByConfig:
+      failure_action_name.append("BlockedByConfig");
+      break;
+    case FeaturePromoResult::kSnoozed:
+      failure_action_name.append("Snoozed");
+      break;
+    case FeaturePromoResult::kBlockedByContext:
+      failure_action_name.append("BlockedByContext");
+      break;
+    case FeaturePromoResult::kFeatureDisabled:
+      failure_action_name.append("FeatureDisabled");
+      break;
+    case FeaturePromoResult::kPermanentlyDismissed:
+      failure_action_name.append("PermanentlyDismissed");
+      break;
+    case FeaturePromoResult::kBlockedByGracePeriod:
+      failure_action_name.append("BlockedByGracePeriod");
+      break;
+    case FeaturePromoResult::kBlockedByCooldown:
+      failure_action_name.append("BlockedByCooldown");
+      break;
+    case FeaturePromoResult::kRecentlyAborted:
+      failure_action_name.append("RecentlyAborted");
+      break;
+    default:
+      NOTREACHED();
+  }
+  base::RecordComputedAction(failure_action_name);
 }
 
 // static

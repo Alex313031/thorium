@@ -361,7 +361,7 @@ void BrowserRootView::PaintChildren(const views::PaintInfo& paint_info) {
     const int width = std::round(toolbar_bounds.width() * scale);
 
     gfx::ScopedCanvas scoped_canvas(canvas);
-    const absl::optional<int> active_tab_index = tabstrip()->GetActiveIndex();
+    const std::optional<int> active_tab_index = tabstrip()->GetActiveIndex();
     if (active_tab_index.has_value()) {
       Tab* active_tab = tabstrip()->tab_at(active_tab_index.value());
       if (active_tab && active_tab->GetVisible()) {
@@ -387,9 +387,29 @@ void BrowserRootView::PaintChildren(const views::PaintInfo& paint_info) {
 
     cc::PaintFlags flags;
     flags.setColor(toolbar_top_separator_color);
-    flags.setStyle(cc::PaintFlags::kFill_Style);
     flags.setAntiAlias(true);
-    canvas->DrawRect(gfx::RectF(x, bottom - scale, width, scale), flags);
+    if (features::IsChromeRefresh2023()) {
+      const float stroke_width = scale;
+      // Outset the rectangle and corner radius by half the stroke width
+      // to draw an outer stroke.
+      const float stroke_outset = stroke_width / 2;
+      const float corner_radius =
+          GetLayoutConstant(TOOLBAR_CORNER_RADIUS) * scale + stroke_outset;
+
+      flags.setStyle(cc::PaintFlags::kStroke_Style);
+      flags.setStrokeWidth(stroke_width);
+
+      // Only draw the top half of the rounded rect.
+      canvas->ClipRect(gfx::RectF(x, 0, width, bottom + corner_radius),
+                       SkClipOp::kIntersect);
+
+      gfx::RectF rect(x, bottom, width, 2 * corner_radius);
+      rect.Outset(stroke_outset);
+      canvas->DrawRoundRect(rect, corner_radius, flags);
+    } else {
+      flags.setStyle(cc::PaintFlags::kFill_Style);
+      canvas->DrawRect(gfx::RectF(x, bottom - scale, width, scale), flags);
+    }
   }
 }
 
@@ -510,5 +530,5 @@ void BrowserRootView::NavigateToDropUrl(
   output_drag_op = GetDropEffect(event, url);
 }
 
-BEGIN_METADATA(BrowserRootView, views::internal::RootView)
+BEGIN_METADATA(BrowserRootView)
 END_METADATA

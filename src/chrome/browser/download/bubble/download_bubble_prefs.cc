@@ -49,7 +49,7 @@ bool DoesDownloadConnectorBlock(Profile* profile, const GURL& url) {
     return false;
   }
 
-  absl::optional<enterprise_connectors::AnalysisSettings> settings =
+  std::optional<enterprise_connectors::AnalysisSettings> settings =
       connector_service->GetAnalysisSettings(
           url, enterprise_connectors::AnalysisConnector::FILE_DOWNLOADED);
   if (!settings) {
@@ -58,10 +58,6 @@ bool DoesDownloadConnectorBlock(Profile* profile, const GURL& url) {
 
   return settings->block_until_verdict ==
          enterprise_connectors::BlockUntilVerdict::kBlock;
-}
-
-bool ShouldSuppressDownloadBubbleIph(Profile* profile) {
-  return profile->GetPrefs()->GetBoolean(prefs::kDownloadBubbleIphSuppression);
 }
 
 bool IsDownloadBubblePartialViewControlledByPref() {

@@ -88,5 +88,5 @@ bool SidePanelToolbarButton::ShouldShowInkdropAfterIphInteraction() {
   return false;
 }
 
-BEGIN_METADATA(SidePanelToolbarButton, ToolbarButton)
+BEGIN_METADATA(SidePanelToolbarButton)
 END_METADATA

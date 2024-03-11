@@ -11,7 +11,6 @@ import("//build/config/ui.gni")
 import("//media/gpu/args.gni")
 import("//testing/libfuzzer/fuzzer_test.gni")
 import("//third_party/libaom/options.gni")
-import("//third_party/libgav1/options.gni")
 
 # This flag sets defaults for the current generation of cast devices.
 is_cast_media_device = is_castos || is_cast_android
@@ -80,6 +79,10 @@ declare_args() {
   # Enables DTS/DTSX audio handling in chromium. This includes demuxing,
   # on-device decoding and bitstream passthrough as supported by device.
   enable_platform_dts_audio = false
+
+  # Enables IAMF audio handling in chromium. This includes demuxing,
+  # on-device decoding and bitstream passthrough as supported by device.
+  enable_platform_iamf_audio = false
 
   # Enable Dolby Vision demuxing. Enabled by default for Chromecast and Windows.
   # Actual decoding must be provided by the platform. Since most Dolby Vision
