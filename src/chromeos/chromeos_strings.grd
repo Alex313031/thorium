@@ -520,7 +520,7 @@
         <message name="IDS_ASH_SHELF_SIGNIN_BUTTON" desc="Text shown on sign in button on enrollment screen.">
           Use as a personal device
         </message>
-        <message name="IDS_ASH_SHELF_OS_INSTALL_BUTTON" desc="Text shown on install ThoriumOS Flex button on login screen.">
+        <message name="IDS_ASH_SHELF_OS_INSTALL_BUTTON" desc="Text shown on install ThoriumOS button on login screen.">
           Install ThoriumOS
         </message>
         <message name="IDS_ASH_SHELF_APP_LIST_LAUNCHER_TITLE" desc="The title used for the Ash Launcher in the Shelf (not mentioning 'Apps' since this is a general launcher).">

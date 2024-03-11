@@ -277,7 +277,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       </if>
 
       <!--
-        Even though Google Thorium for Testing is a separate brand, there is
+        Even though Thorium for Testing is a separate brand, there is
         no separate file for it. Instead, we use the same file as Thorium, with
         a few select overrides for the most prominent end-user strings.
 
@@ -286,7 +286,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <if expr="_is_chrome_for_testing_branded">
         <then>
           <message name="IDS_PRODUCT_NAME" desc="The Thorium for Testing application name" translateable="false">
-            Google Thorium for Testing
+            Thorium for Testing
           </message>
           <message name="IDS_SHORT_PRODUCT_NAME" desc="The Thorium for Testing application short name." translateable="false">
             Thorium for Testing
@@ -357,7 +357,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
         <if expr="_is_chrome_for_testing_branded">
           <then>
             <message name="IDS_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for titles displayed in tabs and popup windows">
-              <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Google Thorium for Testing
+              <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium for Testing
             </message>
           </then>
           <else>
@@ -396,7 +396,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
       <if expr="_is_chrome_for_testing_branded">
         <then>
           <message name="IDS_ACCESSIBLE_BROWSER_WINDOW_TITLE_FORMAT" desc="The format for the accessible name of a tabbed browser window">
-            <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Google Thorium for Testing
+            <ph name="PAGE_TITLE">$1<ex>Google</ex></ph> - Thorium for Testing
           </message>
         </then>
         <else>
@@ -697,7 +697,7 @@ Permissions you've already given to websites and apps may apply to this account.
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_UNKNOWN_SOURCE"
                desc="Summary of dangerous warning for a file (like an extension) from an unknown source.">
-        Extensions, apps, and themes from unknown sources can harm your device. Thorium recommends only installing them from the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph>
+        Extensions, apps, and themes from unknown sources can harm your device. Thorium recommends only installing them from the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph>
       </message>
       <message name="IDS_DOWNLOAD_BUBBLE_SUBPAGE_SUMMARY_MALWARE"
                desc="Subpage summary for malware warning for the user.">
@@ -824,8 +824,8 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_MALWARE" desc="The text explaining the reason for disabling extension. The extension in question contains malware.">
         This extension contains malware and is unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
-      <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Thorium Web Store policy.">
-        This extension violates the Thorium Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
+      <message name="IDS_SAFETY_CHECK_EXTENSIONS_POLICY_VIOLATION" desc="The text explaining the reason for disabling extension. The extension in question violates Chrome Web Store policy.">
+        This extension violates the Chrome Web Store policy, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
       </message>
       <message name="IDS_SAFETY_CHECK_EXTENSIONS_UNPUBLISHED" desc="The text explaining the reason for disabling extension. The extension in question was unpublished by the developer.">
         This extension was unpublished by its developer, and might be unsafe. Remove it from Thorium so it can no longer see and change your data on sites you visit, including your personal info.
@@ -850,10 +850,10 @@ Permissions you've already given to websites and apps may apply to this account.
 
       <if expr="enable_extensions">
         <message name="IDS_EXTENSIONS_MULTIPLE_UNSUPPORTED_DISABLED_BODY" desc="Body of the dialog shown when multiple unsupported extensions have been disabled.">
-          To make Thorium safer, we disabled some extensions that aren't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph> and may have been added without your knowledge.
+          To make Thorium safer, we disabled some extensions that aren't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph> and may have been added without your knowledge.
         </message>
         <message name="IDS_EXTENSIONS_SINGLE_UNSUPPORTED_DISABLED_BODY" desc="Body of the dialog shown when a single unsupported extension has been disabled.">
-          To make Thorium safer, we disabled the following extension that isn't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Thorium Web Store</ex></ph> and may have been added without your knowledge.
+          To make Thorium safer, we disabled the following extension that isn't listed in the <ph name="IDS_EXTENSION_WEB_STORE_TITLE">$1<ex>Chrome Web Store</ex></ph> and may have been added without your knowledge.
         </message>
       </if>
 
@@ -878,7 +878,7 @@ Permissions you've already given to websites and apps may apply to this account.
         <if expr="_is_chrome_for_testing_branded">
           <then>
             <message name="IDS_ABOUT" desc="In Title Case: The text label of the About Thorium for Testing menu item">
-              About &amp;Google Thorium for Testing
+              About &amp;Thorium for Testing
             </message>
           </then>
           <else>
@@ -895,7 +895,7 @@ Permissions you've already given to websites and apps may apply to this account.
         <if expr="_is_chrome_for_testing_branded">
           <then>
             <message name="IDS_ABOUT" desc="The text label of the About Thorium for Testing menu item">
-              About &amp;Google Thorium for Testing
+              About &amp;Thorium for Testing
             </message>
           </then>
           <else>
@@ -924,13 +924,13 @@ Permissions you've already given to websites and apps may apply to this account.
       </if>
 
       <if expr="is_macosx">
-        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Google Thorium." translateable="false">
+        <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Thorium, not Thorium." translateable="false">
           Thorium
         </message>
-        <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Thorium application name (IDS_PRODUCT_NAME). Example: Google Thorium Helper.">
+        <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Thorium application name (IDS_PRODUCT_NAME). Example: Thorium Helper.">
           Thorium Helper
         </message>
-        <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Thorium Helper, not Google Thorium Helper.">
+        <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Thorium Helper, not Thorium Helper.">
           Thorium Helper
         </message>
       </if>

@@ -170,8 +170,8 @@
     <message name="IDS_MANAGEMENT_REPORT_LOGIN_LOGOUT" desc="Message stating that administrators can see device Login and Logout events.">
       Device access actions such as logins (including failed login reasons), logouts, locks, and unlocks
     </message>
-    <message name="IDS_MANAGEMENT_REPORT_CRD_SESSIONS" desc="Message stating that administrators can see Thorium Remote Desktop events.">
-      Thorium Remote Desktop history, including timestamps, hosts and client session ids
+    <message name="IDS_MANAGEMENT_REPORT_CRD_SESSIONS" desc="Message stating that administrators can see Chrome Remote Desktop events.">
+      Chrome Remote Desktop history, including timestamps, hosts and client session ids
     </message>
     <message name="IDS_MANAGEMENT_REPORT_ALL_WEBSITE_INFO_AND_ACTIVITY" desc="Message stating that administrators can see what websites are visited and when.">
       Which websites are visited and when.
