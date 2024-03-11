@@ -64,6 +64,8 @@ git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
+git clean -ffd &&
+
 gclient runhooks &&
 
 # Install all sysroots (i.e. for ARM64)
