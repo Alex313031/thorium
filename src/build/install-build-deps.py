@@ -148,7 +148,7 @@ def check_distro(options):
   distro_id = subprocess.check_output(["lsb_release", "--id",
                                        "--short"]).decode().strip()
 
-  supported_codenames = ["bionic", "focal", "jammy", "mantic"]
+  supported_codenames = ["bionic", "focal", "jammy", "noble"]
   supported_ids = ["Debian"]
 
   if (distro_codename() not in supported_codenames
@@ -160,7 +160,7 @@ def check_distro(options):
         "\tUbuntu 18.04 LTS (bionic with EoL April 2028)",
         "\tUbuntu 20.04 LTS (focal with EoL April 2030)",
         "\tUbuntu 22.04 LTS (jammy with EoL April 2032)",
-        "\tUbuntu 23.10 (mantic)",
+        "\tUbuntu 24.04 LTS (noble with EoL June 2029)",
         "\tDebian 10 (buster), 11 (bullseye) or 12 (bookworm)",
         sep="\n",
         file=sys.stderr,
@@ -348,7 +348,6 @@ def lib_list():
       "libglib2.0-0",
       "libgl1",
       "libgtk-3-0",
-      "libncurses5",
       "libpam0g",
       "libpango-1.0-0",
       "libpangocairo-1.0-0",
@@ -377,7 +376,8 @@ def lib_list():
       "libxrender1",
       "libxtst6",
       "x11-utils",
-      "xorg", # TODO(crbug.com/1417069): Experimental.
+      "xserver-xorg-core",  # TODO(crbug.com/1417069): Experimental.
+      "xserver-xorg-video-dummy",  # TODO(crbug.com/1417069): Experimental.
       "xvfb",
       "zlib1g",
   ]
@@ -416,6 +416,12 @@ def lib_list():
   if package_exists("libinput10"):
     packages.append("libinput10")
 
+  # Work around for dependency on Ubuntu 24.04 LTS (noble)
+  if distro_codename() == "noble":
+    packages.append("libncurses6")
+  else:
+    packages.append("libncurses5")
+
   return packages
 
 
@@ -437,7 +443,6 @@ def lib32_list(options):
       "libegl1:i386",
       "libgl1:i386",
       "libglib2.0-0:i386",
-      "libncurses5:i386",
       "libnss3:i386",
       "libpango-1.0-0:i386",
       "libpangocairo-1.0-0:i386",
@@ -469,6 +474,12 @@ def lib32_list(options):
         ["apt-cache", "depends", "g++-multilib", "--important"]).decode()
     pattern = re.compile(r"g\+\+-[0-9.]+-multilib")
     packages += re.findall(pattern, lines)
+
+  # Work around for 32-bit dependency on Ubuntu 24.04 LTS (noble)
+  if distro_codename() == "noble":
+    packages.append("libncurses6:i386")
+  else:
+    packages.append("libncurses5:i386")
 
   return packages
 
@@ -625,7 +636,7 @@ def arm_list(options):
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
     ])
-  elif distro_codename() == "mantic":
+  elif distro_codename() == "noble":
     packages.extend([
         "gcc-arm-linux-gnueabihf",
         "g++-11-arm-linux-gnueabihf",
@@ -652,8 +663,6 @@ def nacl_list(options):
       "libfontconfig1:i386",
       "libglib2.0-0:i386",
       "libgpm2:i386",
-      "libncurses5:i386",
-      "lib32ncurses5-dev",
       "libnss3:i386",
       "libpango-1.0-0:i386",
       "libssl-dev:i386",
@@ -698,6 +707,14 @@ def nacl_list(options):
     packages.append("libudev1:i386")
   else:
     packages.append("libudev0:i386")
+
+  # Work around for nacl dependency on Ubuntu 24.04 LTS (noble)
+  if distro_codename() == "noble":
+    packages.append("libncurses6:i386")
+    packages.append("lib32ncurses-dev")
+  else:
+    packages.append("libncurses5:i386")
+    packages.append("lib32ncurses5-dev")
 
   return packages
 
