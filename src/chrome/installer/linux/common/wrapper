@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2024 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2024 The Chromium Authors, the AUR, and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -53,7 +53,7 @@ export CHROME_DESKTOP="thorium-browser.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
 # DIST=`cat /etc/debian_version`
-export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Linux"
+export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Ubuntu"
 
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM

@@ -8,6 +8,7 @@
 #include <random>
 
 #include "base/check_deref.h"
+#include "base/check_is_test.h"
 #include "base/containers/contains.h"
 #include "base/feature_list.h"
 #include "base/logging.h"
@@ -19,6 +20,7 @@
 #include "components/pref_registry/pref_registry_syncable.h"
 #include "components/prefs/pref_service.h"
 #include "components/search_engines/prepopulated_engines.h"
+#include "components/search_engines/search_engine_choice/search_engine_choice_service.h"
 #include "components/search_engines/search_engine_choice_utils.h"
 #include "components/search_engines/search_engines_pref_names.h"
 #include "components/search_engines/template_url_data.h"
@@ -120,6 +122,7 @@ constexpr EngineAndTier engines_AT[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Australia
@@ -154,6 +157,8 @@ constexpr EngineAndTier engines_BE[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Bulgaria
@@ -170,6 +175,8 @@ constexpr EngineAndTier engines_BG[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Bahrain
@@ -305,6 +312,9 @@ constexpr EngineAndTier engines_CY[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Czech Republic
@@ -322,6 +332,8 @@ constexpr EngineAndTier engines_CZ[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Germany
@@ -344,6 +356,8 @@ constexpr EngineAndTier engines_DE[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &lilo},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Denmark
@@ -361,6 +375,8 @@ constexpr EngineAndTier engines_DK[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Dominican Republic
@@ -403,6 +419,9 @@ constexpr EngineAndTier engines_EE[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Egypt
@@ -431,6 +450,8 @@ constexpr EngineAndTier engines_ES[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &lilo},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Finland
@@ -448,6 +469,8 @@ constexpr EngineAndTier engines_FI[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Faroe Islands
@@ -477,6 +500,7 @@ constexpr EngineAndTier engines_FR[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // United Kingdom
@@ -504,6 +528,8 @@ constexpr EngineAndTier engines_GR[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Guatemala
@@ -549,6 +575,9 @@ constexpr EngineAndTier engines_HR[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Hungary
@@ -565,6 +594,8 @@ constexpr EngineAndTier engines_HU[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Indonesia
@@ -593,6 +624,7 @@ constexpr EngineAndTier engines_IE[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Israel
@@ -644,13 +676,16 @@ constexpr EngineAndTier engines_IS[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Italy
 constexpr EngineAndTier engines_IT[] = {
   {SearchEngineTier::kTopEngines, &google},
   {SearchEngineTier::kTopEngines, &bing},
-  {SearchEngineTier::kTopEngines, &yahoo},
+  {SearchEngineTier::kTopEngines, &yahoo_it},
   {SearchEngineTier::kTopEngines, &duckduckgo},
   {SearchEngineTier::kTopEngines, &yandex_com},
   {SearchEngineTier::kRemainingEngines, &qwant},
@@ -662,6 +697,8 @@ constexpr EngineAndTier engines_IT[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &lilo},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Jamaica
@@ -750,6 +787,8 @@ constexpr EngineAndTier engines_LI[] = {
   {SearchEngineTier::kRemainingEngines, &panda},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Lithuania
@@ -765,6 +804,9 @@ constexpr EngineAndTier engines_LT[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Luxembourg
@@ -781,6 +823,9 @@ constexpr EngineAndTier engines_LU[] = {
   {SearchEngineTier::kRemainingEngines, &panda},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &lilo},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Latvia
@@ -796,6 +841,9 @@ constexpr EngineAndTier engines_LV[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 
@@ -868,6 +916,8 @@ constexpr EngineAndTier engines_MT[] = {
   {SearchEngineTier::kRemainingEngines, &panda},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Mexico
@@ -913,6 +963,8 @@ constexpr EngineAndTier engines_NL[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Norway
@@ -930,6 +982,8 @@ constexpr EngineAndTier engines_NO[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // New Zealand
@@ -1000,6 +1054,8 @@ constexpr EngineAndTier engines_PL[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Puerto Rico
@@ -1026,6 +1082,8 @@ constexpr EngineAndTier engines_PT[] = {
   {SearchEngineTier::kRemainingEngines, &oceanhero},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &lilo},
+  {SearchEngineTier::kRemainingEngines, &you},
 };
 
 // Paraguay
@@ -1059,6 +1117,9 @@ constexpr EngineAndTier engines_RO[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Serbia
@@ -1111,6 +1172,9 @@ constexpr EngineAndTier engines_SE[] = {
   {SearchEngineTier::kRemainingEngines, &info_com},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Singapore
@@ -1135,6 +1199,9 @@ constexpr EngineAndTier engines_SI[] = {
   {SearchEngineTier::kRemainingEngines, &yep},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // Slovakia
@@ -1151,6 +1218,9 @@ constexpr EngineAndTier engines_SK[] = {
   {SearchEngineTier::kRemainingEngines, &seznam_sk},
   {SearchEngineTier::kRemainingEngines, &karma},
   {SearchEngineTier::kRemainingEngines, &privacywall},
+  {SearchEngineTier::kRemainingEngines, &panda},
+  {SearchEngineTier::kRemainingEngines, &you},
+  {SearchEngineTier::kRemainingEngines, &oceanhero},
 };
 
 // El Salvador
@@ -1667,20 +1737,30 @@ GetPrepopulatedEnginesForEeaRegionCountries(int country_id,
     }
   }
 
-  uint64_t profile_seed = prefs->GetInt64(
-      prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed);
-  int seed_version_number = prefs->GetInteger(
-      prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone);
-  int current_version_number = version_info::GetMajorVersionNumberAsInt();
-  // Ensure that the generated seed is not 0 to avoid accidental re-seeding and
-  // re-shuffle on every chrome update.
-  while (profile_seed == 0 || current_version_number != seed_version_number) {
-    profile_seed = base::RandUint64();
-    prefs->SetInt64(prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed,
-                    profile_seed);
-    prefs->SetInteger(prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone,
-                      current_version_number);
-    seed_version_number = current_version_number;
+  uint64_t profile_seed;
+  if (prefs) {
+    profile_seed = prefs->GetInt64(
+        prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed);
+    int seed_version_number = prefs->GetInteger(
+        prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone);
+    int current_version_number = version_info::GetMajorVersionNumberAsInt();
+    // Ensure that the generated seed is not 0 to avoid accidental re-seeding
+    // and re-shuffle on every chrome update.
+    while (profile_seed == 0 || current_version_number != seed_version_number) {
+      profile_seed = base::RandUint64();
+      prefs->SetInt64(
+          prefs::kDefaultSearchProviderChoiceScreenRandomShuffleSeed,
+          profile_seed);
+      prefs->SetInteger(
+          prefs::kDefaultSearchProviderChoiceScreenShuffleMilestone,
+          current_version_number);
+      seed_version_number = current_version_number;
+    }
+  } else {
+    // TODO(crbug.com/1499181): Avoid passing null prefs and unbranch the code.
+    CHECK_IS_TEST();
+    // Choosing a fixed magic number to ensure a stable shuffle in tests too.
+    profile_seed = 42;
   }
 
   // Randomize all vectors using the generated seed.
@@ -1811,6 +1891,7 @@ int GetDataVersion(PrefService* prefs) {
 
 std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
     PrefService* prefs,
+    search_engines::SearchEngineChoiceService* search_engine_choice_service,
     size_t* default_search_provider_index,
     bool include_current_default,
     TemplateURLService* template_url_service) {
@@ -1819,8 +1900,13 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
   std::vector<std::unique_ptr<TemplateURLData>> t_urls =
       GetOverriddenTemplateURLData(prefs);
   if (t_urls.empty()) {
-    t_urls = GetPrepopulatedTemplateURLData(
-        search_engines::GetSearchEngineChoiceCountryId(prefs), prefs);
+    // `search_engine_choice_service` (and `prefs`) can be null in tests.
+    // TODO(b/318801987): Make sure `prefs` and `search_engine_choice_service`
+    //                    are always not null.
+    int country_id = search_engine_choice_service
+                         ? search_engine_choice_service->GetCountryId()
+                         : country_codes::GetCurrentCountryID();
+    t_urls = GetPrepopulatedTemplateURLData(country_id, prefs);
 
     if (include_current_default && template_url_service) {
       CHECK(search_engines::IsChoiceScreenFlagEnabled(
@@ -1829,6 +1915,7 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
       // returned list if it's not already there.
       const TemplateURL* default_search_engine =
           template_url_service->GetDefaultSearchProvider();
+      bool inserted_default = false;
       if (default_search_engine &&
           !base::Contains(t_urls, default_search_engine->prepopulate_id(),
                           [](const std::unique_ptr<TemplateURLData>& engine) {
@@ -1836,7 +1923,9 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
                           })) {
         t_urls.insert(t_urls.begin(), std::make_unique<TemplateURLData>(
                                           default_search_engine->data()));
+        inserted_default = true;
       }
+      search_engines::RecordIsDefaultProviderAddedToChoices(inserted_default);
     }
   }
   if (default_search_provider_index) {
@@ -1848,10 +1937,12 @@ std::vector<std::unique_ptr<TemplateURLData>> GetPrepopulatedEngines(
   return t_urls;
 }
 
-std::unique_ptr<TemplateURLData> GetPrepopulatedEngine(PrefService* prefs,
-                                                       int prepopulated_id) {
-  auto engines =
-      TemplateURLPrepopulateData::GetPrepopulatedEngines(prefs, nullptr);
+std::unique_ptr<TemplateURLData> GetPrepopulatedEngine(
+    PrefService* prefs,
+    search_engines::SearchEngineChoiceService* search_engine_choice_service,
+    int prepopulated_id) {
+  auto engines = TemplateURLPrepopulateData::GetPrepopulatedEngines(
+      prefs, search_engine_choice_service, nullptr);
   for (auto& engine : engines) {
     if (engine->prepopulate_id == prepopulated_id)
       return std::move(engine);
@@ -1862,16 +1953,15 @@ std::unique_ptr<TemplateURLData> GetPrepopulatedEngine(PrefService* prefs,
 #if BUILDFLAG(IS_ANDROID)
 
 std::vector<std::unique_ptr<TemplateURLData>> GetLocalPrepopulatedEngines(
-    const std::string& locale) {
-  int country_id = country_codes::CountryStringToCountryID(locale);
+    const std::string& country_code,
+    PrefService& prefs) {
+  int country_id = country_codes::CountryStringToCountryID(country_code);
   if (country_id == country_codes::kCountryIDUnknown) {
-    LOG(ERROR) << "Unknown country code specified: " << locale;
+    LOG(ERROR) << "Unknown country code specified: " << country_code;
     return std::vector<std::unique_ptr<TemplateURLData>>();
   }
 
-  // TODO(b/303632061): Pass the correct PrefService to this method to fetch the
-  // search engines for Android.
-  return GetPrepopulatedTemplateURLData(country_id, nullptr);
+  return GetPrepopulatedTemplateURLData(country_id, &prefs);
 }
 
 #endif
@@ -1883,6 +1973,7 @@ std::vector<const PrepopulatedEngine*> GetAllPrepopulatedEngines() {
 
 std::unique_ptr<TemplateURLData> GetPrepopulatedEngineFromFullList(
     PrefService* prefs,
+    search_engines::SearchEngineChoiceService* search_engine_choice_service,
     int prepopulated_id) {
   // TODO(crbug.com/1500526): Refactor to better share code with
   // `GetPrepopulatedEngine()`.
@@ -1899,7 +1990,7 @@ std::unique_ptr<TemplateURLData> GetPrepopulatedEngineFromFullList(
   // We look in the profile country's prepopulated set first. This is intended
   // to help using the right entry for the case where we have multiple ones in
   // the full list that share a same prepopulated id.
-  const int country = search_engines::GetSearchEngineChoiceCountryId(prefs);
+  const int country = search_engine_choice_service->GetCountryId();
   for (const EngineAndTier& engine_and_tier :
        GetPrepopulationSetFromCountryID(country)) {
     if (engine_and_tier.search_engine->id == prepopulated_id) {
@@ -1931,11 +2022,13 @@ void ClearPrepopulatedEnginesInPrefs(PrefService* prefs) {
 }
 
 std::unique_ptr<TemplateURLData> GetPrepopulatedDefaultSearch(
-    PrefService* prefs) {
+    PrefService* prefs,
+    search_engines::SearchEngineChoiceService* search_engine_choice_service) {
   size_t default_search_index;
   // This could be more efficient.  We load all URLs but keep only the default.
   std::vector<std::unique_ptr<TemplateURLData>> loaded_urls =
-      GetPrepopulatedEngines(prefs, &default_search_index);
+      GetPrepopulatedEngines(prefs, search_engine_choice_service,
+                             &default_search_index);
 
   return (default_search_index < loaded_urls.size())
              ? std::move(loaded_urls[default_search_index])

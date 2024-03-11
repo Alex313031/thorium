@@ -1,3 +1,5 @@
+@@include@@repo_variables.include
+
 # Copyright (c) 2024 Alex313031.
 
 APT_GET="`command -v apt-get 2> /dev/null`"

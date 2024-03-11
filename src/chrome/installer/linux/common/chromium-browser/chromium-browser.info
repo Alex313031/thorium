@@ -1,4 +1,4 @@
-# Copyright (c) 2024 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2024 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 #
@@ -7,9 +7,6 @@
 
 # Base name of the package.
 PACKAGE="thorium-browser"
-
-# Base name of the snap package
-SNAPNAME="thorium-browser"
 
 # Filename of the main executable (for generating launcher scripts, etc.)
 PROGNAME=thorium
