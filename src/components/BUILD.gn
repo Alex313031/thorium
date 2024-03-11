@@ -7,6 +7,7 @@ import("//build/config/chrome_build.gni")
 import("//build/config/chromeos/ui_mode.gni")
 import("//build/config/features.gni")
 import("//build/config/ui.gni")
+import("//components/compose/features.gni")
 import("//components/nacl/features.gni")
 import("//components/optimization_guide/features.gni")
 import("//components/safe_browsing/buildflags.gni")
@@ -207,6 +208,7 @@ test("components_unittests") {
     "//components/crash/core/common:unit_tests",
     "//components/cross_device/logging:unit_tests",
     "//components/crx_file:unit_tests",
+    "//components/data_sharing:unit_tests",
     "//components/device_event_log:unit_tests",
     "//components/device_reauth:unit_tests",
     "//components/device_signals/core:unit_tests",
@@ -279,6 +281,7 @@ test("components_unittests") {
     "//components/prefs:unit_tests",
     "//components/profile_metrics:unit_tests",
     "//components/proxy_config:unit_tests",
+    "//components/push_notification:unit_tests",
     "//components/qr_code_generator:unit_tests",
     "//components/query_parser:unit_tests",
     "//components/reading_list/core:unit_tests",
@@ -325,6 +328,7 @@ test("components_unittests") {
     "//components/sync_device_info:unit_tests",
     "//components/sync_preferences:unit_tests",
     "//components/sync_user_events:unit_tests",
+    "//components/system_cpu:unit_tests",
     "//components/system_media_controls:unit_tests",
     "//components/test:run_all_unittests",
     "//components/tpcd/metadata:unit_tests",
@@ -425,6 +429,7 @@ test("components_unittests") {
       "//components/commerce/content/browser:unit_tests",
       "//components/content_capture/browser:unit_tests",
       "//components/content_relationship_verification:unit_tests",
+      "//components/content_settings/browser:unit_tests",
       "//components/contextual_search/core/browser:unit_tests",
       "//components/continuous_search/browser:unit_tests",
       "//components/continuous_search/common:unit_tests",
@@ -460,12 +465,16 @@ test("components_unittests") {
       "//components/navigation_interception:unit_tests",
       "//components/no_state_prefetch/browser:unit_tests",
       "//components/no_state_prefetch/common:unit_tests",
+      "//components/offline_pages:unit_tests",
       "//components/optimization_guide/content/browser:unit_tests",
       "//components/optimization_guide/content/renderer:unit_tests",
       "//components/origin_trials:unit_tests",
       "//components/page_image_annotation/content/renderer:unit_tests",
       "//components/page_image_annotation/core:unit_tests",
       "//components/page_info/core:unit_tests",
+      "//components/page_load_metrics/browser:unit_tests",
+      "//components/page_load_metrics/browser/observers/ad_metrics:unit_tests",
+      "//components/page_load_metrics/renderer:unit_tests",
       "//components/paint_preview/browser:unit_tests",
       "//components/paint_preview/common:unit_tests",
       "//components/paint_preview/player:unit_tests",
@@ -482,6 +491,7 @@ test("components_unittests") {
       "//components/services/paint_preview_compositor:unit_tests",
       "//components/services/storage:tests",
       "//components/session_proto_db:unit_tests",
+      "//components/subresource_filter/content/browser:unit_tests",
       "//components/subresource_filter/content/common:unit_tests",
       "//components/subresource_filter/content/renderer:unit_tests",
       "//components/tracing:unit_tests",
@@ -542,15 +552,11 @@ test("components_unittests") {
     deps += [
       "//components/background_sync:unit_tests",
       "//components/blocked_content:unit_tests",
-      "//components/content_settings/browser:unit_tests",
       "//components/content_settings/browser/ui:unit_tests",
+      "//components/facilitated_payments/content/renderer:unit_tests",
       "//components/media_router/browser:unit_tests",
       "//components/media_router/common:unit_tests",
       "//components/media_router/common/providers/cast/channel:unit_tests",
-      "//components/offline_pages:unit_tests",
-      "//components/page_load_metrics/browser:unit_tests",
-      "//components/page_load_metrics/browser/observers/ad_metrics:unit_tests",
-      "//components/page_load_metrics/renderer:unit_tests",
       "//components/permissions:unit_tests",
       "//components/permissions/prediction_service:unit_tests",
       "//components/privacy_sandbox:unit_tests",
@@ -568,7 +574,6 @@ test("components_unittests") {
       "//components/site_isolation:unit_tests",
       "//components/spellcheck/browser:unit_tests",
       "//components/spellcheck/renderer:unit_tests",
-      "//components/subresource_filter/content/browser:unit_tests",
     ]
 
     if (!is_win) {  #!iOS and!Windows
@@ -595,7 +600,7 @@ test("components_unittests") {
 
   if (is_android) {
     deps += [
-      "//base:base_java_unittest_support",
+      "//base:base_unittest_support_java",
       "//components/android_autofill/browser:unit_tests",
       "//components/browser_ui/accessibility/android:unit_tests",
       "//components/browser_ui/site_settings/android:unit_tests",
@@ -603,9 +608,9 @@ test("components_unittests") {
       "//components/cdm/browser:unit_tests",
       "//components/component_updater/android:embedded_component_loader_java",
       "//components/component_updater/android:embedded_component_loader_unittests",
-      "//components/content_creation/notes/core:unit_tests",
       "//components/crash/android:java",
       "//components/crash/android:unit_tests",
+      "//components/data_sharing/internal:internal_java",
       "//components/download/internal/common:internal_java",
       "//components/embedder_support/android:native_java_unittests_java",
       "//components/embedder_support/android/metrics:test_support_java",
@@ -626,6 +631,8 @@ test("components_unittests") {
       "//components/permissions/android:java",
       "//components/policy/android:native_test_support_java",
       "//components/policy/android:policy_java",
+      "//components/search_engines/android:java",
+      "//components/search_engines/android:test_utils_java",
       "//components/signin/core/browser",
       "//components/signin/public/android:java",
       "//components/signin/public/android:signin_java_test_support",
@@ -762,7 +769,6 @@ test("components_unittests") {
     deps += [
       "//components/safe_browsing/content/renderer:throttles_unittest",
       "//components/safe_browsing/core/browser:ping_manager_unittest",
-      "//components/safe_browsing/core/browser:safe_browsing_lookup_mechanism_experimenter_unittest",
       "//components/safe_browsing/core/browser:user_population_unittest",
       "//components/safe_browsing/core/browser:verdict_cache_manager_unittest",
       "//components/safe_browsing/core/browser/db:unit_tests_local_db",
@@ -808,6 +814,10 @@ test("components_unittests") {
       "//components/user_notes/browser:unit_tests",
       "//components/user_notes/storage:unit_tests",
     ]
+  }
+
+  if (enable_compose) {
+    deps += [ "//components/compose/core/browser:unit_tests" ]
   }
 
   # Only supported on cast-enabled platforms.
@@ -912,9 +922,11 @@ if (use_blink) {
       "autofill/content/browser/risk/fingerprint_browsertest.cc",
       "autofill/content/renderer/a11y_utils_browsertest.cc",
       "autofill/content/renderer/autofill_agent_browsertest.cc",
+      "autofill/content/renderer/autofill_agent_form_interaction_browsertest.cc",
       "autofill/content/renderer/form_autofill_issues_browsertest.cc",
       "autofill/content/renderer/form_autofill_util_browsertest.cc",
       "autofill/content/renderer/form_cache_browsertest.cc",
+      "autofill/content/renderer/form_tracker_browsertest.cc",
       "autofill/content/renderer/html_based_username_detector_browsertest.cc",
       "autofill/content/renderer/password_form_conversion_utils_browsertest.cc",
       "browsing_data/content/browsing_data_helper_browsertest.h",
@@ -970,6 +982,7 @@ if (use_blink) {
       "//components/dom_distiller/core",
       "//components/dom_distiller/core:test_support",
       "//components/error_page/content/browser:browser_tests",
+      "//components/facilitated_payments/content/renderer:browser_tests",
       "//components/metrics:content",
       "//components/optimization_guide/content/renderer",
       "//components/paint_preview/renderer",
