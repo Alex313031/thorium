@@ -76,7 +76,6 @@ process_template() (
     -e "s#@@PACKAGE@@#${PACKAGE}#g" \
     -e "s#@@PACKAGE_ORIG@@#${PACKAGE_ORIG}#g" \
     -e "s#@@PACKAGE_FILENAME@@#${PACKAGE_FILENAME}#g" \
-    -e "s#@@SNAPNAME@@#${SNAPNAME}#g" \
     -e "s#@@PROGNAME@@#${PROGNAME}#g" \
     -e "s#@@SANDNAME@@#${SANDNAME}#g" \
     -e "s#@@CHANNEL@@#${CHANNEL}#g" \
@@ -383,10 +382,15 @@ stage_install_common() {
   fi
 
   # Check to make sure all the ELF binaries are stripped.
-  UNSTRIPPED=$(find "${STAGEDIR}/${INSTALLDIR}/" -type f | xargs file |
-      grep ELF | grep -c "not stripped" || true)
-  if [ "${UNSTRIPPED}" != "0" ]; then
-    echo "NOTICE: Found ${UNSTRIPPED} unstripped ELF files." 1>&2
+  UNSTRIPPED_BINS=
+  for elf in $(find "${STAGEDIR}/${INSTALLDIR}/" -type f | xargs file |
+                grep ELF | grep "not stripped" | awk '{print $1;}' |
+                sed 's/:$//'); do
+    UNSTRIPPED_BINS="${UNSTRIPPED_BINS} ${elf}"
+  done
+
+  if [ -n "${UNSTRIPPED_BINS}" ]; then
+    echo "NOTICE: Found unstripped ELF files:${UNSTRIPPED_BINS}" 1>&2
   fi
 
   # Check to make sure no ELF binaries set RPATH.
