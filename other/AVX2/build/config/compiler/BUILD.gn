@@ -147,6 +147,8 @@ declare_args() {
   # recognizable in the debugger, and crashes on memory accesses through
   # uninitialized pointers.
   #
+  # Flag discussion: https://crbug.com/977230
+  #
   # TODO(crbug.com/1131993): This regresses binary size by ~1MB on Android and
   # needs to be evaluated before enabling it there as well.
   init_stack_vars = !(is_android && is_official_build)
@@ -817,13 +819,9 @@ config("compiler") {
         ldflags += [ "-Wcrl,object_path_lto" ]
       }
 
-      if (!is_chromeos) {
-        # TODO(https://crbug.com/972449): turn on for ChromeOS when that
-        # toolchain has this flag.
-        # We only use one version of LLVM within a build so there's no need to
-        # upgrade debug info, which can be expensive since it runs the verifier.
-        ldflags += [ "-Wl,-mllvm,-disable-auto-upgrade-debug-info" ]
-      }
+      # We only use one version of LLVM within a build so there's no need to
+      # upgrade debug info, which can be expensive since it runs the verifier.
+      ldflags += [ "-Wl,-mllvm,-disable-auto-upgrade-debug-info" ]
     }
 
     # TODO(https://crbug.com/1211155): investigate why this isn't effective on
@@ -1804,9 +1802,9 @@ config("default_warnings") {
       cflags += [ "/wd4244" ]
     }
   } else {
-    if (is_apple && !is_nacl) {
-      # When compiling Objective-C, warns if a method is used whose
-      # availability is newer than the deployment target.
+    if ((is_apple || is_android) && !is_nacl) {
+      # Warns if a method is used whose availability is newer than the
+      # deployment target.
       cflags += [ "-Wunguarded-availability" ]
     }
 
@@ -1903,27 +1901,30 @@ config("default_warnings") {
         # Ignore warnings about MSVC optimization pragmas.
         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
         "-Wno-ignored-pragma-optimize",
+
+        # TODO(crbug.com/1343975) Evaluate and possibly enable.
+        "-Wno-deprecated-builtins",
+
+        # TODO(crbug.com/1352183) Evaluate and possibly enable.
+        "-Wno-bitfield-constant-conversion",
+
+        # TODO(crbug.com/1412713) Evaluate and possibly enable.
+        "-Wno-deprecated-this-capture",
+
+        # TODO(https://crbug.com/1491833): Fix and re-enable.
+        "-Wno-invalid-offsetof",
+
+        # TODO(crbug.com/1494809): Evaluate and possibly enable.
+        "-Wno-vla-extension",
+
+        # TODO(https://crbug.com/1490607): Fix and re-enable.
+        "-Wno-thread-safety-reference-return",
       ]
 
       if (!is_nacl) {
-        cflags += [
-          # TODO(crbug.com/1343975) Evaluate and possibly enable.
-          "-Wno-deprecated-builtins",
-
-          # TODO(crbug.com/1352183) Evaluate and possibly enable.
-          "-Wno-bitfield-constant-conversion",
-
-          # TODO(crbug.com/1412713) Evaluate and possibly enable.
-          "-Wno-deprecated-this-capture",
-
-          # TODO(https://crbug.com/1491833): Fix and re-enable.
-          "-Wno-invalid-offsetof",
-
-          # TODO(crbug.com/1494809): Evaluate and possibly enable.
-          "-Wno-vla-extension",
-
-          # TODO(https://crbug.com/1490607): Fix and re-enable.
-          "-Wno-thread-safety-reference-return",
+        cflags_cc += [
+          # TODO(https://crbug.com/1513724): Fix and re-enable.
+          "-Wno-c++11-narrowing-const-reference",
         ]
       }
     }
@@ -2991,7 +2992,7 @@ config("symbols") {
       ]
     }
   }
-  rustflags += [ "-g", "-Copt-level=3", "-Ctarget-feature=+aes,+avx,+avx2,+fma", ]
+  rustflags += [ "-g" ]
 }
 
 # Minimal symbols.
