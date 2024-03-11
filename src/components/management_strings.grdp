@@ -170,8 +170,14 @@
     <message name="IDS_MANAGEMENT_REPORT_LOGIN_LOGOUT" desc="Message stating that administrators can see device Login and Logout events.">
       Device access actions such as logins (including failed login reasons), logouts, locks, and unlocks
     </message>
-    <message name="IDS_MANAGEMENT_REPORT_CRD_SESSIONS" desc="Message stating that administrators can see Chrome Remote Desktop events.">
-      Chrome Remote Desktop history, including timestamps, hosts and client session ids
+    <message name="IDS_MANAGEMENT_REPORT_CRD_SESSIONS" desc="Message stating that administrators can see Thorium Remote Desktop events.">
+      Thorium Remote Desktop history, including timestamps, hosts and client session ids
+    </message>
+    <message name="IDS_MANAGEMENT_REPORT_ALL_WEBSITE_INFO_AND_ACTIVITY" desc="Message stating that administrators can see what websites are visited and when.">
+      Which websites are visited and when.
+    </message>
+    <message name="IDS_MANAGEMENT_REPORT_WEBSITE_INFO_AND_ACTIVITY" desc="Message stating that administrators can see administrator-specified list of websites when they are visited.">
+      Which administrator-defined websites are visited and when: <ph name="ALLOWLISTED_WEBSITES">$1<ex>[*.]google.com, example.com</ex></ph>
     </message>
     <message name="IDS_MANAGEMENT_CROSTINI" desc="Message stating that administrators can see Crostini usage">
       Linux apps installed and when they were last used
@@ -278,7 +284,6 @@
     <message name="IDS_MANAGEMENT_LEGACY_TECH_REPORT" desc="Message explaining that browser will upload a report when a legacy technology is used for a webpage" formatter_data="android_java">
       A limited list of URLs of pages you visit where <ph name="BEGIN_LINK">&lt;a target="_blank" href="https://chromestatus.com/features#browsers.chrome.status%3A%22Deprecated%22" &gt;</ph>legacy technology events<ph name="END_LINK">&lt;/a&gt;</ph> are occuring.
     </message>
-
     <!-- Strings related to Thorium Enterprise Connectors -->
     <message name="IDS_MANAGEMENT_THREAT_PROTECTION" desc="Title of the Thorium Enterprise Connectors section of the page">
       Thorium Enterprise Connectors

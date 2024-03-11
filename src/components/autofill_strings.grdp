@@ -125,6 +125,9 @@
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_EXPANDABLE_ONLY_ENTRY" desc="Screen reader announcement used for non-expandable Autofill popup entries." translateable="false">
     You are currently on a menu
   </message>
+  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_VIRTUAL_CARD_MANUAL_FALLBACK_ENTRY" desc="Screen reader announcement used for virtual credit card suggestions that do not fill the web form." translateable="false">
+    Dialog with credit card details was shown
+  </message>
 
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_EDIT_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that edit autofill profile option was selected.">
     The edit address option was selected
@@ -139,11 +142,11 @@
   </message>
 
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILL_ADDRESS_GROUP_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that filling address fields option was selected.">
-    The fill full address option was selected
+    The fill address option was selected
   </message>
 
   <message name="IDS_AUTOFILL_FILL_ADDRESS_GROUP_POPUP_OPTION_SELECTED" desc="The text displayed at one of the autofill submenus options allowing the users to fill all address related fields at once." meaning="Fills all address related fields">
-    Fill full address
+    Fill address
   </message>
 
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILL_NAME_GROUP_POPUP_OPTION_SELECTED" desc="Screen reader announcement indicating that filling name fields option was selected.">
@@ -160,10 +163,6 @@
 
   <message name="IDS_AUTOFILL_HIDE_SUGGESTIONS" desc="The text displayed at the Autofill popup to allow the user to hide the suggestions menu." meaning="Hides the suggestion list.">
     Hide suggestions
-  </message>
-
-  <message name="IDS_AUTOFILL_MANAGE" desc="The text displayed at the bottom of the Autofill popup to allow the user to manage their Autofill preferences for addresses, credit cards, and passwords. Imperative. When the user clicks on it, opens the Autofill settings page." meaning="Manage addresses, credit cards and passwords in the user profile that can be used by Thorium Autofill.">
-    Manage...
   </message>
 
   <message name="IDS_AUTOFILL_EDIT_ADDRESS_PROFILE_POPUP_OPTION_SELECTED" desc="The text displayed at the bottom of the Autofill sub meny to open the edit address profile dialog." meaning="Entry point to address profile deletion.">
@@ -591,10 +590,7 @@
     <message name="IDS_AUTOFILL_EDIT_ADDRESS_DIALOG_CANCEL_BUTTON_LABEL" desc="Label of the Cancel button in the dialog that edits an address before saving it.">
       Cancel
     </message>
-    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_CONTROLL_A11Y_NAME" desc="Autofill desktop popup: the a11y name for the expandable suggestion controll." translateable="false">
-      Expand suggestion
-    </message>
-    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_FULL_ADDRESS_A11Y_ADDON" desc="Autofill desktop popup: additional screen reader info to distinguish the address top level suggestions from others.">
+    <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_FILL_ADDRESS_A11Y_ADDON" desc="Autofill desktop popup: call to action message part for expandable address suggestions.">
       Fill address
     </message>
     <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_EXPAND_SHORTCUT" desc="Autofill desktop popup: the shortcut used to focus the expanding control and effectively open the sub-menu, used in IDS_AUTOFILL_EXPANDABLE_SUGGESTION_SUBMENU_HINT.">

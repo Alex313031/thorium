@@ -572,7 +572,7 @@ bool ChromeDesktopShortcutsExist(const base::FilePath& chrome_exe) {
 void DeleteDesktopShortcuts(
     const std::set<base::FilePath>& shortcuts,
     bool ensure_shortcuts_remain,
-    const absl::optional<base::FilePath>& default_profile_path,
+    const std::optional<base::FilePath>& default_profile_path,
     const base::FilePath& chrome_exe) {
   base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
                                                 base::BlockingType::MAY_BLOCK);
@@ -615,7 +615,7 @@ void DeleteDesktopShortcuts(
 // shortcut was deleted.
 void UnpinAndDeleteDesktopShortcuts(
     const base::FilePath& profile_path,
-    const absl::optional<base::FilePath>& default_profile_path,
+    const std::optional<base::FilePath>& default_profile_path,
     bool ensure_shortcuts_remain) {
   base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
                                                 base::BlockingType::MAY_BLOCK);
@@ -920,7 +920,7 @@ void ProfileShortcutManagerWin::RemoveProfileShortcuts(
     const base::FilePath& profile_path) {
   base::ThreadPool::CreateCOMSTATaskRunner({base::MayBlock()})
       ->PostTask(FROM_HERE, base::BindOnce(&UnpinAndDeleteDesktopShortcuts,
-                                           profile_path, absl::nullopt, false));
+                                           profile_path, std::nullopt, false));
 }
 
 void ProfileShortcutManagerWin::HasProfileShortcuts(

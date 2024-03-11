@@ -30,6 +30,11 @@ BASE_FEATURE(kAllowEyeDropperWGCScreenCapture,
 #endif  // BUILDFLAG(IS_WIN)
 );
 
+// Enables icon in titlebar for web apps.
+BASE_FEATURE(kWebAppIconInTitlebar,
+             "WebAppIconInTitlebar",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // Enables Chrome Labs menu in the toolbar. See https://crbug.com/1145666
 BASE_FEATURE(kChromeLabs, "ChromeLabs", base::FEATURE_ENABLED_BY_DEFAULT);
 const char kChromeLabsActivationParameterName[] =
@@ -67,12 +72,6 @@ BASE_FEATURE(kCameraMicPreview,
              "CameraMicPreview",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
-
-// Enables displaying the submenu to open a link with a different profile if
-// there is at least one other active profile. Fully rolled out on Desktop.
-BASE_FEATURE(kDisplayOpenLinkAsProfile,
-             "DisplayOpenLinkAsProfile",
-             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables showing the EV certificate details in the Page Info bubble.
 BASE_FEATURE(kEvDetailsInPageInfo,
@@ -129,7 +128,7 @@ BASE_FEATURE(kSearchWebInSidePanel,
 // used to control automatic triggering for side search.
 BASE_FEATURE(kSideSearchAutoTriggering,
              "SideSearchAutoTriggering",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Feature param that determines how many times a user has to return to a given
 // SRP before we automatically trigger the side search side panel for that SRP
@@ -161,7 +160,7 @@ bool IsSidePanelPinningEnabled() {
 
 BASE_FEATURE(kSidePanelMinimumWidth,
              "SidePanelMinimumWidth",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 const base::FeatureParam<int> kSidePanelMinimumWidthParameter{
     &kSidePanelMinimumWidth, "minPanelWidth", 360};
 int GetSidePanelMinimumWidth() {
@@ -216,9 +215,7 @@ BASE_FEATURE(kTabGroupsCollapseFreezing,
 
 // Enables users to explicitly save and recall tab groups.
 // https://crbug.com/1223929
-BASE_FEATURE(kTabGroupsSave,
-             "TabGroupsSave",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+BASE_FEATURE(kTabGroupsSave, "TabGroupsSave", base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables configuring tab hover card image previews in the settings.
 BASE_FEATURE(kTabHoverCardImageSettings,
@@ -335,6 +332,12 @@ const base::FeatureParam<int> kTabSearchRecentlyClosedTabCountThreshold{
 
 BASE_FEATURE(kTabSearchUseMetricsReporter,
              "TabSearchUseMetricsReporter",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// Enables creating a web app window when tearing off a tab with a url
+// controlled by a web app.
+BASE_FEATURE(kTearOffWebAppTabOpensWebAppWindow,
+             "TearOffWebAppTabOpensWebAppWindow",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kToolbarUseHardwareBitmapDraw,
