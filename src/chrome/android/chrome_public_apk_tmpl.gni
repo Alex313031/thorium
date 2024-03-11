@@ -265,8 +265,13 @@ template("chrome_common_apk_or_module_tmpl") {
       version_code = _version_code
     }
     if (defined(invoker.expected_android_manifest)) {
-      expected_android_manifest_version_code_offset = chrome_version_code
-      expected_android_manifest_library_version_offset = chrome_version_code
+      if (android_64bit_target_cpu) {
+        _version_code_offset = chrome_32_version_code
+      } else {
+        _version_code_offset = chrome_version_code
+      }
+      expected_android_manifest_version_code_offset = _version_code_offset
+      expected_android_manifest_library_version_offset = _version_code_offset
     }
 
     if (_target_type == "android_apk") {
@@ -421,10 +426,6 @@ template("chrome_common_apk_or_module_tmpl") {
         # For bundles, Dev UI is a feature in a DFM.
         deps += [ "//chrome/android/features/dev_ui:java" ]
       }
-      if (enable_vr) {
-        # For bundles, VR is a feature in a DFM.
-        deps += [ "//chrome/android/features/vr:java" ]
-      }
     }
 
     if (_is_monochrome) {
@@ -494,7 +495,9 @@ template("chrome_common_apk_or_module_tmpl") {
       }
     }
 
-    # https://crbug.com/1415351
+    # Chrome uses the window APIs directly instead of going through the
+    # androidx middleware.
+    # See //third_party/android_sdk/window_extensions/README.md
     assert_no_deps = [
       "//third_party/androidx:androidx_window_extensions_core_core_java",
       "//third_party/androidx:androidx_window_sidecar_sidecar_java",
@@ -766,20 +769,5 @@ template("chrome_public_test_apk_tmpl") {
     target_type = "instrumentation_test_apk"
     forward_variables_from(invoker, TESTONLY_AND_VISIBILITY)
     forward_variables_from(invoker, "*", TESTONLY_AND_VISIBILITY)
-  }
-}
-
-# TODO(https://crbug.com/1427610): Remove.
-template("monochrome_public_common_apk_or_module_tmpl") {
-  chrome_common_apk_or_module_tmpl(target_name) {
-    forward_variables_from(invoker, "*")
-    if (!defined(is_monochrome)) {
-      is_trichrome = true
-    }
-  }
-}
-template("chrome_public_common_apk_or_module_tmpl") {
-  chrome_common_apk_or_module_tmpl(target_name) {
-    forward_variables_from(invoker, "*")
   }
 }

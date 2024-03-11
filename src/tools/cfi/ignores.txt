@@ -1,3 +1,6 @@
+#!special-case-list-v1
+# TODO(https://crbug.com/1515966): update to glob patterns
+
 # Copyright (c) 2024 Alex313031 and RobRich999
 # This file defines which warnings should be ignored while running clang's
 # control flow integrity sanitizer, as run by the cfi_flags build target.
@@ -163,10 +166,9 @@ fun:*AddTraceEvent*
 # Dawn, calls to OpenGL and Vulkan function pointers from shared library.
 src:*third_party/dawn/src/dawn/native/*
 
-# liboptimization_guide_internal.so calls into the main binary for the Dawn
-# procs and Dawn uses std::function for callbacks back to the lib.
+# Dawn uses std::function for callbacks from the main binary to
+# liboptimization_guide_internal.so.
 # TODO(crbug.com/1511050): See if we can avoid disabling CFI for std::function.
-src:*third_party/dawn/src/dawn/dawn_proc.c
 src:*third_party/libc*/invoke.h
 src:*third_party/libc*/function.h
 
@@ -269,6 +271,9 @@ fun:*InvokeAccessorGetterCallback*
 # XNNPACK casts incorrect function signature to pthreadpool task type.
 src:*third_party/pthreadpool/src/src/fastpath.c
 src:*third_party/pthreadpool/src/src/portable-api.c
+
+# XNNPack casts incorrect function signature.
+src:*third_party/xnnpack/src/src/operators/deconvolution-nhwc.c
 
 ######### Uncategorized
 

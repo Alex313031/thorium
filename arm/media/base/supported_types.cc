@@ -80,10 +80,9 @@ bool IsSupportedHdrMetadata(const VideoType& type) {
       return type.color_space.transfer ==
              VideoColorSpace::TransferID::SMPTEST2084;
 
+    // 2094-10 SEI metadata is not the same as Dolby Vision RPU metadata, Dolby
+    // Vision decoders on each platform only support Dolby Vision RPU metadata.
     case gfx::HdrMetadataType::kSmpteSt2094_10:
-#if BUILDFLAG(ENABLE_PLATFORM_DOLBY_VISION)
-      return type.codec == VideoCodec::kDolbyVision;
-#endif
     case gfx::HdrMetadataType::kSmpteSt2094_40:
       return false;
   }
@@ -207,6 +206,7 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
       return true;
 
     case AudioCodec::kFLAC:
+    case AudioCodec::kIAMF:
     case AudioCodec::kMP3:
     case AudioCodec::kOpus:
     case AudioCodec::kVorbis:
@@ -381,24 +381,18 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
     case AudioCodec::kGSM_MS:
     case AudioCodec::kALAC:
     case AudioCodec::kMpegHAudio:
-    case AudioCodec::kAC4:
+    case AudioCodec::kIAMF:
     case AudioCodec::kUnknown:
       return false;
     case AudioCodec::kDTS:
     case AudioCodec::kDTSXP2:
     case AudioCodec::kDTSE:
-#if BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO)
-      return true;
-#else
-      return false;
-#endif
+      return BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO);
     case AudioCodec::kAC3:
     case AudioCodec::kEAC3:
-#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
-      return true;
-#else
-      return false;
-#endif
+      return BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO);
+    case AudioCodec::kAC4:
+      return BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO);
   }
 }
 

@@ -484,9 +484,6 @@ CHAR_LIMIT guidelines:
      <message name="IDS_AUTOFILL_PROFILE_EDITOR_COUNTRY" desc="Label for a spinner input field containing a list of countries or regions [CHAR_LIMIT=32]">
         Country/Region
       </message>
-      <message name="IDS_AUTOFILL_PROFILE_EDITOR_HONORIFIC_PREFIX" desc="Label for text input field containing a title that can be auto-filled by Thorium. A 'Title' field in a web form could be a prefix like Ms., Mx., or Dr. or a position held, like Captain or Rabbi. [CHAR_LIMIT=32]" meaning="Honorific">
-        Title
-      </message>
       <message name="IDS_AUTOFILL_PROFILE_EDITOR_EMAIL_ADDRESS" desc="Label for text input field containing an e-mail address. [CHAR_LIMIT=32]">
         Email
       </message>
@@ -605,6 +602,12 @@ CHAR_LIMIT guidelines:
       </message>
       <message name="IDS_PASSWORD_MANAGER_SETTINGS_TITLE" desc="Title for the settings menu item leading to the Password Manager UI surface. This allows users to e.g. manage their saved passwords, toggle saving and auto-sign-in on/off, etc. [CHAR_LIMIT=32]">
         Password Manager
+      </message>
+      <message name="IDS_PASSWORD_SAVING_ON_BY_ADMINISTRATOR" desc="Subtitle for the settings menu item leading to the Password Manager UI surface, shown when the device administrator set saving passwords to enabled.">
+        Password saving is turned on by your administrator
+      </message>
+      <message name="IDS_PASSWORD_SAVING_OFF_BY_ADMINISTRATOR" desc="Subtitle for the settings menu item leading to the Password Manager UI surface, shown when the device administrator set saving passwords to disabled.">
+        Password saving is turned off by your administrator
       </message>
       <message name="IDS_PASSWORD_SETTINGS_SAVE_PASSWORDS" desc="Title for the checkbox toggling whether passwords are saved or not. [CHAR_LIMIT=32]">
         Save passwords
@@ -929,12 +932,6 @@ For example, some websites may respond to this request by showing you ads that a
       </message>
 
       <!-- Privacy Sandbox Settings. Used by //chrome/browser/privacy_sandbox. -->
-      <message name="IDS_PRIVACY_SANDBOX_STATUS_ENABLED" desc="Status text, displayed when the Privacy sandbox APIs are enabled.">
-        Trial features are on
-      </message>
-      <message name="IDS_PRIVACY_SANDBOX_STATUS_DISABLED" desc="Status text, displayed when the Privacy sandbox APIs are disabled.">
-        Trial features are off
-      </message>
       <message name="IDS_PRIVACY_SANDBOX_SNACKBAR_MESSAGE" desc="The text displayed in the snackbar, which gives the user an option to navigate to the Privacy Sandbox settings page. 'Privacy sandbox' has TC ID 5753235213964358658.">
         Learn about and control new technologies that aim to replace third-party cookies
       </message>
@@ -1806,16 +1803,16 @@ Your Google account may have other forms of browsing history like searches and a
         File might be harmful
       </message>
 
-        <!-- Mixed content download -->
-        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm an insecure download">
-          File can’t be downloaded securely
-        </message>
-        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the insecure download dialog for user to confirm the download.">
-          Keep
-        </message>
-        <message name="IDS_INSECURE_DOWNLOAD_DIALOG_DISCARD_TEXT" desc="Text label for the cancel button on the insecure download dialog for user to confirm the download.">
-          Discard
-        </message>
+      <!-- Mixed content download -->
+      <message name="IDS_INSECURE_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm an insecure download">
+        File can’t be downloaded securely
+      </message>
+      <message name="IDS_INSECURE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the insecure download dialog for user to confirm the download.">
+        Keep
+      </message>
+      <message name="IDS_INSECURE_DOWNLOAD_DIALOG_DISCARD_TEXT" desc="Text label for the cancel button on the insecure download dialog for user to confirm the download.">
+        Discard
+      </message>
 
       <!-- Downloads location -->
       <message name="IDS_DOWNLOADS_LOCATION_SELECTOR_TITLE" desc="Title of the preference that allows the user to select which of the folders they would like to make the default location to save their downloads.">
@@ -1894,8 +1891,8 @@ Your Google account may have other forms of browsing history like searches and a
         New file name
       </message>
 
-       <!-- Duplicate download -->
-       <message name="IDS_DUPLICATE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the dangerous download dialog for user to confirm the download.">
+      <!-- Duplicate download -->
+      <message name="IDS_DUPLICATE_DOWNLOAD_DIALOG_CONFIRM_TEXT" desc="Text label for the confirm button on the dangerous download dialog for user to confirm the download.">
         Download again
       </message>
       <message name="IDS_DUPLICATE_DOWNLOAD_DIALOG_TEXT" desc="Warning message shown on a dialog to ask user to confirm the download of a duplicate file.">
@@ -1906,6 +1903,35 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_DUPLICATE_PAGE_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm downloading a page that has been downloaded before.">
         Download page again?
+      </message>
+
+      <!-- Download open dialog -->
+      <message name="IDS_OPEN_DOWNLOAD_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm they want to open a downloaded pdf file.">
+        Open PDF?
+      </message>
+      <message name="IDS_OPEN_DOWNLOAD_WITH_APP_DIALOG_TITLE" desc="Title of the dialog for asking user to confirm they want to open a downloaded pdf file with another app.">
+        Open PDF with <ph name="APP_NAME">%1$s<ex>Drive PDF Viewer</ex></ph>?
+      </message>
+      <message name="IDS_OPEN_DOWNLOAD_DIALOG_OPEN_TEXT" desc="Text label for the button on the open download dialog for user to open the downloaded pdf.">
+        Open
+      </message>
+      <message name="IDS_OPEN_DOWNLOAD_DIALOG_CONTINUE_TEXT" desc="Text label for the button on the open download dialog for user to continue to select pdf viewers to open the downloaded pdf.">
+        Continue
+      </message>
+      <message name="IDS_OPEN_DOWNLOAD_DIALOG_CANCEL_TEXT" desc="Text label for the button on the open download dialog for user to cancel opening a downloaded pdf.">
+        Cancel
+      </message>
+      <message name="IDS_OPEN_DOWNLOAD_DIALOG_AUTO_OPEN_TEXT" desc="Text label for the check box on the open download dialog that allows user to auto-open downloaded PDF files in future.">
+        Always open downloaded PDFs
+      </message>
+      <message name="IDS_AUTO_OPEN_PDF_ENABLED_TITLE" desc="Title for preference that allows the user to indicate whether they want to automatically open a pdf after download completion if the download is triggered by an external app.">
+        Automatically open PDFs
+      </message>
+      <message name="IDS_AUTO_OPEN_PDF_ENABLED_DESCRIPTION" desc="Description for preference that allows other apps to automatically open a pdf after download completion if the download is triggered by an external app.">
+        Downloaded PDFs automatically open with one of the PDF viewers on your device
+      </message>
+      <message name="IDS_AUTO_OPEN_PDF_ENABLED_WITH_APP_DESCRIPTION" desc="Description for preference that allows another app to automatically open a pdf after download completion if the download is triggered by an external app.">
+        Downloaded PDFs automatically open with <ph name="APP_NAME">%1$s<ex>Drive PDF Viewer</ex></ph>
       </message>
 
       <!-- About Thorium preferences -->
@@ -2577,9 +2603,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_OPEN" desc="The label of the button which upon click would open the site user was trying to install as PWA. ">
         Go back to site
       </message>
-      <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_RETRY" desc="The label of the button which upon click would retry installing the PWA">
-        Try again
-      </message>
       <message name="IDS_IPH_PWA_INSTALL_AVAILABLE_TEXT" desc="The in-product-help message for PWAs that can be installed to the device.">
         Install this app
       </message>
@@ -2933,10 +2956,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Thorium First Run Experience
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS" desc="Message explaining that use of Thorium is governed by Thorium's terms of service.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>.
       </message>
       <message name="IDS_LIGHTWEIGHT_FRE_ASSOCIATED_APP_TOS_AND_PRIVACY_CHILD_ACCOUNT" desc="Message explaining that use of Thorium is governed by Thorium's terms of service, and the Google Privacy Policy.">
-        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
+        <ph name="APP_NAME">%1$s<ex>Google Maps</ex></ph> will open in Thorium. By continuing, you agree to the <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>Google Terms of Service<ph name="END_LINK1">&lt;/LINK1&gt;</ph>, and the <ph name="BEGIN_LINK2">&lt;LINK2&gt;</ph>Google Thorium and ThoriumOS Additional Terms of Service<ph name="END_LINK2">&lt;/LINK2&gt;</ph>. The <ph name="BEGIN_LINK3">&lt;LINK3&gt;</ph>Privacy Policy<ph name="END_LINK3">&lt;/LINK3&gt;</ph> also applies.
       </message>
       <message name="IDS_FRE_ACCEPT_CONTINUE" desc="Text for first page accept and continue button [CHAR_LIMIT=20]">
         Accept &amp; continue
@@ -3401,9 +3424,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       content.">
         To refresh the feed content, pull down the page
       </message>
-      <message name="IDS_FEED_BACK_TO_TOP_PROMPT" desc="A prompt for the user to click in order to go back to the top of the feed.">
-        Back to top
-      </message>
       <message name="IDS_RECENT_TABS_BULK_CLOSURE" desc="Text for a Recent Tabs Page > Recently closed row item that represents multiple tabs closed together. Can be used for the following cases: 1) at least two tabs closed at the same time, 2) at least one tab group and at least one tab closed at the same time, 3) at least two tab groups closed at the same time. TAB_COUNT is the total number of tabs closed in the action including grouped tabs.">
         <ph name="TAB_COUNT">%1$s<ex>6</ex></ph> tabs
       </message>
@@ -3491,6 +3511,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_CUSTOM_TAB_MINIMIZE_BUTTON_IPH_BUBBLE_TEXT" desc="The message on the text bubble shown to educate the user about the minimize button on the custom tab toolbar.">
         Minimize tab to return to it later
+      </message>
+      <message name="IDS_MINIMIZE_FAILURE_TOAST" desc="Toast shown when minimizing the tab using the minimize button fails.">
+        Couldn’t minimize tab. Try again later.
       </message>
       <message name="IDS_ADAPTIVE_TOOLBAR_BUTTON_PREFERENCE_NEW_TAB" desc="Title name for the new tab option in the preference.">
         New tab
@@ -3636,12 +3659,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_ACCESSIBILITY_FOLLOW_ACCELERATOR_IPH" desc="In-product help that points at the menu icon for the news feed on Thorium's new tab page. This string informs the user about the  following feature.">
         Adds the current web site to the list of web sites that you are following.
-      </message>
-      <message name="IDS_MENU_ITEM_REQUEST_DESKTOP_SITE" desc="Menu item allowing users to change the website from the mobile site to desktop site. [CHAR_LIMIT=27]">
-        Request desktop site
-      </message>
-      <message name="IDS_MENU_ITEM_REQUEST_MOBILE_SITE" desc="Menu item allowing users to change the website from the desktop site to mobile site. [CHAR_LIMIT=27]">
-        Request mobile site
       </message>
       <message name="IDS_MENU_PAINT_PREVIEW_SHOW" desc="Menu item allowing users to capture and show a paint preview of a page. [CHAR_LIMIT=27]" translateable="false">
         Show Paint Preview
@@ -3912,6 +3929,21 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_FOLDER_PICKER_CANCEL"  desc="Button the user clicks to cancel the move action.">
         Cancel
+      </message>
+
+      <!-- Account bookmarks strings -->
+      <message name="IDS_LOCAL_BOOKMARKS_SECTION_HEADER" desc="The section header of local top-level bookmark folders.">
+        Only on this device
+      </message>
+      <message name="IDS_ACCOUNT_BOOKMARKS_SECTION_HEADER" desc="The section header of account top-level bookmark folders.">
+        In your Google Account
+      </message>
+      <!-- Power bookmarks strings-->
+      <message name="IDS_ACCOUNT_BOOKMARK_SAVE_FLOW_TITLE" desc="The title of the save flow when a user chooses save a bookmarks.">
+        Saved in <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>
+      </message>
+      <message name="IDS_ACCOUNT_BOOKMARK_SAVE_FLOW_SUBTITLE_LOCAL" desc="The subtitle of the save flow when a user saves a bokmark locally.">
+        On this device
       </message>
 
       <!-- Read later strings -->
@@ -4291,6 +4323,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_MAX_NUMBER_OF_WINDOWS" desc="Toast message for when the user has tried to start more than 5 instances of Thorium window.">
         You can have up to 5 windows.
       </message>
+      <message name="IDS_TAB_DROPPED_DIFFERENT_MODEL" desc="Toast that appears when a tab is dropped into tab strip with a different profile (regular v.s. incognito).">
+        You can find all open tabs in the tab switcher
+      </message>
 
       <message name="IDS_CLOSE_TAB" desc="Context menu option that allows the user to close the selected tab.">
         Close tab
@@ -4541,6 +4576,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Keyboard shortcuts in Android N-->
+      <message name="IDS_KEYBOARD_SHORTCUT_OPEN_NEW_WINDOW" desc="A text label that appears next to the keyboard shortcut to open a new window in Thorium. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
+        Open a new window
+      </message>
       <message name="IDS_KEYBOARD_SHORTCUT_OPEN_NEW_TAB" desc="A text label that appears next to the keyboard shortcut to open a new tab in Thorium. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Open a new tab
       </message>
@@ -4595,28 +4633,17 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_KEYBOARD_SHORTCUT_RELOAD_NO_CACHE" desc="A text label that appears next to the keyboard shortcut that will reload the current page without a cache. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Reload the current page, ignoring cached content
       </message>
-      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
+      <message name="IDS_KEYBOARD_SHORTCUT_HELP_CENTER" desc="A text label that appears next to the keyboard shortcut that will open the Google Thorium Help Center in a new tab. The shortcut description is shown in a system dialog along with all other supported shortcuts. [CHAR_LIMIT=55]">
         Open the Thorium Help Center in a new tab
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_TAB_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Tab and window shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_CHROME_FEATURE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to the Thorium app features. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
-        Thorium feature shortcuts
+        Google Thorium feature shortcuts
       </message>
       <message name="IDS_KEYBOARD_SHORTCUT_WEBPAGE_GROUP_HEADER" desc="A text label that appears above a list of shortcuts that are related to manipulation of the current tab window. This group is part of several groups of keyboard shortcuts all shown in a dialog.">
         Webpage shortcuts
-      </message>
-
-      <!-- VR module -->
-      <message name="IDS_VR_MODULE_TITLE" desc="Text shown when the VR module is referenced in install start, success, failure UI (e.g. in IDS_MODULE_INSTALL_START_TEXT, which will expand to 'Installing Virtual Reality for Thorium…').">
-        Virtual Reality
-      </message>
-      <message name="IDS_VR_PREPARING_VR_NOTIFICATION_TITLE" desc="Title of a notifaction shown in VR if VR browser not ready yet. [CHAR_LIMIT=23]">
-        Something went wrong.
-      </message>
-      <message name="IDS_VR_PREPARING_VR_NOTIFICATION_BODY" desc="Body of a notifaction shown in VR if VR browser not ready yet.">
-        Reopen Thorium.
       </message>
 
       <if expr="enable_arcore">
@@ -4737,18 +4764,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_IPH_IDENTITY_DISC_ACCESSIBILITY_TEXT" desc="The in-product-help accessibility text prompting the user that tapping identity disc will navigate to 'Sync and Google services' settings page.">
         To manage your Google account, tap the "Manage account" button
-      </message>
-      <message name="IDS_IPH_NTP_WITHOUT_FEED_TEXT" desc="The in-product-help message to open the new tab page with personalized top sites.">
-        See your top sites
-      </message>
-      <message name="IDS_IPH_NTP_WITHOUT_FEED_ACCESSIBILITY_TEXT" desc="The in-product-help accessibility text to open the new tab page with personalized top sites. The 'Home' button name should match TC ID 2821179408673282599.">
-        To see your top sites, tap the Home button
-      </message>
-      <message name="IDS_IPH_NTP_WITH_FEED_TEXT" desc="The in-product-help message to open the new tab page with personalized top sites and stories.">
-        See top sites and stories for you
-      </message>
-      <message name="IDS_IPH_NTP_WITH_FEED_ACCESSIBILITY_TEXT" desc="The in-product-help accessibility text to open the new tab page with personalized top sites and stories. The 'Home' button name should match TC ID 2821179408673282599.">
-        To see top sites and stories for you, tap the Home button
       </message>
       <message name="IDS_IPH_TAB_SWITCHER_TEXT" desc="The in-product-help message to open the tab switcher.">
         Open tabs to visit different pages at the same time
@@ -5053,7 +5068,7 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_CABLEV2_ACTIVITY_TITLE"
         desc="The label of the Activity for using your phone as a security key. A 'security key' in this context is generally a small USB device that is used for logging into websites. This feature allows Thorium on an Android phone to act as a security key. A user may see it in Android permissions prompts (see screenshot).">
-         Thorium as a Security Key
+         Google Thorium as a Security Key
       </message>
 
       <message name="IDS_CABLEV2_REGISTRATION_SUCCEEDED"
@@ -5261,16 +5276,8 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Copy image with link
       </message>
 
-      <message name="IDS_SHARING_COPY_GIF" desc="Label for the Copy GIF button in the sharing hub.">
-        Copy GIF
-      </message>
-
       <message name="IDS_SHARING_COPY_HIGHLIGHT_WITHOUT_LINK" desc="Label for the Copy highlighted text without link button in the sharing hub. This is used when sharing highlighted text with a generated link.">
         Copy without link
-      </message>
-
-      <message name="IDS_SHARING_SCREENSHOT" desc="Label for Screenshot button in the sharing hub.">
-        Screenshot
       </message>
 
       <message name="IDS_SHARING_LONG_SCREENSHOT" desc="Label for Long Screenshot button in the sharing hub.">
@@ -5301,28 +5308,12 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Something went wrong. Try again.
       </message>
 
-      <message name="IDS_SHARING_WEBNOTES_CREATE_CARD" desc="Label for the button in sharing hub for creating card for the highlight text.">
-        Create card
-      </message>
-
-      <message name="IDS_SHARING_WEBNOTES_ACCESSIBILITY_DESCRIPTION" desc="Accessibility description for the button in sharing hub for creating card for the highlight text.">
-        Create stylized card with highlight
-      </message>
-
-      <message name="IDS_SHARING_SAVE_IMAGE" desc="Label for the button in sharing hub for saving an image to device.">
-        Save to device
-      </message>
-
       <message name="IDS_SHARING_SEND_TAB_TO_SELF" desc="Label for the button in sharing hub for sending the current tab to other devices if user signed in (Send Tab to Self feature).">
         Send to devices
       </message>
 
       <message name="IDS_SHARING_INCLUDING_LINK_TITLE_TEMPLATE" desc="Title used in share sheet when sharing the highlighted text with a generated link.">
         Including link: <ph name="ORIGIN">%1$s<ex>https://www.example.com</ex></ph>
-      </message>
-
-      <message name="IDS_GIF_COPIED" desc="Text shown in the toast notification when Copy GIF is selected in the sharing hub.">
-        GIF Copied
       </message>
 
       <message name="IDS_QR_CODE_OPEN_SETTINGS_LABEL" desc="Text on button on QR Code sharing tab triggering Android settings.">
@@ -5357,10 +5348,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Include link
       </message>
 
-      <message name="IDS_LINK_TOGGLE_SHARE_WEBNOTE_ONLY" desc="Toast displayed when the toggle is clicked for a Webnote share and a link is excluded.">
-        Share card only
-      </message>
-
       <message name="IDS_LINK_TOGGLE_SHARE_SCREENSHOT_ONLY" desc="Toast displayed when the toggle is clicked for a screenshot share and a link is excluded.">
         Share screenshot only
       </message>
@@ -5373,19 +5360,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Share GIF only
       </message>
 
-      <message name="IDS_LINK_TOGGLE_SHARE_REACTION_ONLY" desc="Toast displayed when the toggle is clicked for a lightweight reaction share and a link is excluded.">
-        Share reaction only
-      </message>
-
       <message name="IDS_LINK_TOGGLE_SHARE_CONTENT_ONLY" desc="Fallback toast displayed when the toggle is clicked for a generic share and a link is excluded.">
         Share content only
       </message>
 
       <!-- Share Screenshot strings -->
-      <message name="IDS_SCREENSHOT_EDIT_TITLE" desc="The text shown on the share option for screenshots.">
-        Edit
-      </message>
-
       <message name="IDS_SCREENSHOT_DELETE_TITLE" desc="The text shown on the delete option for screenshots.">
         Delete
       </message>
@@ -5404,10 +5383,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_SCREENSHOT_FILENAME_PREFIX" desc="File name prefix for downloaded screenshot that is followed by timestamp.">
         chrome_screenshot_<ph name="CURRENT_TIMESTAMP_MS">%1$s<ex>1582667748515</ex></ph>
-      </message>
-
-      <message name="IDS_SAVE_IMAGE_FILENAME_PREFIX" desc="File name prefix for downloaded image that is followed by timestamp.">
-        chrome_image_<ph name="CURRENT_TIMESTAMP_MS">%1$s<ex>1582667748515</ex></ph>
       </message>
 
       <!-- Chime DFM module strings -->
@@ -5465,10 +5440,10 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
         Save up to 60% data
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_2_DESCRIPTION" desc="The body text of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.  Promotes data savings.">
-        Use Lite mode on Thorium
+        Use Lite mode on Google Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_TITLE" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.">
-        Alex313031 recommends Thorium
+        Google recommends Thorium
       </message>
       <message name="IDS_CHROME_REENGAGEMENT_NOTIFICATION_3_DESCRIPTION" desc="The title of a notification shown to suggest that users use Thorium.  Users probably have not opened Thorium in a while.  Promotes data savings and relevant news.">
         Save up to 60% data, read today's news
@@ -5539,6 +5514,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- WebID Account Selection strings -->
+      <message name="IDS_ACCOUNT_SELECTION_ADD_ACCOUNT" desc="Title of the button that lets the user sign in to an additional account" translateable="false">
+        Add Account
+      </message>
       <message name="IDS_ACCOUNT_SELECTION_SHEET_TITLE_EXPLICIT_SIGNIN" desc="Header for sign in sheet. Sheet is shown to prompt user to sign in to a website using an account from an identity provider.">
         Sign in to <ph name="SITE_ETLD_PLUS_ONE">%1$s<ex>rp.example</ex></ph> with <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">%2$s<ex>idp.com</ex></ph>
       </message>
@@ -5647,29 +5625,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_VERIFY_SHEET_TITLE" desc="Header for verify sheet for explicit sign-in.">
         Verifying…
-      </message>
-
-      <!-- Content Creation strings -->
-      <message name="IDS_CONTENT_CREATION_NOTE_TITLE_FOR_SHARE" desc="The title of the share sheet when sharing a stylized note. The date will be formatted according to the current locale.">
-        Stylized highlight <ph name="CURRENT_DATE">%1$s<ex>2020-09-16</ex></ph>
-      </message>
-      <message name="IDS_CONTENT_CREATION_NOTE_FILENAME_PREFIX" desc="Prefix used to name files when saving a Note's image representation. Underscores need to be used in place of whitespaces to avoid breaking the file path. Random numbers will be appended to this suffix to guarantee uniqueness.">
-        chrome_stylized_highlight_
-      </message>
-      <message name="IDS_CONTENT_CREATION_NOTE_TEMPLATE_SELECTED" desc="Announcment string for accessibility when selected template changes.">
-        <ph name="TEMPLATE_TITLE">%1$s<ex>Classic</ex></ph> template selected
-      </message>
-      <message name="IDS_CONTENT_CREATION_NOTE_DIALOG_DESCRIPTION" desc="Accessibility information for note template picking dialog.">
-        Select a template for your highlight.
-      </message>
-      <message name="IDS_CONTENT_CREATION_NOTE_SHORTENED_MESSAGE" desc="Toast message displayed when highlighted text is too long and is cropped to fit in the note.">
-        Highlight was shortened
-      </message>
-      <message name="IDS_QUOTATION_MARK_PREFIX" desc="String to put in front of other text to represent it as a quote start.">
-        “
-      </message>
-      <message name="IDS_QUOTATION_MARK_SUFFIX" desc="String to put after other text to represent it as a quote end.">
-        ”
       </message>
 
       <!-- HTTPS-First Mode settings strings -->
@@ -5907,6 +5862,27 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
 
       <message name="IDS_READALOUD_VOICE_PREVIEW_MESSAGE" desc="String to be read aloud when a voice's preview button is clicked as a demonstration of how that voice sounds. It also explains how to select the voice by clicking the menu item.">
         Here are the voices you can pick for reading out your web pages. If you like this voice and want me to keep using it just tap the voice name.
+      </message>
+
+      <!-- WebAuthn -->
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_TITLE" desc="The title of a bottomsheet that appears before the user saves passkey in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'.)" formatter_data="android_java">
+        Save passkey outside Incognito?
+      </message>
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_BODY" desc="The body of a bottomsheet that appears before the user saves passkey in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'.)" formatter_data="android_java">
+        This passkey will be saved to your password manager. Anyone with access to it will be able to use this passkey.
+      </message>
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_CONTINUE" desc="The text of a button that the user will click to continue creating a passkey in Incognito mode" formatter_data="android_java">
+        Continue
+      </message>
+
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_SHEET_DESCRIPTION" desc="Accessibility string that describes a bottomsheet that confirms with the user that they want to create passkey while in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'." formatter_data="android_java">
+        Passkey confirmation sheet
+      </message>
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_SHEET_OPENED" desc="Accessibility string that describes opening a bottomsheet that confirms with the user that they want to create passkey while in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'." formatter_data="android_java">
+        Passkey confirmation sheet opened
+      </message>
+      <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_SHEET_CLOSED" desc="Accessibility string that describes closing a bottomsheet that confirms with the user that they want to create passkey while in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'." formatter_data="android_java">
+        Passkey confirmation sheet closed
       </message>
     </messages>
   </release>
