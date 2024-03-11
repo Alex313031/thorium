@@ -46,7 +46,6 @@
 #include "ui/gfx/x/connection.h"
 #include "ui/gfx/x/screensaver.h"
 #include "ui/gfx/x/shm.h"
-#include "ui/gfx/x/visual_manager.h"
 #include "ui/gfx/x/xproto.h"
 
 #if BUILDFLAG(IS_FREEBSD)
@@ -577,44 +576,6 @@ bool SuspendX11ScreenSaver(bool suspend) {
   return true;
 }
 
-gfx::ICCProfile GetICCProfileForMonitor(int monitor) {
-  gfx::ICCProfile icc_profile;
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kHeadless)) {
-    return icc_profile;
-  }
-  std::string atom_name = monitor == 0
-                              ? "_ICC_PROFILE"
-                              : base::StringPrintf("_ICC_PROFILE_%d", monitor);
-  scoped_refptr<base::RefCountedMemory> data;
-  if (GetRawBytesOfProperty(GetX11RootWindow(), x11::GetAtom(atom_name.c_str()),
-                            &data, nullptr)) {
-    icc_profile = gfx::ICCProfile::FromData(data->data(), data->size());
-  }
-  return icc_profile;
-}
-
-bool IsSyncExtensionAvailable() {
-// Chrome for ChromeOS can be run with X11 on a Linux desktop. In this case,
-// NotifySwapAfterResize is never called as the compositor does not notify about
-// swaps after resize. Thus, simply disable usage of XSyncCounter on ChromeOS
-// builds.
-//
-// TODO(https://crbug.com/1036285): Also, disable sync extension for all ozone
-// builds as long as our EGL impl for Ozone/X11 is not mature enough and we do
-// not receive swap completions on time, which results in weird resize behaviour
-// as X Server waits for the XSyncCounter changes.
-#if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_OZONE)
-  return false;
-#else
-  static bool result =
-      x11::Connection::Get()
-          ->sync()
-          .Initialize({x11::Sync::major_version, x11::Sync::minor_version})
-          .Sync();
-  return result;
-#endif
-}
-
 SkColorType ColorTypeForVisual(x11::VisualId visual) {
   struct {
     SkColorType color_type;
@@ -679,19 +640,6 @@ bool IsVulkanSurfaceSupported() {
     }
   }
   return false;
-}
-
-bool DoesVisualHaveAlphaForTest() {
-  uint8_t depth = 0;
-  bool visual_has_alpha = false;
-  x11::Connection::Get()->GetOrCreateVisualManager().ChooseVisualForWindow(
-      true, nullptr, &depth, nullptr, &visual_has_alpha);
-
-  if (visual_has_alpha) {
-    DCHECK_EQ(32, depth);
-  }
-
-  return visual_has_alpha;
 }
 
 gfx::ImageSkia GetNativeWindowIcon(intptr_t target_window_id) {

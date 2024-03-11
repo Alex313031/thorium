@@ -55,11 +55,6 @@ if (is_android) {
 }
 
 declare_args() {
-  # Indicates whether keystone registration framework should be enabled (see
-  # action("keystone_registration_framework") below).  There are some tests
-  # where we'd like for it to be disabled. (https://crbug.com/909080)
-  enable_keystone_registration_framework = true
-
   # On macOS, `is_chrome_branded` builds that have been signed locally will not
   # launch because certain entitlements are tied to the official Google code
   # signing identity. If `include_branded_entitlements` is set to false, these
@@ -106,7 +101,7 @@ group("assert_no_deps") {
 
   if (is_android) {
     deps += [ "//chrome/android:chrome_public_apk" ]
-  } else {
+  } else if (!is_fuchsia) {
     deps += [ ":chrome" ]
   }
 
@@ -129,7 +124,7 @@ group("assert_no_deps") {
   }
 }
 
-if (!is_android && !is_mac) {
+if (!is_android && !is_mac && !is_fuchsia) {
   group("chrome") {
     public_deps = [ ":chrome_initial" ]
     data_deps = [ ":chrome_initial" ]
@@ -204,7 +199,7 @@ if (!is_android && !is_mac) {
           ":chrome_dll",
           ":chrome_exe_version",
           ":copy_first_run",
-          ":packed_resources_integrity",
+          ":packed_resources_integrity_header",
           ":visual_elements_resources",
           "//base",
           "//build:branding_buildflags",
@@ -471,7 +466,8 @@ if (is_win) {
   chrome_framework_name = chrome_product_full_name + " Framework"
   chrome_framework_version = chrome_version_full
 
-  verify_dynamic_libraries = !is_component_build && !is_asan
+  verify_dynamic_libraries = !is_component_build && !is_asan && !is_ubsan &&
+                             !is_ubsan_vptr && !is_ubsan_security
   if (host_os == "mac") {
     objdump_path = mac_bin_path
   } else {
@@ -963,13 +959,6 @@ if (is_win) {
       "//chrome/browser/mac:install",
     ]
 
-    if (is_chrome_branded) {
-      sources += [
-        "browser/mac/keystone_promote_postflight.sh",
-        "browser/mac/keystone_promote_preflight.sh",
-      ]
-    }
-
     if (icu_use_data_file) {
       sources += [ "$root_out_dir/icudtl.dat" ]
       public_deps += [ "//third_party/icu:icudata" ]
@@ -1093,17 +1082,6 @@ if (is_win) {
     }
   }
 
-  if (is_chrome_branded && enable_keystone_registration_framework) {
-    bundle_data("keystone_registration_framework") {
-      sources = [ "//third_party/googlemac/Releases/Keystone/KeystoneRegistration.framework" ]
-
-      outputs = [ "{{bundle_contents_dir}}/Frameworks/{{source_file_part}}" ]
-    }
-  } else {
-    group("keystone_registration_framework") {
-    }
-  }
-
   if (build_with_internal_optimization_guide) {
     # Add the optimization guide .dylib in the MODULE_DIR of Chromium.app
     bundle_data("optimization_guide_library") {
@@ -1218,10 +1196,6 @@ if (is_win) {
 
     if (is_chrome_branded) {
       framework_contents += [ "Default Apps" ]
-      if (enable_keystone_registration_framework) {
-        # For KeystoneRegistration.framework.
-        framework_contents += [ "Frameworks" ]
-      }
     }
 
     if (enable_nacl) {
@@ -1245,7 +1219,6 @@ if (is_win) {
       ":chrome_framework_helpers",
       ":chrome_framework_plugins",
       ":chrome_framework_resources",
-      ":keystone_registration_framework",
       ":optimization_guide_library",
       ":swiftshader_library",
       ":widevine_cdm_library",
@@ -1621,6 +1594,7 @@ if (!is_android) {
       public_deps = [ ":preinstalled_apps" ]
     }
 
+    # This needs to be in-sync with //chrome/app/packed_resources_integrity.h.
     files_to_hash = [
       "resources.pak",
       "chrome_100_percent.pak",
@@ -1628,6 +1602,15 @@ if (!is_android) {
     if (enable_hidpi) {
       files_to_hash += [ "chrome_200_percent.pak" ]
     }
+  }
+
+  # This is extracted to deserialize build dependency around
+  # :packed_resources_integrity_hash and improve build parallelism.
+  source_set("packed_resources_integrity_header") {
+    sources = [ "app/packed_resources_integrity.h" ]
+
+    # chrome/app/packed_resources_integrity.cc file is generated in dependency.
+    deps = [ ":packed_resources_integrity" ]
   }
 }
 
@@ -1725,10 +1708,6 @@ if (is_android) {
 
     if (is_chromeos_ash) {
       public_deps += [ "//ui/lottie" ]
-    }
-
-    if (enable_vr) {
-      deps += [ "//third_party/gvr-android-sdk:gvr_shim" ]
     }
   }
 }

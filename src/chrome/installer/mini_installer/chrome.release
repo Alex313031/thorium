@@ -30,8 +30,6 @@ chrome_child.dll: %(VersionDir)s\
 chrome_elf.dll: %(VersionDir)s\
 chrome_pwa_launcher.exe: %(VersionDir)s\
 chrome_wer.dll: %(VersionDir)s\
-thorium_shell.exe: %(VersionDir)s\
-thorium_shell.ico: %(VersionDir)s\
 content_resources.pak: %(VersionDir)s\
 content_shell.pak: %(VersionDir)s\
 d3dcompiler_47.dll: %(VersionDir)s\
@@ -44,6 +42,8 @@ notification_helper.exe: %(VersionDir)s\
 optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
 shell_resources.pak: %(VersionDir)s\
+thorium_shell.exe: %(VersionDir)s\
+thorium_shell.ico: %(VersionDir)s\
 ui_resources_100_percent.pak: %(VersionDir)s\
 resources\*.*: %(VersionDir)s\resources\
 vk_swiftshader.dll: %(VersionDir)s\

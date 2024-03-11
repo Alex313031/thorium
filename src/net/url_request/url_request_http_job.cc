@@ -106,6 +106,20 @@
 
 namespace {
 
+// These values are persisted to logs. Entries should not be renumbered and
+// numeric values should never be reused.
+enum class TpcdHeaderStatus {
+  kSet = 0,
+  kNoLabel = 1,
+  kNoCookie = 2,
+  kMaxValue = kNoCookie,
+};
+
+void RecordTpcdHeaderStatus(TpcdHeaderStatus status) {
+  base::UmaHistogramEnumeration("Privacy.3PCD.SecCookieDeprecationHeaderStatus",
+                                status);
+}
+
 base::Value::Dict FirstPartySetMetadataNetLogParams(
     const net::FirstPartySetMetadata& first_party_set_metadata,
     const int64_t* const fps_cache_filter) {
@@ -771,6 +785,14 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
     AnnotateAndMoveUserBlockedCookies(maybe_included_cookies, excluded_cookies);
   }
 
+  const bool cookie_deprecation_testing_enabled =
+      request_->context()->cookie_deprecation_label().has_value();
+  const bool cookie_deprecation_testing_has_label =
+      cookie_deprecation_testing_enabled &&
+      !request_->context()->cookie_deprecation_label().value().empty();
+  bool may_set_sec_cookie_deprecation_header =
+      cookie_deprecation_testing_has_label;
+
   if (!maybe_included_cookies.empty()) {
     std::string cookie_line =
         CanonicalCookie::BuildCookieLine(maybe_included_cookies);
@@ -778,8 +800,6 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
                                           cookie_line);
 
     size_t n_partitioned_cookies = 0;
-    bool may_set_sec_cookie_deprecation_header =
-        !request_->context()->cookie_deprecation_label().value_or("").empty();
 
     // TODO(crbug.com/1031664): Reduce the number of times the cookie list
     // is iterated over. Get metrics for every cookie which is included.
@@ -827,6 +847,15 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
     if (ShouldRecordPartitionedCookieUsage()) {
       base::UmaHistogramCounts100("Cookie.PartitionedCookiesInRequest",
                                   n_partitioned_cookies);
+    }
+  }
+  if (cookie_deprecation_testing_enabled) {
+    if (!cookie_deprecation_testing_has_label) {
+      RecordTpcdHeaderStatus(TpcdHeaderStatus::kNoLabel);
+    } else if (may_set_sec_cookie_deprecation_header) {
+      RecordTpcdHeaderStatus(TpcdHeaderStatus::kNoCookie);
+    } else {
+      RecordTpcdHeaderStatus(TpcdHeaderStatus::kSet);
     }
   }
 
@@ -1711,6 +1740,46 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
     UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeSuccess", total_time);
   } else {
     UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeCancel", total_time);
+  }
+
+  // These metrics are intended to replace some of the later IP
+  // Protection-focused metrics below which require response_info_. These
+  // metrics are only concerned with data that actually hits or perhaps should
+  // have hit the network.
+  //
+  // We count towards these metrics even if the job has been aborted. Jobs
+  // aborted before an end-to-end connection is established will have both
+  // sent and received equal to zero.
+  //
+  // In addition, we don't want to ignore jobs where response_info_->was_cached
+  // is true but the network was used to trigger cache usage as part of a 304
+  // Not Modified response. However, cache hits which bypass the network
+  // entirely should not be counted.
+  //
+  // GetTotalReceivedBytes measures HTTP stream bytes, which is more
+  // comprehensive than PrefilterBytesRead, which measures (possibly compressed)
+  // content's length only.
+  const bool bypassedNetwork = response_info_ && response_info_->was_cached &&
+                               !response_info_->network_accessed &&
+                               GetTotalSentBytes() == 0 &&
+                               GetTotalReceivedBytes() == 0;
+  if (!bypassedNetwork) {
+    UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.BytesSent2", GetTotalSentBytes(),
+                                1, 50000000, 50);
+    UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.BytesReceived2",
+                                GetTotalReceivedBytes(), 1, 50000000, 50);
+    // Having a transaction_ does not imply having a response_info_. This is
+    // particularly the case in some aborted/cancelled jobs. The transaction is
+    // the primary source of MDL match information.
+    if ((transaction_ && transaction_->IsMdlMatchForMetrics()) ||
+        (response_info_ && response_info_->was_mdl_match)) {
+      UMA_HISTOGRAM_CUSTOM_COUNTS(
+          "Net.HttpJob.IpProtection.AllowListMatch.BytesSent2",
+          GetTotalSentBytes(), 1, 50000000, 50);
+      UMA_HISTOGRAM_CUSTOM_COUNTS(
+          "Net.HttpJob.IpProtection.AllowListMatch.BytesReceived2",
+          GetTotalReceivedBytes(), 1, 50000000, 50);
+    }
   }
 
   if (response_info_) {

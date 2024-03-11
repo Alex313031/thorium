@@ -5,6 +5,7 @@
 #include "net/dns/dns_client.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 
@@ -34,7 +35,7 @@ namespace net {
 
 namespace {
 
-bool IsEqual(const absl::optional<DnsConfig>& c1, const DnsConfig* c2) {
+bool IsEqual(const std::optional<DnsConfig>& c1, const DnsConfig* c2) {
   if (!c1.has_value() && c2 == nullptr)
     return true;
 
@@ -133,7 +134,7 @@ class DnsClientImpl : public DnsClient {
            insecure_fallback_failures_ >= kMaxInsecureFallbackFailures;
   }
 
-  bool SetSystemConfig(absl::optional<DnsConfig> system_config) override {
+  bool SetSystemConfig(std::optional<DnsConfig> system_config) override {
     if (system_config == system_config_)
       return false;
 
@@ -176,11 +177,11 @@ class DnsClientImpl : public DnsClient {
     return &config->hosts;
   }
 
-  absl::optional<std::vector<IPEndPoint>> GetPresetAddrs(
+  std::optional<std::vector<IPEndPoint>> GetPresetAddrs(
       const url::SchemeHostPort& endpoint) const override {
     DCHECK(endpoint.IsValid());
     if (!session_)
-      return absl::nullopt;
+      return std::nullopt;
     const auto& servers = session_->config().doh_config.servers();
     auto it = base::ranges::find_if(servers, [&](const auto& server) {
       std::string uri;
@@ -191,7 +192,7 @@ class DnsClientImpl : public DnsClient {
       return url::SchemeHostPort(gurl) == endpoint;
     });
     if (it == servers.end())
-      return absl::nullopt;
+      return std::nullopt;
     std::vector<IPEndPoint> combined;
     for (const IPAddressList& ips : it->endpoints()) {
       for (const IPAddress& ip : ips) {
@@ -226,7 +227,7 @@ class DnsClientImpl : public DnsClient {
     return dict;
   }
 
-  absl::optional<DnsConfig> GetSystemConfigForTesting() const override {
+  std::optional<DnsConfig> GetSystemConfigForTesting() const override {
     return system_config_;
   }
 
@@ -240,7 +241,7 @@ class DnsClientImpl : public DnsClient {
   }
 
  private:
-  absl::optional<DnsConfig> BuildEffectiveConfig() const {
+  std::optional<DnsConfig> BuildEffectiveConfig() const {
     DnsConfig config;
     // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
     if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode) {
@@ -248,7 +249,7 @@ class DnsClientImpl : public DnsClient {
     } else {
       if (!system_config_) {
         LOG(WARNING) << "BuildEffectiveConfig(): no system configuration";
-        return absl::nullopt;
+        return std::nullopt;
       }
 
       config = config_overrides_.ApplyOverrides(system_config_.value());
@@ -266,14 +267,14 @@ class DnsClientImpl : public DnsClient {
 
     if (!config.IsValid()) {
       LOG(WARNING) << "BuildEffectiveConfig(): invalid configuration";
-      return absl::nullopt;
+      return std::nullopt;
     }
 
     return config;
   }
 
   bool UpdateDnsConfig() {
-    absl::optional<DnsConfig> new_effective_config = BuildEffectiveConfig();
+    std::optional<DnsConfig> new_effective_config = BuildEffectiveConfig();
 
     if (IsEqual(new_effective_config, GetEffectiveConfig()))
       return false;
@@ -290,7 +291,7 @@ class DnsClientImpl : public DnsClient {
     return true;
   }
 
-  void UpdateSession(absl::optional<DnsConfig> new_effective_config) {
+  void UpdateSession(std::optional<DnsConfig> new_effective_config) {
     factory_.reset();
     session_ = nullptr;
 
@@ -308,7 +309,7 @@ class DnsClientImpl : public DnsClient {
   bool can_query_additional_types_via_insecure_ = false;
   int insecure_fallback_failures_ = 0;
 
-  absl::optional<DnsConfig> system_config_;
+  std::optional<DnsConfig> system_config_;
   DnsConfigOverrides config_overrides_;
 
   scoped_refptr<DnsSession> session_;

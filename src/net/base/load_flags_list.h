@@ -62,8 +62,9 @@ LOAD_FLAG(BYPASS_PROXY, 1 << 7)
 // page is loaded.
 LOAD_FLAG(MAIN_FRAME_DEPRECATED, 1 << 8)
 
-// Indicates that this load was motivated by the rel=prefetch feature,
-// and is (in theory) not intended for the current frame.
+// Indicates that this load was motivated by the rel=prefetch feature, or the
+// speculationrules prefetch feature, and is (in theory) not intended for the
+// current frame.
 LOAD_FLAG(PREFETCH, 1 << 9)
 
 // Indicates that this load could cause deadlock if it has to wait for another
@@ -116,7 +117,7 @@ LOAD_FLAG(DISABLE_SHARED_DICTIONARY_AFTER_CROSS_ORIGIN_REDIRECT, 1 << 18)
 LOAD_FLAG(SHOULD_BYPASS_HSTS, 1 << 19)
 
 // This load will not send Accept-Language or User-Agent headers, and not
-// advertise brotli encoding.
+// advertise brotli or zstd encoding.
 // Used to comply with IETF (draft) DNS-over-HTTPS:
 // "Implementors SHOULD NOT set non-essential HTTP headers in DoH client requests."
 LOAD_FLAG(MINIMAL_HEADERS, 1 << 20)
