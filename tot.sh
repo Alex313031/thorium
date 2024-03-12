@@ -37,7 +37,7 @@ fi
 printf "\n" &&
 printf "${bold}${GRE}Script to Rebase/Sync Chromium repo to Tip of Tree.${c0}\n" &&
 printf "\n" &&
-printf "${YEL}Rebasing/Syncing to `origin/main` and running hooks...\n" &&
+printf "${YEL}Rebasing/Syncing to \`origin/main\` and running hooks...\n" &&
 tput sgr0 &&
 
 cd ${CR_SRC_DIR}/v8/ &&
