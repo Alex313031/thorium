@@ -61,10 +61,9 @@ cp -v thorium-libjxl/src/DEPS ${CR_SRC_DIR}/ &&
 cd ${CR_SRC_DIR} &&
 
 git clean -ffd &&
+git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
-
-git clean -ffd &&
 
 gclient runhooks &&
 
