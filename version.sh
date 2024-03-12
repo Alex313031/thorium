@@ -86,7 +86,7 @@ python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromiu
 python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 printf "\n" &&
 
-printf "${YEL}Downloading PGO Profile for V8 (when v8_enable_builtins_optimization = true)\n" &&
+printf "${YEL}Downloading PGO Profile for V8 (for when v8_enable_builtins_optimization = true)\n" &&
 printf "\n" &&
 tput sgr0 &&
 
