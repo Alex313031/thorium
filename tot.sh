@@ -18,9 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo.${c0}\n" &&
-	# printf "${bold}${YEL}Use the --shallow flag to do a shallow sync, if you have downloaded${c0}\n" &&
-	# printf "${bold}${YEL}the Chromium repo with the --no-history flag.${c0}\n" &&
+	printf "${bold}${GRE}Script to Rebase/Sync Chromium repo to Tip of Tree.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -37,9 +35,9 @@ else
 fi
 
 printf "\n" &&
-printf "${bold}${GRE}Script to Rebase/Sync Chromium repo.${c0}\n" &&
+printf "${bold}${GRE}Script to Rebase/Sync Chromium repo to Tip of Tree.${c0}\n" &&
 printf "\n" &&
-printf "${YEL}Rebasing/Syncing and running hooks...\n" &&
+printf "${YEL}Rebasing/Syncing to `origin/main` and running hooks...\n" &&
 tput sgr0 &&
 
 cd ${CR_SRC_DIR}/v8/ &&
