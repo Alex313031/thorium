@@ -35,6 +35,4 @@ ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
 
-Add captive portals patch > https://github.com/uazo/cromite/blob/master/build/patches/Remove-detection-of-captive-portals.patch
-
-Restore JXL support on Android.
+ - Restore JXL support on Android.

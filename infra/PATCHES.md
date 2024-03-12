@@ -49,8 +49,13 @@ REMOVED ~~VDPAU Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blo
 Audio Sandbox Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-audio-sandbox.patch
 
 DNS Over HTTPS (DoH) Secure Mode Patch > https://github.com/uazo/cromite/blob/master/build/patches/DoH-improvements.patch
+  - Made by uazo
 
 DNS Over HTTPS (DoH) Bare Minimum HTTP Headers Patch > https://github.com/uazo/cromite/blob/master/build/patches/Reduce-HTTP-headers-in-DoH-requests-to-bare-minimum.patch
+  - Made by uazo
+
+Disable Captive Portals Detection > https://github.com/uazo/cromite/blob/master/build/patches/Remove-detection-of-captive-portals.patch
+  - Made by uazo
 
 Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
