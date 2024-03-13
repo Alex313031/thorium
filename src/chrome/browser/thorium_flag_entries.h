@@ -32,7 +32,7 @@
     {"force-high-contrast",
      "Enable High Contrast Mode",
      "Enables high contrast mode for all Thorium instances.",
-     kOsAll, SINGLE_VALUE_TYPE("force-high-contrast")},
+     kOsAll, SINGLE_VALUE_TYPE(switches::kForceHighContrast)},
 
 #if BUILDFLAG(IS_WIN)
     {"disable-aero",
@@ -56,12 +56,12 @@
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
 
-#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
-    {"middle-click-autoscroll",
-     "Middle Button Autoscroll",
-     "Enables autoscrolling when the middle mouse button is pressed.",
-     kOsDesktop, SINGLE_VALUE_TYPE("middle-click-autoscroll")},
-#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+//#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+//    {"middle-click-autoscroll",
+//    "Middle Click Autoscroll",
+//     "Enables autoscrolling when the middle mouse button is pressed.",
+//     kOsDesktop, SINGLE_VALUE_TYPE(blink::features::kMiddleClickAutoscroll)},
+//#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 
     {"autoplay-policy",
      "Disable/Enable AutoPlay",

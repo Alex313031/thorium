@@ -34,5 +34,8 @@ Thorium Remote Desktop > Chrome Remote Desktop
 ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
+Aw, Snap! > Aw, #@%!, this tab's process has gone bye bye...
+
+ - Add GPC patch
 
  - Restore JXL support on Android.

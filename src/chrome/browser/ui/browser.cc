@@ -2925,7 +2925,7 @@ bool Browser::CanCloseWithMultipleTabs() {
 
   // Figure out how many windows are open total
   int total_window_count = 0;
-  for (auto* browser : *BrowserList::GetInstance()) {
+  for (Browser* browser : *BrowserList::GetInstance()) {
     // Don't count this browser window or any other in the process of closing.
     // Window closing may be delayed, and windows that are in the process of
     // closing don't count against our totals.
