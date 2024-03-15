@@ -132,15 +132,13 @@ config("compiler") {
     # "/fp:fast", enables FMA.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "-mmmx",
-        "-mfxsr",
-        "-msse",
-        "-msse2",
+        "-msse3",
+        "-mssse3",
+        "-msse4.1",
         "/clang:-O3",
-        "/clang:-mmmx",
-        "/clang:-mfxsr",
-        "/clang:-msse",
-        "/clang:-msse2",
+        "/clang:-msse3",
+        "/clang:-mssse3",
+        "/clang:-msse4.1",
         "-Xclang", "-O3",
       ]
     }
