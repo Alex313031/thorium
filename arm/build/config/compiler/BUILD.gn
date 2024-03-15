@@ -2488,7 +2488,7 @@ config("march_i8mm") {
 
 config("march_i8mm_f16") {
   if (!is_win || is_clang) {
-    cflags = [ "-march=armv8.2-a+i8mm" ]
+    cflags = [ "-march=armv8.2-a+i8mm+fp16" ]
     asmflags = cflags
   }
 }
