@@ -129,7 +129,7 @@ config("compiler") {
     # "/fp:fast", enables FMA.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "/arch:AVX2",
+        # "/arch:AVX2",
         "-msse3",
         "-mssse3",
         "-msse4.1",
