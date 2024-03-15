@@ -127,9 +127,9 @@ config("compiler") {
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
     # "/fp:fast", enables FMA.
+    # "/arch:AVX2", for AVX2
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        # "/arch:AVX2",
         "-msse3",
         "-mssse3",
         "-msse4.1",
