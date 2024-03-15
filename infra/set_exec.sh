@@ -55,6 +55,8 @@ sudo chmod -v +x reset_depot_tools.sh &&
 
 sudo chmod -v +x version.sh &&
 
+sudo chmod -v +x version_clean.sh &&
+
 sudo chmod -v +x infra/arch-prerequisites.sh &&
 
 sudo chmod -v +x infra/fetch_api_keys.sh &&
