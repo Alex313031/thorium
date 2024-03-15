@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 # --help
 displayHelp () {
 	printf "\n" &&
-	printf "${bold}${GRE}Script to build Thorium for Windows on Linux.${c0}\n" &&
+	printf "${bold}${GRE}Script to build Thorium for Windows.${c0}\n" &&
 	printf "${underline}${YEL}Usage:${c0} build_win.sh # (where # is number of jobs)${c0}\n" &&
 	printf "\n"
 }
