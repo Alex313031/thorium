@@ -65,6 +65,8 @@ cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
+echo "Copying other files to \`out/thorium\`" &&
+
 # Add default_apps dir for Google Docs Offline extension.
 mkdir -v -p ${CR_SRC_DIR}/out/thorium/default_apps &&
 cp -r -v infra/default_apps/. ${CR_SRC_DIR}/out/thorium/default_apps/ &&
@@ -72,10 +74,6 @@ cp -r -v infra/default_apps/. ${CR_SRC_DIR}/out/thorium/default_apps/ &&
 # Add initial preferences file to open Thorium welcome page on first run.
 cp -v infra/initial_preferences ${CR_SRC_DIR}/out/thorium/ &&
 cp -v infra/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-
-echo " # Workaround for DevTools" &&
-mkdir -v -p ${CR_SRC_DIR}/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
-cp -r -v src/third_party/devtools-frontend/src/front_end/Images/src/chromeSelectDark.svg ${CR_SRC_DIR}/out/thorium/gen/third_party/devtools-frontend/src/front_end/Images/ &&
 
 # MacOS ARMv8.3-A optimizations
 copyMacOS () {

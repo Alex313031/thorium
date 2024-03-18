@@ -101,6 +101,7 @@ MEIPreload\preloaded_data.pb: %(VersionDir)s\MEIPreload\
 [HIDPI]
 chrome_200_percent.pak: %(VersionDir)s\
 thorium.ico: %(VersionDir)s\
+thorium.svg: %(VersionDir)s\
 
 # Add component ffmpeg to Thorium.
 [FFMPEG]

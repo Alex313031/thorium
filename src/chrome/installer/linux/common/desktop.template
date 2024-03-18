@@ -169,7 +169,7 @@ Name[uk]=Нове вікно
 Name[vi]=Cửa sổ Mới
 Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
-Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --new-window %U
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
@@ -221,7 +221,7 @@ Name[uk]=Нове вікно в режимі анонімного перегля
 Name[vi]=Cửa sổ ẩn danh mới
 Name[zh_CN]=新建隐身窗口
 Name[zh_TW]=新增無痕式視窗
-Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --incognito %U
 
 [Desktop Action temp-profile]
 Name=Open New Window with a temporary profile
@@ -259,7 +259,7 @@ Name[ug]=ۋاقىتلىق سەپلىمە ھۆججەت بىلەن يېڭى كۆز
 Name[vi]=Mở cửa sổ mới với hồ sơ tạm
 Name[zh_CN]=以临时配置文件打开新窗口
 Name[zh_TW]=以暫時性個人身分開啟新視窗
-Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --temp-profile
+Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --temp-profile  %U
 
 [Desktop Action content-shell]
 Name=Open Thorium Shell
