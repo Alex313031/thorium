@@ -1,8 +1,7 @@
 google_api_key = ""
 google_default_client_id = ""
 google_default_client_secret = ""
-# Hopefully re-enable
-enable_jxl_decoder = false
+enable_jxl_decoder = true
 target_os = "android"
 target_cpu = "arm"
 v8_target_cpu = "arm"
