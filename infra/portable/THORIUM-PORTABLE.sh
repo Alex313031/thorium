@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2024 The Chromium Authors and Alex313031. All rights reserved.
+# Copyright 2024 The Chromium Authors, the AUR, and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -14,7 +14,7 @@ HERE="`dirname "$CHROME_WRAPPER"`"
 # detect whether the system xdg utilities are sufficiently new to be likely to
 # work for us by looking for xdg-settings. If we find it, we leave $PATH alone,
 # so that the system xdg utilities (including any distro patches) will be used.
-if ! which xdg-settings &> /dev/null; then
+if ! command -v xdg-settings &> /dev/null; then
   # Old xdg utilities. Prepend $HERE to $PATH to use ours instead.
   export PATH="$HERE:$PATH"
 else
@@ -34,6 +34,11 @@ else
 fi
 export LD_LIBRARY_PATH
 
+# Clean up old crash reports (see https://bugs.debian.org/1015931)
+# after 30 days.
+find "$(pwd)/.config/thorium/Crash Reports/pending/" -mtime +30 \
+  \( -name "*.meta" -o -name "*.dmp" \) -exec rm \{\} \;
+
 # APPNAME for GTK.
 APPNAME=thorium
 
@@ -47,7 +52,7 @@ TITLE="Thorium Portable"
 export CHROME_DESKTOP="thorium-portable.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
-DIST=`cat /etc/debian_version`
+# DIST=`cat /etc/debian_version`
 export CHROME_VERSION_EXTRA="stable, (Portable)"
 
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
