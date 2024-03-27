@@ -6,10 +6,10 @@
 
 #include <optional>
 
+#include "base/command_line.h"
 #include "base/debug/crash_logging.h"
 #include "base/debug/dump_without_crashing.h"
 #include "base/memory/raw_ptr.h"
-#include "base/command_line.h"
 #include "base/metrics/field_trial_params.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/strings/string_split.h"
@@ -333,7 +333,8 @@ struct InsecureDownloadData {
         download_source == DownloadSource::OFFLINE_PAGE ||
         download_source == DownloadSource::INTERNAL_API ||
         download_source == DownloadSource::EXTENSION_API ||
-        download_source == DownloadSource::EXTENSION_INSTALLER) {
+        download_source == DownloadSource::EXTENSION_INSTALLER ||
+        base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads")) {
       is_insecure_download_ = false;
     } else {  // Not ignorable download.
       // TODO(crbug.com/1352598): Add blocking metrics.
