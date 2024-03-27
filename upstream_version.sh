@@ -36,35 +36,32 @@ else
     export CR_SRC_DIR
 fi
 
-THOR_VER="121.0.6167.206"
+CR_VER="122.0.6261.148"
 
-export THOR_VER &&
+export CR_VER &&
 
 printf "\n"
-printf "${GRE}Current Thorium version is:${c0} ${underline}$THOR_VER${c0}\n"
+printf "${GRE}Current Chromium version is:${c0} ${underline}$CR_VER${c0}\n"
 printf "\n"
-printf "${RED}NOTE: ${YEL}Checking out${CYA} tags/$THOR_VER ${YEL}in ${CR_SRC_DIR}...${c0}\n"
+printf "${RED}NOTE: ${YEL}Checking out${CYA} tags/$CR_VER ${YEL}in ${CR_SRC_DIR}...${c0}\n"
 printf "\n"
 
 cd ${CR_SRC_DIR} &&
 
-git checkout -f tags/$THOR_VER &&
+git checkout -f tags/$CR_VER &&
 
-cd ~/thorium &&
-
-# Use our artifacts hash
-cp -v src/build/vs_toolchain.py ${CR_SRC_DIR}/build/ &&
-
-cd ${CR_SRC_DIR} &&
-
+git clean -ffd &&
 git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
 gclient runhooks &&
 
+# Install all sysroots (i.e. for ARM64)
+build/linux/sysroot_scripts/install-sysroot.py --all &&
+
 printf "\n"
-printf "${GRE}Chromium tree is checked out at tag: ${c0}$THOR_VER\n"
+printf "${GRE}Chromium tree is checked out at tag: ${c0}$CR_VER\n"
 printf "\n"
 	
 printf "${YEL}Downloading PGO Profiles for Linux, Windows, and Mac...\n" &&
@@ -78,14 +75,12 @@ python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromiu
 python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 printf "\n" &&
 
-printf "${YEL}Downloading PGO Profile for V8 (when v8_enable_builtins_optimization = true)\n" &&
+printf "${YEL}Downloading PGO Profile for V8 (for when v8_enable_builtins_optimization = true)\n" &&
 printf "\n" &&
 tput sgr0 &&
 
 python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools download &&
 printf "\n" &&
 
-cd ~/thorium &&
-
-printf "${GRE}Done! ${YEL}You can now run \'./setup.sh\'\n"
+printf "${GRE}Done!\n"
 tput sgr0
