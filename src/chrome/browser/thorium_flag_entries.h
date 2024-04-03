@@ -124,8 +124,8 @@
      "Choose whether to use the GTK3 or GTK4 backend. It should match the default GTK used by the system.",
      kOsLinux, MULTI_VALUE_TYPE(kGtkVersionChoices)},
     {"vaapi-on-nvidia-gpus",
-     "VAAPI on Nvidia GPUs",
-     "Toggle whether VAAPI is enabled when proprietary Nvidia Drivers are installed. "
+     "VAAPI on nVidia GPUs",
+     "Toggle whether VAAPI is enabled when proprietary nVidia Drivers are installed. "
      "Requires `vdpau-va-driver` to be installed, and can be buggy. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiOnNvidiaGPUs)},
 #endif // BUILDFLAG(IS_LINUX)
