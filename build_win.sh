@@ -44,7 +44,7 @@ export NINJA_SUMMARIZE_BUILD=1 &&
 export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium thorium chromedriver clear_key_cdm thorium_shell policy_templates setup mini_installer -j$@ &&
+autoninja -C out/thorium thorium chromedriver clear_key_cdm thorium_shell policy_templates pack_policy_templates setup mini_installer -j$@ &&
 
 mv -v -f ${CR_SRC_DIR}/out/thorium/mini_installer.exe ${CR_SRC_DIR}/out/thorium/thorium_mini_installer.exe &&
 
