@@ -26,9 +26,9 @@
 #include "base/files/file_util.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
+#include "base/logging.h"
 #include "base/process/kill.h"
 #include "base/process/process_iterator.h"
-#include "base/logging.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/version.h"
@@ -38,6 +38,7 @@
 #include "base/win/win_util.h"
 #include "base/win/windows_version.h"
 #include "build/branding_buildflags.h"
+#include "content/public/common/result_codes.h"
 #include "chrome/install_static/buildflags.h"
 #include "chrome/install_static/install_details.h"
 #include "chrome/install_static/install_modes.h"
@@ -64,7 +65,6 @@
 #include "chrome/installer/util/shell_util.h"
 #include "chrome/installer/util/util_constants.h"
 #include "chrome/installer/util/work_item_list.h"
-#include "content/public/common/result_codes.h"
 
 #if BUILDFLAG(USE_GOOGLE_UPDATE_INTEGRATION)
 #include "chrome/installer/setup/channel_override_work_item.h"
