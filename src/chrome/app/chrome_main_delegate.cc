@@ -741,6 +741,7 @@ void InitLogging(const std::string& process_type) {
   if (process_type.empty()) {
     LOG(WARNING) << "This is " << chrome::kBrandName << " version: "
                  << chrome::kChromeVersion << " (not a warning)";
+    LOG(WARNING) << "In Loving Memory of Linda Louise Frick: Grandma, Mother, and Sister.";
   }
 
 #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
