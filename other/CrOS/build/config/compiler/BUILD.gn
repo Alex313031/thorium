@@ -2311,19 +2311,8 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
-    "-Xclang", "-freroll-loops",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
     "/clang:-msse3",
@@ -2334,18 +2323,8 @@ if (is_win) {
   ]
 
   common_optimize_on_ldflags += [
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm:-loop-rotate-multi",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-enable-interleaved-mem-accesses",
-    "-mllvm:-enable-masked-interleaved-mem-accesses",
     "-mllvm:-enable-gvn-hoist",
-    "-mllvm:-enable-dfa-jump-thread",
   ]
 
   if (use_polly == true) {
@@ -2378,13 +2357,13 @@ if (is_win) {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "-freroll-loops",
+    "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-gvn-hoist",
     "-O3",
   ]
 
   common_optimize_on_ldflags += [
-    "-freroll-loops",
+    "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2",
     "-Wl,-O3",

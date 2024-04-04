@@ -2313,19 +2313,8 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
-    "-Xclang", "-freroll-loops",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-enable-dfa-jump-thread",
     "/O2",
     "/clang:-O3",
     "/clang:-mmmx",
@@ -2336,18 +2325,8 @@ if (is_win) {
   ]
 
   common_optimize_on_ldflags += [
-    "-mllvm:-enable-cond-stores-vec",
-    "-mllvm:-slp-vectorize-hor-store",
-    "-mllvm:-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm:-loop-rotate-multi",
-    "-mllvm:-enable-loop-distribute",
-    "-mllvm:-enable-unroll-and-jam",
-    "-mllvm:-interleave-small-loop-scalar-reduction",
     "-mllvm:-aggressive-ext-opt",
-    "-mllvm:-enable-interleaved-mem-accesses",
-    "-mllvm:-enable-masked-interleaved-mem-accesses",
     "-mllvm:-enable-gvn-hoist",
-    "-mllvm:-enable-dfa-jump-thread",
   ]
 
   if (use_polly == true) {
@@ -2380,36 +2359,14 @@ if (is_win) {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "-freroll-loops",
-    "-mllvm", "-enable-cond-stores-vec",
-    "-mllvm", "-slp-vectorize-hor-store",
-    "-mllvm", "-scalar-evolution-use-expensive-range-sharpening",
-    "-mllvm", "-loop-rotate-multi",
-    "-mllvm", "-enable-loop-distribute",
-    "-mllvm", "-enable-unroll-and-jam",
-    "-mllvm", "-interleave-small-loop-scalar-reduction",
     "-mllvm", "-aggressive-ext-opt",
-    "-mllvm", "-enable-interleaved-mem-accesses",
-    "-mllvm", "-enable-masked-interleaved-mem-accesses",
     "-mllvm", "-enable-gvn-hoist",
-    "-mllvm", "-enable-dfa-jump-thread",
     "-O3",
   ]
 
   common_optimize_on_ldflags += [
-    "-freroll-loops",
-    "-Wl,-mllvm,-enable-cond-stores-vec",
-    "-Wl,-mllvm,-slp-vectorize-hor-store",
-    "-Wl,-mllvm,-scalar-evolution-use-expensive-range-sharpening",
-    "-Wl,-mllvm,-loop-rotate-multi",
-    "-Wl,-mllvm,-enable-loop-distribute",
-    "-Wl,-mllvm,-enable-unroll-and-jam",
-    "-Wl,-mllvm,-interleave-small-loop-scalar-reduction",
     "-Wl,-mllvm,-aggressive-ext-opt",
-    "-Wl,-mllvm,-enable-interleaved-mem-accesses",
-    "-Wl,-mllvm,-enable-masked-interleaved-mem-accesses",
     "-Wl,-mllvm,-enable-gvn-hoist",
-    "-Wl,-mllvm,-enable-dfa-jump-thread",
     "-Wl,-O3",
   ]
 
