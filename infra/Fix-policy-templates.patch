@@ -1,0 +1,106 @@
+diff --git a/components/policy/tools/template_writers/writer_configuration.py b/components/policy/tools/template_writers/writer_configuration.py
+index 8cb77158561d3..edd529b4753de 100755
+--- a/components/policy/tools/template_writers/writer_configuration.py
++++ b/components/policy/tools/template_writers/writer_configuration.py
+@@ -10,9 +10,6 @@ def GetConfigurationForBuild(defines):
+ 
+   Args:
+     defines: Definitions coming from the build system.
+-
+-  Raises:
+-    Exception: If 'defines' contains an unknown build-type.
+   '''
+   # The prefix of key names in config determines which writer will use their
+   # corresponding values:
+@@ -24,45 +21,7 @@ def GetConfigurationForBuild(defines):
+   # Google:Cat_Google references the external google.admx file.
+   # category_path_strings strings in curly braces are looked up from localized
+   # 'messages' in policy_templates.json.
+-  if '_chromium' in defines:
+-    config = {
+-        'build': 'chromium',
+-        'app_name': 'Chromium',
+-        'doc_url': 'https://chromeenterprise.google/policies/',
+-        'frame_name': 'Chromium Frame',
+-        'os_name': 'ChromiumOS',
+-        'webview_name': 'Chromium WebView',
+-        'win_config': {
+-            'win': {
+-                'reg_mandatory_key_name': 'Software\\Policies\\Chromium',
+-                'reg_recommended_key_name':
+-                'Software\\Policies\\Chromium\\Recommended',
+-                'mandatory_category_path': ['chromium'],
+-                'recommended_category_path': ['chromium_recommended'],
+-                'category_path_strings': {
+-                    'chromium': 'Chromium',
+-                    'chromium_recommended': 'Chromium - {doc_recommended}',
+-                },
+-                'namespace': 'Chromium.Policies.Chromium',
+-            },
+-            'chrome_os': {
+-                'reg_mandatory_key_name': 'Software\\Policies\\ChromiumOS',
+-                'reg_recommended_key_name':
+-                'Software\\Policies\\ChromiumOS\\Recommended',
+-                'mandatory_category_path': ['chromium_os'],
+-                'recommended_category_path': ['chromium_os_recommended'],
+-                'category_path_strings': {
+-                    'chromium_os': 'ChromiumOS',
+-                    'chromium_os_recommended': 'ChromiumOS - {doc_recommended}',
+-                },
+-                'namespace': 'Chromium.Policies.ChromiumOS'
+-            },
+-        },
+-        'admx_prefix': 'chromium',
+-        'linux_policy_path': '/etc/chromium/policies/',
+-        'bundle_id': 'org.chromium',
+-    }
+-  elif '_google_chrome' in defines or '_is_chrome_for_testing_branded' in defines:
++  if defines.get('_google_chrome', False) == True or defines.get('_is_chrome_for_testing_branded', False) == True:
+     linux_policy_path = '/etc/opt/chrome/policies/' if '_google_chrome' in defines else '/etc/opt/chrome_for_testing/policies/'
+     config = {
+         'build': 'chrome',
+@@ -121,7 +80,43 @@ def GetConfigurationForBuild(defines):
+         'bundle_id': 'com.google.chrome.ios',
+     }
+   else:
+-    raise Exception('Unknown build')
++    config = {
++        'build': 'thorium',
++        'app_name': 'Thorium',
++        'doc_url': 'https://chromeenterprise.google/policies/',
++        'frame_name': 'Thorium Frame',
++        'os_name': 'ThoriumOS',
++        'webview_name': 'Thorium WebView',
++        'win_config': {
++            'win': {
++                'reg_mandatory_key_name': 'Software\\Policies\\Thorium',
++                'reg_recommended_key_name':
++                'Software\\Policies\\Thorium\\Recommended',
++                'mandatory_category_path': ['chromium'],
++                'recommended_category_path': ['chromium_recommended'],
++                'category_path_strings': {
++                    'chromium': 'Thorium',
++                    'chromium_recommended': 'Thorium - {doc_recommended}',
++                },
++                'namespace': 'Chromium.Policies.Thorium',
++            },
++            'chrome_os': {
++                'reg_mandatory_key_name': 'Software\\Policies\\ThoriumOS',
++                'reg_recommended_key_name':
++                'Software\\Policies\\ThoriumOS\\Recommended',
++                'mandatory_category_path': ['chromium_os'],
++                'recommended_category_path': ['chromium_os_recommended'],
++                'category_path_strings': {
++                    'chromium_os': 'ThoriumOS',
++                    'chromium_os_recommended': 'ThoriumOS - {doc_recommended}',
++                },
++                'namespace': 'Chromium.Policies.ThoriumOS'
++            },
++        },
++        'admx_prefix': 'thorium',
++        'linux_policy_path': '/etc/thorium/policies/',
++        'bundle_id': 'org.chromium.Thorium',
++    }
+   if 'version' in defines:
+     config['version'] = defines['version']
+   if 'major_version' in defines:
