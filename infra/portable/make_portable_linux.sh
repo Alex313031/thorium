@@ -65,7 +65,7 @@ makeARM () {
 	printf "${c0}\n" &&
 
 	# Build zip
-	cd temp; zip -r ../out/${FILENAME}.zip * &&
+	cd temp; zip -r ../${FILENAME}.zip * &&
 
 	printf "\n" &&
 	printf "${YEL}Cleaning up...\n" &&
@@ -84,7 +84,7 @@ makeARM () {
 	rm -r -v ./temp &&
 
 	printf "\n" &&
-	printf "${GRE}Done! ${YEL}Zip at //out/*.zip\n" &&
+	printf "${GRE}Done! ${YEL}Zip at ./${FILENAME}.zip\n" &&
 	printf "\n" &&
 	tput sgr0
 }
@@ -130,7 +130,7 @@ printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
 # Build zip
-cd temp; zip -r ../out/${FILENAME}.zip * &&
+cd temp; zip -r ../${FILENAME}.zip * &&
 
 printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
@@ -149,6 +149,6 @@ rm -r -v ./debian-binary &&
 rm -r -v ./temp &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}Zip at //out/*.zip\n" &&
+printf "${GRE}Done! ${YEL}Zip at ./${FILENAME}.zip\n" &&
 printf "\n" &&
 tput sgr0

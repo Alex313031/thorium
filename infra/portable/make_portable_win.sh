@@ -57,7 +57,7 @@ printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
 # Build zip
-cd temp; zip -r ../out/zipped_thorium_win.zip * &&
+cd temp; zip -r ../thorium_portable.zip * &&
 
 printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
@@ -71,6 +71,6 @@ rm -r -v chrome.7z &&
 rm -r -v temp &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}Zip at //out/zipped_thorium_win.zip\n - Remember to rename it with the version before distributing it.\n" &&
+printf "${GRE}Done! ${YEL}Zip at ./thorium_portable.zip\n - Remember to rename it with the version before distributing it.\n" &&
 printf "\n" &&
 tput sgr0
