@@ -1,4 +1,4 @@
-# Thorium AVX2
+# Thorium for Mac
 
 This directory contains build config files for compiling Thorium/Chromium for MacOS.
 
