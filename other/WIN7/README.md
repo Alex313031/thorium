@@ -6,7 +6,7 @@ See > https://support.google.com/chrome/thread/185534985/sunsetting-support-for-
 
 This dir used to host build files for Windows 7, and then I made a [branch](https://github.com/Alex313031/thorium/tree/WIN7), but then I decided to move it all to a whole 'nother repo.
 
-The new repo hosts AVX, AVX2, SSE3, and 32 Bit SSE2 builds, kept up to date with __M109__, and with backported patches from newer versions of Thorium.
+The new repo hosts AVX, AVX2, SSE3, SSE4, and 32 Bit SSE2 & SSE3 builds, kept up to date with the Extended Support branch of Chrome, and with backported patches from newer versions of Thorium.
 
 You can find it here > https://github.com/Alex313031/thorium-win7
 
