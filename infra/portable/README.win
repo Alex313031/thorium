@@ -8,10 +8,11 @@
 Contains THORIUM.BAT for running portable/standalone.
 	- Also contains THORIUM_SHELL.BAT for running the Thorium Content Shell.
 	
-| NOTE: Append --disable-encryption --disable-machine-id to THORIUM.BAT to disable user profile encryption and tying it to a specific machine, to enable truly portable usage. Note that this will remove things like passwords and history the first time it is enabled, so back up your stuff or make a new user profile.
+Append --disable-encryption --disable-machine-id to THORIUM.BAT to disable user profile encryption and tying it to a specific machine, to enable truly portable usage. 
+ Note that this will remove things like passwords and history the first time it is enabled, so back up your stuff or make a new user profile.
 
-| NOTE: You can also skip using THORIUM.BAT and just copy the contents of BIN somewhere, and run thorium.exe from within, note this will make a profile dir in 
-C:\Users\$USERNAME\AppData\Local\Thorium\User Data\ and write a few registry values.
+You can also skip using THORIUM.BAT and just copy the contents of BIN somewhere, and run thorium.exe from within. 
+ Note this will make a profile dir in C:\Users\$USERNAME\AppData\Local\Thorium\User Data\ and write a few registry values.
 
 BIN - Contains Thorium
 	- Contains thorium_shell.ico for setting an icon for thorium_shell.exe if you make a shortcut.
