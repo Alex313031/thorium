@@ -57,6 +57,8 @@ cp -v src/build/vs_toolchain.py ${CR_SRC_DIR}/build/ &&
 
 # Add //third_party/libjxl to DEPS
 cp -v thorium-libjxl/src/DEPS ${CR_SRC_DIR}/ &&
+cp -v thorium-libjxl/src/.gitmodules ${CR_SRC_DIR}/ &&
+cp -v thorium-libjxl/src/third_party/.gitignore ${CR_SRC_DIR}/third_party/ &&
 
 cd ${CR_SRC_DIR} &&
 
