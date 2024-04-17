@@ -2488,6 +2488,13 @@ config("march_dotprod_fp16") {
   }
 }
 
+config("march_dotprod_i8mm_sve") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8.2-a+dotprod+i8mm+sve" ]
+    asmflags = cflags
+  }
+}
+
 config("march_i8mm") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+i8mm" ]
