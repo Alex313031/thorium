@@ -23,12 +23,16 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --raspi flag for Raspberry Pi builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --sse4 flag for SSE4.1 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse2 flag for 32 bit SSE2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --android flag for Android Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --cros flag for ChromiumOS Builds.${c0}\n" &&
-	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in Thorium/infra, then use the setup_polly.sh${c0}\n" &&
-	printf "${bold}${YEL}script in Thorium/other/Polly. Both of these actions should be taken AFTER running this script!${c0}\n" &&
+	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in ./infra before building.${c0}\n" &&
+	printf "${bold}${YEL} This should be done AFTER running this setup.sh script!${c0}\n" &&
+	printf "\n"
+	printf "${bold}${YEL}NOTE: The \`CR_DIR\` env variable can be used to override the location of \"chromium/src\".${c0}\n" &&
+	printf "${bold}${YEL} The default is $HOME/chromium/src${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -79,8 +83,8 @@ cp -v infra/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
-	cp -r -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
-	cp -r -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
+	cp -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
+	cp -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n"
 }
@@ -97,7 +101,6 @@ copyRaspi () {
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
 	#./infra/fix_libaom.sh &&
-	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	printf "\n" &&
 	cp -r -v arm/raspi/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	printf "\n" &&
@@ -112,9 +115,9 @@ esac
 copyWOA () {
 	printf "\n" &&
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
-	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
-	cp -r -v arm/woa_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
+	# Use regular arm.gni from src, pending further testing
+	# cp -v arm/woa_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
 }
 case $1 in
@@ -126,13 +129,24 @@ copyAVX2 () {
 	printf "\n" &&
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
 	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
-	cp -r -v other/AVX2/v8/* ${CR_SRC_DIR}/v8/ &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
-	cp -r -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in
 	--avx2) copyAVX2;
+esac
+
+# Copy SSE4.1 files
+copySSE4 () {
+	printf "\n" &&
+	printf "${YEL}Copying SSE4.1 build files...${c0}\n" &&
+	cp -r -v other/SSE4.1/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	printf "\n"
+}
+case $1 in
+	--sse4) copySSE4;
 esac
 
 # Copy SSE3 files
@@ -140,8 +154,7 @@ copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
-	cp -r -v other/SSE3/v8/* ${CR_SRC_DIR}/v8/ &&
-	cp -r -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in
@@ -153,7 +166,7 @@ copySSE2 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
-	cp -r -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	printf "\n"
 }
 case $1 in
@@ -164,7 +177,6 @@ esac
 copyAndroid () {
 	printf "\n" &&
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
-	cp -r -v arm/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n" &&
