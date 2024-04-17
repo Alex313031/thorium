@@ -174,6 +174,7 @@ stage_install_common() {
     # install -m ${SHLIB_PERMS} "${OUTPUTDIR}/libblink_test_plugin.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m ${SHLIB_PERMS} "${OUTPUTDIR}/ClearKeyCdm/_platform_specific/linux_arm64/libclearkeycdm.so" "${STAGEDIR}/${INSTALLDIR}/lib"
     install -m 644 "${OUTPUTDIR}/thorium_shell.png" "${STAGEDIR}/${INSTALLDIR}/"
+    install -m 644 "${OUTPUTDIR}/thorium.svg" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thor_ver" "${STAGEDIR}/${INSTALLDIR}/"
     install -m 644 "${OUTPUTDIR}/thorium-shell.desktop" "${STAGEDIR}/usr/share/applications/"
     install -m 755 "${OUTPUTDIR}/thorium-shell" "${STAGEDIR}/usr/bin/"
