@@ -56,8 +56,7 @@ mkdir -v -p ${CR_SRC_DIR}/out/thorium/ &&
 printf "\n" &&
 
 printf "\n" &&
-printf "${YEL}Copying Thorium source files over the Chromium tree...\n" &&
-tput sgr0 &&
+printf "${YEL}Copying Thorium source files over the Chromium tree...${c0}\n" &&
 
 # Copy libjxl src
 cd ~/thorium &&
@@ -69,6 +68,15 @@ cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
+printf "\n" &&
+printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
+
+cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg &&
+cd ${CR_SRC_DIR}/third_party/ffmpeg &&
+git apply --reject add-hevc-ffmpeg-decoder-parser.patch &&
+cd ~/thorium &&
+
+printf "\n" &&
 echo "Copying other files to \`out/thorium\`" &&
 
 # Add default_apps dir for Google Docs Offline extension.
