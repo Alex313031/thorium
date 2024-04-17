@@ -123,34 +123,6 @@ def PrintAndCheckCall(argv, *args, **kwargs):
   subprocess.check_call(argv, *args, **kwargs)
 
 
-def DetermineHostOsAndArch():
-  if platform.system() == 'Linux':
-    host_os = 'linux'
-  elif platform.system() == 'Darwin':
-    host_os = 'mac'
-  elif platform.system() == 'Windows' or 'CYGWIN_NT' in platform.system():
-    host_os = 'win'
-  else:
-    return None
-
-  if re.match(r'i.86', platform.machine()):
-    host_arch = 'ia32'
-  elif platform.machine() == 'x86_64' or platform.machine() == 'AMD64':
-    host_arch = 'x64'
-  elif platform.machine() == 'aarch64':
-    host_arch = 'arm64'
-  elif platform.machine() == 'mips32':
-    host_arch = 'mipsel'
-  elif platform.machine() == 'mips64':
-    host_arch = 'mips64el'
-  elif platform.machine().startswith('arm'):
-    host_arch = 'arm'
-  else:
-    return None
-
-  return (host_os, host_arch)
-
-
 def GetDsoName(target_os, dso_name, dso_version):
   if target_os in ('linux', 'linux-noasm', 'android'):
     return 'lib%s.so.%s' % (dso_name, dso_version)
@@ -626,12 +598,8 @@ def main(argv):
     parser.print_help()
     return 1
 
-  host_tuple = DetermineHostOsAndArch()
-  if not host_tuple:
-    print('Unrecognized host OS and architecture.', file=sys.stderr)
-    return 1
-
-  host_os, host_arch = host_tuple
+  host_os = ROBO_CONFIGURATION.host_operating_system()
+  host_arch = ROBO_CONFIGURATION.host_architecture()
   parallel_jobs = 8
 
   if target_os.split('-', 1)[0] != host_os and (host_os != 'linux' or
