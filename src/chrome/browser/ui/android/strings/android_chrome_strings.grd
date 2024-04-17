@@ -798,6 +798,12 @@ CHAR_LIMIT guidelines:
       <message name="IDS_PASSWORD_MIGRATION_WARNING_CANCEL" desc="The text for the cancel button in the password migration warning sheet. It closes the sheet">
         Cancel
       </message>
+      <message name="IDS_POST_PASSWORD_MIGRATION_SHEET_TITLE" desc="The title of the post password migration sheet that informs the user that the migration happened." formatter_data="android_java">
+        We changed how passwords are saved on this device
+      </message>
+      <message name="IDS_POST_PASSWORD_MIGRATION_SHEET_SUBTITLE" desc="The subtitle of the post password migration sheet." formatter_data="android_java">
+        Your lists of saved passwords for Thorium and <ph name="CHROME_CHANNEL">%1$s<ex>Thorium Dev</ex></ph> were merged. You can still autofill all your saved passwords on both apps.
+      </message>
       <message name="IDS_EXPORTED_PASSWORDS_DELETION_DIALOG_TITLE" desc="The title of the dialog that offers to delete passwords from Google Password Manager." formatter_data="android_java">
         Delete passwords from Google Password Manager?
       </message>
@@ -947,10 +953,10 @@ For example, some websites may respond to this request by showing you ads that a
 
       <!-- Privacy Sandbox v4 - Consent & Notice Flow -->
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_EEA_BULLET_2" desc="* This is 2 of 2 bullets that site beneath the sentence: 'We’re launching new ways to limit what sites can learn about you when they show you personalized ads, for example:' * 'ad measurement' is the name of a new setting we're launching and that appears on the Ad privacy page of Thorium settings.  * 'limited types of data': This setting helps an advertiser associate a user's actions on one site with their actions on another. For example, a user sees an ad on one site and then later buys that product from the company that sells the product. The ad measurement setting allows Thorium to help a company make the association between the two sites so that the first site can be fairly compensated for showing an ad. Compared with third-party cookies, very little info is shared between sites to support this functionality.  **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT EEA NOTICE **** 1) This screen provides notice to Thorium users in the European Economic Area (EEA). It follows guidelines established by the GDPR.  2) This screen is the second of 2 screens. This second screen describes 2 settings: “Site-suggested ads” and “Ad measurement”. The first screen describes the “Ad topics” setting. ">
-        With ad measurement, limited types of data can be shared among sites and apps to measure the performance of their ads, such as the time of day an ad was shown to you.
+        With ad measurement, limited types of data are shared between sites to measure the performance of their ads, such as whether you made a purchase after visiting a site.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_ROW_DESCRIPTION_3" desc="A paragraph on the 'Enhanced ad privacy in Thorium' page that provides notice to Thorium users outside of the EEA. **** CONTEXT PRIVACY SANDBOX **** Thorium’s Privacy Sandbox initiative 1) deprecates third-party cookies in Thorium, 2) supports free and open content on the web (by finding better ways to support ads online), 3) while providing stronger privacy protections for users. You can see a high-level description of this public project at www.privacysanbox.com. **** CONTEXT ROW NOTICE **** 1) This screen provides notice to Thorium users outside of the European Economic Area (EEA) (we typically refer to this screen as “Rest of World” or “ROW”). It follows guidelines established by the GDPR.  2) We’re using similar but distinct content for EEA / ROW because legal requirements differ. For ROW, we can provide notice for all 3 settings, and so all 3 settings can appear on a single screen. ">
-        To measure the performance of an ad, limited types of data can be shared among sites, such as the time of day an ad was shown to you.
+        To measure the performance of an ad, limited types of data are shared between sites, such as whether you made a purchase after visiting a site.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_M1_NOTICE_RESTRICTED_DESCRIPTION_1_ANDROID" desc="First description in the restricted notice which applies to Android only">
         We’re launching a new ad privacy feature called ad measurement. Thorium shares only very limited information among sites and apps, such as when an ad was shown to you, to help measure the performance of ads.
@@ -1103,7 +1109,7 @@ For example, some websites may respond to this request by showing you ads that a
         Things to consider
       </message>
       <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_1" desc="1 of 3 bullets in the 'When on' section that describes the Ad measurement setting. * 'Limited types of data': The Ad measurement API (for developers) and the Ad measurement control (for users) is offered by Thorium. But Thorium is a 'pass through', helping one site communicate information to another about the performance of an ad. That's where this passive construction comes from. Thorium facilitates, but shouldn't be seen as a major actor here. And we don't want to suggest anything like 'Thorium limits the types of data shared between sites,' because Thorium can't do that. Any 2 sites can have a side agreement to share as much info as they like. ">
-        Limited types of data are shared between sites to measure the performance of their ads, such as the time of day an ad was shown to you
+        Limited types of data are shared between sites to measure the performance of their ads, such as whether you made a purchase after visiting a site
       </message>
       <message name="IDS_SETTINGS_AD_MEASUREMENT_PAGE_ENABLED_BULLET_2" desc="2 of 3 bullets in the 'When on' section that describes the Ad measurement setting.">
         Ad-measurement data is deleted regularly from your device
@@ -1383,10 +1389,10 @@ Your Google account may have other forms of browsing history like searches and a
         Explore more settings below or finish now
       </message>
       <message name="IDS_PRIVACY_GUIDE_PRIVACY_SANDBOX_HEADING" desc="Title for the Privacy Sandbox item on the final page of the privacy guide">
-        Privacy Sandbox trial
+        Ad privacy
       </message>
       <message name="IDS_PRIVACY_GUIDE_PRIVACY_SANDBOX_DESCRIPTION" desc="Description for the Privacy Sandbox item on the final page of the privacy guide">
-        Thorium is exploring new features that allow sites to deliver the same browsing experience using less of your data
+        Thorium gives you more control over the ads you see and limits what sites can learn about you when they show you personalized ads.
       </message>
       <message name="IDS_PRIVACY_GUIDE_WEB_APP_ACTIVITY_HEADING" desc="Title for the Web and App Activity item on the final page of the privacy guide">
         Web &amp; App Activity
@@ -1476,8 +1482,14 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_SAFETY_CHECK_UPDATES_TITLE" desc="Title for the updates section.">
         Updates
       </message>
-      <message name="IDS_SAFETY_CHECK_PASSWORDS_TITLE" desc="Title for the passwords section.">
+      <message name="IDS_SAFETY_CHECK_PASSWORDS_TITLE" desc="Title for the passwords check for all passwords saved by the user.">
         Passwords
+      </message>
+      <message name="IDS_SAFETY_CHECK_PASSWORDS_LOCAL_TITLE" desc="Title for the passwords check for the local passwords stored on user's device only.">
+        Passwords saved to this device
+      </message>
+      <message name="IDS_SAFETY_CHECK_PASSWORDS_ACCOUNT_TITLE" desc="Title for the passwords check for the synced passwords stored in the user's account store.">
+        Passwords saved to <ph name="USERNAME">%1$s<ex>elisa.becket@gmail.com</ex></ph>.
       </message>
       <message name="IDS_SAFETY_CHECK_BUTTON" desc="Text for the button to start Safety check.">
         Check now
@@ -1717,7 +1729,7 @@ Your Google account may have other forms of browsing history like searches and a
         To show content in your preferred languages, the sites you visit can see your preferences
       </message>
       <message name="IDS_LANGUAGES_LIST_DESCRIPTION" desc="Description on the Languages settings screen. Appears above a list of one or more languages that the user selects, to tell Thorium which languages they prefer to use to read website content.">
-        Websites will show text in your preferred language, when possible.
+        Let websites know the languages you speak. They’ll show content in those languages, when possible.
       </message>
       <message name="IDS_LANGUAGES_OFFER_TRANSLATE_SWITCH" desc="Appears next to the 'offer to translate' switch that controls whether or not Thorium will display the Google Translate UI on web pages that are not in the user's preferred language(s).">
         Offer to translate pages in other languages
@@ -2073,6 +2085,9 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_TURN_OFF_SYNC_AND_SIGNOUT_MESSAGE" desc="Message to display in 'Sign out and turn off sync?' dialog">
         Your bookmarks, history, passwords, and other Thorium data will no longer be synced to your Google Account
       </message>
+      <message name="IDS_TURN_OFF_SYNC_AND_SIGNOUT_MESSAGE_WITHOUT_PASSWORDS" desc="Message to display in 'Sign out and turn off sync?' dialog, without explicitly mentioning passwords. Similar to IDS_TURN_OFF_SYNC_AND_SIGNOUT_MESSAGE">
+        Your bookmarks, history, and other Thorium data will no longer be synced to your Google Account
+      </message>
       <message name="IDS_REMOVE_LOCAL_DATA" desc="Checkbox to delete all existing data in local device storage">
         Also clear your Thorium data from this device
       </message>
@@ -2163,20 +2178,20 @@ Your Google account may have other forms of browsing history like searches and a
         Encryption
       </message>
       <message name="IDS_SYNC_PASSPHRASE_TYPE_KEYSTORE" desc="Option to encrypt only passwords, using your Google credentials.">
-        Encrypt synced passwords with your Google Account
+        Use Google’s default encryption for the passwords in your Google Account
       </message>
       <message name="IDS_SYNC_PASSPHRASE_TYPE_CUSTOM" desc="Option to encrypt sync data with a custom passphrase.">
-        Encrypt synced data with your own sync passphrase
+        Use your own passphrase to encrypt all the Thorium data in your Google Account
       </message>
       <message name="IDS_SYNC_PASSPHRASE_TYPE_CUSTOM_DIALOG_TITLE" desc="Dialog title for custom passphrase creation.">
         Create passphrase
       </message>
-      <message name="IDS_SIGN_IN_GOOGLE_ACCOUNT" desc="Title of sign in account selection dialog. [CHAR_LIMIT=32]">
-        Google Account
+      <message name="IDS_SYNC_ENTER_PASSPHRASE_TITLE" desc="Title of dialog to ask user to enter their passphrase. [CHAR_LIMIT=32]">
+        Enter passphrase
       </message>
-      <message name="IDS_NEW_SYNC_CUSTOM_PASSPHRASE" desc="Prompt user to create a custom sync password.">
+      <message name="IDS_SYNC_ENCRYPTION_CREATE_PASSPHRASE" desc="Prompt user to create a custom sync password.">
         Payment methods and addresses from Google Pay won’t be encrypted. Browsing history from Thorium won’t sync.
-Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, you’ll need to reset sync. <ph name="BEGIN_LINK">&lt;learnmore&gt;</ph>Learn more<ph name="END_LINK">&lt;/learnmore&gt;</ph>
+Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_ENTER_CUSTOM_PASSPHRASE_HINT" desc="Hint for the passphrase field when user is to type in a passphrase. [CHAR_LIMIT=30]">
         Passphrase
@@ -2184,8 +2199,8 @@ Only someone with your passphrase can read your encrypted data. The passphrase i
       <message name="IDS_SYNC_ENTER_CUSTOM_PASSPHRASE_HINT_CONFIRM" desc="Hint for the passphrase confirmation field when user is to type in a passphrase. [CHAR_LIMIT=30]">
         Confirm passphrase
       </message>
-      <message name="IDS_SYNC_ENTER_PASSPHRASE_BODY_WITH_DATE_ANDROID" desc="Instructions for the dialog where the user enters their Sync passphrase.">
-        Your data was encrypted with your <ph name="BEGIN_LINK">&lt;learnmore&gt;</ph>sync passphrase<ph name="END_LINK">&lt;/learnmore&gt;</ph> on <ph name="TIME">%1$s<ex>Sept 1, 2012</ex></ph>. Enter it to start sync.
+      <message name="IDS_SYNC_ENTER_PASSPHRASE_BODY_WITH_EMAIL" desc="Instructions for the dialog where the user enters their Sync passphrase.">
+        Your data is encrypted with your passphrase. Enter it to use and save Thorium data in your Google Account.
       </message>
       <message name="IDS_SYNC_ACCOUNT_INFO"  desc="The message that appears in the options dialog indicating that the user is signed in with the given email address.">
         Signed in as <ph name="USER_EMAIL_ADDRESS">%1$s<ex>foo@gmail.com</ex></ph>.
@@ -2193,8 +2208,8 @@ Only someone with your passphrase can read your encrypted data. The passphrase i
       <message name="IDS_SYNC_PASSPHRASE_CANNOT_BE_BLANK" desc="Inform user that they cannot use a blank password [CHAR_LIMIT=40]">
         This field cannot be blank
       </message>
-      <message name="IDS_SYNC_PASSPHRASE_RESET_INSTRUCTIONS" desc="Inform the user how they can reset their passphrase if they have forgotten it." meaning="Android">
-        If you forgot your passphrase or want to change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<ph name="END_LINK">&lt;/resetlink&gt;</ph>
+      <message name="IDS_SYNC_PASSPHRASE_RECOVER" desc="Inform the user how they can reset their passphrase if they have forgotten it." meaning="Android">
+        If you forgot your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_PASSPHRASES_DO_NOT_MATCH" desc="Inform user that their sync password does not match.">
         Passphrases do not match
@@ -2202,7 +2217,7 @@ Only someone with your passphrase can read your encrypted data. The passphrase i
       <message name="IDS_SYNC_PASSPHRASE_ENCRYPTION_RESET_INSTRUCTIONS" desc="Inform user how to change their encryption setting.">
         Passphrase encryption doesn’t include payment methods and addresses from Google Pay.
 
-To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<ph name="END_LINK">&lt;/resetlink&gt;</ph>
+To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_PASSPHRASE_INCORRECT" desc="Inform the user that the passphrase they entered for sync is incorrect. [CHAR_LIMIT=40]">
         Incorrect passphrase
@@ -2215,6 +2230,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_SYNC_IMPORT_DATA_PROMPT" desc="Prompt for the user to choose how they want to handle their existing sync data">
          You have bookmarks, history, passwords, and other settings from <ph name ="FROM_ACCOUNT">%1$s<ex>johndoe@old.com</ex></ph>.
+      </message>
+      <message name="IDS_SYNC_IMPORT_DATA_PROMPT_WITHOUT_PASSWORDS" desc="Prompt for the user to choose how they want to handle their existing sync data. Similar to IDS_SYNC_IMPORT_DATA_PROMPT but without mentioning passwords.">
+         You have bookmarks, history, and other settings from <ph name ="FROM_ACCOUNT">%1$s<ex>johndoe@old.com</ex></ph>.
       </message>
       <message name="IDS_SYNC_IMPORT_EXISTING_DATA" desc="Option to import existing data to the newly selected sync account">
         Combine my data
@@ -2308,6 +2326,66 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_WIPING_PROFILE_DATA_MESSAGE" desc="Message for the progress dialog shown while profile data is being wiped after signing out of an enterprise account">
         Please wait…
+      </message>
+
+      <!-- Identity error card message strings -->
+      <message name="IDS_IDENTITY_ERROR_CARD_PASSPHRASE_REQUIRED" desc="Error message to resolve passphrase required error.">
+        To use and save Thorium data in your Google Account, enter your passphrase
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_CLIENT_OUT_OF_DATE" desc="Error message to resolve sync protocol error for out-of-date client.">
+        To use and save Thorium data in your Google Account, update Thorium
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_AUTH_ERROR" desc="Error message to resolve auth error.">
+        To use and save Thorium data in your Google Account, verify it’s you
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_SYNC_RETRIEVE_KEYS_FOR_EVERYTHING" desc="Error message to resolve sync encryption error, required to resume sync.">
+        To use and save Thorium data in your Google Account, verify it’s you
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_SYNC_RETRIEVE_KEYS_FOR_PASSWORDS" desc="Error message to resolve sync encryption error, required to resume syncing passwords.">
+        To use and save passwords in your Google Account, verify it’s you
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_SYNC_RECOVERABILITY_DEGRADED_FOR_EVERYTHING" desc="Error message to resolve sync degraded recoverability, for users that have not chosen to encrypt all sync data.">
+        To use and save Thorium data in your Google Account, verify it’s you
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_SYNC_RECOVERABILITY_DEGRADED_FOR_PASSWORDS" desc="Error message to resolve sync degraded recoverability, for users that have chosen to encrypt all sync data.">
+        To make sure you can always use the passwords in your Google Account, verify it’s you
+      </message>
+
+      <!-- Identity error card button strings -->
+      <message name="IDS_IDENTITY_ERROR_CARD_BUTTON_PASSPHRASE_REQUIRED" desc="Button label for passphrase required error.">
+        Enter passphrase
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_BUTTON_CLIENT_OUT_OF_DATE" desc="Button label for client out-of-date error. Also used for error message button.">
+        Update
+      </message>
+      <message name="IDS_IDENTITY_ERROR_CARD_BUTTON_VERIFY" desc="Button label for all errors requiring re-auth (auth error, degreaded recoverability, encryption error). Also used for error message and notification title.">
+        Verify it’s you
+      </message>
+
+      <!-- Identity error message and notification strings -->
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BODY" desc="Error message/notification to resolve passphrase required error, sync encryption error, auth error, outdated client error.">
+        Keep using the Thorium data in your Google Account
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BODY_SYNC_RETRIEVE_KEYS_FOR_PASSWORDS" desc="Error message/notification to resolve sync encryption error, required to resume syncing passwords.">
+        Keep using the passwords in your Google Account
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BODY_SYNC_RECOVERABILITY_DEGRADED_FOR_EVERYTHING" desc="Error message/notification to resolve sync degraded recoverability, for users that have chosen to encrypt all sync data.">
+        Make sure you can always use the Thorium data in your Google Account
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BODY_SYNC_RECOVERABILITY_DEGRADED_FOR_PASSWORDS" desc="Error message/notification to resolve sync degraded recoverability, for users that have chosen to encrypt only passwords.">
+        Make sure you can always use the passwords in your Google Account
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_TITLE_PASSPHRASE_REQUIRED" desc="Error message/notification title for passphrase required error.">
+        Enter your passphrase
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_TITLE_CLIENT_OUT_OF_DATE" desc="Error message/notification title for client out-of-date error.">
+        Update Thorium
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BUTTON_PASSPHRASE_REQUIRED" desc="Error message button label for passphrase required error.">
+        Enter
+      </message>
+      <message name="IDS_IDENTITY_ERROR_MESSAGE_BUTTON_VERIFY" desc="Error message button label for all errors requiring re-auth (auth error, degraded recoverability, encryption error)">
+        Verify
       </message>
 
       <!-- Tab switcher -->
@@ -2657,6 +2735,21 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_NOTIFICATION_SITE_SETTINGS_BUTTON" desc="Text of a button shown on notifications, that opens the Site Settings of the website that showed the notification. (If it isn't possible to fit within the char limit, the string will be ellipsized if 3 buttons are shown side by side, so try to ensure that the user can guess the meaning from the first 8 characters). [CHAR_LIMIT=9]">
         Settings
       </message>
+      <message name="IDS_NOTIFICATION_UNSUBSCRIBE_BUTTON" desc="Text of a button shown by the system on all notifications, allowing the user to unsubscribe from notifications from a web site in a single click (with an option to undo later). Note: there is very little horizontal space for this button. If it isn't possible to fit within the char limit, the string will be ellipsized if 3 buttons are shown side by side, so try to ensure that the user can guess the meaning from the first 8 characters. [CHAR_LIMIT=11]">
+        Unsubscribe
+      </message>
+      <message name="IDS_NOTIFICATION_PROVISIONALLY_UNSUBSCRIBED_TITLE" desc="Title of a system notification informing the user that they have successfully unsubscribed from receiving notifications from a web site.">
+        Unsubscribed from notifications
+      </message>
+      <message name="IDS_NOTIFICATION_PROVISIONALLY_UNSUBSCRIBED_BODY" desc="Body text of a system notification informing the user that they have successfully unsubscribed from receiving notifications from a web site.">
+        You'll no longer receive notifications from <ph name="DOMAIN">%1$s<ex>example.com</ex></ph>.
+      </message>
+      <message name="IDS_NOTIFICATION_UNDO_UNSUBSCRIBE_BUTTON" desc="Label for an action button on a system notification informing the user that they have successfully unsubscribed from receiving notifications from a web site. Clicking the button allows the user to undo unsubscribing, and continue receiving notifications instead.">
+        Undo
+      </message>
+      <message name="IDS_NOTIFICATION_COMMIT_UNSUBSCRIBE_BUTTON" desc="Label for an action button on a system notification informing the user that they have successfully unsubscribed from receiving notifications from a web site. Clicking the button allows the user to acknowledge unsubscribing and dismiss this notification.">
+        Okay
+      </message>
       <message name="IDS_NOTIFICATION_MANAGE_BUTTON" desc="Text of a button shown on notifications, that opens the Thorium notifications settings page. This allows users to edit notification settings when a site asks them to allow notifications. [CHAR_LIMIT=9]">
         Manage
       </message>
@@ -2885,9 +2978,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
 
       <!-- Browsing History UI -->
-      <message name="IDS_HISTORY_MANAGER_EMPTY" desc="Indicates that there are no browsing history items.">
-        Pages that you visit appear here
-      </message>
       <message name="IDS_HISTORY_MANAGER_EMPTY_STATE" desc="Indicates that there are no browsing history items.">
         You’ll find your history here
       </message>
@@ -3061,32 +3151,11 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_SIGNIN_TITLE" desc="Title for the screen that asks users to sign-in and turn on Sync. [CHAR_LIMIT=27]">
         Turn on sync?
       </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_A" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. The value proposition of sync here is to allow a user to proceed their web navigation on a different device. The tone should be informative and inviting. [CHAR_LIMIT=35]">
-        Pick up where you left off
-      </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_B" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Devices include phones, tables and computers. The tone should be informative and inviting. [CHAR_LIMIT=35]">
-        Browse across devices
-      </message>
       <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_C" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Typing refers to typing urls in the address bar. The tone should be informative and inviting. [CHAR_LIMIT=35]">
         Save time and type less
       </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_D" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. Suggestions refers to suggested entries in the address bar. The tone should be informative and inviting. [CHAR_LIMIT=35]">
-        Get better suggestions
-      </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_TITLE_E" desc="This string appears as a heading on a full-page screen that asks users if they want to turn on history sync. The tone should be informative and inviting. [CHAR_LIMIT=35]">
-        Sync your tabs and history
-      </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_A" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. Devices include phones, tablets and computers. The tone should be informative and inviting. [CHAR_LIMIT=100]">
-        To continue browsing on another device, sync your tabs and history
-      </message>
       <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_C" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. The tone should be informative and inviting. [CHAR_LIMIT=100]">
         To quickly get back to sites you’ve visited, sync your tabs and history
-      </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_D" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. The tone should be informative and inviting. [CHAR_LIMIT=100]">
-        To see better suggestions in your address bar, sync your tabs and history
-      </message>
-      <message name="IDS_HISTORY_SYNC_CONSENT_SUBTITLE_E" desc="This string appears as a subheading on a full-page screen that asks users if they want to turn on browsing history sync. Sync is short for synchronization. Devices include phones, tablets and computers. The tone should be informative and inviting. [CHAR_LIMIT=100]">
-        To get back to the sites you’ve visited on other devices, sync your tabs and history
       </message>
       <message name="IDS_SIGNIN_SYNC_TITLE" desc="Title of Sync feature for the screen that asks users to sign-in and turn on Sync.">
         Sync your passwords, history &amp; more on all devices
@@ -3938,6 +4007,18 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       <message name="IDS_ACCOUNT_BOOKMARKS_SECTION_HEADER" desc="The section header of account top-level bookmark folders.">
         In your Google Account
       </message>
+      <message name="IDS_LOCAL_BOOKMARK_MOVE_SNACKBAR_MESSAGE" desc="The snackbar message shown when a bookmark is moved to a local folder.">
+        {BOOKMARK_COUNT, plural,
+          =1 {Bookmark saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>. It is only saved to this device.}
+          other {Bookmarks saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>. It is only saved to this device.}}
+      </message>
+      <message name="IDS_ACCOUNT_BOOKMARK_MOVE_SNACKBAR_MESSAGE" desc="The snackbar message shown when a bookmark is moved to an account folder.">
+        {BOOKMARK_COUNT, plural,
+          =1 {Bookmark saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph> in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}
+          other {Bookmarks saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph> in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}}
+      </message>
+
+
       <!-- Power bookmarks strings-->
       <message name="IDS_ACCOUNT_BOOKMARK_SAVE_FLOW_TITLE" desc="The title of the save flow when a user chooses save a bookmarks.">
         Saved in <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>
@@ -4072,9 +4153,6 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_RDS_GLOBAL_DEFAULT_ON_MESSAGE_BUTTON" desc="Text on the button reflecting an opt-out of the default setting update.">
         Update settings
-      </message>
-      <message name="IDS_RDS_GLOBAL_OPT_IN_MESSAGE_TITLE" desc="Title of the message shown for the user to opt in to the desktop site global setting based on device conditions.">
-        Request desktop sites by default?
       </message>
       <message name="IDS_RDS_WINDOW_SETTING_MESSAGE_TITLE" desc="Title of the message shown after window setting changes the page layout from desktop to mobile.">
         Thorium will request the mobile site when the screen is narrow
@@ -4403,6 +4481,9 @@ To change this setting, <ph name="BEGIN_LINK">&lt;resetlink&gt;</ph>reset sync<p
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_PRIVACY_NOTICE" desc="Text that displays privacy notice for page insights hub">
         Your activity in Page Insights is saved in your <ph name="BEGIN_LINK">&lt;link&gt;</ph>Google Account<ph name="END_LINK">&lt;/link&gt;</ph>.
+      </message>
+      <message name="IDS_PAGE_INSIGHTS_HUB_ALT_PRIVACY_NOTICE" desc="Text that displays privacy notice for page insights hub">
+        Your activity in Page Insights is saved in your Google Account. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn how to manage this<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_MY_ACTIVITY_LOGO" desc="Logo of privacy notice for page insights hub">
 	Logo of privacy notice for page insights hub which redirects to my activity page.

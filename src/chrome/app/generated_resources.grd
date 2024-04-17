@@ -642,6 +642,16 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW" desc="The name of the Preview link command in the content area context menu">
             Preview link
           </message>
+          <if expr="is_macosx">
+            <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW_TRIGGER_ALTCLICK" desc="The minor text of the Preview link command in the content area context menu, alt+click trigger">
+              ⌥+Click
+            </message>
+          </if>
+          <if expr="not is_macosx">
+            <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW_TRIGGER_ALTCLICK" desc="The minor text of the Preview link command in the content area context menu, alt+click trigger">
+              Alt+Click
+            </message>
+          </if>
 
           <message name="IDS_CONTENT_CONTEXT_SAVELINKAS" desc="The name of the Save Link As command in the content area context menu">
             Save lin&amp;k as...
@@ -707,7 +717,7 @@ are declared in tools/grit/grit_rule.gni.
           </message>
 
           <message name="IDS_CONTENT_CONTEXT_SAVEVIDEOFRAMEAS" desc="The name of the Save Video Frame As command in the content area context menu">
-            Sa&amp;ve video frame as...
+            Save video &amp;frame as...
           </message>
           <message name="IDS_CONTENT_CONTEXT_SAVEVIDEOAS" desc="The name of the Save Video As command in the content area context menu">
             Sa&amp;ve video as...
@@ -716,10 +726,10 @@ are declared in tools/grit/grit_rule.gni.
             C&amp;opy video address
           </message>
           <message name="IDS_CONTENT_CONTEXT_COPYVIDEOFRAME" desc="The name of the Copy Video Frame command in the content area context menu">
-            C&amp;opy video frame
+            Cop&amp;y video frame
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHFORVIDEOFRAME" desc="In Title Case: The name of the Lens Search command in the content area context menu">
-            Search video frame with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            &amp;Search video frame with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENVIDEONEWTAB" desc="The name of the Open Video in New Tab command in the content area context menu">
             &amp;Open video in new tab
@@ -920,6 +930,16 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW" desc="In Title Case: The name of the Preview link command in the content area context menu">
             Preview Link
           </message>
+          <if expr="is_macosx">
+            <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW_TRIGGER_ALTCLICK" desc="In Title Case: The minor text of the Preview link command in the content area context menu, alt+click trigger">
+              ⌥+Click
+            </message>
+          </if>
+          <if expr="not is_macosx">
+            <message name="IDS_CONTENT_CONTEXT_OPENLINKPREVIEW_TRIGGER_ALTCLICK" desc="In Title Case: The minor text of the Preview link command in the content area context menu, alt+click trigger">
+              Alt+Click
+            </message>
+          </if>
 
           <message name="IDS_CONTENT_CONTEXT_SAVELINKAS" desc="In Title Case: The name of the Save Link As command in the content area context menu">
             Save Lin&amp;k As...
@@ -985,7 +1005,7 @@ are declared in tools/grit/grit_rule.gni.
           </message>
 
           <message name="IDS_CONTENT_CONTEXT_SAVEVIDEOFRAMEAS" desc="In Title Case: The name of the Save Video Frame As command in the content area context menu">
-           Sa&amp;ve Video Frame As...
+           Save Video &amp;Frame As...
           </message>
           <message name="IDS_CONTENT_CONTEXT_SAVEVIDEOAS" desc="In Title Case: The name of the Save Video As command in the content area context menu">
            Sa&amp;ve Video As...
@@ -994,10 +1014,10 @@ are declared in tools/grit/grit_rule.gni.
             C&amp;opy Video Address
           </message>
           <message name="IDS_CONTENT_CONTEXT_COPYVIDEOFRAME" desc="The name of the Copy Video Frame command in the content area context menu">
-            C&amp;opy Video Frame
+            Cop&amp;y Video Frame
           </message>
           <message name="IDS_CONTENT_CONTEXT_SEARCHFORVIDEOFRAME" desc="In Title Case: The name of the Lens Search command in the content area context menu">
-            Search Video Frame with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
+            &amp;Search Video Frame with <ph name="VISUAL_SEARCH_PROVIDER">$1<ex>Google Lens</ex></ph>
           </message>
           <message name="IDS_CONTENT_CONTEXT_OPENVIDEONEWTAB" desc="In Title Case: The name of the Open Video in New Tab command in the content area context menu">
             &amp;Open Video in New Tab
@@ -1290,9 +1310,6 @@ are declared in tools/grit/grit_rule.gni.
           <message name="IDS_MOVE_TAB_TO_NEW_WINDOW" desc="The text label of the Move Tab to Window menu item.">
             Move tab to new window
           </message>
-          <message name="IDS_TOGGLE_QUICK_COMMANDS" desc="The text label of the Toggle Quick Commands menu item">
-          Quick commands
-          </message>
           <message name="IDS_SEARCH_TABS" desc="The text label of the Search Tabs... menu item">
           Search tabs...
           </message>
@@ -1432,9 +1449,6 @@ are declared in tools/grit/grit_rule.gni.
           </message>
           <message name="IDS_MOVE_TAB_TO_NEW_WINDOW" desc="In Title Case: The text label of the Move Tab to New Window menu item.">
             Move Tab to New Window
-          </message>
-          <message name="IDS_TOGGLE_QUICK_COMMANDS" desc="In Title Case:The text label of the Toggle Quick Commands menu item">
-          Quick Commands
           </message>
           <message name="IDS_SEARCH_TABS" desc="In Title Case:The text label of the Search Tabs... menu item">
           Search Tabs...
@@ -3968,20 +3982,8 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_COOKIE_CONTROLS_BUBBLE_SITE_NOT_WORKING_TITLE" desc="Subtitle shown on the cookie controls bubble when cookies are blocked guiding the user to the cookie controls toggle button.">
         Site not working?
       </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_SITE_NOT_WORKING_DESCRIPTION_TEMPORARY" desc="Descriptive text in the cookie controls bubble explaining the trade-off of temporarily allowing third-party cookies for this site, a change that will automatically expire in the future.">
-        Try temporarily allowing third-party cookies, which means less protection but site features are more likely to work
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_SITE_NOT_WORKING_DESCRIPTION_PERMANENT" desc="Descriptive text in the cookie controls bubble explaining the trade-off of allowing third-party cookies for this site, a change that will not automatically expire in the future.">
-        Try allowing third-party cookies, which means less protection but site features are more likely to work
-      </message>
-      <message name="IDS_TRACKING_PROTECTION_BUBBLE_SITE_NOT_WORKING_DESCRIPTION_PERMANENT" desc="Descriptive text in the trackings protection bubble mentioning the option to enable third-party cookies and mentions the trade off of doing so.">
+      <message name="IDS_TRACKING_PROTECTION_BUBBLE_SITE_NOT_WORKING_DESCRIPTION" desc="Descriptive text in the trackings protection bubble mentioning the option to enable third-party cookies and mentions the trade off of doing so.">
         Try temporarily allowing third-party cookies, which means less browsing protection but site features are more likely to work as expected.
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_BLOCKING_RESTART_TITLE" desc="Subtitle shown on the cookie controls bubble when cookies are allowed temporarily, indicating how long until they are no longer allowed.">
-        {COUNT, plural,
-              =0 {Thorium will block cookies again today}
-              =1 {Thorium will block cookies again tomorrow}
-              other {# days until Thorium blocks cookies again}}
       </message>
       <message name="IDS_TRACKING_PROTECTION_BUBBLE_LIMITING_RESTART_TITLE" desc="Subtitle shown on the tracking protection bubble indicating how long until cookies will be limited again.">
         {COUNT, plural,
@@ -3989,26 +3991,17 @@ are declared in tools/grit/grit_rule.gni.
               =1 {Thorium will limit cookies again tomorrow}
               other {# days until Thorium limits cookies again}}
       </message>
-      <message name="IDS_TRACKING_PROTECTION_BUBBLE_BLOCKING_RESTART_TITLE" desc="Subtitle shown on the tracking protection bubble indicating how long until cookies will be blocked again.">
+      <message name="IDS_TRACKING_PROTECTION_BUBBLE_BLOCKING_RESTART_TITLE" desc="Subtitle shown on the tracking protection bubble indicating how long until cookies are blocked again.">
         {COUNT, plural,
-              =0 {Thorium will block cookies again today}
-              =1 {Thorium will block cookies again tomorrow}
+              =0 {Cookies will be blocked again today}
+              =1 {Cookies will be blocked again tomorrow}
               other {# days until cookies are blocked again}}
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_BLOCKING_RESTART_DESCRIPTION_TODAY" desc="Descriptive text in the cookie controls bubble after the user has allowed third-party cookies on a site explaining the trade-off of their decision.">
-        You allowed this site to use third-party cookies. This means that most site features should work, but you have less protection.
       </message>
       <message name="IDS_TRACKING_PROTECTION_BUBBLE_BLOCKING_RESTART_DESCRIPTION" desc="Descriptive text in the tracking protection bubble detailing the trade offs of temporarily allowing third-party cookies.">
         You temporarily allowed this site to use third-party cookies, which means less browsing protection but site features are more likely to work as expected.
       </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_PERMANENT_ALLOWED_TITLE" desc="A subtitle in the cookie controls bubble if cookies were allowed by the user and they won't be automatically blocked again the future.">
-        You allowed third-party cookies for this site
-      </message>
       <message name="IDS_TRACKING_PROTECTION_BUBBLE_PERMANENT_ALLOWED_TITLE" desc="A subtitle in the tracking protection bubble stating that third-party cookies are allowed due to a permanent exception.">
         You allowed third-party cookies on this site
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_PERMANENT_ALLOWED_DESCRIPTION" desc="A description in the cookie controls bubble of the impact of current user settings for this site if cookies are allowed and they won't be automatically blocked again in the future.">
-        This means that most site features should work, but you have less protection
       </message>
       <message name="IDS_TRACKING_PROTECTION_BUBBLE_PERMANENT_ALLOWED_DESCRIPTION" desc="Descriptive text in the tracking protection bubble for permanent exceptions informing the user about having less browsing protection.">
         This means site features should work as expected, but you may have less browsing protection.
@@ -4027,16 +4020,6 @@ are declared in tools/grit/grit_rule.gni.
       </message>
       <message name="IDS_COOKIE_CONTROLS_BUBBLE_SEND_FEEDBACK_FORM_PLACEHOLDER" desc="In the feedback text box accessible from the cookie controls bubble, this is the default text the user replaces with their feedback.">
         Tell us why you allowed third-party cookies on this site
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_BLOCKED_SITES_COUNT" desc="The count of sites that have been blocked from accessing third party cookies">
-        {COUNT, plural,
-              =1 {1 site blocked}
-              other {# sites blocked}}
-      </message>
-      <message name="IDS_COOKIE_CONTROLS_BUBBLE_ALLOWED_SITES_COUNT" desc="The count of sites that have been allowed to access third party cookies">
-        {COUNT, plural,
-              =1 {1 site allowed}
-              other {# sites allowed}}
       </message>
       <message name="IDS_TRACKING_PROTECTION_BUBBLE_COOKIES_ALLOWED_LABEL" desc="A label for the third-party cookies toggle in the tracking protection bubble that tells the user third-party cookies are allowed.">
         Allowed
@@ -4911,6 +4894,9 @@ are declared in tools/grit/grit_rule.gni.
         </message>
         <message name="IDS_TASK_MANAGER_PLUGIN_BROKER_PREFIX" desc="Task Manager row for PPAPI plugin broker, which provides additional access for PPAPI plugins">
           Plugin Broker: <ph name="PLUGIN_NAME">$1<ex>Unknown Plugin</ex></ph>
+        </message>
+        <message name="IDS_TASK_MANAGER_PRELOADED_RENDERER_FOR_UI" desc="Task Manager row for the render process that is preloaded with Top Thorium WebUI resources.">
+          Preloaded UI Renderer
         </message>
         <!-- TODO(liuwilliam): crbug/1325318 renaming the rest of existing Prerender to NoStatePrefetch -->
         <message name="IDS_TASK_MANAGER_NO_STATE_PREFETCH_PREFIX" desc="The prefix for a Task Manager No State Prefetch row">
@@ -6441,11 +6427,14 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_EXTENSIONS_MENU_MESSAGE_SECTION_RESTRICTED_ACCESS_TEXT" desc="Text of the message section when this site is restricted to all extensions.">
         No extensions need access to this site
       </message>
+      <message name="IDS_EXTENSIONS_MENU_MESSAGE_SECTION_POLICY_BLOCKED_ACCESS_TEXT" desc="Text of the message section when the site is restricted to all non-enterprise extensions.">
+        Extensions are not allowed on this site
+      </message>
       <message name="IDS_EXTENSIONS_MENU_MESSAGE_SECTION_USER_BLOCKED_ACCESS_TEXT" desc="Text of the message section when the user blocked access to this site to all extensions.">
         Extensions are not allowed on this site
       </message>
       <message name="IDS_EXTENSIONS_MENU_MESSAGE_SECTION_ENTERPRISE_TOOLTIP_ICON_TEXT" desc="Text of the info tooltip icon in the message section when the user blocked access to this site to all extensions but extensions installed by admin still have access.">
-        Extensions installed by your administrator can still read and change sites
+        Extensions installed by your administrator can still read and change this site
       </message>
       <message name="IDS_EXTENSIONS_MENU_MESSAGE_SECTION_USER_CUSTOMIZED_ACCESS_TEXT" desc="Text of the message section when the user can customize access to this site by extensions.">
         Extensions can request access to this site
@@ -6495,11 +6484,20 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_SITE_ACCESS_NONE" desc="Text of the site permissions button when extension doesn't have site access to the site">
         No access needed
       </message>
-      <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_OPEN_CHROME_WEBSTORE_ACCESSIBLE_NAME" desc="Accessibility string for the button that opens the chrome webstore.">
-        Open webstore
+      <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_OPEN_CHROME_WEBSTORE_TOOLTIP" desc="Tooltip text for the button that opens the chrome webstore.">
+        Chrome Web Store
       </message>
       <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_SITE_ACCESS_TOOLTIP" desc="Tooltip text of an extension's site permissions button.">
         Change site permissions
+      </message>
+      <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_BUTTON_HAS_ACCESS_TOOLTIP" desc="Tooltip text of an extension's menu button when the extension has access to the current site.">
+        Allowed to read &amp; change this site
+      </message>
+      <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_BUTTON_BLOCKED_ACCESS_TOOLTIP" desc="Tooltip text of an extension's menu button when the extension does not have access to the current site.">
+        Not allowed to read &amp; change this site
+      </message>
+      <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_BUTTON_REQUESTS_TOOLTIP" desc="Tooltip text of an extension's menu button when the extension is requesting access to the current site.">
+        Requesting to read &amp; change this site
       </message>
       <message name="IDS_EXTENSIONS_MENU_MAIN_PAGE_EXTENSION_SITE_ACCESS_ACCESSIBLE_NAME" desc="Accessibility string of an extension's site permissions button.">
         <ph name="SITE_ACCESS">$1<ex>Always on this site</ex></ph>. Select to change site permissions
@@ -6951,7 +6949,7 @@ Keep your key file in a safe place. You will need it to create new versions of y
         Add Username
       </message>
       <message name="IDS_ADD_USERNAME_BODY" desc="Body text in the add username bubble.">
-        To help Google Password Manager save your sing-in info, add your username for this site
+        To help Google Password Manager save your sign-in info, add your username for this site
       </message>
       <message name="IDS_UPDATE_PASSWORD" desc="The title of the save password bubble when a password can be updated.">
         Update password?
@@ -7651,6 +7649,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CUSTOM_BG_CUSTOMIZE_NTP_LABEL" desc="Accessibility label for the gear icon. (On the New Tab Page)">
         Customize this page
       </message>
+      <message name="IDS_NTP_CUSTOM_BG_CUSTOMIZE_NTP_WALLPAPER_SEARCH_LABEL" desc="Accessibility label for the wallpaper search gear icon. (On the New Tab Page)">
+        Customize this page with AI
+      </message>
       <message name="IDS_NTP_DISMISS_PROMO" desc="The tooltip title and accessibility label for the (X) button to dismiss promotional messages on the middle / bottom of the New Tab page.">
         Dismiss this message
       </message>
@@ -7903,6 +7904,18 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_NTP_CUSTOMIZE_CHROME_COLOR_SCHEME_MODE_SYSTEM_LABEL" desc="A color scheme mode option for browser system mode, which follows the OS color scheme mode in customize chrome side panel.">
         Device
       </message>
+      <message name="IDS_NTP_CUSTOMIZE_CHROME_WEBSTORE_LABEL" desc="The message that prompts user to customize Thorium with Thorium webstore.">
+        Customize your browser even more with extensions from the <ph name="BEGIN_LINK1">&lt;a href="#" id="chromeWebstoreLink" on-click="onThoriumWebStoreLinkClick_"&gt;</ph>Chrome Web Store<ph name="END_LINK1">&lt;/a&gt;</ph>
+      </message>
+      <message name="IDS_NTP_WEBSTORE_SHOPPING_CATEOGRY_LABEL" desc="The message displayed on the button that redirects users to the 'shopping' category page of the Thorium webstore.">
+        Find coupons
+      </message>
+      <message name="IDS_NTP_WEBSTORE_WRITTING_HELP_COLLECTION_LABEL" desc="The message displayed on the button that redirects users to the 'writing help' collection page of the Thorium webstore.">
+        Get writing help
+      </message>
+       <message name="IDS_NTP_WEBSTORE_PRODUCTIVITY_CATEOGRY_LABEL" desc="The message displayed on the button that redirects users to the 'productivity' category page of the Thorium webstore.">
+        Increase your productivity
+      </message>
       <message name="IDS_NTP_WEBSTORE_TOAST_MESSAGE" desc="The message displayed on the New Tab Page toast that directs users to the Thorium webstore themes.">
         You can find older colors in the Chrome Web Store
       </message>
@@ -8046,6 +8059,12 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_NTP_WALLPAPER_SEARCH_DESCRIPTORS_CHANGED_A11Y_MESSAGE" desc="Accessibility announcement message for when descriptors are updated by clicking on an inspiration.">
         Form values updated
+      </message>
+      <message name="IDS_NTP_WALLPAPER_SEARCH_SIGNED_OUT_DESCRIPTION" desc="The description of the message displayed when a wallpaper search request rejected because the user is signed out.">
+        In order to use this new experimental feature, please sign in.
+      </message>
+      <message name="IDS_NTP_WALLPAPER_SEARCH_SIGNED_OUT_TITLE" desc="The title of the message displayed when a wallpaper search request rejected because the user is signed out.">
+        Please sign in to continue.
       </message>
 
       <!-- NTP Modules -->
@@ -8437,6 +8456,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       <message name="IDS_ACCNAME_SEARCH_SUGG" desc="The accessible name for the search suggestion tile in the NTP Journeys Module.">
         Search for <ph name="QUERY_CLUSTER_NAME">$1<ex>Office Chairs</ex></ph>
       </message>
+      <message name="IDS_NTP_MODULES_TAB_RESUMPTION_DISMISS_BUTTON" desc="A label for the dismiss button in the dropdown.">
+        No longer interested
+      </message>
       <message name="IDS_NTP_TAB_RESUMPTION_TITLE" desc="Name of the tab resumption module in sentence case shown in various UIs.">
         Tabs from other devices
       </message>
@@ -8445,6 +8467,15 @@ Keep your key file in a safe place. You will need it to create new versions of y
         <ph name="BREAK">&lt;br&gt;</ph>
         <ph name="BREAK">&lt;br&gt;</ph>
         You can manage settings from the card menu or see more options in Customize Thorium.
+      </message>
+      <message name="IDS_NTP_MODULES_TAB_RESUMPTION_SENTENCE" desc="Name of the tabs in the Tab Resumption module in sentence case shown in various UIs.">
+        Tabs
+      </message>
+      <message name="IDS_NTP_MODULES_TAB_RESUMPTION_RECENTLY_OPENED" desc="Default string text for when a tab was opened less than 60 seconds ago." translateable="false">
+        Recently opened
+      </message>
+      <message name="IDS_NTP_MODULES_TAB_RESUMPTION_DEVICE_PREFIX" desc="Prefix for device name to be shown in various UIs." translateable="false">
+        From your
       </message>
 
       <!-- Extensions NTP Middle Slot Promo -->
@@ -9965,6 +9996,9 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         <message name="IDS_PASSWORD_MANAGER_IPH_SHARE_PASSWORD_BUTTON_SCREENREADER" desc="Text announced with the in Product Help for Share Password Button in Password Manager.">
           Use Share button at the bottom of the card to share a copy of your password with someone in your family group
         </message>
+        <message name="IDS_PASSWORD_MANAGER_IPH_ACCOUNT_STORAGE_TOGGLE" desc="Body of the in Product Help for account storage toggle in Password Manager.">
+          You can turn off this setting to save your passwords only on this device
+        </message>
         <message name="IDS_PASSWORD_MANAGER_IPH_CREATE_SHORTCUT_TITLE" desc="Body of the in Product Help shown after successfully logging into a website telling user about how to create a shortcut">
           Get to your saved passwords quicker
         </message>
@@ -10808,7 +10842,10 @@ Check your passwords anytime in <ph name="GOOGLE_PASSWORD_MANAGER">$1<ex>Google 
         You can check for tab group suggestions at any time
       </message>
       <message name="IDS_TAB_ORGANIZATION_NOT_STARTED_BODY_FRE" desc="The body text for the first run experience of the not started state in the tab organization UI">
-        You'll get tab group suggestions that group similar tabs to help you stay organized
+        You'll get tab group suggestions that group similar tabs. Your open tabs and titles are sent to Google, and may be reviewed by humans to improve this feature.
+      </message>
+      <message name="IDS_TAB_ORGANIZATION_NOT_STARTED_BODY_LINK_FRE" desc="The body text for the first run experience of the not started state in the tab organization UI">
+        Learn more about tab group suggestions
       </message>
       <message name="IDS_TAB_ORGANIZATION_NOT_STARTED_BODY_SIGNED_OUT" desc="The body text for the not started state in the tab organization UI, when not signed in">
         Sign in and turn on sync to let Thorium suggest tab groups and keep your tabs organized
@@ -12515,6 +12552,12 @@ This can include information about installed software, files, your browser, and 
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_MANAGED_BY_DISCLAIMER" desc="Enterprise disclaimer for a managed account in the signin interception bubble, with the manager domain name.">
           This new profile will be managed by <ph name="DOMAIN">$1<ex>example.com</ex></ph>. <ph name="BEGIN_LINK">&lt;a href="$2" target=&quot;_blank&quot;&gt;<ex>https://help.google.com/articleLink</ex></ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SEPARATE_BROWSING_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for separating accounts into different browsers is displayed.">
+          Separate Browsing?
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_AVATAR_BUTTON_SWITCH_PROFILE_TEXT" desc="Text to be displayed on the extended avatar pill while the bubble for switching to a profile that has the account intercepted already signed into is displayed.">
+          Switch Profile?
+        </message>
       </if>
 
       <if expr="not chromeos_ash and not is_android">
@@ -13694,30 +13737,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
         </message>
 
       <!-- Web MIDI messages -->
-      <message name="IDS_ALLOWED_MIDI_TITLE" desc="Title of the info bubble shown when a site is allowed to use MIDI messages.">
-        MIDI devices allowed
-      </message>
-      <message name="IDS_BLOCKED_MIDI_TITLE" desc="Title of the info bubble shown when a site is denied to use MIDI smessages.">
-        MIDI devices blocked
-      </message>
-      <message name="IDS_ALLOWED_MIDI_MESSAGE" desc="Info bubble message and location bar icon tooltip text shown when a site has been allowed to use MIDI messages.">
-        This site is using your MIDI devices.
-      </message>
-      <message name="IDS_ALLOWED_MIDI_BLOCK" desc="Radio button to block access to use MIDI messages.">
-        Always block <ph name="HOST">$1<ex>example.com</ex></ph> from using your MIDI devices.
-      </message>
-      <message name="IDS_ALLOWED_MIDI_NO_ACTION" desc="Radio button to keep allowing access to use MIDI messages.">
-        Continue allowing this site to use your MIDI devices.
-      </message>
-      <message name="IDS_BLOCKED_MIDI_MESSAGE" desc="Info bubble message and location bar icon tooltip text shown when a site has been denied access to use MIDI messages.">
-        This site has been blocked from using your MIDI devices.
-      </message>
-      <message name="IDS_BLOCKED_MIDI_UNBLOCK" desc="Radio button choice to unblock a site from using MIDI messages.">
-        Always allow <ph name="HOST">$1<ex>mail.google.com</ex></ph> to use your MIDI devices.
-      </message>
-      <message name="IDS_BLOCKED_MIDI_NO_ACTION" desc="Radio button choice to continue blocking a site from using MIDI messages.">
-        Continue blocking this site from using your MIDI devices.
-      </message>
       <message name="IDS_ALLOWED_MIDI_SYSEX_TITLE" desc="Title of the info bubble shown when a site is allowed to use MIDI system exclusive messages.">
         Control and reprogramming of MIDI devices allowed
       </message>
@@ -13725,22 +13744,22 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Control and reprogramming of MIDI devices blocked
       </message>
       <message name="IDS_ALLOWED_MIDI_SYSEX_MESSAGE" desc="Info bubble message and location bar icon tooltip text shown when a site has been allowed to use MIDI system exclusive messages.">
-        This site can control and reprogram your MIDI devices (SysEx).
+        This site can control and reprogram your MIDI devices
       </message>
       <message name="IDS_ALLOWED_MIDI_SYSEX_BLOCK" desc="Radio button to block access to use MIDI system exclusive messages.">
-        Always block <ph name="HOST">$1<ex>example.com</ex></ph> from controlling and reprogramming your MIDI devices.
+        Always block <ph name="HOST">$1<ex>example.com</ex></ph> from controlling and reprogramming your MIDI devices
       </message>
       <message name="IDS_ALLOWED_MIDI_SYSEX_NO_ACTION" desc="Radio button to keep allowing access to use MIDI system exclusive messages.">
-        Continue allowing this site to control and reprogram your MIDI devices.
+        Continue allowing this site to control and reprogram your MIDI devices
       </message>
       <message name="IDS_BLOCKED_MIDI_SYSEX_MESSAGE" desc="Info bubble message and location bar icon tooltip text shown when a site has been denied access to use MIDI system exclusive messages.">
-        This site has been blocked from controlling and reprogramming your MIDI devices (SysEx).
+        This site has been blocked from controlling and reprogramming your MIDI devices
       </message>
       <message name="IDS_BLOCKED_MIDI_SYSEX_UNBLOCK" desc="Radio button choice to unblock a site from using MIDI system exclusive messages.">
-        Always allow <ph name="HOST">$1<ex>mail.google.com</ex></ph> to control and reprogram your MIDI devices.
+        Always allow <ph name="HOST">$1<ex>mail.google.com</ex></ph> to control and reprogram your MIDI devices
       </message>
       <message name="IDS_BLOCKED_MIDI_SYSEX_NO_ACTION" desc="Radio button choice to continue blocking a site from using MIDI system exclusive messages.">
-        Continue blocking this site from controlling and reprogramming your MIDI devices.
+        Continue blocking this site from controlling and reprogramming your MIDI devices
       </message>
 
       <!-- Media Stream -->
@@ -14579,6 +14598,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
         <message name="IDS_A11Y_ALERT_WINDOW_NEEDED" desc="Alert sent to the accessibility api when the user attempts a keyboard command that requires a window to work.">
           Command unavailable. Press control-N to open a new window.
         </message>
+        <message name="IDS_A11Y_ALERT_FASTER_SPLITSCREEN_TOAST" desc="The text for the Faster Splitscreen toast during faster splitscreen setup.">
+        Choose a window for this side
+        </message>
         <message name="IDS_A11Y_ALERT_WINDOW_OVERVIEW_MODE_ENTERED" desc="The accessible text read when the user enters window overview mode in Ash.">
           Entered window overview mode. Swipe to navigate, or press tab if using a keyboard.
         </message>
@@ -14688,6 +14710,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       </message>
       <message name="IDS_DEVICE_LOG_TYPE_DISPLAY" desc="Checkbox to enable showing events of type Display">
         Display
+      </message>
+      <message name="IDS_DEVICE_LOG_TYPE_FIRMWARE" desc="Checkbox to enable showing events of type Firmware">
+        Firmware
       </message>
       <message name="IDS_DEVICE_LOG_FILEINFO" desc="File info checkbox in device event log">
         File Info
@@ -16156,18 +16181,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
              desc="Label of the text field used to enter the new window name.">
       Window name
     </message>
-    <message name="IDS_QUICK_COMMANDS_LABEL"
-             desc="Label to identify the Quick Commands feature in Task Manager">
-      Quick Commands
-    </message>
-    <message name="IDS_QUICK_COMMANDS_PLACEHOLDER"
-             desc="Placeholder text for the Quick Commands text input">
-      Enter a keyword like "tabs" or "windows" to find an action
-    </message>
-    <message name="IDS_QUICK_COMMANDS_NO_RESULTS"
-             desc="Shown when there are no results in Quick Commands">
-      No commands found
-    </message>
 
     <!-- ThoriumLabs bubble -->
     <message name="IDS_CHROMELABS_RELAUNCH_BUTTON_LABEL"
@@ -16309,6 +16322,12 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
     <message name="IDS_ACCOUNT_SELECTION_CONTINUE" desc="Title of the button that continues filling with the only available set of credentials.">
       Continue as <ph name="NAME">$1<ex>Albus (or Albus Dumbledore)</ex></ph>
+    </message>
+    <message name="IDS_ACCOUNT_SELECTION_CHOOSE_AN_ACCOUNT" desc="Text to prompt a user to choose an account to sign in to an identity provider with." translateable="false">
+      Choose an account to continue
+    </message>
+    <message name="IDS_ACCOUNT_SELECTION_CANCEL" desc="Text for button to cancel signing in with an account from an identity provider." translateable="false">
+      Cancel
     </message>
     <message name="IDS_ACCOUNT_SELECTION_DATA_SHARING_CONSENT_NO_PP_OR_TOS" desc="The consent text shown to the user before sign up when there is no privacy policy or terms of service.">
       To continue, <ph name="IDENTITY_PROVIDER_ETLD_PLUS_ONE">$1<ex>idp.com</ex></ph> will share your name, email address, and profile picture with this site.
@@ -16614,23 +16633,11 @@ Please help our engineers fix this problem. Tell us what happened right before y
           <ph name="MEMORY_SAVINGS">$1<ex>300 MB</ex></ph> freed up
         </message>
       </if>
-      <message name="IDS_MEMORY_SAVER_DIALOG_TITLE_V2" desc="Title text for a dialog with information about Memory Saver mode.">
+      <message name="IDS_MEMORY_SAVER_DIALOG_TITLE" desc="Title text for a dialog with information about Memory Saver mode.">
         Memory Saver
       </message>
-      <message name="IDS_MEMORY_SAVER_DIALOG_BODY" desc="Body text for a dialog describing that Memory Saver mode will use less memory from inactive tabs and that this is a setting the user can control.">
-        While this tab was inactive, Memory Saver freed up memory for other tasks. You can change this anytime in <ph name="SETTINGS_LINK">$1<ex>Settings</ex></ph>.
-      </message>
-      <message name="IDS_MEMORY_SAVER_DIALOG_BODY_WITHOUT_LINK" desc="Body text for a dialog describing that Memory Saver mode will use less memory.">
-        While this tab was inactive, Memory Saver freed up memory for other tasks.
-      </message>
-      <message name="IDS_MEMORY_SAVER_DIALOG_BODY_LINK_TEXT" desc="The link text for the body text for the Memory Saver dialog.">
+      <message name="IDS_MEMORY_SAVER_DIALOG_SETTINGS_BUTTON" desc="Label for a button on a dialog that opens the chrome://settings/performance page when clicked.">
         Settings
-      </message>
-      <message name="IDS_MEMORY_SAVER_DIALOG_BODY_WITH_SAVINGS_AND_LINK" desc="Body text for a dialog describing how much less memory was used due to Memory Saver mode and that this is a setting the user can control.">
-        While this tab was inactive, Memory Saver freed up <ph name="MEMORY_VALUE">$1<ex>175MB</ex></ph> of memory for other tasks. You can change this anytime in <ph name="SETTINGS_LINK">$2<ex>Settings</ex></ph>.
-      </message>
-      <message name="IDS_MEMORY_SAVER_DIALOG_BODY_WITH_SAVINGS" desc="Body text for a dialog describing how much less memory was used due to Memory Saver mode.">
-        While this tab was inactive, Memory Saver freed up <ph name="MEMORY_VALUE">$1<ex>175MB</ex></ph> of memory for other tasks.
       </message>
       <message name="IDS_MEMORY_SAVER_DIALOG_SAVINGS_ACCNAME" desc="Accessible label for the memory savings shown on the Memory Saver dialog to provide context to the raw number.">
         <ph name="MEMORY_VALUE">$1<ex>175MB</ex></ph> of memory saved
@@ -16787,15 +16794,9 @@ Please help our engineers fix this problem. Tell us what happened right before y
       You security preferences do not allow installations of Isolated Apps. <ph name="CHANGE_PREFERENCE">$1<ex>Change your preferences</ex></ph>
     </message>
     <message name="IDS_IWA_INSTALLER_ALREADY_INSTALLED_TITLE" desc="Title of an error dialog shown when the bundle trying to be installed is already installed.">
-      This app is already installed
+      <ph name="APP_NAME">$1<ex>Google Maps</ex></ph> is already installed
     </message>
     <message name="IDS_IWA_INSTALLER_ALREADY_INSTALLED_SUBTITLE" desc="Subtitle of an error dialog shown when the bundle trying to be installed is already installed.">
-      <ph name="APP_NAME">$1<ex>Google Maps</ex></ph> version <ph name="APP_VERSION">$2<ex>1.0</ex></ph> is already installed on this device
-    </message>
-    <message name="IDS_IWA_INSTALLER_BUNDLE_OUTDATED_TITLE" desc="Title of an error dialog shown when the bundle trying to be installed is older than the currently installed version.">
-      A newer version of this app is already installed
-    </message>
-    <message name="IDS_IWA_INSTALLER_BUNDLE_OUTDATED_SUBTITLE" desc="Subtitle of an error dialog shown when the bundle trying to be installed is older than the currently installed version.">
       <ph name="APP_NAME">$1<ex>Google Maps</ex></ph> version <ph name="APP_VERSION">$2<ex>1.0</ex></ph> is already installed on this device
     </message>
     <message name="IDS_IWA_INSTALLER_INSTALL_SUBTITLE" desc="Subtitle of the installing screen of the IWA installer.">

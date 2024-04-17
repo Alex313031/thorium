@@ -35,6 +35,7 @@ ThoriumOS Flex > ThoriumOS
 made possible by Thorium > Chromium
 Experiments > Thorium Experiments
 Aw, Snap! > Aw, #@%!, this tab's process has gone bye bye...
+Dino strings in components/error_page_strings.grdp
 
  - Add GPC patch
 
