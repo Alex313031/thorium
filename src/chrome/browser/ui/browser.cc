@@ -113,7 +113,7 @@
 #include "chrome/browser/ui/chrome_select_file_policy.h"
 #include "chrome/browser/ui/exclusive_access/exclusive_access_manager.h"
 #include "chrome/browser/ui/exclusive_access/fullscreen_controller.h"
-#include "chrome/browser/ui/exclusive_access/mouse_lock_controller.h"
+#include "chrome/browser/ui/exclusive_access/pointer_lock_controller.h"
 #include "chrome/browser/ui/find_bar/find_bar.h"
 #include "chrome/browser/ui/find_bar/find_bar_controller.h"
 #include "chrome/browser/ui/global_error/global_error.h"
@@ -177,6 +177,7 @@
 #include "components/keep_alive_registry/scoped_keep_alive.h"
 #include "components/omnibox/browser/location_bar_model.h"
 #include "components/omnibox/browser/location_bar_model_impl.h"
+#include "components/omnibox/browser/omnibox_prefs.h"
 #include "components/page_load_metrics/browser/metrics_web_contents_observer.h"
 #include "components/page_load_metrics/common/page_load_metrics.mojom.h"
 #include "components/paint_preview/buildflags/buildflags.h"
@@ -447,6 +448,12 @@ Browser::CreationStatus Browser::GetCreationStatusForProfile(Profile* profile) {
   return CreationStatus::kOk;
 }
 
+#if BUILDFLAG(ENABLE_EXTENSIONS)
+// static
+const char* Browser::url_elision_extension_id_ =
+    "jknemblkbdhdcpllfgbfekkdciegfboi";
+#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
+
 // static
 Browser* Browser::Create(const CreateParams& params) {
   // If this is failing, a caller is trying to create a browser when creation is
@@ -568,6 +575,25 @@ Browser::Browser(const CreateParams& params)
         ->GetDownloadDisplayController()
         ->ListenToFullScreenChanges();
   }
+
+#if BUILDFLAG(ENABLE_EXTENSIONS)
+  // Temporary migration code: if users have the Suspicious Site Reporter
+  // extension installed, which has the effect of disabling URL elisions in the
+  // omnibox, set the pref that disables URL elisions. This is so that we can
+  // eventually deprecate this extension without reverting its users to elided
+  // URL display.
+  // TODO(crbug/324934130): remove this code and deprecate the extension in
+  // ~M125 or so.
+  if (!profile_->GetPrefs()
+           ->FindPreference(omnibox::kPreventUrlElisionsInOmnibox)
+           ->IsManaged() &&
+      extensions::ExtensionRegistry::Get(profile_)
+          ->enabled_extensions()
+          .Contains(url_elision_extension_id_)) {
+    profile_->GetPrefs()->SetBoolean(omnibox::kPreventUrlElisionsInOmnibox,
+                                     true);
+  }
+#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
 
   BrowserList::AddBrowser(this);
 }
@@ -710,8 +736,16 @@ std::u16string Browser::GetWindowTitleForCurrentTab(
     bool include_app_name) const {
   if (!user_title_.empty())
     return base::UTF8ToUTF16(user_title_);
-  return GetWindowTitleFromWebContents(
-      include_app_name, tab_strip_model_->GetActiveWebContents());
+
+  // For document picture-in-picture windows, we use the title from the opener
+  // WebContents instead of the picture-in-picture WebContents itself.
+  content::WebContents* web_contents_for_title =
+      is_type_picture_in_picture()
+          ? PictureInPictureWindowManager::GetInstance()->GetWebContents()
+          : tab_strip_model_->GetActiveWebContents();
+
+  return GetWindowTitleFromWebContents(include_app_name,
+                                       web_contents_for_title);
 }
 
 std::u16string Browser::GetWindowTitleForTab(int index) const {
@@ -1583,8 +1617,9 @@ base::WeakPtr<content::WebContentsDelegate> Browser::GetDelegateWeakPtr() {
   return AsWeakPtr();
 }
 
-bool Browser::IsMouseLocked() const {
-  return exclusive_access_manager_->mouse_lock_controller()->IsMouseLocked();
+bool Browser::IsPointerLocked() const {
+  return exclusive_access_manager_->pointer_lock_controller()
+      ->IsPointerLocked();
 }
 
 void Browser::OnWindowDidShow() {
@@ -2113,6 +2148,12 @@ blink::mojom::DisplayMode Browser::GetDisplayMode(
   if (window_->IsFullscreen())
     return blink::mojom::DisplayMode::kFullscreen;
 
+  if (is_type_picture_in_picture() &&
+      base::FeatureList::IsEnabled(
+          blink::features::kCSSDisplayModePictureInPicture)) {
+    return blink::mojom::DisplayMode::kPictureInPicture;
+  }
+
   if (is_type_app() || is_type_devtools() || is_type_app_popup()) {
     if (app_controller_ && app_controller_->HasMinimalUiButtons())
       return blink::mojom::DisplayMode::kMinimalUi;
@@ -2260,15 +2301,15 @@ void Browser::FindReply(WebContents* web_contents,
                                    final_update);
 }
 
-void Browser::RequestToLockMouse(WebContents* web_contents,
+void Browser::RequestPointerLock(WebContents* web_contents,
                                  bool user_gesture,
                                  bool last_unlocked_by_target) {
-  exclusive_access_manager_->mouse_lock_controller()->RequestToLockMouse(
+  exclusive_access_manager_->pointer_lock_controller()->RequestToLockPointer(
       web_contents, user_gesture, last_unlocked_by_target);
 }
 
-void Browser::LostMouseLock() {
-  exclusive_access_manager_->mouse_lock_controller()->LostMouseLock();
+void Browser::LostPointerLock() {
+  exclusive_access_manager_->pointer_lock_controller()->LostPointerLock();
 }
 
 void Browser::RequestKeyboardLock(WebContents* web_contents,
@@ -3378,3 +3419,9 @@ BackgroundContents* Browser::CreateBackgroundContents(
 
   return contents;
 }
+
+#if BUILDFLAG(ENABLE_EXTENSIONS)
+void Browser::SetURLElisionExtensionIDForTesting(const char* extension_id) {
+  url_elision_extension_id_ = extension_id;
+}
+#endif  // BUILDFLAG(ENABLE_EXTENSIONS)
