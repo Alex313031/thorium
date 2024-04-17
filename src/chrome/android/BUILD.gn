@@ -295,6 +295,7 @@ if (current_toolchain == default_toolchain) {
       "//base/version_info/android:version_constants_java",
       "//cc:cc_java",
       "//cc/mojom:mojom_java",
+      "//chrome/android/features/jank_tracker:jank_tracker_java",
       "//chrome/android/features/keyboard_accessory:public_java",
       "//chrome/android/features/start_surface:java_resources",
       "//chrome/android/features/start_surface:public_java",
@@ -335,6 +336,7 @@ if (current_toolchain == default_toolchain) {
       "//chrome/browser/commerce/price_tracking/proto:proto_java",
       "//chrome/browser/commerce/subscriptions/android:subscriptions_java",
       "//chrome/browser/consent_auditor/android:java",
+      "//chrome/browser/content_extraction/android:java",
       "//chrome/browser/contextmenu:java",
       "//chrome/browser/creator/android:java",
       "//chrome/browser/data_sharing:factory_java",
@@ -357,7 +359,6 @@ if (current_toolchain == default_toolchain) {
       "//chrome/browser/gsa:java",
       "//chrome/browser/history:java",
       "//chrome/browser/history_clusters:java",
-      "//chrome/browser/history_clusters:java_resources",
       "//chrome/browser/hub:factory_java",
       "//chrome/browser/hub:java",
       "//chrome/browser/image_descriptions:java",
@@ -578,6 +579,7 @@ if (current_toolchain == default_toolchain) {
       "//components/sync/android:sync_java",
       "//components/sync/protocol:protocol_java",
       "//components/sync_device_info:sync_device_info_java",
+      "//components/tab_groups:tab_groups_java",
       "//components/thin_webview:factory_java",
       "//components/thin_webview:java",
       "//components/translate/content/android:java",
@@ -680,7 +682,7 @@ if (current_toolchain == default_toolchain) {
       "//components/dom_distiller/core:distiller_type_java",
       "//components/ntp_tiles:ntp_tiles_enums_java",
       "//components/offline_pages/core:offline_page_model_enums_java",
-      "//components/supervised_user/core/common:supervised_user_utils_enum_javagen",
+      "//components/supervised_user/core/browser:supervised_user_utils_enum_javagen",
       "//net:effective_connection_type_java",
     ]
 
@@ -707,8 +709,11 @@ if (current_toolchain == default_toolchain) {
     jar_excluded_patterns = [ "*/AppHooksImpl.class" ]
 
     annotation_processor_deps = [
-      "//components/module_installer/android:module_interface_processor",
+      # Dagger must come first so that when enable_chrome_android_internal=true,
+      # the bundled version of Guava is not shadowed by the one in android_deps.
+      # https://crbug.com/325425527
       "//third_party/android_deps:dagger_processor",
+      "//components/module_installer/android:module_interface_processor",
     ]
 
     processor_args_javac = [ "dagger.fastInit=enabled" ]
@@ -1194,6 +1199,7 @@ if (current_toolchain == default_toolchain) {
       "//components/sync/android:sync_java",
       "//components/sync/protocol:protocol_java",
       "//components/sync_device_info:sync_device_info_java",
+      "//components/tab_groups:tab_groups_java",
       "//components/translate/content/android:junit",
       "//components/ukm/android:java",
       "//components/url_formatter/android:url_formatter_java",
@@ -3514,7 +3520,7 @@ generate_jni("chrome_jni_headers") {
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/link_to_text/LinkToTextBridge.java",
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/long_screenshots/bitmap_generation/LongScreenshotsTabService.java",
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/long_screenshots/bitmap_generation/LongScreenshotsTabServiceFactory.java",
-    "../browser/share/android/java/src/org/chromium/chrome/browser/share/qrcode/QRCodeGenerationRequest.java",
+    "../browser/share/android/java/src/org/chromium/chrome/browser/share/qrcode/QRCodeGenerator.java",
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/screenshot/EditorScreenshotTask.java",
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/send_tab_to_self/MetricsRecorder.java",
     "../browser/share/android/java/src/org/chromium/chrome/browser/share/send_tab_to_self/NotificationManager.java",
@@ -3711,6 +3717,7 @@ generate_jni("chrome_jni_headers") {
     "java/src/org/chromium/chrome/browser/webapps/WebApkInstallService.java",
     "java/src/org/chromium/chrome/browser/webapps/WebApkInstaller.java",
     "java/src/org/chromium/chrome/browser/webapps/WebApkPostShareTargetNavigator.java",
+    "java/src/org/chromium/chrome/browser/webapps/WebApkSyncService.java",
     "java/src/org/chromium/chrome/browser/webapps/WebApkUpdateDataFetcher.java",
     "java/src/org/chromium/chrome/browser/webapps/WebApkUpdateManager.java",
     "java/src/org/chromium/chrome/browser/webapps/WebappRegistry.java",

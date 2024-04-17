@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2023 The Chromium Authors and Alex313031. All rights reserved.
-     Use of this source code is governed by a BSD-style license that can be
-     found in the LICENSE file. -->
+<!--
+Copyright 2024 The Chromium Authors and Alex313031
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- The application name displayed to the user. -->
@@ -9,5 +11,4 @@
     <string name="bookmark_widget_title" translatable="false">Thorium Bookmarks</string>
     <string name="search_widget_title" translatable="false">Thorium Search</string>
     <string name="quick_action_search_widget_title" translatable="false">Thorium Quick Action Search</string>
-    <string name="dino_widget_title" translatable="false">Thorium Dino</string>
 </resources>

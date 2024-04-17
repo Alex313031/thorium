@@ -39,6 +39,7 @@
 #include "components/variations/proto/variations_seed.pb.h"
 #include "components/variations/seed_response.h"
 #include "components/variations/service/limited_entropy_synthetic_trial.h"
+#include "components/variations/synthetic_trial_registry.h"
 #include "components/variations/variations_safe_seed_store_local_state.h"
 #include "components/variations/variations_seed_simulator.h"
 #include "components/variations/variations_switches.h"
@@ -327,9 +328,11 @@ VariationsService::VariationsService(
     std::unique_ptr<web_resource::ResourceRequestAllowedNotifier> notifier,
     PrefService* local_state,
     metrics::MetricsStateManager* state_manager,
-    const UIStringOverrider& ui_string_overrider)
+    const UIStringOverrider& ui_string_overrider,
+    SyntheticTrialRegistry* synthetic_trial_registry)
     : client_(std::move(client)),
       local_state_(local_state),
+      synthetic_trial_registry_(synthetic_trial_registry),
       state_manager_(state_manager),
       limited_entropy_synthetic_trial_(local_state),
       policy_pref_service_(local_state),
@@ -562,14 +565,16 @@ std::unique_ptr<VariationsService> VariationsService::Create(
     const char* disable_network_switch,
     const UIStringOverrider& ui_string_overrider,
     web_resource::ResourceRequestAllowedNotifier::NetworkConnectionTrackerGetter
-        network_connection_tracker_getter) {
+        network_connection_tracker_getter,
+    SyntheticTrialRegistry* synthetic_trial_registry) {
   std::unique_ptr<VariationsService> result;
   result.reset(new VariationsService(
       std::move(client),
       std::make_unique<web_resource::ResourceRequestAllowedNotifier>(
           local_state, disable_network_switch,
           std::move(network_connection_tracker_getter)),
-      local_state, state_manager, ui_string_overrider));
+      local_state, state_manager, ui_string_overrider,
+      synthetic_trial_registry));
   return result;
 }
 
@@ -634,7 +639,7 @@ bool VariationsService::DoFetchFromURL(const GURL& url, bool is_http_retry) {
       if (!EncryptString(serial_number, &serial_number)) {
         return false;
       }
-      base::Base64Encode(serial_number, &serial_number);
+      serial_number = base::Base64Encode(serial_number);
     }
     resource_request->headers.SetHeader("If-None-Match", serial_number);
   }
@@ -903,7 +908,11 @@ void VariationsService::PerformSimulationWithVersion(
   if (!version.IsValid())
     return;
 
-  auto entropy_providers = state_manager_->CreateEntropyProviders();
+  auto entropy_providers = state_manager_->CreateEntropyProviders(
+      VariationsFieldTrialCreatorBase::
+          IsLimitedEntropyRandomizationSourceEnabled(
+              client()->GetChannelForVariations(),
+              &limited_entropy_synthetic_trial_));
 
   std::unique_ptr<ClientFilterableState> client_state =
       field_trial_creator_.GetClientFilterableStateForVersion(version);
@@ -943,8 +952,9 @@ bool VariationsService::SetUpFieldTrials(
 
   return field_trial_creator_.SetUpFieldTrials(
       variation_ids, command_line_variation_ids, extra_overrides,
-      std::move(feature_list), state_manager_, platform_field_trials,
-      &safe_seed_manager_, /*add_entropy_source_to_variations_ids=*/true);
+      std::move(feature_list), state_manager_, synthetic_trial_registry_,
+      platform_field_trials, &safe_seed_manager_,
+      /*add_entropy_source_to_variations_ids=*/true);
 }
 
 std::vector<StudyGroupNames> VariationsService::GetStudiesAvailableToForce() {
@@ -956,8 +966,13 @@ std::vector<StudyGroupNames> VariationsService::GetStudiesAvailableToForce() {
     return {};
   }
 
+  // TODO(crbug.com/1519232): chrome://field-trial-internals will not support
+  // studies that are constrained to a layer with LIMITED entropy mode before
+  // limited entropy randomization fully lands.
+  auto entropy_providers = state_manager_->CreateEntropyProviders(
+      /*enable_limited_entropy_mode=*/false);
   return variations::GetStudiesAvailableToForce(
-      std::move(seed), *state_manager_->CreateEntropyProviders(),
+      std::move(seed), *entropy_providers,
       *GetClientFilterableStateForVersion());
 }
 
