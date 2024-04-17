@@ -33,4 +33,4 @@ FULLDESC="Thorium is a browser that combines a minimal design with sophisticated
 # TODO(mmoss) Setup a mailbox for this address
 MAINTNAME="Thorium Linux Maintainers"
 MAINTMAIL="alex313031@gmail.com"
-PRODUCTURL="https://github.com/Alex313031/thorium"
+PRODUCTURL="https://thorium.rocks"

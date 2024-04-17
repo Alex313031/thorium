@@ -70,6 +70,7 @@ default_apps\external_extensions.json: %(VersionDir)s\default_apps\
 #
 ClearKeyCdm\_platform_specific\win_x64\clearkeycdm.dll: %(VersionDir)s\ClearKeyCdm\_platform_specific\win_x64\
 ClearKeyCdm\_platform_specific\win_x86\clearkeycdm.dll: %(VersionDir)s\ClearKeyCdm\_platform_specific\win_x86\
+ClearKeyCdm\_platform_specific\win_arm64\clearkeycdm.dll: %(VersionDir)s\ClearKeyCdm\_platform_specific\win_arm64\
 
 #
 # Widevine CDM sub-dir
