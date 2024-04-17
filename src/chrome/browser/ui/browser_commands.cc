@@ -72,7 +72,6 @@
 #include "chrome/browser/ui/browser_tabstrip.h"
 #include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/chrome_pages.h"
-#include "chrome/browser/ui/commander/commander.h"
 #include "chrome/browser/ui/exclusive_access/exclusive_access_manager.h"
 #include "chrome/browser/ui/exclusive_access/fullscreen_controller.h"
 #include "chrome/browser/ui/find_bar/find_bar.h"
@@ -163,7 +162,6 @@
 #include "content/public/common/url_utils.h"
 #include "content/public/common/user_agent.h"
 #include "extensions/buildflags/buildflags.h"
-#include "net/cookies/cookie_util.h"
 #include "pdf/buildflags.h"
 #include "printing/buildflags/buildflags.h"
 #include "rlz/buildflags/buildflags.h"
@@ -421,9 +419,7 @@ void RecordReloadWithCookieBlocking(const Browser* browser,
   ukm::SourceId source_id =
       web_contents->GetPrimaryMainFrame()->GetPageUkmSourceId();
 
-  ukm::builders::ThirdPartyCookies_BreakageIndicator(source_id)
-      .SetBreakageIndicatorType(static_cast<int>(
-          net::cookie_util::BreakageIndicatorType::USER_RELOAD))
+  ukm::builders::ThirdPartyCookies_BreakageIndicator_UserReload(source_id)
       .SetTPCBlocked(cookies_blocked)
       .SetTPCBlockedInSettings(cookies_blocked_in_settings)
       .Record(ukm::UkmRecorder::Get());
@@ -850,6 +846,7 @@ base::WeakPtr<content::NavigationHandle> OpenCurrentURL(Browser* browser) {
       location_bar->navigation_params().url_typed_without_scheme;
   params.url_typed_with_http_scheme =
       location_bar->navigation_params().url_typed_with_http_scheme;
+  params.extra_headers = location_bar->navigation_params().extra_headers;
   auto result = Navigate(&params);
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -2128,10 +2125,6 @@ void ToggleMultitaskMenu(Browser* browser) {
   browser->window()->ToggleMultitaskMenu();
 }
 #endif
-
-void ToggleCommander(Browser* browser) {
-  commander::Commander::Get()->ToggleForBrowser(browser);
-}
 
 #if !defined(TOOLKIT_VIEWS)
 std::optional<int> GetKeyboardFocusedTabIndex(const Browser* browser) {

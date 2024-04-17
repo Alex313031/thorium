@@ -579,7 +579,7 @@ def VerifyZStdSupport():
     print('OK')
 
 
-def DownloadDebianSysroot(platform_name):
+def DownloadDebianSysroot(platform_name, skip_download=False):
   # Download sysroots. This uses basically Chromium's sysroots, but with
   # minor changes:
   # - glibc version bumped to 2.18 to make __cxa_thread_atexit_impl
@@ -605,7 +605,8 @@ def DownloadDebianSysroot(platform_name):
   output = os.path.join(LLVM_BUILD_TOOLS_DIR, toolchain_name)
   U = toolchain_bucket + hashes[platform_name] + '/' + toolchain_name + \
       '.tar.xz'
-  DownloadAndUnpack(U, output)
+  if not skip_download:
+    DownloadAndUnpack(U, output)
 
   return output
 
@@ -847,6 +848,12 @@ def main():
       '-DCMAKE_ASM_FLAGS_RELEASE=-O3 -w -mavx -maes -DNDEBUG',
       '-DCMAKE_C_FLAGS_RELEASE=-O3 -w -mavx -maes -DNDEBUG',
       '-DCMAKE_CXX_FLAGS_RELEASE=-O3 -w -mavx -maes -DNDEBUG',
+      # The Rust build (on Mac ARM at least if not others) depends on the
+      # FileCheck tool which is built but not installed by default, this
+      # puts it in the path for the Rust build to find and matches the
+      # `bootstrap` tool:
+      # https://github.com/rust-lang/rust/blob/021861aea8de20c76c7411eb8ada7e8235e3d9b5/src/bootstrap/src/core/build_steps/llvm.rs#L348
+      '-DLLVM_INSTALL_UTILS=ON',
       '-DLLVM_ENABLE_ZSTD=%s' % ('ON' if args.with_zstd else 'OFF'),
   ]
 
@@ -878,7 +885,8 @@ def main():
     cc = args.host_cc
     cxx = args.host_cxx
   else:
-    DownloadPinnedClang()
+    if not args.skip_checkout:
+      DownloadPinnedClang()
     if sys.platform == 'win32':
       cc = os.path.join(PINNED_CLANG_DIR, 'bin', 'clang-cl.exe')
       cxx = os.path.join(PINNED_CLANG_DIR, 'bin', 'clang-cl.exe')
@@ -896,10 +904,10 @@ def main():
       base_cmake_args += [ '-DLLVM_STATIC_LINK_CXX_STDLIB=ON' ]
 
   if sys.platform.startswith('linux'):
-    sysroot_amd64 = DownloadDebianSysroot('amd64')
-    sysroot_i386 = DownloadDebianSysroot('i386')
-    sysroot_arm = DownloadDebianSysroot('arm')
-    sysroot_arm64 = DownloadDebianSysroot('arm64')
+    sysroot_amd64 = DownloadDebianSysroot('amd64', args.skip_checkout)
+    sysroot_i386 = DownloadDebianSysroot('i386', args.skip_checkout)
+    sysroot_arm = DownloadDebianSysroot('arm', args.skip_checkout)
+    sysroot_arm64 = DownloadDebianSysroot('arm64', args.skip_checkout)
 
     # Add the sysroot to base_cmake_args.
     if platform.machine() == 'aarch64':
@@ -1288,9 +1296,7 @@ def main():
       if target_arch == 'arm':
         target_triple = 'armv7'
       api_level = '21'
-      if target_arch == 'aarch64' or target_arch == 'x86_64':
-        api_level = '21'
-      elif target_arch == 'riscv64':
+      if target_arch == 'riscv64':
         api_level = '35'
         toolchain_dir = ANDROID_NDK_CANARY_TOOLCHAIN_DIR
       target_triple += '-linux-android' + api_level
