@@ -71,12 +71,12 @@ cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 printf "\n" &&
 printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
 
-cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg &&
+cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 cp -v other/Fix-policy-templates.patch ${CR_SRC_DIR}/ &&
 cd ${CR_SRC_DIR}/third_party/ffmpeg &&
-git apply --reject add-hevc-ffmpeg-decoder-parser.patch ./ &&
+git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
 cd ${CR_SRC_DIR} &&
-git apply --reject Fix-policy-templates.patch ./ &&
+git apply --reject ./Fix-policy-templates.patch &&
 cd ~/thorium &&
 
 printf "\n" &&
