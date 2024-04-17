@@ -410,9 +410,12 @@ BASE_FEATURE(kUseAndroidOverlayForSecureOnly,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Allows usage of OS-level (platform) audio encoders.
+// TODO(crbug.com/1522976): re-enable platform audio encoders on arm64 win when
+//                          querying for OS support works as expected.
 BASE_FEATURE(kPlatformAudioEncoder,
              "PlatformAudioEncoder",
-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_ANDROID)
+#if (BUILDFLAG(IS_WIN) && !defined(ARCH_CPU_ARM64)) || BUILDFLAG(IS_MAC) || \
+    BUILDFLAG(IS_ANDROID)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -592,20 +595,14 @@ BASE_FEATURE(kMemoryPressureBasedSourceBufferGC,
 // image.
 BASE_FEATURE(kUseWritePixelsYUV,
              "UseWritePixelsYUV",
-// Windows requires d3d11 write pixel support in angle.
-#if BUILDFLAG(IS_WIN)
-             base::FEATURE_DISABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
-);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Enables creating single shared image and mailbox for multi-planar formats for
 // hardware video decoders.
 BASE_FEATURE(kUseMultiPlaneFormatForHardwareVideo,
              "UseMultiPlaneFormatForHardwareVideo",
 #if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_FUCHSIA) || \
-    BUILDFLAG(IS_LINUX)
+    BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -616,7 +613,8 @@ BASE_FEATURE(kUseMultiPlaneFormatForHardwareVideo,
 // software video decoders.
 BASE_FEATURE(kUseMultiPlaneFormatForSoftwareVideo,
              "UseMultiPlaneFormatForSoftwareVideo",
-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_FUCHSIA)
+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_APPLE) || BUILDFLAG(IS_FUCHSIA) || \
+    BUILDFLAG(IS_WIN)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -626,12 +624,7 @@ BASE_FEATURE(kUseMultiPlaneFormatForSoftwareVideo,
 // Enables using RasterInterface in VideoResourceUpdater.
 BASE_FEATURE(kRasterInterfaceInVideoResourceUpdater,
              "RasterInterfaceInVideoResourceUpdater",
-#if BUILDFLAG(IS_ANDROID)
-             base::FEATURE_DISABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
-);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables binding software video NV12/P010 GMBs as separate shared images.
 BASE_FEATURE(kMultiPlaneSoftwareVideoSharedImages,
@@ -693,6 +686,18 @@ BASE_FEATURE(kDedicatedMediaServiceThread,
 #endif
 );
 
+// Defer requesting persistent audio focus until the WebContents is audible.
+// The goal is to prevent silent playback from taking audio focus from
+// background apps on android, where focus is typically exclusive.
+BASE_FEATURE(kDeferAudioFocusUntilAudible,
+             "DeferAudioFocusUntilAudible",
+#if BUILDFLAG(IS_ANDROID)
+             base::FEATURE_ENABLED_BY_DEFAULT
+#else
+             base::FEATURE_DISABLED_BY_DEFAULT
+#endif
+);
+
 // Allows document picture-in-picture pages to request capture.
 BASE_FEATURE(kDocumentPictureInPictureCapture,
              "DocumentPictureInPictureCapture",
@@ -727,7 +732,12 @@ BASE_FEATURE(kGlobalMediaControlsAutoDismiss,
 BASE_FEATURE(kGlobalMediaControlsCrOSUpdatedUI,
              "GlobalMediaControlsCrOSUpdatedUI",
              base::FEATURE_ENABLED_BY_DEFAULT);
-#endif
+#else   // BUILDFLAG(IS_CHROMEOS)
+// Updated global media controls UI for all the non-CrOS desktop platforms.
+BASE_FEATURE(kGlobalMediaControlsUpdatedUI,
+             "GlobalMediaControlsUpdatedUI",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif  // BUILDFLAG(IS_CHROMEOS)
 
 #if !BUILDFLAG(IS_ANDROID)
 // If enabled, users can request Media Remoting without fullscreen-in-tab.
@@ -841,7 +851,12 @@ BASE_FEATURE(kVaapiAV1Encoder,
 // calls for thread safe backends.
 BASE_FEATURE(kGlobalVaapiLock,
              "GlobalVaapiLock",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_CHROMEOS)
+             base::FEATURE_DISABLED_BY_DEFAULT
+#else
+             base::FEATURE_ENABLED_BY_DEFAULT
+#endif
+);
 
 #if defined(ARCH_CPU_X86_FAMILY) && BUILDFLAG(IS_CHROMEOS)
 // TODO(b/214589754): revisit the need for the BUILDFLAG(IS_CHROMEOS) guard (as
@@ -877,11 +892,6 @@ BASE_FEATURE(kVideoBlitColorAccuracy,
              "video-blit-color-accuracy",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// A client (e.g. cast mirroring) can allow a video encoder to drop a frame.
-BASE_FEATURE(kVideoEncoderFrameDrop,
-             "VideoEncoderFrameDrop",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 #if BUILDFLAG(IS_APPLE)
 // Use VideoToolbox for AV1 hardware decoding.
 // Owner: dalecurtis@chromium.org, sandersd@chromium.org
@@ -897,6 +907,21 @@ BASE_FEATURE(kVideoToolboxVideoDecoder,
              "VideoToolboxVideoDecoder",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_APPLE)
+
+// A video encoder is allowed to drop a frame in cast mirroring.
+BASE_FEATURE(kCastVideoEncoderFrameDrop,
+             "CastVideoEncoderFrameDrop",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// A video encoder is allowed to drop a frame in WebCodecs.
+BASE_FEATURE(kWebCodecsVideoEncoderFrameDrop,
+             "WebCodecsVideoEncoderFrameDrop",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+// A hardware video encoder is allowed to drop a frame in WebRTC.
+BASE_FEATURE(kWebRTCHardwareVideoEncoderFrameDrop,
+             "WebRTCHardwareVideoEncoderFrameDrop",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Inform webrtc with correct video color space information whenever
 // possible.
@@ -1219,6 +1244,10 @@ BASE_FEATURE(kAllowMediaCodecSoftwareDecoder,
 BASE_FEATURE(kBuiltInHlsPlayer,
              "BuiltInHlsPlayer",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+BASE_FEATURE(kBuiltInHlsMP4,
+             "kBuiltInHlsMP4",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(ENABLE_HLS_DEMUXER)
 
 #if BUILDFLAG(USE_CHROMEOS_MEDIA_ACCELERATION)
@@ -1430,7 +1459,7 @@ BASE_FEATURE(kExposeOutOfProcessVideoDecodingToLacros,
 // using the GPU process.
 BASE_FEATURE(kUseOutOfProcessVideoDecoding,
              "UseOutOfProcessVideoDecoding",
-#if BUILDFLAG(IS_CHROMEOS_LACROS)
+#if BUILDFLAG(IS_CHROMEOS)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
              base::FEATURE_DISABLED_BY_DEFAULT
@@ -1668,6 +1697,13 @@ BASE_FEATURE(kCastStreamingVp9,
              "CastStreamingVp9",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
+#if BUILDFLAG(IS_MAC)
+// Controls whether hardware H264 is default enabled on macOS.
+BASE_FEATURE(kCastStreamingMacHardwareH264,
+             "CastStreamingMacHardwareH264",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+#endif
+
 #if BUILDFLAG(IS_FUCHSIA)
 // Enables use of Fuchsia's Mediacodec service for encoding.
 BASE_FEATURE(kFuchsiaMediacodecVideoEncoder,
@@ -1728,6 +1764,13 @@ BASE_FEATURE(kCrOSLegacyMediaFormats,
 #endif
 #endif
 
+#if BUILDFLAG(IS_WIN)
+// Controls whether to use D3D12 video decoder instead of D3D11 when supported.
+BASE_FEATURE(kD3D12VideoDecoder,
+             "D3D12VideoDecoder",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+#endif
+
 bool IsChromeWideEchoCancellationEnabled() {
 #if BUILDFLAG(CHROME_WIDE_ECHO_CANCELLATION)
   return base::FeatureList::IsEnabled(kChromeWideEchoCancellation);
@@ -1773,10 +1816,6 @@ bool IsVideoCaptureAcceleratedJpegDecodingEnabled() {
 
 bool IsMultiPlaneFormatForHardwareVideoEnabled() {
   return
-#if BUILDFLAG(ENABLE_VALIDATING_COMMAND_DECODER) && BUILDFLAG(IS_CHROMEOS)
-      gl::UsePassthroughCommandDecoder(
-          base::CommandLine::ForCurrentProcess()) &&
-#endif
       base::FeatureList::IsEnabled(kUseMultiPlaneFormatForHardwareVideo);
 }
 

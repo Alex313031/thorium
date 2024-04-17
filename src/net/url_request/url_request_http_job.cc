@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <optional>
 #include <utility>
 #include <vector>
 
@@ -93,9 +94,7 @@
 #include "net/url_request/url_request_error_job.h"
 #include "net/url_request/url_request_job_factory.h"
 #include "net/url_request/url_request_redirect_job.h"
-#include "net/url_request/url_request_throttler_manager.h"
 #include "net/url_request/websocket_handshake_userdata_key.h"
-#include "third_party/abseil-cpp/absl/types/optional.h"
 #include "url/gurl.h"
 #include "url/origin.h"
 #include "url/url_constants.h"
@@ -125,7 +124,7 @@ base::Value::Dict FirstPartySetMetadataNetLogParams(
     const int64_t* const fps_cache_filter) {
   base::Value::Dict dict;
   auto entry_or_empty =
-      [](const absl::optional<net::FirstPartySetEntry>& entry) -> std::string {
+      [](const std::optional<net::FirstPartySetEntry>& entry) -> std::string {
     return entry.has_value() ? entry->GetDebugString() : "none";
   };
 
@@ -325,10 +324,6 @@ URLRequestHttpJob::URLRequestHttpJob(
     const HttpUserAgentSettings* http_user_agent_settings)
     : URLRequestJob(request),
       http_user_agent_settings_(http_user_agent_settings) {
-  URLRequestThrottlerManager* manager = request->context()->throttler_manager();
-  if (manager)
-    throttling_entry_ = manager->RegisterRequestUrl(request->url());
-
   ResetTimer();
 }
 
@@ -389,7 +384,7 @@ void URLRequestHttpJob::Start() {
 
   request_->net_log().BeginEvent(NetLogEventType::FIRST_PARTY_SETS_METADATA);
 
-  absl::optional<
+  std::optional<
       std::pair<FirstPartySetMetadata, FirstPartySetsCacheFilter::MatchInfo>>
       maybe_metadata = cookie_util::ComputeFirstPartySetMetadataMaybeAsync(
           SchemefulSite(request()->url()), request()->isolation_info(),
@@ -531,9 +526,6 @@ void URLRequestHttpJob::NotifyHeadersComplete() {
     response_info_ = transaction_->GetResponseInfo();
   }
 
-  if (!response_info_->was_cached && throttling_entry_.get())
-    throttling_entry_->UpdateWithResponse(GetResponseCode());
-
   ProcessStrictTransportSecurityHeader();
 
   // Clear |set_cookie_access_result_list_| after any processing in case
@@ -593,7 +585,7 @@ void URLRequestHttpJob::StartTransaction() {
 
 void URLRequestHttpJob::NotifyBeforeStartTransactionCallback(
     int result,
-    const absl::optional<HttpRequestHeaders>& headers) {
+    const std::optional<HttpRequestHeaders>& headers) {
   // The request should not have been cancelled or have already completed.
   DCHECK(!is_done());
 
@@ -672,18 +664,12 @@ void URLRequestHttpJob::StartTransactionInternal() {
             is_shared_dictionary_read_allowed_callback_);
       }
 
-      if (!throttling_entry_.get() ||
-          !throttling_entry_->ShouldRejectRequest(*request_)) {
-        rv = transaction_->Start(
-            &request_info_,
-            base::BindOnce(&URLRequestHttpJob::OnStartCompleted,
-                           base::Unretained(this)),
-            request_->net_log());
-        start_time_ = base::TimeTicks::Now();
-      } else {
-        // Special error code for the exponential back-off module.
-        rv = ERR_TEMPORARILY_THROTTLED;
-      }
+      rv = transaction_->Start(
+          &request_info_,
+          base::BindOnce(&URLRequestHttpJob::OnStartCompleted,
+                         base::Unretained(this)),
+          request_->net_log());
+      start_time_ = base::TimeTicks::Now();
     }
   }
 
@@ -835,7 +821,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
 
         if (may_set_sec_cookie_deprecation_header &&
             c.cookie.Name() == "receive-cookie-deprecation" &&
-            c.cookie.IsHttpOnly() && c.cookie.IsSecure()) {
+            c.cookie.IsHttpOnly() && c.cookie.SecureAttribute()) {
           request_info_.extra_headers.SetHeader(
               "Sec-Cookie-Deprecation",
               *request_->context()->cookie_deprecation_label());
@@ -946,9 +932,9 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
   }
 
   base::Time response_date;
-  absl::optional<base::Time> server_time = absl::nullopt;
+  std::optional<base::Time> server_time = std::nullopt;
   if (GetResponseHeaders()->GetDateValue(&response_date))
-    server_time = absl::make_optional(response_date);
+    server_time = std::make_optional(response_date);
 
   bool force_ignore_site_for_cookies =
       request_->force_ignore_site_for_cookies();
@@ -1002,7 +988,7 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
         request_->cookie_partition_key(), /*block_truncated=*/true,
         &returned_status);
 
-    absl::optional<CanonicalCookie> cookie_to_return = absl::nullopt;
+    std::optional<CanonicalCookie> cookie_to_return = std::nullopt;
     if (returned_status.IsInclude()) {
       DCHECK(cookie);
       // Make a copy of the cookie if we successfully made one.
@@ -1045,11 +1031,10 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
     NotifyHeadersComplete();
 }
 
-void URLRequestHttpJob::OnSetCookieResult(
-    const CookieOptions& options,
-    absl::optional<CanonicalCookie> cookie,
-    std::string cookie_string,
-    CookieAccessResult access_result) {
+void URLRequestHttpJob::OnSetCookieResult(const CookieOptions& options,
+                                          std::optional<CanonicalCookie> cookie,
+                                          std::string cookie_string,
+                                          CookieAccessResult access_result) {
   if (request_->net_log().IsCapturing()) {
     request_->net_log().AddEvent(NetLogEventType::COOKIE_INCLUSION_STATUS,
                                  [&](NetLogCaptureMode capture_mode) {
@@ -1135,7 +1120,7 @@ void URLRequestHttpJob::OnStartCompleted(int result) {
       // |URLRequestHttpJob::OnHeadersReceivedCallback()| or
       // |NetworkDelegate::URLRequestDestroyed()| has been called.
       OnCallToDelegate(NetLogEventType::NETWORK_DELEGATE_HEADERS_RECEIVED);
-      preserve_fragment_on_redirect_url_ = absl::nullopt;
+      preserve_fragment_on_redirect_url_ = std::nullopt;
       IPEndPoint endpoint;
       if (transaction_)
         transaction_->GetRemoteEndpoint(&endpoint);
@@ -1730,16 +1715,16 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
     return;
 
   base::TimeDelta total_time = base::TimeTicks::Now() - start_time_;
-  UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTime", total_time);
+  base::UmaHistogramTimes("Net.HttpJob.TotalTime", total_time);
 
   if (reason == FINISHED) {
-    UmaHistogramTimes(
+    base::UmaHistogramTimes(
         base::StringPrintf("Net.HttpJob.TotalTimeSuccess.Priority%d",
                            request()->priority()),
         total_time);
-    UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeSuccess", total_time);
+    base::UmaHistogramTimes("Net.HttpJob.TotalTimeSuccess", total_time);
   } else {
-    UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeCancel", total_time);
+    base::UmaHistogramTimes("Net.HttpJob.TotalTimeCancel", total_time);
   }
 
   // These metrics are intended to replace some of the later IP
@@ -1764,19 +1749,19 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
                                GetTotalSentBytes() == 0 &&
                                GetTotalReceivedBytes() == 0;
   if (!bypassedNetwork) {
-    UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.BytesSent2", GetTotalSentBytes(),
-                                1, 50000000, 50);
-    UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.BytesReceived2",
-                                GetTotalReceivedBytes(), 1, 50000000, 50);
+    base::UmaHistogramCustomCounts("Net.HttpJob.BytesSent2",
+                                   GetTotalSentBytes(), 1, 50000000, 50);
+    base::UmaHistogramCustomCounts("Net.HttpJob.BytesReceived2",
+                                   GetTotalReceivedBytes(), 1, 50000000, 50);
     // Having a transaction_ does not imply having a response_info_. This is
     // particularly the case in some aborted/cancelled jobs. The transaction is
     // the primary source of MDL match information.
     if ((transaction_ && transaction_->IsMdlMatchForMetrics()) ||
         (response_info_ && response_info_->was_mdl_match)) {
-      UMA_HISTOGRAM_CUSTOM_COUNTS(
+      base::UmaHistogramCustomCounts(
           "Net.HttpJob.IpProtection.AllowListMatch.BytesSent2",
           GetTotalSentBytes(), 1, 50000000, 50);
-      UMA_HISTOGRAM_CUSTOM_COUNTS(
+      base::UmaHistogramCustomCounts(
           "Net.HttpJob.IpProtection.AllowListMatch.BytesReceived2",
           GetTotalReceivedBytes(), 1, 50000000, 50);
     }
@@ -1790,8 +1775,8 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
     bool used_quic = response_info_->DidUseQuic();
     if (is_https_google) {
       if (used_quic) {
-        UMA_HISTOGRAM_MEDIUM_TIMES("Net.HttpJob.TotalTime.Secure.Quic",
-                                   total_time);
+        base::UmaHistogramMediumTimes("Net.HttpJob.TotalTime.Secure.Quic",
+                                      total_time);
       }
     }
 
@@ -1804,45 +1789,54 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
       base::UmaHistogramTimes("Net.HttpJob.TotalTime.TLS13.Google", total_time);
     }
 
-    UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.PrefilterBytesRead",
-                                prefilter_bytes_read(), 1, 50000000, 50);
+    base::UmaHistogramCustomCounts("Net.HttpJob.PrefilterBytesRead",
+                                   prefilter_bytes_read(), 1, 50000000, 50);
     if (response_info_->was_cached) {
-      UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeCached", total_time);
-      UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.PrefilterBytesRead.Cache",
-                                  prefilter_bytes_read(), 1, 50000000, 50);
+      base::UmaHistogramTimes("Net.HttpJob.TotalTimeCached", total_time);
+      base::UmaHistogramCustomCounts("Net.HttpJob.PrefilterBytesRead.Cache",
+                                     prefilter_bytes_read(), 1, 50000000, 50);
     } else {
-      UMA_HISTOGRAM_TIMES("Net.HttpJob.TotalTimeNotCached", total_time);
+      base::UmaHistogramTimes("Net.HttpJob.TotalTimeNotCached", total_time);
       if (response_info_->was_mdl_match) {
-        UMA_HISTOGRAM_CUSTOM_COUNTS(
+        base::UmaHistogramCustomCounts(
             "Net.HttpJob.IpProtection.AllowListMatch.BytesSent",
             GetTotalSentBytes(), 1, 50000000, 50);
 
-        UMA_HISTOGRAM_CUSTOM_COUNTS(
+        base::UmaHistogramCustomCounts(
             "Net.HttpJob.IpProtection.AllowListMatch.PrefilterBytesRead.Net",
             prefilter_bytes_read(), 1, 50000000, 50);
       }
-      if (response_info_->was_ip_protected) {
-        UMA_HISTOGRAM_TIMES("Net.HttpJob.IpProtection.TotalTimeNotCached",
-                            total_time);
+      if (response_info_->proxy_chain.is_for_ip_protection()) {
+        base::UmaHistogramTimes("Net.HttpJob.IpProtection.TotalTimeNotCached",
+                                total_time);
+        // Log specific times for non-zero chains. The zero chain is the
+        // default and is still counted in the base `TotalTimeNotCached`.
+        int chain_id = response_info_->proxy_chain.ip_protection_chain_id();
+        if (chain_id != ProxyChain::kNotIpProtectionChainId) {
+          UmaHistogramTimes(
+              base::StrCat({"Net.HttpJob.IpProtection.TotalTimeNotCached.Chain",
+                            base::NumberToString(chain_id)}),
+              total_time);
+        }
 
-        UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.IpProtection.BytesSent",
-                                    GetTotalSentBytes(), 1, 50000000, 50);
+        base::UmaHistogramCustomCounts("Net.HttpJob.IpProtection.BytesSent",
+                                       GetTotalSentBytes(), 1, 50000000, 50);
 
-        UMA_HISTOGRAM_CUSTOM_COUNTS(
+        base::UmaHistogramCustomCounts(
             "Net.HttpJob.IpProtection.PrefilterBytesRead.Net",
             prefilter_bytes_read(), 1, 50000000, 50);
       }
-      UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.PrefilterBytesRead.Net",
-                                  prefilter_bytes_read(), 1, 50000000, 50);
+      base::UmaHistogramCustomCounts("Net.HttpJob.PrefilterBytesRead.Net",
+                                     prefilter_bytes_read(), 1, 50000000, 50);
 
       if (request_->ad_tagged()) {
-        UMA_HISTOGRAM_CUSTOM_COUNTS("Net.HttpJob.PrefilterBytesRead.Ads.Net",
-                                    prefilter_bytes_read(), 1, 50000000, 50);
+        base::UmaHistogramCustomCounts("Net.HttpJob.PrefilterBytesRead.Ads.Net",
+                                       prefilter_bytes_read(), 1, 50000000, 50);
       }
 
       if (is_https_google && used_quic) {
-        UMA_HISTOGRAM_MEDIUM_TIMES("Net.HttpJob.TotalTimeNotCached.Secure.Quic",
-                                   total_time);
+        base::UmaHistogramMediumTimes(
+            "Net.HttpJob.TotalTimeNotCached.Secure.Quic", total_time);
       }
     }
   }
