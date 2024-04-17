@@ -386,12 +386,7 @@ config("compiler") {
           cflags += [ "-fstack-protector" ]
         }
       } else if ((is_posix && !is_chromeos && !is_nacl) || is_fuchsia) {
-        # TODO(phajdan.jr): Use -fstack-protector-strong when our gcc supports it.
-        # See also https://crbug.com/533294
-        # The x86 toolchain currently has problems with stack-protector.
-        if (is_android && current_cpu == "x86") {
-          cflags += [ "-fno-stack-protector" ]
-        } else if (current_os != "aix") {
+        if (current_os != "aix") {
           # Not available on aix.
           cflags += [ "-fstack-protector" ]
         }
@@ -787,8 +782,6 @@ config("compiler") {
       ldflags += [
         "/opt:lldltojobs=all",
         "-mllvm:-import-instr-limit=$import_instr_limit",
-        "-mllvm:-import-hot-multiplier=15",
-        "-mllvm:-import-cold-multiplier=2",
         "-mllvm:-disable-auto-upgrade-debug-info",
       ]
     } else {
@@ -1062,9 +1055,14 @@ config("compiler") {
   if (rust_abi_target != "") {
     rustflags += [ "--target=$rust_abi_target" ]
   }
-  if (!use_thin_lto) {
+  if (!use_thin_lto || !toolchain_supports_rust_thin_lto) {
     # Don't include bitcode if it won't be used.
     rustflags += [ "-Cembed-bitcode=no" ]
+
+    # Disable "automatic" ThinLTO between codegen units. The weak symbol
+    # resolution across units can have surprising effects on linking, see
+    # crbug.com/324126269 and github.com/rust-lang/rust/issues/120842.
+    rustflags += [ "-Clto=no" ]
   }
   if (is_official_build) {
     rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", ]
@@ -1113,8 +1111,8 @@ config("thinlto_optimize_default") {
       ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
-      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
       ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     if (toolchain_supports_rust_thin_lto) {
@@ -1151,8 +1149,8 @@ config("thinlto_optimize_max") {
       ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
     } else {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
-      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
       ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
     if (toolchain_supports_rust_thin_lto) {
@@ -1194,11 +1192,11 @@ config("compiler_cpu_abi") {
         "-msse4",
         "-msse4.1",
         "-msse4.2",
-        "-mavx",
-        "-maes",
         "-mpclmul",
+        "-maes",
+        "-mavx",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-msse4.2", "-mavx", "-maes", "-mpclmul", "-Wl,-mllvm,-import-instr-limit=30", "-Wl,-mllvm,-import-hot-multiplier=15", "-Wl,-mllvm,-import-cold-multiplier=2", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-msse4.2", "-mpclmul", "-maes", "-mavx", "-Wl,-mllvm,-import-instr-limit=30", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -1206,8 +1204,8 @@ config("compiler_cpu_abi") {
         cflags += [
           "-mfpmath=sse",
           "-O3",
-          "-msse3",
           "-mmmx",
+          "-msse3",
         ]
       }
     } else if (current_cpu == "arm") {
@@ -1891,6 +1889,9 @@ config("default_warnings") {
         cflags_cc += [
           # TODO(https://crbug.com/1474434): fix and reenable
           "-Wno-missing-field-initializers",
+
+          # TODO(https://crbug.com/324953188): fix and reenable
+          "-Wno-extra-qualification",
         ]
       }
 
@@ -1935,6 +1936,7 @@ config("default_warnings") {
       cflags += [
         "-Wno-error=unknown-warning-option",
         "-Wno-error=unused-command-line-argument",
+        "-Wno-error=unknown-pragmas",
       ]
     }
   }
@@ -1984,6 +1986,35 @@ config("prevent_unsafe_narrowing") {
         # fixing types to be sign-correct.
         "-Wtautological-unsigned-zero-compare",
       ]
+    }
+  }
+}
+
+# unsafe_buffer_warning -------------------------------------------------------
+
+# Paths of third-party headers that violate Wunsafe-buffer-usage, but which we
+# have been unable to fix yet. We use this list to be able to make progress and
+# enable the warning on code that we do control/own.
+#
+# WARNING: This will disable all warnings in the files. ONLY USE THIS for
+# third-party code which we do not control/own. Fix the warnings instead in
+# our own code.
+if (is_clang) {
+  unsafe_buffer_warning_header_allowlist =
+      [ "third_party/googletest/src/googletest/include/gtest" ]
+}
+
+# Enables warnings on pointer arithmetic/indexing or calls to functions
+# annotated with `UNSAFE_BUFFER_USAGE`.
+config("unsafe_buffer_warning") {
+  if (is_clang) {
+    cflags = [ "-Wunsafe-buffer-usage" ]
+    foreach(h, unsafe_buffer_warning_header_allowlist) {
+      if (is_win) {
+        cflags += [ "/clang:--system-header-prefix=$h" ]
+      } else {
+        cflags += [ "--system-header-prefix=$h" ]
+      }
     }
   }
 }
@@ -2330,7 +2361,11 @@ if (is_win) {
     "-Xclang", "-O3",
   ]
 
-  common_optimize_on_ldflags += [ "-mllvm:-enable-interleaved-mem-accesses" ]
+  common_optimize_on_ldflags += [
+    "-mllvm:-enable-interleaved-mem-accesses",
+    "-mllvm:-aggressive-ext-opt",
+    "-mllvm:-enable-gvn-hoist",
+  ]
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
@@ -2372,6 +2407,9 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
+    "-mllvm", "-enable-interleaved-mem-accesses",
+    "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-enable-gvn-hoist",
     "-O3",
   ]
 
@@ -2383,6 +2421,9 @@ if (is_win) {
   }
 
   common_optimize_on_ldflags += [
+    "-Wl,-mllvm,-enable-interleaved-mem-accesses",
+    "-Wl,-mllvm,-aggressive-ext-opt",
+    "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
 
@@ -2537,32 +2578,22 @@ config("optimize") {
       # to optimize for performance like `/O2` for clang.
       rustflags = [ "-Copt-level=3" ]
     }
-  } else if (optimize_for_size) {
+  } else if (optimize_for_size || is_chromeos) {
     # Favor size over speed.
-    if (is_clang) {
-      cflags = [ "-O3" ] + common_optimize_on_cflags
+    # -Os in clang is more of a size-conscious -O2 than "size at any cost" (AKA -Oz).
 
-      if (use_ml_inliner && is_a_target_toolchain) {
-        cflags += [
-          "-mllvm",
-          "-enable-ml-inliner=release",
-        ]
-      }
+    if (is_fuchsia) {
+      cflags = [ "-O3" ] + common_optimize_on_cflags
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
 
-    # Like with `-Oz` on Clang, `-Copt-level=z` will also turn off loop
-    # vectorization.
-    rustflags = [ "-Copt-level=3" ]
-  } else if (is_chromeos) {
-    # TODO(gbiv): This is partially favoring size over speed. CrOS exclusively
-    # uses clang, and -Os in clang is more of a size-conscious -O2 than "size at
-    # any cost" (AKA -Oz). It'd be nice to:
-    # - Make `optimize_for_size` apply to all platforms where we're optimizing
-    #   for size by default (so, also Windows)
-    # - Investigate -Oz here, maybe just for ARM?
-    cflags = [ "-O3" ] + common_optimize_on_cflags
+    if (is_clang && use_ml_inliner && is_a_target_toolchain && !is_chromeos) {
+      cflags += [
+        "-mllvm",
+        "-enable-ml-inliner=release",
+      ]
+    }
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
