@@ -144,8 +144,8 @@ config("pgo_optimization_flags") {
     if (use_thin_lto) {
       if (is_win) {
         ldflags = [
-          "-mllvm:-enable-ext-tsp-block-placement"
-          "-mllvm:-enable-split-machine-functions"
+          "-mllvm:-enable-ext-tsp-block-placement",
+          "-mllvm:-enable-split-machine-functions",
         ]
       } else {
         ldflags = [
