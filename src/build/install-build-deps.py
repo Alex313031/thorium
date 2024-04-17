@@ -632,15 +632,15 @@ def arm_list(options):
     ])
   elif distro_codename() == "jammy":
     packages.extend([
-        "gcc-arm-linux-gnueabihf",
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
+        "gcc-arm-linux-gnueabihf",
     ])
   elif distro_codename() == "noble":
     packages.extend([
-        "gcc-arm-linux-gnueabihf",
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
+        "gcc-arm-linux-gnueabihf",
     ])
 
   return packages

@@ -108,6 +108,8 @@ static_library("test_support") {
     "../browser/media/session/mock_media_session_service_impl.h",
     "../browser/payments/stub_payment_credential.cc",
     "../browser/payments/stub_payment_credential.h",
+    "../browser/preloading/prefetch/mock_prefetch_service_delegate.cc",
+    "../browser/preloading/prefetch/mock_prefetch_service_delegate.h",
     "../browser/preloading/prefetch/prefetch_test_utils.cc",
     "../browser/preloading/prefetch/prefetch_test_utils.h",
     "../browser/presentation/presentation_test_utils.cc",
@@ -360,6 +362,8 @@ static_library("test_support") {
     "../public/test/web_transport_simple_test_server.h",
     "../public/test/web_ui_browsertest_util.cc",
     "../public/test/web_ui_browsertest_util.h",
+    "../renderer/accessibility/render_accessibility_impl_test.cc",
+    "../renderer/accessibility/render_accessibility_impl_test.h",
     "../renderer/mock_agent_scheduling_group.cc",
     "../renderer/mock_agent_scheduling_group.h",
     "content_browser_consistency_checker.cc",
@@ -393,8 +397,6 @@ static_library("test_support") {
     "mock_clipboard_host.h",
     "mock_commit_deferring_condition.cc",
     "mock_commit_deferring_condition.h",
-    "mock_display_feature.cc",
-    "mock_display_feature.h",
     "mock_keyboard.cc",
     "mock_keyboard.h",
     "mock_overscroll_observer.h",
@@ -787,6 +789,7 @@ static_library("test_support") {
       "//chromeos/crosapi/cpp:crosapi_constants",
       "//chromeos/lacros",
       "//chromeos/lacros:test_support",
+      "//chromeos/startup",
       "//chromeos/startup:constants",
     ]
   }
@@ -803,8 +806,6 @@ static_library("test_support") {
       "../browser/smart_card/mock_smart_card_context_factory.cc",
       "../browser/smart_card/mock_smart_card_context_factory.h",
     ]
-
-    deps += [ "//ui/gfx/linux:gbm" ]
   }
 
   if (is_fuchsia) {
@@ -966,6 +967,21 @@ group("telemetry_gpu_integration_test_data") {
   data_deps = [ ":telemetry_gpu_common_data" ]
 }
 
+# Instead of implicitly depends on the main function from libbrowsertest_support.a,
+# executables should now depend on 'default_content_test_launcher' if they want to
+# use the main function from content_test_launcher.cc.
+# see b/324126269 for detailes.
+source_set("default_content_test_launcher") {
+  testonly = true
+  sources = [ "content_test_launcher.cc" ]
+
+  deps = [
+    ":browsertest_support",
+    ":test_support",
+    "//content/shell:content_shell_lib",
+  ]
+}
+
 # browsertest_support can be used by targets that run content_shell based
 # browser tests.
 static_library("browsertest_support") {
@@ -998,7 +1014,6 @@ static_library("browsertest_support") {
     "../public/test/resource_load_observer.h",
     "content_browser_test_utils_internal.cc",
     "content_browser_test_utils_internal.h",
-    "content_test_launcher.cc",
   ]
 
   public_deps = [
@@ -1014,6 +1029,7 @@ static_library("browsertest_support") {
     "//base/test:test_config",
     "//base/test:test_support",
     "//build:chromeos_buildflags",
+    "//cc/slim",
     "//components/network_session_configurator/common:common",
     "//components/services/storage:storage",
     "//content/app:for_content_tests",
@@ -1040,6 +1056,13 @@ static_library("browsertest_support") {
 
   if (use_aura && toolkit_views && !is_castos) {
     deps += [ "//ui/views" ]
+  }
+
+  if (use_aura) {
+    sources += [
+      "../browser/accessibility/accessibility_browsertest.cc",
+      "../browser/accessibility/accessibility_browsertest.h",
+    ]
   }
 
   if (is_mac) {
@@ -1305,7 +1328,6 @@ test("content_browsertests") {
     "../browser/accessibility/scoped_accessibility_mode_browsertest.cc",
     "../browser/accessibility/site_per_process_accessibility_browsertest.cc",
     "../browser/accessibility/snapshot_ax_tree_browsertest.cc",
-    "../browser/accessibility/touch_accessibility_aura_browsertest.cc",
     "../browser/attribution_reporting/attribution_internals_browsertest.cc",
     "../browser/attribution_reporting/attribution_src_browsertest.cc",
     "../browser/attribution_reporting/attributions_browsertest.cc",
@@ -1460,6 +1482,7 @@ test("content_browsertests") {
     "../browser/pointer_lock_browsertest.h",
     "../browser/power_monitor_browsertest.cc",
     "../browser/preloading/anchor_element_interaction_browsertest.cc",
+    "../browser/preloading/prefetch/contamination_delay_browsertest.cc",
     "../browser/preloading/preloading_decider_browsertest.cc",
     "../browser/preloading/prerender/prerender_browsertest.cc",
     "../browser/private_aggregation/private_aggregation_internals_browsertest.cc",
@@ -1482,7 +1505,6 @@ test("content_browsertests") {
     "../browser/renderer_host/input/composited_scrolling_browsertest.cc",
     "../browser/renderer_host/input/compositor_event_ack_browsertest.cc",
     "../browser/renderer_host/input/double_tap_to_zoom_browsertest.cc",
-    "../browser/renderer_host/input/event_latency_aura_browsertest.cc",
     "../browser/renderer_host/input/fling_browsertest.cc",
     "../browser/renderer_host/input/input_event_browsertest.cc",
     "../browser/renderer_host/input/interaction_mq_dynamic_browsertest.cc",
@@ -1493,7 +1515,6 @@ test("content_browsertests") {
     "../browser/renderer_host/input/synthetic_input_browsertest.cc",
     "../browser/renderer_host/input/touch_action_browsertest.cc",
     "../browser/renderer_host/input/touch_input_browsertest.cc",
-    "../browser/renderer_host/input/touch_selection_controller_client_aura_browsertest.cc",
     "../browser/renderer_host/input/touchpad_pinch_browsertest.cc",
     "../browser/renderer_host/input/wheel_event_listener_browsertest.cc",
     "../browser/renderer_host/input/wheel_scroll_latching_browsertest.cc",
@@ -1519,12 +1540,11 @@ test("content_browsertests") {
     "../browser/renderer_host/render_process_host_browsertest.cc",
     "../browser/renderer_host/render_view_host_browsertest.cc",
     "../browser/renderer_host/render_widget_host_browsertest.cc",
-    "../browser/renderer_host/render_widget_host_view_aura_browsertest.cc",
-    "../browser/renderer_host/render_widget_host_view_aura_vk_browsertest.cc",
     "../browser/renderer_host/render_widget_host_view_browsertest.cc",
     "../browser/renderer_host/render_widget_host_view_child_frame_browsertest.cc",
     "../browser/renderer_host/scroll_into_view_browsertest.cc",
     "../browser/renderer_host/sec_fetch_browsertest.cc",
+    "../browser/renderer_host/spare_render_process_host_manager_browsertest.cc",
     "../browser/renderer_host/speculative_render_view_host_browsertest.cc",
     "../browser/renderer_host/unassigned_site_instance_browsertest.cc",
     "../browser/resource_loading_browsertest.cc",
@@ -1573,11 +1593,10 @@ test("content_browsertests") {
     "../browser/web_contents/opened_by_dom_browsertest.cc",
     "../browser/web_contents/web_contents_impl_browsertest.cc",
     "../browser/web_contents/web_contents_observer_browsertest.cc",
-    "../browser/web_contents/web_contents_view_aura_browsertest.cc",
     "../browser/web_package/signed_exchange_request_handler_browsertest.cc",
     "../browser/web_package/signed_exchange_subresource_prefetch_browsertest.cc",
-    "../browser/webid/test/mock_digital_credential_provider.cc",
-    "../browser/webid/test/mock_digital_credential_provider.h",
+    "../browser/webid/test/mock_digital_identity_provider.cc",
+    "../browser/webid/test/mock_digital_identity_provider.h",
     "../browser/webid/test/mock_identity_request_dialog_controller.cc",
     "../browser/webid/test/mock_identity_request_dialog_controller.h",
     "../browser/webid/test/mock_modal_dialog_view_delegate.cc",
@@ -1618,6 +1637,7 @@ test("content_browsertests") {
     "../browser/worker_host/worker_browsertest.cc",
     "../browser/worker_network_isolation_key_browsertest.cc",
     "../child/webthemeengine_impl_default_browsertest.cc",
+    "../renderer/accessibility/annotations/ax_image_annotator_browsertest.cc",
     "../renderer/accessibility/render_accessibility_impl_browsertest.cc",
     "../renderer/blink_platform_audio_hardware_browsertest.cc",
     "../renderer/fluent_scrollbar_browsertest.cc",
@@ -1680,6 +1700,7 @@ test("content_browsertests") {
   deps = [
     ":browsertest_support",
     ":content_test_mojo_bindings",
+    ":default_content_test_launcher",
     ":test_support",
     ":web_ui_managed_interface_tests_bindings",
     ":web_ui_ts_test_mojo_bindings",
@@ -1928,8 +1949,6 @@ test("content_browsertests") {
 
   if (is_win) {
     sources += [
-      "../browser/accessibility/accessibility_browsertest.cc",
-      "../browser/accessibility/accessibility_browsertest.h",
       "../browser/accessibility/accessibility_win_browsertest.cc",
       "../browser/accessibility/ax_platform_node_textprovider_win_browsertest.cc",
       "../browser/accessibility/ax_platform_node_textrangeprovider_win_browsertest.cc",
@@ -1977,11 +1996,8 @@ test("content_browsertests") {
     ]
 
     if (use_atk) {
-      sources += [
-        "../browser/accessibility/accessibility_auralinux_browsertest.cc",
-        "../browser/accessibility/accessibility_browsertest.cc",
-        "../browser/accessibility/accessibility_browsertest.h",
-      ]
+      sources +=
+          [ "../browser/accessibility/accessibility_auralinux_browsertest.cc" ]
       configs += [ "//build/config/linux/atk" ]
     }
   }
@@ -2175,21 +2191,21 @@ test("content_browsertests") {
   }
 
   if (use_aura) {
-    deps += [
-      "//ui/aura",
-      "//ui/aura:test_support",
-      "//ui/base/dragdrop:types",
-      "//ui/touch_selection:test_support",
-      "//ui/touch_selection:touch_selection",
-    ]
-  } else {
-    sources -= [
+    sources += [
+      "../browser/accessibility/accessibility_metrics_browsertest.cc",
       "../browser/accessibility/touch_accessibility_aura_browsertest.cc",
       "../browser/renderer_host/input/event_latency_aura_browsertest.cc",
       "../browser/renderer_host/input/touch_selection_controller_client_aura_browsertest.cc",
       "../browser/renderer_host/render_widget_host_view_aura_browsertest.cc",
       "../browser/renderer_host/render_widget_host_view_aura_vk_browsertest.cc",
       "../browser/web_contents/web_contents_view_aura_browsertest.cc",
+    ]
+    deps += [
+      "//ui/aura",
+      "//ui/aura:test_support",
+      "//ui/base/dragdrop:types",
+      "//ui/touch_selection:test_support",
+      "//ui/touch_selection:touch_selection",
     ]
   }
 
@@ -2420,8 +2436,6 @@ test("content_unittests") {
     "../browser/indexed_db/indexed_db_cleanup_on_io_error_unittest.cc",
     "../browser/indexed_db/indexed_db_context_unittest.cc",
     "../browser/indexed_db/indexed_db_database_unittest.cc",
-    "../browser/indexed_db/indexed_db_dispatcher_host_unittest.cc",
-    "../browser/indexed_db/indexed_db_factory_unittest.cc",
     "../browser/indexed_db/indexed_db_fake_backing_store.cc",
     "../browser/indexed_db/indexed_db_fake_backing_store.h",
     "../browser/indexed_db/indexed_db_leveldb_coding_unittest.cc",
@@ -2529,6 +2543,7 @@ test("content_unittests") {
     "../browser/picture_in_picture/picture_in_picture_service_impl_unittest.cc",
     "../browser/preloading/anchor_element_interaction_host_impl_unittest.cc",
     "../browser/preloading/preconnector_unittest.cc",
+    "../browser/preloading/prefetch/contamination_delay_navigation_throttle_unittest.cc",
     "../browser/preloading/prefetch/no_vary_search_helper_unittest.cc",
     "../browser/preloading/prefetch/prefetch_canary_checker_unittest.cc",
     "../browser/preloading/prefetch/prefetch_container_unittest.cc",
@@ -2799,7 +2814,7 @@ test("content_unittests") {
     "../public/test/permission_type_unittest.cc",
     "../public/test/referrer_unittest.cc",
     "../public/test/test_utils_unittest.cc",
-    "../renderer/accessibility/ax_image_stopwords_unittest.cc",
+    "../renderer/accessibility/annotations/ax_image_stopwords_unittest.cc",
     "../renderer/content_security_policy_util_unittest.cc",
     "../renderer/media/batching_media_log_unittest.cc",
     "../renderer/media/gpu/gpu_video_accelerator_factories_impl_unittest.cc",
@@ -3195,6 +3210,7 @@ test("content_unittests") {
     sources += [
       "../browser/accessibility/browser_accessibility_manager_win_unittest.cc",
       "../browser/accessibility/browser_accessibility_win_unittest.cc",
+      "../browser/device_posture/device_posture_platform_provider_win_unittest.cc",
       "../browser/renderer_host/direct_manipulation_test_helper_win.cc",
       "../browser/renderer_host/direct_manipulation_test_helper_win.h",
       "../browser/renderer_host/direct_manipulation_win_unittest.cc",
@@ -3267,7 +3283,6 @@ test("content_unittests") {
       "../browser/android/overscroll_controller_android_unittest.cc",
       "../browser/android/scoped_surface_request_manager_unittest.cc",
       "../browser/font_unique_name_lookup/font_unique_name_lookup_unittest.cc",
-      "../browser/host_zoom_map_impl_android_unittest.cc",
       "../browser/renderer_host/render_widget_host_view_android_unittest.cc",
       "../browser/sms/sms_provider_gms_unittest.cc",
       "../renderer/java/gin_java_bridge_value_converter_unittest.cc",
@@ -3492,4 +3507,16 @@ group("gpu_pytype") {
     ":telemetry_gpu_integration_test_support",
     "//testing:pytype_dependencies",
   ]
+}
+
+if (is_fuchsia) {
+  group("telemetry_gpu_integration_test_fuchsia") {
+    testonly = true
+    data = [ "//content/test/gpu/run_gpu_integration_test_fuchsia.py" ]
+    data_deps = [
+      "//content/test:fuchsia_telemetry_test_data",
+      "//content/test:telemetry_gpu_integration_test_support",
+      "//tools/perf/chrome_telemetry_build:telemetry_chrome_test",
+    ]
+  }
 }
