@@ -309,6 +309,7 @@ if (is_linux || is_chromeos) {
     ]
 
     ldflags = [
+      "-Wl,-O3",
       "-pie",
     ]
   }

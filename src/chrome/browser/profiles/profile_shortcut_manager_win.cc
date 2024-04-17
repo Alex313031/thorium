@@ -71,7 +71,7 @@ const char16_t kReservedCharacters[] =
     u"\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F";
 
 // The maximum number of characters allowed in profile shortcuts' file names.
-// Warning: Migration code will be needed if this is changed later, since
+// Warning: migration code will be needed if this is changed later, since
 // existing shortcuts might no longer be found if the name is generated
 // differently than it was when a shortcut was originally created.
 const int kMaxProfileShortcutFileNameLength = 64;
@@ -79,7 +79,7 @@ const int kMaxProfileShortcutFileNameLength = 64;
 // Incrementing this number will cause profile icons to be regenerated on
 // profile startup (it should be incremented whenever the product/avatar icons
 // change, etc).
-const char kBlahName[] = "11";
+// const char kBlahName[] = "11";
 const int kCurrentProfileIconVersion = 12;
 
 bool disabled_for_unit_tests = false;
