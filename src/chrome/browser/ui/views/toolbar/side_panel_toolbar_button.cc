@@ -76,10 +76,10 @@ void SidePanelToolbarButton::UpdateToolbarButtonIcon() {
     }
   } else {
     if (is_right_aligned) {
-      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshIcon
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelChromeRefreshThoriumIcon
                                                      : kSidePanelThoriumIcon, kSidePanelTouchThoriumIcon);
     } else {
-      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelLeftChromeRefreshIcon
+      SetVectorIcons(features::IsChromeRefresh2023() ? kSidePanelLeftChromeRefreshThoriumIcon
                                                      : kSidePanelLeftThoriumIcon, kSidePanelLeftTouchThoriumIcon);
     }
   }

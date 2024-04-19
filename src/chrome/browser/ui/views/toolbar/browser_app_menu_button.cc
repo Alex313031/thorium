@@ -157,7 +157,8 @@ void BrowserAppMenuButton::UpdateIcon() {
   const gfx::VectorIcon& icon =
       ui::TouchUiController::Get()->touch_ui()
           ? kBrowserToolsTouchIcon
-          : (features::IsChromeRefresh2023() ? kBrowserToolsChromeRefreshIcon
+          : (features::IsChromeRefresh2023() ? disable_thorium_icons ? kBrowserToolsChromeRefreshIcon
+                                             : kBrowserToolsChromeRefreshThoriumIcon
                                              : disable_thorium_icons ? kBrowserToolsIcon
                                              : kBrowserToolsThoriumIcon);
   for (auto state : kButtonStates) {

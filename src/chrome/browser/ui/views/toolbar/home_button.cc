@@ -139,7 +139,8 @@ HomeButton::HomeButton(PressedCallback callback, PrefService* prefs)
   SetTriggerableEventFlags(ui::EF_LEFT_MOUSE_BUTTON |
                            ui::EF_MIDDLE_MOUSE_BUTTON);
   SetVectorIcons(features::IsChromeRefresh2023()
-                     ? kNavigateHomeChromeRefreshIcon
+                     ? disable_thorium_icons ? kNavigateHomeChromeRefreshIcon
+                     : kNavigateHomeChromeRefreshThoriumIcon
                      : disable_thorium_icons ? kNavigateHomeIcon
                      : kNavigateHomeThoriumIcon,
                  kNavigateHomeTouchIcon);
