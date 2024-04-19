@@ -39,4 +39,4 @@ Dino strings in components/error_page_strings.grdp
 
  - Add GPC patch
 
- - Restore JXL support on Android.
+ - Re-add FILL_RULE_NONZERO, to bookmark_chrome_refresh.icon back_arrow_chrome_refresh.icon forward_arrow_chrome_refresh.icon
