@@ -85,6 +85,10 @@ const char kInputFile[] = "input-file";
 // of an uncompressed archive).
 const char kInstallArchive[] = "install-archive";
 
+// Use the given uncompressed chrome.7z archive as the source of files to
+// install.
+const char kUncompressedArchive[] = "uncompressed-archive";
+
 // Specify the file path of Chrome initial preference file.
 const char kInstallerData[] = "installerdata";
 
