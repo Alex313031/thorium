@@ -113,7 +113,7 @@ BASE_FEATURE(kResponsiveToolbar,
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
              base::FEATURE_ENABLED_BY_DEFAULT
 #else
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT
 #endif
 );
 
