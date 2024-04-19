@@ -47,7 +47,6 @@ makeARM () {
 
 	# Extract data.tar.xz
 	mkdir -v -p ./temp &&
-	mkdir -v -p ./out &&
 	ar xv *.deb &&
 	tar xvf ./data.tar.xz &&
 	cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
@@ -112,7 +111,6 @@ export FILENAME &&
 
 # Extract data.tar.xz
 mkdir -v -p ./temp &&
-mkdir -v -p ./out &&
 ar xv *.deb &&
 tar xvf ./data.tar.xz &&
 cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
