@@ -4,7 +4,6 @@
 // You can obtain one at http://mozilla.org/MPL/2.0/.
 
 CANVAS_DIMENSIONS, 24,
-FILL_RULE_NONZERO,
 MOVE_TO, 20.46f, 20.46f,
 R_H_LINE_TO, -0.59f,
 R_ARC_TO, 7.61f, 7.61f, 0, 0, 1, 0, -3.08f,
