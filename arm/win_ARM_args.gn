@@ -90,5 +90,5 @@ use_text_section_splitting = true
 use_thin_lto = true
 thin_lto_enable_optimizations = true
 enable_rust = true
-chrome_pgo_phase = 0
-# pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-win-arm64-main-1705946049-3bf8bd91a0fc0f118ee74cd78ea72620cb3b3820.profdata"
+chrome_pgo_phase = 2
+pgo_data_path = "/c/src/chromium/src/chrome/build/pgo_profiles/chrome-win-arm64-main-1708322053-df56b306a957f0257e2903c443bece58cc5fcf0b-fbc30e15b0d2590e506762a5dab342a272788c5c.profdata"

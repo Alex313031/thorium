@@ -88,4 +88,4 @@ thin_lto_enable_optimizations = true
 enable_rust = true
 chrome_pgo_phase = 2
 pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/speedometer2.profdata"
-# chrome-mac-6167-1706032279-25144dc1c87be275c5981becbafed7785e2f39f2.profdata
+# chrome-mac-main-1706096829-9b2160cb39f31cc28c32402938f110df1a69fea2.profdata
