@@ -40,7 +40,7 @@ BASE_FEATURE(kChromeLabs, "ChromeLabs", base::FEATURE_ENABLED_BY_DEFAULT);
 const char kChromeLabsActivationParameterName[] =
     "chrome_labs_activation_percentage";
 const base::FeatureParam<int> kChromeLabsActivationPercentage{
-    &kChromeLabs, kChromeLabsActivationParameterName, 99};
+    &kChromeLabs, kChromeLabsActivationParameterName, 100};
 
 // When enabled, clicks outside the omnibox and its popup will close an open
 // omnibox popup.
