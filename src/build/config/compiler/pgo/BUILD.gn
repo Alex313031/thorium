@@ -143,10 +143,7 @@ config("pgo_optimization_flags") {
     # improve icache utilization and reduce the binary size.
     if (use_thin_lto) {
       if (is_win) {
-        ldflags = [
-          "-mllvm:-enable-ext-tsp-block-placement",
-          "-mllvm:-enable-split-machine-functions",
-        ]
+        ldflags = [ "-mllvm:-enable-ext-tsp-block-placement=1" ]
       } else {
         ldflags = [
           "-Wl,-mllvm,-enable-ext-tsp-block-placement",
@@ -154,17 +151,10 @@ config("pgo_optimization_flags") {
         ]
       }
     } else {
-      if (is_win) {
-        cflags += [
-          "-mllvm", "-enable-ext-tsp-block-placement",
-          "-fsplit-machine-functions",
-        ]
-      } else {
-        cflags += [
-          "-mllvm", "-enable-ext-tsp-block-placement",
-          "-fsplit-machine-functions",
-        ]
-      }
+      cflags += [
+        "-mllvm",
+        "-enable-ext-tsp-block-placement=1",
+      ]
     }
   }
 }
