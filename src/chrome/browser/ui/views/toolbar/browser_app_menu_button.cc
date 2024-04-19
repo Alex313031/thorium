@@ -153,6 +153,7 @@ void BrowserAppMenuButton::UpdateThemeBasedState() {
 void BrowserAppMenuButton::UpdateIcon() {
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+
   const gfx::VectorIcon& icon =
       ui::TouchUiController::Get()->touch_ui()
           ? kBrowserToolsTouchIcon

@@ -4,10 +4,10 @@
 
 #include "chrome/browser/ui/views/toolbar/home_button.h"
 
+#include "base/command_line.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "base/memory/raw_ptr.h"
-#include "base/command_line.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "chrome/app/vector_icons/vector_icons.h"
@@ -36,8 +36,9 @@
 namespace {
 
 class HomePageUndoBubble : public views::BubbleDialogDelegateView {
+  METADATA_HEADER(HomePageUndoBubble, views::BubbleDialogDelegateView)
+
  public:
-  METADATA_HEADER(HomePageUndoBubble);
   HomePageUndoBubble(views::View* anchor_view,
                      PrefService* prefs,
                      const GURL& undo_url,
@@ -101,7 +102,7 @@ void HomePageUndoBubble::UndoClicked() {
   GetWidget()->Close();
 }
 
-BEGIN_METADATA(HomePageUndoBubble, views::BubbleDialogDelegateView)
+BEGIN_METADATA(HomePageUndoBubble)
 END_METADATA
 
 }  // namespace

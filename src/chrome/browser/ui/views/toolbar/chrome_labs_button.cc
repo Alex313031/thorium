@@ -43,9 +43,10 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_CHROMELABS_BUTTON));
   button_controller()->set_notify_action(
       views::ButtonController::NotifyAction::kOnPress);
-  GetViewAccessibility().OverrideRole(ax::mojom::Role::kPopUpButton);
+  GetViewAccessibility().SetRole(ax::mojom::Role::kPopUpButton);
   GetViewAccessibility().OverrideHasPopup(ax::mojom::HasPopup::kDialog);
-  new_experiments_indicator_ = views::DotIndicator::Install(image());
+  new_experiments_indicator_ =
+      views::DotIndicator::Install(image_container_view());
   UpdateDotIndicator();
 
   chrome_labs_coordinator_ = std::make_unique<ChromeLabsCoordinator>(
@@ -54,14 +55,14 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
 
 ChromeLabsButton::~ChromeLabsButton() = default;
 
-void ChromeLabsButton::Layout() {
-  ToolbarButton::Layout();
+void ChromeLabsButton::Layout(PassKey) {
+  LayoutSuperclass<ToolbarButton>(this);
   gfx::Rect dot_rect(8, 8);
   if (ui::TouchUiController::Get()->touch_ui()) {
     dot_rect = ScaleToEnclosingRect(
         dot_rect, float{kDefaultTouchableIconSize} / kDefaultIconSize);
   }
-  dot_rect.set_origin(image()->GetImageBounds().bottom_right() -
+  dot_rect.set_origin(image_container_view()->GetLocalBounds().bottom_right() -
                       dot_rect.bottom_right().OffsetFromOrigin());
   new_experiments_indicator_->SetBoundsRect(dot_rect);
 }
