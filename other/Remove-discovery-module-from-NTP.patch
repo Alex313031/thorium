@@ -1,6 +1,6 @@
-From 88ff88b618cfdeacffeb06e2ee6a53fc0e45dd8b Mon Sep 17 00:00:00 2001
+From 2d3faaa9bffea6b0bad213ab58aa29f763cdbda1 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Fri, 15 Mar 2024 13:56:45 +0800
+Date: Sat, 20 Apr 2024 23:03:36 +0800
 Subject: [PATCH] Remove-discovery-module-from-NTP
 
 ---
@@ -73,5 +73,5 @@ index 7ac1995862d0b..9bb65c1962ded 100644
  }
  
 -- 
-2.43.0
+2.44.0.windows.1
 
