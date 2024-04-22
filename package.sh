@@ -19,7 +19,6 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium .deb and .rpm packages on Linux.${c0}\n" &&
-	printf "${underline}${YEL}Usage: ${c0}package.sh # (where # is number of jobs)\n" &&
 	printf "\n"
 }
 case $1 in
@@ -45,7 +44,7 @@ export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
 cd ${CR_SRC_DIR} &&
 
-autoninja -C out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j$@ &&
+autoninja -C out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j $(nproc) &&
 
 printf "${GRE}Done! ${YEL}Installers at \'//out/thorium/thorium*.deb\' and \'//out/thorium/thorium*.rpm\'\n" &&
 tput sgr0

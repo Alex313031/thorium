@@ -79,7 +79,6 @@ patchFFMPEG () {
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./Fix-policy-templates.patch
 }
-
 [ -f ${CR_SRC_DIR}/third_party/ffmpeg/add-hevc-ffmpeg-decoder-parser.patch ] || patchFFMPEG;
 
 cd ~/thorium &&
