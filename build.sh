@@ -46,7 +46,9 @@ export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 cd ${CR_SRC_DIR} &&
 autoninja -C out/thorium thorium chrome_sandbox chromedriver clear_key_cdm thorium_shell policy_templates -j$@ &&
 
+printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+printf "\n" &&
 
 printf "${GRE}${bold}Build Completed! ${YEL}${bold}You can now run \'./package.sh\' to build installation packages.\n" &&
 tput sgr0

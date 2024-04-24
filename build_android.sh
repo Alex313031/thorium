@@ -56,7 +56,9 @@ buildARM32 () {
 
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
+	printf "\n" &&
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "\n" &&
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
 	printf "\n"
@@ -77,7 +79,9 @@ buildARM64 () {
 
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_64_apk -j${cr_build_jobs} &&
+	printf "\n" &&
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "\n" &&
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
 	printf "\n"
@@ -98,7 +102,9 @@ buildX86 () {
 
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
+	printf "\n" &&
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "\n" &&
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
 	printf "\n"
@@ -119,7 +125,9 @@ buildX64 () {
 
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
+	printf "\n" &&
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "\n" &&
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
 	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
 	printf "\n"

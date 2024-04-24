@@ -38,8 +38,10 @@ buildShell () {
 	
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium thorium chromedriver thorium_shell policy_templates -j$@ &&
-	
+
+	printf "\n" &&
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "\n" &&
 	
 	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\', and copy the Thorium Shell.app out.\n" &&
 	tput sgr0
@@ -68,7 +70,9 @@ export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 cd ${CR_SRC_DIR} &&
 autoninja -C out/thorium thorium chromedriver policy_templates -j$@ &&
 
+printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+printf "\n" &&
 
 printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\'\n" &&
 tput sgr0
