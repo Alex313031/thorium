@@ -99,7 +99,7 @@ sudo chmod -v +x infra/portable/make_portable_win.sh &&
 
 sudo chmod -v +x infra/APPIMAGE/pkg2appimage &&
 
-sudo chmod -v +x infra/APPIMAGE/build_appimage.sh &&
+sudo chmod -v +x infra/APPIMAGE/make_appimage.sh &&
 
 sudo chmod -v +x infra/APPIMAGE/extract_appimage.sh &&
 

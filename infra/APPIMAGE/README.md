@@ -3,7 +3,7 @@
 ### Instructions
 This directory contains files to generate an .AppImage of Thorium.
 
-You __must__ place the .deb file (generated from running `package.sh`) in this directory, and then run `./build_appimage.sh`
+You __must__ place the .deb file (generated from running `package.sh`) in this directory, and then run `./make_appimage.sh`
 
 When it is done, you will have an appimage in *out*, I.E. it should be something like `//thorium/infra/APPIMAGE/out/Thorium_Browser-104.0.5107.0.glibc2.17-x86_64.AppImage`
 

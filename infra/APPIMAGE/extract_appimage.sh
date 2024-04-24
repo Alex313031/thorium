@@ -18,7 +18,7 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to extract Thorium .AppImage on Linux.${c0}\n" &&
-	printf "${bold}${YEL}Please run build_appimage.sh in this directory before running.${c0}\n" &&
+	printf "${bold}${YEL}Please run make_appimage.sh in this directory before running.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -26,7 +26,7 @@ case $1 in
 esac
 
 printf "\n" &&
-printf "${bold}${RED}NOTE: You must run build_appimage.sh in this directory before running.${c0}\n" &&
+printf "${bold}${RED}NOTE: You must run make_appimage.sh in this directory before running.${c0}\n" &&
 printf "${YEL}Extracting Thorium*.Appimage...\n" &&
 printf "${c0}\n" &&
 
