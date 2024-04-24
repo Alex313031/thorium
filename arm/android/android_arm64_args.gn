@@ -102,5 +102,6 @@ enable_mse_mpeg2ts_stream_parser = true
 use_thin_lto = true
 thin_lto_enable_optimizations = true
 enable_rust = true
+enable_all_rust_features = false
 chrome_pgo_phase = 2
 pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-android64-main-1708386286-149336b0094939c79303a748b0223213e84f59a1-72ffdabd5430413eb5beb657f1c3f32221c4c014.profdata"

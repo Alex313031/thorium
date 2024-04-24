@@ -19,8 +19,8 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to build Thorium for Android.${c0}\n" &&
-	printf "${underline}${YEL}Usage:${c0} build.sh # (where # is number of jobs)${c0}\n" &&
-	printf "${YEL}Use the --help flag to show this help.${c0}\n" &&
+	printf "${underline}${YEL}Usage:${c0}${bold} build_android.sh --arm32 | --arm64 | --x86 | --x64 # (where # is number of jobs)${c0}\n" &&
+	printf " Use the --help flag to show this help.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
@@ -36,23 +36,96 @@ else
     export CR_SRC_DIR
 fi
 
-printf "\n" &&
-printf "${YEL}Building Thorium for Android...\n" &&
-printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
-printf "${CYA}\n" &&
-
-cr_build_jobs="$1"
+cr_build_jobs="$2"
 export cr_build_jobs
 
-# Build Thorium and System WebView
-export NINJA_SUMMARIZE_BUILD=1 &&
-export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
+printf "\n" &&
+printf "${bold}${GRE}Script to build Thorium for Android.${c0}\n" &&
+printf "${underline}${YEL}Usage:${c0}${bold} build_android.sh --arm32 | --arm64 | --x86 | --x64 # (where # is number of jobs)${c0}\n" &&
+printf " Use the --help flag to show this help.${c0}\n" &&
 
-cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
+buildARM32 () {
+	printf "\n" &&
+	printf "${YEL}Building Thorium for Android arm32...\n" &&
+	printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
+	printf "${CYA}\n" &&
 
-cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	# Build Thorium, Thorium Shell, and System WebView32
+	export NINJA_SUMMARIZE_BUILD=1 &&
+	export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
-printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
+	cd ${CR_SRC_DIR} &&
+	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_32_apk -j${cr_build_jobs} &&
+	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
+	printf "\n"
+}
+case $1 in
+	--arm32) buildARM32;
+esac
+
+buildARM64 () {
+	printf "\n" &&
+	printf "${YEL}Building Thorium for Android arm64...\n" &&
+	printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
+	printf "${CYA}\n" &&
+
+	# Build Thorium, Thorium Shell, and System WebView64
+	export NINJA_SUMMARIZE_BUILD=1 &&
+	export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
+
+	cd ${CR_SRC_DIR} &&
+	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_64_apk -j${cr_build_jobs} &&
+	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
+	printf "\n"
+}
+case $1 in
+	--arm64) buildARM64;
+esac
+
+buildX86 () {
+	printf "\n" &&
+	printf "${YEL}Building Thorium for Android x86...\n" &&
+	printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
+	printf "${CYA}\n" &&
+
+	# Build Thorium, Thorium Shell, and System WebView x86
+	export NINJA_SUMMARIZE_BUILD=1 &&
+	export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
+
+	cd ${CR_SRC_DIR} &&
+	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_32_apk -j${cr_build_jobs} &&
+	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
+	printf "\n"
+}
+case $1 in
+	--x86) buildX86;
+esac
+
+buildX64 () {
+	printf "\n" &&
+	printf "${YEL}Building Thorium for Android x64...\n" &&
+	printf "${YEL}Note: You may want ADB installed.${c0}\n" &&
+	printf "${CYA}\n" &&
+
+	# Build Thorium, Thorium Shell, and System WebView x86
+	export NINJA_SUMMARIZE_BUILD=1 &&
+	export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
+
+	cd ${CR_SRC_DIR} &&
+	autoninja -C out/thorium chrome_public_apk content_shell_apk system_webview_apk -j${cr_build_jobs} &&
+	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can copy the .apk(s) to your device or use ADB to install it.\n" &&
+	printf "${GRE}${bold}They are located in \'//chromium/src/out/thorium/apks/\'\n" &&
+	printf "\n"
+}
+case $1 in
+	--x64) buildX64;
+esac
+
 tput sgr0
