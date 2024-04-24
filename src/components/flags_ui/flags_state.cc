@@ -657,11 +657,12 @@ void FlagsState::GetFlagFeatureEntries(
 
   for (const FeatureEntry& entry : feature_entries_) {
     std::string desc = entry.visible_description;
-    if (skip_feature_entry.Run(entry))
+    if (skip_feature_entry.Run(entry)) {
       if (flags::IsFlagExpired(flags_storage, entry.internal_name))
         desc.insert(0, " NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON!");
       else
-      continue;
+        continue;
+    }
 
     base::Value::Dict data;
     data.Set("internal_name", entry.internal_name);
