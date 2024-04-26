@@ -3,12 +3,12 @@
  - Commonly asked questions, and answers to common GitHub issues that keep getting filed.
 
 __Q: Why is the Android version not letting me sign in to Google Sync?__  
- A: Even though the Android versions are built with API Keys needed to sign-in, Google has placed extra restrictions on Android Chromium
+ __A:__ Even though the Android versions are built with API Keys needed to sign-in, Google has placed extra restrictions on Android Chromium
  forks that prevent sign in unless the browser is on the Google Play Store and has been whitelisted by them (which costs money). The keys
  are still included to allow location services, but there is no workaround for Google Sync at this time.
 
 __Q: Why are Netflix, Spotify, Twitch, etc. not playing?__  
- A: Thorium includes Widevine, which is a proprietary component used to play encrypted media streams on sites like these. It is used to prevent
+ __A:__ Thorium includes Widevine, which is a proprietary component used to play encrypted media streams on sites like these. It is used to prevent
  piracy by preventing downloading these videos in any format that would be readable by an external application. However, there are various "security
  levels" for Widevine. There is L3 "software secure", which is the least secure. It is used on Linux. Then there is L2 "VMP secure", which is what
  Windows and MacOS uses. Then there is L1 "hardware secure", which is only used on specific Windows, MacOS, and ChromeOS devices that are very new
@@ -30,7 +30,7 @@ __Q: Why are Netflix, Spotify, Twitch, etc. not playing?__
  registered applications, Thorium will be restricted in this way (as are most FOSS Chromium and Firefox forks).
 
 __Q: Why is Thorium always behind Chromium/Chrome as far as the major release number?__  
- A: Chromium/Chrome used to be on a 6 week release schedule, but then they moved to a 4 week release schedule. Rebasing Thorium is a long, hard, convoluted process
+ __A:__ Chromium/Chrome used to be on a 6 week release schedule, but then they moved to a 4 week release schedule. Rebasing Thorium is a long, hard, convoluted process
  that requires attention to detail and manual merging of files. I sometimes make mistakes that require correction before a release can be made. Very often, rebasing
  takes 8+ hours of focused, non-stop work. I do this for free (well I do get donations, that usually amount to ~$30 each month, but I would do it even without the
  donations. Donations are always welcome and appreciated), and it is not something I like doing more than necessary. Then comes actually building for all the platforms.
@@ -49,7 +49,7 @@ __Q: Why is Thorium always behind Chromium/Chrome as far as the major release nu
  there are no services that I am aware of that have a free tier with hardware capable of the compilation. Again, this comes down to money and is prohibitively expensive.
 
 __Q: Why isn't Thorium UnGoogled?__  
- A: Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project goals, as outlined towards the top of the Readme, is to enhance usability.
+ __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project goals, as outlined towards the top of the Readme, is to enhance usability.
  A majority of people use Google search, and prefer to have Google Sync enabled to allow seamless synchronization of their bookmarks, history, and preferences across multiple
  instances of multiple Chromium-based browsers. Thus, while Thorium has removed telemetry and field trials, there are instances where Thorium still connects to Google servers, even
  if Google Sync is not enabled. A common example is for location services. However, the user has to explicitly consent for most of these, and the data that is still exchanged with
