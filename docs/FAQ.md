@@ -1,4 +1,4 @@
-## Thorium FAQ
+## Thorium FAQ <img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/faq.png" width="48">
 
  - Commonly asked questions, and answers to common GitHub issues that keep getting filed.
 
