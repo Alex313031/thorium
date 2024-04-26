@@ -7,7 +7,7 @@ You __must__ place the .deb file (generated from running `package.sh`) in this d
 
 When it is done, you will have an appimage in *out*, I.E. it should be something like `//thorium/infra/APPIMAGE/out/Thorium_Browser-104.0.5107.0.glibc2.17-x86_64.AppImage`
 
-You can use it standalone, after making it executable with `sudo chmod +x Thorium_Browser-*`, or (*reccomended*) to integrate it with your system you can use [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
+You can use it standalone, after making it executable with `sudo chmod +x Thorium_Browser-*`, or (*recommended*) to integrate it with your system you can use [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
 
  - Running `./extract_appimage.sh` will extract the appimage contents to *out/Thorium_squashfs-root*
  - The *files* subdir contains files needed for the 22px and 512px icons, and a thorium-shell wrapper that allows thorium_shell to run properly in an AppImage.

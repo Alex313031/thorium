@@ -272,7 +272,7 @@ $ autoninja -C out/Default unit_tests
 *   You may want to [use a chroot](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/linux/using_a_chroot.md) to
     isolate yourself from versioning or packaging conflicts.
 *   Cross-compiling for ARM? (Raspberry Pi) See the [Thorium ARM](https://github.com/Alex313031/thorium/tree/main/arm#readme) dir and [chromium_arm.md](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/linux/chromium_arm.md).
-*   [Atom](https://atom.io/) and [Geany](https://www.geany.org/) are reccomended IDEs for working on Thorium.
+*   [Atom](https://thorium.rocks/atom-ng/) and [Geany](https://www.geany.org/) are recommended IDEs for working on Thorium.
 
 ### Debugging <a name="debugging"></a>
 *   See the [Thorium DEBUG](https://github.com/Alex313031/thorium/tree/main/infra/DEBUG#readme) dir, including the [More Info](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/README.md#more-info-) section, and [DEBUGGING.md](https://github.com/Alex313031/thorium/blob/main/infra/DEBUG/DEBUGGING.md).
