@@ -17,7 +17,7 @@ __Q: Why are Netflix, Spotify, Twitch, etc. not playing?__
  can be seen by the fact that next to widevine.dll, there is a widevine.sig, and next to the main program .exes, there is a corresponding .sig file.
  For example firefox.sig or chrome.sig. While Widevine includes the widevine.sig file always, and is publicly available, this only contains the public
  key of the widevine binary. Signing with Google's VMP service sends a hash of the main executable to their servers, it is signed with their private key
- and then the results are encrypted and sent back as a .sig file with the name matching the executable that was sent to them. Using this service costs
+ and then the results are encrypted and sent back as a .sig file with the name cmatching the executable that was sent to them. Using this service costs
  a prohibitive amount of money for a FOSS project (1000's of dollars). On Linux, Widevine detects that the platform is Linux, and sends a response header
  to sites which then allows playback even though it is only software secure. But usually, sites will limit the resolution to 480p (i.e. SD), including Netflix.
  This has been a long standing problem/complaint in the Linux community. For Windows and MacOS, things are more complicated. While Widevine will work, since
@@ -39,17 +39,19 @@ __Q: Why is Thorium always behind Chromium/Chrome as far as the major release nu
  we must build a total of 13 times to cover all the platforms and architectures that we support. This is a 3 person team, with me doing most of the coding work, feature
  additions, and rebasing. When Chromium makes a new major version, security fixes and bug fixes are backported from this new version into the previous version. This is why,
  for example, 122.0.6261.171 was released after 123.0.6312.133. This means that I always rebase against the previous major version, but use the latest minor version point
- releases. The result is a browser that is one major version behind, but very stable and usually as secure as the current major version. People keep complaining and get
- super worried that because they are using a browser that is one major version behind, that it is super insecure and they are immediately going to become a magnet attracting
+ releases. The result is a browser that is one major version behind, but very stable and usually as secure as the current major version. People keep getting super
+  worried that because they are using a browser that is one major version behind, that it is super insecure and they are immediately going to become a magnet attracting
  all sorts of malware and viruses. This simply isn't the case. The amount of people who post issues, discussions, and personal emails at me is getting annoying. It is like
  a child in the back seat asking "Are we there yet?" over and over. Asking a billion times is not going to speed up the process at all, and just leads to frustration on my part
  and a cluttering of the GitHub issues and discussions that are better filled with actual bugs. Of course, if there is ever a pertinent security flaw (like the WebP vulnerability
- or something privately relayed to me as per the [SECURITY.md](https://github.com/Alex313031/thorium/blob/main/SECURITY.md) file, I try my best to fix/update it and get releases out as soon as possible. Another thing that people keep
+ or something privately relayed to me as per the [SECURITY.md](https://github.com/Alex313031/thorium/blob/main/SECURITY.md) file), I try my best to fix/update it and get
+ releases out as soon as possible. Another thing that people keep
  suggesting is to use some kind of CI build service. This wouldn't help with the rebasing/development time, and because of the amount of resources needed to compile Thorium,
  there are no services that I am aware of that have a free tier with hardware capable of the compilation. Again, this comes down to money and is prohibitively expensive.
 
 __Q: Why isn't Thorium UnGoogled?__  
- __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project goals, as outlined towards the top of the Readme, is to enhance usability.
+ __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project
+ goals, as outlined towards the top of the Readme, is to enhance usability.
  A majority of people use Google search, and prefer to have Google Sync enabled to allow seamless synchronization of their bookmarks, history, and preferences across multiple
  instances of multiple Chromium-based browsers. Thus, while Thorium has removed telemetry and field trials, there are instances where Thorium still connects to Google servers, even
  if Google Sync is not enabled. A common example is for location services. However, the user has to explicitly consent for most of these, and the data that is still exchanged with
