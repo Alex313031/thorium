@@ -1422,7 +1422,7 @@ config("toolchain") {
       ldflags += [ "/STACK:2097152" ]
     }
   }
-  if (is_linux || is_chromeos) {
+  if (is_linux || is_chromeos || is_android) {
     # Full optimization for V8.
     cflags += [ "-O3" ]
     ldflags += [ "-Wl,-O3" ]
