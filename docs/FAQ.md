@@ -1,13 +1,15 @@
 ## Thorium FAQ <img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/faq.png" width="48">
 
- - Commonly asked questions, and answers to common GitHub issues that keep getting filed.
+ - Commonly asked questions and answers to common GitHub issues that keep getting filed.
 
-__Q: Why is the Android version not letting me sign in to Google Sync?__  
+__1. Q: Why is the Android version not letting me sign in to Google Sync?__  
  __A:__ Even though the Android versions are built with API Keys needed to sign-in, Google has placed extra restrictions on Android Chromium
  forks that prevent sign in unless the browser is on the Google Play Store and has been whitelisted by them (which costs money). The keys
- are still included to allow location services, but there is no workaround for Google Sync at this time.
+ are still included to allow location services, but there is no workaround for Google Sync at this time. This is also the reason why on some
+ devices, opening Thorium will cause a notification saying "Thorium won't run without Google Play Services, which are not supported by your
+ device". This is baloney, and it will run just fine.
 
-__Q: Why are Netflix, Spotify, Twitch, etc. not playing?__  
+__2. Q: Why are Netflix, Spotify, Twitch, etc. not playing?__  
  __A:__ Thorium includes Widevine, which is a proprietary component used to play encrypted media streams on sites like these. It is used to prevent
  piracy by preventing downloading these videos in any format that would be readable by an external application. However, there are various "security
  levels" for Widevine. There is L3 "software secure", which is the least secure. It is used on Linux. Then there is L2 "VMP secure", which is what
@@ -29,7 +31,7 @@ __Q: Why are Netflix, Spotify, Twitch, etc. not playing?__
  it is highly dependent on the specific site. Your mileage may vary, and unless someone wants to send $7,000 on top of a yearly fee to be part of widevine.org's
  registered applications, Thorium will be restricted in this way (as are most FOSS Chromium and Firefox forks).
 
-__Q: Why is Thorium always behind Chromium/Chrome as far as the major release number?__  
+__3. Q: Why is Thorium always behind Chromium/Chrome as far as the major release number?__  
  __A:__ Chromium/Chrome used to be on a 6 week release schedule, but then they moved to a 4 week release schedule. Rebasing Thorium is a long, hard, convoluted process
  that requires attention to detail and manual merging of files. I sometimes make mistakes that require correction before a release can be made. Very often, rebasing
  takes 8+ hours of focused, non-stop work. I do this for free (well I do get donations, that usually amount to ~$30 each month, but I would do it even without the
@@ -40,7 +42,7 @@ __Q: Why is Thorium always behind Chromium/Chrome as far as the major release nu
  additions, and rebasing. When Chromium makes a new major version, security fixes and bug fixes are backported from this new version into the previous version. This is why,
  for example, 122.0.6261.171 was released after 123.0.6312.133. This means that I always rebase against the previous major version, but use the latest minor version point
  releases. The result is a browser that is one major version behind, but very stable and usually as secure as the current major version. People keep getting super
-  worried that because they are using a browser that is one major version behind, that it is super insecure and they are immediately going to become a magnet attracting
+ worried that because they are using a browser that is one major version behind, that it is super insecure and they are immediately going to become a magnet attracting
  all sorts of malware and viruses. This simply isn't the case. The amount of people who post issues, discussions, and personal emails at me is getting annoying. It is like
  a child in the back seat asking "Are we there yet?" over and over. Asking a billion times is not going to speed up the process at all, and just leads to frustration on my part
  and a cluttering of the GitHub issues and discussions that are better filled with actual bugs. Of course, if there is ever a pertinent security flaw (like the WebP vulnerability
@@ -49,7 +51,7 @@ __Q: Why is Thorium always behind Chromium/Chrome as far as the major release nu
  suggesting is to use some kind of CI build service. This wouldn't help with the rebasing/development time, and because of the amount of resources needed to compile Thorium,
  there are no services that I am aware of that have a free tier with hardware capable of the compilation. Again, this comes down to money and is prohibitively expensive.
 
-__Q: Why isn't Thorium UnGoogled?__  
+__4. Q: Why isn't Thorium UnGoogled?__  
  __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project
  goals, as outlined towards the top of the Readme, is to enhance usability.
  A majority of people use Google search, and prefer to have Google Sync enabled to allow seamless synchronization of their bookmarks, history, and preferences across multiple
@@ -62,3 +64,5 @@ __Q: Why isn't Thorium UnGoogled?__
  following the instructions [Here](https://github.com/ungoogled-software/ungoogled-chromium/blob/master/docs/building.md), and using the changes in Thorium's [//build directory](https://github.com/Alex313031/thorium/tree/main/src/build) as a starting point for adding the compiler optimizations to UnGoogled's build config. I am
  willing to provide guidance or help with compiling Chromium or integrating Thorium's compiler optimization patches to an existing source code checkout.
 
+__5. Q: How can I build Thorium for myself?__  
+ __A:__ See the documentation for various platforms here > https://thorium.rocks/docs/
