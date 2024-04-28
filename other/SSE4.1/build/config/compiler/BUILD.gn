@@ -1178,10 +1178,9 @@ config("compiler_cpu_abi") {
         "-O3",
         "-msse3",
         "-mssse3",
-        "-msse4",
         "-msse4.1",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-Wl,-mllvm,-import-instr-limit=30", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4.1", "-Wl,-mllvm,-import-instr-limit=30", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
