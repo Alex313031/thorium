@@ -29,10 +29,14 @@
      "Disable Thorium Top Bar Icons",
      "Disables the custom colored top bar icons in Thorium, and restores the default grey Chromium icon colors.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
+    {"disable-thorium-dns-config",
+     "Disable Thorium Custom DNS Config",
+     "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
+     "due to external apps or a non-standard system DNS config setting.",
     {"force-high-contrast",
      "Enable High Contrast Mode",
      "Enables high contrast mode for all Thorium instances.",
-     kOsAll, SINGLE_VALUE_TYPE(switches::kForceHighContrast)},
+     kOsDesktop, SINGLE_VALUE_TYPE(switches::kForceHighContrast)},
 
 #if BUILDFLAG(IS_WIN)
     {"disable-aero",

@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 
+#include "base/command_line.h"
 #include "base/functional/bind.h"
 #include "base/logging.h"
 #include "base/memory/raw_ptr.h"
@@ -249,16 +250,28 @@ class DnsClientImpl : public DnsClient {
  private:
   std::optional<DnsConfig> BuildEffectiveConfig() const {
     DnsConfig config;
-    // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
-    if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode) {
-      config = config_overrides_.ApplyOverrides(DnsConfig());
-    } else {
-      if (!system_config_) {
-        LOG(WARNING) << "BuildEffectiveConfig(): no system configuration";
-        return std::nullopt;
-      }
+    if (!base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config")) {
+      // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
+      if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode) {
+        config = config_overrides_.ApplyOverrides(DnsConfig());
+      } else {
+        if (!system_config_) {
+          LOG(WARNING) << "BuildEffectiveConfig(): no system configuration";
+          return std::nullopt;
+        }
 
-      config = config_overrides_.ApplyOverrides(system_config_.value());
+        config = config_overrides_.ApplyOverrides(system_config_.value());
+      }
+    } else {
+      if (config_overrides_.OverridesEverything()) {
+        config = config_overrides_.ApplyOverrides(DnsConfig());
+      } else {
+        if (!system_config_)
+          LOG(WARNING) << "BuildEffectiveConfig(): system configuration not set";
+          return std::nullopt;
+
+        config = config_overrides_.ApplyOverrides(system_config_.value());
+      }
     }
 
     UpdateConfigForDohUpgrade(&config);
