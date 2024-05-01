@@ -58,7 +58,7 @@ cd ${CR_SRC_DIR} &&
 
 rm -v -r -f ${CR_SRC_DIR}/third_party/pak &&
 
-rm -r -f -v	components/ungoogled/ &&
+rm -r -f -v components/ungoogled/ &&
 
 git checkout -f origin/main &&
 
