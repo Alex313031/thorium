@@ -19,15 +19,15 @@ __2. Q: Why are Netflix, Spotify, Twitch, etc. not playing?__
  can be seen by the fact that next to widevine.dll, there is a widevine.sig, and next to the main program .exes, there is a corresponding .sig file.
  For example firefox.sig or chrome.sig. While Widevine includes the widevine.sig file always, and is publicly available, this only contains the public
  key of the widevine binary. Signing with Google's VMP service sends a hash of the main executable to their servers, it is signed with their private key
- and then the results are encrypted and sent back as a .sig file with the name cmatching the executable that was sent to them. Using this service costs
- a prohibitive amount of money for a FOSS project (1000's of dollars). On Linux, Widevine detects that the platform is Linux, and sends a response header
+ and then the results are encrypted and sent back as a .sig file with the name matching the executable that was sent to them. Using this service costs
+ a prohibitive amount of money for a FOSS project (1,000's of dollars). On Linux, Widevine detects that the platform is Linux, and sends a response header
  to sites which then allows playback even though it is only software secure. But usually, sites will limit the resolution to 480p (i.e. SD), including Netflix.
  This has been a long standing problem/complaint in the Linux community. For Windows and MacOS, things are more complicated. While Widevine will work, since
  it is not VMP signed, it will only send an L3 header. Some sites will accept this on Windows (like Hulu), but some sites require VMP when it detects that it
  is on Windows or MacOS. Netflix used to not restrict this, but as of 2023, it will refuse to play without VMP. There is no way to spoof this by changing the
  User Agent to report Linux. Widevine detects the OS and sends it as part of the header to the website. As a side note, L1 is used to allow 4K or 8K playback
  on some sites that support it (like Netflix). Many streaming devices have a hardware chip like what was described above, and hence why they can play this
- high resolution content. So, the end result is that Thorium will play Widevine encrypted content on Linux, but at lower quality, but on Windows or MacOS
+ high resolution content. So, the end result is that Thorium will play Widevine encrypted content on Linux, but at lower quality, and on Windows or MacOS
  it is highly dependent on the specific site. Your mileage may vary, and unless someone wants to send $7,000 on top of a yearly fee to be part of widevine.org's
  registered applications, Thorium will be restricted in this way (as are most FOSS Chromium and Firefox forks).
 
