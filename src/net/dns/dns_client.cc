@@ -37,8 +37,6 @@ namespace net {
 
 namespace {
 
-static const bool disable_thorium_dns_config = base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config");
-
 bool IsEqual(const std::optional<DnsConfig>& c1, const DnsConfig* c2) {
   if (!c1.has_value() && c2 == nullptr)
     return true;
@@ -90,6 +88,7 @@ void UpdateConfigForDohUpgrade(DnsConfig* config) {
 }
 
 class DnsClientImpl : public DnsClient {
+ const bool disable_thorium_dns_config = base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config");
  public:
   DnsClientImpl(NetLog* net_log, const RandIntCallback& rand_int_callback)
       : net_log_(net_log), rand_int_callback_(rand_int_callback) {}
