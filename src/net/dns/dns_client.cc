@@ -37,6 +37,8 @@ namespace net {
 
 namespace {
 
+static const bool disable_thorium_dns_config = base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config");
+
 bool IsEqual(const std::optional<DnsConfig>& c1, const DnsConfig* c2) {
   if (!c1.has_value() && c2 == nullptr)
     return true;
@@ -250,28 +252,18 @@ class DnsClientImpl : public DnsClient {
  private:
   std::optional<DnsConfig> BuildEffectiveConfig() const {
     DnsConfig config;
-    if (!base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config")) {
-      // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
-      if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode) {
-        config = config_overrides_.ApplyOverrides(DnsConfig());
-      } else {
-        if (!system_config_) {
-          LOG(WARNING) << "BuildEffectiveConfig(): no system configuration";
-          return std::nullopt;
-        }
-
-        config = config_overrides_.ApplyOverrides(system_config_.value());
-      }
+    // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
+    if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode && !disable_thorium_dns_config) {
+      config = config_overrides_.ApplyOverrides(DnsConfig());
+    } else if (disable_thorium_dns_config && config_overrides_.OverridesEverything()) {
+      config = config_overrides_.ApplyOverrides(DnsConfig());
     } else {
-      if (config_overrides_.OverridesEverything()) {
-        config = config_overrides_.ApplyOverrides(DnsConfig());
-      } else {
-        if (!system_config_)
-          LOG(WARNING) << "BuildEffectiveConfig(): system configuration not set";
-          return std::nullopt;
-
-        config = config_overrides_.ApplyOverrides(system_config_.value());
+      if (!system_config_) {
+        LOG(WARNING) << "BuildEffectiveConfig(): System configuration not set: No system_config_ ";
+        return std::nullopt;
       }
+
+      config = config_overrides_.ApplyOverrides(system_config_.value());
     }
 
     UpdateConfigForDohUpgrade(&config);
