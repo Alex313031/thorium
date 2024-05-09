@@ -2,7 +2,7 @@
 
  - Commonly asked questions and answers to common GitHub issues that keep getting filed.
 
-__1. Q: Why is the Android version not letting me sign in to Google Sync?__  
+__<a id="1."></a>1. Q: Why is the Android version not letting me sign in to Google Sync?__  
  __A:__ Even though the Android versions are built with API Keys needed to sign-in, Google has placed extra restrictions on Android Chromium
  forks that prevent sign in unless the browser is on the Google Play Store and has been whitelisted by them (which costs money). The keys
  are still included to allow location services, but there is no workaround for Google Sync at this time. This is also the reason why on some
