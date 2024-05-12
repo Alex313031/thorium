@@ -18,7 +18,7 @@
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "build/build_config.h"
-#include "components/bookmarks/browser/bookmark_model.h"
+#include "components/bookmarks/browser/core_bookmark_model.h"
 #include "components/omnibox/browser/autocomplete_controller.h"
 #include "components/omnibox/browser/autocomplete_input.h"
 #include "components/omnibox/browser/autocomplete_match.h"
@@ -59,9 +59,8 @@ bool RichAutocompletionEitherNonPrefixEnabled() {
 #if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_IOS)
 // Return true if the given match uses a vector icon with a background.
 bool HasVectorIconBackground(const AutocompleteMatch& match) {
-  return OmniboxFieldTrial::IsActionsUISimplificationEnabled() &&
-         (match.type == AutocompleteMatchType::HISTORY_CLUSTER ||
-          match.type == AutocompleteMatchType::PEDAL);
+  return match.type == AutocompleteMatchType::HISTORY_CLUSTER ||
+         match.type == AutocompleteMatchType::PEDAL;
 }
 #endif
 
@@ -202,7 +201,7 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
 
   if (model()->ShouldShowCurrentPageIcon()) {
     return ui::ImageModel::FromVectorIcon(
-        GetLocationBarModel()->GetVectorIcon(), color_current_page_icon,
+        controller_->client()->GetVectorIcon(), color_current_page_icon,
         dip_size);
   }
 
@@ -234,7 +233,7 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
   // If it's never called, the vector icon we provide below should remain.
 
   // For bookmarked suggestions, display bookmark icon.
-  bookmarks::BookmarkModel* bookmark_model =
+  bookmarks::CoreBookmarkModel* bookmark_model =
       controller_->client()->GetBookmarkModel();
   const bool is_bookmarked =
       bookmark_model && bookmark_model->IsBookmarked(match.destination_url);
@@ -356,10 +355,6 @@ OmniboxView::OmniboxView(std::unique_ptr<OmniboxClient> client)
     : controller_(std::make_unique<OmniboxController>(
           /*view=*/this,
           std::move(client))) {}
-
-const LocationBarModel* OmniboxView::GetLocationBarModel() const {
-  return controller_->client()->GetLocationBarModel();
-}
 
 OmniboxEditModel* OmniboxView::model() {
   return const_cast<OmniboxEditModel*>(
