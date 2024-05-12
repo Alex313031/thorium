@@ -53,9 +53,6 @@
   </if>
 
   <!-- Autofill Page -->
-  <message name="IDS_SETTINGS_GOOGLE_PAYMENTS_CACHED" desc="Label that will be used to show that a credit card comes from Google Pay and is saved locally. This should follow the casing of the 'Google Pay' and 'Thorium' brands. 'Copied to Thorium' is short for 'The credit card is copied to Thorium'. 'Google Pay' should not be translated as it is the product name.">
-    Google Pay (copied to Thorium)
-  </message>
   <message name="IDS_SETTINGS_CHECK_PASSWORDS_ERROR_OFFLINE" desc="Error message when the password check can't be completed because the user is offline.">
     Thorium can't check your passwords. Try checking your internet connection.
   </message>
@@ -182,15 +179,6 @@
   </message>
   <message name="IDS_SETTINGS_PRIVACY_GUIDE_MSBB_PRIVACY_DESCRIPTION2" desc="A part of the privacy description of 'make searches and browsing better' in the 'Privacy Guide'.">
     If you also share Thorium usage reports, those reports include the URLs you visit
-  </message>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_PRIVACY_DESCRIPTION1" desc="A part of the privacy description of 'search suggestions' in the 'Privacy Guide'.">
-    As you type, Thorium sends the content of the address bar or search box to your default search engine
-  </message>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_PRIVACY_DESCRIPTION2" desc="A part of the privacy description of 'search suggestions' in the 'Privacy Guide'.">
-    Depending on your settings, Thorium may also send cookies and your current URL
-  </message>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_PRIVACY_DESCRIPTION3" desc="A part of the privacy description of 'search suggestions' in the 'Privacy Guide'.">
-    When off, you'll still see suggestions that Thorium provides locally
   </message>
 
   <!-- Privacy Sandbox -->

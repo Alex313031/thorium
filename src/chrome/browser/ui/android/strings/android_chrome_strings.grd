@@ -272,9 +272,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_NOTIFICATION_CATEGORY_SECURITY_KEY" desc="Label for a category of notifications that tells the user that they can sign in on a different computer by using this device [CHAR_LIMIT=32]">
         Sign-in verifications
       </message>
-      <message name="IDS_NOTIFICATION_CATEGORY_FEATURE_GUIDE" desc="Label for a category of notifications that is used to promote features in chrome to improve user engagement and browsing experience [CHAR_LIMIT=32]">
-        Thorium tips
-      </message>
       <message name="IDS_NOTIFICATION_CATEGORY_BLUETOOTH" desc="Label for bluetooth-related notifications, within a list of notification categories. [CHAR_LIMIT=32]">
         Bluetooth
       </message>
@@ -306,6 +303,25 @@ CHAR_LIMIT guidelines:
       </message>
       <message name="IDS_SIGN_IN_GOOGLE_ACTIVITY_CONTROLS_SUMMARY" desc="Message of Google activity controls preference in signed in accounts settings screen">
         Control how your browsing history is used to personalize Search and more
+      </message>
+      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_TITLE" desc="This is the title of a setting that helps users find the settings to control how Thorium history can be used to personalize other Google services. It appears in Thorium’s Advanced Sync settings and is before the “Control how your synced history can be used to personalize other Google services” string. You may shorten the string to “Personalize services” or just “Personalize” in order to help your language fit in the small character limit. [CHAR_LIMIT=30]">
+        Personalize Google services
+      </message>
+      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_SUMMARY" desc="Message of 'Personalize Google services' preference in signed in accounts settings screen">
+        Control how your synced history can be used to personalize other Google services
+      </message>
+      <!-- Personalized Google services preferences-->
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_SUMMARY" desc="This is the body text of a setting that helps users find the settings to control how Thorium history can be used to personalize other Google services. This text appears in Thorium’s Advanced Sync settings, on the subpage that links out to Web &amp; App Activity and linked Google services.">
+        To get the most personalized experience, include Thorium in Web &amp; App Activity and linked Google services
+      </message>
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_WAA_TITLE" desc="This string is found on a link in Thorium’s Advanced Sync settings. When the user taps it, the link takes the user to “Web &amp; App Activity” in the Google Account’s Activity Controls. The link is on a subpage from Thorium’s Advanced Sync settings. This text should match the branded term “Web &amp; App Activity” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3b75.">
+        Web &amp; App Activity
+      </message>
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_LINKED_SERVICES_TITLE" desc="This string is found on a subpage from Thorium’s Advanced Sync settings. When the user taps it, the link takes the user to “Linked Google services” in the Google Account’s Data &amp; privacy settings. The link is on a setting that users see in Thorium’s Advanced Sync settings. This text should match the branded term “linked Google services” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=517bace2.">
+        Linked Google services
+      </message>
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_LINKED_SERVICES_SUMMARY" desc="This is the subtitle of a setting that links to “Linked Google services” in the Google Account’s Data &amp; privacy settings. This subtitle appears on a subpage from Thorium’s Advanced Sync settings, and is after the “Linked Google services” string. The pronoun “them” refers to Thorium and other Google services.">
+        Link Thorium and other Google services if you want them to personalize your experience using data from one another
       </message>
       <!-- Unified consent preferences -->
       <message name="IDS_SIGN_OUT_AND_TURN_OFF_SYNC" desc="The text for a preferences row that for signs out the user and turns off sync.">
@@ -449,8 +465,14 @@ CHAR_LIMIT guidelines:
       <message name="IDS_SEARCH_ENGINE_DIALOG_TITLE" desc="Title shown in the dialog to change search engines">
         Choose your search engine
       </message>
-      <message name="IDS_SEARCH_ENGINE_DIALOG_FOOTER" desc="Title shown in the dialog to change search engines">
+      <message name="IDS_SEARCH_ENGINE_DIALOG_FOOTER_LEGACY" desc="Title shown in the dialog to change search engines">
         You can change this later in Settings
+      </message>
+      <message name="IDS_SEARCH_ENGINE_DIALOG_FOOTER" desc="This is the footer text of a screen that prompts the user to select the search engine that they want to use by default. (A search engine provides answers to search queries; this is different from a browser, which displays web pages. A search engine powers many experiences within a browser.) This screen appears when the user opens Thorium after updating or installing the app. The headline for this screen is “Choose your search engine”, followed by a list of search engines to choose from. The screen's goal is to help users understand that they can use any search engine with Thorium,, and that the user can change their mind at any time.">
+        You can change your default anytime in settings
+      </message>
+      <message name="IDS_SEARCH_ENGINE_DIALOG_CONFIRM_BUTTON_TITLE" desc="Button label to confirm the user’s search engine choice. It is on a screen that appears when the user opens Thorium after updating or installing it. This text is a verb phrase, and is short for the longer phrase “Set my selected search engine as my default search engine for search queries“.">
+        Set as default
       </message>
 
       <message name="IDS_SEARCH_ENGINE_CHOICE_PROMPT" desc="Prompt asking users whether they want to change the search engine">
@@ -526,9 +548,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_AUTOFILL_CREDIT_CARD_EDITOR_BILLING_ADDRESS" desc="Label for a spinner input field containing a list of billing addresses for a credit card. [CHAR_LIMIT=32]">
         Billing address
       </message>
-      <message name="IDS_AUTOFILL_DESCRIBE_LOCAL_COPY" desc="Text label that describes a Wallet credit card which has been copied to the local Thorium instance.">
-         Copied to Thorium
-      </message>
       <message name="IDS_AUTOFILL_PAYMENTS_AUTHENTICATOR_SELECTION_DIALOG_FOOTER" desc="Footer for the dialog where the user selects an authenticator from a list of options.">
         Not seeing your current info? Please contact your bank to update it.
       </message>
@@ -572,6 +591,16 @@ CHAR_LIMIT guidelines:
       <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_DELETE_BUTTON_LABEL" desc="Label shown on the button that the user clicks on to delete their saved CVCs.">
         Delete
       </message>
+      <message name="IDS_AUTOFILL_IBAN_EDITOR_NICKNAME" desc="Label for text input field containing the nickname for IBAN shown in the add/edit IBAN form. [CHAR_LIMIT=25]">
+        Nickname
+      </message>
+      <message name="IDS_AUTOFILL_IBAN_EDITOR_VALUE" desc="Label for text input field containing IBAN value shown in the add/edit IBAN form.">
+        IBAN
+      </message>
+      <message name="IDS_AUTOFILL_IBAN_EDITOR_LOCAL_SAVE_FOOTER" desc="Footer informing users that the IBAN will be saved locally, shown in the add/edit IBAN form.">
+        This IBAN will be saved to this device only
+      </message>
+
 
        <!-- Payment Request section preview strings -->
        <message name="IDS_PAYMENT_REQUEST_PAYMENT_METHODS_PREVIEW" desc="This is a snippet of a payment method a user has saved to Thorium, plus an indication of the number of additional payment methods the user has saved.
@@ -766,7 +795,7 @@ CHAR_LIMIT guidelines:
         We’re changing how passwords are saved on this device
       </message>
       <message name="IDS_PASSWORD_MIGRATION_WARNING_SUBTITLE" desc="The subtitle of the password migration warning sheet." formatter_data="android_java">
-        Right now, passwords saved on this device cannot be used across Thorium channels. After Thorium 121, passwords saved on your device for Thorium and <ph name="CHROME_CHANNEL">%1$s<ex>Thorium Dev</ex></ph> will be merged and can be used in both apps.
+        Right now, passwords saved on this device cannot be used across Thorium channels. After Thorium 125, passwords saved on your device for Thorium and <ph name="CHROME_CHANNEL">%1$s<ex>Thorium Dev</ex></ph> will be merged and can be used in both apps.
       </message>
       <message name="IDS_PASSWORD_MIGRATION_WARNING_ACKNOWLEDGE" desc="The text on the button that acknowledges the password migration warning.">
         Got it
@@ -1227,6 +1256,9 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_CLEAR_FORM_DATA_TITLE" desc="Title for Clear Form Data in Clear Browsing Data preference">
         Autofill form data
       </message>
+      <message name="IDS_CLEAR_TABS_TITLE" desc="Title for Clear Tabs in Clear Browsing Data preference">
+        Tabs on this device
+      </message>
       <message name="IDS_CLEAR_BROWSING_DATA_PROGRESS_TITLE" desc='Title for the progress dialog used when waiting for "clear browsing data" to complete.'>
         Clearing browsing data
       </message>
@@ -1274,6 +1306,9 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_OPEN_CLEAR_BROWSING_DATA_DIALOG_BUTTON" desc="Title of the button that will open the clear browsing data dialog.">
         Clear browsing data…
+      </message>
+      <message name="IDS_OPEN_FULL_CHROME_HISTORY" desc="Title of the button that will open the full history in Thorium browser from CCT history page.">
+              Open full Thorium history
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_BASIC_TAB_TITLE" desc="The title of the tab showing the basic clear browsing data options.">
         Basic
@@ -1469,6 +1504,11 @@ Your Google account may have other forms of browsing history like searches and a
         Manage third-party cookies and tracking protections
       </message>
 
+      <!-- IP protection -->
+      <message name="IDS_IP_PROTECTION_TITLE" desc="IP Protection preference item title." translateable="false">
+        Hide your IP address
+      </message>
+
       <!-- Safety check -->
       <message name="IDS_PREFS_SAFETY_CHECK" desc="Title of the Safety check element in settings, allowing the user to check multiple areas of browser safety. [CHAR_LIMIT=32]">
         Safety check
@@ -1489,7 +1529,7 @@ Your Google account may have other forms of browsing history like searches and a
         Passwords saved to this device
       </message>
       <message name="IDS_SAFETY_CHECK_PASSWORDS_ACCOUNT_TITLE" desc="Title for the passwords check for the synced passwords stored in the user's account store.">
-        Passwords saved to <ph name="USERNAME">%1$s<ex>elisa.becket@gmail.com</ex></ph>.
+        Passwords saved to <ph name="USERNAME">%1$s<ex>elisa.becket@gmail.com</ex></ph>
       </message>
       <message name="IDS_SAFETY_CHECK_BUTTON" desc="Text for the button to start Safety check.">
         Check now
@@ -2111,6 +2151,9 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_SIGN_IN_MANAGED_ACCOUNT_DESCRIPTION" desc="Description for signing in to managed accounts">
         You are signing in with an account managed by <ph name="MANAGED_DOMAIN">%1$s<ex>Google</ex></ph> and giving its administrator control over your Thorium data. Your data will become permanently tied to this account. Signing out of Thorium will delete your data from this device, but it will remain stored in your Google Account.
       </message>
+      <message name="IDS_MANAGED_SIGNIN_WITH_USER_POLICY_SUBTITLE" desc="The subtitle of the Sign in with a managed account dialog when user policies are enabled.">
+        Your organization, <ph name="MANAGED_DOMAIN">%1$s<ex>Google</ex></ph>, manages the account you're signing in to and how Thorium can be used. Your administrator can set up or restrict certain features.
+      </message>
       <message name="IDS_SYNC_YOUR_BOOKMARKS" desc="Title for the prompt to signin and enable sync to sync their bookmarks">
         Sync your bookmarks
       </message>
@@ -2164,6 +2207,9 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_SYNC_SETTINGS" desc="Title for preference which enables sync'ing of settings. [CHAR_LIMIT=32]">
         Settings
+      </message>
+      <message name="IDS_SYNC_APPS" desc="Title for preference which enables sync'ing of WebAPKs. [CHAR_LIMIT=32]">
+        Apps
       </message>
       <message name="IDS_SYNC_PAYMENTS_INTEGRATION" desc="Title for preference which enables import of Google Pay data for Autofill. 'Google Pay' should not be translated as it is the product name.">
         Payment methods, offers, and addresses using Google Pay
@@ -2388,6 +2434,11 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Verify
       </message>
 
+      <!-- Accessibility strings for identity error visual cues -->
+      <message name="IDS_ACCESSIBILITY_ACCOUNT_MANAGEMENT_ROW_ACCOUNT_ERROR" desc="Accessibility string for alert icon in the account management row in the settings and for the alert icon in the error card on the accounts page, in case of identity error.">
+        Google Account error
+      </message>
+
       <!-- Tab switcher -->
       <message name="IDS_ACCESSIBILITY_TAB_SWITCHER_STANDARD_STACK" desc="Content description for the standard stack selection 'button'.">
         Standard tabs
@@ -2472,6 +2523,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
 
       <message name="IDS_MENU_LISTEN_TO_THIS_PAGE" desc="Menu item for making the browser read out the page's text in spoken audio form. [CHAR_LIMIT=27]">
         Listen to this page
+      </message>
+
+      <message name="IDS_MENU_LISTEN_TO_THIS_PAGE_IPH" desc="The in-product-help message that encourages users to use the Listen to this Page feature in the app menu">
+        You can listen to this page
       </message>
 
       <message name="IDS_MENU_PRINT" desc="Menu item for printing the current page. [CHAR_LIMIT=27]">
@@ -3092,6 +3147,10 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SIGNIN_FRE_UMA_DIALOG_SECOND_SECTION_BODY" desc="Text with info about the data that users share with Google if they turn on the metric sharing option.">
         Info is sent to Google about your Thorium usage, but it isn\u2019t tied to you\n\nIf Thorium crashes, details about the crash may include some personal info\n\nIf you turn on sync, metrics may also include info about URLs you visit
       </message>
+      <!-- TODO(b/41493786): replace string with final version and set as translateable -->
+      <message name="IDS_SIGNIN_FRE_TITLE" translateable="false">
+      Make Thorium your own
+      </message>
       <message name="IDS_SIGNIN_FRE_SUBTITLE" desc="Subtitle shown below a welcoming title on the very first screen after opening Thorium for the first time. Asks the user to sign in to Thorium with their Google Account to get more useful features when they're signed in across multiple devices (like phones and computers). Try to limit translations to 50 characters. Do not exceed 75 characters.">
         Sign in to browse easier across devices
       </message>
@@ -3166,8 +3225,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SIGNIN_DETAILS_DESCRIPTION" desc="Message with a link to customize Sync settings. Shown on the screen that asks the user to turn on Sync.">
         You can always choose what to sync in <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>settings<ph name="END_LINK1">&lt;/LINK1&gt;</ph>.
       </message>
-      <message name="IDS_SYNC_CONSENT_DETAILS_DESCRIPTION" desc="This string appears in the footer on a full-page screen that asks users if they want to turn on sync. 'Sync' is short for 'synchronization'. The first sentence informs the user where they can go to change their mind or to customize what Thorium data types they choose to sync (a user's Thorium data includes their bookmarks, passwords, history, settings, and more). The second sentence informs the user that if they choose to sync, then their history may be used to personalize Search and other services. Translate 'history' according to https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=59c3162. [CHAR_LIMIT=200].">
-        You can always choose what to sync in <ph name="BEGIN_LINK1">&lt;LINK1&gt;</ph>settings<ph name="END_LINK1">&lt;/LINK1&gt;</ph>. Google may personalize Search and other services based on your history.
+      <!-- TODO(b/41493786): replace strings with final version and set as translateable -->
+      <message name="IDS_HISTORY_SYNC_SIGNED_IN_FOOTER" translateable="false">
+        You are signed in as <ph name="EMAIL">%1$s<ex>jane.doe@example.com</ex></ph>. You can always choose what to sync in settings. Google may personalize Search and other services based on your history.
+      </message>
+      <message name="IDS_HISTORY_SYNC_FOOTER" translateable="false">
+        You can always choose what to sync in settings. Google may personalize Search and other services based on your history.
       </message>
       <message name="IDS_SIGNIN_ACCEPT_BUTTON" desc="Text for the confirmation button in the sign-in screen. By clicking this button users signs in and turns on Sync. [CHAR_LIMIT=20]">
         Yes, I'm in
@@ -3178,11 +3241,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_DIALOG_TITLE" desc="The title for the dialog that shows the list of accounts on the device and asks the user to select one of these accounts. [CHAR_LIMIT=27]">
         Choose an account
       </message>
-      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION_WITH_EMAIL" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog.">
-        Choose an account. Currently selected <ph name="EMAIL">%1$s<ex>john.doe@example.com</ex></ph>.
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION_WITH_NAME_AND_EMAIL" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog.">
+        <ph name="NAME">%1$s<ex>John Doe</ex></ph>, <ph name="EMAIL">%2$s<ex>john.doe@example.com</ex></ph> currently selected. Choose an account.
       </message>
-      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog. Used when the user's email cannot be displayed.">
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION_WITH_EMAIL" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog. Used when the user's name is not available.">
+        <ph name="EMAIL">%1$s<ex>john.doe@example.com</ex></ph> currently selected. Choose an account.
+      </message>
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION_WITH_NAME" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog. Used when the user's email cannot be displayed.">
+        <ph name="NAME">%1$s<ex>John Doe</ex></ph> currently selected. Choose an account.
+      </message>
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_DESCRIPTION_WITHOUT_NAME_OR_EMAIL" is_accessibility_with_no_ui="true" desc="The content description for the account picker. Opens the 'Choose an account' dialog. Used when the user's name and email cannot be displayed.">
         Choose an account.
+      </message>
+      <message name="IDS_SIGNIN_ACCOUNT_LABEL_FOR_NON_SELECTED_ACCOUNT" is_accessibility_with_no_ui="true" desc="The content description for each account in the expanded account picker. Names the account that will be selected.">
+        <ph name="NAME">%1$s<ex>John Doe</ex></ph>, <ph name="EMAIL">%2$s<ex>john.doe@example.com</ex></ph>.
       </message>
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_TITLE_FOR_SEND_TAB_TO_SELF" desc="The title for the bottom sheet that shows the list of accounts on the device and asks the user to select one of these accounts, when send-tab-to-self triggered the UI. [CHAR_LIMIT=27]">
         Sign in to Thorium
@@ -3249,6 +3321,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SYNC_PROMO_DESCRIPTION_BOOKMARKS" desc="This string is the body of a card that appears when the user opens Thorium's bookmarks; the user may be signed in to Thorium, but isn't syncing their Thorium data. The headline above this string is 'Get all your bookmarks'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your bookmarks from your other devices
       </message>
+      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_BOOKMARKS" desc="This string is the body of a card that appears when the user opens Thorium's bookmarks; the user is signed out of Thorium. The headline above this string is 'Get all your bookmarks'. There's no character limit but try to keep the translation under 120 characters." meaning="This message means that the user can get the bookmarks from their computer on their phone, and their phone's bookmarks on their computer. We want users to read this card and tap the 'Continue' button and sign-in. The tone should be inviting.">
+        Sign in to get your bookmarks and more from your other devices
+      </message>
       <message name="IDS_SYNC_PROMO_TITLE_NTP_CONTENT_SUGGESTIONS" desc="This string is the headline of a card that appears when the user visits Thorium's new tab page; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get the most relevant content from Google'. [CHAR_LIMIT=70]" meaning="This headline means that the user is missing out on more interesting and relevant news articles. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Get better suggestions
       </message>
@@ -3309,8 +3384,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_N_MINUTES_AGO" desc="A number of minutes in the past. [ICU Syntax]">
         {MINUTES, plural, =1 {# minute ago} other {# minutes ago}}
       </message>
+      <message name="IDS_N_MINUTES_AGO_NARROW" desc="A number of minutes in the past, made narrow to save space, and unit-like to avoid different plural form unless necessary. [ICU Syntax]">
+        {MINUTES, plural, =1 {# min ago} other {# min ago}}
+      </message>
       <message name="IDS_N_HOURS_AGO" desc="A number of hours in the past. [ICU Syntax]">
         {HOURS, plural, =1 {# hour ago} other {# hours ago}}
+      </message>
+      <message name="IDS_N_HOURS_AGO_NARROW" desc="A number of hours in the past, made narrow to save space, and unit-like to avoid different plural form unless necessary. [ICU Syntax]">
+        {HOURS, plural, =1 {# hr ago} other {# hr ago}}
       </message>
       <message name="IDS_N_DAYS_AGO" desc="A number of days in the past. [ICU Syntax]">
         {DAYS, plural, =1 {# day ago} other {# days ago}}
@@ -3515,38 +3596,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Explore content to follow
       </message>
 
-      <!-- Feature notification guide -->
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_TITLE" desc="Notification title text educating user about tips and tricks in chrome.">
-        Thorium tips
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_MESSAGE_DEFAULT_BROWSER" desc="Notification body text educating user about setting chrome as default browser.">
-        Learn how to set Thorium as your default
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_MESSAGE_SIGN_IN" desc="Notification body text educating user about signing in into chrome.">
-        To get your Google stuff across devices, sign in
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_MESSAGE_INCOGNITO_TAB" desc="Notification body text educating user about incognito tab in chrome.">
-        To browse privately on this device, try out Incognito
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_MESSAGE_NTP_SUGGESTION_CARD" desc="Notification body text educating user about discovering suggested articles in chrome new tab page.">
-        Discover new content on Thorium’s homepage
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_NOTIFICATION_MESSAGE_VOICE_SEARCH" desc="Notification body text educating user about voice search in chrome.">
-        You can use your voice to search in Thorium
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_TOOLTIP_MESSAGE_INCOGNITO_TAB" desc="Tooltip text educating user about using incognito tab in chrome.">
-        To open a new Incognito tab, open the menu
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_TOOLTIP_MESSAGE_NTP_SUGGESTION_CARD" desc="Tooltip text educating user about discovering suggested articles in chrome new tab page.">
-        Scroll down to see suggested articles
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_TOOLTIP_MESSAGE_VOICE_SEARCH" desc="Tooltip text educating user about voice search in chrome.">
-        To search with your voice, tap the microphone
-      </message>
-      <message name="IDS_FEATURE_NOTIFICATION_GUIDE_TOOLTIP_MESSAGE_SIGN_IN" desc="Tooltip text educating user about signing in into chrome.">
-        Sign in to Thorium with your Google Account
-      </message>
-
       <!-- Toolbar button strings -->
       <message name="IDS_OPEN_TABS" desc="Text for button to enter the tab switcher and show tabs that are open on this device">
         Open tabs
@@ -3574,6 +3623,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_CUSTOM_TAB_SIDE_SHEET_MINIMIZE" desc="The accesibility text for minimize button in side-sheet custom tab.">
         Collapse to side view
+      </message>
+      <message name="IDS_CUSTOM_TAB_HISTORY_IPH_BUBBLE_TEXT" desc="The message on the text bubble shown to educate the user about history in CCTs.">
+        View your web history here
       </message>
       <message name="IDS_CUSTOM_TAB_MINIMIZE" desc="The accessibility text for minimize button for custom tabs.">
         Minimize tab
@@ -3694,6 +3746,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_MENU_RECENT_TABS" desc="Menu item for opening the 'Recent tabs' page that shows recently closed tabs and pages the user has opened on his/her other devices. [CHAR_LIMIT=27]">
         Recent tabs
       </message>
+      <message name="IDS_MENU_WEB_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
+        Web history
+      </message>
       <message name="IDS_MENU_HISTORY" desc="Menu item for opening the history page. [CHAR_LIMIT=27]">
         History
       </message>
@@ -3702,9 +3757,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_MENU_DOWNLOADS" desc="Menu item for opening the downloads page. [CHAR_LIMIT=27]">
         Downloads
-      </message>
-      <message name="IDS_MENU_ADD_BOOKMARK" desc="Menu item for adding the current page to 'Bookmarks'. Verb. [CHAR_LIMIT=27]">
-        Bookmark
       </message>
       <message name="IDS_MENU_EDIT_BOOKMARK" desc="Menu item for editing the content of the bookmark for the current page. [CHAR_LIMIT=27]">
         Edit Bookmark
@@ -3749,6 +3801,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_MENU_SETTINGS" desc="Menu item for opening browser settings. [CHAR_LIMIT=27]">
         Settings
+      </message>
+      <message name="IDS_MENU_SETTINGS_ACCOUNT_ERROR" desc="Accessibility string for settings menu item with a badge on the icon in case of sync/identity error.">
+        Settings, Google Account error
       </message>
       <message name="IDS_MENU_CLOSE_ALL_TABS" desc="Menu item for closing all open tabs. [CHAR_LIMIT=27]">
         Close all tabs
@@ -4009,13 +4064,13 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_LOCAL_BOOKMARK_MOVE_SNACKBAR_MESSAGE" desc="The snackbar message shown when a bookmark is moved to a local folder.">
         {BOOKMARK_COUNT, plural,
-          =1 {Bookmark saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>. It is only saved to this device.}
-          other {Bookmarks saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>. It is only saved to this device.}}
+          =1 {Bookmark saved to "<ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>". It is only saved to this device.}
+          other {Bookmarks saved to "<ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>". It is only saved to this device.}}
       </message>
       <message name="IDS_ACCOUNT_BOOKMARK_MOVE_SNACKBAR_MESSAGE" desc="The snackbar message shown when a bookmark is moved to an account folder.">
         {BOOKMARK_COUNT, plural,
-          =1 {Bookmark saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph> in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}
-          other {Bookmarks saved to <ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph> in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}}
+          =1 {Bookmark saved to "<ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>" in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}
+          other {Bookmarks saved to "<ph name="FOLDER_NAME">%1$s<ex>Mobile bookmarks</ex></ph>" in your account, <ph name="ACCOUNT_EMAIL">%2$s<ex>example@gmail.com</ex></ph>.}}
       </message>
 
 
@@ -4969,9 +5024,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
 
       <!-- Sharing Hub -->
-      <message name="IDS_SHARING_HUB_NO_DEVICES_AVAILABLE_TEXT" desc="Text to show when no device targets are available for sharing.">
-        To share this page to another device, turn on sync in Thorium settings on the other device
-      </message>
       <message name="IDS_SHARING_HUB_STORAGE_DISABLED_TEXT" desc="Text to show when storage permission is disabled.">
         You have disabled Storage access, please go to Settings to enable it.
       </message>
@@ -5964,6 +6016,11 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_WEBAUTHN_INCOGNITO_CONFIRMATION_SHEET_CLOSED" desc="Accessibility string that describes closing a bottomsheet that confirms with the user that they want to create passkey while in Incognito mode. (See the glossary for translations of the word 'passkey'. Do not translate as 'password'." formatter_data="android_java">
         Passkey confirmation sheet closed
+      </message>
+
+      <!-- Data Sharing -->
+      <message name="IDS_SHARED_IMAGE_TILES_COUNT" desc="The count string for number of tiles that overflows from shared image tiles. |COUNT_NUMBER| will be a number between 1 and 99 (it will be 1-2 digits at most). [CHAR_LIMIT=3]">
+        +<ph name="COUNT_NUMBER">%1$s<ex>1</ex></ph>
       </message>
     </messages>
   </release>

@@ -23,12 +23,6 @@
     </message>
   </if>
 
-  <if expr="is_android or is_ios">
-    <message name="IDS_AUTOFILL_REMOVE_LOCAL_COPY_BUTTON" desc="The label of the button that removes the local copy of a Wallet Credit Card." formatter_data="android_java">
-      Remove copy
-    </message>
-  </if>
-
   <message name="IDS_AUTOFILL_WARNING_INSECURE_CONNECTION" desc="Warning text to show when credit card autofill is disabled because the website is not using a secure connection.">
     Automatic credit card filling is disabled because this form does not use a secure connection.
   </message>
@@ -121,11 +115,10 @@
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_FILLED_FORM" desc="Screen reader announcement indicating that current form was autofilled.">
     The form was filled in
   </message>
-  <!--TODO(crbug.com/1493361): Align with writers about related strings and remove translateable=false-->
-  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_EXPANDABLE_ONLY_ENTRY" desc="Screen reader announcement used for non-expandable Autofill popup entries." translateable="false">
+  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_EXPANDABLE_ONLY_ENTRY" desc="Screen reader announcement used for non-expandable Autofill popup entries.">
     You are currently on a menu
   </message>
-  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_VIRTUAL_CARD_MANUAL_FALLBACK_ENTRY" desc="Screen reader announcement used for virtual credit card suggestions that do not fill the web form." translateable="false">
+  <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_VIRTUAL_CARD_MANUAL_FALLBACK_ENTRY" desc="Screen reader announcement used for virtual credit card suggestions that do not fill the web form.">
     Dialog with credit card details was shown
   </message>
 
@@ -247,6 +240,13 @@
 
   <message name="IDS_AUTOFILL_IPH_EXTERNAL_ACCOUNT_PROFILE_SUGGESTION" desc="IPH bubble for a suggestion item with an account profile that was created somewhere outside Thorium (e.g. Google Pay)." formatter_data="android_java">
     You can now use addresses from your Google Account
+  </message>
+  <!-- TODO(b/320633229): Revisit string and mark it as translatable.-->
+  <message name="IDS_AUTOFILL_IPH_MANUAL_FALLBACK" desc="IPH bubble for triggering autofill from the context menu." translateable="false">
+    Right click to fill your saved info in any online form with less typing
+  </message>
+  <message name="IDS_AUTOFILL_IPH_MANUAL_FALLBACK_SCREENREADER" is_accessibility_with_no_ui="true" desc="Screenreader text for the IPH bubble for triggering autofill from the context menu.">
+    Right click to fill in your saved info in any online form with less typing
   </message>
 
   <!-- Autofill suggestion label separator -->
@@ -575,6 +575,15 @@
     <message name="IDS_AUTOFILL_UPDATE_ADDRESS_PROMPT_TITLE" desc="Title shown at the top of prompt that offers the user to update an existing address.">
       Update address?
     </message>
+    <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_PROMPT_TITLE" desc="The 'Add new address' bubble title.">
+      Fill your address with less typing
+    </message>
+    <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_INTO_CHROME_PROMPT_BODY_TEXT" desc="The 'Add new address' bubble body text if the address will be saved in Thorium (locally or syncable among Thoriums on different devices).">
+      You don't have any addresses saved. Add an address to use it in Thorium.
+    </message>
+    <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_INTO_ACCOUNT_PROMPT_BODY_TEXT" desc="The 'Add new address' bubble body text if the address will be save in the user's Google account.">
+      You don't have any addresses saved. Add an address to use it across Google products.
+    </message>
     <message name="IDS_AUTOFILL_UPDATE_ADDRESS_PROMPT_CANCEL_BUTTON_LABEL" desc="Label of the Cancel button in the prompt that offers the user to update an existing address.">
       No thanks
     </message>
@@ -589,6 +598,9 @@
     </message>
     <message name="IDS_AUTOFILL_EDIT_ADDRESS_DIALOG_OK_BUTTON_LABEL_UPDATE" desc="Label of the OK button in the dialog that edits the address before using it to update an existing address.">
       Update
+    </message>
+    <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_DIALOG_OK_BUTTON_LABEL" desc="Label of the OK button in the dialog that promts the user to add a new address.">
+      Add address
     </message>
     <message name="IDS_AUTOFILL_EDIT_ADDRESS_DIALOG_CANCEL_BUTTON_LABEL" desc="Label of the Cancel button in the dialog that edits an address before saving it.">
       Cancel

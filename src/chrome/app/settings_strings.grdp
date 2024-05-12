@@ -259,8 +259,17 @@
   <message name="IDS_SETTINGS_SHOW_BOOKMARKS_BAR" desc="Label for the checkbox which enables or disables showing the bookmarks bar in the toolbar.">
     Show bookmarks bar
   </message>
-  <message name="IDS_SETTINGS_SHOW_HOVER_CARD_IMAGES" desc="Label for the checkbox which enables or disables showing image previews for tab hovercards.">
-    Show images on tab hover preview cards
+  <message name="IDS_SETTINGS_HOVER_CARD_TITLE" desc="Title for the section in appearance settings for configuring what gets displayed in tab hovercards.">
+    Tab hover preview card
+  </message>
+  <message name="IDS_SETTINGS_SHOW_HOVER_CARD_IMAGES" desc="Label for the toggle which enables or disables showing image previews for tab hovercards.">
+    Show tab preview images
+  </message>
+  <message name="IDS_SETTINGS_SHOW_HOVER_CARD_MEMORY_USAGE" desc="Label for the toggle which enables or disables showing tabs' memory usage in tab hovercards.">
+    Show tab memory usage
+  </message>
+  <message name="IDS_SETTINGS_SHOW_HOVER_CARD_MEMORY_USAGE_STANDALONE" desc="Label for the toggle which enables or disables showing tabs' memory usage in tab hovercards. This longer string is shown when then toggle is in it's own row without a title to indicate the setting is to do with tab hovercards.">
+    Show memory usage on tab hover preview card
   </message>
   <message name="IDS_SETTINGS_SIDE_PANEL" desc="Title for the side panel section. Allows the user to toggle which side the side panel is displayed on.">
     Side panel
@@ -454,9 +463,6 @@
   </message>
   <message name="IDS_SETTINGS_ADDRESS_REMOVED_MESSAGE" desc="Hidden text that is read to screen readers to confirm that an address was removed.">
     Address deleted
-  </message>
-  <message name="IDS_SETTINGS_CREDIT_CARD_REMOVE" desc="Label for a context menu item removes the locally cached credit card that is also saved on Google Payments. Clicking this will NOT remove the credit card from Google Payments.">
-    Remove copy
   </message>
   <message name="IDS_SETTINGS_EDIT_CREDIT_CARD_TITLE" desc="The title for the dialog that's shown when editing a card. This can be either credit, debit, or prepaid card..">
     Edit card
@@ -1340,15 +1346,6 @@
   <message name="IDS_SETTINGS_PRELOAD_PAGES_TITLE" desc="Title for a section in Settings that controls pages preloading and informs the user about the data shared by this feature.">
     Preload pages
   </message>
-  <message name="IDS_SETTINGS_PRELOAD_PAGES_SUMMARY" desc="Summary for a section in Settings that controls pages preloading and informs the user about the data shared by this feature.">
-    Choose whether to preload pages
-  </message>
-  <message name="IDS_SETTINGS_PRELOAD_PAGES_NO_PRELOADING_TITLE" desc="Name of the no preloading option for the Preload Pages settings page. This option disables preloading pages that Thorium believes the user is likely to navigate to.">
-    No preloading
-  </message>
-  <message name="IDS_SETTINGS_PRELOAD_PAGES_NO_PRELOADING_SUMMARY" desc="Short explanation of what the no preloading mode does in the Preload Pages setting.">
-    Pages load only after you open them
-  </message>
   <message name="IDS_SETTINGS_PRELOAD_PAGES_STANDARD_PRELOADING_TITLE" desc="Name of the standard preloading option for the Preload Pages settings page. This option enables preloading pages that Thorium believes the user is likely to navigate to.">
     Standard preloading
   </message>
@@ -1744,12 +1741,6 @@
       If a site tries to steal your password, or when you download a harmful file, Thorium may also send URLs, including bits of page content, to Google
     </message>
   </if>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_CARD_HEADER" desc="Header of the 'search suggestions' card in the 'Privacy Guide'.">
-    Choose whether to get additional search suggestions
-  </message>
-  <message name="IDS_SETTINGS_PRIVACY_GUIDE_SEARCH_SUGGESTIONS_FEATURE_DESCRIPTION1" desc="A part of the feature description of 'search suggestions' in the 'Privacy Guide'.">
-    When you click or type in the address bar or search box, you'll see suggestions from your default search engine. This is off in Incognito.
-  </message>
 
   <!-- Safety check -->
   <message name="IDS_SETTINGS_SAFETY_CHECK_SECTION_TITLE" desc="'Safety check' is a noun phrase (sentence case). 'Safety check' refers to an area of the Settings page where users can quickly check whether their safety-related settings are fully protecting them.">
@@ -2695,6 +2686,18 @@
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_FONTS_BLOCKED_EXCEPTIONS" desc="Label for the blocked exceptions site list of the fonts content setting.">
     Not allowed to use fonts installed on your device
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_AUTOMATIC_FULLSCREEN_DESCRIPTION" desc="Label explaining the automatic fullscreen content setting.">
+    Sites use this setting to offer immersive fullscreen experiences regardless of user gestures
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_AUTOMATIC_FULLSCREEN_BLOCK" desc="Label explaining that automatic fullscreen is blocked by default, meaning a user gesture is required.">
+    Entering fullscreen requires a user gesture by default
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_AUTOMATIC_FULLSCREEN_ALLOWED_EXCEPTIONS" desc="Label for the allowed exceptions site list of the automatic fullscreen content setting.">
+    Allowed to enter fullscreen automatically
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_AUTOMATIC_FULLSCREEN_BLOCKED_EXCEPTIONS" desc="Label for the blocked exceptions site list of the automatic fullscreen content setting.">
+    Not allowed to enter fullscreen automatically
   </message>
   <message name="IDS_SETTINGS_SITE_SETTINGS_HID_DEVICES_DESCRIPTION" desc="Description of the hid devices site setting.">
     Sites usually connect to HID devices for features that use uncommon keyboards, game controllers, and other devices

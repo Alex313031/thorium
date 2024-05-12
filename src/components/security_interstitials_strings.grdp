@@ -109,6 +109,9 @@
   <message name="IDS_ENTERPRISE_BLOCK_PRIMARY_PARAGRAPH_CUSTOM_MESSAGE" desc="Main paragraph of an error message with custom message provided by admin. Context: the error page that's shown when the requested URL doesn't pass the filtering rules set by the admin.">
   Your administrator says: "<ph name="CUSTOM_MESSAGE">$1<ex>This site has been blocked because it violates a policy.</ex></ph>"
   </message>
+  <message name="IDS_ENTERPRISE_BLOCK_PRIMARY_PARAGRAPH_CUSTOM_MESSAGE" desc="Main paragraph of an error message with custom message provided by admin. Context: the error page that's shown when the requested URL doesn't pass the filtering rules set by the admin.">
+  Your administrator says: "<ph name="CUSTOM_MESSAGE">$1<ex>This site has been blocked because it violates a policy.</ex></ph>"
+  </message>
   <message name="IDS_ENTERPRISE_BLOCK_GO_BACK" desc="The text for the button that takes the user back to safety.">
     Go back
   </message>
