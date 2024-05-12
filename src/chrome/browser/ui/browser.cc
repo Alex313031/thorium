@@ -897,9 +897,10 @@ Browser::WarnBeforeClosingResult Browser::MaybeWarnBeforeClosing(
   // before-unload handlers by setting `force_skip_warning_user_on_close_` to
   // true or there are no pending downloads we need to prompt about) then
   // there's no need to warn.
-  if (force_skip_warning_user_on_close_ || CanCloseWithInProgressDownloads())
+  if (force_skip_warning_user_on_close_ || CanCloseWithInProgressDownloads()) {
     if (CanCloseWithMultipleTabs())
       return WarnBeforeClosingResult::kOkToClose;
+  }
 
   DCHECK(!warn_before_closing_callback_)
       << "Tried to close window during close warning; dialog should be modal.";
@@ -1320,14 +1321,16 @@ void Browser::OnTabGroupChanged(const TabGroupChange& change) {
           tab_strip_model_->group_model()
               ->GetTabGroup(change.group)
               ->visual_data();
-      const SavedTabGroupKeyedService* const saved_tab_group_keyed_service =
-          base::FeatureList::IsEnabled(features::kTabGroupsSave)
-              ? SavedTabGroupServiceFactory::GetForProfile(profile_)
-              : nullptr;
+      const tab_groups::SavedTabGroupKeyedService* const
+          saved_tab_group_keyed_service =
+              base::FeatureList::IsEnabled(features::kTabGroupsSave)
+                  ? tab_groups::SavedTabGroupServiceFactory::GetForProfile(
+                        profile_)
+                  : nullptr;
       std::optional<std::string> saved_guid;
 
       if (saved_tab_group_keyed_service) {
-        const SavedTabGroup* const saved_group =
+        const tab_groups::SavedTabGroup* const saved_group =
             saved_tab_group_keyed_service->model()->Get(change.group);
         if (saved_group) {
           saved_guid = saved_group->saved_guid().AsLowercaseString();
@@ -1611,10 +1614,6 @@ bool Browser::ShouldShowStaleContentOnEviction(content::WebContents* source) {
 // TODO(crbug.com/1198344): Remove this.
 void Browser::MediaWatchTimeChanged(
     const content::MediaPlayerWatchTime& watch_time) {
-}
-
-base::WeakPtr<content::WebContentsDelegate> Browser::GetDelegateWeakPtr() {
-  return AsWeakPtr();
 }
 
 bool Browser::IsPointerLocked() const {
@@ -2309,7 +2308,8 @@ void Browser::RequestPointerLock(WebContents* web_contents,
 }
 
 void Browser::LostPointerLock() {
-  exclusive_access_manager_->pointer_lock_controller()->LostPointerLock();
+  exclusive_access_manager_->pointer_lock_controller()
+      ->ExitExclusiveAccessToPreviousState();
 }
 
 void Browser::RequestKeyboardLock(WebContents* web_contents,
@@ -2389,18 +2389,25 @@ void Browser::SetWebContentsBlocked(content::WebContents* web_contents,
     return;
   }
 
-  // For security, if the WebContents is in fullscreen, have it drop fullscreen.
-  // This gives the user the context they need in order to make informed
-  // decisions.
-  if (web_contents->IsFullscreen()) {
-    // FullscreenWithinTab mode exception: In this case, the browser window is
-    // in its normal layout and not fullscreen (tab content rendering is in a
-    // "simulated fullscreen" state for the benefit of screen capture). Thus,
-    // the user has the same context as they would in any non-fullscreen
-    // scenario. See "FullscreenWithinTab note" in FullscreenController's
-    // class-level comments for further details.
-    if (!exclusive_access_manager_->fullscreen_controller()
-             ->IsFullscreenWithinTab(web_contents)) {
+  // Drop HTML fullscreen to give users context for making informed decisions.
+  // Skip browser-fullscreen, which is more expressly user-initiated.
+  // Skip fullscreen-within-tab, which shows the browser frame.
+  if (blocked && GetFullscreenState(web_contents).target_mode ==
+                     content::FullscreenMode::kContent) {
+    bool exit_fullscreen = true;
+    if (base::FeatureList::IsEnabled(
+            features::kAutomaticFullscreenContentSetting)) {
+      // Skip URLs with the automatic fullscreen content setting granted.
+      const GURL& url = web_contents->GetLastCommittedURL();
+      const HostContentSettingsMap* const content_settings =
+          HostContentSettingsMapFactory::GetForProfile(
+              web_contents->GetBrowserContext());
+      exit_fullscreen =
+          content_settings->GetContentSetting(
+              url, url, ContentSettingsType::AUTOMATIC_FULLSCREEN) !=
+          CONTENT_SETTING_ALLOW;
+    }
+    if (exit_fullscreen) {
       web_contents->ExitFullscreen(true);
     }
   }

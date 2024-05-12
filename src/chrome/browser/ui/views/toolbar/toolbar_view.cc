@@ -74,7 +74,7 @@
 #include "chrome/browser/ui/views/toolbar/app_menu.h"
 #include "chrome/browser/ui/views/toolbar/back_forward_button.h"
 #include "chrome/browser/ui/views/toolbar/browser_app_menu_button.h"
-#include "chrome/browser/ui/views/toolbar/chrome_labs_button.h"
+#include "chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_button.h"
 #include "chrome/browser/ui/views/toolbar/home_button.h"
 #include "chrome/browser/ui/views/toolbar/pinned_toolbar_actions_container.h"
 #include "chrome/browser/ui/views/toolbar/reload_button.h"
@@ -1212,9 +1212,17 @@ DownloadToolbarButtonView* ToolbarView::GetDownloadButton() {
   return download_button();
 }
 
-BrowserRootView::DropIndex ToolbarView::GetDropIndex(
-    const ui::DropTargetEvent& event) {
-  return {browser_->tab_strip_model()->active_index(), false};
+std::optional<BrowserRootView::DropIndex> ToolbarView::GetDropIndex(
+    const ui::DropTargetEvent& event,
+    bool allow_replacement) {
+  if (!allow_replacement) {
+    return std::nullopt;
+  }
+
+  return BrowserRootView::DropIndex{
+      .index = browser_->tab_strip_model()->active_index(),
+      .relative_to_index =
+          BrowserRootView::DropIndex::RelativeToIndex::kReplaceIndex};
 }
 
 BrowserRootView::DropTarget* ToolbarView::GetDropTarget(
