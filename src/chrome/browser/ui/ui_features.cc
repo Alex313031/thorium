@@ -30,6 +30,17 @@ BASE_FEATURE(kAllowEyeDropperWGCScreenCapture,
 #endif  // BUILDFLAG(IS_WIN)
 );
 
+#if !defined(ANDROID)
+// Enables experiment were the cast item in the app menu may be reordered and
+// its subgroup renamed.
+BASE_FEATURE(kCastAppMenuExperiment,
+             "CastAppMenuExperiment",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+const base::FeatureParam<bool> kCastListedFirst{&kCastAppMenuExperiment,
+                                                "cast_listed_first", false};
+
+#endif
+
 // Enables icon in titlebar for web apps.
 BASE_FEATURE(kWebAppIconInTitlebar,
              "WebAppIconInTitlebar",
@@ -47,6 +58,36 @@ const base::FeatureParam<int> kChromeLabsActivationPercentage{
 BASE_FEATURE(kCloseOmniboxPopupOnInactiveAreaClick,
              "CloseOmniboxPopupOnInactiveAreaClick",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+// Enables updated copy and modified behavior for the default browser prompt.
+BASE_FEATURE(kDefaultBrowserPromptRefresh,
+             "DefaultBrowserPromptRefresh",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+// Parallel feature to track the group name for the synthetic trial.
+BASE_FEATURE(kDefaultBrowserPromptRefreshTrial,
+             "DefaultBrowserPromptRefreshTrial",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+const base::FeatureParam<std::string> kDefaultBrowserPromptRefreshStudyGroup{
+    &kDefaultBrowserPromptRefreshTrial, "group_name", ""};
+
+const base::FeatureParam<bool> kShowDefaultBrowserInfoBar{
+    &kDefaultBrowserPromptRefresh, "show_info_bar", true};
+
+const base::FeatureParam<bool> kShowDefaultBrowserAppMenuChip{
+    &kDefaultBrowserPromptRefresh, "show_app_menu_chip", false};
+
+const base::FeatureParam<bool> kUpdatedInfoBarCopy{
+    &kDefaultBrowserPromptRefresh, "updated_info_bar_copy", true};
+
+const base::FeatureParam<base::TimeDelta> kRepromptDuration{
+    &kDefaultBrowserPromptRefresh, "reprompt_duration", base::Days(28)};
+
+const base::FeatureParam<int> kMaxPromptCount{&kDefaultBrowserPromptRefresh,
+                                              "max_prompt_count", -1};
+
+const base::FeatureParam<int> kRepromptDurationMultiplier{
+    &kDefaultBrowserPromptRefresh, "reprompt_duration_multiplier", 2};
 
 // Create new Extensions app menu option (removing "More Tools -> Extensions")
 // with submenu to manage extensions and visit chrome web store.
@@ -66,13 +107,6 @@ BASE_FEATURE(kAccessCodeCastUI,
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
-#if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_CHROMEOS) && !BUILDFLAG(IS_FUCHSIA)
-// Enables camera preview in permission bubble and site settings.
-BASE_FEATURE(kCameraMicPreview,
-             "CameraMicPreview",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
-
 // Enables showing the EV certificate details in the Page Info bubble.
 BASE_FEATURE(kEvDetailsInPageInfo,
              "EvDetailsInPageInfo",
@@ -89,6 +123,12 @@ BASE_FEATURE(kGetTheMostOutOfChrome,
 // Enables or disables the Happiness Tracking Surveys being delivered via chrome
 // webui, rather than a separate static website.
 BASE_FEATURE(kHaTSWebUI, "HaTSWebUI", base::FEATURE_DISABLED_BY_DEFAULT);
+
+// When enabled, requesting to use the keyboard or pointer lock API causes a
+// permission prompt to be shown.
+BASE_FEATURE(kKeyboardAndPointerLockPrompt,
+             "KeyboardAndPointerLockPrompt",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // !BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
@@ -101,10 +141,27 @@ BASE_FEATURE(kLightweightExtensionOverrideConfirmations,
 
 // Preloads a WebContents with a Top Chrome WebUI on BrowserView initialization,
 // so that it can be shown instantly at a later time when necessary.
-// TODO(40168622): hook up to browser view initialization.
 BASE_FEATURE(kPreloadTopChromeWebUI,
              "PreloadTopChromeWebUI",
              base::FEATURE_DISABLED_BY_DEFAULT);
+constexpr base::FeatureParam<PreloadTopChromeWebUIMode>::Option
+    kPreloadTopChromeWebUIModeOptions[] = {
+        {PreloadTopChromeWebUIMode::kPreloadOnWarmup, "preload-on-warmup"},
+        {PreloadTopChromeWebUIMode::kPreloadOnMakeContents,
+         "preload-on-make-contents"},
+};
+const base::FeatureParam<PreloadTopChromeWebUIMode> kPreloadTopChromeWebUIMode{
+    &kPreloadTopChromeWebUI, "preload-mode",
+    PreloadTopChromeWebUIMode::kPreloadOnMakeContents,
+    &kPreloadTopChromeWebUIModeOptions};
+
+// Enables exiting browser fullscreen (users putting the browser itself into the
+// fullscreen mode via the browser UI or shortcuts) with press-and-hold Esc.
+#if !BUILDFLAG(IS_ANDROID)
+BASE_FEATURE(kPressAndHoldEscToExitBrowserFullscreen,
+             "PressAndHoldEscToExitBrowserFullscreen",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+#endif
 
 // Enable responsive toolbar. Toolbar buttons overflow to a chevron button when
 // the browser width is resized smaller than normal.
@@ -255,6 +312,10 @@ BASE_FEATURE(kMultiTabOrganization,
              "MultiTabOrganization",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
+BASE_FEATURE(kTabReorganization,
+             "TabReorganization",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 const base::FeatureParam<base::TimeDelta> kTabOrganizationTriggerPeriod{
     &kTabOrganization, "trigger_period", base::Hours(6)};
 
@@ -269,10 +330,6 @@ const base::FeatureParam<double> kTabOrganizationTriggerSensitivityThreshold{
 
 const base::FeatureParam<bool> KTabOrganizationTriggerDemoMode{
     &kTabOrganization, "trigger_demo_mode", false};
-
-BASE_FEATURE(kTabOrganizationRefreshButton,
-             "TabOrganizationRefreshButton",
-             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kTabSearchChevronIcon,
              "TabSearchChevronIcon",
@@ -327,10 +384,6 @@ const base::FeatureParam<int> kTabSearchRecentlyClosedDefaultItemDisplayCount{
 
 const base::FeatureParam<int> kTabSearchRecentlyClosedTabCountThreshold{
     &kTabSearchRecentlyClosed, "TabSearchRecentlyClosedTabCountThreshold", 100};
-
-BASE_FEATURE(kTabSearchUseMetricsReporter,
-             "TabSearchUseMetricsReporter",
-             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Enables creating a web app window when tearing off a tab with a url
 // controlled by a web app.
@@ -409,7 +462,7 @@ BASE_FEATURE(kWebUITabStripContextMenuAfterTap,
 #if BUILDFLAG(IS_CHROMEOS)
 BASE_FEATURE(kChromeOSTabSearchCaptionButton,
              "ChromeOSTabSearchCaptionButton",
-             base::FEATURE_ENABLED_BY_DEFAULT
+             base::FEATURE_ENABLED_BY_DEFAULT);
 #endif
 
 #if BUILDFLAG(IS_MAC)

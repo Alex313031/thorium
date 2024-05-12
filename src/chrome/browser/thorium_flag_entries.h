@@ -34,6 +34,15 @@
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
      "due to external apps or a non-standard system DNS config setting.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
+    {"side-panel-journeys",
+     "Side Panel Journeys",
+     "Enables Journeys within the Side Panel.",
+     kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
+    {"show-component-extension-options",
+     "Show Component Extension Options",
+     "Shows internal Chromium component extensions on the `chrome://extensions`. These are normally hidden, "
+     "but this is an override for debugging or inspection.",
+     kOsDesktop, SINGLE_VALUE_TYPE(switches::kShowComponentExtensionOptions)},
     {"force-high-contrast",
      "Enable High Contrast Mode",
      "Enables high contrast mode for all Thorium instances.",

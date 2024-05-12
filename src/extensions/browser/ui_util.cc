@@ -20,8 +20,10 @@ bool ShouldDisplayInExtensionSettings(Manifest::Type type,
 
   // Hide component extensions because they are only extensions as an
   // implementation detail of Chrome.
-  if (Manifest::IsComponentLocation(location)) {
-    return true;
+  if (Manifest::IsComponentLocation(location) &&
+      !base::CommandLine::ForCurrentProcess()->HasSwitch(
+          switches::kShowComponentExtensionOptions)) {
+    return false;
   }
 
   // Unless they are unpacked, never show hosted apps. Note: We intentionally
