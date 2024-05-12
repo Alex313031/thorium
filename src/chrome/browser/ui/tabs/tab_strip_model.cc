@@ -11,10 +11,10 @@
 #include <unordered_map>
 #include <utility>
 
+#include "base/command_line.h"
 #include "base/containers/adapters.h"
 #include "base/containers/contains.h"
 #include "base/containers/flat_map.h"
-#include "base/command_line.h"
 #include "base/memory/raw_ptr.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/metrics/user_metrics.h"
@@ -40,6 +40,7 @@
 #include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/send_tab_to_self/send_tab_to_self_bubble.h"
 #include "chrome/browser/ui/tab_ui_helper.h"
+#include "chrome/browser/ui/tabs/organization/metrics.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_service.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_service_factory.h"
 #include "chrome/browser/ui/tabs/organization/tab_organization_session.h"
@@ -333,6 +334,13 @@ void TabStripModel::AppendWebContents(std::unique_ptr<WebContents> contents,
                                       bool foreground) {
   InsertWebContentsAt(
       count(), std::move(contents),
+      foreground ? (ADD_INHERIT_OPENER | ADD_ACTIVE) : ADD_NONE);
+}
+
+void TabStripModel::AppendTab(std::unique_ptr<tabs::TabModel> tab,
+                              bool foreground) {
+  InsertDetachedTabAt(
+      count(), std::move(tab),
       foreground ? (ADD_INHERIT_OPENER | ADD_ACTIVE) : ADD_NONE);
 }
 
@@ -669,6 +677,14 @@ void TabStripModel::MoveGroupTo(const tab_groups::TabGroupId& group,
 
 WebContents* TabStripModel::GetActiveWebContents() const {
   return GetWebContentsAt(active_index());
+}
+
+tabs::TabModel* TabStripModel::GetActiveTab() const {
+  int index = active_index();
+  if (ContainsIndex(index)) {
+    return contents_data_[index].get();
+  }
+  return nullptr;
 }
 
 WebContents* TabStripModel::GetWebContentsAt(int index) const {
@@ -1614,8 +1630,9 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.AllEntrypoints.Clicked", true);
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.TabContextMenu.Clicked", true);
 
-      service->RestartSessionAndShowUI(browser,
-                                       GetWebContentsAt(context_index));
+      service->RestartSessionAndShowUI(
+          browser, TabOrganizationEntryPoint::kTabContextMenu,
+          GetWebContentsAt(context_index));
       break;
     }
 
@@ -1966,8 +1983,9 @@ void TabStripModel::CloseTabs(base::span<content::WebContents* const> items,
   }
 
   const std::string flag_value = base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("close-window-with-last-tab");
-  if (flag_value == "never" && !closing_all_ && static_cast<int>(filtered_items.size()) == count())
+  if (flag_value == "never" && !closing_all_ && static_cast<int>(filtered_items.size()) == count()) {
     delegate()->AddTabAt(GURL(), -1, true);
+  }
 
   const bool closing_all = static_cast<int>(filtered_items.size()) == count();
   base::WeakPtr<TabStripModel> ref = weak_factory_.GetWeakPtr();
@@ -2507,9 +2525,10 @@ void TabStripModel::DisconnectSavedTabGroups(
     return;
   }
 
-  SavedTabGroupKeyedService* const keyed_service =
-      SavedTabGroupServiceFactory::GetForProfile(profile_);
-  const SavedTabGroupModel* const stg_model = keyed_service->model();
+  tab_groups::SavedTabGroupKeyedService* const keyed_service =
+      tab_groups::SavedTabGroupServiceFactory::GetForProfile(profile_);
+  const tab_groups::SavedTabGroupModel* const stg_model =
+      keyed_service->model();
 
   // Count the tabs in each group in `indices`.
   std::unordered_map<tab_groups::TabGroupId, size_t, tab_groups::TabGroupIdHash>
