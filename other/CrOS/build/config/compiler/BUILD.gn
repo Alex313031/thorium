@@ -800,7 +800,7 @@ config("compiler") {
         # FIXME(inglorion): maybe tune these?
         # TODO(b/271459198): Revert limit on amd64 to 30 when fixed.
         import_instr_limit = 30
-      } else if (is_android) {
+      } else if (is_android && optimize_for_size) {
         # TODO(crbug.com/1308318): Investigate if we can get the > 6% perf win
         # of import_instr_limit 30 with a binary size hit smaller than ~2 MiB.
         import_instr_limit = 30
@@ -1086,6 +1086,12 @@ config("compiler") {
   } else {
     defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
   }
+
+  # Enable libstdc++ hardening lightweight assertions. Those have a low
+  # performance penalty but are considered a bare minimum for security.
+  if (use_safe_libstdcxx) {
+    defines += [ "_GLIBCXX_ASSERTIONS=1" ]
+  }
 }
 
 # The BUILDCONFIG file sets this config on targets by default, which means when
@@ -1178,10 +1184,9 @@ config("compiler_cpu_abi") {
         "-O3",
         "-msse3",
         "-mssse3",
-        "-msse4",
         "-msse4.1",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4.1", ]
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
       ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
@@ -1192,11 +1197,6 @@ config("compiler_cpu_abi") {
           "-mmmx",
           "-msse3",
         ]
-      }
-    } else if (target_cpu == "arm64") {
-      if (!is_android && !is_nacl) {
-        cflags += [ "-O3", ]
-        ldflags += [ "-Wl,-O3", ]
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
@@ -1748,6 +1748,9 @@ config("treat_warnings_as_errors") {
   # Note we apply the actual lint flags in config("compiler"). All warnings
   # are suppressed in third-party crates.
   rustflags = [ "-Dwarnings" ]
+
+  # TODO(https://crbug.com/326247202): Fix unused imports and remove this flag.
+  rustflags += [ "-Aunused-imports" ]
 }
 
 # default_warnings ------------------------------------------------------------
@@ -1795,6 +1798,12 @@ config("default_warnings") {
       # When compiling Objective-C, warns if a selector named via @selector has
       # not been defined in any visible interface.
       cflags += [ "-Wundeclared-selector" ]
+
+      # Blink builds use a higher deployment target than non-Blink builds, so
+      # suppress deprecation warnings in these builds.
+      if (use_blink) {
+        cflags += [ "-Wno-deprecated-declarations" ]
+      }
     }
 
     # Suppress warnings about ABI changes on ARM (Clang doesn't give this
@@ -1882,8 +1891,6 @@ config("default_warnings") {
       }
 
       cflags += [
-        "-Wenum-compare-conditional",
-
         # Ignore warnings about MSVC optimization pragmas.
         # TODO(thakis): Only for no_chromium_code? http://crbug.com/912662
         "-Wno-ignored-pragma-optimize",
@@ -1905,6 +1912,11 @@ config("default_warnings") {
 
         # TODO(https://crbug.com/1490607): Fix and re-enable.
         "-Wno-thread-safety-reference-return",
+      ]
+
+      cflags_cc += [
+        # TODO(crbug.com/328490295): Fix and re-enable for C flags.
+        "-Wenum-compare-conditional",
       ]
 
       if (!is_nacl) {
@@ -1972,35 +1984,6 @@ config("prevent_unsafe_narrowing") {
         # fixing types to be sign-correct.
         "-Wtautological-unsigned-zero-compare",
       ]
-    }
-  }
-}
-
-# unsafe_buffer_warning -------------------------------------------------------
-
-# Paths of third-party headers that violate Wunsafe-buffer-usage, but which we
-# have been unable to fix yet. We use this list to be able to make progress and
-# enable the warning on code that we do control/own.
-#
-# WARNING: This will disable all warnings in the files. ONLY USE THIS for
-# third-party code which we do not control/own. Fix the warnings instead in
-# our own code.
-if (is_clang) {
-  unsafe_buffer_warning_header_allowlist =
-      [ "third_party/googletest/src/googletest/include/gtest" ]
-}
-
-# Enables warnings on pointer arithmetic/indexing or calls to functions
-# annotated with `UNSAFE_BUFFER_USAGE`.
-config("unsafe_buffer_warning") {
-  if (is_clang) {
-    cflags = [ "-Wunsafe-buffer-usage" ]
-    foreach(h, unsafe_buffer_warning_header_allowlist) {
-      if (is_win) {
-        cflags += [ "/clang:--system-header-prefix=$h" ]
-      } else {
-        cflags += [ "--system-header-prefix=$h" ]
-      }
     }
   }
 }
@@ -2222,9 +2205,7 @@ config("export_dynamic") {
 config("thin_archive") {
   # The macOS and iOS default linker ld64 does not support reading thin
   # archives.
-  # TODO(crbug.com/1221615): Enable on is_apple if use_lld once that no longer
-  # confuses lldb.
-  if ((is_posix && !is_nacl && !is_apple) || is_fuchsia) {
+  if ((is_posix && !is_nacl && (!is_apple || use_lld)) || is_fuchsia) {
     arflags = [ "-T" ]
   } else if (is_win && use_lld) {
     arflags = [ "/llvmlibthin" ]
@@ -2322,7 +2303,6 @@ if (is_win) {
   common_optimize_on_ldflags = []
 
   common_optimize_on_cflags += [
-    "/Ob2",  # Both explicit and auto inlining.
     "/Oy-",  # Disable omitting frame pointers, must be after /O2.
     "/Zc:inline",  # Remove unreferenced COMDAT (faster links).
   ]
@@ -2538,24 +2518,16 @@ config("default_stack_frames") {
 # Default "optimization on" config.
 config("optimize") {
   if (is_win) {
-    if (chrome_pgo_phase != 2) {
-      # Favor size over speed, /O1 must be before the common flags.
-      # /O1 implies /Os and /GF.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
-      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1" ]
-    } else {
-      # PGO requires all translation units to be compiled with /O2. The actual
-      # optimization level will be decided based on the profiling data.
-      cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
+    cflags = [ "/O2", "-Xclang", "-O3", ] + common_optimize_on_cflags
 
-      # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
-      # suggests not using an explicit `-Copt-level` at all, and the default is
-      # to optimize for performance like `/O2` for clang.
-      rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1" ]
-    }
+    # https://doc.rust-lang.org/rustc/profile-guided-optimization.html#usage
+    # suggests not using an explicit `-Copt-level` at all, and the default is
+    # to optimize for performance like `/O2` for clang.
+    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1" ]
   } else if (optimize_for_size || is_chromeos) {
     # Favor size over speed.
-    # -Os in clang is more of a size-conscious -O2 than "size at any cost" (AKA -Oz).
+    # -Os in clang is more of a size-conscious -O2 than "size at any cost"
+    # (AKA -Oz).
 
     if (is_fuchsia) {
       cflags = [ "-O3" ] + common_optimize_on_cflags
