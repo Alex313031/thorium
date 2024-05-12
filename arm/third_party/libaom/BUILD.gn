@@ -5,7 +5,6 @@
 import("//build/buildflag_header.gni")
 import("//build/config/android/config.gni")
 import("//build/config/arm.gni")
-import("//build/config/sanitizers/sanitizers.gni")
 import("//testing/libfuzzer/fuzzer_test.gni")
 import("//testing/test.gni")
 import("//third_party/libaom/libaom_srcs.gni")
@@ -66,12 +65,13 @@ libaom_include_dirs = [
   "source/libaom",
 ]
 
+# Private configuration used in building libaom.
 config("libaom_config") {
   include_dirs = libaom_include_dirs
 }
 
 # This config is applied to targets that depend on libaom.
-config("libaom_external_config") {
+config("libaom_public_config") {
   include_dirs = [
     "source/libaom",
     platform_include_dir,
@@ -146,6 +146,9 @@ if (current_cpu == "x86" || (current_cpu == "x64" && !is_msan)) {
     sources += aom_av1_encoder_intrin_ssse3
     sources += aom_dsp_common_intrin_ssse3
     sources += aom_dsp_encoder_intrin_ssse3
+    if (current_cpu == "x86") {
+      sources += aom_av1_common_intrin_ssse3_x86
+    }
   }
 
   source_set("libaom_intrinsics_sse4_1") {
@@ -275,9 +278,7 @@ static_library("libaom") {
   configs -= [ "//build/config/compiler:default_init_stack_vars" ]
 
   sources = aom_av1_common_sources
-  sources += aom_av1_decoder_sources
   sources += aom_dsp_common_sources
-  sources += aom_dsp_decoder_sources
   sources += aom_mem_sources
   sources += aom_rtcd_sources
   sources += aom_scale_sources
@@ -331,7 +332,7 @@ static_library("libaom") {
   if (is_android) {
     deps += [ "//third_party/cpu_features:ndk_compat" ]
   }
-  public_configs = [ ":libaom_external_config" ]
+  public_configs = [ ":libaom_public_config" ]
   public_deps = [ ":libaom_buildflags" ]
 }
 
@@ -349,31 +350,22 @@ static_library("libaomrc") {
   configs += [ "//build/config/compiler:no_chromium_code" ]
   configs += [ ":libaom_config" ]
 
-  public_configs = [ ":libaom_external_config" ]
+  public_configs = [ ":libaom_public_config" ]
   public_deps = [ ":libaom" ]
 }
 
-fuzzer_test("libaom_av1_dec_fuzzer") {
-  sources = [ "source/libaom/examples/av1_dec_fuzzer.cc" ]
-  seed_corpus = "fuzz/av1_dec_fuzzer_corpus"
-  deps = [ ":libaom" ]
-  additional_configs = [ ":libaom_config" ]
-}
+test("av1_encoder_fuzz_test") {
+  sources = [ "fuzz/av1_encoder_fuzz_test.cc" ]
 
-if (fuzztest_supported) {
-  test("av1_encoder_fuzz_test") {
-    sources = [ "fuzz/av1_encoder_fuzz_test.cc" ]
+  fuzztests = [
+    "AV1EncodeFuzzTest.AV1EncodeSucceeds",
+    "AV1EncodeFuzzTest.AV1EncodeArbitraryCallSequenceSucceeds",
+  ]
 
-    fuzztests = [
-      "AV1EncodeFuzzTest.AV1EncodeSucceeds",
-      "AV1EncodeFuzzTest.AV1EncodeArbitraryCallSequenceSucceeds",
-    ]
-
-    deps = [
-      ":libaom",
-      "//third_party/fuzztest:fuzztest_gtest_main",
-    ]
-  }
+  deps = [
+    ":libaom",
+    "//third_party/fuzztest:fuzztest_gtest_main",
+  ]
 }
 
 config("test_libaom_config") {
@@ -382,13 +374,10 @@ config("test_libaom_config") {
 
 test("test_libaom") {
   sources = aom_libwebm_sources
-  sources += aom_webm_decoder_sources
   sources += aom_webm_encoder_sources
   sources += aom_common_app_util_sources
-  sources += aom_decoder_app_util_sources
   sources += aom_encoder_app_util_sources
   sources += aom_unit_test_common_sources
-  sources += aom_unit_test_decoder_sources
   sources += aom_unit_test_encoder_sources
   sources += aom_unit_test_wrapper_sources
   sources += [ "source/gen_src/usage_exit.c" ]

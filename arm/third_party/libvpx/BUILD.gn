@@ -5,7 +5,6 @@
 import("//build/config/android/config.gni")
 import("//build/config/arm.gni")
 import("//build/config/chromeos/ui_mode.gni")
-import("//build/config/sanitizers/sanitizers.gni")
 import("//testing/test.gni")
 import("//third_party/libvpx/libvpx_srcs.gni")
 import("//third_party/nasm/nasm_assemble.gni")
@@ -71,6 +70,7 @@ libvpx_include_dirs = [
   "source/libvpx",
 ]
 
+# Private configuration used in building libvpx.
 config("libvpx_config") {
   include_dirs = libvpx_include_dirs
 
@@ -97,7 +97,7 @@ config("libvpx_config") {
 }
 
 # This config is applied to targets that depend on libvpx.
-config("libvpx_external_config") {
+config("libvpx_public_config") {
   include_dirs = [
     "source/libvpx",
     platform_include_dir,
@@ -344,6 +344,21 @@ if (current_cpu == "arm64") {
         deps = [ ":libvpx_arm64_highbd_headers" ]
       }
     }
+
+    source_set("libvpx_intrinsics_sve2") {
+      check_includes = false
+      configs -= [ "//build/config/compiler:chromium_code" ]
+      configs += [ "//build/config/compiler:no_chromium_code" ]
+      configs += [ "//build/config/compiler:march_sve2" ]
+      configs += [ ":libvpx_config" ]
+      if (cpu_arch_full == "arm64") {
+        sources = libvpx_srcs_arm64_sve2
+        deps = [ ":libvpx_arm64_headers" ]
+      } else if (cpu_arch_full == "arm64-highbd") {
+        sources = libvpx_srcs_arm64_highbd_sve2
+        deps = [ ":libvpx_arm64_highbd_headers" ]
+      }
+    }
   }
 }
 
@@ -529,7 +544,10 @@ static_library("libvpx") {
     deps += [ ":libvpx_intrinsics_neon_dotprod" ]
     deps += [ ":libvpx_intrinsics_neon_i8mm" ]
     if (!is_win) {
-      deps += [ ":libvpx_intrinsics_sve" ]
+      deps += [
+        ":libvpx_intrinsics_sve",
+        ":libvpx_intrinsics_sve2",
+      ]
     }
   }
   if (is_android) {
@@ -542,7 +560,7 @@ static_library("libvpx") {
     deps += [ ":libvpx_loongarch_lsx" ]
   }
 
-  public_configs = [ ":libvpx_external_config" ]
+  public_configs = [ ":libvpx_public_config" ]
 }
 
 static_library("libvpxrc") {
@@ -564,35 +582,33 @@ static_library("libvpxrc") {
   configs += [ ":libvpx_config" ]
   public_deps = [ ":libvpx" ]
 
-  public_configs = [ ":libvpx_external_config" ]
+  public_configs = [ ":libvpx_public_config" ]
 }
 
-if (fuzztest_supported) {
-  test("vp8_encoder_fuzz_test") {
-    sources = [ "tests/fuzzer/vp8_encoder_fuzz_test.cc" ]
+test("vp8_encoder_fuzz_test") {
+  sources = [ "tests/fuzzer/vp8_encoder_fuzz_test.cc" ]
 
-    fuzztests = [
-      "VP8EncodeFuzzTest.VP8EncodeArbitraryCallSequenceSucceeds",
-      "VP8EncodeFuzzTest.VP8EncodeSucceeds",
-    ]
+  fuzztests = [
+    "VP8EncodeFuzzTest.VP8EncodeArbitraryCallSequenceSucceeds",
+    "VP8EncodeFuzzTest.VP8EncodeSucceeds",
+  ]
 
-    deps = [
-      ":libvpx",
-      "//third_party/fuzztest:fuzztest_gtest_main",
-    ]
-  }
+  deps = [
+    ":libvpx",
+    "//third_party/fuzztest:fuzztest_gtest_main",
+  ]
+}
 
-  test("vp9_encoder_fuzz_test") {
-    sources = [ "tests/fuzzer/vp9_encoder_fuzz_test.cc" ]
+test("vp9_encoder_fuzz_test") {
+  sources = [ "tests/fuzzer/vp9_encoder_fuzz_test.cc" ]
 
-    fuzztests = [
-      "VP9EncodeFuzzTest.VP9EncodeArbitraryCallSequenceSucceeds",
-      "VP9EncodeFuzzTest.VP9EncodeSucceeds",
-    ]
+  fuzztests = [
+    "VP9EncodeFuzzTest.VP9EncodeArbitraryCallSequenceSucceeds",
+    "VP9EncodeFuzzTest.VP9EncodeSucceeds",
+  ]
 
-    deps = [
-      ":libvpx",
-      "//third_party/fuzztest:fuzztest_gtest_main",
-    ]
-  }
+  deps = [
+    ":libvpx",
+    "//third_party/fuzztest:fuzztest_gtest_main",
+  ]
 }

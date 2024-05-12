@@ -2497,6 +2497,11 @@ config("march_i8mm_f16") {
   }
 }
 
+config("march_sve2") {
+  cflags = [ "-march=armv9-a+sve2" ]
+  asmflags = cflags
+}
+
 config("default_stack_frames") {
   if (!is_win) {
     if (enable_frame_pointers) {
