@@ -216,7 +216,7 @@ fi
 eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/export \1='\2'/" \
   "${OUTPUTDIR}/installer/theme/BRANDING")
 
-export USR_BIN_SYMLINK_NAME="${PACKAGE}"
+export USR_BIN_SYMLINK_NAME="thorium-browser"
 
 stage_install_rpm
 do_package

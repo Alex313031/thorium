@@ -59,6 +59,9 @@ Disable Captive Portals Detection > https://github.com/uazo/cromite/blob/master/
 
 Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
+Enable Fingerprinting Protection Patch
+  - Made by me.
+
 Show full URLs by Default Patch > https://github.com/Alex313031/thorium/blob/74219f27911e133483c3ab85c70ba4360ea98423/src/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc#L292
 
 Disable Privacy Sandbox (previously known as FLOC) Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch

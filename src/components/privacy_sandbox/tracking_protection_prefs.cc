@@ -75,6 +75,9 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
       prefs::kIpProtectionEnabled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(
+      prefs::kFingerprintingProtectionEnabled, true,
+      user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterBooleanPref(
       prefs::kEnableDoNotTrack, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
 

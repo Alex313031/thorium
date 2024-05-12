@@ -11,10 +11,13 @@
 #include "base/metrics/histogram_macros.h"
 #include "base/metrics/user_metrics.h"
 #include "base/task/single_thread_task_runner.h"
+#include "base/types/pass_key.h"
 #include "chrome/browser/infobars/confirm_infobar_creator.h"
 #include "chrome/browser/ui/startup/default_browser_prompt.h"
+#include "chrome/browser/ui/ui_features.h"
 #include "chrome/grit/branded_strings.h"
 #include "chrome/grit/generated_resources.h"
+#include "components/infobars/core/confirm_infobar_delegate.h"
 #include "components/infobars/core/infobar.h"
 #include "components/vector_icons/vector_icons.h"
 #include "ui/base/l10n/l10n_util.h"
@@ -22,20 +25,25 @@
 namespace chrome {
 
 // static
-void DefaultBrowserInfoBarDelegate::Create(
+infobars::InfoBar* DefaultBrowserInfoBarDelegate::Create(
     infobars::ContentInfoBarManager* infobar_manager,
     Profile* profile) {
+  return;
 }
 
-DefaultBrowserInfoBarDelegate::DefaultBrowserInfoBarDelegate(Profile* profile)
+DefaultBrowserInfoBarDelegate::DefaultBrowserInfoBarDelegate(
+    base::PassKey<DefaultBrowserInfoBarDelegate>,
+    Profile* profile)
     : profile_(profile) {
-  // We want the info-bar to stick-around for few seconds and then be hidden
-  // on the next navigation after that.
-  base::SingleThreadTaskRunner::GetCurrentDefault()->PostDelayedTask(
-      FROM_HERE,
-      base::BindOnce(&DefaultBrowserInfoBarDelegate::AllowExpiry,
-                     weak_factory_.GetWeakPtr()),
-      base::Seconds(8));
+  if (!base::FeatureList::IsEnabled(features::kDefaultBrowserPromptRefresh)) {
+    // We want the info-bar to stick-around for few seconds and then be hidden
+    // on the next navigation after that.
+    base::SingleThreadTaskRunner::GetCurrentDefault()->PostDelayedTask(
+        FROM_HERE,
+        base::BindOnce(&DefaultBrowserInfoBarDelegate::AllowExpiry,
+                       weak_factory_.GetWeakPtr()),
+        base::Seconds(8));
+  }
 }
 
 DefaultBrowserInfoBarDelegate::~DefaultBrowserInfoBarDelegate() {
@@ -74,9 +82,15 @@ void DefaultBrowserInfoBarDelegate::InfoBarDismissed() {
   UMA_HISTOGRAM_ENUMERATION("DefaultBrowser.InfoBar.UserInteraction",
                             DISMISS_INFO_BAR,
                             NUM_INFO_BAR_USER_INTERACTION_TYPES);
+
+  ConfirmInfoBarDelegate::InfoBarDismissed();
 }
 
 std::u16string DefaultBrowserInfoBarDelegate::GetMessageText() const {
+  if (base::FeatureList::IsEnabled(features::kDefaultBrowserPromptRefresh) &&
+      features::kUpdatedInfoBarCopy.Get()) {
+    return l10n_util::GetStringUTF16(IDS_DEFAULT_BROWSER_INFOBAR_REFRESH_TEXT);
+  }
   return l10n_util::GetStringUTF16(IDS_DEFAULT_BROWSER_INFOBAR_TEXT);
 }
 
@@ -87,6 +101,11 @@ int DefaultBrowserInfoBarDelegate::GetButtons() const {
 std::u16string DefaultBrowserInfoBarDelegate::GetButtonLabel(
     InfoBarButton button) const {
   DCHECK_EQ(BUTTON_OK, button);
+  if (base::FeatureList::IsEnabled(features::kDefaultBrowserPromptRefresh) &&
+      features::kUpdatedInfoBarCopy.Get()) {
+    return l10n_util::GetStringUTF16(
+        IDS_DEFAULT_BROWSER_INFOBAR_REFRESH_OK_BUTTON_LABEL);
+  }
   return l10n_util::GetStringUTF16(IDS_DEFAULT_BROWSER_INFOBAR_OK_BUTTON_LABEL);
 }
 
@@ -102,7 +121,8 @@ bool DefaultBrowserInfoBarDelegate::Accept() {
   // and it will be automatically freed once all its tasks have finished.
   base::MakeRefCounted<shell_integration::DefaultBrowserWorker>()
       ->StartSetAsDefault(base::NullCallback());
-  return true;
+
+  return ConfirmInfoBarDelegate::Accept();
 }
 
 }  // namespace chrome

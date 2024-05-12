@@ -66,6 +66,11 @@ void RegisterBrowserPrefs(PrefRegistrySimple* registry) {
                                 true);
 #endif
   registry->RegisterIntegerPref(prefs::kToolbarAvatarLabelSettings, 0);
+
+  registry->RegisterTimePref(prefs::kDefaultBrowserLastDeclinedTime,
+                             base::Time());
+
+  registry->RegisterIntegerPref(prefs::kDefaultBrowserDeclinedCount, 0);
 }
 
 void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
@@ -75,12 +80,6 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
                                 GetHomeButtonAndHomePageIsNewTabPageFlags());
 
   registry->RegisterInt64Pref(prefs::kDefaultBrowserLastDeclined, 0);
-  bool reset_check_default = false;
-#if BUILDFLAG(IS_WIN)
-  reset_check_default = true;
-#endif
-  registry->RegisterBooleanPref(prefs::kResetCheckDefaultBrowser,
-                                reset_check_default);
   registry->RegisterBooleanPref(prefs::kWebAppCreateOnDesktop, true);
   registry->RegisterBooleanPref(prefs::kWebAppCreateInAppsMenu, true);
   registry->RegisterBooleanPref(prefs::kWebAppCreateInQuickLaunchBar, true);
@@ -169,4 +168,7 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterDictionaryPref(prefs::kHttpsUpgradeFallbacks);
   registry->RegisterDictionaryPref(prefs::kHttpsUpgradeNavigations);
   registry->RegisterBooleanPref(prefs::kHttpsOnlyModeAutoEnabled, false);
+#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
+  registry->RegisterStringPref(prefs::kEnterpriseLogoUrl, std::string());
+#endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
 }

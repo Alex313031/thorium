@@ -29,7 +29,7 @@
     // existing data should get a new version. Otherwise, existing data may
     // continue to be used and updates made here will not always appear.
     // Also then run tools/search_engine_choice/generate_search_engine_icons.py.
-    "kCurrentDataVersion": 149
+    "kCurrentDataVersion": 160
   },
 
   // The following engines are included in country lists and are added to the
@@ -74,7 +74,7 @@
     },
 
     "brave": {
-      "name": "Brave Search",
+      "name": "Brave",
       "keyword": "search.brave.com",
       "favicon_url": "https://cdn.search.brave.com/serp/favicon.ico",
       "search_url": "https://search.brave.com/search?q={searchTerms}",
@@ -158,6 +158,7 @@
       "favicon_url": "https://karmasearch.org/favicon.ico",
       "search_url": "https://karmasearch.org/search?q={searchTerms}",
       "suggest_url": "https://api.karmasearch.org/search/autosuggest?q={searchTerms}",
+      "new_tab_url": "https://karmasearch.org/newtab",
       "type": "SEARCH_ENGINE_KARMA",
       "id": 110
     },
@@ -168,6 +169,8 @@
       "favicon_url": "https://www.lilo.org/wp-content/themes/jarvis_wp/ajans/assets/favicon.ico",
       "search_url": "https://search.lilo.org/?q={searchTerms}",
       "suggest_url": "https://search.lilo.org/api/?service=suggestions&action=suggest&q={searchTerms}&f=chr&l={language}",
+      "new_tab_url": "https://search.lilo.org",
+      "type": "SEARCH_ENGINE_LILO",
       "id": 111
     },
 
@@ -264,21 +267,24 @@
     },
 
     "seznam_cz": {
-      "name": "Seznam",
+      "name": "Seznam.cz",
       "keyword": "seznam.cz",
       "favicon_url": "https://search.seznam.cz/favicon.ico",
       "search_url": "https://search.seznam.cz/?q={searchTerms}",
       "suggest_url": "https://suggest.seznam.cz/fulltext_ff?phrase={searchTerms}",
+      "new_tab_url": "https://search.seznam.cz/?sourceid=chromechoice",
       "type": "SEARCH_ENGINE_SEZNAM",
       "id": 25
     },
 
+    // TODO(b/335397380): Remove this entry once b/322513019 is fixed.
     "seznam_sk": {
-      "name": "Seznam",
+      "name": "Seznam.cz",
       "keyword": "seznam.sk",
-      "favicon_url": "https://search.seznam.sk/favicon.ico",
-      "search_url": "https://search.seznam.sk/?q={searchTerms}",
-      "suggest_url": "https://suggest.seznam.sk/fulltext_ff?phrase={searchTerms}",
+      "favicon_url": "https://search.seznam.cz/favicon.ico",
+      "search_url": "https://search.seznam.cz/?q={searchTerms}",
+      "suggest_url": "https://suggest.seznam.cz/fulltext_ff?phrase={searchTerms}",
+      "new_tab_url": "https://search.seznam.cz/?sourceid=chromechoice",
       "type": "SEARCH_ENGINE_SEZNAM",
       "id": 25
     },
@@ -311,7 +317,7 @@
     },
 
     "yahoo": {
-      "name": "Yahoo Search",
+      "name": "Yahoo!",
       "keyword": "yahoo.com",
       "favicon_url": "https://search.yahoo.com/favicon.ico",
       "search_url": "https://search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas_sfp&p={searchTerms}",
@@ -322,7 +328,7 @@
     },
 
     "yahoo_ar": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Argentina",
       "keyword": "ar.yahoo.com",
       "favicon_url": "https://ar.search.yahoo.com/favicon.ico",
       "search_url": "https://ar.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -332,7 +338,7 @@
     },
 
     "yahoo_at": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! \u00d6sterreich",
       "keyword": "at.yahoo.com",
       "favicon_url": "https://at.search.yahoo.com/favicon.ico",
       "search_url": "https://at.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -342,7 +348,7 @@
     },
 
     "yahoo_au": {
-      "name": "Yahoo Search",
+      "name": "Yahoo!7",
       "keyword": "au.yahoo.com",
       "favicon_url": "https://au.search.yahoo.com/favicon.ico",
       "search_url": "https://au.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -352,7 +358,7 @@
     },
 
     "yahoo_br": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Brasil",
       "keyword": "br.yahoo.com",
       "favicon_url": "https://br.search.yahoo.com/favicon.ico",
       "search_url": "https://br.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -362,7 +368,7 @@
     },
 
     "yahoo_ca": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Canada",
       "keyword": "ca.yahoo.com",
       "favicon_url": "https://ca.search.yahoo.com/favicon.ico",
       "search_url": "https://ca.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -372,7 +378,7 @@
     },
 
     "yahoo_ch": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Schweiz",
       "keyword": "ch.yahoo.com",
       "favicon_url": "https://ch.search.yahoo.com/favicon.ico",
       "search_url": "https://ch.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -382,7 +388,7 @@
     },
 
     "yahoo_cl": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Chile",
       "keyword": "cl.yahoo.com",
       "favicon_url": "https://cl.search.yahoo.com/favicon.ico",
       "search_url": "https://cl.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -392,7 +398,7 @@
     },
 
     "yahoo_co": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Colombia",
       "keyword": "co.yahoo.com",
       "favicon_url": "https://co.search.yahoo.com/favicon.ico",
       "search_url": "https://co.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -402,7 +408,7 @@
     },
 
     "yahoo_de": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Deutschland",
       "keyword": "de.yahoo.com",
       "favicon_url": "https://de.search.yahoo.com/favicon.ico",
       "search_url": "https://de.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -415,7 +421,7 @@
     // suggestion is disabled. For some of them, we might consider using one of
     // the other language/country URLs as a fallback.
     "yahoo_dk": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Danmark",
       "keyword": "dk.yahoo.com",
       "favicon_url": "https://dk.search.yahoo.com/favicon.ico",
       "search_url": "https://dk.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -423,8 +429,18 @@
       "id": 2
     },
 
-    "yahoo_es": {
+    "yahoo_emea": {
       "name": "Yahoo Search",
+      "keyword": "emea.yahoo.com",
+      "favicon_url": "https://search.yahoo.com/favicon.ico",
+      "search_url": "https://emea.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
+      "suggest_url": "https://emea.search.yahoo.com/sugg/chrome?output=fxjson&appid=crmas&command={searchTerms}",
+      "type": "SEARCH_ENGINE_YAHOO",
+      "id": 2
+    },
+
+    "yahoo_es": {
+      "name": "Yahoo Búsquedas",
       "keyword": "es.yahoo.com",
       "favicon_url": "https://es.search.yahoo.com/favicon.ico",
       "search_url": "https://es.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -434,7 +450,7 @@
     },
 
     "yahoo_fi": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Suomi",
       "keyword": "fi.yahoo.com",
       "favicon_url": "https://fi.search.yahoo.com/favicon.ico",
       "search_url": "https://fi.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -443,7 +459,7 @@
     },
 
     "yahoo_fr": {
-      "name": "Yahoo Search",
+      "name": "Yahoo Recherche",
       "keyword": "fr.yahoo.com",
       "favicon_url": "https://fr.search.yahoo.com/favicon.ico",
       "search_url": "https://fr.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -463,7 +479,7 @@
     },
 
     "yahoo_id": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Indonesia",
       "keyword": "id.yahoo.com",
       "favicon_url": "https://id.search.yahoo.com/favicon.ico",
       "search_url": "https://id.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -473,7 +489,7 @@
     },
 
     "yahoo_in": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! India",
       "keyword": "in.yahoo.com",
       "favicon_url": "https://in.search.yahoo.com/favicon.ico",
       "search_url": "https://in.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -483,7 +499,7 @@
     },
 
     "yahoo_it": {
-      "name": "Yahoo Search",
+      "name": "Ricerca di Yahoo",
       "keyword": "it.yahoo.com",
       "favicon_url": "https://it.search.yahoo.com/favicon.ico",
       "search_url": "https://it.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -493,7 +509,7 @@
     },
 
     "yahoo_jp": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! JAPAN",
       "keyword": "yahoo.co.jp",
       "favicon_url": "https://search.yahoo.co.jp/favicon.ico",
       "search_url": "https://search.yahoo.co.jp/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -503,7 +519,7 @@
     },
 
     "yahoo_mx": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! M\u00e9xico",
       "keyword": "mx.yahoo.com",
       "favicon_url": "https://mx.search.yahoo.com/favicon.ico",
       "search_url": "https://mx.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -513,7 +529,7 @@
     },
 
     "yahoo_my": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Malaysia",
       "keyword": "malaysia.yahoo.com",
       "favicon_url": "https://malaysia.search.yahoo.com/favicon.ico",
       "search_url": "https://malaysia.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -523,7 +539,7 @@
     },
 
     "yahoo_nl": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Nederland",
       "keyword": "nl.yahoo.com",
       "favicon_url": "https://nl.search.yahoo.com/favicon.ico",
       "search_url": "https://nl.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -533,7 +549,7 @@
     },
 
     "yahoo_nz": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! New Zealand",
       "keyword": "nz.yahoo.com",
       "favicon_url": "https://nz.search.yahoo.com/favicon.ico",
       "search_url": "https://nz.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -543,7 +559,7 @@
     },
 
     "yahoo_pe": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Per\u00fa",
       "keyword": "pe.yahoo.com",
       "favicon_url": "https://pe.search.yahoo.com/favicon.ico",
       "search_url": "https://pe.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -553,7 +569,7 @@
     },
 
     "yahoo_ph": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Philippines",
       "keyword": "ph.yahoo.com",
       "favicon_url": "https://ph.search.yahoo.com/favicon.ico",
       "search_url": "https://ph.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -563,7 +579,7 @@
     },
 
     "yahoo_se": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Sverige",
       "keyword": "se.yahoo.com",
       "favicon_url": "https://se.search.yahoo.com/favicon.ico",
       "search_url": "https://se.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -572,7 +588,7 @@
     },
 
     "yahoo_sg": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Singapore",
       "keyword": "sg.yahoo.com",
       "favicon_url": "https://sg.search.yahoo.com/favicon.ico",
       "search_url": "https://sg.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -582,7 +598,7 @@
     },
 
     "yahoo_th": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! \u0e1b\u0e23\u0e30\u0e40\u0e17\u0e28\u0e44\u0e17\u0e22",
       "keyword": "th.yahoo.com",
       "favicon_url": "https://th.search.yahoo.com/favicon.ico",
       "search_url": "https://th.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -592,7 +608,7 @@
     },
 
     "yahoo_tr": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! T\u00fcrkiye",
       "keyword": "tr.yahoo.com",
       "favicon_url": "https://tr.search.yahoo.com/favicon.ico",
       "search_url": "https://tr.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -601,7 +617,7 @@
     },
 
     "yahoo_tw": {
-      "name": "Yahoo Search",
+      "name": "Yahoo!\u5947\u6469",
       "keyword": "tw.yahoo.com",
       "favicon_url": "https://tw.search.yahoo.com/favicon.ico",
       "search_url": "https://tw.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -621,7 +637,7 @@
     },
 
     "yahoo_ve": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Venezuela",
       "keyword": "ve.yahoo.com",
       "favicon_url": "https://ve.search.yahoo.com/favicon.ico",
       "search_url": "https://ve.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -631,7 +647,7 @@
     },
 
     "yahoo_vn": {
-      "name": "Yahoo Search",
+      "name": "Yahoo! Vi\u1ec7t Nam",
       "keyword": "vn.yahoo.com",
       "favicon_url": "https://vn.search.yahoo.com/favicon.ico",
       "search_url": "https://vn.search.yahoo.com/search{google:pathWildcard}?ei={inputEncoding}&fr=crmas&p={searchTerms}",
@@ -1064,6 +1080,7 @@
       "favicon_url": "https://oceanhero.today/favicon.ico",
       "search_url": "https://oceanhero.today/web?q={searchTerms}",
       "suggest_url": "https://api.oceanhero.today/suggestions?q={searchTerms}",
+      "new_tab_url": "https://oceanhero.today/home",
       "type": "SEARCH_ENGINE_OCEANHERO",
       "id": 99
     },
@@ -1084,6 +1101,7 @@
       "favicon_url": "https://www.privacywall.org/images/favicon_32x32.ico",
       "search_url": "https://www.privacywall.org/search/secure/?q={searchTerms}",
       "suggest_url": "https://search.privacywall.org/suggest.php?q={searchTerms}",
+      "new_tab_url": "https://www.privacywall.org/newtab/",
       "type": "SEARCH_ENGINE_PRIVACYWALL",
       "id": 100
     },
