@@ -146,6 +146,8 @@ const char* FFmpegGlue::GetAllowedAudioDecoders() {
         "mp3,pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw");
 #if BUILDFLAG(USE_PROPRIETARY_CODECS)
     allowed_decoders += ",aac";
+    allowed_decoders += ",ac3";
+    allowed_decoders += ",eac3";
 #endif
     return allowed_decoders;
   }());
