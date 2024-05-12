@@ -28,6 +28,7 @@ BEGIN
             VALUE "FileDescription", "@PRODUCT_INSTALLER_FULLNAME@"
             VALUE "FileVersion", "@MAJOR@.@MINOR@.@BUILD@.@PATCH@"
             VALUE "InternalName", "thorium_mini_installer"
+            VALUE "OriginalFilename", "mini_installer.exe"
             VALUE "LegalCopyright", "@COPYRIGHT@"
             VALUE "ProductName", "@PRODUCT_INSTALLER_FULLNAME@"
             VALUE "ProductVersion", "@MAJOR@.@MINOR@.@BUILD@.@PATCH@"
@@ -35,6 +36,7 @@ BEGIN
             VALUE "ProductShortName", "@PRODUCT_INSTALLER_SHORTNAME@"
             VALUE "LastChange", "@LASTCHANGE@"
             VALUE "Official Build", "@OFFICIAL_BUILD@"
+            VALUE "Comments", "https://github.com/Alex313031/Thorium"
         END
     END
     BLOCK "VarFileInfo"

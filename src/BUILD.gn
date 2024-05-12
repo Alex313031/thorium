@@ -118,7 +118,7 @@ group("gn_all") {
       "//third_party/angle/src/tests:angle_end2end_tests",
       "//third_party/angle/src/tests:angle_unittests",
       "//third_party/angle/src/tests:angle_white_box_tests",
-      "//third_party/distributed_point_functions:distributed_point_functions_unittests",
+      "//third_party/distributed_point_functions/shim:distributed_point_functions_shim_unittests",
       "//third_party/flatbuffers:flatbuffers_unittests",
       "//third_party/liburlpattern:liburlpattern_unittests",
       "//tools/binary_size:binary_size_trybot_py",
@@ -385,12 +385,11 @@ group("gn_all") {
         "//build/config/android/test/proto:test_build_protos",
         "//build/private_code_test:private_paths",
         "//chrome/android/monochrome:monochrome_public_apk_checker",
-        "//chrome/android/webapk/shell_apk:maps_go_webapk",
         "//chrome/android/webapk/shell_apk:webapk",
         "//chrome/android/webapk/shell_apk/prepare_upload_dir:prepare_webapk_shell_upload_dir",
         "//chrome/test:android_browsertests",
         "//components:components_junit_tests",
-        "//components/ip_protection_auth/javatests:ip_protection_auth_test_apk",
+        "//components/ip_protection/android_auth_client_lib/javatests:ip_protection_auth_test_apk",
         "//content/public/android:content_junit_tests",
         "//content/shell/android:content_shell_apk",
         "//device:device_junit_tests",
@@ -401,7 +400,7 @@ group("gn_all") {
         "//third_party/android_build_tools/lint:custom_lint_java",
         "//third_party/androidx_javascriptengine",
         "//third_party/catapult/devil",
-        "//third_party/jni_zero/samples:jni_generator_tests",
+        "//third_party/jni_zero/sample:jni_generator_tests",
         "//third_party/r8:custom_d8_java",
         "//tools/android:android_tools",
         "//tools/android:memconsumer",
@@ -1136,16 +1135,16 @@ if (use_blink && !is_cronet_build) {
       args = [
         "--test-type",
         "testharness",
-        "reftest",
         "crashtest",
-        "print-reftest",
         "--product=content_shell",
+        "--no-virtual-tests",
         "--no-show-results",
         "--zero-tests-executed-ok",
       ]
       data_deps = [
         ":blink_web_tests_expectations",
         ":blink_web_tests_support_data",
+        "//chrome/test/chromedriver:chromedriver_server",
         "//third_party/blink/tools:wpt_tests_isolate",
       ]
     }
@@ -1272,9 +1271,17 @@ if (use_blink && !is_cronet_build) {
       "@WrappedPath(.)",
     ]
   } else {
-    _common_web_test_args = [ "@WrappedPath(" + rebase_path(
-                                  "//third_party/blink/tools/run_web_tests.py",
-                                  root_build_dir) + ")" ]
+    base_out_dir = rebase_path(get_path_info(root_build_dir, "dir"), ".")
+    out_dir = get_path_info(root_build_dir, "name")
+    _common_web_test_args = [
+      "@WrappedPath(" +
+          rebase_path("//third_party/blink/tools/run_web_tests.py",
+                      root_build_dir) + ")",
+      "--build-directory",
+      base_out_dir,
+      "--target",
+      out_dir,
+    ]
   }
   if (is_debug) {
     _common_web_test_args += [ "--debug" ]
@@ -1457,7 +1464,9 @@ if (use_blink && !is_cronet_build) {
         "//third_party/blink/web_tests/platform/mac-mac11-arm64/",
         "//third_party/blink/web_tests/platform/mac-mac12/",
         "//third_party/blink/web_tests/platform/mac-mac12-arm64/",
+        "//third_party/blink/web_tests/platform/mac-mac13/",
         "//third_party/blink/web_tests/platform/mac-mac13-arm64/",
+        "//third_party/blink/web_tests/platform/mac-mac14-arm64/",
       ]
     }
 
@@ -1699,10 +1708,10 @@ if (!is_ios && !is_android && !is_castos && !is_cronet_build) {
       deps += [ "//tools/ipc_fuzzer:ipc_fuzzer_all" ]
     }
     if (!is_chromeos_ash) {
-      deps += [
-        "//third_party/pdfium/samples:pdfium_test",
-        "//v8:v8_shell($v8_snapshot_toolchain)",
-      ]
+      deps += [ "//v8:v8_shell($v8_snapshot_toolchain)" ]
+      if (enable_pdf) {
+        deps += [ "//third_party/pdfium/samples:pdfium_test" ]
+      }
     }
 
     if (!is_component_build) {
