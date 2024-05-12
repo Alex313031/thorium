@@ -4,10 +4,10 @@
 
 #include "ui/gtk/native_theme_gtk.h"
 
+#include "base/command_line.h"
 #include "base/no_destructor.h"
 #include "base/ranges/algorithm.h"
 #include "base/strings/strcat.h"
-#include "base/command_line.h"
 #include "cc/paint/paint_canvas.h"
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "ui/color/color_id.h"
