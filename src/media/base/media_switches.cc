@@ -1253,7 +1253,6 @@ BASE_FEATURE(kAllowMediaCodecSoftwareDecoder,
 BASE_FEATURE(kBuiltInHlsPlayer,
              "BuiltInHlsPlayer",
              base::FEATURE_ENABLED_BY_DEFAULT);
-);
 
 BASE_FEATURE(kBuiltInHlsMP4,
              "kBuiltInHlsMP4",

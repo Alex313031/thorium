@@ -42,7 +42,7 @@
      "Show Component Extension Options",
      "Shows internal Chromium component extensions on the `chrome://extensions`. These are normally hidden, "
      "but this is an override for debugging or inspection.",
-     kOsDesktop, SINGLE_VALUE_TYPE(switches::kShowComponentExtensionOptions)},
+     kOsDesktop, SINGLE_VALUE_TYPE(extensions::switches::kShowComponentExtensionOptions)},
     {"force-high-contrast",
      "Enable High Contrast Mode",
      "Enables high contrast mode for all Thorium instances.",
