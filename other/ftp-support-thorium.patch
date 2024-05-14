@@ -8340,7 +8340,7 @@ index 0000000000000..8c8b965924cca
 +
 +  resolve_request_ =
 +      resolver_->CreateRequest(url::SchemeHostPort(request_->url),
-+                               NetworkAnonymizationKey(), net_log_, absl::nullopt);
++                               NetworkAnonymizationKey(), net_log_, std::nullopt);
 +  return resolve_request_->Start(base::BindOnce(
 +      &FtpNetworkTransaction::OnIOComplete, base::Unretained(this)));
 +}
