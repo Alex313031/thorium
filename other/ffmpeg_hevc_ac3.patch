@@ -338,7 +338,7 @@ index c9666ae199..75415127f1 100644
 +    &ff_ac3_fixed_decoder,
      NULL };
 diff --git a/chromium/config/Chrome/win/x64/libavcodec/parser_list.c b/chromium/config/Chrome/win/x64/libavcodec/parser_list.c
-index c85087a596..d57aae769c 100644
+index c85087a596..a9e086ef6d 100644
 --- a/chromium/config/Chrome/win/x64/libavcodec/parser_list.c
 +++ b/chromium/config/Chrome/win/x64/libavcodec/parser_list.c
 @@ -7,4 +7,5 @@ static const AVCodecParser * const parser_list[] = {
@@ -359,10 +359,10 @@ index 920b22bfa7..d6d293dc60 100644
 +    &ff_eac3_demuxer,
      NULL };
 diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
-index 16e1b7c3ff..b5a6b146da 100644
+index 16e1b7c3ff..21439c5672 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
-@@ -265,7 +265,37 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
+@@ -265,7 +265,19 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
      "libavcodec/hevc_sei.c",
      "libavcodec/hevcdec.c",
      "libavcodec/hevcdsp.c",
@@ -380,24 +380,18 @@ index 16e1b7c3ff..b5a6b146da 100644
 +    "libavcodec/eac3_data.c",
 +    "libavcodec/ac3dec_fixed.c",
 +    "libavformat/ac3dec.c",
-+  ]
-+
-+  ffmpeg_c_sources += [
-+    "libavcodec/x86/bswapdsp_init.c",
-+    "libavcodec/x86/hevcdsp_init.c"
-+  ]
-+
-+  ffmpeg_asm_sources += [
-+    "libavcodec/x86/bswapdsp.asm",
-+    "libavcodec/x86/hevc_add_res.asm",
-+    "libavcodec/x86/hevc_deblock.asm",
-+    "libavcodec/x86/hevc_idct.asm",
-+    "libavcodec/x86/hevc_mc.asm",
-+    "libavcodec/x86/hevc_sao.asm",
-+    "libavcodec/x86/hevc_sao_10bit.asm",
+   ]
+ 
+   ffmpeg_c_sources += [
+@@ -324,7 +336,10 @@ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
+     "libavcodec/x86/hevc_mc.asm",
+     "libavcodec/x86/hevc_sao.asm",
+     "libavcodec/x86/hevc_sao_10bit.asm",
+-    "libavcodec/x86/h26x/h2656_inter.asm"
++    "libavcodec/x86/h26x/h2656_inter.asm",
 +    "libavcodec/x86/ac3dsp.asm",
 +    "libavcodec/x86/ac3dsp_downmix.asm",
-+    "libavcodec/x86/fmtconvert.asm",
++    "libavcodec/x86/fmtconvert.asm"
    ]
  
    ffmpeg_c_sources += [

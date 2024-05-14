@@ -84,16 +84,25 @@ cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
-printf "\n" &&
-printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
-
 patchFFMPEG () {
 	cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 	cp -v other/Fix-policy-templates.patch ${CR_SRC_DIR}/ &&
+	cp -v other/ftp-support-thorium.patch ${CR_SRC_DIR}/ &&
+
+	printf "\n" &&
+	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
 	cd ${CR_SRC_DIR}/third_party/ffmpeg &&
 	git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
+
+	printf "\n" &&
+	printf "${YEL}Patching policy templates...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
-	git apply --reject ./Fix-policy-templates.patch
+	git apply --reject ./Fix-policy-templates.patch &&
+
+	printf "\n" &&
+	printf "${YEL}Patching FTP support...${c0}\n" &&
+	cd ${CR_SRC_DIR} &&
+	git apply --reject ./ftp-support-thorium.patch
 }
 [ -f ${CR_SRC_DIR}/third_party/ffmpeg/add-hevc-ffmpeg-decoder-parser.patch ] || patchFFMPEG;
 
