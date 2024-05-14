@@ -99,4 +99,4 @@ use_thin_lto = true
 thin_lto_enable_optimizations = true
 enable_rust = true
 chrome_pgo_phase = 0
-# pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-6261-1708451532-ea569ad77b4d2d5fc18b9306c3ec758d03fbe0bb-85bd8488a36d82a5e4478ad2a9d47c3d8a9d037a.profdata"
+# pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-linux-6367-1713241470-670276ef28f19a417eb8760095e8d97cc8fc8d30-9efed7f2d85678370a0b4dbeb319bf6021e620d0.profdata"
