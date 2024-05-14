@@ -1,8 +1,8 @@
 diff --git a/android_webview/browser/aw_browser_context.cc b/android_webview/browser/aw_browser_context.cc
-index 5350c42e25dc2..096e94907ca09 100644
+index 6167ef5ed42af..6af9e477c4c8a 100644
 --- a/android_webview/browser/aw_browser_context.cc
 +++ b/android_webview/browser/aw_browser_context.cc
-@@ -573,6 +573,9 @@ void AwBrowserContext::ConfigureNetworkContextParams(
+@@ -564,6 +564,9 @@ void AwBrowserContext::ConfigureNetworkContextParams(
    // (http://crbug.com/921750).
    context_params->enforce_chrome_ct_policy = false;
  
@@ -32,10 +32,10 @@ index 5654e5c9d5858..08d00c2005d7b 100644
  			<key>CFBundleURLName</key>
  			<string>Local file URL</string>
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
-index 6ac137571b75b..64128990c01b0 100644
+index ceabbced0f67e..c298005d46bc3 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -12656,6 +12656,9 @@ This can include information about installed software, files, your browser, and
+@@ -12764,6 +12764,9 @@ This can include information about installed software, files, your browser, and
        <message name="IDS_DIRECTORY_LISTING_DATE_MODIFIED" desc="When viewing a local directory, this is the text for the column above the last modified dates.">
          Date Modified
        </message>
@@ -46,10 +46,10 @@ index 6ac137571b75b..64128990c01b0 100644
        <!-- Saving Page-->
        <message name="IDS_SAVE_PAGE_DESC_HTML_ONLY" desc="In the Save Page dialog, the description of saving only the HTML of a webpage.">
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index de3be2eec25cc..944dd8dd6b390 100644
+index c9e74052c7afb..d271ccc0dca71 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8123,6 +8123,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8054,6 +8054,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           heavy_ad_intervention::features::kHeavyAdPrivacyMitigations)},
  
@@ -63,12 +63,12 @@ index de3be2eec25cc..944dd8dd6b390 100644
      {"crostini-container-install",
       flag_descriptions::kCrostiniContainerInstallName,
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
-index 8385c597f050e..ccedccd3b3cb3 100644
+index e2a95fa3aadaa..5b608e9272838 100644
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -318,6 +318,13 @@ const char kForceGpuMainThreadToNormalPriorityDrDcDescription[] =
-     "hence have higher thread priority than GPU main. Note that this flag will "
-     "be a no-op when DrDc is disabled.";
+@@ -353,6 +353,13 @@ const char kEnableDrDcDescription[] =
+     "(raster, webgl, video) "
+     " continues using the gpu main thread.";
  
 +const char kEnableFtpName[] = "Enable support for FTP URLs";
 +const char kEnableFtpDescription[] =
@@ -81,24 +81,24 @@ index 8385c597f050e..ccedccd3b3cb3 100644
      "Use ClientGmb interface to create GpuMemoryBuffers.";
  const char kUseClientGmbInterfaceDescription[] =
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index a023e473a3c31..0c8b267a246ea 100644
+index 4ef2b219f1d74..69f9c4f7d9e1a 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -232,6 +232,9 @@ extern const char kEnableExtensionsPermissionsForSupervisedUsersOnDesktopName[];
- extern const char
+@@ -250,6 +250,9 @@ extern const char
      kEnableExtensionsPermissionsForSupervisedUsersOnDesktopDescription[];
+ #endif  // ENABLE_SUPERVISED_USERS
  
 +extern const char kEnableFtpName[];
 +extern const char kEnableFtpDescription[];
 +
- extern const char kSupervisedPrefsControlledBySupervisedStoreName[];
- extern const char kSupervisedPrefsControlledBySupervisedStoreDescription[];
+ extern const char kUseAndroidStagingSmdsName[];
+ extern const char kUseAndroidStagingSmdsDescription[];
  
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
-index 62d54608cfe39..81e10d8332d77 100644
+index e50641649a959..0f0ef6bd2b0fd 100644
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -994,6 +994,15 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
+@@ -1094,6 +1094,15 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
      network_context_params->hsts_policy_bypass_list.push_back(*string_value);
    }
  
@@ -115,10 +115,10 @@ index 62d54608cfe39..81e10d8332d77 100644
  
    network_context_params->enable_certificate_reporting = true;
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
-index 3a4b8cce3f881..3ccb1436d5597 100644
+index 22a62ad698fdb..ec30208a38bf0 100644
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
-@@ -1026,6 +1026,12 @@ SystemNetworkContextManager::CreateNetworkContextParams() {
+@@ -1041,6 +1041,12 @@ SystemNetworkContextManager::CreateNetworkContextParams() {
  
    network_context_params->http_cache_enabled = false;
  
@@ -209,10 +209,10 @@ index 0000000000000..ce0c4c91818cd
 +</head>
 +</html>
 diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
-index 54c18d58aea64..1bd8e794ab4d9 100644
+index 0ff900e700ba8..50ddf23b7610f 100644
 --- a/components/content_settings/renderer/content_settings_agent_impl.cc
 +++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -406,6 +406,11 @@ bool ContentSettingsAgentImpl::IsAllowlistedForContentSettings() const {
+@@ -364,6 +364,11 @@ bool ContentSettingsAgentImpl::IsAllowlistedForContentSettings() const {
    if (should_allowlist_)
      return true;
  
@@ -225,7 +225,7 @@ index 54c18d58aea64..1bd8e794ab4d9 100644
    WebSecurityOrigin origin = document.GetSecurityOrigin();
    WebURL document_url = document.Url();
 diff --git a/components/safe_browsing/content/browser/safe_browsing_network_context.cc b/components/safe_browsing/content/browser/safe_browsing_network_context.cc
-index 05e440f325c12..18ab83974bfb2 100644
+index 37852c47b90d4..8be654c440fc9 100644
 --- a/components/safe_browsing/content/browser/safe_browsing_network_context.cc
 +++ b/components/safe_browsing/content/browser/safe_browsing_network_context.cc
 @@ -133,6 +133,10 @@ class SafeBrowsingNetworkContext::SharedURLLoaderFactory
@@ -252,7 +252,7 @@ index 6e96af056f62c..1e3dbc90f441a 100644
          url::kFileScheme,
          url::kFileSystemScheme
 diff --git a/content/public/common/content_switches.cc b/content/public/common/content_switches.cc
-index 0e06580a8d496..89713a6fdbeed 100644
+index 30f63bfc1750f..a38a1839d7207 100644
 --- a/content/public/common/content_switches.cc
 +++ b/content/public/common/content_switches.cc
 @@ -345,6 +345,9 @@ const char kEnableFakeNoAllocDirectCallForTesting[] =
@@ -266,10 +266,10 @@ index 0e06580a8d496..89713a6fdbeed 100644
  const char kDisableOriginTrialControlledBlinkFeatures[] =
      "disable-origin-trial-controlled-blink-features";
 diff --git a/content/public/common/content_switches.h b/content/public/common/content_switches.h
-index 1708337fd82f0..a2aff04595000 100644
+index b6f3b21a2b1ff..d01af10dcec28 100644
 --- a/content/public/common/content_switches.h
 +++ b/content/public/common/content_switches.h
-@@ -111,6 +111,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
+@@ -109,6 +109,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
  CONTENT_EXPORT extern const char kEnableExperimentalWebPlatformFeatures[];
  CONTENT_EXPORT extern const char kEnableFakeNoAllocDirectCallForTesting[];
  CONTENT_EXPORT extern const char kEnableBlinkTestFeatures[];
@@ -292,10 +292,10 @@ index c7aa04a3f3edb..61b37176a24ab 100644
    virtual void SetSelectedText(const std::u16string& selection_text,
                                 size_t offset,
 diff --git a/content/renderer/render_frame_impl.cc b/content/renderer/render_frame_impl.cc
-index 07bb68687683a..bbcf881a6eb5d 100644
+index f362ee7c23241..d34f9fbe475b2 100644
 --- a/content/renderer/render_frame_impl.cc
 +++ b/content/renderer/render_frame_impl.cc
-@@ -2423,6 +2423,10 @@ RenderFrameImpl::GetRemoteAssociatedInterfaces() {
+@@ -2480,6 +2480,10 @@ RenderFrameImpl::GetRemoteAssociatedInterfaces() {
    return remote_associated_interfaces_.get();
  }
  
@@ -307,10 +307,10 @@ index 07bb68687683a..bbcf881a6eb5d 100644
                                        size_t offset,
                                        const gfx::Range& range) {
 diff --git a/content/renderer/render_frame_impl.h b/content/renderer/render_frame_impl.h
-index b229bc3ebfee7..eab77c813013b 100644
+index b32fbb5887cb2..626bbdd3b1e5d 100644
 --- a/content/renderer/render_frame_impl.h
 +++ b/content/renderer/render_frame_impl.h
-@@ -400,6 +400,7 @@ class CONTENT_EXPORT RenderFrameImpl
+@@ -402,6 +402,7 @@ class CONTENT_EXPORT RenderFrameImpl
        mojo::ScopedMessagePipeHandle interface_pipe) override;
    blink::AssociatedInterfaceRegistry* GetAssociatedInterfaceRegistry() override;
    blink::AssociatedInterfaceProvider* GetRemoteAssociatedInterfaces() override;
@@ -331,7 +331,7 @@ index b20d661a62641..d2cfd8b508c60 100644
  #import "net/http/http_network_session.h"
  #import "net/http/http_server_properties.h"
 diff --git a/net/BUILD.gn b/net/BUILD.gn
-index 65bc73a317778..a958d2d72e777 100644
+index f35c35e21f2b6..b8e8fd53bdf01 100644
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
 @@ -94,6 +94,7 @@ buildflag_header("buildflags") {
@@ -342,7 +342,7 @@ index 65bc73a317778..a958d2d72e777 100644
      "ENABLE_MDNS=$enable_mdns",
      "ENABLE_REPORTING=$enable_reporting",
      "ENABLE_WEBSOCKETS=$enable_websockets",
-@@ -1477,6 +1478,41 @@ component("net") {
+@@ -1492,6 +1493,41 @@ component("net") {
      ]
    }
  
@@ -384,7 +384,7 @@ index 65bc73a317778..a958d2d72e777 100644
    if (enable_websockets) {
      sources += [
        "websockets/websocket_basic_handshake_stream.cc",
-@@ -3073,6 +3109,21 @@ test("net_unittests") {
+@@ -3089,6 +3125,21 @@ test("net_unittests") {
      ]
    }
  
@@ -406,7 +406,7 @@ index 65bc73a317778..a958d2d72e777 100644
    if (enable_built_in_dns) {
      sources += [ "url_request/http_with_dns_over_https_unittest.cc" ]
    }
-@@ -3541,6 +3592,46 @@ fuzzer_test("net_spdy_headers_to_http_response_headers_fuzzer") {
+@@ -3562,6 +3613,46 @@ fuzzer_test("net_spdy_headers_to_http_response_headers_fuzzer") {
    libfuzzer_options = [ "max_len = 512" ]
  }
  
@@ -4909,7 +4909,7 @@ index 0000000000000..eb4acff145d95
 +"550 Not a directory\x0D\x0A\\ "
 +"599 I'm sorry, Dave, I'm afraid I can't do that.\x0D\x0A\\ "
 diff --git a/net/docs/proxy.md b/net/docs/proxy.md
-index a0ea9f52d1779..b6f1489e4c05a 100644
+index a0ea9f52d1779..589b499e2d4c4 100644
 --- a/net/docs/proxy.md
 +++ b/net/docs/proxy.md
 @@ -110,6 +110,7 @@ about an HTTP proxy.
@@ -4921,7 +4921,7 @@ index a0ea9f52d1779..b6f1489e4c05a 100644
  Communication to HTTP proxy servers is insecure, meaning proxied `http://`
  requests are sent in the clear. When proxying `https://` requests through an
 diff --git a/net/features.gni b/net/features.gni
-index 8027cbae175e8..0dd5d7bcc6cb0 100644
+index 026a38c0baab1..1d7d13a7c409f 100644
 --- a/net/features.gni
 +++ b/net/features.gni
 @@ -14,6 +14,9 @@ declare_args() {
@@ -12090,7 +12090,7 @@ index 0000000000000..3c7e0faebc2bb
 +
 +#endif  // NET_URL_REQUEST_FTP_PROTOCOL_HANDLER_H_
 diff --git a/net/url_request/url_request.h b/net/url_request/url_request.h
-index ce7074e0474ec..e4551b812efe2 100644
+index 859dcb00e8153..d0791fdace3c5 100644
 --- a/net/url_request/url_request.h
 +++ b/net/url_request/url_request.h
 @@ -732,7 +732,8 @@ class NET_EXPORT URLRequest : public base::SupportsUserData {
@@ -12104,11 +12104,11 @@ index ce7074e0474ec..e4551b812efe2 100644
      return received_response_content_length_;
    }
 diff --git a/net/url_request/url_request_context.h b/net/url_request/url_request_context.h
-index 6b4f3a5145530..36a8cd84a1ab2 100644
+index 5618d02062989..e71e085486f2f 100644
 --- a/net/url_request/url_request_context.h
 +++ b/net/url_request/url_request_context.h
-@@ -55,6 +55,10 @@ class URLRequestJobFactory;
- class URLRequestThrottlerManager;
+@@ -55,6 +55,10 @@ class URLRequest;
+ class URLRequestJobFactory;
  class URLRequestContextBuilder;
  
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
@@ -12118,7 +12118,7 @@ index 6b4f3a5145530..36a8cd84a1ab2 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  class NetworkErrorLoggingService;
  class PersistentReportingAndNelStore;
-@@ -227,6 +231,13 @@ class NET_EXPORT URLRequestContext final {
+@@ -222,6 +226,13 @@ class NET_EXPORT URLRequestContext final {
    // context has been bound to.
    handles::NetworkHandle bound_network() const { return bound_network_; }
  
@@ -12132,7 +12132,7 @@ index 6b4f3a5145530..36a8cd84a1ab2 100644
    void AssertCalledOnValidThread() {
      DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
    }
-@@ -354,6 +365,10 @@ class NET_EXPORT URLRequestContext final {
+@@ -345,6 +356,10 @@ class NET_EXPORT URLRequestContext final {
  
    std::unique_ptr<TransportSecurityPersister> transport_security_persister_;
  
@@ -12140,15 +12140,15 @@ index 6b4f3a5145530..36a8cd84a1ab2 100644
 +  FtpAuthCache* ftp_auth_cache_;
 +#endif  // !BUILDFLAG(DISABLE_FTP_SUPPORT)
 +
-   std::unique_ptr<std::set<const URLRequest*>> url_requests_;
+   std::unique_ptr<std::set<raw_ptr<const URLRequest, SetExperimental>>>
+       url_requests_;
  
-   // Enables Brotli Content-Encoding support.
 diff --git a/net/url_request/url_request_context_builder.cc b/net/url_request/url_request_context_builder.cc
-index 30a861d1430ee..bc628ab121e06 100644
+index c4ba7328234bf..4f5bb37448ccd 100644
 --- a/net/url_request/url_request_context_builder.cc
 +++ b/net/url_request/url_request_context_builder.cc
-@@ -53,6 +53,12 @@
- #include "third_party/abseil-cpp/absl/types/optional.h"
+@@ -52,6 +52,12 @@
+ #include "net/url_request/url_request_job_factory.h"
  #include "url/url_constants.h"
  
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
@@ -12160,7 +12160,7 @@ index 30a861d1430ee..bc628ab121e06 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  #include "net/network_error_logging/network_error_logging_service.h"
  #include "net/network_error_logging/persistent_reporting_and_nel_store.h"
-@@ -561,12 +567,23 @@ std::unique_ptr<URLRequestContext> URLRequestContextBuilder::Build() {
+@@ -555,12 +561,23 @@ std::unique_ptr<URLRequestContext> URLRequestContextBuilder::Build() {
  
    std::unique_ptr<URLRequestJobFactory> job_factory =
        std::make_unique<URLRequestJobFactory>();
@@ -12185,7 +12185,7 @@ index 30a861d1430ee..bc628ab121e06 100644
  
    if (cookie_deprecation_label_.has_value()) {
 diff --git a/net/url_request/url_request_context_builder.h b/net/url_request/url_request_context_builder.h
-index e65bf6682bacb..43312a9915cb8 100644
+index 66fd979ebae17..996f83526a69c 100644
 --- a/net/url_request/url_request_context_builder.h
 +++ b/net/url_request/url_request_context_builder.h
 @@ -199,6 +199,11 @@ class NET_EXPORT URLRequestContextBuilder {
@@ -12200,9 +12200,9 @@ index e65bf6682bacb..43312a9915cb8 100644
    // Sets a valid ProtocolHandler for a scheme.
    // A ProtocolHandler already exists for |scheme| will be overwritten.
    void SetProtocolHandler(
-@@ -412,6 +417,11 @@ class NET_EXPORT URLRequestContextBuilder {
+@@ -408,6 +413,11 @@ class NET_EXPORT URLRequestContextBuilder {
  
-   absl::optional<std::string> cookie_deprecation_label_;
+   std::optional<std::string> cookie_deprecation_label_;
  
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
 +  // Include support for ftp:// requests.
@@ -12210,8 +12210,8 @@ index e65bf6682bacb..43312a9915cb8 100644
 +#endif
 +
    bool http_cache_enabled_ = true;
-   bool throttling_enabled_ = false;
    bool cookie_store_set_by_client_ = false;
+   bool suppress_setting_socket_performance_watcher_factory_for_testing_ = false;
 diff --git a/net/url_request/url_request_ftp_fuzzer.cc b/net/url_request/url_request_ftp_fuzzer.cc
 new file mode 100644
 index 0000000000000..e589091fb92e4
@@ -13016,10 +13016,10 @@ index 68b4dae4b2e71..32c72a06c53bf 100644
   public:
    // URLRequest::is_for_websockets() must match `is_for_websockets`, or requests
 diff --git a/net/url_request/url_request_test_util.h b/net/url_request/url_request_test_util.h
-index 0fdcd605a05f4..c185ec6126968 100644
+index 575a510b7e188..2ada1ead4c8f8 100644
 --- a/net/url_request/url_request_test_util.h
 +++ b/net/url_request/url_request_test_util.h
-@@ -33,6 +33,7 @@
+@@ -34,6 +34,7 @@
  #include "net/cookies/cookie_setting_override.h"
  #include "net/disk_cache/disk_cache.h"
  #include "net/first_party_sets/first_party_set_metadata.h"
@@ -13028,10 +13028,10 @@ index 0fdcd605a05f4..c185ec6126968 100644
  #include "net/http/http_cache.h"
  #include "net/http/http_network_layer.h"
 diff --git a/net/url_request/url_request_unittest.cc b/net/url_request/url_request_unittest.cc
-index fa39f0d636e9c..f26b2fa8349b2 100644
+index 18b16b9d46f01..24c0efb4f2cef 100644
 --- a/net/url_request/url_request_unittest.cc
 +++ b/net/url_request/url_request_unittest.cc
-@@ -158,10 +158,15 @@
+@@ -159,10 +159,15 @@
  #include <shlobj.h>
  #include <windows.h>
  #include <wrl/client.h>
@@ -13048,7 +13048,7 @@ index fa39f0d636e9c..f26b2fa8349b2 100644
  #if BUILDFLAG(IS_APPLE)
  #include "base/mac/mac_util.h"
  #endif
-@@ -203,6 +208,12 @@ const std::u16string kUser(u"user");
+@@ -204,6 +209,12 @@ const std::u16string kUser(u"user");
  const base::FilePath::CharType kTestFilePath[] =
      FILE_PATH_LITERAL("net/data/url_request_unittest");
  
@@ -13061,7 +13061,7 @@ index fa39f0d636e9c..f26b2fa8349b2 100644
  // Tests load timing information in the case a fresh connection was used, with
  // no proxy.
  void TestLoadTimingNotReused(const LoadTimingInfo& load_timing_info,
-@@ -304,6 +315,29 @@ void TestLoadTimingCacheHitNoNetwork(const LoadTimingInfo& load_timing_info) {
+@@ -305,6 +316,29 @@ void TestLoadTimingCacheHitNoNetwork(const LoadTimingInfo& load_timing_info) {
    EXPECT_TRUE(load_timing_info.proxy_resolve_end.is_null());
  }
  
@@ -13091,7 +13091,7 @@ index fa39f0d636e9c..f26b2fa8349b2 100644
  // Job that allows monitoring of its priority.
  class PriorityMonitoringURLRequestJob : public URLRequestTestJob {
   public:
-@@ -11768,6 +11802,404 @@ TEST_F(HTTPSLocalCRLSetTest, InterceptionBlockedAllowOverrideOnHSTS) {
+@@ -11767,6 +11801,404 @@ TEST_F(HTTPSLocalCRLSetTest, InterceptionBlockedAllowOverrideOnHSTS) {
  }
  #endif  // !BUILDFLAG(IS_IOS)
  
@@ -13497,10 +13497,10 @@ index fa39f0d636e9c..f26b2fa8349b2 100644
    auto context_builder = CreateTestURLRequestContextBuilder();
    auto host_resolver = std::make_unique<MockHostResolver>();
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index 4547a0dc69562..eb61c1f6f1c8a 100644
+index 16e8cf435e4b0..2d06e601e9376 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -159,6 +159,10 @@
+@@ -160,6 +160,10 @@
  #include "services/network/sct_auditing/sct_auditing_handler.h"
  #endif  // BUILDFLAG(IS_CT_SUPPORTED)
  
@@ -13511,7 +13511,7 @@ index 4547a0dc69562..eb61c1f6f1c8a 100644
  #if BUILDFLAG(IS_CHROMEOS)
  #include "services/network/cert_verifier_with_trust_anchors.h"
  #endif  // BUILDFLAG(IS_CHROMEOS)
-@@ -2144,6 +2148,14 @@ void NetworkContext::AddAuthCacheEntry(
+@@ -2161,6 +2165,14 @@ void NetworkContext::AddAuthCacheEntry(
      const net::NetworkAnonymizationKey& network_anonymization_key,
      const net::AuthCredentials& credentials,
      AddAuthCacheEntryCallback callback) {
@@ -13526,7 +13526,7 @@ index 4547a0dc69562..eb61c1f6f1c8a 100644
    net::HttpAuthCache* http_auth_cache =
        url_request_context_->http_transaction_factory()
            ->GetSession()
-@@ -2155,6 +2167,7 @@ void NetworkContext::AddAuthCacheEntry(
+@@ -2172,6 +2184,7 @@ void NetworkContext::AddAuthCacheEntry(
                         net::HttpAuth::StringToScheme(challenge.scheme),
                         network_anonymization_key, challenge.challenge,
                         credentials, challenge.path);
@@ -13534,7 +13534,7 @@ index 4547a0dc69562..eb61c1f6f1c8a 100644
    std::move(callback).Run();
  }
  
-@@ -2537,6 +2550,12 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2558,6 +2571,12 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
    }
    builder.set_hsts_policy_bypass_list(params_->hsts_policy_bypass_list);
  
@@ -13548,7 +13548,7 @@ index 4547a0dc69562..eb61c1f6f1c8a 100644
    bool reporting_enabled = base::FeatureList::IsEnabled(features::kReporting);
    if (reporting_enabled) {
 diff --git a/services/network/network_context_unittest.cc b/services/network/network_context_unittest.cc
-index 0fda814470151..dfbbbd7058d64 100644
+index 6d3382b4de9ff..a4d5cdd555ad8 100644
 --- a/services/network/network_context_unittest.cc
 +++ b/services/network/network_context_unittest.cc
 @@ -155,6 +155,10 @@
@@ -13562,7 +13562,7 @@ index 0fda814470151..dfbbbd7058d64 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  #include "net/network_error_logging/network_error_logging_service.h"
  #include "net/reporting/reporting_cache.h"
-@@ -717,7 +721,8 @@ TEST_F(NetworkContextTest, UnhandedProtocols) {
+@@ -719,7 +723,8 @@ TEST_F(NetworkContextTest, UnhandedProtocols) {
        GURL("file:///not/a/path/that/leads/anywhere/but/it/should/not/matter/"
             "anyways"),
  
@@ -13572,7 +13572,7 @@ index 0fda814470151..dfbbbd7058d64 100644
        GURL("ftp://foo.test/"),
    };
  
-@@ -6429,6 +6434,37 @@ TEST_F(NetworkContextTest, BlockAllCookies) {
+@@ -6455,6 +6460,37 @@ TEST_F(NetworkContextTest, BlockAllCookies) {
    EXPECT_EQ("None", response_body);
  }
  
@@ -13611,10 +13611,10 @@ index 0fda814470151..dfbbbd7058d64 100644
    std::unique_ptr<NetworkContext> network_context =
        CreateContextWithParams(CreateNetworkContextParamsForTesting());
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
-index 77e659c24ade9..a88633e4e9c29 100644
+index d38116aca078f..18b3daef09f8e 100644
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -217,6 +217,11 @@ BASE_FEATURE(kAcceptCHFrame, "AcceptCHFrame", base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -218,6 +218,11 @@ BASE_FEATURE(kAcceptCHFrame, "AcceptCHFrame", base::FEATURE_ENABLED_BY_DEFAULT);
  BASE_FEATURE(kGetCookiesStringUma,
               "GetCookiesStringUma",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -13627,7 +13627,7 @@ index 77e659c24ade9..a88633e4e9c29 100644
  namespace {
  
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
-index e9a2385ec1a3c..e825f05c88107 100644
+index 66221223e2c55..31dc4e14bfe10 100644
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
 @@ -86,6 +86,8 @@ extern uint32_t GetDataPipeDefaultAllocationSize(
@@ -13640,10 +13640,10 @@ index e9a2385ec1a3c..e825f05c88107 100644
  extern uint32_t GetLoaderChunkSize();
  
 diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network/public/cpp/simple_url_loader.cc
-index f9c156e20e2a7..ffca0aed23b11 100644
+index 517777afcfeae..9b2469197b537 100644
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
-@@ -1751,7 +1751,7 @@ void SimpleURLLoaderImpl::OnReceiveResponse(
+@@ -1771,7 +1771,7 @@ void SimpleURLLoaderImpl::OnReceiveResponse(
  
    // Assume a 200 response unless headers were received indicating otherwise.
    // No headers indicates this was not a real HTTP response (Could be a file
@@ -13684,10 +13684,10 @@ index bb80e3ebd42f8..dbf99f662b65d 100644
  
  }  // namespace network
 diff --git a/services/network/public/mojom/network_context.mojom b/services/network/public/mojom/network_context.mojom
-index 3096bd7d6719b..62d9c1ff91bb8 100644
+index c774dfca15ae1..e972bac69d2e5 100644
 --- a/services/network/public/mojom/network_context.mojom
 +++ b/services/network/public/mojom/network_context.mojom
-@@ -373,6 +373,10 @@ struct NetworkContextParams {
+@@ -374,6 +374,10 @@ struct NetworkContextParams {
    // used to fetch PAC scripts. Note that currently data URLs are always enabled
    // and file URLs are always disabled.
  
@@ -13698,7 +13698,7 @@ index 3096bd7d6719b..62d9c1ff91bb8 100644
    // Whether or not to check the Android platform's cleartext policy for
    // requests. Under some conditions, Android may advise us to block cleartext
    // traffic.
-@@ -1584,12 +1588,14 @@ interface NetworkContext {
+@@ -1567,12 +1571,14 @@ interface NetworkContext {
    LoadHttpAuthCacheProxyEntries(mojo_base.mojom.UnguessableToken cache_key)
        => ();
  
@@ -13734,10 +13734,10 @@ index f9d3219990dcf..d2b95cce4c380 100644
    virtual void SetCodeCacheHost(
        CrossVariantMojoRemote<mojom::CodeCacheHostInterfaceBase> code_cache_host,
 diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_party/blink/renderer/core/loader/document_loader.cc
-index 059d39e07ccde..97bf8a87f5b55 100644
+index 15c696731f42b..61659b43bc89a 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -151,6 +151,7 @@
+@@ -152,6 +152,7 @@
  #include "third_party/blink/renderer/platform/loader/fetch/resource_timing_utils.h"
  #include "third_party/blink/renderer/platform/loader/fetch/unique_identifier.h"
  #include "third_party/blink/renderer/platform/loader/fetch/url_loader/navigation_body_loader.h"
@@ -13745,7 +13745,7 @@ index 059d39e07ccde..97bf8a87f5b55 100644
  #include "third_party/blink/renderer/platform/loader/static_data_navigation_body_loader.h"
  #include "third_party/blink/renderer/platform/mhtml/archive_resource.h"
  #include "third_party/blink/renderer/platform/mhtml/mhtml_archive.h"
-@@ -298,6 +299,7 @@ struct SameSizeAsDocumentLoader
+@@ -300,6 +301,7 @@ struct SameSizeAsDocumentLoader
    bool is_same_origin_navigation;
    bool has_text_fragment_token;
    bool was_discarded;
@@ -13753,7 +13753,7 @@ index 059d39e07ccde..97bf8a87f5b55 100644
    bool loading_main_document_from_mhtml_archive;
    bool loading_srcdoc;
    KURL fallback_base_url;
-@@ -1194,7 +1196,7 @@ void DocumentLoader::BodyDataReceivedImpl(BodyData& data) {
+@@ -1223,7 +1225,7 @@ void DocumentLoader::BodyDataReceivedImpl(BodyData& data) {
    DCHECK(!frame_->GetPage()->Paused());
    time_of_last_data_received_ = clock_->NowTicks();
  
@@ -13762,7 +13762,7 @@ index 059d39e07ccde..97bf8a87f5b55 100644
      // 1) Ftp directory listings accumulate data buffer and transform it later
      //    to the actual document content.
      // 2) Mhtml archives accumulate data buffer and parse it as mhtml later
-@@ -1304,6 +1306,12 @@ void DocumentLoader::FinishedLoading(base::TimeTicks finish_time) {
+@@ -1338,6 +1340,12 @@ void DocumentLoader::FinishedLoading(base::TimeTicks finish_time) {
           MainThreadDebugger::Instance(frame_->DomWindow()->GetIsolate())
               ->IsPaused());
  
@@ -13775,7 +13775,7 @@ index 059d39e07ccde..97bf8a87f5b55 100644
    if (loading_main_document_from_mhtml_archive_ && state_ < kCommitted) {
      // The browser process should block any navigation to an MHTML archive
      // inside iframes. See NavigationRequest::OnResponseStarted().
-@@ -1444,6 +1452,17 @@ DocumentPolicy::ParsedDocumentPolicy DocumentLoader::CreateDocumentPolicy() {
+@@ -1478,6 +1486,17 @@ DocumentPolicy::ParsedDocumentPolicy DocumentLoader::CreateDocumentPolicy() {
  void DocumentLoader::HandleResponse() {
    DCHECK(frame_);
  
@@ -13794,10 +13794,10 @@ index 059d39e07ccde..97bf8a87f5b55 100644
        !network::IsSuccessfulStatus(response_.HttpStatusCode())) {
      DCHECK(!IsA<HTMLObjectElement>(frame_->Owner()));
 diff --git a/third_party/blink/renderer/core/loader/document_loader.h b/third_party/blink/renderer/core/loader/document_loader.h
-index e1857807c2038..27d30a098b2c5 100644
+index 4b0cc3793ecb9..337cd1eea6a70 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.h
 +++ b/third_party/blink/renderer/core/loader/document_loader.h
-@@ -350,6 +350,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
+@@ -351,6 +351,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
      return devtools_navigation_token_;
    }
  
@@ -13806,7 +13806,7 @@ index e1857807c2038..27d30a098b2c5 100644
    UseCounterImpl& GetUseCounter() { return use_counter_; }
  
    PrefetchedSignedExchangeManager* GetPrefetchedSignedExchangeManager() const;
-@@ -766,6 +768,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
+@@ -769,6 +771,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
    // See WebNavigationParams for definition.
    const bool was_discarded_ = false;
  
@@ -13816,10 +13816,10 @@ index e1857807c2038..27d30a098b2c5 100644
    // |archive_| to be created. Nested documents will also inherit from the same
    // |archive_|, but won't have |loading_main_document_from_mhtml_archive_| set.
 diff --git a/third_party/blink/renderer/platform/loader/BUILD.gn b/third_party/blink/renderer/platform/loader/BUILD.gn
-index 3569fa1d5a4ee..0c3e71783603f 100644
+index da5070066fd47..39fc54f713ec4 100644
 --- a/third_party/blink/renderer/platform/loader/BUILD.gn
 +++ b/third_party/blink/renderer/platform/loader/BUILD.gn
-@@ -158,6 +158,8 @@ blink_platform_sources("loader") {
+@@ -159,6 +159,8 @@ blink_platform_sources("loader") {
      "fetch/worker_resource_timing_notifier.h",
      "internet_disconnected_url_loader.cc",
      "internet_disconnected_url_loader.h",
@@ -13828,7 +13828,7 @@ index 3569fa1d5a4ee..0c3e71783603f 100644
      "link_header.cc",
      "link_header.h",
      "mixed_content.cc",
-@@ -240,6 +242,7 @@ source_set("unit_tests") {
+@@ -242,6 +244,7 @@ source_set("unit_tests") {
      "fetch/url_loader/sync_load_context_unittest.cc",
      "fetch/url_loader/url_loader_unittest.cc",
      "fetch/url_loader/worker_main_script_loader_unittest.cc",
