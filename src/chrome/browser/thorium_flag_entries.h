@@ -38,6 +38,10 @@
      "Side Panel Journeys",
      "Enables Journeys within the Side Panel.",
      kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
+    {"customize-chrome-side-panel-no-cr23",
+     "Customize Chrome Side Panel (Non-Cr23 Variant)",
+     "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
+     kOsDesktop, FEATURE_VALUE_TYPE(kCustomizeChromeSidePanelNoChromeRefresh2023)},
     {"show-component-extension-options",
      "Show Component Extension Options",
      "Shows internal Chromium component extensions on the `chrome://extensions`. These are normally hidden, "
