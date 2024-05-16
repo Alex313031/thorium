@@ -148,8 +148,8 @@ void AddInfoBarsIfNecessary(Browser* browser,
       chrome::ShowBadFlagsPrompt(web_contents);
     }
 
-    infobars::ContentInfoBarManager* infobar_manager =
-        infobars::ContentInfoBarManager::FromWebContents(web_contents);
+    //infobars::ContentInfoBarManager* infobar_manager =
+    //    infobars::ContentInfoBarManager::FromWebContents(web_contents);
 
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
     if (!is_web_app &&
