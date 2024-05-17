@@ -42,11 +42,15 @@
      "Customize Chrome Side Panel (Non-Cr23 Variant)",
      "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
      kOsDesktop, FEATURE_VALUE_TYPE(features::kCustomizeChromeSidePanelNoChromeRefresh2023)},
+
+#if !BUILDFLAG(IS_ANDROID)
     {"show-component-extension-options",
      "Show Component Extension Options",
      "Shows internal Chromium component extensions on the `chrome://extensions`. These are normally hidden, "
      "but this is an override for debugging or inspection.",
      kOsDesktop, SINGLE_VALUE_TYPE(extensions::switches::kShowComponentExtensionOptions)},
+#endif // BUILDFLAG(IS_ANDROID)
+
     {"force-high-contrast",
      "Enable High Contrast Mode",
      "Enables high contrast mode for all Thorium instances.",
@@ -74,12 +78,12 @@
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",
      kOsDesktop, MULTI_VALUE_TYPE(kScrollEventChangesTab)},
 
-//#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
-//    {"middle-click-autoscroll",
-//    "Middle Click Autoscroll",
-//     "Enables autoscrolling when the middle mouse button is pressed.",
-//     kOsDesktop, SINGLE_VALUE_TYPE(blink::features::kMiddleClickAutoscroll)},
-//#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+#if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
+    {"middle-click-autoscroll",
+     "Middle Click Autoscroll",
+     "Enables autoscrolling when the middle mouse button is pressed.",
+     kOsDesktop, FEATURE_VALUE_TYPE(blink::features::kMiddleClickAutoscroll)},
+#endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 
     {"autoplay-policy",
      "Disable/Enable AutoPlay",

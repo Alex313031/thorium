@@ -85,7 +85,8 @@ enable_hangout_services_extension = true
 rtc_use_h264 = false
 rtc_prefer_fixed_point = true
 rtc_include_ilbc = true
-rtc_build_with_neon = true
+# TODO: Re-Enable
+rtc_build_with_neon = false
 rtc_build_examples = false
 rtc_enable_avx2 = false
 enable_vr = true
