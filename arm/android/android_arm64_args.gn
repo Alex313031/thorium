@@ -54,7 +54,8 @@ v8_enable_fast_torque = true
 v8_enable_builtins_optimization = true
 v8_enable_maglev = true
 v8_enable_turbofan = true
-use_v8_context_snapshot = true
+# TODO: Re-Enable
+use_v8_context_snapshot = false
 v8_use_external_startup_data = true
 blink_symbol_level = 0
 enable_precompiled_headers = false
@@ -85,8 +86,7 @@ enable_hangout_services_extension = true
 rtc_use_h264 = false
 rtc_prefer_fixed_point = true
 rtc_include_ilbc = true
-# TODO: Re-Enable
-rtc_build_with_neon = false
+rtc_build_with_neon = true
 rtc_build_examples = false
 rtc_enable_avx2 = false
 enable_vr = true
