@@ -33,7 +33,7 @@
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
      "due to external apps or a non-standard system DNS config setting.",
-     kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-dns-config")},
     {"side-panel-journeys",
      "Side Panel Journeys",
      "Enables Journeys within the Side Panel.",
