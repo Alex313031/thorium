@@ -16,7 +16,7 @@ import sys
 
 from gn_helpers import ToGNString
 
-# VS 2022 17.9.6 with 10.1.22621.3233 SDK with ARM64 libraries and UWP support.
+# VS 2022 17.10.1 with 10.1.22621.3233 SDK with ARM64 libraries and UWP support.
 # See go/chromium-msvc-toolchain for instructions about how to update the
 # toolchain.
 #
@@ -38,7 +38,7 @@ from gn_helpers import ToGNString
 #   Maps between Visual Studio version and MSVC toolset
 # * MSVS_VERSIONS in this file
 #   Records the packaged and default version of Visual Studio
-TOOLCHAIN_HASH = 'ddd1c8108e'
+TOOLCHAIN_HASH = 'ee246c16c6'
 SDK_VERSION = '10.0.22621.0'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
