@@ -1,8 +1,8 @@
-app-id: org.chromium.Chromium
+app-id: rocks.thorium.Thorium
 runtime: org.freedesktop.Platform
 runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
-base: org.chromium.Chromium.BaseApp
+base: rocks.thorium.Thorium.BaseApp
 base-version: '22.08'
 command: chromium
 finish-args:
@@ -31,13 +31,13 @@ finish-args:
   - --own-name=org.mpris.MediaPlayer2.chromium.*
 
 add-extensions:
-  org.chromium.Chromium.Codecs:
+  rocks.thorium.Thorium.Codecs:
     directory: chromium/nonfree-codecs
     add-ld-path: lib
     bundle: true
     autodelete: true
 
-  org.chromium.Chromium.NativeMessagingHost:
+  rocks.thorium.Thorium.NativeMessagingHost:
     version: '1'
     directory: chromium/native-messaging-hosts
     merge-dirs: native-messaging-hosts
@@ -45,7 +45,7 @@ add-extensions:
     no-autodownload: true
     autodelete: true
 
-  org.chromium.Chromium.Extension:
+  rocks.thorium.Thorium.Extension:
     version: '1'
     directory: chromium/extensions
     merge-dirs: extensions;native-messaging-hosts;policies/managed;policies/recommended
@@ -53,7 +53,7 @@ add-extensions:
     no-autodownload: true
     autodelete: true
 
-  org.chromium.Chromium.Policy:
+  rocks.thorium.Thorium.Policy:
     version: '1'
     directory: chromium/policies
     merge-dirs: policies/managed;policies/recommended
@@ -139,9 +139,9 @@ modules:
           component: llvm-git
       - patches/all.json
       - type: file
-        path: org.chromium.Chromium.desktop
+        path: rocks.thorium.Thorium.desktop
       - type: file
-        path: org.chromium.Chromium.metainfo.xml
+        path: rocks.thorium.Thorium.metainfo.xml
       - type: file
         path: chromium.sh
       - type: file
