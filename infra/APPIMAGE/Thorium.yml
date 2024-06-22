@@ -27,6 +27,7 @@ script:
   - cp -v usr/bin/product_logo_128.png usr/share/icons/hicolor/128x128/apps/thorium.png
   - cp -v usr/bin/product_logo_256.png usr/share/icons/hicolor/256x256/apps/thorium.png
   - cp -v usr/bin/product_logo_512.png usr/share/icons/hicolor/512x512/apps/thorium.png
+  - cp -v usr/bin/thorium.svg usr/share/icons/
   - # Set Version
   - ./usr/bin/thorium --version | cut -d ' ' -f2 > ../VERSION
   - # Remove redundant libffmpeg.so
