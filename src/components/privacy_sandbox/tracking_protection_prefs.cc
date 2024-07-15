@@ -66,6 +66,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kBlockAll3pcToggleEnabled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterBooleanPref(prefs::kAllowAll3pcToggleEnabled, false);
   registry->RegisterIntegerPref(
       prefs::kTrackingProtectionLevel,
       static_cast<int>(TrackingProtectionLevel::kStandard),
@@ -80,17 +81,6 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kEnableDoNotTrack, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-
-  // Sentiment Survey
-  registry->RegisterIntegerPref(
-      prefs::kTrackingProtectionSentimentSurveyGroup,
-      static_cast<int>(TrackingProtectionSentimentSurveyGroup::kNotSet));
-
-  registry->RegisterTimePref(prefs::kTrackingProtectionSentimentSurveyStartTime,
-                             base::Time());
-
-  registry->RegisterTimePref(prefs::kTrackingProtectionSentimentSurveyEndTime,
-                             base::Time());
 }
 
 }  // namespace privacy_sandbox::tracking_protection
