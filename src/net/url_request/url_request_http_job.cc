@@ -8,6 +8,7 @@
 #include <iterator>
 #include <memory>
 #include <optional>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -102,6 +103,11 @@
 #if BUILDFLAG(IS_ANDROID)
 #include "net/android/network_library.h"
 #endif
+
+#if BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
+#include "net/device_bound_sessions/device_bound_session_registration_fetcher_param.h"
+#include "net/device_bound_sessions/device_bound_session_service.h"
+#endif  // BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 
 namespace {
 
@@ -375,9 +381,6 @@ void URLRequestHttpJob::Start() {
           IsSameSiteIgnoringWebSocketProtocol(request_initiator_site().value(),
                                               request()->url()));
 
-  UMA_HISTOGRAM_BOOLEAN("Net.HttpJob.CanIncludeCookies",
-                        ShouldAddCookieHeader());
-
   CookieStore* cookie_store = request()->context()->cookie_store();
   const CookieAccessDelegate* delegate =
       cookie_store ? cookie_store->cookie_access_delegate() : nullptr;
@@ -483,7 +486,7 @@ PrivacyMode URLRequestHttpJob::DeterminePrivacyMode() const {
     // |allow_credentials_| implies LOAD_DO_NOT_SAVE_COOKIES.
     DCHECK(request_->load_flags() & LOAD_DO_NOT_SAVE_COOKIES);
 
-    // TODO(https://crbug.com/775438): Client certs should always be
+    // TODO(crbug.com/40089326): Client certs should always be
     // affirmatively omitted for these requests.
     return request()->send_client_certs()
                ? PRIVACY_MODE_ENABLED
@@ -527,6 +530,9 @@ void URLRequestHttpJob::NotifyHeadersComplete() {
   }
 
   ProcessStrictTransportSecurityHeader();
+#if BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
+  ProcessDeviceBoundSessionsHeader();
+#endif  // BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 
   // Clear |set_cookie_access_result_list_| after any processing in case
   // SaveCookiesAndNotifyHeadersComplete is called again.
@@ -787,7 +793,7 @@ void URLRequestHttpJob::SetCookieHeaderAndStart(
 
     size_t n_partitioned_cookies = 0;
 
-    // TODO(crbug.com/1031664): Reduce the number of times the cookie list
+    // TODO(crbug.com/40110557): Reduce the number of times the cookie list
     // is iterated over. Get metrics for every cookie which is included.
     for (const auto& c : maybe_included_cookies) {
       bool request_is_secure = request_->url().SchemeIsCryptographic();
@@ -893,8 +899,8 @@ void URLRequestHttpJob::AnnotateAndMoveUserBlockedCookies(
 
 void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
   DCHECK(set_cookie_access_result_list_.empty());
-  // TODO(crbug.com/1186863): Turn this CHECK into DCHECK once the investigation
-  // is done.
+  // TODO(crbug.com/40753971): Turn this CHECK into DCHECK once the
+  // investigation is done.
   CHECK_EQ(0, num_cookie_lines_left_);
 
   // End of the call started in OnStartCompleted.
@@ -957,7 +963,7 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
 
   // Set all cookies, without waiting for them to be set. Any subsequent
   // read will see the combined result of all cookie operation.
-  const base::StringPiece name("Set-Cookie");
+  const std::string_view name("Set-Cookie");
   std::string cookie_string;
   size_t iter = 0;
 
@@ -985,7 +991,8 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
     DCHECK(cookie_string.find('\n') == std::string::npos);
     std::unique_ptr<CanonicalCookie> cookie = net::CanonicalCookie::Create(
         request_->url(), cookie_string, base::Time::Now(), server_time,
-        request_->cookie_partition_key(), /*block_truncated=*/true,
+        request_->cookie_partition_key(),
+        /*block_truncated=*/true, net::CookieSourceType::kHTTP,
         &returned_status);
 
     std::optional<CanonicalCookie> cookie_to_return = std::nullopt;
@@ -1058,6 +1065,20 @@ void URLRequestHttpJob::OnSetCookieResult(const CookieOptions& options,
   if (num_cookie_lines_left_ == 0)
     NotifyHeadersComplete();
 }
+
+#if BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
+void URLRequestHttpJob::ProcessDeviceBoundSessionsHeader() {
+  std::vector<DeviceBoundSessionRegistrationFetcherParam> params =
+      DeviceBoundSessionRegistrationFetcherParam::CreateIfValid(
+          request_->url(), GetResponseHeaders());
+  if (auto* service = request_->context()->device_bound_session_service()) {
+    for (auto& param : params) {
+      service->RegisterBoundSession(std::move(param),
+                                    request_->isolation_info());
+    }
+  }
+}
+#endif  // BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 
 void URLRequestHttpJob::ProcessStrictTransportSecurityHeader() {
   DCHECK(response_info_);
@@ -1664,7 +1685,7 @@ void URLRequestHttpJob::RecordTimer() {
   // connection makes use of 0-RTT. However, 0-RTT can affect how requests are
   // bound to connections and which connections offer resumption. We look at
   // all TLS 1.3 responses for an apples-to-apples comparison.
-  // TODO(crbug.com/641225): Remove these metrics after launching 0-RTT.
+  // TODO(crbug.com/41272059): Remove these metrics after launching 0-RTT.
   if (transaction_ && transaction_->GetResponseInfo() &&
       IsTLS13OverTCP(*transaction_->GetResponseInfo()) &&
       HasGoogleHost(request()->url())) {
@@ -1783,7 +1804,7 @@ void URLRequestHttpJob::RecordCompletionHistograms(CompletionCause reason) {
     // Record metrics for TLS 1.3 to measure the impact of 0-RTT. See comment in
     // RecordTimer().
     //
-    // TODO(https://crbug.com/641225): Remove these metrics after launching
+    // TODO(crbug.com/41272059): Remove these metrics after launching
     // 0-RTT.
     if (IsTLS13OverTCP(*response_info_) && is_https_google) {
       base::UmaHistogramTimes("Net.HttpJob.TotalTime.TLS13.Google", total_time);

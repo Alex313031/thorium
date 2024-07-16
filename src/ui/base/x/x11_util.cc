@@ -114,7 +114,7 @@ void DrawPixmap(x11::Connection* connection,
 
   auto color_type = ColorTypeForVisual(visual);
   if (color_type == kUnknown_SkColorType) {
-    // TODO(https://crbug.com/1066670): Add a fallback path in case any users
+    // TODO(crbug.com/40124639): Add a fallback path in case any users
     // are running a server that uses visual types for which Skia doesn't have
     // a corresponding color format.
     return;
@@ -294,7 +294,11 @@ bool GetRawBytesOfProperty(x11::Window window,
   if (!response || !response->format) {
     return false;
   }
-  *out_data = response->value;
+  // SAFETY: The GetProperty response has a `format` which specified the number
+  // of bits per object in the `value` and `value_len` for the number of
+  // objects, so `value_len * format / 8` gives the number of bytes in `value`.
+  *out_data = UNSAFE_BUFFERS(x11::SizedRefCountedMemory::From(
+      response->value, response->value_len * response->format / 8u));
   if (out_type) {
     *out_type = response->type;
   }
