@@ -499,16 +499,6 @@ def DownloadRPMalloc():
   return rpmalloc_dir
 
 
-def StartGomaAndGetGomaCCPath():
-  bat_ext = '.bat' if sys.platform == 'win32' else ''
-  exe_ext = '.exe' if sys.platform == 'win32' else ''
-  subprocess.check_output(['goma_ctl' + bat_ext, 'ensure_start'])
-  return os.path.join(
-      subprocess.check_output(['goma_ctl' + bat_ext, 'goma_dir'],
-                              universal_newlines=True).rstrip(),
-      'gomacc' + exe_ext)
-
-
 def DownloadPinnedClang():
   PINNED_CLANG_VERSION = 'llvmorg-17-init-16420-g0c545a44-1'
   DownloadAndUnpackPackage('clang', PINNED_CLANG_DIR, GetDefaultHostOs(),
@@ -619,6 +609,9 @@ def compiler_rt_cmake_flags(*, sanitizers, profile):
       # everywhere, even though we only need it on Linux.
       'COMPILER_RT_BUILD_CRT=ON',
       'COMPILER_RT_BUILD_LIBFUZZER=OFF',
+      # Turn off ctx_profile because it depends on the sanitizer libraries,
+      # which we don't always build.
+      'COMPILER_RT_BUILD_CTX_PROFILE=OFF',
       'COMPILER_RT_BUILD_MEMPROF=OFF',
       'COMPILER_RT_BUILD_ORC=OFF',
       'COMPILER_RT_BUILD_PROFILE=' + ('ON' if profile else 'OFF'),
@@ -712,9 +705,9 @@ def main():
                       help='don\'t build Fuchsia clang_rt runtime (linux/mac)',
                       dest='with_fuchsia',
                       default=sys.platform in ('linux2', 'darwin'))
-  parser.add_argument('--with-goma',
+  parser.add_argument('--with-ccache',
                       action='store_true',
-                      help='Use goma to build the stage 1 compiler')
+                      help='Use ccache to build the stage 1 compiler')
   parser.add_argument('--without-zstd',
                       dest='with_zstd',
                       action='store_false',
@@ -862,22 +855,10 @@ def main():
                                        universal_newlines=True).rstrip()
   base_cmake_args += ['-DLLVM_ENABLE_UNWIND_TABLES=OFF']
 
-  # See https://crbug.com/1302636#c49 - #c56 -- intercepting crypt_r() does not
-  # work with the sysroot for not fully understood reasons. Disable it.
-  sanitizers_override = [
-    '-DSANITIZER_OVERRIDE_INTERCEPTORS',
-    '-I' + os.path.join(THIS_DIR, 'sanitizers'),
-  ]
-  cflags += sanitizers_override
-  cxxflags += sanitizers_override
-
-  goma_cmake_args = []
-  goma_ninja_args = []
-  if args.with_goma:
-    goma_path = StartGomaAndGetGomaCCPath()
-    goma_cmake_args.append('-DCMAKE_C_COMPILER_LAUNCHER=' + goma_path)
-    goma_cmake_args.append('-DCMAKE_CXX_COMPILER_LAUNCHER=' + goma_path)
-    goma_ninja_args = ['-j' + str(multiprocessing.cpu_count() * 50)]
+  ccache_cmake_args = []
+  if args.with_ccache:
+    ccache_cmake_args.append('-DCMAKE_C_COMPILER_LAUNCHER=ccache')
+    ccache_cmake_args.append('-DCMAKE_CXX_COMPILER_LAUNCHER=ccache')
 
   if args.host_cc or args.host_cxx:
     assert args.host_cc and args.host_cxx, \
@@ -950,6 +931,29 @@ def main():
     cflags += zstd_cflags
     cxxflags += zstd_cflags
 
+  lit_excludes = []
+  if sys.platform.startswith('linux'):
+    lit_excludes += [
+        # fstat and sunrpc tests fail due to sysroot/host mismatches
+        # (crbug.com/1459187).
+        '^MemorySanitizer-.* f?stat(at)?(64)?.cpp$',
+        '^.*Sanitizer-.*sunrpc.*cpp$',
+        # sysroot/host glibc version mismatch, crbug.com/1506551
+        '^.*Sanitizer.*mallinfo2.cpp$',
+    ]
+  elif sys.platform == 'darwin':
+    lit_excludes += [
+        # Fails on macOS 14, crbug.com/332589870
+        '^.*Sanitizer.*Darwin/malloc_zone.cpp$',
+        # Fails with a recent ld, crbug.com/332589870
+        '^.*ContinuousSyncMode/darwin-proof-of-concept.c$',
+        '^.*instrprof-darwin-exports.c$',
+    ]
+  test_env = None
+  if lit_excludes:
+    test_env = os.environ.copy()
+    test_env['LIT_FILTER_OUT'] = '|'.join(lit_excludes)
+
   if args.bootstrap:
     print('Building bootstrap compiler')
     if os.path.exists(LLVM_BOOTSTRAP_DIR):
@@ -970,7 +974,7 @@ def main():
     if sys.platform == 'darwin':
       # Need ARM and AArch64 for building the ios clang_rt.
       bootstrap_targets += ';ARM;AArch64'
-    bootstrap_args = base_cmake_args + goma_cmake_args + [
+    bootstrap_args = base_cmake_args + ccache_cmake_args + [
         '-DLLVM_TARGETS_TO_BUILD=' + bootstrap_targets,
         '-DLLVM_ENABLE_PROJECTS=clang;lld',
         '-DLLVM_ENABLE_RUNTIMES=' + ';'.join(runtimes),
@@ -1004,9 +1008,9 @@ def main():
     if lld is not None: bootstrap_args.append('-DCMAKE_LINKER=' + lld)
     RunCommand(['cmake'] + bootstrap_args + [os.path.join(LLVM_DIR, 'llvm')],
                setenv=True)
-    RunCommand(['ninja'] + goma_ninja_args, setenv=True)
+    RunCommand(['ninja'], setenv=True)
     if args.run_tests:
-      RunCommand(['ninja', 'check-all'], setenv=True)
+      RunCommand(['ninja', 'check-all'], env=test_env, setenv=True)
     RunCommand(['ninja', 'install'], setenv=True)
 
     if sys.platform == 'win32':
@@ -1030,6 +1034,11 @@ def main():
       RmTree(LLVM_INSTRUMENTED_DIR)
     EnsureDirExists(LLVM_INSTRUMENTED_DIR)
     os.chdir(LLVM_INSTRUMENTED_DIR)
+
+    # Disable -Wbackend-plugin for PGO builds as these warnings are harmless
+    # (https://llvm.org/docs/HowToBuildWithPGO.html#building-clang-with-pgo)
+    cflags += ['-Wno-backend-plugin']
+    cxxflags += ['-Wno-backend-plugin']
 
     instrument_args = base_cmake_args + [
         '-DLLVM_ENABLE_PROJECTS=clang',
@@ -1190,7 +1199,7 @@ def main():
     runtimes_triples_args['i386-unknown-linux-gnu'] = {
         "args": [
             'CMAKE_SYSROOT=%s' % sysroot_i386,
-            # TODO(https://crbug.com/1374690): pass proper flags to i386 tests so they compile correctly
+            # TODO(crbug.com/40242553): pass proper flags to i386 tests so they compile correctly
             'LLVM_INCLUDE_TESTS=OFF',
         ],
         "profile":
@@ -1277,8 +1286,9 @@ def main():
             'SANITIZER_MIN_OSX_VERSION=' + deployment_target,
             'COMPILER_RT_ENABLE_MACCATALYST=ON',
             'COMPILER_RT_ENABLE_IOS=ON',
-            'COMPILER_RT_ENABLE_WATCHOS=OFF',
+            'COMPILER_RT_ENABLE_WATCHOS=ON',
             'COMPILER_RT_ENABLE_TVOS=OFF',
+            'COMPILER_RT_ENABLE_XROS=ON',
             'DARWIN_ios_ARCHS=arm64',
             'DARWIN_iossim_ARCHS=arm64;x86_64',
             'DARWIN_osx_ARCHS=arm64;x86_64',
@@ -1425,7 +1435,7 @@ def main():
   # If we're bootstrapping, Goma doesn't know about the bootstrap compiler
   # we're using as the host compiler.
   if not args.bootstrap:
-    cmake_args.extend(goma_cmake_args)
+    cmake_args.extend(ccache_cmake_args)
 
   if os.path.exists(LLVM_BUILD_DIR):
     RmTree(LLVM_BUILD_DIR)
@@ -1434,7 +1444,7 @@ def main():
   RunCommand(['cmake'] + cmake_args + [os.path.join(LLVM_DIR, 'llvm')],
              setenv=True,
              env=deployment_env)
-  RunCommand(['ninja'] + goma_ninja_args, setenv=True)
+  RunCommand(['ninja'], setenv=True)
 
   if chrome_tools:
     # If any Chromium tools were built, install those now.
@@ -1514,23 +1524,8 @@ def main():
     RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'cr-check-all'], setenv=True)
 
   if not args.build_mac_arm and args.run_tests:
-    env = None
-    if sys.platform.startswith('linux'):
-      env = os.environ.copy()
-      lit_excludes = [
-          # See SANITIZER_OVERRIDE_INTERCEPTORS above: We disable crypt_r()
-          # interception, so its tests can't pass.
-          '^SanitizerCommon-(a|l|m|ub|t)san-x86_64-Linux :: Linux/crypt_r.cpp$',
-          # fstat and sunrpc tests fail due to sysroot/host mismatches
-          # (crbug.com/1459187).
-          '^MemorySanitizer-.* f?stat(at)?(64)?.cpp$',
-          '^.*Sanitizer-.*sunrpc.*cpp$',
-          # sysroot/host glibc version mismatch, crbug.com/1506551
-          '^.*Sanitizer.*mallinfo2.cpp$'
-      ]
-      env['LIT_FILTER_OUT'] = '|'.join(lit_excludes)
     RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'check-all'],
-               env=env,
+               env=test_env,
                setenv=True)
   if args.install_dir:
     RunCommand(['ninja', 'install'], setenv=True)

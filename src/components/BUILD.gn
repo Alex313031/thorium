@@ -163,7 +163,7 @@ test("components_unittests") {
     additional_manifest_fragments = [
       "//build/config/fuchsia/test/fonts.shard.test-cml",
 
-      # TODO(https://crbug.com/1185811): Investigate removing the requirement
+      # TODO(crbug.com/40055105): Investigate removing the requirement
       # for VmexResource.
       "//build/config/fuchsia/test/mark_vmo_executable.shard.test-cml",
       "//build/config/fuchsia/test/network.shard.test-cml",
@@ -199,6 +199,8 @@ test("components_unittests") {
     "//components/client_update_protocol:unit_tests",
     "//components/cloud_devices/common:unit_tests",
     "//components/commerce/core:shopping_service_unit_tests",
+    "//components/commerce/core:utils_unit_tests",
+    "//components/commerce/core/product_specifications:unit_tests",
     "//components/component_updater:unit_tests",
     "//components/component_updater/installer_policies:unit_tests",
     "//components/consent_auditor:unit_tests",
@@ -218,6 +220,7 @@ test("components_unittests") {
     "//components/encrypted_messages:unit_tests",
     "//components/enterprise:unit_tests",
     "//components/enterprise/common:unit_tests",
+    "//components/facilitated_payments/core/metrics:unit_tests",
     "//components/facilitated_payments/core/util:unit_tests",
     "//components/favicon/core:unit_tests",
     "//components/favicon_base:unit_tests",
@@ -304,6 +307,7 @@ test("components_unittests") {
     "//components/safe_browsing/core/browser/tailored_security_service:unit_tests",
     "//components/safe_browsing/core/browser/utils:unit_tests",
     "//components/safe_browsing/core/common:unit_tests",
+    "//components/safe_browsing/core/common/hashprefix_realtime:unit_tests",
     "//components/safe_search_api:unit_tests",
     "//components/saved_tab_groups:unit_tests",
     "//components/search:unit_tests",
@@ -335,7 +339,8 @@ test("components_unittests") {
     "//components/system_cpu:unit_tests",
     "//components/system_media_controls:unit_tests",
     "//components/test:run_all_unittests",
-    "//components/tpcd/metadata:unit_tests",
+    "//components/tpcd/metadata/browser:unit_tests",
+    "//components/tpcd/metadata/common:unit_tests",
     "//components/translate/core/browser:unit_tests",
     "//components/translate/core/common:unit_tests",
     "//components/translate/core/language_detection:unit_tests",
@@ -398,7 +403,7 @@ test("components_unittests") {
       "//components/fuchsia_legacymetrics:unit_tests",
     ]
   } else {
-    # TODO(crbug.com/1290514): Enable all relevant tests on Fuchsia too.
+    # TODO(crbug.com/40818181): Enable all relevant tests on Fuchsia too.
     deps += [
       "//components/browser_sync:unit_tests",
       "//components/send_tab_to_self:unit_tests",
@@ -440,6 +445,7 @@ test("components_unittests") {
       "//components/favicon/content:unit_tests",
       "//components/feed/core/v2:core_unit_tests",
       "//components/file_access:unit_tests",
+      "//components/fingerprinting_protection_filter/browser:unit_tests",
       "//components/gcm_driver/instance_id:unit_tests",
       "//components/heavy_ad_intervention:unit_tests",
       "//components/history/content/browser:unit_tests",
@@ -477,6 +483,7 @@ test("components_unittests") {
       "//components/password_manager/services/csv_password:unit_tests",
       "//components/payments/content:unit_tests",
       "//components/payments/content/utility:unit_tests",
+      "//components/pdf/common:unit_tests",
       "//components/performance_manager:unit_tests",
       "//components/policy/content:unit_tests",
       "//components/query_tiles:unit_tests",
@@ -487,6 +494,7 @@ test("components_unittests") {
       "//components/session_proto_db:unit_tests",
       "//components/subresource_filter/content/browser:unit_tests",
       "//components/subresource_filter/content/renderer:unit_tests",
+      "//components/subresource_filter/content/shared/browser:unit_tests",
       "//components/tracing:unit_tests",
       "//components/translate/content/browser:unit_tests",
       "//components/translate/content/renderer:unit_tests",
@@ -494,6 +502,7 @@ test("components_unittests") {
       "//components/url_rewrite:unit_tests",
       "//components/user_education/common:unit_tests",
       "//components/value_store:unit_tests",
+      "//components/visited_url_ranking/internal:unit_tests",
       "//components/visitedlink/test:unit_tests",
       "//components/web_cache/browser:unit_tests",
       "//components/web_package:unit_tests",
@@ -629,6 +638,7 @@ test("components_unittests") {
       "//components/permissions/android:java",
       "//components/policy/android:native_test_support_java",
       "//components/policy/android:policy_java",
+      "//components/saved_tab_groups:native_java_unittests_java",
       "//components/search_engines/android:java",
       "//components/search_engines/android:test_utils_java",
       "//components/signin/core/browser",
@@ -704,6 +714,7 @@ test("components_unittests") {
   if (is_chromeos_ash) {
     deps += [
       "//components/arc:unit_tests",
+      "//components/cross_device/nearby:unit_tests",
       "//components/desks_storage:unit_tests",
       "//components/guest_os:unit_tests",
       "//components/ownership:unit_tests",
@@ -975,6 +986,7 @@ if (use_blink) {
       "//components/dom_distiller/core:test_support",
       "//components/error_page/content/browser:browser_tests",
       "//components/facilitated_payments/content/renderer:browser_tests",
+      "//components/js_injection/browser:browser_tests",
       "//components/metrics:content",
       "//components/optimization_guide/content/renderer",
       "//components/paint_preview/renderer",
@@ -1019,12 +1031,16 @@ if (use_blink) {
     }
 
     if (is_ios) {
+      entitlements_path = "//content/app/ios/appex/app.entitlements"
       bundle_deps = [
         ":components_tests_distiller_bundle_data",
         ":components_tests_pak_bundle_data",
         "test:dom_distiller_test_bundle_data",
         "test:url_rewrite_test_bundle_data",
+        "//content/test:content_process_bundle",
         "//content/test:content_test_bundle_data",
+        "//content/test:gpu_process_bundle",
+        "//content/test:network_process_bundle",
       ]
     }
 
@@ -1146,6 +1162,7 @@ if (use_blink) {
 
   test("components_perftests") {
     sources = [
+      "attribution_reporting/aggregatable_utils_perftest.cc",
       "attribution_reporting/privacy_math_perftest.cc",
       "discardable_memory/common/discardable_shared_memory_heap_perftest.cc",
       "omnibox/browser/history_quick_provider_performance_unittest.cc",
@@ -1167,6 +1184,7 @@ if (use_blink) {
       "//components/test:test_support",
       "//components/visitedlink/browser",
       "//testing/perf",
+      "//third_party/google_benchmark:google_benchmark",
       "//url",
     ]
 
@@ -1234,6 +1252,7 @@ if (is_android) {
       "//components/policy/android:components_policy_junit_tests",
       "//components/prefs/android:junit",
       "//components/query_tiles:query_tiles_junit_tests",
+      "//components/saved_tab_groups:components_tab_group_sync_junit_tests",
       "//components/signin/public/android:junit",
       "//components/stylus_handwriting/android:stylus_handwriting_junit_tests",
       "//components/subresource_filter/android:junit",
