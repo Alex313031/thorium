@@ -838,16 +838,12 @@ PrivacySandboxSettingsImpl::GetSiteAccessAllowedStatus(
 
 PrivacySandboxSettingsImpl::Status
 PrivacySandboxSettingsImpl::GetPrivacySandboxAllowedStatus(
-    bool should_ignore_restriction /*=false*/) const {
-  if (delegate_->IsIncognitoProfile()) {
-    return Status::kIncognitoProfile;
-  }
+  bool should_ignore_restriction /*=false*/) const {
+    if (delegate_->IsIncognitoProfile()) {
+      return Status::kIncognitoProfile;
+    }
 
-  if (IsPrivacySandboxRestricted() && !should_ignore_restriction) {
     return Status::kRestricted;
-  }
-
-  return Status::kAllowed;
 }
 
 PrivacySandboxSettingsImpl::Status

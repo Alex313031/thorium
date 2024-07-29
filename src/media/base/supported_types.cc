@@ -289,7 +289,8 @@ bool IsAACSupported(const AudioType& type) {
 #elif BUILDFLAG(IS_MAC)
   return true;
 #elif BUILDFLAG(IS_WIN)
-  return base::win::GetVersion() >= base::win::Version::WIN11_22H2;
+  return base::win::GetVersion() >= base::win::Version::WIN11_22H2 &&
+         !base::win::OSInfo::GetInstance()->IsWindowsNSku();
 #else
   return false;
 #endif
@@ -341,14 +342,14 @@ bool IsDefaultSupportedVideoType(const VideoType& type) {
                  ? true
                  : GetSupplementalProfileCache()->IsProfileSupported(
                        type.profile);
-    case VideoCodec::kMPEG2:
-      return true;
     case VideoCodec::kAV1:
       return IsAV1Supported(type);
     case VideoCodec::kVP9:
       return IsVp9ProfileSupported(type);
     case VideoCodec::kHEVC:
       return IsHevcProfileSupported(type);
+    case VideoCodec::kMPEG2:
+      return true;
     case VideoCodec::kMPEG4:
       return IsMPEG4Supported();
     case VideoCodec::kDolbyVision:

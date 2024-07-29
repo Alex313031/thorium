@@ -336,7 +336,7 @@ template("chrome_common_apk_or_module_tmpl") {
     resource_exclusion_regex += "|${_material_package}/xml.*badge_"
 
     if (!is_java_debug) {
-      # TODO(crbug.com/993340): Update test goldens with webp versions of images.
+      # TODO(crbug.com/41475795): Update test goldens with webp versions of images.
       if (!_is_test) {
         png_to_webp = true
       }
@@ -556,6 +556,12 @@ template("chrome_common_apk_or_module_tmpl") {
     # lint.
     if (!disable_android_lint) {
       data_deps += [ "//chrome/android:android_lint" ]
+    }
+
+    # Official builds need the dump_syms binary for symbolizing. This is a small
+    # binary necessary for debugging official builds. Ensure it is built.
+    if (is_official_build) {
+      data_deps += [ "//third_party/breakpad:dump_syms" ]
     }
 
     shared_libraries = []
