@@ -40,3 +40,5 @@ Dino strings in components/error_page_strings.grdp
  - Add GPC patch
 
  - Re-add FILL_RULE_NONZERO, to bookmark_chrome_refresh.icon back_arrow_chrome_refresh.icon forward_arrow_chrome_refresh.icon
+
+Remove media/filters/win/media_foundation_audio_decoder.cc in M127
