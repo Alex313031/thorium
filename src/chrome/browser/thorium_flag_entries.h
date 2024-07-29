@@ -215,6 +215,12 @@
      "Disable Machine ID",
      "Disables use of a generated machine-specific ID to lock the user data directory to that machine. This is used to enable portable user data directories. Enabled for Thorium Portable.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-machine-id")},
+    {"revert-from-portable",
+     "Prevent Data Loss When Changing User Profile Portable State",
+     "When moving a Thorium user profile from one drive to another (or one system to another), enable this flag before moving the profile directory. It should also be used "
+     "when migrating a portable profile back to a normal, non-portable profile (i.e. when disabling the `chrome://flags#disable-encryption` and/or the `chrome://flags#disable-machine-id` flags "
+     "after being previously enabled). This mostly ensures that extensions, extension data, and some other data are not lost during the migration.",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-machine-id")},
 
 #if BUILDFLAG(IS_LINUX)
     {"password-store",

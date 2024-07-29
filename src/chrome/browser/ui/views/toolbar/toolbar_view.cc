@@ -68,6 +68,7 @@
 #include "chrome/browser/ui/views/page_action/page_action_icon_container.h"
 #include "chrome/browser/ui/views/page_action/page_action_icon_controller.h"
 #include "chrome/browser/ui/views/performance_controls/battery_saver_button.h"
+#include "chrome/browser/ui/views/performance_controls/performance_intervention_button.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_toolbar_icon_view.h"
 #include "chrome/browser/ui/views/side_panel/side_panel_toolbar_container.h"
 #include "chrome/browser/ui/views/tabs/tab_strip.h"
@@ -230,6 +231,8 @@ ToolbarView::ToolbarView(Browser* browser, BrowserView* browser_view)
   SetID(VIEW_ID_TOOLBAR);
 
   container_view_ = AddChildView(std::make_unique<ContainerView>());
+
+  SetAccessibleRole(ax::mojom::Role::kToolbar);
 
   if (display_mode_ == DisplayMode::NORMAL) {
     container_view_->SetBackground(
@@ -438,6 +441,12 @@ void ToolbarView::Init() {
         std::make_unique<BatterySaverButton>(browser_view_));
   }
 
+  if (base::FeatureList::IsEnabled(
+          performance_manager::features::kPerformanceIntervention)) {
+    performance_intervention_button_ = container_view_->AddChildView(
+        std::make_unique<PerformanceInterventionButton>());
+  }
+
   if (cast)
     cast_ = container_view_->AddChildView(std::move(cast));
 
@@ -480,13 +489,14 @@ void ToolbarView::Init() {
 
   const std::string sab_value = base::CommandLine::ForCurrentProcess()->
                                 GetSwitchValueASCII("show-avatar-button");
-  if (sab_value == "always")
+  if (sab_value == "always") {
     show_avatar_toolbar_button = true;
-  else if (sab_value == "incognito-and-guest")
+  } else if (sab_value == "incognito-and-guest") {
     show_avatar_toolbar_button = browser_->profile()->IsIncognitoProfile() ||
                                  browser_->profile()->IsGuestSession();
-  else if (sab_value == "never")
+  } else if (sab_value == "never") {
     show_avatar_toolbar_button = false;
+  }
 
   avatar_->SetVisible(show_avatar_toolbar_button);
 
@@ -531,6 +541,13 @@ void ToolbarView::Init() {
   app_menu_icon_controller_.UpdateDelegate();
 
   location_bar_->Init();
+
+  show_forward_button_.Init(
+      prefs::kShowForwardButton, prefs,
+      base::BindRepeating(&ToolbarView::OnShowForwardButtonChanged,
+                          base::Unretained(this)));
+
+  forward_->SetVisible(show_forward_button_.GetValue());
 
   show_home_button_.Init(
       prefs::kShowHomeButton, prefs,
@@ -738,7 +755,8 @@ bool ToolbarView::GetAcceleratorForCommandId(
 ////////////////////////////////////////////////////////////////////////////////
 // ToolbarView, views::View overrides:
 
-gfx::Size ToolbarView::CalculatePreferredSize() const {
+gfx::Size ToolbarView::CalculatePreferredSize(
+    const views::SizeBounds& available_size) const {
   gfx::Size size;
   switch (display_mode_) {
     case DisplayMode::CUSTOM_TAB:
@@ -753,7 +771,7 @@ gfx::Size ToolbarView::CalculatePreferredSize() const {
       // the toolbar to report an unreasonable height (see crbug.com/985909), we
       // cap the height at the size of known child views (location bar and back
       // button) plus margins.
-      // TODO(crbug.com/1033627): Figure out why the height reports incorrectly
+      // TODO(crbug.com/40663413): Figure out why the height reports incorrectly
       // on some installations.
       if (layout_manager_ && location_bar_->GetVisible()) {
         const int max_height =
@@ -782,7 +800,7 @@ gfx::Size ToolbarView::GetMinimumSize() const {
       // the toolbar to report an unreasonable height (see crbug.com/985909), we
       // cap the height at the size of known child views (location bar and back
       // button) plus margins.
-      // TODO(crbug.com/1033627): Figure out why the height reports incorrectly
+      // TODO(crbug.com/40663413): Figure out why the height reports incorrectly
       // on some installations.
       if (layout_manager_ && location_bar_->GetVisible()) {
         const int max_height =
@@ -838,7 +856,7 @@ void ToolbarView::Layout(PassKey) {
   // to the overflow state determined by the first pass.
   // TODO(pengchaocai): Explore possible optimizations.
   if (toolbar_controller_) {
-    // TODO(crbug.com/1499021) Move this logic into LayoutManager.
+    // TODO(crbug.com/40939901) Move this logic into LayoutManager.
     views::ManualLayoutUtil manual_layout_util(layout_manager_);
     const bool was_overflow_button_visible =
         toolbar_controller_->overflow_button()->GetVisible();
@@ -1024,7 +1042,7 @@ void ToolbarView::InitLayout() {
   if (base::FeatureList::IsEnabled(features::kResponsiveToolbar)) {
     constexpr int kToolbarFlexOrderStart = 1;
 
-    // TODO(crbug.com/1479588): Ignore containers till issue addressed.
+    // TODO(crbug.com/40929989): Ignore containers till issue addressed.
     toolbar_controller_ = std::make_unique<ToolbarController>(
         ToolbarController::GetDefaultResponsiveElements(browser_),
         ToolbarController::GetDefaultOverflowOrder(), kToolbarFlexOrderStart,
@@ -1111,6 +1129,16 @@ void ToolbarView::UpdateTypeAndSeverity(
   }
   app_menu_button_->SetAccessibleName(accname_app);
   app_menu_button_->SetTypeAndSeverity(type_and_severity);
+
+  if (base::FeatureList::IsEnabled(features::kDefaultBrowserPromptRefresh) &&
+      DefaultBrowserPromptManager::GetInstance()->get_show_app_menu_prompt()) {
+    // Anytime the default chip is eligible to be shown, log whether the prompt
+    // was actually shown. This helps us understand how often it is pre-empted.
+    base::UmaHistogramBoolean(
+        "DefaultBrowser.AppMenu.DefaultChipShown",
+        type_and_severity.type ==
+            AppMenuIconController::IconType::DEFAULT_BROWSER_PROMPT);
+  }
 }
 
 SkColor ToolbarView::GetDefaultColorForSeverity(
@@ -1180,7 +1208,8 @@ views::AccessiblePaneView* ToolbarView::GetAsAccessiblePaneView() {
   return this;
 }
 
-views::View* ToolbarView::GetAnchorView(PageActionIconType type) {
+views::View* ToolbarView::GetAnchorView(
+    std::optional<PageActionIconType> type) {
   return location_bar_;
 }
 
@@ -1249,10 +1278,13 @@ void ToolbarView::LoadImages() {
     extensions_container_->UpdateAllIcons();
 }
 
+void ToolbarView::OnShowForwardButtonChanged() {
+  forward_->SetVisible(show_forward_button_.GetValue());
+  InvalidateLayout();
+}
+
 void ToolbarView::OnShowHomeButtonChanged() {
   home_->SetVisible(show_home_button_.GetValue());
-  DeprecatedLayoutImmediately();
-  SchedulePaint();
 }
 
 void ToolbarView::OnTouchUiChanged() {

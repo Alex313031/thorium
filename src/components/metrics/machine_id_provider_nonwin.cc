@@ -24,9 +24,6 @@ bool MachineIdProvider::HasId() {
 // On non-windows, the machine id is based on the hardware model name.
 // This will suffice as users are unlikely to change to the same machine model.
 std::string MachineIdProvider::GetMachineId() {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
-    return std::string();
-  }
   // Gets hardware model name. (e.g. 'Macbook Pro 16,1', 'iPhone 9,3')
   std::string hardware_model_name = base::SysInfo::HardwareModelName();
 
