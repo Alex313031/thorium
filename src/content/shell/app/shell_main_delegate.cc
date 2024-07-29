@@ -75,9 +75,9 @@
 #endif  // BUILDFLAG(IS_MAC)
 
 #if BUILDFLAG(IS_WIN)
+#include <initguid.h>
 #include <windows.h>
 
-#include <initguid.h>
 #include "base/logging_win.h"
 #include "base/win/scoped_handle.h"
 #include "base/win/win_util.h"
@@ -176,9 +176,7 @@ void InitLogging(const base::CommandLine& command_line) {
 #endif  // BUILDFLAG(IS_WIN)
 
   if (dest == LoggingDest::kFile) {
-    settings.log_file_path = log_filename.value().c_str();
-  } else {
-    settings.log_file_path = nullptr;
+    settings.log_file_path = log_filename.value();
   }
 
   if (dest == LoggingDest::kStderr) {
@@ -272,7 +270,7 @@ void ShellMainDelegate::PreSandboxStartup() {
 
 // Disable platform crash handling and initialize the crash reporter, if
 // requested.
-// TODO(crbug.com/1226159): Implement crash reporter integration for Fuchsia.
+// TODO(crbug.com/40188745): Implement crash reporter integration for Fuchsia.
 #if !BUILDFLAG(IS_FUCHSIA)
   if (base::CommandLine::ForCurrentProcess()->HasSwitch(
           switches::kEnableCrashReporter)) {
@@ -385,7 +383,7 @@ void ShellMainDelegate::InitializeResourceBundle() {
     global_descriptors->Set(kShellPakDescriptor, pak_fd, pak_region);
   }
   DCHECK_GE(pak_fd, 0);
-  // TODO(crbug.com/330930): A better way to prevent fdsan error from a double
+  // TODO(crbug.com/40346051): A better way to prevent fdsan error from a double
   // close is to refactor GlobalDescriptors.{Get,MaybeGet} to return
   // "const base::File&" rather than fd itself.
   base::File android_pak_file(pak_fd);
@@ -436,7 +434,7 @@ std::optional<int> ShellMainDelegate::PostEarlyInitialization(
   // PoissonAllocationSampler in the ContentShell. Therefore, enforce inclusion
   // at the moment.
   //
-  // TODO(https://crbug.com/1411454): Clarify which users of
+  // TODO(crbug.com/40062835): Clarify which users of
   // PoissonAllocationSampler we have in the ContentShell. Do we really need to
   // enforce it?
   memory_system::Initializer()

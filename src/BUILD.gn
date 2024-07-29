@@ -14,6 +14,7 @@ import("//build/config/compiler/compiler.gni")
 import("//build/config/cronet/config.gni")
 import("//build/config/dcheck_always_on.gni")
 import("//build/config/features.gni")
+import("//build/config/ios/config.gni")
 import("//build/config/rust.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build/config/ui.gni")
@@ -306,7 +307,7 @@ group("gn_all") {
     if (enable_pdf) {
       deps += [
         "//pdf/pdfium/fuzzers",
-        "//third_party/pdfium/samples:pdfium_test",
+        "//third_party/pdfium/testing:pdfium_test",
       ]
     }
 
@@ -400,7 +401,7 @@ group("gn_all") {
         "//third_party/android_build_tools/lint:custom_lint_java",
         "//third_party/androidx_javascriptengine",
         "//third_party/catapult/devil",
-        "//third_party/jni_zero/sample:jni_generator_tests",
+        "//third_party/jni_zero:jni_zero_tests",
         "//third_party/r8:custom_d8_java",
         "//tools/android:android_tools",
         "//tools/android:memconsumer",
@@ -562,8 +563,6 @@ group("gn_all") {
           "//courgette:courgette_fuzz",
           "//courgette:courgette_minimal_tool",
           "//courgette:courgette_unittests",
-          "//media/cast:generate_barcode_video",
-          "//media/cast:generate_timecode_audio",
           "//net:crash_cache",
           "//net:net_watcher",  # TODO(GYP): This should be conditional on
                                 # use_v8_in_net
@@ -622,8 +621,6 @@ group("gn_all") {
     if (is_linux || is_chromeos_lacros) {
       deps += [
         "//gpu/khronos_glcts_support:khronos_glcts_test",
-        "//media/cast:cast_benchmarks",
-        "//media/cast:tap_proxy",
         "//skia:filter_fuzz_stub",
         "//skia:image_operations_bench",
         "//ui/snapshot:snapshot_unittests",
@@ -743,7 +740,6 @@ group("gn_all") {
         "//components/constrained_window:unit_tests",
         "//components/metrics:serialization",
         "//components/sessions:unit_tests",
-        "//media/cast:udp_proxy",
         "//storage/browser:dump_file_system",
         "//third_party/angle:libANGLE",
         "//third_party/angle:libEGL",
@@ -1130,20 +1126,24 @@ if (use_blink && !is_cronet_build) {
         "//third_party/blink/tools:wpt_tests_isolate",
       ]
     }
-    script_test("content_shell_wpt") {
+    script_test("headless_shell_wpt") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
       args = [
         "--test-type",
         "testharness",
+        "reftest",
         "crashtest",
-        "--product=content_shell",
+        "print-reftest",
+        "--product=headless_shell",
         "--no-virtual-tests",
+        "--no-wpt-internal",
         "--no-show-results",
         "--zero-tests-executed-ok",
       ]
       data_deps = [
         ":blink_web_tests_expectations",
         ":blink_web_tests_support_data",
+        "//chrome:chrome",
         "//chrome/test/chromedriver:chromedriver_server",
         "//third_party/blink/tools:wpt_tests_isolate",
       ]
@@ -1241,7 +1241,7 @@ if (use_blink && !is_cronet_build) {
       data_deps += [ "//build/win:copy_cdb_to_output" ]
     }
 
-    if (is_mac) {
+    if (is_mac || (is_ios && target_environment == "simulator")) {
       data += [
         "//third_party/apache-mac/",
         "//third_party/apache-mac-arm64/",
@@ -1710,7 +1710,7 @@ if (!is_ios && !is_android && !is_castos && !is_cronet_build) {
     if (!is_chromeos_ash) {
       deps += [ "//v8:v8_shell($v8_snapshot_toolchain)" ]
       if (enable_pdf) {
-        deps += [ "//third_party/pdfium/samples:pdfium_test" ]
+        deps += [ "//third_party/pdfium/testing:pdfium_test" ]
       }
     }
 

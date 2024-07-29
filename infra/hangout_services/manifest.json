@@ -1,0 +1,47 @@
+{
+  // Manifest V3 version of the extension, otherwise equivalent to manifest_v2.json.
+  // Only one of manifest_v2.json or manifest_v3.json will be loaded, chosen at
+  // runtime based on the kHangoutsExtensionV3 base feature.
+
+  // Extension ID: nkeimhogjdpnpccoofpliimaahmaaome
+  "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAQt2ZDdPfoSe/JI6ID5bgLHRCnCu9T36aYczmhw/tnv6QZB2I6WnOCMZXJZlRdqWc7w9jo4BWhYS50Vb4weMfh/I0On7VcRwJUgfAxW2cHB+EkmtI1v4v/OU24OqIa1Nmv9uRVeX0GjhQukdLNhAE6ACWooaf5kqKlCeK+1GOkQIDAQAB",
+
+  "name": "Google Hangouts Services",
+  "description": "Hangout services is an internal Chromium extension that adds extra features to Google Hangouts",
+  "homepage_url": "https://github.com/Alex313031/thorium/tree/main/infra/hangout_services/README.md",
+  // Note: Always update the version number when this file is updated. Chrome
+  // triggers extension preferences update on the version increase.
+  "version": "1.4.1",
+  "manifest_version": 3,
+  "minimum_chrome_version": "91",
+  "icons": {
+     "16": "icons/icon_16.png",
+     "24": "icons/icon_24.png",
+     "32": "icons/icon_32.png",
+     "48": "icons/icon_48.png",
+     "64": "icons/icon_64.png",
+    "128": "icons/icon_128.png",
+    "256": "icons/icon_256.png"
+  },
+  "externally_connectable": {
+    "matches": [
+      "https://*.google.com/*"
+    ]
+  },
+  "background": {
+    "service_worker": "thunk.js"
+  },
+  "incognito": "split",
+  "permissions": [
+    "desktopCapture",
+    "enterprise.hardwarePlatform",
+    "processes",
+    "system.cpu",
+    "webrtcAudioPrivate",
+    "webrtcDesktopCapturePrivate",
+    "webrtcLoggingPrivate"
+  ],
+  "host_permissions": [
+    "https://*.google.com/*"
+  ]
+}
