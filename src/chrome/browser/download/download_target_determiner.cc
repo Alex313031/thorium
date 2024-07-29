@@ -247,7 +247,6 @@ DownloadTargetDeterminer::Result
       return QUIT_DOLOOP;
     }
 
-    conflict_action_ = DownloadPathReservationTracker::OVERWRITE;
     DCHECK(virtual_path_.IsAbsolute());
     return CONTINUE;
   }
@@ -483,7 +482,7 @@ void DownloadTargetDeterminer::ReserveVirtualPathDone(
         << "Transient download should not ask the user for confirmation.";
     DCHECK(result != download::PathValidationResult::CONFLICT)
         << "Transient download"
-           "should always overwrite the file.";
+           "should always overwrite or uniquify the file.";
     switch (result) {
       case download::PathValidationResult::PATH_NOT_WRITABLE:
       case download::PathValidationResult::NAME_TOO_LONG:
@@ -496,8 +495,8 @@ void DownloadTargetDeterminer::ReserveVirtualPathDone(
       case download::PathValidationResult::SUCCESS:
       case download::PathValidationResult::SUCCESS_RESOLVED_CONFLICT:
       case download::PathValidationResult::SAME_AS_SOURCE:
-        DCHECK_EQ(virtual_path_, path) << "Transient download path should not"
-                                          "be changed.";
+        DCHECK(virtual_path_ == path ||
+               conflict_action_ == DownloadPathReservationTracker::UNIQUIFY);
         break;
       case download::PathValidationResult::COUNT:
         NOTREACHED();
@@ -510,7 +509,7 @@ void DownloadTargetDeterminer::ReserveVirtualPathDone(
       case download::PathValidationResult::SAME_AS_SOURCE:
         break;
 
-      // TODO(crbug.com/1361503): This should trigger a duplicate download
+      // TODO(crbug.com/40863725): This should trigger a duplicate download
       // prompt.
       case download::PathValidationResult::SUCCESS_RESOLVED_CONFLICT:
         break;
@@ -960,11 +959,6 @@ DownloadTargetDeterminer::Result
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
   next_state_ = STATE_DETERMINE_INTERMEDIATE_PATH;
 
-  // Allow all downloads with this Thorium flag
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads")) {
-    return CONTINUE;
-  }
-
   // Checking if there are prior visits to the referrer is only necessary if the
   // danger level of the download depends on the file type.
   if (danger_type_ != download::DOWNLOAD_DANGER_TYPE_NOT_DANGEROUS &&
@@ -1270,6 +1264,13 @@ bool DownloadTargetDeterminer::HasPromptedForPath() const {
 DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
     PriorVisitsToReferrer visits) const {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+
+  // Allow all downloads with this Thorium flag
+  static const bool allow_insecure_downloads_ =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+  if (allow_insecure_downloads_) {
+    return DownloadFileType::NOT_DANGEROUS;
+  }
 
   // If the user has has been prompted or will be, assume that the user has
   // approved the download. A programmatic download is considered safe unless it

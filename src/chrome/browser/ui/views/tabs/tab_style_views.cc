@@ -7,11 +7,11 @@
 #include <algorithm>
 #include <utility>
 
+#include "base/command_line.h"
 #include "base/i18n/rtl.h"
 #include "base/memory/raw_ptr.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/strings/strcat.h"
-#include "base/command_line.h"
 #include "cc/paint/paint_record.h"
 #include "cc/paint/paint_shader.h"
 #include "chrome/browser/themes/theme_properties.h"
@@ -997,7 +997,7 @@ void GM2TabStyleViews::PaintBackgroundHover(gfx::Canvas* canvas,
                       TabStyle::TabSelectionState::kActive, /*hovered=*/false),
                   hover_controller_->GetAlpha());
 
-  // TODO(crbug/1308932): Remove FromColor and make all SkColor4f.
+  // TODO(crbug.com/40219248): Remove FromColor and make all SkColor4f.
   const SkColor4f colors[2] = {
       SkColor4f::FromColor(color),
       SkColor4f::FromColor(SkColorSetA(color, SK_AlphaTRANSPARENT))};

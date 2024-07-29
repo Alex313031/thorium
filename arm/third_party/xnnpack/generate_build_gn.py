@@ -36,6 +36,7 @@
 
 import atexit
 import collections
+import io
 import json
 import logging
 import os
@@ -43,6 +44,8 @@ import platform
 import shutil
 import subprocess
 import sys
+import urllib.request
+import zipfile
 
 from dataclasses import dataclass, field
 
@@ -79,16 +82,12 @@ config("xnnpack_config") {
   ]
 
   defines = [
+    "CHROMIUM",
+
     # Don't enable this without first talking to Chrome Security!
     # XNNPACK runs in the browser process. The hardening and fuzzing needed
     # to ensure JIT can be used safely is not in place yet.
     "XNN_ENABLE_JIT=0",
-
-    # TODO: b/327013106 - Before enabling this and removing
-    # --define=xnn_enable_avx512amx=false from the generation script, ensure
-    # the detection has been updated to remove use of syscall() or that the
-    # function has been allowed in the sandbox.
-    "XNN_ENABLE_AVX512AMX=0",
 
     "XNN_ENABLE_ASSEMBLY=1",
     "XNN_ENABLE_GEMM_M_SPECIALIZATION=1",
@@ -530,7 +529,6 @@ def GenerateObjectBuilds(cpu):
     'mnemonic("CppCompile", filter("//:", deps(:xnnpack_for_tflite)))',
     '--define',
     'xnn_enable_jit=false',
-    '--define=xnn_enable_avx512amx=false',
     "--output=jsonproto",
   ])
   logging.info('parsing actions from bazel aquery...')
@@ -633,6 +631,17 @@ def MakeXNNPACKDepsList(target_sss):
 
   return deps_list
 
+def EnsureAndroidNDK():
+  """
+  Ensures that the Android NDK is available and bazel can find it later.
+  """
+  if 'ANDROID_NDK_HOME' in os.environ:
+    return
+  logging.info('Downloading a copy of the Android NDK for bazel')
+  resp = urllib.request.urlopen('https://dl.google.com/android/repository/android-ndk-r19c-linux-x86_64.zip')
+  logging.info('Unpacking the Android NDK')
+  zipfile.ZipFile(io.BytesIO(resp.read())).extractall(path='/tmp/')
+  os.environ['ANDROID_NDK_HOME'] = '/tmp/android-ndk-r19c'
 
 def MakeXNNPACKSourceSet(ss):
   """
@@ -656,6 +665,8 @@ def main():
     logging.error(f'{_AARCH64_LINUX_GCC} and {_X86_64_LINUX_GCC} are required!')
     logging.error('On x86-64 Debian, install gcc-aarch64-linux-gnu and gcc.')
     sys.exit(1)
+
+  EnsureAndroidNDK()
 
   CreateToolchainFiles()
 

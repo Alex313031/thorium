@@ -36,6 +36,9 @@ using InsecureDownloadStatus = download::DownloadItem::InsecureDownloadStatus;
 
 namespace {
 
+static const bool allow_insecure_downloads_ =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+
 // Configuration for which extensions to warn/block. These parameters are set
 // differently for testing, so the listed defaults are only used when the flag
 // is manually enabled (and in unit tests).
@@ -278,9 +281,9 @@ struct InsecureDownloadData {
     //  - anything extension related,
     //  - etc.
     //
-    // TODO(1029062): INTERNAL_API is also used for background fetch. That
-    // probably isn't the correct behavior, since INTERNAL_API is otherwise used
-    // for Chrome stuff. Background fetch should probably be HTTPS-only.
+    // TODO(crbug.com/40661154): INTERNAL_API is also used for background fetch.
+    // That probably isn't the correct behavior, since INTERNAL_API is otherwise
+    // used for Chrome stuff. Background fetch should probably be HTTPS-only.
     auto download_source = item->GetDownloadSource();
     auto transition_type = item->GetTransitionType();
     if (download_source == DownloadSource::RETRY ||
@@ -334,10 +337,10 @@ struct InsecureDownloadData {
         download_source == DownloadSource::INTERNAL_API ||
         download_source == DownloadSource::EXTENSION_API ||
         download_source == DownloadSource::EXTENSION_INSTALLER ||
-        base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads")) {
+        allow_insecure_downloads_) {
       is_insecure_download_ = false;
     } else {  // Not ignorable download.
-      // TODO(crbug.com/1352598): Add blocking metrics.
+      // TODO(crbug.com/40857867): Add blocking metrics.
       // insecure downloads are either delivered insecurely, or we can't trust
       // who told us to download them (i.e. have an insecure initiator).
       is_insecure_download_ =
@@ -413,7 +416,7 @@ void PrintConsoleMessage(const InsecureDownloadData& data) {
 bool IsDownloadPermittedByContentSettings(
     Profile* profile,
     const std::optional<url::Origin>& initiator) {
-  // TODO(crbug.com/1048957): Checking content settings crashes unit tests on
+  // TODO(crbug.com/40117459): Checking content settings crashes unit tests on
   // Android. It shouldn't.
 #if !BUILDFLAG(IS_ANDROID)
   HostContentSettingsMap* host_content_settings_map =
@@ -454,7 +457,12 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
   InsecureDownloadData data(path, item);
 
   // If the download is fully secure, early abort.
-  if (!data.is_insecure_download_ || base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads")) {
+  if (!data.is_insecure_download_) {
+    return InsecureDownloadStatus::SAFE;
+  }
+
+  // Don't nag
+  if (allow_insecure_downloads_) {
     return InsecureDownloadStatus::SAFE;
   }
 
