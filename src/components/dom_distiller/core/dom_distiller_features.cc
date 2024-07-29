@@ -19,20 +19,10 @@ bool IsDomDistillerEnabled() {
   return true;
 }
 
-bool OfferReaderModeInSettings() {
-    return true;
-}
-
-bool ShowReaderModeOption() {
-  if (OfferReaderModeInSettings())
-    return true;
-  return IsDomDistillerEnabled();
-}
-
 bool ShouldStartDistillabilityService() {
   return base::CommandLine::ForCurrentProcess()->HasSwitch(
-             switches::kEnableDistillabilityService) ||
-         base::FeatureList::IsEnabled(kReaderMode);
+      switches::kEnableDistillabilityService) ||
+      base::FeatureList::IsEnabled(kReaderMode);
 }
 
 }  // namespace dom_distiller
