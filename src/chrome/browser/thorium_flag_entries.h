@@ -29,6 +29,11 @@
      "Disable Thorium Top Bar Icons",
      "Disables the custom colored top bar icons in Thorium, and restores the default grey Chromium icon colors.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
+    {"left-aligned-tab-search-button",
+     "Enable Left-Aligned Tab Search Button",
+     "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
+     "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
+     kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
@@ -38,10 +43,10 @@
      "Side Panel Journeys",
      "Enables Journeys within the Side Panel.",
      kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
-    {"customize-chrome-side-panel-no-cr23",
-     "Customize Chrome Side Panel (Non-Cr23 Variant)",
-     "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
-     kOsDesktop, FEATURE_VALUE_TYPE(features::kCustomizeChromeSidePanelNoChromeRefresh2023)},
+    // {"customize-chrome-side-panel-no-cr23",
+     // "Customize Chrome Side Panel (Non-Cr23 Variant)",
+     // "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
+     // kOsDesktop, FEATURE_VALUE_TYPE(features::kCustomizeChromeSidePanelNoChromeRefresh2023)},
 
 #if !BUILDFLAG(IS_ANDROID)
     {"show-component-extension-options",

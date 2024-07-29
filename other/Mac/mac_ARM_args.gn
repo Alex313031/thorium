@@ -64,7 +64,7 @@ enable_cdm_host_verification = false
 ignore_missing_widevine_signing_cert = true
 enable_media_drm_storage = true
 # enable_media_overlay = true
-enable_hangout_services_extension = true
+enable_hangout_services_extension = false
 rtc_use_h264 = true
 rtc_include_ilbc = true
 rtc_build_with_neon = true
@@ -89,4 +89,4 @@ enable_rust = true
 # enable_all_rust_features = false
 # init_stack_vars_zero = true
 pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/speedometer2.profdata"
-# chrome-mac-arm-main-1710792001-0c00ba89d965e6f101f3c058b8304cfa71485af8-3c63dfe95d95f8906657589268ecd69df6974717.profdata
+# chrome-mac-arm-6478-1718140332-a5d624b0263722fc03c4f7de8132b821227e92a0-0f6ccde38577332705f7d4c9f054388ecf6f0e23.profdata
