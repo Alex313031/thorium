@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
 
-  <if expr="not is_ios">
-    <message name="IDS_AUTOFILL_CLEAR_FORM_MENU_ITEM" desc="The entry in the suggestions dropdown that clears an auto-filled form.">
-      Clear form
-    </message>
-  </if>
-  <if expr="is_ios">
-    <message name="IDS_AUTOFILL_CLEAR_FORM_MENU_ITEM" desc="iOS: The entry in the suggestions keyboard accessory that clears an auto-filled form. Title-cased.">
-      Clear Form
-    </message>
-  </if>
+  <!-- TODO(crbug.com/40266549): Remove when Undo launches on iOS. -->
+  <message name="IDS_AUTOFILL_CLEAR_FORM_MENU_ITEM" desc="iOS: The entry in the suggestions keyboard accessory that clears an auto-filled form. Title-cased.">
+    Clear Form
+  </message>
 
   <if expr="not is_ios">
     <message name="IDS_AUTOFILL_UNDO_MENU_ITEM" desc="The entry in the suggestions dropdown that undoes the last filling operation on a field.">
@@ -93,6 +87,9 @@
   <message name="IDS_AUTOFILL_CC_UNION_PAY" desc="China UnionPay credit card name.">
     China UnionPay
   </message>
+  <message name="IDS_AUTOFILL_CC_VERVE" desc="Verve credit card name.">
+    Verve
+  </message>
   <message name="IDS_AUTOFILL_CC_VISA" desc="Visa credit card name.">
     Visa
   </message>
@@ -103,7 +100,7 @@
     , '''
   </message>
 
-  <!-- TODO(crbug.com/1451267): Make translatable once strings are finalized. -->
+  <!-- TODO(crbug.com/40270486): Make translatable once strings are finalized. -->
   <message name="IDS_AUTOFILL_ADDRESS_TEST_DATA" desc="The text displayed as a secondary label in the test addresses devtools suggestion." translateable="false">
     Address test data
   </message>
@@ -130,6 +127,7 @@
     The delete address option was selected
   </message>
 
+  <!-- TODO(crbug.com/40266549): Update when Undo launches on iOS. -->
   <message name="IDS_AUTOFILL_A11Y_ANNOUNCE_CLEARED_FORM" desc="Screen reader announcement indicating that current form autofilled values were cleared.">
     The autofilled info was cleared from the form
   </message>
@@ -241,12 +239,11 @@
   <message name="IDS_AUTOFILL_IPH_EXTERNAL_ACCOUNT_PROFILE_SUGGESTION" desc="IPH bubble for a suggestion item with an account profile that was created somewhere outside Thorium (e.g. Google Pay)." formatter_data="android_java">
     You can now use addresses from your Google Account
   </message>
-  <!-- TODO(b/320633229): Revisit string and mark it as translatable.-->
-  <message name="IDS_AUTOFILL_IPH_MANUAL_FALLBACK" desc="IPH bubble for triggering autofill from the context menu." translateable="false">
-    Right click to fill your saved info in any online form with less typing
+  <message name="IDS_AUTOFILL_IPH_MANUAL_FALLBACK" desc="IPH bubble for triggering autofill from the context menu.">
+    Right click to autofill saved info, like your name or address, on any form
   </message>
   <message name="IDS_AUTOFILL_IPH_MANUAL_FALLBACK_SCREENREADER" is_accessibility_with_no_ui="true" desc="Screenreader text for the IPH bubble for triggering autofill from the context menu.">
-    Right click to fill in your saved info in any online form with less typing
+    Right click to autofill saved info, like your name or address, on any form
   </message>
 
   <!-- Autofill suggestion label separator -->
@@ -365,12 +362,6 @@
         </message>
       </if>
       <if expr="is_android">
-        <message name="IDS_ENABLE_CREDIT_CARD_FIDO_AUTH_LABEL" desc="The authentication mechanism on Android. Label for a toggle that allows users to control whether or not to use FIDO authentication for credit card unmasking. Title-Cased." formatter_data="android_java">
-          Screen lock
-        </message>
-        <message name="IDS_ENABLE_CREDIT_CARD_FIDO_AUTH_SUBLABEL" desc="Sublabel for a toggle that allows users to control whether or not to use FIDO authentication for credit card unmasking for Android. Sentence-Cased." formatter_data="android_java">
-          Use screen lock to confirm cards faster
-        </message>
         <message name="IDS_AUTOFILL_EDIT_ADDRESS_REQUIRED_FIELD_ERROR" desc="Validation error message for missing required address field." formatter_data="android_java">
           Enter <ph name="FIELD">$1<ex>ZIP code</ex></ph>
         </message>
@@ -400,19 +391,19 @@
     </else>
   </if>
   <if expr="is_android">
-    <!-- TODO(crbug.com/1469795): Use finalized string.-->
+    <!-- TODO(crbug.com/40068611): Use finalized string.-->
     <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT" desc="Title of the option to use the default Thorium autofill experience." formatter_data="android_java">
       Default
     </message>
-    <!-- TODO(crbug.com/1469795): Use finalized string.-->
+    <!-- TODO(crbug.com/40068611): Use finalized string.-->
     <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN" desc="Title of the option to use third-party autofill in Thorium." formatter_data="android_java">
       Use other providers
     </message>
-    <!-- TODO(crbug.com/1469795): Use finalized string.-->
+    <!-- TODO(crbug.com/40068611): Use finalized string.-->
     <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT_DESCRIPTION" desc="Description shown on the option to use the default Thorium autofill experience." formatter_data="android_java">
       Use Google Password Manager and Thorium Autofill to save and fill passwords, passkeys, payment methods, and addresses
     </message>
-    <!-- TODO(crbug.com/1469795): Use finalized string.-->
+    <!-- TODO(crbug.com/40068611): Use finalized string.-->
     <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN_DESCRIPTION" desc="Description shown on the option enabling the use of third-party autofill in Thorium." formatter_data="android_java">
       Use password managers and autofill services that are turned on in Android Settings
     </message>
@@ -578,6 +569,9 @@
     <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_PROMPT_TITLE" desc="The 'Add new address' bubble title.">
       Fill your address with less typing
     </message>
+    <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_EDITOR_TITLE" desc="The title of the editor dialog called after the 'Add new address' prompt is accepted.">
+      Add address
+    </message>
     <message name="IDS_AUTOFILL_ADD_NEW_ADDRESS_INTO_CHROME_PROMPT_BODY_TEXT" desc="The 'Add new address' bubble body text if the address will be saved in Thorium (locally or syncable among Thoriums on different devices).">
       You don't have any addresses saved. Add an address to use it in Thorium.
     </message>
@@ -616,6 +610,12 @@
     </message>
     <message name="IDS_AUTOFILL_EXPANDABLE_SUGGESTION_SUBMENU_HINT" desc="Autofill desktop popup: additional screen reader info to let the user know that the suggestion can be expanded into a sub-menu.">
       Submenu available, use <ph name="SHORTCUT">$1<ex>right key</ex></ph> to navigate to additional options.
+    </message>
+    <message name="IDS_AUTOFILL_SIGNIN_PROMO_TITLE_PASSWORD" desc="This is the body text of a confirmation message and means that the password was only saved locally to the user's device (not in their Google Account). It appears after a password save if the user is not signed in to Thorium or their sign-in credentials have expired. If the user wants to save this data to their Google Account, they can click the button at the bottom of this message. The tone should be motivating.">
+    Password saved to this device
+    </message>
+    <message name="IDS_AUTOFILL_VERIFY_PROMO_SUBTITLE_PASSWORD" desc="This is the body text of a confirmation message and means that the password is in an account-pending storage. In other words, it's waiting to be uploaded to the user's Google Account. It appears when the user was signed in to Thorium but their sign-in credentials have expired; now, they need to sign back in to Thorium. The string is after the 'Password saved' string. If the user wants to save this data to their Google Account, they can click the 'Verify it's you' button at the bottom of this message. The tone should be motivating.">
+    To save and use this password on all your devices, verify it's you
     </message>
   </if>
 

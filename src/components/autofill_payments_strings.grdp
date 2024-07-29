@@ -158,12 +158,6 @@
       </message>
     </else>
   </if>
-  <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_TITLE_EXPERIMENT_ENCRYPTED_AND_SECURE" desc="Title text for the Autofill save card prompt when the card is to be saved by uploading it to Google Payments. The prompt can be either a bubble or an infobar. This is an experiment text and may change in the future.">
-    Save card securely
-  </message>
-  <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_TITLE_EXPERIMENT_FASTER_AND_PROTECTED" desc="Title text for the Autofill save card prompt when the card is to be saved by uploading it to Google Payments. The prompt can be either a bubble or an infobar. This is an experiment text and may change in the future.">
-    Save card?
-  </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_TITLE_TO_CLOUD_V3" desc="Title text for the Autofill save card prompt when the card is to be saved by uploading it to Google Payments, according to January 2018 UI guidelines. The prompt can be either a bubble or an infobar.">
     Save card?
   </message>
@@ -204,12 +198,6 @@
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_V3" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments, according to April 2018 UI guidelines, and minorly updated again in September 2023. The prompt will be shown either in a bubble below the omnibox, or in a bottom sheet, or in an infobar.">
     To pay faster next time, save your card and billing address in your Google Account
-  </message>
-  <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_EXPERIMENT_ENCRYPTED_AND_SECURE" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments. The prompt will be shown in a bubble below the omnibox. This is an experiment text and may change in the future.">
-    It’ll be encrypted, saved securely and the CVC is never stored.
-  </message>
-  <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_EXPERIMENT_FASTER_AND_PROTECTED" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments. The prompt will be shown in a bubble below the omnibox. This is an experiment text and may change in the future.">
-    Pay faster next time and protect your card with Google’s industry-leading security.
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_V3_WITH_NAME" desc="Explanation of the effect of the Autofill save card prompt when the card is to be saved by uploading it to Google Payments, according to April 2018 UI guidelines, and minorly updated again in September 2023. The prompt will be shown either in a bubble below the omnibox, or in a bottom sheet, or in an infobar.">
     To pay faster next time, save your card, name, and billing address in your Google Account
@@ -260,6 +248,9 @@
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_AND_CARDHOLDER_NAME_TOOLTIP" desc="The tooltip hover text that explains why credit card upload to Google Account is being offered and where the suggested cardholder name came from.">
     Thorium is offering to save your cards in your Google Account because you are signed in. You can change this behavior in settings. The cardholder name comes from your account.
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_LOADING_THROBBER_ACCESSIBLE_NAME" desc="Accessible name announced by the screenreader for save card bubble in loading state showing a throbber.">
+    Saving card info
   </message>
 
   <!-- Autofill Local card migration bubble or dialog -->
@@ -436,6 +427,9 @@
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_UPDATE_CARD_MESSAGE_LINK" desc="Text explaining the user they can update their credit card expiration date if they received a new card after the old one expired. The text also contains a link that when tapped displays the form to update the expiration date.">
       New card? <ph name="BEGIN_LINK">BEGIN_LINK</ph>Enter Card Details<ph name="END_LINK">END_LINK</ph>
     </message>
+    <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_FOOTER_LINK" desc="Text explaining the user they can request another OTP if they didn't received the previous one. The text also contains a link that when tapped sends a request to server for a new OTP.">
+      Didn't receive your code? <ph name="BEGIN_LINK">BEGIN_LINK</ph>Get new code<ph name="END_LINK">END_LINK</ph>
+  </message>
     <message name="IDS_AUTOFILL_CARD_UNMASK_PROMPT_EXPIRATION_DATE_FIELD_TITLE" desc="The name of the field for the expiration date of the credit card in the card unmasking dialog.">
       Expiration Date
     </message>
@@ -696,7 +690,7 @@
     Save IBAN to Google Account?
   </message>
   <message name="IDS_AUTOFILL_UPLOAD_IBAN_PROMPT_EXPLANATION" desc="Explanation text for the Autofill save IBAN (International Bank Account Number) to the GPay server prompt when a user submits a form with a valid IBAN.">
-    To pay faster next time, save your IBAN to your Google Account
+    To autofill this IBAN next time, save it in your Google account
   </message>
 
   <!-- Mandatory Reauth related strings - start -->
@@ -747,22 +741,6 @@
   <if expr="not is_ios and not is_android">
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLLMENT_FALLBACK_ICON_TOOLTIP" desc="The tooltip message for the omnibox icon for the virtual card enroll bubble on Desktop. This bubble prompts users if they would like to enroll in a virtual card.">
       Add virtual card
-    </message>
-    <message name="IDS_AUTOFILL_VIRTUAL_CARD_SELECTION_DIALOG_CONTENT_TITLE" desc="The title shown in the Autofill virtual card selection dialog. This dialog offers available virtual credit cards for users to choose to fill the form with. [ICU Syntax]">
-      {NUM_CARDS, plural,
-      =1 {Use a virtual number for this card}
-      other {Select a card}}
-    </message>
-    <message name="IDS_AUTOFILL_VIRTUAL_CARD_SELECTION_DIALOG_CONTENT_EXPLANATION" desc="The detailed explanations shown in the Autofill virtual card selection dialog. This dialog offers available virtual credit cards for users to choose to fill the form with. [ICU Syntax]">
-      {NUM_CARDS, plural,
-      =1 {This card will be charged when you pay, but its real number won't be shared with this site. For extra security, a temporary CVC will be generated.}
-      other {The card you select will be charged when you pay, but its real number won't be shared with this site. For extra security, a temporary CVC will be generated.}}
-    </message>
-    <message name="IDS_AUTOFILL_VIRTUAL_CARD_SELECTION_DIALOG_OK_BUTTON_LABEL" desc="Text shown in the OK button in the Autofill virtual card selection dialog. This dialog offers all available virtual credit cards for users to choose.">
-      Continue
-    </message>
-    <message name="IDS_AUTOFILL_VIRTUAL_CARD_SELECTION_DIALOG_CANCEL_BUTTON_LABEL" desc="Text shown in the Cancel button in the Autofill virtual card selection dialog. This dialog offers all available virtual credit cards for users to choose.">
-      Cancel
     </message>
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_TITLE" desc="The title shown in the Autofill virtual card manual fallback bubble on Desktop. This bubble shows the complete information for the virtual card selected to fill the form.">
       Virtual card details
@@ -840,6 +818,9 @@
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_NUMBER_SWITCH_LABEL" desc="The text shown as the label for virtual card enrollment switch in the server card edit page." formatter_data="android_java">
     Virtual card
   </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLL_LOADING_THROBBER_ACCESSIBLE_NAME" desc="Accessible name announced by the screenreader for virtual card prompt in loading state showing a throbber.">
+      Turning on virtual card
+  </message>
   <if expr="is_android">
     <message name="IDS_AUTOFILL_VIRTUAL_CARD_CONTAINER_ACCESSIBILITY_DESCRIPTION" desc="The accessibility description for a UI element that contains the credit card icon, the card name and last four digits (in placeholder), and the text 'Virtual card'. This UI element is in the dialog that lets users enroll their credit card into the virtual card number feature.">
       <ph name="IDS_AUTOFILL_VIRTUAL_CARD_NAME_AND_LAST_FOUR_DIGITS">$1<ex>Visa **** 1234</ex></ph>, virtual card
@@ -876,6 +857,18 @@
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_STANDALONE_CVC_SUGGESTION_TITLE" desc="Text to be displayed when displaying an Autofill suggestion to fill a standalone CVC for a virtual card on file.">
       CVC for virtual card
+  </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_CARD_NUMBER_LABEL_IOS" desc="Text shown above the virtual card number in the manual fallback bubble on IOS. This bubble shows the card number for the virtual card available to fill the form. Clicking the bubble will fill the field with the complete information to use the virtual card.">
+      Virtual card number:
+  </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_EXP_DATE_LABEL_IOS" desc="Text shown above the virtual card expiration date in the manual fallback bubble on IOS. The bubble below shows the expiration date for the card being displayed. Clicking the bubble will populate the field with the date.">
+      Expiration date:
+  </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_NAME_ON_CARD_LABEL_IOS" desc="Text shown above the virtual cardholder's name on card field in the manual fallback bubble on IOS. The bubble below shows the cahrdholder's name for the card available to fill the form. Clicking the bubble will populate the field with the cardholder's name.">
+      Name on card:
+  </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_DISABLED_SUGGESTION_OPTION_VALUE" desc="Text to be displayed for a virtual card option in the credit card suggestion list when the virtual card is disabled (opted-out) by the merchant. This suggestion will be grayed-out and the user will not be able to preview or select this option.">
+      Merchant doesn't accept this virtual card
   </message>
   <!-- virtual cards related strings - end -->
   <message name="IDS_AUTOFILL_CARD_AUTH_SELECTION_DIALOG_TITLE_MULTIPLE_OPTIONS" desc="Title for the credit card unmasking dialog for multiple challenge options. Used in VCN authentication, and once a challenge option is selected a new dialog is rendered where the user authenticates with the selected challenge option." formatter_data="android_java">
@@ -944,10 +937,19 @@
   <message name="IDS_AUTOFILL_PAYMENTS_WINDOW_USER_CONSENT_DIALOG_OK_BUTTON_LABEL_VCN_3DS" desc="This text is shown as the accept button label for the user consent dialog for VCN 3DS. If the user accepts the dialog, Thorium will open a pop-up and initiate the VCN 3DS flow.">
     Continue
   </message>
+  <message name="IDS_AUTOFILL_REGULAR_CARD_MANUAL_FALLBACK_BUBBLE_CARD_NUMBER_LABEL_IOS" desc="Text shown above the card number in the manual fallback bubble on IOS. This bubble shows the card number for the card being shown to fill the form. Clicking this button will populate the available card-related fields of the form.">
+      Card number:
+  </message>
 
   <!-- Credit card benefits-related strings -->
   <message name="IDS_AUTOFILL_CREDIT_CARD_BENEFIT_TEXT_FOR_SUGGESTIONS" desc="benefit text string shown in suggestion dropdown indicating that the credit card has an applicable benefit for this purchase with `terms apply` appended.">
     <ph name="BENEFIT_DESCRIPTION">$1<ex>5% cashback on travel</ex></ph> (terms apply)
+  </message>
+  <message name="IDS_AUTOFILL_CREDIT_CARD_BENEFIT_IPH_BUBBLE_LABEL" desc="Text shown in the IPH bubble for educating the user on the existence of card benefits.">
+    Now you can see card benefits before you pay
+  </message>
+  <message name="IDS_AUTOFILL_CREDIT_CARD_BENEFIT_IPH_BUBBLE_LABEL_SCREENREADER" is_accessibility_with_no_ui="true" desc="Screenreader text for the IPH bubble for educating the user on the existence of card benefits.">
+    Now you can see card benefits before you pay
   </message>
 
   <!-- Credit card and promo code offers and rewards-related strings -->
@@ -1016,12 +1018,15 @@
     Cancel
   </message>
 
-  <!-- Autofill credit card delete dialog -->
+  <!-- Autofill payment method delete dialog -->
   <if expr="is_android">
     <message name="IDS_AUTOFILL_CREDIT_CARD_DELETE_CONFIRMATION_TITLE" desc="Title for the confirmation dialog displayed when the user clicks on the delete button while editing card information." formatter_data="android_java">
       Delete card
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_DELETE_CONFIRMATION_DESCRIPTION" desc="Description for the confirmation dialog displayed when the user clicks on the delete button while editing card information." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_IBAN_DELETE_CONFIRMATION_TITLE" desc="Title for the confirmation dialog displayed when the user clicks on the delete button while editing the IBAN information." formatter_data="android_java">
+      Delete IBAN
+    </message>
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_DELETE_CONFIRMATION_DESCRIPTION" desc="Description for the confirmation dialog displayed when the user clicks on the delete button while editing payment method information." formatter_data="android_java">
       This payment method will be deleted from this device
     </message>
   </if>
@@ -1038,8 +1043,11 @@
 
   <!-- Autofill IBAN preferences -->
   <if expr="is_android">
-    <message name="IDS_AUTOFILL_ADD_LOCAL_IBAN" desc="Button that allows the user to add a new IBAN that will be saved locally." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_ADD_LOCAL_IBAN" desc="Button in the Payment methods page that allows the user to add a new IBAN that will be saved locally. It is also the title for the local IBAN editor when a user is adding a new IBAN." formatter_data="android_java">
       Add IBAN
+    </message>
+    <message name="IDS_AUTOFILL_EDIT_LOCAL_IBAN" desc="Title for the local IBAN editor when a user is editing an existing IBAN." formatter_data="android_java">
+      Edit IBAN
     </message>
   </if>
 
@@ -1048,25 +1056,25 @@
     <message name="IDS_AUTOFILL_BOTTOM_SHEET_MANAGE_PAYMENT_METHODS" desc="An option in the autofill bottom sheet that triggers navigation to the payment settings." formatter_data="android_java">
       Manage payment methods
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_TITLE" desc="The title of the touch to fill bottom sheet for payments that appears under the GPay icon." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_TITLE" desc="The title of the touch to fill bottom sheet for payments that appears under the GPay icon." formatter_data="android_java">
       Autofill payment info
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_CONTINUE_BUTTON" desc="The label of the button, which would fill in the web form with card credentials." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_CONTINUE_BUTTON" desc="The label of the button, which would fill in the web form with card credentials." formatter_data="android_java">
       Continue
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the bottom sheet is opened. It describes the bottom sheet where a user can pick a payment method to fill into a form." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the bottom sheet is opened. It describes the bottom sheet where a user can pick a payment method to fill into a form." formatter_data="android_java">
       Payment methods available to be filled on touch. Keyboard hidden.
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_HALF_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at half height. The sheet will occupy the bottom half the screen." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_HALF_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at half height. The sheet will occupy the bottom half the screen." formatter_data="android_java">
       Payment methods available to be filled on touch opened at half height.
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_FULL_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at full height. The sheet will occupy the entire screen." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_FULL_HEIGHT" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is opened at full height. The sheet will occupy the entire screen." formatter_data="android_java">
       Payment methods available to be filled on touch opened at full height.
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_BOTTOM_SHEET_CLOSED" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is closed." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_CLOSED" desc="Accessibility string read when the bottom sheet showing a list of the user's payment methods is closed." formatter_data="android_java">
       List of payment methods is closed.
     </message>
-    <message name="IDS_AUTOFILL_CREDIT_CARD_A11Y_ITEM_COLLECTION_INFO" desc="A template message for a fillable item content description, provides its position in the list info (e.g. 'Item label, 2 of 4')." formatter_data="android_java">
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_A11Y_ITEM_COLLECTION_INFO" desc="A template message for a fillable item content description, provides its position in the list info (e.g. 'Item label, 2 of 4')." formatter_data="android_java">
       <ph name="ITEM_LABEL">%1$s<ex>Card info</ex></ph>, <ph name="ITEM_POSITION">%2$s<ex>2</ex></ph> of <ph name="ITEMS_TOTAL">%3$s<ex>8</ex></ph>.
     </message>
   </if>
@@ -1091,6 +1099,9 @@
   <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_CVC_STORAGE_LABEL" desc="Label for the payments settings page toggle that enables the user to store and use CVC for payments autofill." formatter_data="android_java">
     Save security codes
   </message>
+  <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_CVC_STORAGE_ARIA_LABEL_FOR_NO_CVC_SAVED" desc="Label for the payments settings page toggle that enables the user to store and use CVC for payments autofill.">
+    Save security codes, no security codes currently saved
+  </message>
   <message name="IDS_AUTOFILL_SETTINGS_PAGE_ENABLE_CVC_STORAGE_SUBLABEL" desc="Sublabel for the payments settings page toggle that enables the user to store and use CVC for payments autofill." formatter_data="android_java">
     Check out faster when your CVCs are saved
   </message>
@@ -1103,7 +1114,7 @@
       Card benefits
     </message>
     <message name="IDS_AUTOFILL_SETTINGS_PAGE_CARD_BENEFITS_TOGGLE_SUBLABEL_WITH_LEARN_LINK" desc="Sublabel for the payments settings page card benefits toggle, including a hyperlinked text to learn about card benefits.">
-      See info that helps you choose which card to pay with. <ph name="CARD_BENEFIT_HELP_LINK_BEGIN">&lt;a href="#"&gt;</ph>Learn about card benefits<ph name="CARD_BENEFIT_HELP_LINK_END">&lt;/a&gt;</ph>
+      Show which rewards and benefits are available for your cards at checkout <ph name="CARD_BENEFIT_HELP_LINK_BEGIN">&lt;a href="#" aria-description="$1"&gt;</ph>Learn about card benefits<ph name="CARD_BENEFIT_HELP_LINK_END">&lt;/a&gt;</ph>
     </message>
     <message name="IDS_AUTOFILL_SETTINGS_PAGE_BULK_REMOVE_CVC_TITLE" desc="Title for the modal dialog when the user is trying to bulk remove/delete all the CVCs stored locally and on Google servers.">
       Delete saved security codes?
@@ -1114,11 +1125,11 @@
     <message name="IDS_AUTOFILL_SETTINGS_PAGE_CVC_TAG_FOR_CREDIT_CARD_LIST_ENTRY" desc="Tag present on each entry in the credit card list on the payments settings page if that entry has a cvc saved to it.">
       CVC saved
     </message>
-    <message name="IDS_AUTOFILL_SETTINGS_PAGE_BENEFITS_AVAILABLE_TAG_FOR_CREDIT_CARD_LIST_ENTRY" desc="Tag present on each entry in the credit card list on the payments settings page if that entry has associated benefits and a product terms URL.">
-      Card benefits available
-    </message>
     <message name="IDS_AUTOFILL_SETTINGS_PAGE_BENEFITS_TERMS_TAG_FOR_CREDIT_CARD_LIST_ENTRY" desc="Tag present on each entry in the credit card list on the payments settings page if that entry has associated benefits and a product terms URL. It is also a hyperlink text which opens the product terms page.">
-      See terms here
+      See card benefit terms
+    </message>
+    <message name="IDS_AUTOFILL_SETTINGS_PAGE_BENEFITS_TERMS_ARIA_LABEL" desc="Screenreader text for the benefits terms link on a credit card entry in the Autofill settings page.">
+      See terms here for <ph name="CREDIT_CARD_NAME">$1</ph>
     </message>
   </if>
   <if expr="is_android">
@@ -1170,8 +1181,14 @@
     Your bank can't offer virtual cards for this payment method right now, but you can still use your <ph name="CARD_LABEL">$1<ex>Visa **4444</ex></ph> to pay online.
   </message>
 
-  <message name="IDS_AUTOFILL_SAVE_CARD_AND_VIRTUAL_CARD_ENROLL_CONFIRMATION_FAILURE_BUTTON_TEXT" desc="Text shown on the button of the confirmation prompt after card upload or vcn enrollment failure.">
+  <message name="IDS_AUTOFILL_SAVE_CARD_AND_VIRTUAL_CARD_ENROLL_CONFIRMATION_FAILURE_OK_BUTTON_TEXT" desc="Text shown on the ok button of the confirmation prompt after card upload or vcn enrollment failure.">
     Got it
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_CARD_CONFIRMATION_FAILURE_OK_BUTTON_ACCESSIBLE_NAME" desc="Accessible name announced by the screenreader for save card failure confirmation prompt's ok button.">
+    Confirming card info can't be saved
+  </message>
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLL_CONFIRMATION_FAILURE_OK_BUTTON_ACCESSIBLE_NAME" desc="Accessible name announced by the screenreader for virtual card enrollment failure confirmation prompt's ok button.">
+    Confirming virtual card can't be turned on
   </message>
 
 </grit-part>

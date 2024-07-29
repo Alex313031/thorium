@@ -64,7 +64,7 @@
     <if expr="not chromeos_ash">
       <if expr="_google_chrome">
         <message name="IDS_MANAGEMENT_BROWSER_NOTICE" desc="Message shown when the (Google-branded) Thorium browser is managed, it indicates what the administrator can do on the browser.">
-        Your administrator can change your browser setup remotely. Activity on this device may also be managed outside of Thorium. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+        Your administrator can make changes to your profile and browser remotely, analyze information about the browser through reporting, and perform other necessary tasks. Activity on this device may also be managed outside of Thorium.  <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_MANAGEMENT_NOT_MANAGED_NOTICE" desc="Message indicating that the (Google-branded) Thorium browser is not managed">
         This browser is not managed by a company or other organization. Activity on this device may be managed outside of Thorium. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
@@ -72,12 +72,15 @@
       </if>
       <if expr="not _google_chrome">
         <message name="IDS_MANAGEMENT_BROWSER_NOTICE" desc="Message shown when the (non-Google-branded) Thorium browser is managed, it indicates what the administrator can do on the browser.">
-        Your administrator can change your browser setup remotely. Activity on this device may also be managed outside of Thorium. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+        Your administrator can make changes to your profile and browser remotely, analyze information about the browser through reporting, and perform other necessary tasks. Activity on this device may also be managed outside of Thorium. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
         <message name="IDS_MANAGEMENT_NOT_MANAGED_NOTICE" desc="Message indicating that the (non-Google-branded) Thorium browser is not managed">
         This browser is not managed by a company or other organization. Activity on this device may be managed outside of Thorium. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
         </message>
       </if>
+      <message name="IDS_MANAGEMENT_PROFILE_NOTICE" desc="Message shown when one profile from the Thorium browser is managed, it indicates what the administrator can do for that profile.">
+        The profile you’re signed in to is a managed profile. Your administrator can make changes to your profile settings remotely, analyze information about the browser through reporting, and perform other necessary tasks. <ph name="BEGIN_LINK">&lt;a target="_blank" href="$1" aria-label="$2"&gt;</ph>Learn more<ph name="END_LINK">&lt;/a&gt;</ph>
+      </message>
       <message name="IDS_MANAGEMENT_LEARN_MORE_ACCCESSIBILITY_TEXT" desc="Accessibility text for a 'Learn more' link that links to a help article about how the browser is managed.">
         Learn more about how your browser is managed
       </message>
@@ -284,6 +287,29 @@
     <message name="IDS_MANAGEMENT_LEGACY_TECH_REPORT" desc="Message explaining that browser will upload a report when a legacy technology is used for a webpage" formatter_data="android_java">
       A limited list of URLs of pages you visit where <ph name="BEGIN_LINK">&lt;a target="_blank" href="https://chromestatus.com/features#browsers.chrome.status%3A%22Deprecated%22" &gt;</ph>legacy technology events<ph name="END_LINK">&lt;/a&gt;</ph> are occuring.
     </message>
+
+    <!--Profile reporting management message-->
+    <if expr="not is_android">
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_EXPLANATION" desc="Message explaining browser reporting" formatter_data="android_java" translateable="false">
+        Managed profile, browser, and some device information is accessible to your administrator. They can see information such as the following:
+      </message>
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_OVERVIEW" desc="Item in a list of information viewable by the enterprise admin, indicating that the admin can view the user's work profile overview." formatter_data="android_java" translateable="false">
+        Work profile overview
+      </message>
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_USERNAME" desc="Item in a list of information viewable by the enterprise admin, indicating that the admin can view the user's work profile username." formatter_data="android_java" translateable="false">
+        Work profile information (such as your work profile username)
+      </message>
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_BROWSER" desc="Item in a list of information viewable by the enterprise admin, indicating that the admin can view the device information that user's work profile belong to" formatter_data="android_java" translateable="false">
+        Browser and device OS information (such as the browser &amp; OS versions)
+      </message>
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_EXTENSION" desc="Item in a list of information viewable by the enterprise admin, indicating that the admin can view user's work profile extensions" formatter_data="android_java" translateable="false">
+        Installed apps &amp; extensions in your work profile
+      </message>
+      <message name="IDS_MANAGEMENT_PROFILE_REPORTING_POLICY" desc="Item in a list of information viewable by the enterprise admin, indicating that the admin can viewuser's work profile policies" formatter_data="android_java" translateable="false">
+        Applied browser policies in your work profile
+      </message>
+    </if>
+
     <!-- Strings related to Thorium Enterprise Connectors -->
     <message name="IDS_MANAGEMENT_THREAT_PROTECTION" desc="Title of the Thorium Enterprise Connectors section of the page">
       Thorium Enterprise Connectors
@@ -343,7 +369,7 @@
       Applications authorized by your administrator can capture all screens attached to your device. This information can be processed locally or uploaded to your organization’s servers.
     </message>
     <message name="IDS_MANAGEMENT_ENTERPRISE_REPORTING_VISIBLE_DATA" desc="Description of the visible data for the Connectors reporting feature">
-      When security events are flagged by Thorium, relevant data about the events is sent to your administrator. This can include URLs of pages you visit in Thorium, file names or metadata, browser or tab crashes, and the username that you use to sign in to web based applications, your device and Thorium.
+      When security events are flagged by Thorium, relevant data about the events is sent to your administrator. This can include URLs of pages you visit in Thorium, URLs of pages you copied data from, file names or metadata, browser or tab crashes, and the username that you use to sign in to web based applications, your device and Thorium.
     </message>
     <message name="IDS_MANAGEMENT_PAGE_VISITED_VISIBLE_DATA" desc="Description of the visible data for the real time URL check feature.">
       URLs of pages you visit are sent to Google Cloud or third parties for analysis. For example, they might be scanned to detect unsafe websites or filter websites based on rules set by the administrator.

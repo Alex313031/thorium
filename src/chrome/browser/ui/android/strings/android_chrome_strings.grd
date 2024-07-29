@@ -208,9 +208,6 @@ CHAR_LIMIT guidelines:
       <message name="IDS_COOKIE_CONTROLS_IPH_MESSAGE" desc="In-context Product Help - Appears right under the page info icon to highlight the Cookie Controls entrypoint.">
         Site not working? Third-party cookies are blocked
       </message>
-      <message name="IDS_COOKIE_CONTROLS_REMINDER_IPH_MESSAGE" desc="In-context Product Help - Appears right under the page info icon to highlight the Cookie Controls entrypoint. This message is a reminder.">
-        Site not working? Try temporarily allowing third-party cookies
-      </message>
 
       <!-- Main Preferences -->
       <message name="IDS_PREFS_SECTION_BASICS" desc='Title of "Basics" section of preferences. [CHAR_LIMIT=32]'>
@@ -218,6 +215,11 @@ CHAR_LIMIT guidelines:
       </message>
       <message name="IDS_PREFS_SECTION_ADVANCED" desc='Title of "Advanced" section of preferences. [CHAR_LIMIT=32]'>
         Advanced
+      </message>
+
+      <!-- TODO(b/326574743): Revisit string and mark it as translateable.-->
+      <message name="IDS_ACCOUNT_ADVANCED_HEADER" desc="Heading of a section with settings related to the user's Google Account and data. [CHAR_LIMIT=32]" translateable="false">
+        Control your data &amp; account
       </message>
 
       <!-- Notification channels -->
@@ -304,24 +306,27 @@ CHAR_LIMIT guidelines:
       <message name="IDS_SIGN_IN_GOOGLE_ACTIVITY_CONTROLS_SUMMARY" desc="Message of Google activity controls preference in signed in accounts settings screen">
         Control how your browsing history is used to personalize Search and more
       </message>
-      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_TITLE" desc="This is the title of a setting that helps users find the settings to control how Thorium history can be used to personalize other Google services. It appears in Thorium’s Advanced Sync settings and is before the “Control how your synced history can be used to personalize other Google services” string. You may shorten the string to “Personalize services” or just “Personalize” in order to help your language fit in the small character limit. [CHAR_LIMIT=30]">
-        Personalize Google services
+      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_TITLE" desc="This is the title of a setting that directs users to other settings where they can control how Thorium history can be used to personalize other Google services. It appears in Thorium’s Advanced Sync settings and is before the “Control how browsing history is used with your other data across Google services” string. [CHAR_LIMIT=30]">
+        Personalization
       </message>
-      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_SUMMARY" desc="Message of 'Personalize Google services' preference in signed in accounts settings screen">
-        Control how your synced history can be used to personalize other Google services
+      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_TITLE_EEA" desc="This is the title of a setting that directs users to other settings where they can control how Thorium history can be used to personalize other Google services. It appears in Thorium’s Advanced Sync settings and is before the “Control how browsing history is used with your other data across Google services” string. “Linking” refers to the ability to link Google services; this verb should align with the verb for the branded term “linked Google services” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=517bace2. [CHAR_LIMIT=30]">
+        Personalization &amp; Linking
+      </message>
+      <message name="IDS_SIGN_IN_PERSONALIZE_GOOGLE_SERVICES_SUMMARY" desc="This is the subtitle of a setting that directs users to other settings where they can control how Thorium history can be used to personalize other Google services. This subtitle appears in Thorium’s Advanced Sync settings, after the “Personalization &amp; linking” or “Personalization“ string.">
+        Control how browsing history is used with your other data across Google services
       </message>
       <!-- Personalized Google services preferences-->
       <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_SUMMARY" desc="This is the body text of a setting that helps users find the settings to control how Thorium history can be used to personalize other Google services. This text appears in Thorium’s Advanced Sync settings, on the subpage that links out to Web &amp; App Activity and linked Google services.">
         To get the most personalized experience, include Thorium in Web &amp; App Activity and linked Google services
       </message>
-      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_WAA_TITLE" desc="This string is found on a link in Thorium’s Advanced Sync settings. When the user taps it, the link takes the user to “Web &amp; App Activity” in the Google Account’s Activity Controls. The link is on a subpage from Thorium’s Advanced Sync settings. This text should match the branded term “Web &amp; App Activity” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3b75.">
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_WAA_TITLE" desc="This string is found on a link in Thorium’s Advanced Sync settings. When the user taps it, the link takes the user to “Web &amp; App Activity” in the Google Account’s Activity Controls. This text should match the branded term “Web &amp; App Activity” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=77d3b75.">
         Web &amp; App Activity
       </message>
       <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_LINKED_SERVICES_TITLE" desc="This string is found on a subpage from Thorium’s Advanced Sync settings. When the user taps it, the link takes the user to “Linked Google services” in the Google Account’s Data &amp; privacy settings. The link is on a setting that users see in Thorium’s Advanced Sync settings. This text should match the branded term “linked Google services” in Glossary Manager: https://localization.google.com/glossary/termset?gid=27517723&amp;tsid=517bace2.">
         Linked Google services
       </message>
-      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_LINKED_SERVICES_SUMMARY" desc="This is the subtitle of a setting that links to “Linked Google services” in the Google Account’s Data &amp; privacy settings. This subtitle appears on a subpage from Thorium’s Advanced Sync settings, and is after the “Linked Google services” string. The pronoun “them” refers to Thorium and other Google services.">
-        Link Thorium and other Google services if you want them to personalize your experience using data from one another
+      <message name="IDS_PERSONALIZED_GOOGLE_SERVICES_LINKED_SERVICES_SUMMARY" desc="This is the subtitle of a setting that links to “Linked Google services” in the Google Account’s Data &amp; privacy settings. This subtitle appears on a subpage from Thorium’s Advanced Sync settings, and is after the “Linked Google services” string.">
+        Link Thorium and other Google services for personalization and other purposes
       </message>
       <!-- Unified consent preferences -->
       <message name="IDS_SIGN_OUT_AND_TURN_OFF_SYNC" desc="The text for a preferences row that for signs out the user and turns off sync.">
@@ -578,9 +583,17 @@ CHAR_LIMIT guidelines:
       <message name="IDS_AUTOFILL_CARD_EDITOR_VIRTUAL_CARD_TURN_OFF_BUTTON_LABEL" desc="Label shown on the button that the user clicks on to unenroll from virtual cards.">
         Turn off
       </message>
-      <!-- TODO(crbug.com/1425882): Use finalized string.-->
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
       <message translateable="false" name="IDS_AUTOFILL_OPTIONS_TITLE" desc="Description below switch toggling the use of third-party autofill in Thorium." formatter_data="android_java">
         Autofill Options
+      </message>
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_CONFIRM_RESTART" desc="Description below switch toggling the use of third-party autofill in Thorium." formatter_data="android_java">
+        Restart now
+      </message>
+      <!-- TODO(crbug.com/40898980): Use finalized string.-->
+      <message translateable="false" name="IDS_AUTOFILL_OPTIONS_UNDO_TOGGLE_CHANGE" desc="Description below switch toggling the use of third-party autofill in Thorium." formatter_data="android_java">
+        Undo setting change
       </message>
       <message name="IDS_AUTOFILL_DELETE_SAVED_CVCS_CONFIRMATION_DIALOG_TITLE" desc="Title for the dialog where the user confirms their intention to delete their saved CVCs.">
         Delete saved security codes?
@@ -630,7 +643,7 @@ CHAR_LIMIT guidelines:
         Passwords
       </message>
       <message name="IDS_PASSWORD_MANAGER_SETTINGS_TITLE" desc="Title for the settings menu item leading to the Password Manager UI surface. This allows users to e.g. manage their saved passwords, toggle saving and auto-sign-in on/off, etc. [CHAR_LIMIT=32]">
-        Password Manager
+        Google Password Manager
       </message>
       <message name="IDS_PASSWORD_SAVING_ON_BY_ADMINISTRATOR" desc="Subtitle for the settings menu item leading to the Password Manager UI surface, shown when the device administrator set saving passwords to enabled.">
         Password saving is turned on by your administrator
@@ -1197,14 +1210,14 @@ For example, some websites may respond to this request by showing you ads that a
         Please verify that this is a valid provider or try again later
       </message>
 
-      <message name="IDS_CLEAR_BROWSING_DATA_TITLE" desc="Title of the Clear Browsing Data screen. [CHAR_LIMIT=32]">
-        Clear browsing data
+      <message name="IDS_CLEAR_BROWSING_DATA_TITLE" desc="Title of the Delete Browsing Data screen. [CHAR_LIMIT=32]">
+        Delete browsing data
       </message>
-      <message name="IDS_CLEAR_BROWSING_DATA_SUMMARY" desc="Summary of the settings item that opens the Clear Browsing Data dialog.">
-        Clear history, cookies, site data, cache…
+      <message name="IDS_CLEAR_BROWSING_DATA_SUMMARY" desc="Summary of the settings item that opens the Delete Browsing Data dialog.">
+        Delete history, cookies, site data, cache…
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_DIALOG_TITLE" desc="Title of a dialog that is shown after the deletion of browsing history finished.">
-        Cleared Thorium data
+        Deleted Thorium data
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_HISTORY_DIALOG_DATA_TEXT" desc="Text of the dialog that is shown after the deletion of browsing history items finished, indicating that the selected data has been removed, but there may be other forms of browsing history still present in user's Google account.">
         The selected data has been removed from Thorium and your synced devices.
@@ -1227,10 +1240,10 @@ Your Google account may have other forms of browsing history like searches and a
         Signs you out of most sites. You won't be signed out of your Google Account.
       </message>
       <message name="IDS_CLEAR_BROWSING_HISTORY_SUMMARY" desc="A text for the basic tab explaining browsing history.">
-        Clears history, including in the search box
+        Deletes history, including in the search box
       </message>
       <message name="IDS_CLEAR_BROWSING_HISTORY_SUMMARY_SYNCED_NO_LINK" desc="A text for the basic tab explaining browsing history for users with history sync. This version is shown when the link to MyActivity is displayed separately.">
-        Clears history from all synced devices
+        Deletes history from all synced devices
       </message>
       <message name="IDS_CLEAR_SEARCH_HISTORY_LINK" desc="Text informing the user that they can clear search history and other data using MyActivity.">
         <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>Search history<ph name="END_LINK1">&lt;/link1&gt;</ph> and <ph name="BEGIN_LINK2">&lt;link2&gt;</ph>other forms of activity<ph name="END_LINK2">&lt;/link2&gt;</ph> may be saved in your Google Account when you’re signed in. You can delete them anytime.
@@ -1241,8 +1254,8 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_SIGN_OUT_OF_CHROME_LINK" desc="The text is displayed in a footer in a dialog to clear browsing data. The link ‘sign out of Thorium’ opens a dialog where the user can confirm if they want to sign out of Thorium.">
           To sign out of your Google Account on all websites, <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>sign out of Thorium<ph name="END_LINK1">&lt;/link1&gt;</ph>.
       </message>
-      <message name="IDS_SIGN_OUT_OF_CHROME_LINK_ADVANCED" desc="The text is displayed in a footer in the advanced option of clear browsing data dialog. The link ‘sign out of Thorium’ opens a dialog where the user can confirm if they want to sign out of Thorium.">
-          Clearing your browsing data doesn't sign you out of your Google Account. To do so, <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>sign out of Thorium<ph name="END_LINK1">&lt;/link1&gt;</ph>.
+      <message name="IDS_SIGN_OUT_OF_CHROME_LINK_ADVANCED" desc="The text is displayed in a footer in the advanced option of delete browsing data dialog. The link ‘sign out of Thorium’ opens a dialog where the user can confirm if they want to sign out of Thorium.">
+          Deleting your browsing data doesn't sign you out of your Google Account. To do so, <ph name="BEGIN_LINK1">&lt;link1&gt;</ph>sign out of Thorium<ph name="END_LINK1">&lt;/link1&gt;</ph>.
       </message>
       <message name="IDS_CLEAR_SEARCH_HISTORY_NON_GOOGLE_DSE" desc="Text informing the user about the way to clear their search history when their Default Search Engine is not Google.">
         Your search engine is <ph name="dse">%1$s<ex>Bing</ex></ph>. See their instructions for deleting your search history, if applicable.
@@ -1257,13 +1270,16 @@ Your Google account may have other forms of browsing history like searches and a
         Autofill form data
       </message>
       <message name="IDS_CLEAR_TABS_TITLE" desc="Title for Clear Tabs in Clear Browsing Data preference">
-        Tabs on this device
+        Tabs
       </message>
-      <message name="IDS_CLEAR_BROWSING_DATA_PROGRESS_TITLE" desc='Title for the progress dialog used when waiting for "clear browsing data" to complete.'>
-        Clearing browsing data
+      <message name="IDS_CLEAR_TABS_DISABLED_SUMMARY" desc="A descriptive line that appears as a secondary text for Clear Tabs in Clear Browsing Data preference. The text explains why 'Tabs' checkbox is disabled.">
+        Can’t be closed across multiple windows
       </message>
-      <message name="IDS_CLEAR_DATA_DELETE" desc="Button that allows the user to clear their browsing data. [CHAR_LIMIT=30]">
-        Clear data
+      <message name="IDS_CLEAR_BROWSING_DATA_PROGRESS_TITLE" desc='Title for the progress dialog used when waiting for "delete browsing data" to complete.'>
+        Deleting browsing data
+      </message>
+      <message name="IDS_CLEAR_DATA_DELETE" desc="Button that allows the user to delete their browsing data. [CHAR_LIMIT=30]">
+        Delete data
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_PROGRESS_MESSAGE" desc='Message on the progress dialog used when waiting for "clear browsing data" to complete.'>
         Please wait…
@@ -1302,10 +1318,10 @@ Your Google account may have other forms of browsing history like searches and a
         These sites and apps seem important to you:
       </message>
       <message name="IDS_CLEAR_BROWSING_DATA_IMPORTANT_DIALOG_BUTTON" desc="The text of the button to perform the clear action in the dialog presenting the user with 'important' sites that they can exclude from clearing.">
-        Clear
+        Delete
       </message>
-      <message name="IDS_OPEN_CLEAR_BROWSING_DATA_DIALOG_BUTTON" desc="Title of the button that will open the clear browsing data dialog.">
-        Clear browsing data…
+      <message name="IDS_OPEN_CLEAR_BROWSING_DATA_DIALOG_BUTTON" desc="Title of the button that will open the delete browsing data dialog.">
+        Delete browsing data…
       </message>
       <message name="IDS_OPEN_FULL_CHROME_HISTORY" desc="Title of the button that will open the full history in Thorium browser from CCT history page.">
               Open full Thorium history
@@ -1313,8 +1329,20 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_CLEAR_BROWSING_DATA_BASIC_TAB_TITLE" desc="The title of the tab showing the basic clear browsing data options.">
         Basic
       </message>
+      <message name="IDS_ANDROID_APP_HISTORY_OPEN_FULL" desc="The informational message at the top of the history page letting users know that app-specific history may be missing some entries.">
+        Some of your history might not show up here. To see all your Thorium history, open full Thorium history.
+      </message>
+      <message name="IDS_ANDROID_APP_HISTORY_OPEN_FULL_OTHER_FORMS" desc="The informational message at the top of the history page letting users know that app-specific history may be missing some entries, followed by the info on the other forms of browing history.">
+        Some of your history might not show up here. To see all your Thorium history, open full Thorium history. Also, your Google Account may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
+      </message>
       <message name="IDS_ANDROID_HISTORY_OTHER_FORMS_OF_HISTORY" desc="The notification at the top of the history page indicating that deleting Thorium browsing history will not delete other forms of history stored at Google My Activity.">
         Your Google Account may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
+      </message>
+      <message name="IDS_ANDROID_HISTORY_FROM_OTHER_APPS" desc="The notification at the top of the history page indicating that users will see the history from other apps that open links in Thorium.">
+        You may see the history from other apps that open links in Thorium.
+      </message>
+      <message name="IDS_ANDROID_HISTORY_FROM_OTHER_APPS_OTHER_FORMS_OF_HISTORY" desc="The notification at the top of the history page indicating that 1) users will see the history from other apps that open links in Thorium 2) deleting Thorium browsing history will not delete other forms of history stored at Google My Activity.">
+        You may see the history from other apps that open links in Thorium. Your Google Account may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
       </message>
       <message name="IDS_ANDROID_HISTORY_BLOCKED_SITE" desc="The text displayed in the history page indicating that a visit to a web site was blocked due to an administrator policy.">
         Blocked site
@@ -1701,6 +1729,23 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_SAFE_BROWSING_ENHANCED_PROTECTION_LEARN_MORE_LABEL" desc="The text for a link to a help center article that gives more information about Safe Browsing.">
         Learn more about <ph name="BEGIN_LINK">&lt;link&gt;</ph>how Thorium keeps your data private<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+
+      <!-- History App filter -->
+      <message name="IDS_HISTORY_FILTER_BY_APP" desc="Text used in the app filter button and in the header of app filter sheet.">
+        Filter by app
+      </message>
+      <message name="IDS_HISTORY_IPH_BUBBLE_TEXT" desc="The message on the text bubble shown to educate users about the app history filter.">
+        Search by app, date, and more.
+      </message>
+      <message name="IDS_HISTORY_APP_FILTER_SHEET_DESCRIPTION" desc="The content description of history app filter where an app id to filter the history with can be chosen.">
+        App filter sheet
+      </message>
+      <message name="IDS_HISTORY_APP_FILTER_SHEET_OPENED" desc="The accessibility string read when the app filter sheet is fully opened.">
+        App filter sheet is opened.
+      </message>
+      <message name="IDS_HISTORY_APP_FILTER_SHEET_CLOSED" desc="The accessibility string read when the app filter sheet is closed.">
+        App filter sheet is closed.
       </message>
 
       <!-- Safe Browsing standard protection preferences -->
@@ -2117,7 +2162,7 @@ Your Google account may have other forms of browsing history like searches and a
         Turn off sync?
       </message>
       <message name="IDS_SIGNOUT_MANAGED_ACCOUNT_TITLE" desc="Title for sign out of Thorium dialog for enterprise account [CHAR_LIMIT=40]">
-        Clear your Thorium data from this device?
+        Delete your Thorium data from this device?
       </message>
       <message name="IDS_SIGNOUT_MESSAGE" desc="The text is displayed as the message of a dialog to confirm whether the user wants to sign out of Thorium. The dialog is titled ‘Sign out of Thorium?’. The user can cancel and stay signed in, or confirm and sign out.">
         Some Thorium features won\u2019t be available anymore
@@ -2129,10 +2174,26 @@ Your Google account may have other forms of browsing history like searches and a
         Your bookmarks, history, and other Thorium data will no longer be synced to your Google Account
       </message>
       <message name="IDS_REMOVE_LOCAL_DATA" desc="Checkbox to delete all existing data in local device storage">
-        Also clear your Thorium data from this device
+        Also delete your Thorium data from this device
       </message>
       <message name="IDS_SIGNOUT_MANAGED_ACCOUNT_MESSAGE" desc="Message to display for sign out of Thorium dialog when the account has enterprise management, and all user data will be erased">
         Because you're signing out of an account managed by <ph name="DOMAIN_NAME">%1$s<ex>google.com</ex></ph>, your Thorium data will be deleted from this device. It will remain in your Google Account.
+      </message>
+      <!-- TODO(crbug.com/41493790): Add description and remove translateable once strings are finalized. -->
+      <message name="IDS_SIGN_OUT_SNACKBAR_MESSAGE" desc="to be added" translateable="false">
+          Signed out. Sign back in to use the bookmarks, passwords and more in your account.
+      </message>
+      <!-- TODO(crbug.com/41493791): Add description and remove translateable once strings are finalized. -->
+      <message name="IDS_SIGN_OUT_UNSAVED_DATA_TITLE" desc="to be added" translateable="false">
+        Unsaved data
+      </message>
+      <!-- TODO(crbug.com/41493791): Add description and remove translateable once strings are finalized. -->
+      <message name="IDS_SIGN_OUT_UNSAVED_DATA_MESSAGE" desc="to be added" translateable="false">
+        Some of your Thorium data hasn\u2019t been saved in your Google Account yet.\nTry waiting a few minutes before signing out. If you sign out now, this data will be deleted.
+      </message>
+      <!-- TODO(crbug.com/41493791): Add description and remove translateable once strings are finalized. -->
+      <message name="IDS_SIGN_OUT_UNSAVED_DATA_PRIMARY_BUTTON" desc="to be added" translateable="false">
+        Delete and sign out
       </message>
       <message name="IDS_SIGN_IN_GETTING_ACCOUNT_MANAGEMENT_POLICY" desc="Title of progress bar dialog for getting management policy">
         Contacting Google. This may take a minute…
@@ -2196,6 +2257,10 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_SYNC_HISTORY" desc="Title for preference which enables sync'ing of history data. [CHAR_LIMIT=32]">
         History
       </message>
+      <!-- TODO(b/326574743): Revisit string and mark it as translatable.-->
+      <message name="IDS_SYNC_HISTORY_AND_TABS" desc="Title for preference which enables sync'ing of history data and open tabs. [CHAR_LIMIT=32]" translateable="false">
+        History and Tabs
+      </message>
       <message name="IDS_SYNC_PASSWORDS" desc="Title for preference which enables sync'ing of passwords. [CHAR_LIMIT=32]">
         Passwords
       </message>
@@ -2211,6 +2276,10 @@ Your Google account may have other forms of browsing history like searches and a
       <message name="IDS_SYNC_APPS" desc="Title for preference which enables sync'ing of WebAPKs. [CHAR_LIMIT=32]">
         Apps
       </message>
+      <!-- TODO(b/326574743): Revisit string and mark it as translatable.-->
+      <message name="IDS_ACCOUNT_SECTION_FOOTER" desc="Footer below a section with toggles to control which types of data users can use and save in their Google Account (as opposed to saving them only on the device)." translateable="false">
+        When on, use and save data in your Google Account. When off, data is saved only to this device.
+      </message>
       <message name="IDS_SYNC_PAYMENTS_INTEGRATION" desc="Title for preference which enables import of Google Pay data for Autofill. 'Google Pay' should not be translated as it is the product name.">
         Payment methods, offers, and addresses using Google Pay
       </message>
@@ -2219,6 +2288,18 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_SYNC_REVIEW_DATA" desc="Title for link to https://chrome.google.com/sync Dashboard to manage sync data.">
         Review your synced data
+      </message>
+      <!-- TODO(b/326574743): Revisit string and mark it as translatable.-->
+      <message name="IDS_SIGNIN_REVIEW_DATA_TITLE" desc="Title for link to https://chrome.google.com/sync Dashboard to manage sync data." translateable="false">
+        Data in your account
+      </message>
+      <!-- TODO(b/326574743): Revisit string and mark it as translatable.-->
+      <message name="IDS_SIGNIN_REVIEW_DATA_SUMMARY" desc="Summary for link to https://chrome.google.com/sync Dashboard to manage sync data." translateable="false">
+        Review your account data
+      </message>
+      <!-- TODO(b/326574743): Revisit string and mark it as translatable.-->
+      <message name="IDS_MANAGE_ACCOUNTS_ON_THIS_DEVICE" desc="Title of account management section." translateable="false">
+        Manage accounts on this device
       </message>
       <message name="IDS_SYNC_PASSPHRASE_TYPE_TITLE" desc="Title of sync passphrase type dialog. [CHAR_LIMIT=24]">
         Encryption
@@ -2237,7 +2318,7 @@ Your Google account may have other forms of browsing history like searches and a
       </message>
       <message name="IDS_SYNC_ENCRYPTION_CREATE_PASSPHRASE" desc="Prompt user to create a custom sync password.">
         Payment methods and addresses from Google Pay won’t be encrypted. Browsing history from Thorium won’t sync.
-Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
+Only someone with your passphrase can read your encrypted data. The passphrase is not sent to or stored by Google. If you forget your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_ENTER_CUSTOM_PASSPHRASE_HINT" desc="Hint for the passphrase field when user is to type in a passphrase. [CHAR_LIMIT=30]">
         Passphrase
@@ -2255,7 +2336,7 @@ Only someone with your passphrase can read your encrypted data. The passphrase i
         This field cannot be blank
       </message>
       <message name="IDS_SYNC_PASSPHRASE_RECOVER" desc="Inform the user how they can reset their passphrase if they have forgotten it." meaning="Android">
-        If you forgot your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
+        If you forgot your passphrase or want to change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_PASSPHRASES_DO_NOT_MATCH" desc="Inform user that their sync password does not match.">
         Passphrases do not match
@@ -2263,7 +2344,7 @@ Only someone with your passphrase can read your encrypted data. The passphrase i
       <message name="IDS_SYNC_PASSPHRASE_ENCRYPTION_RESET_INSTRUCTIONS" desc="Inform user how to change their encryption setting.">
         Passphrase encryption doesn’t include payment methods and addresses from Google Pay.
 
-To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
+To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>delete the Thorium data in your account<ph name="END_LINK">END_LINK</ph>.
       </message>
       <message name="IDS_SYNC_PASSPHRASE_INCORRECT" desc="Inform the user that the passphrase they entered for sync is incorrect. [CHAR_LIMIT=40]">
         Incorrect passphrase
@@ -2333,6 +2414,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_HINT_CLIENT_OUT_OF_DATE" desc="Hint message to resolve sync protocol error for out-of-date client.">
         Update <ph name="PRODUCT_NAME">%1$s<ex>Thorium</ex></ph> to start sync
       </message>
+      <message name="IDS_SYNC_ERROR_CARD_OUTDATED_GMS" desc="Error message to update Google Play services to continue syncing passwords.">
+        To save and use new passwords in your Google Account, update Google Play services
+      </message>
 
       <!-- Sync error card button strings -->
       <message name="IDS_CLIENT_OUT_OF_DATE_ERROR_CARD_BUTTON" desc="Button text for client out of date error in sync error cards.">
@@ -2364,14 +2448,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SYNC_ERROR_SERVICE_UNAVAILABLE" desc="Sync error string for service unavailable. [CHAR_LIMIT=80]">
         The service is not available; try again later.
       </message>
-      <message name="IDS_POLICY_DIALOG_PROCEED" desc="Label on the button to accept the policy dialog during sign-in. [CHAR_LIMIT=20]">
-        Accept and sign in
-      </message>
       <message name="IDS_WIPING_PROFILE_DATA_TITLE" desc="Title for the progress dialog shown while profile data is being wiped after signing out of an enterprise account">
-        Clearing account data
+        Deleting account data
       </message>
       <message name="IDS_WIPING_PROFILE_DATA_MESSAGE" desc="Message for the progress dialog shown while profile data is being wiped after signing out of an enterprise account">
         Please wait…
+      </message>
+      <message name="IDS_SYNC_ERROR_OUTDATED_GMS" desc="Sync error string for the Sync row in the main menu, and also the title for the sync error card, in case Google Play services needs to be updated to continue syncing passwords.">
+        Update Google Play services
       </message>
 
       <!-- Identity error card message strings -->
@@ -2570,7 +2654,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_PASSWORD_MANAGER_OUTDATED_GMS_DIALOG_DESCRIPTION" desc="Description text of the dialog appearing when the Google Play Services needs to be updated to use the Google Password Manager. Dialog suggests to update the Google Play Services.">
         To manage your passwords, update Google Play services
       </message>
-      <message name="IDS_PASSWORD_MANAGER_OUTDATED_GMS_POSITIVE_BUTTON" desc="Label for the positive ('update') button of the dialog appearing when the Google Play Services needs to be updated to use the Google Password Manager. Clicking on this button opens the Google Play services page in the Google Play Store.">
+      <message name="IDS_PASSWORD_MANAGER_OUTDATED_GMS_POSITIVE_BUTTON" desc="Label for the positive ('update') button of the dialog appearing when the Google Play Services needs to be updated to use the Google Password Manager. This is also used in the corresponding sync error card. Clicking on this button opens the Google Play services page in the Google Play Store.">
         Update
       </message>
       <message name="IDS_PASSWORD_MANAGER_OUTDATED_GMS_NEGATIVE_BUTTON" desc="Label for the negative ('not now') button of the dialog appearing when the Google Play Services needs to be updated to use the Google Password Manager. Clicking on this button dismisses the dialog without further actions.">
@@ -2736,9 +2820,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_WEBAPK_INSTALL_FAILED_ACTION_OPEN" desc="The label of the button which upon click would open the site user was trying to install as PWA. ">
         Go back to site
       </message>
-      <message name="IDS_IPH_PWA_INSTALL_AVAILABLE_TEXT" desc="The in-product-help message for PWAs that can be installed to the device.">
-        Install this app
-      </message>
       <message name="IDS_IPH_MESSAGE_ADD_TO_HOME_SCREEN_TITLE" desc="The title of in-product-help message encouraging users to add a commonly visited webpage to the home screen.">
         Add to Home screen
       </message>
@@ -2792,6 +2873,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_NOTIFICATION_UNSUBSCRIBE_BUTTON" desc="Text of a button shown by the system on all notifications, allowing the user to unsubscribe from notifications from a web site in a single click (with an option to undo later). Note: there is very little horizontal space for this button. If it isn't possible to fit within the char limit, the string will be ellipsized if 3 buttons are shown side by side, so try to ensure that the user can guess the meaning from the first 8 characters. [CHAR_LIMIT=11]">
         Unsubscribe
+      </message>
+      <message name="IDS_NOTIFICATION_UNSUBSCRIBING_LABEL" desc="Text of a label shown by the system on a notifications in place of an [Unsubscribe] button after the user clicked it.">
+        Unsubscribing…
       </message>
       <message name="IDS_NOTIFICATION_PROVISIONALLY_UNSUBSCRIBED_TITLE" desc="Title of a system notification informing the user that they have successfully unsubscribed from receiving notifications from a web site.">
         Unsubscribed from notifications
@@ -3036,8 +3120,8 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_HISTORY_MANAGER_EMPTY_STATE" desc="Indicates that there are no browsing history items.">
         You’ll find your history here
       </message>
-      <message name="IDS_HISTORY_MANAGER_EMPTY_STATE_VIEW_OR_CLEAR_PAGE_VISITED" desc="Indicates that users can view or clear page visited here">
-        You can see the pages you’ve visited or clear them from your history
+      <message name="IDS_HISTORY_MANAGER_EMPTY_STATE_VIEW_OR_CLEAR_PAGE_VISITED" desc="Indicates that users can view or delete page visited here">
+        You can see the pages you’ve visited or delete them from your history
       </message>
       <message name="IDS_HISTORY_MANAGER_NO_RESULTS" desc="Text explaining that no browsing history items match a search query.">
         Can’t find that page. Check your spelling or try a search on <ph name="SEARCH_ENGINE">%1$s<ex>Google</ex></ph>.
@@ -3045,14 +3129,31 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_HISTORY_MANAGER_NO_RESULTS_NO_DSE" desc="Text explaining that no browsing history items match a search query when the default search engine is not set.">
         Can’t find that page. Check your spelling or try a web search.
       </message>
+
+      <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_EMPTY_STATE_TITLE" desc="Title text in app-specific history zero state that indicates that there are no history items.">
+        Nothing to show yet
+      </message>
+      <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_EMPTY_STATE_DESCRIPTION" desc="Description text in app-specific history zero state that states history for a specific-app will be displayed here.">
+        The pages you've opened in Thorium while using <ph name="APP_LABEL">%1$s<ex>YouTube</ex></ph> will show up here.
+      </message>
+
+      <message name="IDS_HISTORY_MANAGER_APP_SPECIFIC_HISTORY_NO_RESULTS" desc="Text explaining that no browsing history items match a search query in app-specific history.">
+        No search results found
+      </message>
+      <message name="IDS_HISTORY_MANAGER_EMPTY_STATE_VIEW_OR_OPEN_MORE_HISTORY" desc="Indicates that users can search something else or open more history">
+        Try searching for something else or open full Thorium history to see more results.
+      </message>
       <message name="IDS_HISTORY_MANAGER_SEARCH" desc="Placeholder text for the input field that allows users to search browsing history.">
         Search your history
+      </message>
+      <message name="IDS_HISTORY_APP_ATTRIBUTION" desc="Text showing that a history entry was generated by a certain app via a Custom Tab">
+        From <ph name="APP_LABEL">%1$s<ex>YouTube</ex></ph>
       </message>
       <message name="IDS_INCOGNITO_HISTORY_PLACEHOLDER_TITLE" desc="Title that states sites the users visit are not saved in Incognito mode.">
         Sites you visit aren’t saved in Incognito
       </message>
-      <message name="IDS_INCOGNITO_HISTORY_PLACEHOLDER_DESCRIPTION" desc="Description that states to clear Incognito browsing history from the device, users need to close all incognito tabs.">
-        To clear Incognito browsing history from your device, close all Incognito tabs.
+      <message name="IDS_INCOGNITO_HISTORY_PLACEHOLDER_DESCRIPTION" desc="Description that states to delete Incognito browsing history from the device, users need to close all incognito tabs.">
+        To delete Incognito browsing history from your device, close all Incognito tabs.
       </message>
 
       <!-- Close Incognito tabs notification messages -->
@@ -3061,6 +3162,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_CLOSE_ALL_INCOGNITO_NOTIFICATION" desc="Message on the notification that closes all Incognito tabs.">
         Close all Incognito tabs
+      </message>
+      <message name="IDS_HISTORY_OPEN_IN_CHROME" desc="App-specific history selection men item to open the selected link in Thorium. [CHAR_LIMIT=30]">
+        Open in new Thorium tab
+      </message>
+      <message name="IDS_HISTORY_OPEN_IN_INCOGNITO_CHROME" desc="App-specific history selection men item to open the selected link in Thorium in incognito mode. [CHAR_LIMIT=30]">
+        Open in Incognito Thorium tab
       </message>
 
      <!-- Incognito reauthentication page -->
@@ -3200,7 +3307,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Opening Thorium without a profile lock will remove your saved passwords and payment methods from the car. Using a profile lock keeps this data secure.
       </message>
       <message name="IDS_MISSING_DEVICE_LOCK_REMOVE_LOCAL_DATA" desc="Option given to the user to delete all Thorium profile data, particularly mentioning bookmarks and history.">
-        Also clear bookmarks, history, and more from this car
+        Also delete bookmarks, history, and more from this car
       </message>
       <message name="IDS_DELETE_AND_CONTINUE" desc="Text for the button that will delete any sensitive data and then navigate the user back to Thorium.">
         Delete &amp; continue
@@ -3295,6 +3402,9 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_SUBTITLE_FOR_BACK_OF_CARD_MENU_SIGNIN" desc="The subtitle for the account picker bottom sheet that tells the user what happens if the Continue button is clicked, when signin from BoC triggered the UI.">
         Sign in to manage your preferences
       </message>
+      <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_BENEFITS_SUBTITLE" desc="This string is on a sign-in page, after the user taps on a promotion about signing in to Thorium with the user's Google Account. It explains the overarching user benefit of signing in (access to bookmarks, passwords, history, settings, etc.). We want users to understand why signing in is beneficial, and click 'Continue as name' to sign in to their Google Account. The tone should be informative and lightweight.">
+        Get your bookmarks, passwords, and more on all your devices
+      </message>
 
       <!-- Cormorant Signin Strings -->
       <message name="IDS_SIGNIN_ACCOUNT_PICKER_BOTTOM_SHEET_TITLE_FOR_CORMORANT_SIGNIN" desc="The title for the bottom sheet that shows the list of accounts on the device and asks the user to select one of these accounts, when signin from Cormorant triggered the UI. [CHAR_LIMIT=27]">
@@ -3333,8 +3443,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_SYNC_PROMO_TITLE_RECENT_TABS" desc="This string is the headline of a card that appears when the user opens Thorium's recent tabs. The user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your tabs from your other devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can see some of their recent tabs from their computer on their phone, and their phone's recent tabs on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Get all your tabs
       </message>
+      <message name="IDS_SIGNIN_PROMO_TITLE_RECENT_TABS" translateable="false">
+        You’ll find tabs from other devices here
+      </message>
       <message name="IDS_SYNC_PROMO_DESCRIPTION_RECENT_TABS" desc="This string is the body of a card that appears when the user opens Thorium's recent tabs. The user may be signed in to Thorium, but isn't syncing their Thorium data. There's no character limit but try to keep the translation under 120 characters." meaning="The headline above this string is 'Continue from another device'. This message means that the user can see some of their recent tabs from their computer on their phone, and their phone's recent tabs on their computer. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Sync to get your tabs from your other devices
+      </message>
+      <message name="IDS_SIGNIN_PROMO_DESCRIPTION_RECENT_TABS" translateable="false">
+        To see tabs from other devices, sync your tabs and history
       </message>
       <message name="IDS_SYNC_PROMO_TITLE_SETTINGS" desc="This string is the headline of a card that appears when the user opens Thorium's settings; the user may be signed in to Thorium, but isn't syncing their Thorium data. The line below this string is 'Sync to get your passwords, bookmarks and more on all your devices'. [CHAR_LIMIT=70]" meaning="This headline means that the user can use Thorium more easily by syncing their passwords, bookmarks, settings, and more.. We want users to read this card and tap the 'Continue' button and turn on sync. The tone should be inviting.">
         Use Thorium your way
@@ -3347,6 +3463,15 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_SYNC_PROMO_TURN_ON_SYNC" desc="Button that the user can press if they want to turn on sync with this account.">
         Turn on sync
+      </message>
+      <message name="IDS_SIGNIN_PROMO_TURN_ON" translateable="false">
+        Turn on
+      </message>
+      <message name="IDS_SIGNIN_SETTINGS_TITLE" desc="Title of the sign-in row in the settings page that offers the user to sign-in to Thorium.">
+        Sign in
+      </message>
+      <message name="IDS_SIGNIN_SETTINGS_SUBTITLE" desc="Subtitle of the sign-in row in the settings page that offers the user to sign-in to Thorium. It explains the overarching user benefit of signing in (access to bookmarks, passwords, history, settings, etc.).">
+        Get your bookmarks, passwords and more on all your devices
       </message>
 
       <message name="IDS_EXTERNAL_APP_RESTRICTED_ACCESS_ERROR" desc="A message shown to the user if Thorium receives a file view request to something Thorium does not have access to view.">
@@ -3625,7 +3750,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Collapse to side view
       </message>
       <message name="IDS_CUSTOM_TAB_HISTORY_IPH_BUBBLE_TEXT" desc="The message on the text bubble shown to educate the user about history in CCTs.">
-        View your web history here
+        View your Thorium history here
       </message>
       <message name="IDS_CUSTOM_TAB_MINIMIZE" desc="The accessibility text for minimize button for custom tabs.">
         Minimize tab
@@ -3746,14 +3871,14 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_MENU_RECENT_TABS" desc="Menu item for opening the 'Recent tabs' page that shows recently closed tabs and pages the user has opened on his/her other devices. [CHAR_LIMIT=27]">
         Recent tabs
       </message>
-      <message name="IDS_MENU_WEB_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
-        Web history
+      <message name="IDS_CHROME_HISTORY" desc="Menu item for opening the CCT history page. [CHAR_LIMIT=27]">
+        Thorium history
       </message>
       <message name="IDS_MENU_HISTORY" desc="Menu item for opening the history page. [CHAR_LIMIT=27]">
         History
       </message>
       <message name="IDS_MENU_QUICK_DELETE" desc="Menu item for quick delete functionality that allows users to delete their browsing data. [CHAR_LIMIT=27]">
-        Clear browsing data
+        Delete browsing data
       </message>
       <message name="IDS_MENU_DOWNLOADS" desc="Menu item for opening the downloads page. [CHAR_LIMIT=27]">
         Downloads
@@ -3875,9 +4000,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_BOOKMARK_SHOW_IN_FOLDER" desc="Menu item text for opening the folder which contains the bookmark of interest. [CHAR_LIMIT=24]">
         Show in folder
       </message>
-      <message name="IDS_BOOKMARK_ADD_FOLDER" desc="Title for button to add a new bookmark folder [CHAR_LIMIT=32]">
-        New folder…
-      </message>
       <message name="IDS_BOOKMARK_CHOOSE_FOLDER" desc="Title for the dialog that moves bookmarks to another folder [CHAR_LIMIT=32]">
         Choose folder
       </message>
@@ -3901,9 +4023,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_EDIT_BOOKMARK" desc='The string prompting the user to edit the content of a bookmark. [CHAR_LIMIT=30]'>
         Edit bookmark
-      </message>
-      <message name="IDS_ADD_FOLDER" desc='Title of the "Add Folder" form dialog. [CHAR_LIMIT=30]'>
-        Add folder
       </message>
       <message name="IDS_EDIT_FOLDER" desc='Title of the "Edit Folder" form dialog. [CHAR_LIMIT=30]'>
         Edit folder
@@ -3966,9 +4085,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_PRICE_TRACKING_BOOKMARKS_FILTER_TITLE" desc="The title of the filter in the bookmarks manager.">
         Tracked products
-      </message>
-      <message name="IDS_TRACKED_PRODUCTS_EMPTY_LIST_TITLE" desc="The text on tracked products page when there are no tracked products. Informing user that tracked products is supposed to appear on this surface.">
-        You’ll find your tracked products here
       </message>
       <message name="IDS_PRICE_TRACKING_DISABLED_SNACKBAR" desc="Snackbar for when price-tracking is disabled.">
         Stopped tracking price
@@ -4273,8 +4389,11 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_IDENTITY_DISC_WITH_NAME" desc="The content description for a toolbar button displaying user profile picture, for users who don't have a readable email address. Tapping on this button navigates to 'Sync and Google services' page in settings">
               Signed in as <ph name="USER_NAME">%s<ex>Bruce Wayne</ex></ph>. Opens settings.
       </message>
-      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_SIGNED_OUT_IDENTITY_DISC" desc="The content description for a toolbar button displaying the signed-out avatar. Tapping on this button navigates to 'Turn on Sync' page in settings">
+      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_SIGNED_OUT_WITH_SYNC_IDENTITY_DISC" desc="The content description for a toolbar button displaying the signed-out avatar. Tapping on this button navigates to 'Turn on Sync' page in settings">
         Signed out. Opens dialog to sign in and turn on sync.
+      </message>
+      <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_SIGNED_OUT_IDENTITY_DISC" desc="The content description for a toolbar button displaying the signed-out avatar. Tapping on this button opens the sign-in sheet">
+        Signed out. Opens options to sign in.
       </message>
       <message name="IDS_ACCESSIBILITY_TOOLBAR_BTN_HOME" desc="Content description for the home button.">
         Open the home page
@@ -4296,6 +4415,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_ACCESSIBILITY_TABSTRIP_BTN_INCOGNITO_TOGGLE_INCOGNITO" desc="Content description for the Incognito tabs toggle button when viewing Incognito tabs.">
         Leave Incognito mode
+      </message>
+      <message name="IDS_ACCESSIBILITY_TABSTRIP_GROUP_IDENTIFIER_MULTIPLE_TABS" desc="Content description for group identifiers with multiple tabs.">
+        <ph name="WEBSITE_TITLE">%1$s<ex>Crater Lake National Park (U.S. National Park Service)</ex></ph> and <ph name="TAB_COUNT">%2$d<ex>12</ex></ph> other tabs
+      </message>
+      <message name="IDS_ACCESSIBILITY_TABSTRIP_GROUP_IDENTIFIER_UNNAMED" desc="Content description for group identifiers without a name.">
+        Unnamed group
       </message>
       <message name="IDS_ACCESSIBILITY_TABSTRIP_IDENTIFIER" desc="Content description for tabs that are not selected">
         Tab
@@ -4430,6 +4555,12 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_UNDO_BAR_CLOSE_ALL_MESSAGE" desc="Message shown when you can undo a close all tabs action.">
         <ph name="TAB_COUNT">%1$s<ex>3</ex></ph> tabs closed
       </message>
+      <message name="IDS_UNDO_BAR_DELETE_TAB_GROUP_MESSAGE" desc="Message shown when you can undo a tab group deletion action.">
+        <ph name="TAB_COUNT">%1$s<ex>3</ex></ph> tabs deleted
+      </message>
+      <message name="IDS_UNDO_BAR_DELETE_SINGLE_TAB_GROUP_MESSAGE" desc="Message shown when you can undo a tab group containing a single tab.">
+        <ph name="TAB_COUNT">%1$s<ex>1</ex></ph> tab deleted
+      </message>
       <message name="IDS_CONFIRM_DELETE_MESSAGE" desc="Message shown or announced to get confirmation on whether a file should be deleted.">
         Do you want to delete <ph name="ITEM_TITLE">%1$s<ex>example.pdf</ex></ph>?
       </message>
@@ -4535,9 +4666,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Page insights Loading Indicator
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_PRIVACY_NOTICE" desc="Text that displays privacy notice for page insights hub">
-        Your activity in Page Insights is saved in your <ph name="BEGIN_LINK">&lt;link&gt;</ph>Google Account<ph name="END_LINK">&lt;/link&gt;</ph>.
-      </message>
-      <message name="IDS_PAGE_INSIGHTS_HUB_ALT_PRIVACY_NOTICE" desc="Text that displays privacy notice for page insights hub">
         Your activity in Page Insights is saved in your Google Account. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn how to manage this<ph name="END_LINK">&lt;/link&gt;</ph>
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_MY_ACTIVITY_LOGO" desc="Logo of privacy notice for page insights hub">
@@ -4545,6 +4673,20 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_PAGE_INSIGHTS_HUB_PRIVACY_NOTICE_CLOSE" desc="Close button for closing privacy notice of page insights hub">
 	Close button to close privacy notice of page insights hub.
+      </message>
+
+      <!-- GoogleBottomBar -->
+      <message name="IDS_GOOGLE_BOTTOM_BAR_SAVE_DISABLED_TOOLTIP_MESSAGE" desc="Tooltip message when disabled save button is clicked">
+      Sign in to save this page
+      </message>
+      <message name="IDS_GOOGLE_BOTTOM_BAR_SAVE_DISABLED_BUTTON_DESCRIPTION" desc="Content description for disabled save button">
+      Disabled save button
+      </message>
+      <message name="IDS_GOOGLE_BOTTOM_BAR_SHARE_BUTTON_DESCRIPTION" desc="Content description for share button">
+      Share button
+      </message>
+      <message name="IDS_GOOGLE_BOTTOM_BAR_PAGE_INSIGHTS_BUTTON_DESCRIPTION" desc="Content description for page insights button">
+      Page insights button
       </message>
 
       <!-- WebFeed -->
@@ -4688,8 +4830,8 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_TWA_CLEAR_DATA_DIALOG_TITLE" desc="Title of the clear data dialog showing after user uninstalls or clears data of an app hosting a Trusted Web Activity">
         <ph name="APP_NAME">%1$s<ex>YouTube</ex></ph> also has data in Thorium
       </message>
-      <message name="IDS_TWA_CLEAR_DATA_DIALOG_MESSAGE" desc="Message of the clear data dialog">
-        You can clear the data in Thorium Settings
+      <message name="IDS_TWA_CLEAR_DATA_DIALOG_MESSAGE" desc="Message of the delete data dialog">
+        You can delete the data in Thorium Settings
       </message>
       <message name="IDS_TWA_CLEAR_DATA_DIALOG_KEEP_DATA" desc="Text on the negative button of the clear data dialog">
         Keep Data
@@ -5064,51 +5206,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       </message>
       <message name="IDS_CLICK_TO_CALL_DIALER_ABSENT_NOTIFICATION_TEXT" desc="Text displayed in a click to call notification when there is no dialer on device.">
         Make sure a phone app is enabled on this device
-      </message>
-
-      <!-- Sharing content types -->
-      <message name="IDS_BROWSER_SHARING_CONTENT_TYPE_TEXT" desc="This will be used as a placeholder in the message 'Can't share [content type].' so it should be lower-case unless this is a language where nouns are upper case." meaning="text as placeholder">
-        text
-      </message>
-
-      <!-- Sharing notification error messages -->
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TITLE_GENERIC_ERROR" desc="The label to be shown as the title of the dialog when we encounter an error that can be fixed by the user. Eg, device not connected to internet or sync turned off.">
-        Can't share <ph name="CONTENT_TYPE">%1$s<ex>video</ex></ph>
-      </message>
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TITLE_INTERNAL_ERROR" desc="The label to be shown as the title of the dialog when an internal error occurred while sending the message.">
-        Couldn't share <ph name="CONTENT_TYPE">%1$s<ex>video</ex></ph>
-      </message>
-
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TEXT_DEVICE_NOT_FOUND" desc="The text to be shown on the dialog when an error occurred because the device is not synced.">
-        Make sure <ph name="TARGET_DEVICE_NAME">%1$s<ex>Pixel XL</ex></ph> has sync turned on in Thorium
-      </message>
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TEXT_NETWORK_ERROR" desc="The text to be shown on the dialog when the sender device has network issues.">
-        Make sure this device is connected to the internet
-      </message>
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TEXT_DEVICE_ACK_TIMEOUT" desc="The text to be shown on the dialog when the recipient device has network issues.">
-        Make sure <ph name="TARGET_DEVICE_NAME">%1$s<ex>Pixel XL</ex></ph> is connected to the internet
-      </message>
-      <message name="IDS_BROWSER_SHARING_ERROR_DIALOG_TEXT_INTERNAL_ERROR" desc="The text to be shown on the dialog when an internal error occurred while sending the message.">
-        Something went wrong. Try again later.
-      </message>
-
-      <!-- Shared clipboard error message for notification. Could potentially be made generic -->
-      <message name="IDS_BROWSER_SHARING_SHARED_CLIPBOARD_ERROR_DIALOG_TITLE_PAYLOAD_TOO_LARGE" desc="The label to be shown as the title of the dialog when the text shared is too large.">
-        Text is too large
-      </message>
-      <message name="IDS_BROWSER_SHARING_SHARED_CLIPBOARD_ERROR_DIALOG_TEXT_PAYLOAD_TOO_LARGE" desc="The text to be shown on the dialog when the text shared is too large.">
-        Try sharing the text in smaller chunks
-      </message>
-
-      <!-- Shared Clipboard -->
-      <message name="IDS_SHARED_CLIPBOARD_NOTIFICATION_TITLE_UNKNOWN_DEVICE" desc="Title text displayed in a shared clipboard notification when the source device name is unknown.">
-        Text shared from other device
-      </message>
-      <message name="IDS_SHARED_CLIPBOARD_NOTIFICATION_TITLE" desc="Title text displayed in a shared clipboard notification when the source device name is known.">
-        Text shared from <ph name="DEVICE_NAME">%1$s<ex>Pixel 3</ex></ph>
-      </message>
-      <message name="IDS_SHARED_CLIPBOARD_NOTIFICATION_TEXT" desc="Content text displayed in a shared clipboard notification.">
-        Copied to your clipboard
       </message>
 
       <!-- Sms Fetcher -->
@@ -5813,15 +5910,6 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_MANAGEMENT" desc="Title of the chrome://management page, which shows whether the account is managed.">
         Management
       </message>
-      <message name="IDS_MANAGEMENT_SUBTITLE" desc="The title of the chrome://management page when the browser runs in an environment managed by an unknown organization. (e.g. Employer owned device that has a managed Profile)">
-        Your browser is managed by your administrator
-      </message>
-      <message name="IDS_MANAGEMENT_SUBTITLE_MANAGED_BY" desc="The title of the chrome://management page when the browser runs in an environment managed by a known organization. (e.g. Employer owned device enrolled to CBCM)">
-        Your browser is managed by <ph name="DOMAIN">%1$s<ex>google.com</ex></ph>
-      </message>
-      <message name="IDS_MANAGEMENT_NOT_MANAGED_SUBTITLE" desc="The title of the chrome://management page when the browser runs in an environment which is not not managed by any organization. (e.g. A personal device bought at a store)">
-        Your browser is not managed
-      </message>
       <message name="IDS_MANAGEMENT_BROWSER_NOTICE" desc="The descriptive text on chrome://management page that explains to the user the implications of browsing under a managed environment.">
         Your administrator can change your browser setup remotely. Activity on this device may also be managed outside of Thorium.
       </message>
@@ -5860,10 +5948,13 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
 
        <!-- Quick Delete strings -->
       <message name="IDS_QUICK_DELETE_DIALOG_TITLE" desc="Title of the dialog when asking users to confirm deleting browsing data.">
-        Clear browsing data
+        Delete browsing data
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_TABS_CLOSED_TEXT" desc="Text indicating that the tabs which a user recently used to visit a website within the specified time range would be closed.">
         {NUM_TABS, plural, =1 {1 tab on this device} other {# tabs on this device}}
+      </message>
+      <message name="IDS_QUICK_DELETE_TABS_TITLE" desc="Title for the tabs row in the Quick Delete dialog.">
+        Tabs on this device
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_ZERO_TABS_CLOSED_ALL_TIME_TEXT" desc="Text indicating that no tabs would be closed.">
         No tabs on this device
@@ -5894,8 +5985,8 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
       <message name="IDS_QUICK_DELETE_DIALOG_MORE_OPTIONS_BUTTON_TEXT" desc="Text inside the more options button which redirects users to the advanced page of 'Clear Browsing Data' where the users can customize more deletion options.">
         More options
       </message>
-      <message name="IDS_QUICK_DELETE_DIALOG_MORE_OPTIONS_BUTTON_TEXT_A11Y" desc="A11y text for Talkback, in order to give more context to the button that redirects users to the advanced page of 'Clear Browsing Data'.">
-        More options to clear browsing data
+      <message name="IDS_QUICK_DELETE_DIALOG_MORE_OPTIONS_BUTTON_TEXT_A11Y" desc="A11y text for Talkback, in order to give more context to the button that redirects users to the advanced page of 'Delete Browsing Data'.">
+        More options to delete browsing data
       </message>
       <message name="IDS_QUICK_DELETE_DIALOG_DATA_PENDING" desc="Text that is shown when data in the dialog is being fetched.">
         Calculating...
@@ -5988,7 +6079,7 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Use another device
       </message>
 
-      <!-- Plus Address accessibility strings: TODO(crbug.com/1467623): Replace with final versions  -->
+      <!-- Plus Address accessibility strings: TODO(crbug.com/40276862): Replace with final versions  -->
       <message name="IDS_PLUS_ADDRESS_BOTTOM_SHEET_CONTENT_DESCRIPTION" desc="Accessibility string read when the plus address bottom sheet is opened." is_accessibility_with_no_ui="true">
         Lorem Ipsum
       </message>
@@ -6018,9 +6109,120 @@ To change this setting, <ph name="BEGIN_LINK">BEGIN_LINK</ph>clear the Thorium d
         Passkey confirmation sheet closed
       </message>
 
+      <!-- Share with Summary Bottom Sheet -->
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_TITLE" desc="Title of a bottomsheet that appears when generating a summary to share along a web page.">
+        Summary
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_DESCRIPTION" desc="Accessibility string that describes a bottomsheet that appears when generating a summary to share along a web page." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary sheet
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_OPENED" desc="Accessibility string that describes opening a bottomsheet that appears when generating a summary to share along a web page." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary sheet opened
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_CLOSED" desc="Accessibility string that describes closing a bottomsheet that appears when generating a summary to share along a web page." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary sheet closed
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_POSITIVE_FEEDBACK_DESCRIPTION" desc="Accessibility string that describes a thumbs up button to provide positive feedback on a generated summary." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Thumbs up submits feedback that you like this summary
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_NEGATIVE_FEEDBACK_DESCRIPTION" desc="Accessibility string that describes a thumbs down button to provide negative feedback on a generated summary." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Thumbs down submits feedback that you dislike this summary
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_ADD_SUMMARY" desc="Label of a button to add a generated summary to a share sheet.">
+        Add summary
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_ERROR_MESSAGE" desc="Error message shown after a summary failed to generate.">
+        Something went wrong. Summary couldn\u2019t be completed
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_SHEET_DISCLAIMER" desc="Disclaimer at the bottom of a sheet with a generated summary. The learn more link will open a help article.">
+        This is an experimental AI feature and won\u2019t always get it right. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_SHEET_TITLE" desc="Title of a bottom sheet that appears when providing feedback for a generated web page summary.">
+        Select an issue
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_SHEET_SUBMIT" desc="Button label to submit feedback on a generated web page summary.">
+        Submit
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_SHEET_DESCRIPTION" desc="Accessibility string that describes a bottomsheet that appears when providing feedback on a generated web page summary." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary feedback sheet
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_SHEET_OPENED" desc="Accessibility string that describes opening a bottomsheet that appears when providing feedback on a generated web page summary." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary feedback sheet opened
+      </message>
+      <message name="IDS_SHARING_CREATE_SUMMARY" desc="Label of share sheet action to create a summary of the currently shared page.">
+        Create summary
+      </message>
+      <message name="IDS_SHARING_REMOVE_SUMMARY" desc="Label of share sheet action to remove a summary when sharing a web page.">
+        Remove summary
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_SHEET_CLOSED" desc="Accessibility string that describes closing a bottomsheet that appears when providing feedback on a generated web page summary." formatter_data="android_java" is_accessibility_with_no_ui="true">
+        Share with summary feedback sheet closed
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_DISCLAIMER" desc="Disclaimer at the bottom of a bottom sheet to provide feedback for a generated web page summary.">
+        The URL of the page you\u2019re providing feedback for will be sent to Google, and may be reviewed by humans to improve this feature
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_LABEL_OFFENSIVE" desc="Label of a radio button item for providing feedback on a generated summary that's offensive or unsafe.">
+        Offensive or unsafe
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_LABEL_INACCURATE" desc="Label of a radio button item for providing feedback on a generated summary that's inaccurate.">
+        Inaccurate
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_LABEL_REPETITIVE" desc="Label of a radio button item for providing feedback on a generated summary that's repetitive.">
+        Repetitive
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_LABEL_MISSING_INFO" desc="Label of a radio button item for providing feedback on a generated summary that's missing information.">
+        Missing information
+      </message>
+      <message name="IDS_SHARE_WITH_SUMMARY_FEEDBACK_LABEL_OTHER" desc="Label of a radio button item for providing feedback on a generated summary that doesn't fit any other category.">
+        Other
+      </message>
+
       <!-- Data Sharing -->
       <message name="IDS_SHARED_IMAGE_TILES_COUNT" desc="The count string for number of tiles that overflows from shared image tiles. |COUNT_NUMBER| will be a number between 1 and 99 (it will be 1-2 digits at most). [CHAR_LIMIT=3]">
         +<ph name="COUNT_NUMBER">%1$s<ex>1</ex></ph>
+      </message>
+      <message name="IDS_DATA_SHARING_INVITATION_NOTIFICATION_TITLE" desc="The title of the notification shown to user when a data sharing invitation is received. |NAME| will be the name of the inviter.">
+        <ph name="NAME">%1$s<ex>Jane Doe</ex></ph> invited you to access a shared item.
+      </message>
+      <message name="IDS_DATA_SHARING_ORIGIN_FALLBACK" desc="The fallback inviter name of the data sharing service notification.">
+        Someone
+      </message>
+      <message name="IDS_DATA_SHARING_INVITATION_DIALOG_TITLE" desc="The title of the dialog shown when a user has received a tab group invitation.">
+        Open Tab Group?
+      </message>
+      <message name="IDS_DATA_SHARING_INVITATION_DIALOG_BLOCK" desc="The negative button text of the dialog shown when a user has received a tab group invitation.">
+        Block
+      </message>
+      <message name="IDS_DATA_SHARING_INVITATION_DIALOG_NOT_NOW" desc="The snooze button text of the dialog shown when a user has received a tab group invitation.">
+        Not now
+      </message>
+      <message name="IDS_DATA_SHARING_INVITATION_DIALOG_ACCEPT" desc="The positive button text of the dialog shown when a user has received a tab group invitation.">
+        Accept
+      </message>
+
+      <!-- Interstitial shown prior to making digital identity request to wallet -->
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_DIALOG_TITLE" translateable="false">
+        Caution
+      </message>
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_LOW_RISK_DIALOG_TEXT" translateable="false">
+        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> would like to ask Android to give you options for sharing your identity information.
+      </message>
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_LOW_RISK_POSITIVE_BUTTON_TEXT" translateable="false">
+        Share
+      </message>
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_HIGH_RISK_DIALOG_TEXT" translateable="false">
+        <ph name="WEBSITE_ORIGIN">%1$s<ex>www.cheapalcohol.com</ex></ph> would like to ask Android for access to your identity. Thorium cannot determine what privacy risks this may pose.
+      </message>
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_HIGH_RISK_POSITIVE_BUTTON_TEXT" translateable="false">
+        Share Anyway
+      </message>
+      <message name="IDS_DIGITAL_IDENTITY_INTERSTITIAL_NEGATIVE_BUTTON_TEXT" translateable="false">
+        Do Not Share
+      </message>
+
+      <!-- Inline PDF viewer support -->
+      <message name="IDS_PDF_TRANSIENT_TAB_TITLE" desc="This string is shown as the temporary tab title when a PDF file is loading in a tab. The tab title will be updated to the actual PDF file name once available.">
+        Loading PDF…
       </message>
     </messages>
   </release>
