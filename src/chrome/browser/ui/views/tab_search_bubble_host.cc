@@ -269,11 +269,14 @@ bool TabSearchBubbleHost::ShouldTabSearchRenderBeforeTabStrip() {
   // Mac should have tabsearch on the right side. Windows >= Win10 has the
   // Tab Search button as a FrameCaptionButton, but it still needs to be on the
   // left if it exists.
+#if BUILDFLAG(IS_MAC)
+  return false;
+#else
+  // Revert Google's stupid UI design decision
   if (base::CommandLine::ForCurrentProcess()->HasSwitch("left-aligned-tab-search-button")) {
     return features::IsChromeRefresh2023();
-  } else if (is_mac) {
-    return false;
   } else {
     return false;
   }
+#endif
 }
