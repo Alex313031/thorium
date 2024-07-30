@@ -842,7 +842,7 @@ PrivacySandboxSettingsImpl::GetPrivacySandboxAllowedStatus(
     if (delegate_->IsIncognitoProfile()) {
       return Status::kIncognitoProfile;
     }
-
+    // Always return restricted in Thorium
     return Status::kRestricted;
 }
 

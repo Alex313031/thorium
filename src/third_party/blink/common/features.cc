@@ -65,9 +65,10 @@ BASE_FEATURE(kAlwaysAllowFledgeDeprecatedRenderURLReplacements,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Block all MIDI access with the MIDI_SYSEX permission
+// Allow MIDI for Thorium Legacy
 BASE_FEATURE(kBlockMidiByDefault,
              "BlockMidiByDefault",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 BASE_FEATURE(kComputePressureRateObfuscationMitigation,
              "ComputePressureRateObfuscationMitigation",
