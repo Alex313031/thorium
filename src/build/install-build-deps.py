@@ -193,6 +193,7 @@ def apt_update(options):
 # Packages needed for development
 def dev_list():
   packages = [
+      "advancecomp",
       "binutils",
       "bison",
       "bzip2",
@@ -245,11 +246,12 @@ def dev_list():
       "libxtst-dev",
       "lighttpd",
       "locales",
-      "openbox",
+      "optipng",
       "p7zip",
       "patch",
       "perl",
       "pkg-config",
+      "pngcrush",
       "rpm",
       "ruby",
       "subversion",

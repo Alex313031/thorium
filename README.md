@@ -22,22 +22,24 @@
 > - Various compiler flags that improve performance and target [AVX](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) CPU's (read [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md))
 > - Experimental [MPEG-DASH](https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP) support.
 > - HEVC/H.265 support on Linux and Windows.
-> - [JPEG XL](https://jpeg.org/jpegxl/) Image File Format turned on by default.
+> - [JPEG XL](https://jpeg.org/jpegxl/) Image File Format support restored and turned on by default.
+> - [FTP](https://en.wikipedia.org/wiki/File_Transfer_Protocol) URL support restored and enabled by default.
 > - Enable [Live Caption](https://support.google.com/chrome/answer/10538231?hl) (SODA) on all builds.
 > - Experimental PDF annotation support (called "Ink" on ChromiumOS). # DISABLED FOR NOW BECAUSE OF CRASHES.
 > - Patches from Debian including font rendering patch, VAAPI Patch, Intel HD support patch, native notifications patch, title bar patch, and... the VDPAU Patch!! (Rejoice Nvidia users)
-> - Audio Sandbox patch.
+> - Linux audio sandbox patch.
 > - [DoH](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (DNS over HTTPS) patches from Bromite.
 > - Enable [Do Not Track](https://allaboutdnt.com/) by default patch from Vanadium.
 > - Show full URLs including trailing slashes in address bar by default.
 > - Disable [FLOC](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) patch.
 > - Disable annoying Google API Key Infobar warning (you can still use API Keys to enable sync) from Ungoogled Chromium.
 > - Disable annoying Default Browser Infobar warning.
+> - Disable annoying IPH (In Product Help) promos.
 > - Adds [DuckDuckGo](https://duckduckgo.com/), [Brave Search](https://search.brave.com/), [Ecosia](https://www.ecosia.org/), [Ask.com](https://www.ask.com/), and [Yandex.com](https://yandex.com/) in US and other locales, along with the normal search engines.
 > - Always use the local NTP (New Tab Page) regardless of search engine.
 > - Fix icons when distilling page content in [Reader Mode](https://www.howtogeek.com/423643/how-to-use-google-chromes-hidden-reader-mode/).
 > - Enable new Menu UI when right clicking the Reload button. (Adds 'Normal Reload', 'Hard Reload', and 'Clear Cache and Hard Reload')
-> - Home button and Chrome Labs shown by Default.
+> - Home button, Chrome Labs button, and Bookmarks bar shown by default.
 > - [Prefetch](https://www.chromium.org/developers/design-documents/dns-prefetching/) settings updated to respect privacy.
 > - Patches for [GN](https://chromium.googlesource.com/chromium/src/tools/gn/+/48062805e19b4697c5fbd926dc649c78b6aaa138/README.md) and [chrome_sandbox](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/design/sandbox.md) when building.
 > - Remove the addition of the Chrome APT sources.list during installation.
