@@ -3856,11 +3856,11 @@ const FeatureEntry::FeatureVariation kComposeProactiveNudgeVariations[] = {
 // Include Thorium Flags
 #include "chrome/browser/thorium_flag_choices.h"
 const FeatureEntry kFeatureEntries[] = {
-#include "chrome/browser/thorium_flag_entries.h"
 // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
 // //tools/flags/generate_unexpire_flags.py.
 #include "build/chromeos_buildflags.h"
 #include "chrome/browser/unexpire_flags_gen.inc"
+#include "chrome/browser/thorium_flag_entries.h"
     {variations::switches::kEnableBenchmarking,
      flag_descriptions::kEnableBenchmarkingName,
      flag_descriptions::kEnableBenchmarkingDescription, kOsAll,

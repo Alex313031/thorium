@@ -36,9 +36,6 @@ using InsecureDownloadStatus = download::DownloadItem::InsecureDownloadStatus;
 
 namespace {
 
-static const bool allow_insecure_downloads_1 =
-    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
 // Configuration for which extensions to warn/block. These parameters are set
 // differently for testing, so the listed defaults are only used when the flag
 // is manually enabled (and in unit tests).
@@ -325,6 +322,9 @@ struct InsecureDownloadData {
                            !download_delivered_securely);
     }
 
+    static const bool allow_insecure_downloads_ =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+
     // Configure insecure download status.
     // Exclude download sources needed by Chrome from blocking. While this is
     // similar to MIX-DL above, it intentionally blocks more user-initiated
@@ -337,7 +337,7 @@ struct InsecureDownloadData {
         download_source == DownloadSource::INTERNAL_API ||
         download_source == DownloadSource::EXTENSION_API ||
         download_source == DownloadSource::EXTENSION_INSTALLER ||
-        allow_insecure_downloads_1) {
+        allow_insecure_downloads_) {
       is_insecure_download_ = false;
     } else {  // Not ignorable download.
       // TODO(crbug.com/40857867): Add blocking metrics.
@@ -456,13 +456,11 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
     const download::DownloadItem* item) {
   InsecureDownloadData data(path, item);
 
-  // If the download is fully secure, early abort.
-  if (!data.is_insecure_download_) {
-    return InsecureDownloadStatus::SAFE;
-  }
+  static const bool allow_insecure_downloads_ =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
 
-  // Don't nag
-  if (allow_insecure_downloads_1) {
+  // If the download is fully secure, early abort. Don't nag
+  if (!data.is_insecure_download_ || allow_insecure_downloads_) {
     return InsecureDownloadStatus::SAFE;
   }
 

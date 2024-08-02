@@ -975,6 +975,14 @@ DownloadTargetDeterminer::Result
   // result is available.
   danger_level_ = GetDangerLevel(NO_VISITS_TO_REFERRER);
 
+  static const bool allow_insecure_downloads_ =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+
+  // Continue with this Thorium flag
+  if (allow_insecure_downloads_) {
+    return CONTINUE;
+  }
+
   if (danger_level_ == DownloadFileType::NOT_DANGEROUS)
     return CONTINUE;
 
@@ -1265,10 +1273,11 @@ DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
     PriorVisitsToReferrer visits) const {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
 
-  // Allow all downloads with this Thorium flag
-  static const bool allow_insecure_downloads_2 =
+  static const bool allow_insecure_downloads_ =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-  if (allow_insecure_downloads_2) {
+
+  // Allow all downloads with this Thorium flag
+  if (allow_insecure_downloads_) {
     return DownloadFileType::NOT_DANGEROUS;
   }
 

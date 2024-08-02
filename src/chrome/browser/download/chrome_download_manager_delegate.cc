@@ -1743,14 +1743,13 @@ bool ChromeDownloadManagerDelegate::IsOpenInBrowserPreferredForFile(
   return false;
 }
 
-static const bool allow_insecure_downloads_3 =
-  base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
 bool ChromeDownloadManagerDelegate::ShouldBlockFile(
     download::DownloadItem* item,
     download::DownloadDangerType danger_type) const {
   // Don't block downloads if flag is set
-  if (allow_insecure_downloads_3) {
+  static const bool allow_insecure_downloads_ =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+  if (allow_insecure_downloads_) {
     return false;
   }
   // Chrome-initiated background downloads should not be blocked.
@@ -1828,32 +1827,7 @@ void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadCanceledReport(
     DownloadItem* download,
     bool is_shutdown) {
 #if BUILDFLAG(FULL_SAFE_BROWSING)
-  if (!DownloadProtectionService::ShouldSendDangerousDownloadReport(download) ||
-      !base::FeatureList::IsEnabled(
-          safe_browsing::kDownloadReportWithoutUserDecision)) {
-    return;
-  }
-  safe_browsing::SafeBrowsingService* sb_service =
-      g_browser_process->safe_browsing_service();
-  if (!sb_service) {
-    return;
-  }
-  // Note: We cannot go through download_protection_service here, because this
-  // function may be called at shutdown. The download_protection_service
-  // object may already be deleted at this point.
-  if (is_shutdown) {
-    sb_service->PersistDownloadReportAndSendOnNextStartup(
-        download,
-        safe_browsing::ClientSafeBrowsingReportRequest::
-            DANGEROUS_DOWNLOAD_PROFILE_CLOSED,
-        /*did_proceed=*/false, std::nullopt);
-  } else {
-    sb_service->SendDownloadReport(
-        download,
-        safe_browsing::ClientSafeBrowsingReportRequest::
-            DANGEROUS_DOWNLOAD_AUTO_DELETED,
-        /*did_proceed=*/false, std::nullopt);
-  }
+  return;
 #endif
 }
 
