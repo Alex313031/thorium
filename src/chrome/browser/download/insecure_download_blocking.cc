@@ -36,7 +36,7 @@ using InsecureDownloadStatus = download::DownloadItem::InsecureDownloadStatus;
 
 namespace {
 
-static const bool allow_insecure_downloads_ =
+static const bool allow_insecure_downloads_1 =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
 
 // Configuration for which extensions to warn/block. These parameters are set
@@ -337,7 +337,7 @@ struct InsecureDownloadData {
         download_source == DownloadSource::INTERNAL_API ||
         download_source == DownloadSource::EXTENSION_API ||
         download_source == DownloadSource::EXTENSION_INSTALLER ||
-        allow_insecure_downloads_) {
+        allow_insecure_downloads_1) {
       is_insecure_download_ = false;
     } else {  // Not ignorable download.
       // TODO(crbug.com/40857867): Add blocking metrics.
@@ -462,7 +462,7 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
   }
 
   // Don't nag
-  if (allow_insecure_downloads_) {
+  if (allow_insecure_downloads_1) {
     return InsecureDownloadStatus::SAFE;
   }
 

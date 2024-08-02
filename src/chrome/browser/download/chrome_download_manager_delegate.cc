@@ -1743,9 +1743,16 @@ bool ChromeDownloadManagerDelegate::IsOpenInBrowserPreferredForFile(
   return false;
 }
 
+static const bool allow_insecure_downloads_3 =
+  base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
+
 bool ChromeDownloadManagerDelegate::ShouldBlockFile(
     download::DownloadItem* item,
     download::DownloadDangerType danger_type) const {
+  // Don't block downloads if flag is set
+  if (allow_insecure_downloads_3) {
+    return false;
+  }
   // Chrome-initiated background downloads should not be blocked.
   if (item && !item->RequireSafetyChecks()) {
     return false;

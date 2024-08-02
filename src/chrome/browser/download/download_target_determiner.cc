@@ -1266,9 +1266,9 @@ DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
 
   // Allow all downloads with this Thorium flag
-  static const bool allow_insecure_downloads_ =
+  static const bool allow_insecure_downloads_2 =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-  if (allow_insecure_downloads_) {
+  if (allow_insecure_downloads_2) {
     return DownloadFileType::NOT_DANGEROUS;
   }
 
