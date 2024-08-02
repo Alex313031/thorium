@@ -34,7 +34,7 @@ bool IsComponentExtensionAllowlisted(const std::string& extension_id) {
     extension_misc::kInAppPaymentsSupportAppId,
     extension_misc::kPdfExtensionId,
     // The UUID of Thorium's external Hangouts component extension
-    "inomiaajaofonadigcpnaacolkggjjpo"
+    "inomiaajaofonadigcpnaacolkggjjpo",
 #if BUILDFLAG(IS_CHROMEOS)
     extension_misc::kAssessmentAssistantExtensionId,
 #endif

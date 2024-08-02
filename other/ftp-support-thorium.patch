@@ -12141,7 +12141,7 @@ index 0000000000000..3c7e0faebc2bb
 +      FtpAuthCache* auth_cache);
 +
 +  std::unique_ptr<FtpTransactionFactory> ftp_transaction_factory_;
-+  FtpAuthCache* ftp_auth_cache_;
++  raw_ptr<FtpAuthCache> ftp_auth_cache_;
 +};
 +
 +}  // namespace net
@@ -12195,7 +12195,7 @@ index 5618d02062989..e71e085486f2f 100644
    std::unique_ptr<TransportSecurityPersister> transport_security_persister_;
  
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
-+  FtpAuthCache* ftp_auth_cache_;
++  raw_ptr<FtpAuthCache> ftp_auth_cache_;
 +#endif  // !BUILDFLAG(DISABLE_FTP_SUPPORT)
 +
    std::unique_ptr<std::set<raw_ptr<const URLRequest, SetExperimental>>>
@@ -12797,7 +12797,7 @@ index 0000000000000..fda29bf6cb24c
 +  std::unique_ptr<AuthData> auth_data_;
 +
 +  FtpTransactionFactory* ftp_transaction_factory_;
-+  FtpAuthCache* ftp_auth_cache_;
++  raw_ptr<FtpAuthCache> ftp_auth_cache_;
 +
 +  base::WeakPtrFactory<URLRequestFtpJob> weak_factory_{this};
 +};
