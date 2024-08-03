@@ -38,8 +38,7 @@ std::optional<std::vector<uint8_t>> DecryptKeyWithDPAPI(
     base::span<const uint8_t> ciphertext) {
 
   if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption")) {
-    return std::vector<uint8_t>(ciphertext.data(),
-      ciphertext.data() + ciphertext.size());
+    return std::vector<uint8_t>(ciphertext.begin(), ciphertext.end());
   }
 
   DATA_BLOB input = {};

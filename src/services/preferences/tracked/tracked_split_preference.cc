@@ -86,9 +86,11 @@ bool TrackedSplitPreference::EnforceAndReport(
         external_validation_value_state, helper_.IsPersonal());
   }
 
-  TrackedPreferenceHelper::ResetAction reset_action = helper_.GetAction(value_state);
+  TrackedPreferenceHelper::ResetAction reset_action =
+      helper_.GetAction(value_state);
+
   if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id") ||
-    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption") || 
+    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption") ||
     base::CommandLine::ForCurrentProcess()->HasSwitch("revert-from-portable")) {
       reset_action = TrackedPreferenceHelper::DONT_RESET;
   }
