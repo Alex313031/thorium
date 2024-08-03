@@ -261,6 +261,9 @@ case $1 in
 	--cros) copyCros;
 esac
 
+cd ${CR_SRC_DIR} &&
+python3 ./tools/search_engine_choice/download_search_engine_icons.py &&
+
 printf "${GRE}Done!\n" &&
 printf "\n" &&
 

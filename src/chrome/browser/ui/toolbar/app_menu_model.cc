@@ -1,4 +1,4 @@
-// Copyright 2012 The Chromium Authors
+// Copyright 2024 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -1853,10 +1853,11 @@ void AppMenuModel::Build() {
   AddSubMenuWithStringIdAndVectorIcon(this, IDC_HELP_MENU, IDS_HELP_MENU,
                                       sub_menus_.back().get(), kHelpMenuIcon);
 #else
+// Add About icon to Thorium menu
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  AddItem(IDC_ABOUT, l10n_util::GetStringUTF16(IDS_ABOUT));
+  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRefreshIcon);
 #else
-  AddItem(IDC_ABOUT, l10n_util::GetStringUTF16(IDS_ABOUT));
+  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRefreshIcon);
 #endif
 #endif
 
