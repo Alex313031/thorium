@@ -1,6 +1,3 @@
-google_api_key = ""
-google_default_client_id = ""
-google_default_client_secret = ""
 # clang_base_path = "/usr/lib/llvm-18"
 # clang_version = "18"
 # use_polly = true

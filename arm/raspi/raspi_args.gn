@@ -1,6 +1,3 @@
-google_api_key = ""
-google_default_client_id = ""
-google_default_client_secret = ""
 target_os = "linux"
 target_cpu = "arm64"
 v8_target_cpu = "arm64"

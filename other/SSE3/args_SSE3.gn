@@ -1,6 +1,3 @@
-google_api_key = ""
-google_default_client_id = ""
-google_default_client_secret = ""
 # is_chancie_wancie_build = true
 # clang_base_path = "/usr/lib/llvm-18"
 # clang_version = "18"

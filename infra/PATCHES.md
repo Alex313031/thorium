@@ -246,7 +246,8 @@ Android Patches from Bromite:
   - https://github.com/bromite/bromite/blob/master/build/patches/Disable-feeds-support-by-default.patch
   - https://github.com/bromite/bromite/blob/master/build/patches/Add-exit-menu-item.patch
 
-Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
+Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+  - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 

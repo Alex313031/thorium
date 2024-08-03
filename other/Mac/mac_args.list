@@ -2657,9 +2657,7 @@ goma_dir
     Absolute directory containing the gomacc binary.
 
 google_api_key
-    Current value = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
-      From //out/thorium/args.gn:3
-    Overridden from the default = ""
+    Current value (from the default) = ""
       From //google_apis/BUILD.gn:42
 
     Set these to bake the specified API keys and OAuth client
@@ -2676,17 +2674,13 @@ google_api_key
     keys will be used instead.
 
 google_default_client_id
-    Current value = "77185425430.apps.googleusercontent.com"
-      From //out/thorium/args.gn:4
-    Overridden from the default = ""
+    Current value (from the default) = ""
       From //google_apis/BUILD.gn:45
 
     See google_api_key.
 
 google_default_client_secret
-    Current value = "OTJgUOQcT7lO7GsGZq2G4IlT"
-      From //out/thorium/args.gn:5
-    Overridden from the default = ""
+    Current value (from the default) = ""
       From //google_apis/BUILD.gn:48
 
     See google_api_key.
