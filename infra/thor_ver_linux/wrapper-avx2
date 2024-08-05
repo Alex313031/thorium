@@ -53,7 +53,7 @@ export CHROME_DESKTOP="thorium-browser.desktop"
 
 # Set CHROME_VERSION_EXTRA text, which is displayed in the About dialog on chrome://help
 # DIST=`cat /etc/debian_version`
-export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Ubuntu (AVX)"
+export CHROME_VERSION_EXTRA="@@CHANNEL@@, built on Ubuntu (AVX2)"
 
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM
