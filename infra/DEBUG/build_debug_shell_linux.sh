@@ -43,7 +43,7 @@ fi
 export NINJA_SUMMARIZE_BUILD=1 &&
 
 cd ${CR_SRC_DIR} &&
-autoninja -C out/thorium thorium_ui_debug_shell -j$@ &&
+autoninja -C out/thorium thorium_ui_debug_shell minidump_stackwalk dump_syms -j$@ &&
 cd ~/thorium/infra/DEBUG &&
 
 mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
@@ -82,6 +82,8 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Th
 cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ~/chromium/src/out/thorium/minidump_stackwalk ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ~/chromium/src/out/thorium/dump_syms ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ClearKeyCdm ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/ClearKeyCdm/_platform_specific/linux_x64/libclearkeycdm.so ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/lib &&
 
