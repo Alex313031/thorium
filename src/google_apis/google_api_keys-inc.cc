@@ -113,11 +113,14 @@
 // variables.  If set, they will be used to replace any of the client
 // IDs and secrets above that have not been set (and only those; they
 // will not override already-set values).
+#if !defined(GOOGLE_DEFAULT_API_KEY)
+#define GOOGLE_DEFAULT_API_KEY "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+#endif
 #if !defined(GOOGLE_DEFAULT_CLIENT_ID)
-#define GOOGLE_DEFAULT_CLIENT_ID ""
+#define GOOGLE_DEFAULT_CLIENT_ID "77185425430.apps.googleusercontent.com"
 #endif
 #if !defined(GOOGLE_DEFAULT_CLIENT_SECRET)
-#define GOOGLE_DEFAULT_CLIENT_SECRET ""
+#define GOOGLE_DEFAULT_CLIENT_SECRET "OTJgUOQcT7lO7GsGZq2G4IlT"
 #endif
 
 namespace google_apis {
