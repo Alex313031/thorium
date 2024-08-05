@@ -22,6 +22,7 @@ displayHelp () {
 	printf "${bold}${YEL}Use the --mac flag for MacOS builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --raspi flag for Raspberry Pi builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --avx512 flag for AVX-512 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse4 flag for SSE4.1 Builds.${c0}\n" &&
 	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
@@ -164,6 +165,20 @@ case $1 in
 	--woa) copyWOA;
 esac
 
+# Copy AVX512 files
+copyAVX512 () {
+	printf "\n" &&
+	printf "${YEL}Copying AVX-512 build files...${c0}\n" &&
+	cp -r -v other/AVX512/build/config/* ${CR_SRC_DIR}/build/config/ &&
+	cp -r -v other/AVX512/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -v other/AVX512/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v infra/thor_ver_linux/wrapper-avx512 chrome/installer/linux/common/wrapper &&
+	printf "\n"
+}
+case $1 in
+	--avx512) copyAVX512;
+esac
+
 # Copy AVX2 files
 copyAVX2 () {
 	printf "\n" &&
@@ -171,6 +186,7 @@ copyAVX2 () {
 	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v infra/thor_ver_linux/wrapper-avx2 chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -183,6 +199,7 @@ copySSE4 () {
 	printf "${YEL}Copying SSE4.1 build files...${c0}\n" &&
 	cp -r -v other/SSE4.1/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v infra/thor_ver_linux/wrapper-sse4 chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -195,6 +212,7 @@ copySSE3 () {
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v infra/thor_ver_linux/wrapper-sse3 chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -207,6 +225,7 @@ copySSE2 () {
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
+	cp -v infra/thor_ver_linux/wrapper-sse2 chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
