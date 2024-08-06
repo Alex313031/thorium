@@ -70,6 +70,7 @@ cp -r -v src/chromeos ${CR_SRC_DIR}/ &&
 cp -r -v src/components ${CR_SRC_DIR}/ &&
 cp -r -v src/content ${CR_SRC_DIR}/ &&
 cp -r -v src/extensions ${CR_SRC_DIR}/ &&
+cp -r -v src/google_apis ${CR_SRC_DIR}/ &&
 cp -r -v src/media ${CR_SRC_DIR}/ &&
 cp -r -v src/net ${CR_SRC_DIR}/ &&
 cp -r -v src/sandbox ${CR_SRC_DIR}/ &&
