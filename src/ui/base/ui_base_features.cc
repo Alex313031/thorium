@@ -504,11 +504,11 @@ bool IsLacrosColorManagementEnabled() {
 
 BASE_FEATURE(kChromeRefresh2023,
              "ChromeRefresh2023",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 BASE_FEATURE(kChromeRefreshSecondary2023,
              "ChromeRefreshSecondary2023",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 bool IsChromeRefresh2023() {
   return base::FeatureList::IsEnabled(kChromeRefresh2023) ||
