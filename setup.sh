@@ -173,7 +173,7 @@ copyAVX512 () {
 	cp -r -v other/AVX512/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/AVX512/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX512/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-avx512 chrome/installer/linux/common/wrapper &&
+	cp -v infra/thor_ver_linux/wrapper-avx512 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -187,7 +187,7 @@ copyAVX2 () {
 	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-avx2 chrome/installer/linux/common/wrapper &&
+	cp -v infra/thor_ver_linux/wrapper-avx2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -200,7 +200,7 @@ copySSE4 () {
 	printf "${YEL}Copying SSE4.1 build files...${c0}\n" &&
 	cp -r -v other/SSE4.1/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse4 chrome/installer/linux/common/wrapper &&
+	cp -v infra/thor_ver_linux/wrapper-sse4 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -213,7 +213,7 @@ copySSE3 () {
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse3 chrome/installer/linux/common/wrapper &&
+	cp -v infra/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
@@ -226,7 +226,7 @@ copySSE2 () {
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse2 chrome/installer/linux/common/wrapper &&
+	cp -v infra/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	printf "\n"
 }
 case $1 in
