@@ -34,6 +34,10 @@
      "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
      "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
      kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
+    {"thorium-2024",
+     "Enable Experimental Thorium 2024 (Th24) UI",
+     "Enable an experimental \"hybrid\" UI, with the pre-Chrome Refresh 2023 tab height, and square rather than rounded menus.",
+     kOsDesktop, SINGLE_VALUE_TYPE("thorium-2024")},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "

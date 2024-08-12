@@ -1,0 +1,106 @@
+diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
+index bba403a7e5068..23b719abb0975 100644
+--- a/chrome/browser/ui/layout_constants.cc
++++ b/chrome/browser/ui/layout_constants.cc
+@@ -1,9 +1,10 @@
+-// Copyright 2015 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+ #include "chrome/browser/ui/layout_constants.h"
+ 
++#include "base/command_line.h"
+ #include "base/feature_list.h"
+ #include "base/notreached.h"
+ #include "build/build_config.h"
+@@ -19,6 +20,7 @@
+ 
+ int GetLayoutConstant(LayoutConstant constant) {
+   const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
++  static const bool thorium_2024 = base::CommandLine::ForCurrentProcess()->HasSwitch("thorium-2024");
+   switch (constant) {
+     case APP_MENU_PROFILE_ROW_AVATAR_ICON_SIZE:
+       return 24;
+@@ -27,8 +29,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+     case BOOKMARK_BAR_HEIGHT: {
+       // The fixed margin ensures the bookmark buttons appear centered relative
+       // to the white space above and below.
+-      const int bookmark_bar_attached_vertical_margin =
+-          features::IsChromeRefresh2023() ? 6 : 4;
++      const int bookmark_bar_attached_vertical_margin = thorium_2024 ? 4 : 6;
+       return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
+              bookmark_bar_attached_vertical_margin;
+     }
+@@ -97,7 +98,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+       return GetLayoutConstant(TAB_HEIGHT) +
+              GetLayoutConstant(TAB_STRIP_PADDING);
+     case TAB_STRIP_PADDING:
+-      return features::IsChromeRefresh2023() ? 6 : 0;
++      return thorium_2024 ? 1 : 6;
+     case TAB_SEPARATOR_HEIGHT:
+       // TODO (crbug.com/1451400): ChromeRefresh2023 needs different values for
+       // this constant.
+diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
+index aa9cd30374311..96a1ea8faf9d0 100644
+--- a/chrome/browser/ui/tabs/tab_style.cc
++++ b/chrome/browser/ui/tabs/tab_style.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2019 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -16,12 +16,12 @@ namespace {
+ // the tab.
+ constexpr int kGM2SeparatorThickness = 1;
+ constexpr int kChromeRefreshSeparatorThickness = 2;
+-constexpr int kChromeRefreshSeparatorHorizontalMargin = 2;
++constexpr int kChromeRefreshSeparatorHorizontalMargin = 1;
+ // TODO (crbug.com/1451400): This constant should be in LayoutConstants.
+-constexpr int kChromeRefreshSeparatorHeight = 16;
++constexpr int kChromeRefreshSeparatorHeight = 20;
+ 
+ // The padding from the top of the tab to the content area.
+-constexpr int kChromeRefreshTabVerticalPadding = 6;
++constexpr int kChromeRefreshTabVerticalPadding = 8;
+ constexpr int kChromeRefreshTabHorizontalPadding = 8;
+ 
+ class GM2TabStyle : public TabStyle {
+diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
+index 3684e27766834..0606853f1f6df 100644
+--- a/ui/views/layout/layout_provider.cc
++++ b/ui/views/layout/layout_provider.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2017 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ 
++#include "base/command_line.h"
+ #include "base/containers/fixed_flat_map.h"
+ #include "base/logging.h"
+ #include "ui/base/ui_base_features.h"
+@@ -233,6 +234,18 @@ int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
+         return 0;
+     }
+   }
++  static const bool thorium_2024 = base::CommandLine::ForCurrentProcess()->HasSwitch("thorium-2024");
++  if (thorium_2024) {
++    switch (id) {
++      case ShapeContextTokens::kMenuRadius:
++      case ShapeContextTokens::kMenuAuxRadius: {
++        return 0;
++      }
++      case ShapeContextTokens::kMenuTouchRadius: {
++        return 3;
++      }
++    }
++  }
+ 
+   ShapeSysTokens token = GetShapeSysToken(id);
+   DCHECK_NE(token, ShapeSysTokens::kDefault)

@@ -90,9 +90,9 @@ bool TrackedSplitPreference::EnforceAndReport(
       helper_.GetAction(value_state);
 
   if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id") ||
-    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption") ||
-    base::CommandLine::ForCurrentProcess()->HasSwitch("revert-from-portable")) {
-      reset_action = TrackedPreferenceHelper::DONT_RESET;
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption") ||
+      base::CommandLine::ForCurrentProcess()->HasSwitch("revert-from-portable")) {
+        reset_action = TrackedPreferenceHelper::DONT_RESET;
   }
 
   helper_.ReportAction(reset_action);

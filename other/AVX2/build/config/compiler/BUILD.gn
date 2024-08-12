@@ -1098,9 +1098,12 @@ config("thinlto_optimize_default") {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
       ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
-    } else {
+    } else if (is_linux || is_chromeos) {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
+    } else {
+      ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
@@ -1136,9 +1139,12 @@ config("thinlto_optimize_max") {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
       ldflags += [ "-mllvm:-enable-pre=false", ]
       ldflags += [ "-opt:lldltocgo=" + lto_opt_level ]
-    } else {
+    } else if (is_linux || is_chromeos) {
       ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,-mllvm,-enable-pre=false", ]
+      ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
+    } else {
+      ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
       ldflags += [ "-Wl,--lto-CGO" + lto_opt_level ]
     }
 
@@ -2391,11 +2397,17 @@ if (is_win) {
     "-O3",
   ]
 
-  common_optimize_on_ldflags += [
-    "-Wl,-mllvm,-aggressive-ext-opt",
-    "-Wl,-mllvm,-enable-gvn-hoist",
-    "-Wl,-O3",
-  ]
+  if (is_mac) {
+    common_optimize_on_ldflags += [
+      "-Wl,-O3",
+    ]
+  } else {
+    common_optimize_on_ldflags += [
+      "-Wl,-mllvm,-aggressive-ext-opt",
+      "-Wl,-mllvm,-enable-gvn-hoist",
+      "-Wl,-O3",
+    ]
+  }
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
