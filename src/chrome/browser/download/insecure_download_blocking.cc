@@ -322,14 +322,13 @@ struct InsecureDownloadData {
                            !download_delivered_securely);
     }
 
-    static const bool allow_insecure_downloads_ =
-      base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
     // Configure insecure download status.
     // Exclude download sources needed by Chrome from blocking. While this is
     // similar to MIX-DL above, it intentionally blocks more user-initiated
     // downloads. For example, downloads are blocked even if they're initiated
     // from the omnibox.
+    static const bool allow_insecure_downloads_ =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
     if (download_source == DownloadSource::RETRY ||
         (transition_type & ui::PAGE_TRANSITION_RELOAD) ||
         (transition_type & ui::PAGE_TRANSITION_FROM_API) ||
@@ -458,7 +457,6 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
 
   static const bool allow_insecure_downloads_ =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
   // If the download is fully secure, early abort. Don't nag
   if (!data.is_insecure_download_ || allow_insecure_downloads_) {
     return InsecureDownloadStatus::SAFE;

@@ -63,7 +63,7 @@ index aa9cd30374311..96a1ea8faf9d0 100644
  
  // The padding from the top of the tab to the content area.
 -constexpr int kChromeRefreshTabVerticalPadding = 6;
-+constexpr int kChromeRefreshTabVerticalPadding = 8;
++constexpr int kChromeRefreshTabVerticalPadding = 9;
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
  class GM2TabStyle : public TabStyle {

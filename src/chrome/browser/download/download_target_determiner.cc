@@ -977,7 +977,6 @@ DownloadTargetDeterminer::Result
 
   static const bool allow_insecure_downloads_ =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
   // Continue with this Thorium flag
   if (allow_insecure_downloads_) {
     return CONTINUE;
@@ -1275,7 +1274,6 @@ DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
 
   static const bool allow_insecure_downloads_ =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
-
   // Allow all downloads with this Thorium flag
   if (allow_insecure_downloads_) {
     return DownloadFileType::NOT_DANGEROUS;

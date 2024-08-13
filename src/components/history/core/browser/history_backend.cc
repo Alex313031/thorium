@@ -1320,7 +1320,8 @@ void HistoryBackend::InitImpl(
   db_->GetStartDate(&first_recorded_time_);
 
   // Start expiring old stuff if flag is unset.
-  if (!base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history")) {
+  static const bool keep_all_history = base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
+  if (!keep_all_history) {
     expirer_.StartExpiringOldStuff(base::Days(kExpireDaysThreshold));
   }
 }
@@ -1550,7 +1551,8 @@ void HistoryBackend::AddPagesWithDetails(const URLRows& urls,
 }
 
 bool HistoryBackend::IsExpiredVisitTime(const base::Time& time) const {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history")) {
+  static const bool keep_all_history = base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
+  if (keep_all_history) {
     return false;
   } else {
     return time < expirer_.GetCurrentExpirationTime();
