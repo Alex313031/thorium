@@ -1260,18 +1260,18 @@ bool TabStrip::ShouldDrawStrokes() const {
 
   // Don't want to have to run a full feature query every time this function is
   // called.
-  static const bool force_enable_tab_outlines =
-      base::CommandLine::ForCurrentProcess()->HasSwitch("force-enable-tab-outlines");
+  static const bool force_disable_tab_outlines =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("force-disable-tab-outlines");
 
   // The Tabstrip in the refreshed style does not meet the contrast ratio
   // requirements listed below but does not have strokes for Tabs or the bottom
   // border.
-  if (!using_system_theme && !force_enable_tab_outlines) {
+  if (!using_system_theme && force_disable_tab_outlines) {
     return false;
   }
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-  if (chromeos::features::IsJellyrollEnabled()) {
+  if (chromeos::features::IsJellyrollEnabled() && !force_disable_tab_outlines) {
     return true;
   }
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
@@ -1293,7 +1293,7 @@ bool TabStrip::ShouldDrawStrokes() const {
     return true;
   }
 
-  if (force_enable_tab_outlines) {
+  if (!force_disable_tab_outlines) {
       return true;
   }
 

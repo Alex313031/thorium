@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Alex313031. All rights reserved.
+// Copyright (c) 2024 Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,14 +17,18 @@
      kOsLinux, SINGLE_VALUE_TYPE("auto-dark-mode")},
 #endif // BUILDFLAG(IS_LINUX)
 
+    {"thorium-2024",
+     "Enable Experimental Thorium 2024 (Th24) UI",
+     "Enable an experimental \"hybrid\" UI, with the pre-Chrome Refresh 2023 tab height, and square rather than rounded menus.",
+     kOsDesktop, SINGLE_VALUE_TYPE("thorium-2024")},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
      kOsDesktop, SINGLE_VALUE_TYPE("prominent-active-tab-titles")},
-    {"force-enable-tab-outlines",
-     "Enable Tab Outlines",
-     "Force enables tab outline strokes, improving accessiblity in dark mode, incognito mode, and low contrast themes.",
-     kOsDesktop, SINGLE_VALUE_TYPE("force-enable-tab-outlines")},
+    {"force-disable-tab-outlines",
+     "Disable Tab Outlines",
+     "Force disables tab outline strokes. Thorium enables them by default, improving accessiblity in dark mode, incognito mode, and low contrast themes.",
+     kOsDesktop, SINGLE_VALUE_TYPE("force-disable-tab-outlines")},
     {"disable-thorium-icons",
      "Disable Thorium Top Bar Icons",
      "Disables the custom colored top bar icons in Thorium, and restores the default grey Chromium icon colors.",
@@ -34,10 +38,6 @@
      "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
      "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
      kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
-    {"thorium-2024",
-     "Enable Experimental Thorium 2024 (Th24) UI",
-     "Enable an experimental \"hybrid\" UI, with the pre-Chrome Refresh 2023 tab height, and square rather than rounded menus.",
-     kOsDesktop, SINGLE_VALUE_TYPE("thorium-2024")},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "

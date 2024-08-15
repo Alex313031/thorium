@@ -29,12 +29,14 @@
 
 namespace extensions {
 
+// The UUID of Thorium's external Hangouts component extension
+static const char * const kThoriumHangoutsId = "inomiaajaofonadigcpnaacolkggjjpo";
+
 bool IsComponentExtensionAllowlisted(const std::string& extension_id) {
   const char* const kAllowed[] = {
     extension_misc::kInAppPaymentsSupportAppId,
     extension_misc::kPdfExtensionId,
-    // The UUID of Thorium's external Hangouts component extension
-    "inomiaajaofonadigcpnaacolkggjjpo",
+    kThoriumHangoutsId,
 #if BUILDFLAG(IS_CHROMEOS)
     extension_misc::kAssessmentAssistantExtensionId,
 #endif
@@ -120,7 +122,7 @@ bool IsComponentExtensionAllowlisted(int manifest_resource_id) {
              << manifest_resource_id << " not in allowlist and is not being "
              << "loaded as a result.";
   NOTREACHED();
-  return false;
+  return true;
 }
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
