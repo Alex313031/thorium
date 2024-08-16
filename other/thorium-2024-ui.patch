@@ -62,7 +62,7 @@ index d26bc737d3177..a8426600a08b7 100644
    TAB_SEPARATOR_HEIGHT,
  
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..684ae104daac1 100644
+index aa9cd30374311..7e4ac0fc981c8 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,9 +1,10 @@
@@ -98,7 +98,7 @@ index aa9cd30374311..684ae104daac1 100644
  constexpr int kChromeRefreshTabVerticalPadding = 6;
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
-@@ -197,14 +201,25 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+@@ -197,11 +201,21 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -122,11 +122,7 @@ index aa9cd30374311..684ae104daac1 100644
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
-+  static const bool thorium_2024 = base::CommandLine::ForCurrentProcess()->HasSwitch("thorium-2024");
-   // The overlap removes the width and the margins of the separator.
-   const float total_separator_width = GetSeparatorMargins().left() +
-                                       GetSeparatorSize().width() +
-@@ -213,23 +228,46 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
+@@ -213,23 +227,46 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
