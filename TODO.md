@@ -44,3 +44,5 @@ Dino strings in components/error_page_strings.grdp
 Remove media/filters/win/media_foundation_audio_decoder.cc in M127
 
 Make hover over link always show full url without delay
+
+https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d03565176f2f481c79e
