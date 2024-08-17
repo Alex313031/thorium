@@ -91,7 +91,7 @@ index d26bc737d3177..f453b459eb3f8 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..d544ca4cf4d40 100644
+index aa9cd30374311..5d5a40f92f922 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -136,10 +136,10 @@ index aa9cd30374311..d544ca4cf4d40 100644
 -  return 10;
 +  static const bool rectangular_tabs =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
-+  if (Th24State()) {
++  if (Th24State() && !rectangular_tabs) {
 +    return 8;
-+  } else if (rectangular_tabs) {
-+    return 0;
++  } else if ((rectangular_tabs && Th24State()) || (rectangular_tabs && !Th24State())) {
++    return 3;
 +  } else {
 +    return 10;
 +  }
@@ -149,10 +149,10 @@ index aa9cd30374311..d544ca4cf4d40 100644
 -  return 12;
 +  static const bool rectangular_tabs =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
-+  if (Th24State()) {
++  if (Th24State() && !rectangular_tabs) {
 +    return 10;
-+  } else if (rectangular_tabs) {
-+    return 0;
++  } else if ((rectangular_tabs && Th24State()) || (rectangular_tabs && !Th24State())) {
++    return 3;
 +  } else {
 +    return 12;
 +  }
