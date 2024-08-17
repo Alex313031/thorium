@@ -1301,7 +1301,7 @@ bool TabStrip::ShouldDrawStrokes() const {
 }
 
 int TabStrip::Th24StrokeOffset() const {
-  return ShouldDrawStrokes() ? 1 : 0;
+  return ShouldDrawStrokes() ? 2 : 2;
 }
 
 void TabStrip::SetSelection(const ui::ListSelectionModel& new_selection) {
