@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index bba403a7e5068..29773d6aca5ad 100644
+index bba403a7e5068..52d3d6485cecb 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -1,12 +1,14 @@
@@ -28,36 +28,22 @@ index bba403a7e5068..29773d6aca5ad 100644
        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
               bookmark_bar_attached_vertical_margin;
      }
-@@ -97,7 +98,11 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -97,7 +98,13 @@ int GetLayoutConstant(LayoutConstant constant) {
        return GetLayoutConstant(TAB_HEIGHT) +
               GetLayoutConstant(TAB_STRIP_PADDING);
      case TAB_STRIP_PADDING:
 -      return features::IsChromeRefresh2023() ? 6 : 0;
 +      return Th24State() ? 0 : 6;
 +    case TAB_MARGIN:
-+      return Th24State() ? 6 : 0;
++      return Th24State() ? 6 : GetLayoutConstant(TAB_STRIP_PADDING);
 +    case TAB_INACTIVE_PADDING:
-+      return Th24State() ? 2 : 6;
++      return Th24State() ? 3 : 6;
++    case TAB_SEARCH_PADDING:
++      return Th24State() ? 4 : 0;
      case TAB_SEPARATOR_HEIGHT:
        // TODO (crbug.com/1451400): ChromeRefresh2023 needs different values for
        // this constant.
-@@ -117,7 +122,7 @@ int GetLayoutConstant(LayoutConstant constant) {
-         return 0;
-       return 1;
-     case TOOLBAR_BUTTON_HEIGHT:
--      if (features::IsChromeRefresh2023()) {
-+      if (features::IsChromeRefresh2023() && !Th24State()) {
-         return touch_ui ? 48 : 34;
-       } else {
-         return touch_ui ? 48 : 28;
-@@ -133,21 +138,29 @@ int GetLayoutConstant(LayoutConstant constant) {
-     case TOOLBAR_ELEMENT_PADDING:
-       return touch_ui ? 0 : 4;
-     case TOOLBAR_ICON_DEFAULT_MARGIN:
--      if (features::IsChromeRefresh2023()) {
-+      if (features::IsChromeRefresh2023() && !Th24State()) {
-         return touch_ui ? 0 : 2;
-       } else {
+@@ -139,7 +146,7 @@ int GetLayoutConstant(LayoutConstant constant) {
          return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
        }
      case TOOLBAR_STANDARD_SPACING:
@@ -66,29 +52,26 @@ index bba403a7e5068..29773d6aca5ad 100644
          return touch_ui ? 12 : 9;
        } else {
          return touch_ui ? 12 : 8;
-       }
-     case PAGE_INFO_ICON_SIZE:
--      return features::IsChromeRefresh2023() ? 20 : 16;
-+      if (features::IsChromeRefresh2023() && !Th24State()) {
-+        return 20;
-+      } else {
-+        return 16;
-+      }
+@@ -149,7 +156,7 @@ int GetLayoutConstant(LayoutConstant constant) {
      case DOWNLOAD_ICON_SIZE:
--      return features::IsChromeRefresh2023() ? 20 : 16;
-+      if (features::IsChromeRefresh2023() && !Th24State()) {
-+        return 20;
-+      } else {
-+        return 16;
-+      }
+       return features::IsChromeRefresh2023() ? 20 : 16;
      case TOOLBAR_CORNER_RADIUS:
-       return 8;
+-      return 8;
++      return Th24State() ? 0 : 8;
      default:
+       break;
+   }
 diff --git a/chrome/browser/ui/layout_constants.h b/chrome/browser/ui/layout_constants.h
-index d26bc737d3177..b19c42b774986 100644
+index d26bc737d3177..f453b459eb3f8 100644
 --- a/chrome/browser/ui/layout_constants.h
 +++ b/chrome/browser/ui/layout_constants.h
-@@ -119,6 +119,12 @@ enum LayoutConstant {
+@@ -1,4 +1,4 @@
+-// Copyright 2015 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -119,9 +119,18 @@ enum LayoutConstant {
    // detached tab, and on all sides of the controls padding.
    TAB_STRIP_PADDING,
  
@@ -101,11 +84,17 @@ index d26bc737d3177..b19c42b774986 100644
    // The height of a separator in the tabstrip.
    TAB_SEPARATOR_HEIGHT,
  
++  // Padding for the tab search button
++  TAB_SEARCH_PADDING,
++
+   // Padding before the tab title.
+   TAB_PRE_TITLE_PADDING,
+ 
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..daab857dd0263 100644
+index aa9cd30374311..d544ca4cf4d40 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
-@@ -1,26 +1,30 @@
+@@ -1,27 +1,32 @@
 -// Copyright 2019 The Chromium Authors
 +// Copyright 2024 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
@@ -136,15 +125,21 @@ index aa9cd30374311..daab857dd0263 100644
  // The padding from the top of the tab to the content area.
 +constexpr int kThoriumTabVerticalPadding = 9;
  constexpr int kChromeRefreshTabVerticalPadding = 6;
++constexpr int kThoriumTabHorizontalPadding = 6;
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
-@@ -197,11 +201,19 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+ class GM2TabStyle : public TabStyle {
+@@ -197,11 +202,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
 -  return 10;
++  static const bool rectangular_tabs =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
 +  if (Th24State()) {
 +    return 8;
++  } else if (rectangular_tabs) {
++    return 0;
 +  } else {
 +    return 10;
 +  }
@@ -152,15 +147,19 @@ index aa9cd30374311..daab857dd0263 100644
  
  int ChromeRefresh2023TabStyle::GetBottomCornerRadius() const {
 -  return 12;
++  static const bool rectangular_tabs =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
 +  if (Th24State()) {
-+    return 8;
++    return 10;
++  } else if (rectangular_tabs) {
++    return 0;
 +  } else {
 +    return 12;
 +  }
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
-@@ -213,23 +225,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
+@@ -213,23 +234,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -184,9 +183,9 @@ index aa9cd30374311..daab857dd0263 100644
 +  if (Th24State()) {
 +    return gfx::Insets::TLBR(
 +        kThoriumTabVerticalPadding + GetLayoutConstant(TAB_STRIP_PADDING),
-+        GetBottomCornerRadius() + kChromeRefreshTabHorizontalPadding,
++        GetBottomCornerRadius() + kThoriumTabHorizontalPadding,
 +        kThoriumTabVerticalPadding + GetLayoutConstant(TAB_STRIP_PADDING),
-+        GetBottomCornerRadius() + kChromeRefreshTabHorizontalPadding);
++        GetBottomCornerRadius() + kThoriumTabHorizontalPadding);
 +  } else {
 +   return gfx::Insets::TLBR(
 +       kChromeRefreshTabVerticalPadding + GetLayoutConstant(TAB_STRIP_PADDING),
@@ -215,35 +214,34 @@ index aa9cd30374311..daab857dd0263 100644
  }
  
  int ChromeRefresh2023TabStyle::GetSeparatorCornerRadius() const {
-diff --git a/chrome/browser/ui/views/frame/browser_frame_view_win.cc b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
-index 779aa88afb0fa..9404ec1e04e3e 100644
---- a/chrome/browser/ui/views/frame/browser_frame_view_win.cc
-+++ b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
-@@ -17,6 +17,7 @@
- #include "chrome/browser/themes/theme_properties.h"
- #include "chrome/browser/ui/color/chrome_color_id.h"
- #include "chrome/browser/ui/layout_constants.h"
-+#include "chrome/browser/ui/thorium_2024.h"
- #include "chrome/browser/ui/ui_features.h"
- #include "chrome/browser/ui/view_ids.h"
- #include "chrome/browser/ui/views/frame/browser_caption_button_container_win.h"
-@@ -318,9 +319,9 @@ int BrowserFrameViewWin::NonClientHitTest(const gfx::Point& point) {
-   // pixels at the end of the top and bottom edges trigger diagonal resizing.
-   constexpr int kResizeCornerWidth = 16;
- 
--  const int top_border_thickness = features::IsChromeRefresh2023()
--                                 ? GetLayoutConstant(TAB_STRIP_PADDING)
--                                 : FrameTopBorderThickness(false);
-+  const int top_border_thickness = Th24State()
-+                                 ? FrameTopBorderThickness(false);
-+                                 : GetLayoutConstant(TAB_STRIP_PADDING);
- 
-   int window_component = GetHTComponentForFrame(
-       point, gfx::Insets::TLBR(top_border_thickness, 0, 0, 0),
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index f534d7e925b86..29928bb858259 100644
+index f534d7e925b86..e49eee8f0c2b4 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2019 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -222,7 +222,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+     if (features::IsChromeRefresh2023()) {
+       tab_search_container_->SetProperty(
+           views::kMarginsKey,
+-          gfx::Insets::TLBR(0, 0, 0, GetLayoutConstant(TAB_STRIP_PADDING)));
++          gfx::Insets::TLBR(0, 0, 0, GetLayoutConstant(TAB_INACTIVE_PADDING)));
+     } else {
+       const gfx::Insets control_padding = gfx::Insets::TLBR(
+           0, 0, 0, GetLayoutConstant(TABSTRIP_REGION_VIEW_CONTROL_PADDING));
+@@ -357,7 +357,7 @@ void TabStripRegionView::Layout(PassKey) {
+     int product_specifications_button_width =
+         product_specifications_button_
+             ? product_specifications_button_->GetPreferredSize().width()
+-            : 0;
++            : GetLayoutConstant(TAB_SEARCH_PADDING);
+     AdjustViewBoundsRect(tab_search_container_,
+                          product_specifications_button_width);
+   }
 @@ -372,7 +372,7 @@ void TabStripRegionView::Layout(PassKey) {
      gfx::Point new_tab_button_new_position =
          gfx::Point(tab_strip_container_->bounds().right() -
@@ -253,28 +251,58 @@ index f534d7e925b86..29928bb858259 100644
                     0);
  
      gfx::Rect new_tab_button_new_bounds =
-diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
-index f59e9c5bc9fe6..e7aa9b960282a 100644
---- a/chrome/browser/ui/views/tabs/tab_style_views.cc
-+++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -1157,7 +1157,7 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
-     // this. Detached tab shapes do not need to respect this.
-     if (path_type != TabStyle::PathType::kInteriorClip &&
-         path_type != TabStyle::PathType::kHitTest) {
--      tab_height -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
-+      tab_height -= GetLayoutConstant(TAB_MARGIN) * scale;
-       tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
-     }
+@@ -502,7 +502,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+     new_tab_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
  
-@@ -1167,7 +1167,7 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
-     }
+     tab_strip_right_margin = new_tab_button_->GetPreferredSize().width() +
+-                             GetLayoutConstant(TAB_STRIP_PADDING);
++                             GetLayoutConstant(TAB_MARGIN);
+   }
  
-     int left = aligned_bounds.x() + extension_corner_radius;
--    int top = aligned_bounds.y() + GetLayoutConstant(TAB_STRIP_PADDING) * scale;
-+    int top = aligned_bounds.y() + GetLayoutConstant(TAB_INACTIVE_PADDING) * scale;
-     int right = aligned_bounds.right() - extension_corner_radius;
-     const int bottom = top + tab_height;
+   // If the tab search button is before the tab strip, it also overlaps the
+@@ -528,8 +528,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+     // should have 6 px of padding between it and the tab_search button (not
+     // including the corner radius).
+     tab_strip_left_margin = tab_strip_left_margin.value() +
+-                            GetLayoutConstant(TAB_STRIP_PADDING) +
+-                            GetLayoutConstant(TAB_STRIP_PADDING) -
++                            GetLayoutConstant(TAB_INACTIVE_PADDING) +
++                            GetLayoutConstant(TAB_INACTIVE_PADDING) -
+                             TabStyle::Get()->GetBottomCornerRadius();
+   }
  
+diff --git a/chrome/browser/ui/views/tabs/tab_slot_controller.h b/chrome/browser/ui/views/tabs/tab_slot_controller.h
+index e928216ad00f7..4f33e232910c1 100644
+--- a/chrome/browser/ui/views/tabs/tab_slot_controller.h
++++ b/chrome/browser/ui/views/tabs/tab_slot_controller.h
+@@ -167,6 +167,9 @@ class TabSlotController {
+   // 0 if there is no stroke.
+   virtual int GetStrokeThickness() const = 0;
+ 
++  // Returns the inactive vertical tab offset when strokes are enabled.
++  virtual int Th24StrokeOffset() const = 0;
++
+   // Returns true if tab loading throbbers can be painted to a composited layer.
+   // This can only be done when the TabController can guarantee that nothing
+   // in the same window will redraw on top of the the favicon area of any tab.
+diff --git a/chrome/browser/ui/views/tabs/tab_strip.h b/chrome/browser/ui/views/tabs/tab_strip.h
+index ae3b649cfcdc6..3bcf134a9b744 100644
+--- a/chrome/browser/ui/views/tabs/tab_strip.h
++++ b/chrome/browser/ui/views/tabs/tab_strip.h
+@@ -1,4 +1,4 @@
+-// Copyright 2017 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -291,6 +291,7 @@ class TabStrip : public views::View,
+   bool HoverCardIsShowingForTab(Tab* tab) override;
+   int GetBackgroundOffset() const override;
+   int GetStrokeThickness() const override;
++  int Th24StrokeOffset() const override;
+   bool CanPaintThrobberToLayer() const override;
+   bool HasVisibleBackgroundTabShapes() const override;
+   SkColor GetTabSeparatorColor() const override;
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index 83c7f06f1b236..576150ff56af4 100644
 --- a/ui/views/controls/menu/menu_config.cc
@@ -310,7 +338,7 @@ index 83c7f06f1b236..576150ff56af4 100644
  
  // static
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 3684e27766834..74e7cb7a004a7 100644
+index 3684e27766834..d62fe3f96ab62 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -1,4 +1,4 @@
@@ -327,36 +355,41 @@ index 3684e27766834..74e7cb7a004a7 100644
  #include "ui/base/ui_base_features.h"
  #include "ui/gfx/font_list.h"
  #include "ui/views/controls/focus_ring.h"
-@@ -234,6 +235,32 @@ int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
-     }
-   }
+@@ -208,6 +209,37 @@ ShapeSysTokens GetShapeSysToken(ShapeContextTokens id) {
  
+ int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
+                                           const gfx::Size& size) const {
++
 +  if (Th24State()) {
 +    switch (id) {
 +      case ShapeContextTokens::kBadgeRadius:
-+        return 3;
++        return 4;
 +      case ShapeContextTokens::kButtonRadius:
-+        return GetCornerRadiusMetric(Emphasis::kMedium, size);
++        return std::min(size.width(), size.height()) / 2;
 +      case ShapeContextTokens::kComboboxRadius:
++        return 8;
 +      case ShapeContextTokens::kDialogRadius:
++        return 12;
 +      case ShapeContextTokens::kFindBarViewRadius:
-+        return GetCornerRadiusMetric(Emphasis::kMedium, size);
++        return 8;
 +      case ShapeContextTokens::kMenuRadius:
 +      case ShapeContextTokens::kMenuAuxRadius:
-+        return GetCornerRadiusMetric(Emphasis::kNone);
++        return 0;
 +      case ShapeContextTokens::kMenuTouchRadius:
-+        return GetCornerRadiusMetric(Emphasis::kHigh);
++        return 8;
 +      case ShapeContextTokens::kOmniboxExpandedRadius:
 +        return 16;
 +      case ShapeContextTokens::kTextfieldRadius:
-+        return FocusRing::kDefaultCornerRadiusDp;
++        return 8;
 +      case ShapeContextTokens::kSidePanelContentRadius:
-+        return GetCornerRadiusMetric(Emphasis::kMedium);
++        return 16;
++      case ShapeContextTokens::kSidePanelPageContentRadius:
++        return 8;
 +      default:
 +        return 0;
 +    }
 +  }
 +
-   ShapeSysTokens token = GetShapeSysToken(id);
-   DCHECK_NE(token, ShapeSysTokens::kDefault)
-       << "kDefault token means there is a missing mapping between shape tokens";
+   if (!features::IsChromeRefresh2023()) {
+     switch (id) {
+       case ShapeContextTokens::kBadgeRadius:

@@ -34,10 +34,14 @@
      "Disables the custom colored top bar icons in Thorium, and restores the default grey Chromium icon colors.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
     {"left-aligned-tab-search-button",
-     "Enable Left-Aligned Tab Search Button",
+     "Left Aligned Tab Search Button",
      "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
      "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
      kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
+    {"rectangular-tabs",
+     "Thorium Rectangular Tabs UI",
+     "Changes the look of browser tabs to appear with a rectangular shape, similar to Vivaldi or Cent Browser.",
+     kOsDesktop, SINGLE_VALUE_TYPE("rectangular-tabs")},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "

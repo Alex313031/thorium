@@ -273,7 +273,9 @@ bool TabSearchBubbleHost::ShouldTabSearchRenderBeforeTabStrip() {
   return false;
 #else
   // Revert Google's stupid UI design decision
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("left-aligned-tab-search-button")) {
+  static const bool left_aligned_tab_search_button =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("left-aligned-tab-search-button");
+  if (left_aligned_tab_search_button) {
     return features::IsChromeRefresh2023();
   } else {
     return false;

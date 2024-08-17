@@ -1300,6 +1300,10 @@ bool TabStrip::ShouldDrawStrokes() const {
   return false;
 }
 
+int TabStrip::Th24StrokeOffset() const {
+  return ShouldDrawStrokes() ? 1 : 0;
+}
+
 void TabStrip::SetSelection(const ui::ListSelectionModel& new_selection) {
   // This CHECK ensures there is always an active tab to maintain UI
   // consistency.
