@@ -428,3 +428,11 @@ void RegisterCdmInfo(std::vector<content::CdmInfo>* cdms) {
 
   DVLOG(3) << __func__ << " done with " << cdms->size() << " cdms";
 }
+
+#if BUILDFLAG(ENABLE_WIDEVINE) && BUILDFLAG(IS_LINUX)
+std::vector<content::CdmInfo> GetSoftwareSecureWidevineForTesting() {
+  std::vector<content::CdmInfo> cdms;
+  AddSoftwareSecureWidevine(&cdms);
+  return cdms;
+}
+#endif  // BUILDFLAG(ENABLE_WIDEVINE) && BUILDFLAG(IS_LINUX)

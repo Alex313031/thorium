@@ -40,7 +40,7 @@ index ceabbced0f67e..c298005d46bc3 100644
          Date Modified
        </message>
 +      <message name="IDS_DIRECTORY_LISTING_PARSING_ERROR_BOX_TEXT" desc="Text to show in a box when we failed to parse FTP directory listing.">
-+        Oh, no! This server is sending data <ph name="PRODUCT_NAME">$1<ex>Google Chrome</ex></ph> can't understand. Please <ph name="BEGIN_LINK">&lt;a href="http://code.google.com/p/chromium/issues/entry"&gt;</ph>report a bug<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>, and include the <ph name="BEGIN2_LINK">&lt;a href="LOCATION"&gt;</ph>raw listing<ph name="END2_LINK">&lt;/a&gt;</ph>.
++        Oh, no! This server is sending data <ph name="PRODUCT_NAME">$1<ex>Thorium</ex></ph> can't understand. Please <ph name="BEGIN_LINK">&lt;a href="https://issues.chromium.org/issues/new"&gt;</ph>report a bug<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>, and include the <ph name="BEGIN2_LINK">&lt;a href="LOCATION"&gt;</ph>raw listing<ph name="END2_LINK">&lt;/a&gt;</ph>.
 +      </message>
  
        <!-- Saving Page-->

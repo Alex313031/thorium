@@ -35,6 +35,7 @@ buildShell () {
 	
 	# Build Thorium
 	export NINJA_SUMMARIZE_BUILD=1 &&
+	export NINJA_STATUS="[%r processes, %f/%t @ %o/s | %e sec. ] " &&
 	
 	cd ${CR_SRC_DIR} &&
 	autoninja -C out/thorium thorium chromedriver thorium_shell policy_templates -j$@ &&

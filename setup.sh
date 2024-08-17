@@ -84,10 +84,11 @@ cp -r -v thorium_shell/. ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak ${CR_SRC_DIR}/out/thorium/ &&
 cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
-patchFFMPEG () {
+patchThor () {
 	cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 	cp -v other/fix-policy-templates.patch ${CR_SRC_DIR}/ &&
 	cp -v other/ftp-support-thorium.patch ${CR_SRC_DIR}/ &&
+	cp -v other/thorium-2024-ui.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -102,9 +103,24 @@ patchFFMPEG () {
 	printf "\n" &&
 	printf "${YEL}Patching FTP support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
-	git apply --reject ./ftp-support-thorium.patch
+	git apply --reject ./ftp-support-thorium.patch &&
+
+	printf "\n" &&
+	printf "${YEL}Patching for Thorium 2024 UI...${c0}\n" &&
+	cd ${CR_SRC_DIR} &&
+	git apply --reject ./thorium-2024-ui.patch
 }
-[ -f ${CR_SRC_DIR}/third_party/ffmpeg/add-hevc-ffmpeg-decoder-parser.patch ] || patchFFMPEG;
+[ -f ${CR_SRC_DIR}/third_party/ffmpeg/add-hevc-ffmpeg-decoder-parser.patch ] || patchThor;
+
+patchAC3 () {
+	cp -v other/ffmpeg_hevc_ac3.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
+
+	printf "\n" &&
+	printf "${YEL}Patching FFMPEG for AC3 & E-AC3...${c0}\n" &&
+	cd ${CR_SRC_DIR}/third_party/ffmpeg &&
+	git apply --reject ./ffmpeg_hevc_ac3.patch &&
+	cd ~/thorium
+}
 
 cd ~/thorium &&
 
@@ -174,6 +190,7 @@ copyAVX512 () {
 	cp -r -v other/AVX512/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX512/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-avx512 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -188,6 +205,7 @@ copyAVX2 () {
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-avx2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -201,6 +219,7 @@ copySSE4 () {
 	cp -r -v other/SSE4.1/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse4 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -214,6 +233,7 @@ copySSE3 () {
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -227,6 +247,7 @@ copySSE2 () {
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -275,6 +296,7 @@ copyCros () {
 	printf "\n" &&
 	printf "${YEL}Copying ChromiumOS build files...${c0}\n" &&
 	cp -r -v other/CrOS/* ${CR_SRC_DIR}/ &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -282,37 +304,38 @@ case $1 in
 esac
 
 cd ${CR_SRC_DIR} &&
+printf "${YEL}Workaround for Ask.com favicon ▾${c0}\n" &&
 python3 ./tools/search_engine_choice/download_search_engine_icons.py &&
 cd ~/thorium &&
 
-printf "${GRE}Done!\n" &&
 printf "\n" &&
+printf "${GRE}Done!${c0}\n" &&
 
-printf "${YEL}Exporting variables and setting handy aliases...${c0}\n" &&
+#. ~/thorium/aliases.txt &&
 
-. ~/thorium/aliases &&
+#printf "\n" &&
+#printf "export ${CYA}NINJA_SUMMARIZE_BUILD=1${c0}\n" &&
+#printf "export ${CYA}EDITOR=nano${c0}\n" &&
+#printf "export ${CYA}VISUAL=nano${c0}\n" &&
+#printf "\n" &&
+#printf "alias ${YEL}origin${c0} = ${CYA}git checkout -f origin/main${c0}\n" &&
+#printf "alias ${YEL}gfetch${c0} = ${CYA}git fetch --tags${c0}\n" &&
+#printf "alias ${YEL}rebase${c0} = ${CYA}git rebase-update${c0}\n" &&
+#printf "alias ${YEL}gsync${c0} = ${CYA}gclient sync --with_branch_heads --with_tags -f -R -D${c0}\n" &&
+#printf "alias ${YEL}args${c0} = ${CYA}gn args out/thorium${c0}\n" &&
+#printf "alias ${YEL}gnls${c0} = ${CYA}gn ls out/thorium${c0}\n" &&
+#printf "alias ${YEL}show${c0} = ${CYA}git show-ref${c0}\n" &&
+#printf "alias ${YEL}runhooks${c0} = ${CYA}gclient runhooks${c0}\n" &&
+#printf "alias ${YEL}pgo${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+#printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+#printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+#printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
+#printf "\n" &&
 
+cat ./logos/thorium_ascii_art.txt &&
+
+printf "${YEL}Tip: See the ${CYA}aliases.txt${YEL} file for some handy bash aliases.${c0}\n" &&
 printf "\n" &&
-printf "export ${CYA}NINJA_SUMMARIZE_BUILD=1${c0}\n" &&
-printf "export ${CYA}EDITOR=nano${c0}\n" &&
-printf "export ${CYA}VISUAL=nano${c0}\n" &&
-printf "\n" &&
-printf "alias ${YEL}origin${c0} = ${CYA}git checkout -f origin/main${c0}\n" &&
-printf "alias ${YEL}gfetch${c0} = ${CYA}git fetch --tags${c0}\n" &&
-printf "alias ${YEL}rebase${c0} = ${CYA}git rebase-update${c0}\n" &&
-printf "alias ${YEL}gsync${c0} = ${CYA}gclient sync --with_branch_heads --with_tags -f -R -D${c0}\n" &&
-printf "alias ${YEL}args${c0} = ${CYA}gn args out/thorium${c0}\n" &&
-printf "alias ${YEL}gnls${c0} = ${CYA}gn ls out/thorium${c0}\n" &&
-printf "alias ${YEL}show${c0} = ${CYA}git show-ref${c0}\n" &&
-printf "alias ${YEL}runhooks${c0} = ${CYA}gclient runhooks${c0}\n" &&
-printf "alias ${YEL}pgo${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=linux update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-printf "alias ${YEL}pgow${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=win64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-printf "alias ${YEL}pgom${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
-printf "\n" &&
-
-cat logos/thorium_ascii_art.txt &&
-
-printf "${GRE}Enjoy Thorium!\n" &&
+printf "${GRE}  Enjoy Thorium!\n" &&
 printf "\n" &&
 tput sgr0
