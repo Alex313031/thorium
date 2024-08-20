@@ -6,10 +6,12 @@
 #define CHROME_BROWSER_UI_THORIUM_2024_UI_H_
 
 #include "base/command_line.h"
+#include "ui/base/ui_base_features.h"
 
 static bool Th24State() {
+  static const bool chrome_2024 = features::IsChromeRefresh2023();
   static const bool thorium_2024 = base::CommandLine::ForCurrentProcess()->HasSwitch("thorium-2024");
-  return thorium_2024;
+  return thorium_2024 && chrome_2024;
 }
 
 #endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_

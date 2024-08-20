@@ -33,39 +33,44 @@ printf "${CYA}\n" &&
 # Build Thorium UI Debug Shell
 export NINJA_SUMMARIZE_BUILD=1 &&
 
-autoninja -C ~/chromium/src/out/thorium thorium_ui_debug_shell -j$@ &&
+autoninja -C ${CR_SRC_DIR}/out/thorium thorium_ui_debug_shell minidump_stackwalk dump_syms -j$@ &&
 
-mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
-mkdir -v -p ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
+mkdir -v -p ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell &&
+# mkdir -v -p ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/lib &&
+mkdir -v -p ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
 
-cp -r -f -v ./icons/icon_16.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_24.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_32.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_48.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_64.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_128.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/icons &&
-cp -r -f -v ./icons/icon_256.png ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ./icons/thorium_debug_shell.ico ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell &&
-cp -r -f -v DEBUG_SHELL_README.md ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/README.md &&
-cp -r -f -v ~/chromium/src/out/thorium/locales ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/test_fonts ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/resources ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/ui ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/blink_test_plugin.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/icudtl.dat ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/content_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/libEGL.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/libGLESv2.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/vulkan-1.dll ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/vk_swiftshader_icd.json ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/v8_context_snapshot.bin ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/ui_resources_100_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/ui_test.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ./icons/icon_16.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_24.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_32.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_48.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_64.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_128.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_256.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/icons &&
+cp -r -f -v ./icons/icon_256.png ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ./icons/thorium_debug_shell.ico ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell &&
+cp -r -f -v DEBUG_SHELL_README.md ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/README.md &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/locales ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/test_fonts ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/resources ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/ui ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/blink_test_plugin.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/icudtl.dat ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/content_resources.pak ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/libEGL.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/libGLESv2.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/vk_swiftshader.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/vulkan-1.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/vk_swiftshader_icd.json ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/v8_context_snapshot.bin ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/ffmpeg.dll ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/ui_resources_100_percent.pak ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/ui_test.pak ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/ui_test_200_percent.pak ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/views_examples_resources.pak ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+cp -r -f -v ${CR_SRC_DIR}/out/thorium/thorium_ui_debug_shell.exe ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
 
-printf "${GRE}Thorium UI Debug Shell Build Completed.\n" &&
+cd ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell &&
+zip -r ../Thorium_UI_Debug_Shell.zip * &&
+
+printf "${GRE}Thorium UI Debug Shell Build Completed!\n" &&
 tput sgr0

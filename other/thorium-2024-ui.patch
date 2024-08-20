@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index bba403a7e5068..52d3d6485cecb 100644
+index bba403a7e5068..e6cba4e30c0a0 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -1,12 +1,14 @@
@@ -24,7 +24,7 @@ index bba403a7e5068..52d3d6485cecb 100644
        // to the white space above and below.
 -      const int bookmark_bar_attached_vertical_margin =
 -          features::IsChromeRefresh2023() ? 6 : 4;
-+      const int bookmark_bar_attached_vertical_margin = Th24State() ? 4 : 6;
++      const int bookmark_bar_attached_vertical_margin = Th24State() ? 2 : 6;
        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
               bookmark_bar_attached_vertical_margin;
      }
@@ -43,7 +43,23 @@ index bba403a7e5068..52d3d6485cecb 100644
      case TAB_SEPARATOR_HEIGHT:
        // TODO (crbug.com/1451400): ChromeRefresh2023 needs different values for
        // this constant.
-@@ -139,7 +146,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -125,9 +132,13 @@ int GetLayoutConstant(LayoutConstant constant) {
+     case TOOLBAR_DIVIDER_CORNER_RADIUS:
+       return 1;
+     case TOOLBAR_DIVIDER_HEIGHT:
+-      return touch_ui ? 20 : 16;
++      if (Th24State()) {
++        return 20;
++      } else {
++        return touch_ui ? 20 : 16;
++      }
+     case TOOLBAR_DIVIDER_SPACING:
+-      return 9;
++      return Th24State() ? 8 : 9;
+     case TOOLBAR_DIVIDER_WIDTH:
+       return 2;
+     case TOOLBAR_ELEMENT_PADDING:
+@@ -139,7 +150,7 @@ int GetLayoutConstant(LayoutConstant constant) {
          return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
        }
      case TOOLBAR_STANDARD_SPACING:
@@ -52,12 +68,12 @@ index bba403a7e5068..52d3d6485cecb 100644
          return touch_ui ? 12 : 9;
        } else {
          return touch_ui ? 12 : 8;
-@@ -149,7 +156,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -149,7 +160,7 @@ int GetLayoutConstant(LayoutConstant constant) {
      case DOWNLOAD_ICON_SIZE:
        return features::IsChromeRefresh2023() ? 20 : 16;
      case TOOLBAR_CORNER_RADIUS:
 -      return 8;
-+      return Th24State() ? 0 : 8;
++      return Th24State() ? 0 : 2;
      default:
        break;
    }

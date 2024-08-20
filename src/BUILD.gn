@@ -42,6 +42,10 @@ if (is_android) {
   import("//build/config/android/config.gni")
 }
 
+if (current_cpu == "arm" || current_cpu == "arm64") {
+  import("//build/config/arm.gni")
+}
+
 if (is_fuchsia) {
   import("//build/config/fuchsia/generate_runner_scripts.gni")
   import("//third_party/fuchsia-gn-sdk/src/component.gni")
@@ -73,12 +77,66 @@ if (is_official_build) {
 
 # Thorium target that simply pulls in the chrome target as a dependency
 group("thorium") {
-  if (is_win || is_linux || is_mac) {
+  if (is_win || is_linux || is_mac || is_chromeos || is_fuchsia) {
     deps = [ "//chrome:chrome" ]
   }
 
   if (is_win) {
     deps += [ "//chrome:chrome_dll" ]
+  }
+}
+
+# Thorium target that builds everything for a release build
+# according to the platform
+group("thorium_all") {
+  testonly = true
+
+  if (is_win || is_linux || is_mac) {
+    deps = [
+      "//chrome:chrome",
+      "//chrome/test/chromedriver:chromedriver",
+      "//components/policy:policy_templates",
+      "//content/shell:thorium_shell",
+      "//media/cdm/library_cdm/clear_key_cdm:clear_key_cdm"
+    ]
+    if (is_debug) {
+      deps += [ "//ui/views/examples:thorium_ui_debug_shell" ]
+    }
+  }
+
+  if (is_linux) {
+    deps += [ "//sandbox/linux:chrome_sandbox" ]
+  }
+
+  if (is_win) {
+    deps += [
+      "//chrome:chrome_dll",
+      "//components/policy:pack_policy_templates"
+    ]
+    if (is_official_build) {
+      deps += [
+        "//chrome/installer/mini_installer:mini_installer",
+        "//chrome/installer/setup:setup"
+      ]
+    }
+  }
+
+  if (is_android) {
+    if (current_cpu == "arm") {
+      deps += [
+        "//android_webview:system_webview_apk",
+        "//chrome/android:chrome_public_apk",
+        "//content/shell/android:content_shell_apk"
+      ]
+    } else if (current_cpu == "arm64") {
+      deps += [
+        "//android_webview:system_webview_64_apk",
+        "//chrome/android:chrome_public_apk",
+        "//content/shell/android:content_shell_apk"
+      ]
+    } else {
+      deps += [ "//android_webview:system_webview_64_apk" ]
+    }
   }
 }
 

@@ -102,7 +102,7 @@ const char* const kBadFlags[] = {
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
     // This flag gives extensions more powers.
-    extensions::switches::kExtensionsOnChromeURLs,
+    // extensions::switches::kExtensionsOnChromeURLs, (Disabled by Alex313031)
 #endif
 
 // TODO(crbug.com/40118868): Revisit the macro expression once build flag switch

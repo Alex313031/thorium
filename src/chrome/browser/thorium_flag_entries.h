@@ -79,7 +79,8 @@
 
     {"custom-ntp",
      "Custom New Tab Page",
-     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
+     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), "
+     "external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
      "This applies for incognito windows as well when not set to a `chrome://` internal page.",
      kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
     {"hide-sidepanel-button",
@@ -99,9 +100,10 @@
 #endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 
     {"autoplay-policy",
-     "Disable/Enable AutoPlay",
-     "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, use `Document User Activation Required` to disable AutoPlay "
-     "and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio) to continue.",
+     "Configure AutoPlay Policy",
+     "Allows setting the AutoPlay policy. `No User Gesture Required` enables AutoPlay. `Document User Activation Required` disables AutoPlay, "
+     "and forces all sites to require a click to initiate media playback; this is the default if unset. `User Gesture Required` blocks "
+     "most AutoPlay annoyances, while still allowing some (i.e. WebAudio) to continue.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
     {"allow-insecure-downloads",
      "Allow Insecure Downloads",
@@ -155,8 +157,9 @@
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
     {"gtk-version",
-     "Choose the GTK Version",
-     "Choose whether to use the GTK3 or GTK4 backend. It should match the default GTK used by the system.",
+     "GTK Version Override",
+     "Choose whether to use the GTK3 or GTK4 backend. It should be set to match the default GTK used by the system, "
+     "but can be overridden for testing or experimenting.",
      kOsLinux, MULTI_VALUE_TYPE(kGtkVersionChoices)},
     {"vaapi-on-nvidia-gpus",
      "VAAPI on nVidia GPUs",
@@ -195,7 +198,8 @@
 #if !BUILDFLAG(IS_ANDROID)
     {"media-router",
      "Enable/Disable Media Router",
-     "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
+     "Media router is a component responsible for pairing Thorium to devices and endpoints, "
+     "for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
      kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
 #endif // BUILDFLAG(IS_ANDROID)
 
