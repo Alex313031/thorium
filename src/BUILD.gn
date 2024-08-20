@@ -123,19 +123,19 @@ group("thorium_all") {
 
   if (is_android) {
     if (current_cpu == "arm") {
-      deps += [
+      deps = [
         "//android_webview:system_webview_apk",
         "//chrome/android:chrome_public_apk",
         "//content/shell/android:content_shell_apk"
       ]
     } else if (current_cpu == "arm64") {
-      deps += [
+      deps = [
         "//android_webview:system_webview_64_apk",
         "//chrome/android:chrome_public_apk",
         "//content/shell/android:content_shell_apk"
       ]
     } else {
-      deps += [ "//android_webview:system_webview_64_apk" ]
+      deps = [ "//chrome/android:chrome_public_apk" ]
     }
   }
 }
