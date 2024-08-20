@@ -520,6 +520,15 @@ bool IsChromeWebuiRefresh2023() {
          base::FeatureList::IsEnabled(kChromeRefreshSecondary2023);
 }
 
+BASE_FEATURE(kThorium2024
+             "Thorium2024",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
+bool IsThorium2024() {
+  return IsChromeRefresh2023() &&
+         base::FeatureList::IsEnabled(kThorium2024);
+}
+
 BASE_FEATURE(kBubbleMetricsApi,
              "BubbleMetricsApi",
              base::FEATURE_DISABLED_BY_DEFAULT);
