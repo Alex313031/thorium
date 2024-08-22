@@ -106,6 +106,23 @@ index d26bc737d3177..f453b459eb3f8 100644
    // Padding before the tab title.
    TAB_PRE_TITLE_PADDING,
  
+diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
+index bec499693cd91..52e9c7f245110 100644
+--- a/chrome/browser/ui/tabs/tab_menu_model.cc
++++ b/chrome/browser/ui/tabs/tab_menu_model.cc
+@@ -102,9 +102,9 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
+   }
+ 
+   int num_tabs = indices.size();
+-  AddItemWithStringId(TabStripModel::CommandNewTabToRight,
+-                      base::i18n::IsRTL() ? IDS_TAB_CXMENU_NEWTABTOLEFT
+-                                          : IDS_TAB_CXMENU_NEWTABTORIGHT);
++  AddItemWithStringId(TabStripModel::CommandNewTabToRight, IDS_TAB_CXMENU_NEWTABTORIGHT);
++  AddItemWithStringId(TabStripModel::CommandNewTabToLeft, IDS_TAB_CXMENU_NEWTABTOLEFT);
++  AddItemWithStringId(IDC_RESTORE_TAB, IDS_RESTORE_TAB);
+   if (tab_strip->delegate()->SupportsReadLater()) {
+     AddItem(
+         TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
 index aa9cd30374311..5d5a40f92f922 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc

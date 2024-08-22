@@ -84,6 +84,10 @@ group("thorium") {
   if (is_win) {
     deps += [ "//chrome:chrome_dll" ]
   }
+
+  if (is_linux || is_chromeos) {
+    deps += [ "//sandbox/linux:chrome_sandbox" ]
+  }
 }
 
 # Thorium target that builds everything for a release build

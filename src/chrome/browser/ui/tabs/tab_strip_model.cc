@@ -1463,6 +1463,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
     ContextMenuCommand command_id) const {
   DCHECK(command_id > CommandFirst && command_id < CommandLast);
   switch (command_id) {
+    case CommandNewTabToLeft:
     case CommandNewTabToRight:
     case CommandCloseTab:
       return true;
@@ -1574,6 +1575,15 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
   if (!ContainsIndex(context_index))
     return;
   switch (command_id) {
+    case CommandNewTabToLeft: {
+      base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
+      UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
+                                NewTabTypes::NEW_TAB_ENUM_COUNT);
+      delegate()->AddTabAt(GURL(), context_index - 1, true,
+                           GetTabGroupForTab(context_index));
+      break;
+    }
+
     case CommandNewTabToRight: {
       base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
       UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
