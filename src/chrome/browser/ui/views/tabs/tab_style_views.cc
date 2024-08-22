@@ -1240,7 +1240,7 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
       }
     }
 
-    if (Th24State()) {
+    if (features::IsThorium2024()) {
       top -= tab()->controller()->Th24StrokeOffset();
       // Experimental int
       //bottom -= tab()->controller()->Th24StrokeOffset();

@@ -520,7 +520,7 @@ bool IsChromeWebuiRefresh2023() {
          base::FeatureList::IsEnabled(kChromeRefreshSecondary2023);
 }
 
-BASE_FEATURE(kThorium2024
+BASE_FEATURE(kThorium2024,
              "Thorium2024",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
