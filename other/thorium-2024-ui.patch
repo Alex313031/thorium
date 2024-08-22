@@ -73,7 +73,7 @@ index bba403a7e5068..e6cba4e30c0a0 100644
        return features::IsChromeRefresh2023() ? 20 : 16;
      case TOOLBAR_CORNER_RADIUS:
 -      return 8;
-+      return IsThorium2024() ? 0 : 2;
++      return IsThorium2024() ? 0 : 8;
      default:
        break;
    }

@@ -19,8 +19,9 @@
 
     {"thorium-2024",
      "Enable Experimental Thorium 2024 (Th24) UI",
-     "Enable an experimental \"hybrid\" UI, with the pre-Chrome Refresh 2023 tab height, and square rather than rounded menus.",
-     kOsDesktop, SINGLE_VALUE_TYPE("thorium-2024")},
+     "Enable an experimental \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
+     "who find the new UI ugly or harder to use.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kThorium2024)},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
