@@ -1579,7 +1579,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
       UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
                                 NewTabTypes::NEW_TAB_ENUM_COUNT);
-      delegate()->AddTabAt(GURL(), context_index - 1, true,
+      delegate()->AddTabAt(GURL(), context_index, true,
                            GetTabGroupForTab(context_index));
       break;
     }

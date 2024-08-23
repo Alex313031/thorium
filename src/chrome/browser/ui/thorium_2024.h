@@ -8,6 +8,7 @@
 #include "base/command_line.h"
 #include "ui/base/ui_base_features.h"
 
-static const bool thor24 = features::IsThorium2024();
+// Blanking out until moving file to //ui/base
+//static const bool thor24 = features::IsThorium2024();
 
 #endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_

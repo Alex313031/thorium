@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index bba403a7e5068..e6cba4e30c0a0 100644
+index bba403a7e5068..e14bb1d796a35 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -1,12 +1,14 @@
@@ -18,17 +18,39 @@ index bba403a7e5068..e6cba4e30c0a0 100644
  #include "chrome/browser/ui/ui_features.h"
  #include "components/omnibox/common/omnibox_features.h"
  #include "ui/base/pointer/touch_ui_controller.h"
-@@ -27,8 +29,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -21,21 +23,25 @@ int GetLayoutConstant(LayoutConstant constant) {
+   const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
+   switch (constant) {
+     case APP_MENU_PROFILE_ROW_AVATAR_ICON_SIZE:
+-      return 24;
++      return features::IsThorium2024() ? 20 : 24;
+     case APP_MENU_MAXIMUM_CHARACTER_LENGTH:
+       return 30;
      case BOOKMARK_BAR_HEIGHT: {
        // The fixed margin ensures the bookmark buttons appear centered relative
        // to the white space above and below.
 -      const int bookmark_bar_attached_vertical_margin =
 -          features::IsChromeRefresh2023() ? 6 : 4;
-+      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 2 : 6;
++      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 4 : 6;
        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
               bookmark_bar_attached_vertical_margin;
      }
-@@ -97,7 +98,13 @@ int GetLayoutConstant(LayoutConstant constant) {
+-    case BOOKMARK_BAR_BUTTON_HEIGHT:
+-      return touch_ui ? 36 : 28;
++    case BOOKMARK_BAR_BUTTON_HEIGHT: {
++      if (features::IsThorium2024()) {
++        return touch_ui ? 34 : 26;
++      } else {
++        return touch_ui ? 36 : 28;
++      }
++    }
+     case BOOKMARK_BAR_BUTTON_PADDING:
+-      return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
++      return 4;
+     case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
+       return features::IsChromeRefresh2023() ? 6 : 8;
+     case WEB_APP_MENU_BUTTON_SIZE:
+@@ -97,7 +103,13 @@ int GetLayoutConstant(LayoutConstant constant) {
        return GetLayoutConstant(TAB_HEIGHT) +
               GetLayoutConstant(TAB_STRIP_PADDING);
      case TAB_STRIP_PADDING:
@@ -43,7 +65,7 @@ index bba403a7e5068..e6cba4e30c0a0 100644
      case TAB_SEPARATOR_HEIGHT:
        // TODO (crbug.com/1451400): ChromeRefresh2023 needs different values for
        // this constant.
-@@ -125,9 +132,13 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -125,9 +137,13 @@ int GetLayoutConstant(LayoutConstant constant) {
      case TOOLBAR_DIVIDER_CORNER_RADIUS:
        return 1;
      case TOOLBAR_DIVIDER_HEIGHT:
@@ -59,7 +81,7 @@ index bba403a7e5068..e6cba4e30c0a0 100644
      case TOOLBAR_DIVIDER_WIDTH:
        return 2;
      case TOOLBAR_ELEMENT_PADDING:
-@@ -139,7 +150,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -139,7 +155,7 @@ int GetLayoutConstant(LayoutConstant constant) {
          return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
        }
      case TOOLBAR_STANDARD_SPACING:
@@ -68,7 +90,7 @@ index bba403a7e5068..e6cba4e30c0a0 100644
          return touch_ui ? 12 : 9;
        } else {
          return touch_ui ? 12 : 8;
-@@ -149,7 +160,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -149,7 +165,7 @@ int GetLayoutConstant(LayoutConstant constant) {
      case DOWNLOAD_ICON_SIZE:
        return features::IsChromeRefresh2023() ? 20 : 16;
      case TOOLBAR_CORNER_RADIUS:
@@ -107,19 +129,17 @@ index d26bc737d3177..f453b459eb3f8 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index bec499693cd91..52e9c7f245110 100644
+index bec499693cd91..404316da5bcd2 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
-@@ -102,9 +102,9 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
-   }
- 
-   int num_tabs = indices.size();
--  AddItemWithStringId(TabStripModel::CommandNewTabToRight,
--                      base::i18n::IsRTL() ? IDS_TAB_CXMENU_NEWTABTOLEFT
--                                          : IDS_TAB_CXMENU_NEWTABTORIGHT);
-+  AddItemWithStringId(TabStripModel::CommandNewTabToRight, IDS_TAB_CXMENU_NEWTABTORIGHT);
-+  AddItemWithStringId(TabStripModel::CommandNewTabToLeft, IDS_TAB_CXMENU_NEWTABTOLEFT);
-+  AddItemWithStringId(IDC_RESTORE_TAB, IDS_RESTORE_TAB);
+@@ -105,6 +105,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
+   AddItemWithStringId(TabStripModel::CommandNewTabToRight,
+                       base::i18n::IsRTL() ? IDS_TAB_CXMENU_NEWTABTOLEFT
+                                           : IDS_TAB_CXMENU_NEWTABTORIGHT);
++  AddItemWithStringId(TabStripModel::CommandNewTabToLeft,
++                      base::i18n::IsRTL() ? IDS_TAB_CXMENU_NEWTABTORIGHT
++                                          : IDS_TAB_CXMENU_NEWTABTOLEFT);
++  //AddItemWithStringId(IDC_RESTORE_TAB, IDS_RESTORE_TAB);
    if (tab_strip->delegate()->SupportsReadLater()) {
      AddItem(
          TabStripModel::CommandAddToReadLater,
@@ -147,7 +167,7 @@ index aa9cd30374311..5d5a40f92f922 100644
  // Thickness in DIPs of the separator painted on the left and right edges of
  // the tab.
  constexpr int kGM2SeparatorThickness = 1;
-+constexpr int kThoriumSeparatorThickness = 2;
++constexpr int kThoriumSeparatorThickness = 1;
  constexpr int kChromeRefreshSeparatorThickness = 2;
 +constexpr int kThoriumSeparatorHorizontalMargin = 1;
  constexpr int kChromeRefreshSeparatorHorizontalMargin = 2;
