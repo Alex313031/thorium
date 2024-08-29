@@ -65,7 +65,7 @@ cp -r -f -v ${CR_SRC_DIR}/out/thorium/locales ${CR_SRC_DIR}/out/thorium/Thorium_
 cp -r -f -v ${CR_SRC_DIR}/out/thorium/test_fonts ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ${CR_SRC_DIR}/out/thorium/resources ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ${CR_SRC_DIR}/out/thorium/ui ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
-cp -r -f -v ${CR_SRC_DIR}/out/thorium/libffmpeg.so ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
+# cp -r -f -v ${CR_SRC_DIR}/out/thorium/libffmpeg.so ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ${CR_SRC_DIR}/out/thorium/libffmpeg.so ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/lib &&
 # cp -r -f -v ${CR_SRC_DIR}/out/thorium/libblink_test_plugin.so ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&
 # cp -r -f -v ${CR_SRC_DIR}/out/thorium/libmojo_core.so ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell/ &&

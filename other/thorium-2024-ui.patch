@@ -1,5 +1,31 @@
+diff --git a/chrome/browser/resources/downloads/item.html b/chrome/browser/resources/downloads/item.html
+index 0197942167f44..9535c3a076409 100644
+--- a/chrome/browser/resources/downloads/item.html
++++ b/chrome/browser/resources/downloads/item.html
+@@ -523,7 +523,7 @@
+     </div>
+     <div class="more-options">
+       <!-- Only show the "x" button in the old UX. -->
+-      <template is="dom-if" if="[[!improvedDownloadWarningsUx_]]">
++      <template is="dom-if" if="[[improvedDownloadWarningsUx_]]">
+         <div role="gridcell">
+           <cr-icon-button class="icon-clear"
+               style$="[[computeRemoveStyle_(isDangerous_, showCancel_)]]"
+diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+index 64948595a4bc6..a568c893736ca 100644
+--- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
++++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+@@ -47,7 +47,7 @@ using bookmarks::BookmarkNode;
+ 
+ namespace chrome {
+ 
+-size_t kNumBookmarkUrlsBeforePrompting = 15;
++size_t kNumBookmarkUrlsBeforePrompting = 50;
+ 
+ static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
+ 
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index bba403a7e5068..e14bb1d796a35 100644
+index bba403a7e5068..056b405e46ec6 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -1,12 +1,14 @@
@@ -144,7 +170,7 @@ index bec499693cd91..404316da5bcd2 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..5d5a40f92f922 100644
+index aa9cd30374311..c5d3cbd005dae 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -356,8 +382,30 @@ index ae3b649cfcdc6..3bcf134a9b744 100644
    bool CanPaintThrobberToLayer() const override;
    bool HasVisibleBackgroundTabShapes() const override;
    SkColor GetTabSeparatorColor() const override;
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+index 83defaaaad55d..3c36bede863ef 100644
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -213,6 +213,7 @@
+ #include "ui/gl/gl_switches.h"
+ #include "url/gurl.h"
+ #include "url/origin.h"
++#include "url/url_constants.h"
+ 
+ #if BUILDFLAG(IS_ANDROID)
+ #include "base/android/child_process_binding_types.h"
+@@ -4412,6 +4413,9 @@ RenderProcessHost::FilterURLResult RenderProcessHostImpl::FilterURL(
+     *url = GURL(kBlockedURL);
+     return FilterURLResult::kBlocked;
+   }
++  if (url.SchemeIs(url::kFtpScheme)) {
++    return FilterURLResult::kAllowed;
++  }
+   return FilterURLResult::kAllowed;
+ }
+ 
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
-index 83c7f06f1b236..576150ff56af4 100644
+index 83c7f06f1b236..173b829890079 100644
 --- a/ui/views/controls/menu/menu_config.cc
 +++ b/ui/views/controls/menu/menu_config.cc
 @@ -1,10 +1,11 @@
@@ -391,7 +439,7 @@ index 83c7f06f1b236..576150ff56af4 100644
  
  // static
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 3684e27766834..d62fe3f96ab62 100644
+index 3684e27766834..72f1751f64c46 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -1,4 +1,4 @@
