@@ -309,6 +309,26 @@ index aa9cd30374311..c5d3cbd005dae 100644
  }
  
  int ChromeRefresh2023TabStyle::GetSeparatorCornerRadius() const {
+diff --git a/chrome/browser/ui/thorium_2024.h b/chrome/browser/ui/thorium_2024.h
+new file mode 100644
+index 0000000000000..de40b42fcc722
+--- /dev/null
++++ b/chrome/browser/ui/thorium_2024.h
+@@ -0,0 +1,14 @@
++// Copyright 2024 Alex313031
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef CHROME_BROWSER_UI_THORIUM_2024_UI_H_
++#define CHROME_BROWSER_UI_THORIUM_2024_UI_H_
++
++#include "base/command_line.h"
++#include "ui/base/ui_base_features.h"
++
++// Blanking out until moving file to //ui/base
++//static const bool thor24 = features::IsThorium2024();
++
++#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
 index efe87aa6d6dd6..be18a870f0217 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
