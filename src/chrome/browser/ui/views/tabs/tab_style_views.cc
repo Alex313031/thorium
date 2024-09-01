@@ -1205,7 +1205,8 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
     if (path_type == TabStyle::PathType::kHitTest &&
         (tab()->GetWidget()->IsMaximized() ||
          tab()->GetWidget()->IsFullscreen())) {
-      top -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
+      // Keep this in Thorium
+      top -= GetLayoutConstant(TAB_MARGIN) * scale;
       // Don't round the top corners to avoid creating dead space between tabs.
       top_content_corner_radius = 0;
     }

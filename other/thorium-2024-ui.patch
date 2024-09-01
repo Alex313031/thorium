@@ -49,7 +49,7 @@ index bba403a7e5068..056b405e46ec6 100644
    switch (constant) {
      case APP_MENU_PROFILE_ROW_AVATAR_ICON_SIZE:
 -      return 24;
-+      return features::IsThorium2024() ? 20 : 24;
++      return features::IsThorium2024() ? 18 : 24;
      case APP_MENU_MAXIMUM_CHARACTER_LENGTH:
        return 30;
      case BOOKMARK_BAR_HEIGHT: {
@@ -57,7 +57,7 @@ index bba403a7e5068..056b405e46ec6 100644
        // to the white space above and below.
 -      const int bookmark_bar_attached_vertical_margin =
 -          features::IsChromeRefresh2023() ? 6 : 4;
-+      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 4 : 6;
++      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 3 : 6;
        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
               bookmark_bar_attached_vertical_margin;
      }
@@ -97,7 +97,7 @@ index bba403a7e5068..056b405e46ec6 100644
      case TOOLBAR_DIVIDER_HEIGHT:
 -      return touch_ui ? 20 : 16;
 +      if (features::IsThorium2024()) {
-+        return 20;
++        return 18;
 +      } else {
 +        return touch_ui ? 20 : 16;
 +      }
@@ -382,28 +382,6 @@ index ae3b649cfcdc6..3bcf134a9b744 100644
    bool CanPaintThrobberToLayer() const override;
    bool HasVisibleBackgroundTabShapes() const override;
    SkColor GetTabSeparatorColor() const override;
-diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
-index 83defaaaad55d..3c36bede863ef 100644
---- a/content/browser/renderer_host/render_process_host_impl.cc
-+++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -213,6 +213,7 @@
- #include "ui/gl/gl_switches.h"
- #include "url/gurl.h"
- #include "url/origin.h"
-+#include "url/url_constants.h"
- 
- #if BUILDFLAG(IS_ANDROID)
- #include "base/android/child_process_binding_types.h"
-@@ -4412,6 +4413,9 @@ RenderProcessHost::FilterURLResult RenderProcessHostImpl::FilterURL(
-     *url = GURL(kBlockedURL);
-     return FilterURLResult::kBlocked;
-   }
-+  if (url.SchemeIs(url::kFtpScheme)) {
-+    return FilterURLResult::kAllowed;
-+  }
-   return FilterURLResult::kAllowed;
- }
- 
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index 83c7f06f1b236..173b829890079 100644
 --- a/ui/views/controls/menu/menu_config.cc
