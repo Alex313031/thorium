@@ -7,11 +7,11 @@
 #include <algorithm>
 #include <utility>
 
+#include "base/command_line.h"
 #include "base/i18n/rtl.h"
 #include "base/memory/raw_ptr.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/strings/strcat.h"
-#include "base/command_line.h"
 #include "cc/paint/paint_record.h"
 #include "cc/paint/paint_shader.h"
 #include "chrome/browser/themes/theme_properties.h"
@@ -19,6 +19,7 @@
 #include "chrome/browser/ui/layout_constants.h"
 #include "chrome/browser/ui/tabs/tab_types.h"
 #include "chrome/browser/ui/tabs/tab_style.h"
+#include "chrome/browser/ui/thorium_2024.h"
 #include "chrome/browser/ui/ui_features.h"
 #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
 #include "chrome/browser/ui/views/frame/browser_view.h"
@@ -29,6 +30,8 @@
 #include "chrome/browser/ui/views/tabs/tab_group_underline.h"
 #include "chrome/browser/ui/views/tabs/tab_slot_controller.h"
 #include "chrome/browser/ui/views/tabs/tab_slot_view.h"
+// Keep this in Thorium
+#include "chrome/browser/ui/views/tabs/tab_strip.h"
 #include "chrome/grit/theme_resources.h"
 #include "components/tab_groups/tab_group_visual_data.h"
 #include "third_party/skia/include/core/SkRRect.h"
@@ -997,7 +1000,7 @@ void GM2TabStyleViews::PaintBackgroundHover(gfx::Canvas* canvas,
                       TabStyle::TabSelectionState::kActive, /*hovered=*/false),
                   hover_controller_->GetAlpha());
 
-  // TODO(crbug/1308932): Remove FromColor and make all SkColor4f.
+  // TODO(crbug.com/40219248): Remove FromColor and make all SkColor4f.
   const SkColor4f colors[2] = {
       SkColor4f::FromColor(color),
       SkColor4f::FromColor(SkColorSetA(color, SK_AlphaTRANSPARENT))};
@@ -1179,7 +1182,8 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
     // this. Detached tab shapes do not need to respect this.
     if (path_type != TabStyle::PathType::kInteriorClip &&
         path_type != TabStyle::PathType::kHitTest) {
-      tab_height -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
+      // Keep this in Thorium
+      tab_height -= GetLayoutConstant(TAB_MARGIN) * scale;
       tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
     }
 
@@ -1189,9 +1193,11 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
     }
 
     int left = aligned_bounds.x() + extension_corner_radius;
-    int top = aligned_bounds.y() + GetLayoutConstant(TAB_STRIP_PADDING) * scale;
+    // Keep this in Thorium
+    int top = aligned_bounds.y() + GetLayoutConstant(TAB_INACTIVE_PADDING) * scale;
     int right = aligned_bounds.right() - extension_corner_radius;
-    const int bottom = top + tab_height;
+    // Keep this in Thorium
+    int bottom = top + tab_height;
 
     // For maximized and fullscreen windows, extend the tab hit test to the top
     // of the tab, encompassing the top padding. This makes it easy to click on
@@ -1199,7 +1205,8 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
     if (path_type == TabStyle::PathType::kHitTest &&
         (tab()->GetWidget()->IsMaximized() ||
          tab()->GetWidget()->IsFullscreen())) {
-      top -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
+      // Keep this in Thorium
+      top -= GetLayoutConstant(TAB_MARGIN) * scale;
       // Don't round the top corners to avoid creating dead space between tabs.
       top_content_corner_radius = 0;
     }
@@ -1232,6 +1239,12 @@ SkPath ChromeRefresh2023TabStyleViews::GetPath(
                   right_separator_overlap) *
                  scale;
       }
+    }
+
+    if (features::IsThorium2024()) {
+      top -= tab()->controller()->Th24StrokeOffset();
+      // Experimental int
+      //bottom -= tab()->controller()->Th24StrokeOffset();
     }
 
     // Radii are clockwise from top left.

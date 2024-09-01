@@ -1,6 +1,3 @@
-google_api_key = ""
-google_default_client_id = ""
-google_default_client_secret = ""
 enable_jxl_decoder = true
 target_os = "android"
 target_cpu = "x86"
@@ -36,7 +33,7 @@ symbol_level = 0
 enable_nacl = false
 optimize_webui = true
 treat_warnings_as_errors = false
-system_webview_package_name = "com.android.webview"
+system_webview_package_name = "com.thorium.webview"
 trichrome_library_package = "org.thorium.trichromelibrary"
 system_webview_shell_package_name = "org.thorium.webview_shell"
 # webview_includes_weblayer = true

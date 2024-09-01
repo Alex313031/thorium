@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Alex313031. All rights reserved.
+// Copyright (c) 2024 Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,18 +17,32 @@
      kOsLinux, SINGLE_VALUE_TYPE("auto-dark-mode")},
 #endif // BUILDFLAG(IS_LINUX)
 
+    {"thorium-2024",
+     "Enable Experimental Thorium 2024 (Th24) UI",
+     "Enable an experimental \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
+     "who find the new UI ugly or harder to use.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kThorium2024)},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
      kOsDesktop, SINGLE_VALUE_TYPE("prominent-active-tab-titles")},
-    {"force-enable-tab-outlines",
-     "Enable Tab Outlines",
-     "Force enables tab outline strokes, improving accessiblity in dark mode, incognito mode, and low contrast themes.",
-     kOsDesktop, SINGLE_VALUE_TYPE("force-enable-tab-outlines")},
+    {"force-disable-tab-outlines",
+     "Disable Tab Outlines",
+     "Force disables tab outline strokes. Thorium enables them by default, improving accessiblity in dark mode, incognito mode, and low contrast themes.",
+     kOsDesktop, SINGLE_VALUE_TYPE("force-disable-tab-outlines")},
     {"disable-thorium-icons",
      "Disable Thorium Top Bar Icons",
      "Disables the custom colored top bar icons in Thorium, and restores the default grey Chromium icon colors.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-icons")},
+    {"left-aligned-tab-search-button",
+     "Left Aligned Tab Search Button",
+     "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
+     "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
+     kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
+    {"rectangular-tabs",
+     "Thorium Rectangular Tabs UI",
+     "Changes the look of browser tabs to appear with a rectangular shape, similar to Vivaldi or Cent Browser.",
+     kOsDesktop, SINGLE_VALUE_TYPE("rectangular-tabs")},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
@@ -38,10 +52,10 @@
      "Side Panel Journeys",
      "Enables Journeys within the Side Panel.",
      kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
-    {"customize-chrome-side-panel-no-cr23",
-     "Customize Chrome Side Panel (Non-Cr23 Variant)",
-     "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
-     kOsDesktop, FEATURE_VALUE_TYPE(features::kCustomizeChromeSidePanelNoChromeRefresh2023)},
+    // {"customize-chrome-side-panel-no-cr23",
+     // "Customize Chrome Side Panel (Non-Cr23 Variant)",
+     // "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
+     // kOsDesktop, FEATURE_VALUE_TYPE(features::kCustomizeChromeSidePanelNoChromeRefresh2023)},
 
 #if !BUILDFLAG(IS_ANDROID)
     {"show-component-extension-options",
@@ -66,7 +80,8 @@
 
     {"custom-ntp",
      "Custom New Tab Page",
-     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
+     "Allows setting a custom URL for the New Tab Page (NTP). Value can be internal (e.g. `about:blank` or `chrome://new-tab-page`), "
+     "external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
      "This applies for incognito windows as well when not set to a `chrome://` internal page.",
      kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
     {"hide-sidepanel-button",
@@ -86,9 +101,10 @@
 #endif // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
 
     {"autoplay-policy",
-     "Disable/Enable AutoPlay",
-     "Allows setting the AutoPlay policy. Use `No User Gesture Required` to enable AutoPlay, and use `Document User Activation Required` to disable AutoPlay "
-     "and force all sites to require a click to initiate media playback. `User Gesture Required` is the default, and blocks most AutoPlay annoyances, while allowing some (i.e. WebAudio) to continue.",
+     "Configure AutoPlay Policy",
+     "Allows setting the AutoPlay policy. `No User Gesture Required` enables AutoPlay. `Document User Activation Required` disables AutoPlay, "
+     "and forces all sites to require a click to initiate media playback; this is the default if unset. `User Gesture Required` blocks "
+     "most AutoPlay annoyances, while still allowing some (i.e. WebAudio) to continue.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
     {"allow-insecure-downloads",
      "Allow Insecure Downloads",
@@ -142,8 +158,9 @@
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
     {"gtk-version",
-     "Choose the GTK Version",
-     "Choose whether to use the GTK3 or GTK4 backend. It should match the default GTK used by the system.",
+     "GTK Version Override",
+     "Choose whether to use the GTK3 or GTK4 backend. It should be set to match the default GTK used by the system, "
+     "but can be overridden for testing or experimenting.",
      kOsLinux, MULTI_VALUE_TYPE(kGtkVersionChoices)},
     {"vaapi-on-nvidia-gpus",
      "VAAPI on nVidia GPUs",
@@ -182,7 +199,8 @@
 #if !BUILDFLAG(IS_ANDROID)
     {"media-router",
      "Enable/Disable Media Router",
-     "Media router is a component responsible for pairing Thorium to devices and endpoints, for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
+     "Media router is a component responsible for pairing Thorium to devices and endpoints, "
+     "for streaming and rendering media sources on those devices. This is used, for example, for Cast.",
      kOsDesktop, FEATURE_VALUE_TYPE(media_router::kMediaRouter)},
 #endif // BUILDFLAG(IS_ANDROID)
 
@@ -215,6 +233,13 @@
      "Disable Machine ID",
      "Disables use of a generated machine-specific ID to lock the user data directory to that machine. This is used to enable portable user data directories. Enabled for Thorium Portable.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-machine-id")},
+    {"revert-from-portable",
+     "Prevent Data Loss When Changing User Profile Portable State",
+     "When moving a Thorium user profile from one drive to another (or one system to another), enable this flag before moving the profile directory. It should also be used "
+     "when migrating a portable profile back to a normal, non-portable profile (i.e. when disabling the `chrome://flags#disable-encryption` and/or the `chrome://flags#disable-machine-id` flags "
+     "after being previously enabled). This mostly ensures that extensions, extension data, and some other data are not lost during the migration. When you are done migrating, the flag should be "
+     "reset back to the default (Disabled).",
+     kOsDesktop, SINGLE_VALUE_TYPE("revert-from-portable")},
 
 #if BUILDFLAG(IS_LINUX)
     {"password-store",

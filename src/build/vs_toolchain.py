@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # Copyright 2024 The Chromium Authors, Alex313031, and gz83
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -16,7 +17,8 @@ import sys
 
 from gn_helpers import ToGNString
 
-# VS 2022 17.10.1 with 10.1.22621.3233 SDK with ARM64 libraries and UWP support.
+# VS 2022 17.10.5 with 10.1.22621.3233 SDK with ARM64 libraries and UWP support.
+# Also includes progwrp.lib and progwrp.dll for Windows XP. See https://github.com/Alex313031/thorium-legacy/tree/main/patches/progwrp
 # See go/chromium-msvc-toolchain for instructions about how to update the
 # toolchain.
 #
@@ -38,7 +40,7 @@ from gn_helpers import ToGNString
 #   Maps between Visual Studio version and MSVC toolset
 # * MSVS_VERSIONS in this file
 #   Records the packaged and default version of Visual Studio
-TOOLCHAIN_HASH = 'ee246c16c6'
+TOOLCHAIN_HASH = '2fd6fb935f'
 SDK_VERSION = '10.0.22621.0'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -50,7 +52,6 @@ json_data_file = os.path.join(script_dir, 'win_toolchain.json')
 MSVS_VERSIONS = collections.OrderedDict([
     ('2022', '17.0'),  # Default and packaged version of Visual Studio.
     ('2019', '16.0'),
-    ('2017', '15.0'),
 ])
 
 # List of preferred VC toolset version based on MSVS
@@ -58,7 +59,6 @@ MSVS_VERSIONS = collections.OrderedDict([
 MSVC_TOOLSET_VERSION = {
     '2022': 'VC143',
     '2019': 'VC142',
-    '2017': 'VC141',
 }
 
 def _HostIsWindows():

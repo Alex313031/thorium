@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Alex313031. All rights reserved.
+// Copyright (c) 2024 Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -139,17 +139,17 @@ const FeatureEntry::Choice kCloseWindowWithLastTab[] = {
 const FeatureEntry::Choice kPasswordStoreChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Basic",
-     switches::kPasswordStore, "basic"},
+     password_manager::kPasswordStore, "basic"},
     {"Kwallet",
-     switches::kPasswordStore, "kwallet"},
+     password_manager::kPasswordStore, "kwallet"},
     {"Kwallet5",
-     switches::kPasswordStore, "kwallet5"},
+     password_manager::kPasswordStore, "kwallet5"},
     {"Gnome",
-     switches::kPasswordStore, "gnome"},
+     password_manager::kPasswordStore, "gnome"},
     {"Gnome-Keyring",
-     switches::kPasswordStore, "gnome-keyring"},
+     password_manager::kPasswordStore, "gnome-keyring"},
     {"Gnome-LibSecret",
-     switches::kPasswordStore, "gnome-libsecret"},
+     password_manager::kPasswordStore, "gnome-libsecret"},
 };
 #endif // BUILDFLAG(IS_LINUX)
 

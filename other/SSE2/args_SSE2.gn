@@ -1,6 +1,3 @@
-google_api_key = ""
-google_default_client_id = ""
-google_default_client_secret = ""
 # is_chancie_wancie_build = true
 # clang_base_path = "/usr/lib/llvm-18"
 # clang_version = "18"
@@ -67,7 +64,7 @@ enable_cdm_host_verification = false
 ignore_missing_widevine_signing_cert = true
 enable_media_drm_storage = true
 # enable_media_overlay = true
-enable_hangout_services_extension = true
+enable_hangout_services_extension = false
 rtc_use_h264 = true
 rtc_include_ilbc = true
 # rtc_build_with_neon = true

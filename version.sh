@@ -36,7 +36,7 @@ else
     export CR_SRC_DIR
 fi
 
-THOR_VER="124.0.6367.218"
+THOR_VER="126.0.6478.251"
 
 export THOR_VER &&
 
@@ -91,7 +91,7 @@ printf "${YEL}Downloading PGO Profile for V8 (for when v8_enable_builtins_optimi
 printf "\n" &&
 tput sgr0 &&
 
-python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools download &&
+python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools --force download &&
 printf "\n" &&
 
 cd ~/thorium &&

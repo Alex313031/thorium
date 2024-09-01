@@ -4,6 +4,8 @@
 
 #include "chrome/browser/ui/views/toolbar/home_button.h"
 
+#include <string_view>
+
 #include "base/command_line.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
@@ -82,7 +84,7 @@ void HomePageUndoBubble::Init() {
       l10n_util::GetStringUTF16(IDS_TOOLBAR_INFORM_SET_HOME_PAGE), undo_string};
   views::StyledLabel* label =
       AddChildView(std::make_unique<views::StyledLabel>());
-  label->SetText(base::JoinString(message, base::StringPiece16(u" ")));
+  label->SetText(base::JoinString(message, std::u16string_view(u" ")));
 
   gfx::Range undo_range(label->GetText().length() - undo_string.length(),
                         label->GetText().length());

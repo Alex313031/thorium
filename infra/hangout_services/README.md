@@ -1,0 +1,8 @@
+## Google Hangouts Services Component Extension
+
+<img src="https://github.com/Alex313031/thorium/blob/main/infra/hangout_services/icons/icon_128.png" width="48">
+
+This is a [component extension](https://chromium.googlesource.com/chromium/src/+/main/extensions/docs/component_extensions.md) that is normally bundled, integrated, and non-removable in Chromium (when the `enable_hangout_services_extension = true` build argument is used).
+It is given special permissions by Chromium (based on the extension matching the __nkeimhogjdpnpccoofpliimaahmaaome__ UUID), that allow it to provide extended services on Google Hangouts and its subdomains. However, it has been [criticized for being privacy-intrusive](https://twitter.com/brave/status/1811129059687997444), so I have disabled it on most platforms (Android and ThoriumOS still have it, due to a large number of users on those platforms that depend on it). This is the source, extracted from the Chromium repo, with a few tweaks. It can be installed manually via the ["Load Unpacked Extension" method](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked) or one can drag 'n drop the pre-built __.crx__ file from the "bin" folder in this directory into `chrome://extensions`. Both methods require that the Developer Mode switch on `chrome://extensions` be toggled on.
+
+Most people will never notice or need to notice that this was removed, but there are some people that frequently use Hangouts who rely on the extended functionality provided by it. (Note that Hangouts will still work without it, just not quite as well).

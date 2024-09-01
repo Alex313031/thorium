@@ -259,7 +259,8 @@ void CopyToClipboard(
     BookmarkModel* model,
     const std::vector<raw_ptr<const BookmarkNode, VectorExperimental>>& nodes,
     bool remove_nodes,
-    metrics::BookmarkEditSource source) {
+    metrics::BookmarkEditSource source,
+    bool is_off_the_record) {
   if (nodes.empty())
     return;
 
@@ -270,12 +271,12 @@ void CopyToClipboard(
       filtered_nodes.push_back(node);
   }
 
-  BookmarkNodeData(filtered_nodes).WriteToClipboard();
+  BookmarkNodeData(filtered_nodes).WriteToClipboard(is_off_the_record);
 
   if (remove_nodes) {
     ScopedGroupBookmarkActions group_cut(model);
     for (const bookmarks::BookmarkNode* node : filtered_nodes) {
-      model->Remove(node, source);
+      model->Remove(node, source, FROM_HERE);
     }
   }
 }
@@ -539,14 +540,15 @@ const BookmarkNode* GetParentForNewNodes(
 }
 
 void DeleteBookmarkFolders(BookmarkModel* model,
-                           const std::vector<int64_t>& ids) {
+                           const std::vector<int64_t>& ids,
+                           const base::Location& location) {
   // Remove the folders that were removed. This has to be done after all the
   // other changes have been committed.
   for (auto iter = ids.begin(); iter != ids.end(); ++iter) {
     const BookmarkNode* node = GetBookmarkNodeByID(model, *iter);
     if (!node)
       continue;
-    model->Remove(node, metrics::BookmarkEditSource::kUser);
+    model->Remove(node, metrics::BookmarkEditSource::kUser, location);
   }
 }
 
@@ -566,11 +568,13 @@ const BookmarkNode* AddIfNotBookmarked(BookmarkModel* model,
                           title, url);
 }
 
-void RemoveAllBookmarks(BookmarkModel* model, const GURL& url) {
+void RemoveAllBookmarks(BookmarkModel* model,
+                        const GURL& url,
+                        const base::Location& location) {
   // Remove all the user bookmarks.
   for (const BookmarkNode* node : model->GetNodesByURL(url)) {
     if (!model->client()->IsNodeManaged(node)) {
-      model->Remove(node, metrics::BookmarkEditSource::kUser);
+      model->Remove(node, metrics::BookmarkEditSource::kUser, location);
     }
   }
 }

@@ -17,6 +17,12 @@ config("pgo_instrumentation_flags") {
   # are not required to be defined when we're not actually using PGO.
   if (chrome_pgo_phase == 1 && is_clang && !is_nacl && is_a_target_toolchain) {
     cflags = [ "-fprofile-generate" ]
+    if (temporal_pgo_profile) {
+      cflags += [
+        "-mllvm",
+        "-pgo-temporal-instrumentation",
+      ]
+    }
     if (!is_win) {
       # Windows directly calls link.exe instead of the compiler driver when
       # linking, and embeds the path to the profile runtime library as
@@ -142,15 +148,23 @@ config("pgo_optimization_flags") {
     # Enable basic block layout based on the extended TSP problem. This aims to
     # improve icache utilization and reduce the binary size.
     if (use_thin_lto) {
-      if (is_win) {
-        ldflags = [ "-mllvm:-enable-ext-tsp-block-placement=1" ]
-      } else if (is_linux) {
-        ldflags = [
-          "-Wl,-mllvm,-enable-ext-tsp-block-placement",
-          "-Wl,-mllvm,-enable-split-machine-functions",
-        ]
+      if (current_cpu == "x64" || current_cpu == "x86") {
+        if (is_win) {
+          ldflags = [ "-mllvm:-enable-ext-tsp-block-placement=1" ]
+        } else if (is_linux) {
+          ldflags = [
+            "-Wl,-mllvm,-enable-ext-tsp-block-placement=1",
+            "-Wl,-mllvm,-enable-split-machine-functions"
+          ]
+        } else {
+          ldflags = [ "-Wl,-mllvm,-enable-ext-tsp-block-placement=1" ]
+        }
       } else {
-        ldflags = [ "-Wl,-mllvm,-enable-ext-tsp-block-placement=1" ]
+        if (is_win) {
+          ldflags = [ "-mllvm:-enable-ext-tsp-block-placement=1" ]
+        } else {
+          ldflags = [ "-Wl,-mllvm,-enable-ext-tsp-block-placement=1" ]
+        }
       }
     } else {
       cflags += [

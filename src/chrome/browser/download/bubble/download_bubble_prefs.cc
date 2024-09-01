@@ -4,8 +4,8 @@
 
 #include "chrome/browser/download/bubble/download_bubble_prefs.h"
 
-#include "base/feature_list.h"
 #include "base/command_line.h"
+#include "base/feature_list.h"
 #include "build/chromeos_buildflags.h"
 #include "chrome/browser/download/download_core_service.h"
 #include "chrome/browser/download/download_core_service_factory.h"

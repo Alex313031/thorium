@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -74,10 +75,10 @@
 #include "chrome/browser/ash/login/demo_mode/demo_setup_controller.h"
 #include "chrome/browser/ash/login/wizard_controller.h"
 #include "chrome/browser/browser_process_platform_part_ash.h"
-#include "chrome/browser/component_updater/cros_component_manager.h"
 #include "chrome/browser/ui/webui/chrome_web_ui_controller_factory.h"
 #include "chrome/common/webui_url_constants.h"
 #include "chromeos/ash/components/system/statistics_provider.h"
+#include "components/component_updater/ash/component_manager_ash.h"
 #include "components/language/core/common/locale_util.h"
 #include "third_party/cros_system_api/dbus/service_constants.h"
 #include "third_party/zlib/google/compression_utils.h"
@@ -522,8 +523,8 @@ std::string ChromeURLs(content::BrowserContext* browser_context) {
   if (is_lacros_primary) {
     auto* WebUiControllerFactory = ChromeWebUIControllerFactory::GetInstance();
     for (const std::string& host : hosts) {
-      // TODO(crbug/1271718): The refactor should make sure that the provided
-      // list can be shown as is without filtering.
+      // TODO(crbug.com/40805730): The refactor should make sure that the
+      // provided list can be shown as is without filtering.
       if (WebUiControllerFactory->CanHandleUrl(GURL("os://" + host)) ||
           WebUiControllerFactory->CanHandleUrl(GURL("chrome://" + host))) {
         html +=
@@ -573,8 +574,8 @@ std::string ChromeURLs(content::BrowserContext* browser_context) {
   if (is_lacros_primary) {
     auto* WebUiControllerFactory = ChromeWebUIControllerFactory::GetInstance();
     for (size_t i = 0; i < chrome::kNumberOfChromeDebugURLs; i++) {
-      // TODO(crbug/1271718): The refactor should make sure that the provided
-      // list can be shown as is without filtering.
+      // TODO(crbug.com/40805730): The refactor should make sure that the
+      // provided list can be shown as is without filtering.
       const std::string host = GURL(chrome::kChromeDebugURLs[i]).host();
       if (WebUiControllerFactory->CanHandleUrl(GURL("os://" + host)) ||
           WebUiControllerFactory->CanHandleUrl(GURL("chrome://" + host))) {
@@ -630,7 +631,8 @@ void AboutUIHTMLSource::StartDataRequest(
     const GURL& url,
     const content::WebContents::Getter& wc_getter,
     content::URLDataSource::GotDataCallback callback) {
-  // TODO(crbug/1009127): Simplify usages of |path| since |url| is available.
+  // TODO(crbug.com/40050262): Simplify usages of |path| since |url| is
+  // available.
   const std::string path = content::URLDataSource::URLToRequestPath(url);
   std::string response;
   // Add your data source here, in alphabetical order.
@@ -703,7 +705,7 @@ void AboutUIHTMLSource::FinishDataRequest(
 }
 
 std::string AboutUIHTMLSource::GetMimeType(const GURL& url) {
-  const base::StringPiece path = url.path_piece().substr(1);
+  const std::string_view path = url.path_piece().substr(1);
   if (path == kCreditsJsPath || path == kStatsJsPath ||
       path == kStringsJsPath) {
     return "application/javascript";

@@ -7,16 +7,18 @@
 
 #include "chrome/installer/setup/install_worker.h"
 
+#include <windows.h>
+
 #include <oaidl.h>
 #include <shlobj.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <time.h>
-#include <windows.h>
 #include <wrl/client.h>
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <vector>
 
@@ -668,7 +670,7 @@ void AddUpdateBrandCodeWorkItem(const InstallerState& installer_state,
     }
     if (result == ERROR_SUCCESS && dtype == REG_BINARY && size != 0) {
       std::string dmtoken_value(base::TrimWhitespaceASCII(
-          base::StringPiece(raw_value.data(), size), base::TRIM_ALL));
+          std::string_view(raw_value.data(), size), base::TRIM_ALL));
       if (dmtoken_value.compare("INVALID_DM_TOKEN")) {
         has_valid_dm_token = true;
       }
@@ -676,7 +678,7 @@ void AddUpdateBrandCodeWorkItem(const InstallerState& installer_state,
   }
 
   bool is_cbcm_enrolled =
-      !InstallUtil::GetCloudManagementEnrollmentToken().empty() &&
+      !InstallUtil::GetCloudManagementEnrollmentToken().empty() ||
       has_valid_dm_token;
   std::wstring cbcm_brand =
       TransformCloudManagementBrandCode(brand, /*to_cbcm=*/is_cbcm_enrolled);

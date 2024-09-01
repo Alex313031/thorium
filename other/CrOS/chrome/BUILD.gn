@@ -62,7 +62,7 @@ declare_args() {
   # launch because certain entitlements are tied to the official Google code
   # signing identity. If `include_branded_entitlements` is set to false, these
   # entitlements will be skipped.
-  include_branded_entitlements = false
+  include_branded_entitlements = true
 }
 
 assert(!is_ios, "Chromium/iOS shouldn't use anything in //chrome")
@@ -345,6 +345,9 @@ if (!is_android && !is_mac) {
 
         if (use_ozone) {
           deps += [ "//ui/ozone" ]
+          if (is_linux) {
+            deps += [ "//ui/linux:display_server_utils" ]
+          }
         }
       }
 
@@ -839,7 +842,7 @@ if (is_win) {
   }
 
   # Create and bundle an InfoPlist.strings for the alert helper app.
-  # TODO(crbug.com/1182393): Disambiguate and localize alert helper app name.
+  # TODO(crbug.com/40751430): Disambiguate and localize alert helper app name.
   compile_plist("chrome_helper_app_alerts_plist_strings") {
     format = "binary1"
     plist_templates = [ "app/helper-alerts-InfoPlist.strings" ]
@@ -965,7 +968,8 @@ if (is_win) {
       if (use_v8_context_snapshot) {
         sources += [ "$root_out_dir/$v8_context_snapshot_filename" ]
         public_deps += [ "//tools/v8_context_snapshot" ]
-      } else {
+      }
+      if (!use_v8_context_snapshot || include_both_v8_snapshots) {
         sources += [ "$root_out_dir/snapshot_blob.bin" ]
       }
     }
@@ -1901,6 +1905,79 @@ if (is_chromeos_lacros && is_official_build) {
       } else {
         deps = [ "//components/nacl/loader:nacl_helper_bootstrap" ]
       }
+    }
+  }
+}
+
+if (is_chrome_for_testing && is_linux) {
+  group("strip_chrome_for_testing_linux_files") {
+    deps = [
+      ":strip_chrome_binary",
+      ":strip_chrome_crashpad_handler",
+      ":strip_chrome_sandbox",
+      ":strip_headless_shell_binary",
+      ":strip_libEGL_shlib",
+      ":strip_libGLESv2_shlib",
+      ":strip_libvk_swiftshader_shlib",
+      ":strip_libvulkan_shlib",
+    ]
+    if (enable_nacl) {
+      deps += [
+        ":strip_nacl_helper",
+        ":strip_nacl_helper_bootstrap",
+      ]
+    }
+  }
+
+  strip_binary("strip_chrome_binary") {
+    binary_input = "$root_out_dir/chrome"
+    deps = [ "//chrome" ]
+  }
+
+  strip_binary("strip_chrome_crashpad_handler") {
+    binary_input = "$root_out_dir/chrome_crashpad_handler"
+    deps = [ "//components/crash/core/app:chrome_crashpad_handler" ]
+  }
+
+  strip_binary("strip_chrome_sandbox") {
+    binary_input = "$root_out_dir/chrome_sandbox"
+    deps = [ "//sandbox/linux:chrome_sandbox" ]
+  }
+
+  strip_binary("strip_libEGL_shlib") {
+    binary_input = "$root_out_dir/libEGL.so"
+    deps = [ "//third_party/angle:libEGL" ]
+  }
+
+  strip_binary("strip_libGLESv2_shlib") {
+    binary_input = "$root_out_dir/libGLESv2.so"
+    deps = [ "//third_party/angle:libGLESv2" ]
+  }
+
+  strip_binary("strip_libvulkan_shlib") {
+    binary_input = "$root_out_dir/libvulkan.so.1"
+    deps = [ "//third_party/vulkan-deps/vulkan-loader/src:libvulkan" ]
+  }
+
+  strip_binary("strip_libvk_swiftshader_shlib") {
+    binary_input = "$root_out_dir/libvk_swiftshader.so"
+    deps = [ "//third_party/swiftshader/src/Vulkan:swiftshader_libvulkan" ]
+  }
+
+  strip_binary("strip_headless_shell_binary") {
+    binary_input = "$root_out_dir/headless_shell"
+    deps = [ "//headless:headless_shell" ]
+  }
+
+  if (enable_nacl) {
+    strip_binary("strip_nacl_helper") {
+      binary_input = "$root_out_dir/nacl_helper"
+      deps = [ "//components/nacl/loader:nacl_helper" ]
+    }
+
+    strip_binary("strip_nacl_helper_bootstrap") {
+      binary_input = "$root_out_dir/nacl_helper_bootstrap"
+      deps = [ "//native_client/src/trusted/service_runtime/linux:bootstrap" ]
     }
   }
 }

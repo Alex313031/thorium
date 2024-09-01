@@ -15,7 +15,7 @@ Ink > https://chromium.googlesource.com/chromium/src/third_party/+/c4f7a938fcdc7
   - Implemented with the args.gn flag "enable_ink = true" Adds PDF annotation features present in CrOS.
 
 MPEG-DASH > https://en.wikipedia.org/wiki/Dynamic_Adaptive_Streaming_over_HTTP
-  - Implemented with the args.gn flags "enable_hls_sample_aes = true" and "enable_mse_mpeg2ts_stream_parser = true"
+  - Implemented via the args.gn flags "enable_hls_demuxer = true" and "enable_mse_mpeg2ts_stream_parser = true"
 
 Enable JPEG XL Image File Format by Default Patch
   - Made by me.
@@ -23,7 +23,13 @@ Enable JPEG XL Image File Format by Default Patch
 Enable Live Caption (SODA) on all builds Patch
   - Made by me.
 
-V8 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch
+Enable AutoPlay of WebAudio, when AutoPlay is normally disallowed
+  - Made by me.
+
+Reversion of some Chrome Refresh 2023 UI elements (most notably the restoration of the tab search button to the right side of the tabstrip)
+  - Made by me.
+
+ REMOVED ~~V8 Font Rendering Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/fix-font-rendering.patch~~
   - Fixes font rendering in certain instances.
 
 VAAPI Patch > https://github.com/saiarcot895/chromium-ubuntu-build/blob/master/debian/patches/enable-vaapi-on-linux.diff
@@ -63,8 +69,10 @@ Enable Fingerprinting Protection Patch
   - Made by me.
 
 Show full URLs by Default Patch > https://github.com/Alex313031/thorium/blob/74219f27911e133483c3ab85c70ba4360ea98423/src/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc#L292
+  - Made by me.
 
 Disable Privacy Sandbox (previously known as FLOC) Patch > https://github.com/ungoogled-software/ungoogled-chromium/blob/master/patches/core/ungoogled-chromium/disable-privacy-sandbox.patch
+  - Modified from UnGoogled patch
 
 Disable Google API Key Warning Infobar Patch > https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/debian/disable/google-api-warning.patch & https://github.com/Eloston/ungoogled-chromium/blob/master/patches/extra/inox-patchset/0013-disable-missing-key-warning.patch
   - Modified by me.
@@ -185,7 +193,7 @@ Enable AC3 and EAC3 for HEVC Patch - https://github.com/Muril-o/electron-chromiu
   - https://github.com/Alex313031/thorium/commit/a2e49dd2fe00e4c6fa882a41e8a1a27f93bedfff AND
   - https://github.com/Alex313031/thorium/commit/7d0b4f045ce0e16ea9edb05a4dc056a1d4583752#diff-09b3d55a8198fc42186bfd6bf5869fe78b8edad6f67e75b78228446f1d7cf66f
 
-Show the Apps button in Bookmarks Bar by Default Patch - Made by me.
+Show the Apps button in Bookmarks Bar by Default Patch - Made by me. NOTE: Now only enabled in the legacy builds after M120.
 
 Add autocomplete for chrome://flags > https://github.com/bromite/bromite/blob/master/build/patches/Offer-builtin-autocomplete-for-chrome-flags.patch
 
@@ -224,6 +232,9 @@ Enable Middle Click Autoscroll on ALL Platforms - https://github.com/Alex313031/
 Patches to enable truly Portable usage > Disable Encryption and Machine ID
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-encryption.patch
   - https://github.com/ungoogled-software/ungoogled-chromium-windows/blob/master/patches/ungoogled-chromium/windows/windows-disable-machine-id.patch
+ > Also added a patch by win32ss from Supermium to allow reversion of a portable profile back to a normal, encrypted one: 
+  - https://github.com/win32ss/supermium/commit/697055c2e65074bf50d30c58e124ddfe293c3f8c AND
+  - https://github.com/win32ss/supermium/commit/1e2e02118f5f014cb1761f6ae05e86ab4304f924
 
 Android Patches from Bromite:
   - https://github.com/bromite/bromite/blob/master/build/patches/do-not-add-suffix-to-package-name.patch
@@ -235,7 +246,8 @@ Android Patches from Bromite:
   - https://github.com/bromite/bromite/blob/master/build/patches/Disable-feeds-support-by-default.patch
   - https://github.com/bromite/bromite/blob/master/build/patches/Add-exit-menu-item.patch
 
-Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell. - Created by me.
+Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
+  - Created by me.
 
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 

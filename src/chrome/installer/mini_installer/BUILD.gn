@@ -36,7 +36,7 @@ declare_args() {
 
 config("mini_installer_compiler_flags") {
   # Disable buffer security checking.
-  cflags = [ "/GS-" ]
+  cflags = [ "/GS-", "/clang:-O3" ]
 }
 
 source_set("lib") {
@@ -183,7 +183,7 @@ action("mini_installer_archive") {
     #'--diff_algorithm=COURGETTE',
 
     # Optional argument for verbose archiving output.
-    #"--verbose",
+    "--verbose",
   ]
 
   deps = [
@@ -232,7 +232,8 @@ action("mini_installer_archive") {
     if (use_v8_context_snapshot) {
       inputs += [ "$root_out_dir/$v8_context_snapshot_filename" ]
       deps += [ "//tools/v8_context_snapshot" ]
-    } else {
+    }
+    if (!use_v8_context_snapshot || include_both_v8_snapshots) {
       inputs += [ "$root_out_dir/snapshot_blob.bin" ]
       args += [ "--include_snapshotblob=1" ]
     }

@@ -43,7 +43,7 @@ find "$(pwd)/.config/thorium/Crash Reports/pending/" -mtime +30 \
 APPNAME=thorium
 
 # Set DESKTOP variable
-# DESKTOP="thorium-browser-stable"
+# DESKTOP="thorium-portable"
 
 # Set XDG Title variable
 TITLE="Thorium Portable"
@@ -58,11 +58,73 @@ export CHROME_VERSION_EXTRA="stable, (Portable)"
 # We don't want bug-buddy intercepting our crashes. http://crbug.com/24120
 export GNOME_DISABLE_CRASH_DIALOG=SET_BY_THORIUM
 
+# Set config home.
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$(pwd)/.config}
+
+usage () {
+  echo "thorium-browser [-h|--help] [--temp-profile] [options] [URL]"
+  echo
+  echo "        -h, -help, or --help       This help screen"
+  echo "        --temp-profile             Start with a new and temporary profile"
+  echo "        --safe-mode                Disable all chrome://flags flags"
+  echo
+  echo " Other supported options are:"
+  MANWIDTH=80 man thorium-browser | sed -e '1,/OPTIONS/d; /ENVIRONMENT/,$d'
+  echo " See 'man thorium-browser' for more details"
+}
+
+want_temp_profile=0
+is_safe_mode=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h | --help | -help )
+      usage
+      exit 0 ;;
+    --temp-profile )
+      want_temp_profile=1
+      shift ;;
+    --safe-mode )
+      is_safe_mode=1
+      shift ;;
+    -- ) # Stop option processing
+      shift
+      break ;;
+    * ) # Else
+      break ;;
+  esac
+done
+
+# Allow users to override command-line options with a file.
+if [[ -f $XDG_CONFIG_HOME/thorium-flags.conf ]]; then
+   CHROME_USER_FLAGS="$(cat $XDG_CONFIG_HOME/thorium-flags.conf)"
+fi
+
 # Sanitize std{in,out,err} because they'll be shared with untrusted child
 # processes (http://crbug.com/376567).
 exec < /dev/null
 exec > >(exec cat)
 exec 2> >(exec cat >&2)
 
+if [ $want_temp_profile -eq 1 ] ; then
+  TEMP_PROFILE=`mktemp -d`
+  echo "Using temporary profile: $TEMP_PROFILE"
+  PROFILE="$TEMP_PROFILE"
+  CACHE="$TEMP_PROFILE/cache"
+  export PROFILE
+  export CACHE
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS"
+else
+  PROFILE="$HERE/.config/thorium"
+  CACHE="$HERE/.config/cache"
+  export PROFILE
+  export CACHE
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS"
+fi
+
+if [ $is_safe_mode -eq 1 ] ; then
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --no-experiments"
+fi
+
+# Launch Thorium
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/thorium" "--user-data-dir=$(pwd)/.config/thorium" "--disk-cache-dir=$(pwd)/.config/cache" "--disable-machine-id" "--disable-encryption" "$@"
+exec -a "$0" "$HERE/thorium" "--disable-machine-id" "--disable-encryption" "--user-data-dir=$PROFILE" "--disk-cache-dir=$CACHE" "$CHROME_USER_FLAGS" "$@"

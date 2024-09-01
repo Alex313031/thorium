@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2024 The Chromium Authors, midzer, and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -141,7 +141,7 @@ class LinkerDriver(object):
                 if not re.match(BAD_RUSTC_ARGS, arg):
                     compiler_driver_args.append(arg)
             else:
-                # TODO(crbug.com/1446796): On Apple, the linker command line
+                # TODO(crbug.com/40268754): On Apple, the linker command line
                 # produced by rustc for LTO includes these arguments, but the
                 # Apple linker doesn't accept them.
                 # Upstream bug: https://github.com/rust-lang/rust/issues/60059
