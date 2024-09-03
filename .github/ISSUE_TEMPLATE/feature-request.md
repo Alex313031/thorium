@@ -13,5 +13,5 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 **Describe the solution you'd like, including relevant patches or source**
 A clear and concise description of what you want to happen.
 
-**Additional Notes**
-Add any other context or screenshots about the feature request here.
+**Did you read the FAQ?**
+https://thorium.rocks/faq

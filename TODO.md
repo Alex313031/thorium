@@ -48,3 +48,9 @@ https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d035651
 Make UA and hints report chrome, and set hints
 
 fix thorium and shell portable --temp profile
+
+--M127--
+
+Fix bookmarks bar underline, bookmarks classic folder icons, menu padding for windows, multiple profiles lag, add remove tab search button
+Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, versus vanilla Google Chrome, all at the same revision, to get a better idea of the overall picture.
+
