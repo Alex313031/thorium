@@ -186,7 +186,7 @@ index bec499693cd91..404316da5bcd2 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..c5d3cbd005dae 100644
+index aa9cd30374311..cf477b5fe2794 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -224,7 +224,34 @@ index aa9cd30374311..c5d3cbd005dae 100644
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
  class GM2TabStyle : public TabStyle {
-@@ -197,11 +202,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+@@ -70,8 +75,25 @@ class ChromeRefresh2023TabStyle : public GM2TabStyle {
+ TabStyle::~TabStyle() = default;
+ 
+ int GM2TabStyle::GetStandardWidth() const {
++
++  const std::string custom_tab_width = base::CommandLine::ForCurrentProcess()->
++                                       GetSwitchValueASCII("custom-tab-width");
++  if (custom_tab_width == "60") {
++    kTabWidthValue = 60;
++  } else if (custom_tab_width == "120") {
++    kTabWidthValue = 120;
++  } else if (custom_tab_width == "240") {
++    kTabWidthValue = 240;
++  } else if (custom_tab_width == "300") {
++    kTabWidthValue = 300;
++  } else if (custom_tab_width == "400") {
++    kTabWidthValue = 400;
++  } else {
++    kTabWidthValue = 240;
++  }
++
+   // The standard tab width is 240 DIP including both separators.
+-  constexpr int kTabWidth = 240;
++  const int kTabWidth = kTabWidthValue;
+   // The overlap includes one separator, so subtract it here.
+   return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
+ }
+@@ -197,11 +219,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -254,7 +281,7 @@ index aa9cd30374311..c5d3cbd005dae 100644
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
-@@ -213,23 +234,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
+@@ -213,23 +251,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -670,15 +697,15 @@ index 3684e27766834..5ab1c1ce9da63 100644
 +  if (features::IsThorium2024()) {
 +    switch (id) {
 +      case ShapeContextTokens::kBadgeRadius:
-+        return 4;
++        return 6;
 +      case ShapeContextTokens::kButtonRadius:
 +        return 4;
 +      case ShapeContextTokens::kComboboxRadius:
-+        return 4;
++        return 6;
 +      case ShapeContextTokens::kDialogRadius:
-+        return 4;
++        return 6;
 +      case ShapeContextTokens::kFindBarViewRadius:
-+        return 4;
++        return 6;
 +      case ShapeContextTokens::kMenuRadius:
 +      case ShapeContextTokens::kMenuAuxRadius:
 +        return 0;

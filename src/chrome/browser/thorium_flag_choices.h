@@ -5,6 +5,25 @@
 #ifndef CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 
+const FeatureEntry::Choice kCustomTabWidthChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"60",
+     "custom-tab-width",
+     "60"},
+    {"120",
+     "custom-tab-width",
+     "120"},
+    {"240",
+     "custom-tab-width",
+     "240"},
+    {"300",
+     "custom-tab-width",
+     "300"},
+    {"400",
+     "custom-tab-width",
+     "400"}
+};
+
 const FeatureEntry::Choice kScrollEventChangesTab[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Always",
