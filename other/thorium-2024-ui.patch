@@ -186,7 +186,7 @@ index bec499693cd91..404316da5bcd2 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..cf477b5fe2794 100644
+index aa9cd30374311..4bf9ac819a508 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -224,13 +224,14 @@ index aa9cd30374311..cf477b5fe2794 100644
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
  class GM2TabStyle : public TabStyle {
-@@ -70,8 +75,25 @@ class ChromeRefresh2023TabStyle : public GM2TabStyle {
+@@ -70,8 +75,26 @@ class ChromeRefresh2023TabStyle : public GM2TabStyle {
  TabStyle::~TabStyle() = default;
  
  int GM2TabStyle::GetStandardWidth() const {
 +
 +  const std::string custom_tab_width = base::CommandLine::ForCurrentProcess()->
 +                                       GetSwitchValueASCII("custom-tab-width");
++  int kTabWidthValue = 240;
 +  if (custom_tab_width == "60") {
 +    kTabWidthValue = 60;
 +  } else if (custom_tab_width == "120") {
@@ -251,7 +252,7 @@ index aa9cd30374311..cf477b5fe2794 100644
    // The overlap includes one separator, so subtract it here.
    return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
  }
-@@ -197,11 +219,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+@@ -197,11 +220,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -281,7 +282,7 @@ index aa9cd30374311..cf477b5fe2794 100644
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
-@@ -213,23 +251,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
+@@ -213,23 +252,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -526,10 +527,10 @@ index 83c7f06f1b236..173b829890079 100644
  
  // static
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 7bd7c44ffc724..ee4465054642f 100644
+index 7bd7c44ffc724..76d7b9ee786ba 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
-@@ -1,9 +1,11 @@
+@@ -1,16 +1,20 @@
 -// Copyright 2015 The Chromium Authors
 +// Copyright 2024 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
@@ -542,11 +543,14 @@ index 7bd7c44ffc724..ee4465054642f 100644
  #include "ui/ozone/public/ozone_platform.h"
  
  namespace views {
-@@ -11,6 +13,7 @@ namespace views {
+ 
  void MenuConfig::InitPlatform() {
-   use_bubble_border =
-       ui::OzonePlatform::GetInstance()->IsWindowCompositingSupported();
-+  arrow_to_edge_padding = features::IsThorium2024() ? 4 : 8;
+-  use_bubble_border =
+-      ui::OzonePlatform::GetInstance()->IsWindowCompositingSupported();
++  use_bubble_border = features::IsThorium2024() ? false
++                      : ui::OzonePlatform::GetInstance()->IsWindowCompositingSupported();
++  arrow_to_edge_padding = features::IsThorium2024() ? 2 : 8;
++  separator_height = features::IsThorium2024() ? 7 : 17;
  }
  
  }  // namespace views
@@ -614,7 +618,7 @@ index eabfb364890d3..2374c18b0f3d7 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_win.cc b/ui/views/controls/menu/menu_config_win.cc
-index a2dae078ccbd3..3f9f6090ab699 100644
+index a2dae078ccbd3..77881d769bdf0 100644
 --- a/ui/views/controls/menu/menu_config_win.cc
 +++ b/ui/views/controls/menu/menu_config_win.cc
 @@ -1,4 +1,4 @@
@@ -632,14 +636,14 @@ index a2dae078ccbd3..3f9f6090ab699 100644
  #include "ui/gfx/system_fonts_win.h"
  
  namespace views {
-@@ -22,8 +24,38 @@ void MenuConfig::InitPlatform() {
+@@ -22,9 +24,40 @@ void MenuConfig::InitPlatform() {
         show_cues == TRUE);
  
    SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
-+
+-  separator_upper_height = 5;
+-  separator_lower_height = 7;
+ 
 +  bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
-   separator_upper_height = 5;
-   separator_lower_height = 7;
 +  use_outer_border = features::IsThorium2024() ? true : false;
 +
 +  if (features::IsThorium2024()) {
@@ -656,6 +660,7 @@ index a2dae078ccbd3..3f9f6090ab699 100644
 +      item_corner_radius = 4;
 +      use_outer_border = false;
 +    } else {
++      corner_radius = 0;
 +      menu_horizontal_border_size = 3;
 +      nonrounded_menu_vertical_border_size = 3;
 +      item_vertical_margin = 3;
@@ -667,12 +672,15 @@ index a2dae078ccbd3..3f9f6090ab699 100644
 +      separator_lower_height = 5;
 +      use_outer_border = true;
 +    }
++  } else {
++    separator_upper_height = 5;
++    separator_lower_height = 7;
 +  }
- 
    use_bubble_border = corner_radius > 0;
  }
+ 
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 3684e27766834..5ab1c1ce9da63 100644
+index 3684e27766834..3192a49fb592c 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -1,4 +1,4 @@

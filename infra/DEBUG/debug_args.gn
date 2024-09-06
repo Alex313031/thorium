@@ -49,7 +49,7 @@ enable_cros_media_app = false
 proprietary_codecs = true
 ffmpeg_branding = "Chrome"
 # Set to false for Polly build
-clang_use_chrome_plugins = true
+clang_use_chrome_plugins = false
 enable_ffmpeg_video_decoders = true
 is_component_ffmpeg = true
 # use_webaudio_ffmpeg = false

@@ -142,6 +142,7 @@ copyMacOS () {
 	cp -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	cp -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
 case $1 in
@@ -335,6 +336,8 @@ printf "${GRE}Done!${c0}\n" &&
 cat ./logos/thorium_ascii_art.txt &&
 
 printf "${YEL}Tip: See the ${CYA}aliases.txt${YEL} file for some handy bash aliases.${c0}\n" &&
+printf "\n" &&
+printf "${RED} IMPORTANT: If you ran setup.sh without any flags, you must also run ./patch_ac3.sh for AC3/E-AC3 support.\n" &&
 printf "\n" &&
 printf "${GRE}  Enjoy Thorium!\n" &&
 printf "\n" &&

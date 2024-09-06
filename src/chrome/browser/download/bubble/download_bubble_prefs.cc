@@ -13,6 +13,7 @@
 #include "chrome/common/pref_names.h"
 #include "components/prefs/pref_service.h"
 #include "components/safe_browsing/core/common/features.h"
+#include "ui/base/ui_base_features.h"
 
 namespace download {
 
@@ -25,7 +26,7 @@ static const bool disable_bubble = base::CommandLine::ForCurrentProcess()->HasSw
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return false;
 #else
-  if (disable_bubble) {
+  if (disable_bubble || features::IsThorium2024()) {
     return false;
   } else {
     return true;

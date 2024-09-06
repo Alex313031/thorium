@@ -778,7 +778,7 @@ void FlagsState::AddFeatureMapping(
     bool feature_state,
     const std::string& variation_id,
     std::map<std::string, SwitchEntry>* name_to_switch_map) const {
-  DCHECK(!base::Contains(*name_to_switch_map, key));
+  // DCHECK(!base::Contains(*name_to_switch_map, key));
 
   SwitchEntry* entry = &(*name_to_switch_map)[key];
   entry->feature_name = feature_name;

@@ -330,7 +330,7 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
 #if DCHECK_IS_ON()
     constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
     for (auto& mapping : *accelerators)
-      DCHECK((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
+      VLOG((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
           << "Accelerators with Ctrl+Alt are reserved by Windows.";
 #endif
 

@@ -46,7 +46,7 @@
     {"custom-tab-width",
      "Custom Tab Width",
      "Allows setting the default tab width, in DIP. Normally 1 DIP = 1 Pixel, and the standard width for tabs is 240.",
-     kOsAll, MULTI_VALUE_TYPE("kCustomTabWidthChoices")},
+     kOsAll, MULTI_VALUE_TYPE(kCustomTabWidthChoices)},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
