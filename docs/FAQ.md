@@ -52,7 +52,7 @@ __<a id="3"></a>3. Q: Why is Thorium always behind Chromium/Chrome as far as the
  there are no services that I am aware of that have a free tier with hardware capable of the compilation. Again, this comes down to money and is prohibitively expensive.
 
 __<a id="4"></a>4. Q: Why isn't Thorium UnGoogled?__  
- __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/infra/PATCHES.md)), but one of the project
+ __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/docs/PATCHES.md)), but one of the project
  goals, as outlined towards the top of the Readme, is to enhance usability.
  A majority of people use Google search, and prefer to have Google Sync enabled to allow seamless synchronization of their bookmarks, history, and preferences across multiple
  instances of multiple Chromium-based browsers. Thus, while Thorium has removed telemetry and field trials, there are instances where Thorium still connects to Google servers, even

@@ -98,7 +98,7 @@ index bba403a7e5068..dae26bd577dcb 100644
 +    case TAB_MARGIN:
 +      return features::IsThorium2024() ? 6 : GetLayoutConstant(TAB_STRIP_PADDING);
 +    case TAB_INACTIVE_PADDING:
-+      return features::IsThorium2024() ? 3 : 6;
++      return features::IsThorium2024() ? 3 : GetLayoutConstant(TAB_STRIP_PADDING);
 +    case TAB_SEARCH_PADDING:
 +      return features::IsThorium2024() ? 4 : 0;
      case TAB_SEPARATOR_HEIGHT:
@@ -372,7 +372,7 @@ index efe87aa6d6dd6..be18a870f0217 100644
        // Spec says height of button should be 36dp, vertical padding on both
        // top and bottom should be 8dp.
 -      return 36 + 2 * 8;
-+      return features::IsThorium2024() ? 38 : 36 + 2 * 8;
++      return features::IsThorium2024() ? 42 : 36 + 2 * 8;
      case DISTANCE_PERMISSION_PROMPT_HORIZONTAL_ICON_LABEL_PADDING:
        return features::IsChromeRefresh2023()
                   ? 8
