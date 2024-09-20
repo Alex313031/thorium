@@ -1,4 +1,4 @@
-<img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/features.png" width="132">
+<img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/features.png" width="116">
 
 ## List of user-facing features included in Thorium :
 

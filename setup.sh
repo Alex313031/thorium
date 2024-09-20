@@ -19,25 +19,29 @@ try() { "$@" || die "${RED}Failed $*"; }
 displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to copy Thorium source files over the Chromium source tree.${c0}\n" &&
-	printf "${bold}${YEL}Use the --mac flag for MacOS builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --raspi flag for Raspberry Pi builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --woa flag for Windows on ARM builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --avx512 flag for AVX-512 Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --sse4 flag for SSE4.1 Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --sse2 flag for 32 bit SSE2 Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --android flag for Android Builds.${c0}\n" &&
-	printf "${bold}${YEL}Use the --cros flag for ChromiumOS Builds.${c0}\n" &&
-	printf "${bold}${YEL}IMPORTANT: For Polly builds, first run build_polly.sh in ./infra before building.${c0}\n" &&
-	printf "${bold}${YEL} This should be done AFTER running this setup.sh script!${c0}\n" &&
+	printf "${bold}${YEL}  Use the --mac flag for MacOS builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --raspi or --arm64 flag for Raspberry Pi builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --woa flag for Windows on ARM builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --avx512 flag for AVX-512 Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --avx2 flag for AVX2 Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --sse4 flag for SSE4.1 Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --sse3 flag for SSE3 Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --sse2 flag for 32 bit SSE2 Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --android flag for Android Builds.${c0}\n" &&
+	printf "${bold}${YEL}  Use the --cros flag for ChromiumOS Builds.${c0}\n" &&
+	printf "${bold}${YEL}  --help or -h shows this help.${c0}\n" &&
+	printf "${bold}${YEL}  IMPORTANT: For Polly builds, first run build_polly.sh in ./infra before building.${c0}\n" &&
+	printf "${bold}${YEL}   This should be done AFTER running this setup.sh script!${c0}\n" &&
 	printf "\n"
-	printf "${bold}${YEL}NOTE: The \`CR_DIR\` env variable can be used to override the location of \"chromium/src\".${c0}\n" &&
-	printf "${bold}${YEL} The default is $HOME/chromium/src${c0}\n" &&
+	printf "${bold}${YEL}  NOTE: The \`CR_DIR\` env variable can be used to override the location of \"chromium/src\".${c0}\n" &&
+	printf "${bold}${YEL}   The default is $HOME/chromium/src${c0}\n" &&
 	printf "\n"
 }
 case $1 in
 	--help) displayHelp; exit 0;;
+esac
+case $1 in
+	-h) displayHelp; exit 0;;
 esac
 
 # chromium/src dir env variable
@@ -167,6 +171,9 @@ copyRaspi () {
 }
 case $1 in
 	--raspi) copyRaspi;
+esac
+case $1 in
+	--arm64) copyRaspi;
 esac
 
 # Windows on ARM64 files

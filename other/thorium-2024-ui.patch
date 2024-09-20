@@ -38,7 +38,7 @@ index 49fd0b0f7a21c..c91d24529eb75 100644
    registry->RegisterIntegerPref(prefs::kSystemTheme,
                                  static_cast<int>(default_system_theme));
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index bba403a7e5068..dae26bd577dcb 100644
+index bba403a7e5068..351e081441698 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -1,12 +1,14 @@
@@ -89,22 +89,31 @@ index bba403a7e5068..dae26bd577dcb 100644
      case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
        return features::IsChromeRefresh2023() ? 6 : 8;
      case WEB_APP_MENU_BUTTON_SIZE:
-@@ -97,7 +103,13 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -83,6 +89,8 @@ int GetLayoutConstant(LayoutConstant constant) {
+       return 16;
+     case TAB_ALERT_INDICATOR_ICON_WIDTH:
+       return touch_ui ? 12 : 16;
++    case TAB_BUTTON_OFFSET:
++      return features::IsThorium2024() ? -1 : 0;
+     case TAB_CLOSE_BUTTON_SIZE:
+       return touch_ui ? 24 : 16;
+     case TAB_HEIGHT: {
+@@ -97,7 +105,13 @@ int GetLayoutConstant(LayoutConstant constant) {
        return GetLayoutConstant(TAB_HEIGHT) +
               GetLayoutConstant(TAB_STRIP_PADDING);
      case TAB_STRIP_PADDING:
 -      return features::IsChromeRefresh2023() ? 6 : 0;
 +      return features::IsThorium2024() ? 0 : 6;
 +    case TAB_MARGIN:
-+      return features::IsThorium2024() ? 6 : GetLayoutConstant(TAB_STRIP_PADDING);
++      return features::IsThorium2024() ? 6 : 6;
 +    case TAB_INACTIVE_PADDING:
-+      return features::IsThorium2024() ? 3 : GetLayoutConstant(TAB_STRIP_PADDING);
++      return features::IsThorium2024() ? 3 : 6;
 +    case TAB_SEARCH_PADDING:
-+      return features::IsThorium2024() ? 4 : 0;
++      return features::IsThorium2024() ? 3 : 6;
      case TAB_SEPARATOR_HEIGHT:
        // TODO (crbug.com/1451400): ChromeRefresh2023 needs different values for
        // this constant.
-@@ -125,9 +137,13 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -125,9 +139,13 @@ int GetLayoutConstant(LayoutConstant constant) {
      case TOOLBAR_DIVIDER_CORNER_RADIUS:
        return 1;
      case TOOLBAR_DIVIDER_HEIGHT:
@@ -120,7 +129,7 @@ index bba403a7e5068..dae26bd577dcb 100644
      case TOOLBAR_DIVIDER_WIDTH:
        return 2;
      case TOOLBAR_ELEMENT_PADDING:
-@@ -139,17 +155,17 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -139,17 +157,17 @@ int GetLayoutConstant(LayoutConstant constant) {
          return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
        }
      case TOOLBAR_STANDARD_SPACING:
@@ -142,7 +151,7 @@ index bba403a7e5068..dae26bd577dcb 100644
        break;
    }
 diff --git a/chrome/browser/ui/layout_constants.h b/chrome/browser/ui/layout_constants.h
-index d26bc737d3177..f453b459eb3f8 100644
+index d26bc737d3177..d1cab25f32356 100644
 --- a/chrome/browser/ui/layout_constants.h
 +++ b/chrome/browser/ui/layout_constants.h
 @@ -1,4 +1,4 @@
@@ -151,7 +160,7 @@ index d26bc737d3177..f453b459eb3f8 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -119,9 +119,18 @@ enum LayoutConstant {
+@@ -119,9 +119,21 @@ enum LayoutConstant {
    // detached tab, and on all sides of the controls padding.
    TAB_STRIP_PADDING,
  
@@ -166,6 +175,9 @@ index d26bc737d3177..f453b459eb3f8 100644
  
 +  // Padding for the tab search button
 +  TAB_SEARCH_PADDING,
++
++  // Offset y for new tab button
++  TAB_BUTTON_OFFSET,
 +
    // Padding before the tab title.
    TAB_PRE_TITLE_PADDING,
@@ -186,7 +198,7 @@ index bec499693cd91..404316da5bcd2 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..4bf9ac819a508 100644
+index aa9cd30374311..120bb7d61df54 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -211,7 +223,7 @@ index aa9cd30374311..4bf9ac819a508 100644
  constexpr int kGM2SeparatorThickness = 1;
 +constexpr int kThoriumSeparatorThickness = 1;
  constexpr int kChromeRefreshSeparatorThickness = 2;
-+constexpr int kThoriumSeparatorHorizontalMargin = 1;
++constexpr int kThoriumSeparatorHorizontalMargin = 0;
  constexpr int kChromeRefreshSeparatorHorizontalMargin = 2;
  // TODO (crbug.com/1451400): This constant should be in LayoutConstants.
 +constexpr int kThoriumSeparatorHeight = 20;
@@ -252,7 +264,7 @@ index aa9cd30374311..4bf9ac819a508 100644
    // The overlap includes one separator, so subtract it here.
    return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
  }
-@@ -197,11 +220,27 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+@@ -197,47 +220,93 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -282,7 +294,22 @@ index aa9cd30374311..4bf9ac819a508 100644
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
-@@ -213,23 +252,43 @@ int ChromeRefresh2023TabStyle::GetTabOverlap() const {
+-  // The overlap removes the width and the margins of the separator.
+-  const float total_separator_width = GetSeparatorMargins().left() +
+-                                      GetSeparatorSize().width() +
+-                                      GetSeparatorMargins().right();
+-  return 2 * GetBottomCornerRadius() - total_separator_width;
++  if (features::IsThorium2024()) {
++    const float total_separator_width = GetSeparatorSize().width() +
++                                        GetSeparatorSize().width();
++    return 2 * GetBottomCornerRadius() - total_separator_width;
++  } else {
++    // The overlap removes the width and the margins of the separator.
++    const float total_separator_width = GetSeparatorMargins().left() +
++                                        GetSeparatorSize().width() +
++                                        GetSeparatorMargins().right();
++    return 2 * GetBottomCornerRadius() - total_separator_width;
++  }
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -337,6 +364,20 @@ index aa9cd30374311..4bf9ac819a508 100644
  }
  
  int ChromeRefresh2023TabStyle::GetSeparatorCornerRadius() const {
+-  return GetSeparatorSize().width() / 2;
++  if (features::IsThorium2024()) {
++    return 0;
++  } else {
++    return GetSeparatorSize().width() / 2;
++  }
+ }
+ 
+ int ChromeRefresh2023TabStyle::GetDragHandleExtension(int height) const {
+-  return 6;
++  return 12;
+ }
+ 
+ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
 diff --git a/chrome/browser/ui/thorium_2024.h b/chrome/browser/ui/thorium_2024.h
 new file mode 100644
 index 0000000000000..de40b42fcc722
@@ -358,7 +399,7 @@ index 0000000000000..de40b42fcc722
 +
 +#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index efe87aa6d6dd6..be18a870f0217 100644
+index efe87aa6d6dd6..600a4c7aeb05f 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
 @@ -1,4 +1,4 @@
@@ -377,7 +418,7 @@ index efe87aa6d6dd6..be18a870f0217 100644
        return features::IsChromeRefresh2023()
                   ? 8
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index f534d7e925b86..2d2e7812ef123 100644
+index f534d7e925b86..53a9741048850 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -1,4 +1,4 @@
@@ -395,25 +436,39 @@ index f534d7e925b86..2d2e7812ef123 100644
      } else {
        const gfx::Insets control_padding = gfx::Insets::TLBR(
            0, 0, 0, GetLayoutConstant(TABSTRIP_REGION_VIEW_CONTROL_PADDING));
-@@ -357,7 +357,7 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -357,7 +357,8 @@ void TabStripRegionView::Layout(PassKey) {
      int product_specifications_button_width =
          product_specifications_button_
              ? product_specifications_button_->GetPreferredSize().width()
 -            : 0;
-+            : GetLayoutConstant(TAB_SEARCH_PADDING);
++            : features::IsThorium2024() ? GetLayoutConstant(TAB_SEARCH_PADDING)
++                                        : 0;
      AdjustViewBoundsRect(tab_search_container_,
                           product_specifications_button_width);
    }
-@@ -372,7 +372,7 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -372,8 +373,8 @@ void TabStripRegionView::Layout(PassKey) {
      gfx::Point new_tab_button_new_position =
          gfx::Point(tab_strip_container_->bounds().right() -
                         TabStyle::Get()->GetBottomCornerRadius() +
 -                       GetLayoutConstant(TAB_STRIP_PADDING),
+-                   0);
 +                       GetLayoutConstant(TAB_MARGIN),
-                    0);
++                       GetLayoutConstant(TAB_BUTTON_OFFSET));
  
      gfx::Rect new_tab_button_new_bounds =
-@@ -502,7 +502,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+         gfx::Rect(new_tab_button_new_position, new_tab_button_size);
+@@ -476,7 +477,9 @@ void TabStripRegionView::UpdateButtonBorders() {
+   // definitely isn't what we want in the scrolling case, so this naive approach
+   // should be improved, likely by taking the scroll state of the tabstrip into
+   // account.
+-  const auto border_insets = gfx::Insets::TLBR(top_inset, 0, bottom_inset, 0);
++  const auto border_insets =
++      gfx::Insets::TLBR(top_inset, 0, bottom_inset,
++                        features::IsThorium2024() ? 8 : 0);
+   if (new_tab_button_) {
+     new_tab_button_->SetBorder(views::CreateEmptyBorder(border_insets));
+   }
+@@ -502,7 +505,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
      new_tab_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
  
      tab_strip_right_margin = new_tab_button_->GetPreferredSize().width() +
@@ -422,7 +477,7 @@ index f534d7e925b86..2d2e7812ef123 100644
    }
  
    // If the tab search button is before the tab strip, it also overlaps the
-@@ -528,8 +528,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -528,8 +531,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
      // should have 6 px of padding between it and the tab_search button (not
      // including the corner radius).
      tab_strip_left_margin = tab_strip_left_margin.value() +
