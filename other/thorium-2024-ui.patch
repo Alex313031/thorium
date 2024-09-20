@@ -11,19 +11,6 @@ index 0197942167f44..9535c3a076409 100644
          <div role="gridcell">
            <cr-icon-button class="icon-clear"
                style$="[[computeRemoveStyle_(isDangerous_, showCancel_)]]"
-diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
-index 64948595a4bc6..a568c893736ca 100644
---- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
-+++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
-@@ -47,7 +47,7 @@ using bookmarks::BookmarkNode;
- 
- namespace chrome {
- 
--size_t kNumBookmarkUrlsBeforePrompting = 15;
-+size_t kNumBookmarkUrlsBeforePrompting = 50;
- 
- static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
- 
 diff --git a/chrome/browser/themes/theme_service_factory.cc b/chrome/browser/themes/theme_service_factory.cc
 index 49fd0b0f7a21c..c91d24529eb75 100644
 --- a/chrome/browser/themes/theme_service_factory.cc
@@ -37,6 +24,19 @@ index 49fd0b0f7a21c..c91d24529eb75 100644
  #endif
    registry->RegisterIntegerPref(prefs::kSystemTheme,
                                  static_cast<int>(default_system_theme));
+diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+index 64948595a4bc6..a568c893736ca 100644
+--- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
++++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+@@ -47,7 +47,7 @@ using bookmarks::BookmarkNode;
+ 
+ namespace chrome {
+ 
+-size_t kNumBookmarkUrlsBeforePrompting = 15;
++size_t kNumBookmarkUrlsBeforePrompting = 50;
+ 
+ static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
+ 
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
 index bba403a7e5068..351e081441698 100644
 --- a/chrome/browser/ui/layout_constants.cc
@@ -198,7 +198,7 @@ index bec499693cd91..404316da5bcd2 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index aa9cd30374311..120bb7d61df54 100644
+index aa9cd30374311..92cb6c3e0932c 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -1,27 +1,32 @@
@@ -264,7 +264,7 @@ index aa9cd30374311..120bb7d61df54 100644
    // The overlap includes one separator, so subtract it here.
    return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
  }
-@@ -197,47 +220,93 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
+@@ -197,47 +220,97 @@ float GM2TabStyle::GetSelectedTabOpacity() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -374,7 +374,11 @@ index aa9cd30374311..120bb7d61df54 100644
  
  int ChromeRefresh2023TabStyle::GetDragHandleExtension(int height) const {
 -  return 6;
-+  return 12;
++  if (features::IsThorium2024()) {
++    return 12;
++  } else {
++    return 6;
++  }
  }
  
  SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
@@ -488,6 +492,33 @@ index f534d7e925b86..53a9741048850 100644
                              TabStyle::Get()->GetBottomCornerRadius();
    }
  
+diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
+index 66e38eaf7a5e9..6d7e98530ca03 100644
+--- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
++++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2022 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -12,6 +12,7 @@
+ #include "ui/accessibility/mojom/ax_node_data.mojom.h"
+ #include "ui/base/l10n/l10n_util.h"
+ #include "ui/base/metadata/metadata_impl_macros.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/color/color_provider.h"
+ #include "ui/compositor/layer.h"
+ #include "ui/gfx/geometry/size.h"
+@@ -31,7 +32,7 @@ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
+   SetCanProcessEventsWithinSubtree(false);
+   SetFocusBehavior(FocusBehavior::ALWAYS);
+   FocusRing::Install(this);
+-  if (lens::features::IsLensOverlayEnabled()) {
++  if (lens::features::IsLensOverlayEnabled() && !features::IsThorium2024()) {
+     const int resize_handle_left_margin = 2;
+     SetProperty(views::kMarginsKey,
+                 gfx::Insets().set_left(resize_handle_left_margin));
 diff --git a/chrome/browser/ui/views/tabs/tab_slot_controller.h b/chrome/browser/ui/views/tabs/tab_slot_controller.h
 index e928216ad00f7..4f33e232910c1 100644
 --- a/chrome/browser/ui/views/tabs/tab_slot_controller.h
@@ -520,33 +551,6 @@ index ae3b649cfcdc6..3bcf134a9b744 100644
    bool CanPaintThrobberToLayer() const override;
    bool HasVisibleBackgroundTabShapes() const override;
    SkColor GetTabSeparatorColor() const override;
-diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index 66e38eaf7a5e9..6d7e98530ca03 100644
---- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-+++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-@@ -1,4 +1,4 @@
--// Copyright 2022 The Chromium Authors
-+// Copyright 2024 The Chromium Authors and Alex313031
- // Use of this source code is governed by a BSD-style license that can be
- // found in the LICENSE file.
- 
-@@ -12,6 +12,7 @@
- #include "ui/accessibility/mojom/ax_node_data.mojom.h"
- #include "ui/base/l10n/l10n_util.h"
- #include "ui/base/metadata/metadata_impl_macros.h"
-+#include "ui/base/ui_base_features.h"
- #include "ui/color/color_provider.h"
- #include "ui/compositor/layer.h"
- #include "ui/gfx/geometry/size.h"
-@@ -31,7 +32,7 @@ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
-   SetCanProcessEventsWithinSubtree(false);
-   SetFocusBehavior(FocusBehavior::ALWAYS);
-   FocusRing::Install(this);
--  if (lens::features::IsLensOverlayEnabled()) {
-+  if (lens::features::IsLensOverlayEnabled() && !features::IsThorium2024()) {
-     const int resize_handle_left_margin = 2;
-     SetProperty(views::kMarginsKey,
-                 gfx::Insets().set_left(resize_handle_left_margin));
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index 83c7f06f1b236..173b829890079 100644
 --- a/ui/views/controls/menu/menu_config.cc
@@ -735,7 +739,7 @@ index a2dae078ccbd3..77881d769bdf0 100644
  }
  
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 3684e27766834..3192a49fb592c 100644
+index 3684e27766834..bb4cc2b2423b2 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -1,4 +1,4 @@
