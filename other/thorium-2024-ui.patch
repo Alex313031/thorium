@@ -609,7 +609,7 @@ index 7bd7c44ffc724..76d7b9ee786ba 100644
 +  use_bubble_border = features::IsThorium2024() ? false
 +                      : ui::OzonePlatform::GetInstance()->IsWindowCompositingSupported();
 +  arrow_to_edge_padding = features::IsThorium2024() ? 2 : 8;
-+  separator_height = features::IsThorium2024() ? 7 : 17;
++  separator_height = features::IsThorium2024() ? 4 : 17;
  }
  
  }  // namespace views
