@@ -44,7 +44,7 @@ index 64948595a4bc6..a568c893736ca 100644
  static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
  
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index ea5c2c05f5fa9..c87e8b6e8fdd6 100644
+index ea5c2c05f5fa9..5db2dac1b2fa2 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -7,6 +7,7 @@
@@ -67,7 +67,7 @@ index ea5c2c05f5fa9..c87e8b6e8fdd6 100644
        // The fixed margin ensures the bookmark buttons appear centered relative
        // to the white space above and below.
 -      const int bookmark_bar_attached_vertical_margin = 6;
-+      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 4 : 6;
++      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 3 : 6;
        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
               bookmark_bar_attached_vertical_margin;
      }
@@ -82,7 +82,7 @@ index ea5c2c05f5fa9..c87e8b6e8fdd6 100644
 +    }
      case BOOKMARK_BAR_BUTTON_PADDING:
 -      return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
-+      return features::IsThorium2024() ? 3 : GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
++      return features::IsThorium2024() ? 2 : GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
      case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
        return 6;
      case WEB_APP_MENU_BUTTON_SIZE:
@@ -146,6 +146,50 @@ index ea5c2c05f5fa9..c87e8b6e8fdd6 100644
      default:
        break;
    }
+@@ -146,7 +168,11 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+       return gfx::Insets::VH(8, 20);
+ 
+     case LOCATION_BAR_ICON_INTERIOR_PADDING:
+-      return gfx::Insets::VH(2, 2);
++      if (features::IsThorium2024()) {
++        return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 8);
++      } else {
++        return gfx::Insets::VH(2, 2);
++      }
+ 
+     case LOCATION_BAR_PAGE_INFO_ICON_PADDING:
+       return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 4);
+@@ -161,7 +187,8 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+     }
+ 
+     case TOOLBAR_BUTTON:
+-      return gfx::Insets(touch_ui ? 12 : 7);
++      return gfx::Insets(touch_ui ? 12
++                                  : (features::IsThorium2024() ? 6 : 7));
+ 
+     case BROWSER_APP_MENU_CHIP_PADDING:
+       if (touch_ui) {
+@@ -178,10 +205,18 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+       }
+ 
+     case TOOLBAR_INTERIOR_MARGIN:
+-      return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
++      if (features::IsThorium2024()) {
++        return touch_ui ? gfx::Insets() : gfx::Insets::VH(4, 6);
++      } else {
++        return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
++      }
+ 
+     case WEBUI_TAB_STRIP_TOOLBAR_INTERIOR_MARGIN:
+-      return gfx::Insets::VH(4, 0);
++      if (features::IsThorium2024()) {
++        return gfx::Insets::VH(4, 6);
++      } else {
++        return gfx::Insets::VH(4, 0);
++      }
+   }
+   NOTREACHED_IN_MIGRATION();
+   return gfx::Insets();
 diff --git a/chrome/browser/ui/layout_constants.h b/chrome/browser/ui/layout_constants.h
 index a35795ee8cc11..60577ba01a5fd 100644
 --- a/chrome/browser/ui/layout_constants.h
@@ -173,7 +217,7 @@ index a35795ee8cc11..60577ba01a5fd 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index d2aae6af7306b..da6152848c9e4 100644
+index d2aae6af7306b..137146e4fe032 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
 @@ -105,6 +105,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
@@ -188,7 +232,7 @@ index d2aae6af7306b..da6152848c9e4 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index b32265fa04597..19c0e56124a5a 100644
+index b32265fa04597..a23850ecead51 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -6,6 +6,7 @@
@@ -205,7 +249,7 @@ index b32265fa04597..19c0e56124a5a 100644
  // the tab.
 +constexpr int kThoriumSeparatorThickness = 1;
  constexpr int kChromeRefreshSeparatorThickness = 2;
-+constexpr int kThoriumSeparatorHorizontalMargin = 0;
++constexpr int kThoriumSeparatorHorizontalMargin = 1;
  constexpr int kChromeRefreshSeparatorHorizontalMargin = 2;
  // TODO (crbug.com/1451400): This constant should be in LayoutConstants.
 +constexpr int kThoriumSeparatorHeight = 20;
@@ -246,7 +290,7 @@ index b32265fa04597..19c0e56124a5a 100644
    // The overlap includes one separator, so subtract it here.
    return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
  }
-@@ -102,19 +126,41 @@ int ChromeRefresh2023TabStyle::GetMinimumInactiveWidth() const {
+@@ -102,19 +126,42 @@ int ChromeRefresh2023TabStyle::GetMinimumInactiveWidth() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -276,17 +320,17 @@ index b32265fa04597..19c0e56124a5a 100644
  }
  
  int ChromeRefresh2023TabStyle::GetTabOverlap() const {
--  // The overlap removes the width and the margins of the separator.
+   // The overlap removes the width and the margins of the separator.
 -  const float total_separator_width = GetSeparatorMargins().left() +
 -                                      GetSeparatorSize().width() +
 -                                      GetSeparatorMargins().right();
 -  return 2 * GetBottomCornerRadius() - total_separator_width;
 +  if (features::IsThorium2024()) {
-+    const float total_separator_width = GetSeparatorSize().width() +
-+                                        GetSeparatorSize().width();
++    const float total_separator_width = GetSeparatorMargins().left() +
++                                        GetSeparatorSize().width() +
++                                        GetSeparatorMargins().right();
 +    return 2 * GetBottomCornerRadius() - total_separator_width;
 +  } else {
-+    // The overlap removes the width and the margins of the separator.
 +    const float total_separator_width = GetSeparatorMargins().left() +
 +                                        GetSeparatorSize().width() +
 +                                        GetSeparatorMargins().right();
@@ -295,7 +339,7 @@ index b32265fa04597..19c0e56124a5a 100644
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
-@@ -124,23 +170,43 @@ gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
+@@ -124,23 +171,43 @@ gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -340,14 +384,14 @@ index b32265fa04597..19c0e56124a5a 100644
  int ChromeRefresh2023TabStyle::GetDragHandleExtension(int height) const {
 -  return 6;
 +  if (features::IsThorium2024()) {
-+    return 12;
++    return (height - GetSeparatorSize().height()) / 2 - 1;
 +  } else {
 +    return 6;
 +  }
  }
  
  SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
-@@ -177,11 +243,19 @@ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
+@@ -177,11 +244,19 @@ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
  }
  
  gfx::Insets ChromeRefresh2023TabStyle::GetContentsInsets() const {
@@ -392,11 +436,51 @@ index 0000000000000..de40b42fcc722
 +//static const bool thor24 = features::IsThorium2024();
 +
 +#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
+diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+index fd011f8983a1d..8000a05951f9b 100644
+--- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
++++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+@@ -54,6 +54,7 @@
+ #include "chrome/browser/ui/layout_constants.h"
+ #include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_service_factory.h"
+ #include "chrome/browser/ui/tabs/tab_strip_model.h"
++#include "chrome/browser/ui/thorium_2024.h"
+ #include "chrome/browser/ui/ui_features.h"
+ #include "chrome/browser/ui/view_ids.h"
+ #include "chrome/browser/ui/views/bookmarks/bookmark_bar_view_observer.h"
+@@ -343,8 +344,8 @@ class BookmarkBarView::ButtonSeparatorView : public views::Separator {
+ 
+  public:
+   ButtonSeparatorView() {
+-    const int leading_padding = 8;
+-    const int trailing_padding = 8;
++    const int leading_padding = features::IsThorium2024() ? 4 : 8;
++    const int trailing_padding = features::IsThorium2024() ? 3 : 8;
+     separator_thickness_ = kBookmarkBarSeparatorThickness;
+     const gfx::Insets border_insets =
+         gfx::Insets::TLBR(0, leading_padding, 0, trailing_padding);
+@@ -694,7 +695,7 @@ void BookmarkBarView::Layout(PassKey) {
+   }
+ 
+   int x = GetLeadingMargin();
+-  static constexpr int kBookmarkBarTrailingMargin = 8;
++  static const int kBookmarkBarTrailingMargin = features::IsThorium2024() ? 0 : 8;
+   int width = View::width() - x - kBookmarkBarTrailingMargin;
+ 
+   const int button_height = GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT);
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index 5291d09d2154f..7cdd069aff2e2 100644
+index 5291d09d2154f..c8cf8e0ad6037 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
-@@ -161,7 +161,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
+@@ -7,6 +7,7 @@
+ #include <algorithm>
+ 
+ #include "base/feature_list.h"
++#include "chrome/browser/ui/thorium_2024.h"
+ #include "chrome/browser/ui/views/chrome_typography.h"
+ #include "components/omnibox/common/omnibox_features.h"
+ #include "ui/base/pointer/touch_ui_controller.h"
+@@ -161,7 +162,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
      case DISTANCE_INFOBAR_HEIGHT:
        // Spec says height of button should be 36dp, vertical padding on both
        // top and bottom should be 8dp.
@@ -405,8 +489,314 @@ index 5291d09d2154f..7cdd069aff2e2 100644
      case DISTANCE_PERMISSION_PROMPT_HORIZONTAL_ICON_LABEL_PADDING:
        return 8;
      case DISTANCE_RICH_HOVER_BUTTON_ICON_HORIZONTAL:
+diff --git a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
+index af21424e93618..7ab9cd6819469 100644
+--- a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
++++ b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
+@@ -73,5 +73,5 @@ gfx::Insets BrowserFrameViewLayoutLinux::RestoredFrameEdgeInsets() const {
+ }
+ 
+ int BrowserFrameViewLayoutLinux::NonClientExtraTopThickness() const {
+-  return delegate_->IsTabStripVisible() ? 0 : kExtraTopBorder;
++  return (!features::IsThorium2024() && delegate_->IsTabStripVisible()) ? 0 : kExtraTopBorder;
+ }
+diff --git a/chrome/browser/ui/views/frame/browser_frame_view_win.cc b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
+index b57fb5baa52a7..4fc9467f16b6c 100644
+--- a/chrome/browser/ui/views/frame/browser_frame_view_win.cc
++++ b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
+@@ -315,7 +315,9 @@ int BrowserFrameViewWin::NonClientHitTest(const gfx::Point& point) {
+   // pixels at the end of the top and bottom edges trigger diagonal resizing.
+   constexpr int kResizeCornerWidth = 16;
+ 
+-  const int top_border_thickness = GetLayoutConstant(TAB_STRIP_PADDING);
++  const int top_border_thickness = features::IsThorium2024()
++                                   ? GetLayoutConstant(TAB_INACTIVE_PADDING)
++                                   : FrameTopBorderThickness(false);
+ 
+   const int window_component = GetHTComponentForFrame(
+       point, gfx::Insets::TLBR(top_border_thickness, 0, 0, 0),
+@@ -495,7 +497,7 @@ int BrowserFrameViewWin::FrameTopBorderThickness(bool restored) const {
+       // default. When maximized, the OS sizes the window such that the border
+       // extends beyond the screen edges. In that case, we must return the
+       // default value.
+-      const int kTopResizeFrameArea = 0;
++      const int kTopResizeFrameArea = features::IsThorium2024() ? 7 : 0;
+       return kTopResizeFrameArea;
+     }
+ 
+@@ -555,6 +557,22 @@ int BrowserFrameViewWin::TopAreaHeight(bool restored) const {
+     return top;
+   }
+ 
++  // In maximized mode, we do not add any additional thickness to the grab
++  // handle above the tabs; just return the frame thickness.
++  if (maximized) {
++    return top;
++  }
++
++  // Besides the frame border, there's empty space atop the window in restored
++  // mode, to use to drag the window around.
++  constexpr int kNonClientRestoredExtraThickness = 6;
++  int thickness = kNonClientRestoredExtraThickness;
++  if (EverHasVisibleBackgroundTabShapes() && features::IsThorium2024()) {
++    thickness =
++        std::max(thickness, BrowserNonClientFrameView::kMinimumDragHeight);
++    return top + thickness;
++  }
++
+   // The tabstrip controls its own top padding.
+   return top;
+ }
+@@ -803,17 +821,30 @@ void BrowserFrameViewWin::LayoutCaptionButtons() {
+ 
+   const gfx::Size preferred_size =
+       caption_button_container_->GetPreferredSize();
++  int height = preferred_size.height();
++  // We use the standard caption bar height when maximized in tablet mode, which
++  // is smaller than our preferred button size.
++  if (IsWebUITabStrip() && IsMaximized()) {
++    height = std::min(height, TitlebarMaximizedVisualHeight());
++  }
++  if (!browser_view()->GetWebAppFrameToolbarPreferredSize().IsEmpty()) {
++    height = IsMaximized() ? TitlebarMaximizedVisualHeight()
++                           : TitlebarHeight(false) - WindowTopY();
++  }
+ 
+   const int system_caption_buttons_width =
+       ShouldBrowserCustomDrawTitlebar(browser_view())
+           ? 0
+           : width() - frame()->GetMinimizeButtonOffset();
+ 
++  height = features::IsThorium2024() ? std::min(GetFrameHeight(), height)
++                                     : GetFrameHeight();
++
+   caption_button_container_->SetBounds(
+       CaptionButtonsOnLeadingEdge()
+           ? system_caption_buttons_width
+           : width() - system_caption_buttons_width - preferred_size.width(),
+-      WindowTopY(), preferred_size.width(), GetFrameHeight());
++      WindowTopY(), preferred_size.width(), height);
+ }
+ 
+ void BrowserFrameViewWin::LayoutClientView() {
+diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
+index 480b5be6b3f5e..de3c389d5bdf9 100644
+--- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
++++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
+@@ -280,7 +280,11 @@ int BrowserNonClientFrameViewChromeOS::GetTopInset(bool restored) const {
+   }
+ 
+   if (browser_view()->GetTabStripVisible()) {
+-    return 0;
++    if (features::IsThorium2024()) {
++      return header_height - browser_view()->GetTabStripHeight();
++    } else {
++      return 0;
++    }
+   }
+ 
+   Browser* browser = browser_view()->browser();
+diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.h b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.h
+index 263261b1c8204..93335609f27da 100644
+--- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.h
++++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.h
+@@ -105,6 +105,8 @@ class BrowserNonClientFrameViewMac : public BrowserNonClientFrameView,
+       const gfx::Rect& frame,
+       const gfx::Insets& caption_button_insets);
+ 
++  CGFloat FullscreenBackingBarHeight() const;
++
+   // Calculate the y offset the top UI needs to shift down due to showing the
+   // slide down menu bar at the very top in full screen.
+   int TopUIFullscreenYOffset() const;
+diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
+index 73592431e1d6c..e55efc19bfd88 100644
+--- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
++++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
+@@ -50,6 +50,8 @@ namespace {
+ // Keep in sync with web_app_frame_toolbar_browsertest.cc
+ constexpr double kTitlePaddingWidthFraction = 0.1;
+ 
++constexpr int kResizeHandleHeight = 1;
++
+ // Empirical measurements of the traffic lights.
+ constexpr int kCaptionButtonsWidth = 52;
+ constexpr int kCaptionButtonsInsetsCatalinaOrOlder = 70;
+@@ -225,7 +227,46 @@ void BrowserNonClientFrameViewMac::LayoutWebAppWindowTitle(
+ }
+ 
+ int BrowserNonClientFrameViewMac::GetTopInset(bool restored) const {
+-  return 0;
++  if (features::IsThorium2024()) {
++    if (!browser_view()->ShouldDrawTabStrip()) {
++      return 0;
++    }
++
++    // Mac seems to reserve 1 DIP of the top inset as a resize handle.
++    const int kTabstripTopInset = 8;
++    int top_inset = kTabstripTopInset;
++    if (EverHasVisibleBackgroundTabShapes()) {
++      top_inset =
++          std::max(top_inset, BrowserNonClientFrameView::kMinimumDragHeight +
++                                  kResizeHandleHeight);
++    }
++
++    // Immersive fullscreen attaches the tab strip to the title bar, no need to
++    // calculate the y_offset below.
++    if (browser_view()->UsesImmersiveFullscreenMode()) {
++      return top_inset;
++    }
++
++    // Calculate the y offset for the tab strip because in fullscreen mode the tab
++    // strip may need to move under the slide down menu bar.
++    CGFloat y_offset = TopUIFullscreenYOffset();
++    if (y_offset > 0) {
++      // When menubar shows up, we need to update mouse tracking area.
++      NSWindow* window = GetWidget()->GetNativeWindow().GetNativeNSWindow();
++      NSRect content_bounds = [[window contentView] bounds];
++      // Backing bar tracking area uses native coordinates.
++      CGFloat tracking_height =
++          FullscreenBackingBarHeight() + top_inset + y_offset;
++      NSRect backing_bar_area =
++          NSMakeRect(0, NSMaxY(content_bounds) - tracking_height,
++                     NSWidth(content_bounds), tracking_height);
++      [fullscreen_toolbar_controller_ updateToolbarFrame:backing_bar_area];
++    }
++
++    return y_offset + top_inset;
++  } else {
++    return 0;
++  }
+ }
+ 
+ void BrowserNonClientFrameViewMac::UpdateFullscreenTopUI() {
+@@ -488,6 +529,21 @@ void BrowserNonClientFrameViewMac::PaintThemedFrame(gfx::Canvas* canvas) {
+   canvas->DrawImageInt(overlay, 0, 0);
+ }
+ 
++CGFloat BrowserNonClientFrameViewMac::FullscreenBackingBarHeight() const {
++  BrowserView* browser_view = this->browser_view();
++  DCHECK(browser_view->IsFullscreen());
++
++  CGFloat total_height = 0;
++  if (browser_view->ShouldDrawTabStrip()) {
++    total_height += browser_view->GetTabStripHeight();
++  }
++
++  if (browser_view->IsToolbarVisible())
++    total_height += browser_view->toolbar()->bounds().height();
++
++  return total_height;
++}
++
+ int BrowserNonClientFrameViewMac::TopUIFullscreenYOffset() const {
+   if (!browser_view()->GetTabStripVisible() ||
+       !browser_view()->IsFullscreen() ||
+diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
+index ba129325c8700..fbfa68c2e71b1 100644
+--- a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
++++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
+@@ -254,7 +254,9 @@ void OpaqueBrowserFrameView::LayoutWebAppWindowTitle(
+ }
+ 
+ int OpaqueBrowserFrameView::GetTopInset(bool restored) const {
+-  return layout_->NonClientTopHeight(restored);
++  return browser_view()->ShouldDrawTabStrip()
++             ? layout_->GetTabStripInsetsTop(restored)
++             : layout_->NonClientTopHeight(restored);
+ }
+ 
+ void OpaqueBrowserFrameView::UpdateThrobber(bool running) {
+diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
+index 67b69d18a802e..f2189d01b206f 100644
+--- a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
++++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
+@@ -78,7 +78,7 @@ gfx::Rect OpaqueBrowserFrameViewLayout::GetBoundsForTabStripRegion(
+     int total_width) const {
+   const int x = available_space_leading_x_;
+   const int available_width = available_space_trailing_x_ - x;
+-  return gfx::Rect(x, NonClientTopHeight(false), std::max(0, available_width),
++  return gfx::Rect(x, GetTabStripInsetsTop(false), std::max(0, available_width),
+                    tabstrip_minimum_size.height());
+ }
+ 
+@@ -181,6 +181,15 @@ int OpaqueBrowserFrameViewLayout::NonClientTopHeight(bool restored) const {
+          kContentEdgeShadowThickness;
+ }
+ 
++int OpaqueBrowserFrameViewLayout::GetTabStripInsetsTop(bool restored) const {
++  const int top = NonClientTopHeight(restored);
++  const bool start_at_top_of_frame = !restored &&
++                                     delegate_->IsFrameCondensed() &&
++                                     features::IsThorium2024();
++  return start_at_top_of_frame ? top
++                               : (top + GetNonClientRestoredExtraThickness());
++}
++
+ gfx::Insets OpaqueBrowserFrameViewLayout::FrameEdgeInsets(bool restored) const {
+   return IsFrameEdgeVisible(restored) ? RestoredFrameEdgeInsets()
+                                       : gfx::Insets();
+@@ -190,7 +199,12 @@ int OpaqueBrowserFrameViewLayout::DefaultCaptionButtonY(bool restored) const {
+   // Maximized buttons start at window top, since the window has no border. This
+   // offset is for the image (the actual clickable bounds extend all the way to
+   // the top to take Fitts' Law into account).
+-  return views::NonClientFrameView::kFrameShadowThickness;
++  const bool start_at_top_of_frame = !restored &&
++                                     delegate_->IsFrameCondensed() &&
++                                     features::IsThorium2024();
++  return start_at_top_of_frame
++             ? FrameBorderInsets(false).top()
++             : views::NonClientFrameView::kFrameShadowThickness;
+ }
+ 
+ int OpaqueBrowserFrameViewLayout::CaptionButtonY(views::FrameButton button_id,
+@@ -236,6 +250,21 @@ int OpaqueBrowserFrameViewLayout::GetWindowCaptionSpacing(
+   return 0;
+ }
+ 
++int OpaqueBrowserFrameViewLayout::GetNonClientRestoredExtraThickness() const {
++  // In Refresh, the tabstrip controls its own top padding.
++  if (!features::IsThorium2024()) {
++    return 0;
++  }
++  // Besides the frame border, there's empty space atop the window in restored
++  // mode, to use to drag the window around.
++  int thickness = 6;
++  if (delegate_->EverHasVisibleBackgroundTabShapes()) {
++    thickness =
++        std::max(thickness, BrowserNonClientFrameView::kMinimumDragHeight);
++  }
++  return thickness;
++}
++
+ void OpaqueBrowserFrameViewLayout::SetWindowControlsOverlayEnabled(
+     bool enabled,
+     views::View* host) {
+diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
+index 707226e0e8c70..5e1a2b4dd9921 100644
+--- a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
++++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
+@@ -89,6 +89,8 @@ class OpaqueBrowserFrameViewLayout : public views::LayoutManager {
+   // if the window was restored, regardless of its current state.
+   int NonClientTopHeight(bool restored) const;
+ 
++  int GetTabStripInsetsTop(bool restored) const;
++
+   // Returns the y-coordinate of the caption button when native frame buttons
+   // are disabled.  If |restored| is true, acts as if the window is restored
+   // regardless of the real mode.
+@@ -125,6 +127,9 @@ class OpaqueBrowserFrameViewLayout : public views::LayoutManager {
+ 
+   const gfx::Rect& client_view_bounds() const { return client_view_bounds_; }
+ 
++  // Returns the extra thickness of the area above the tabs.
++  int GetNonClientRestoredExtraThickness() const;
++
+   // Enables or disables WCO and updates child views accordingly.
+   void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
+ 
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index 17cbbb1eb7f63..72684ae3a2d92 100644
+index 17cbbb1eb7f63..9b81a22dc946d 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -227,7 +227,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
@@ -435,22 +825,11 @@ index 17cbbb1eb7f63..72684ae3a2d92 100644
 -                       GetLayoutConstant(TAB_STRIP_PADDING),
 -                   0);
 +                       GetLayoutConstant(TAB_MARGIN),
-+                       GetLayoutConstant(TAB_BUTTON_OFFSET));
++                       0);
  
      gfx::Rect new_tab_button_new_bounds =
          gfx::Rect(new_tab_button_new_position, new_tab_button_size);
-@@ -478,7 +479,9 @@ void TabStripRegionView::UpdateButtonBorders() {
-   // definitely isn't what we want in the scrolling case, so this naive approach
-   // should be improved, likely by taking the scroll state of the tabstrip into
-   // account.
--  const auto border_insets = gfx::Insets::TLBR(top_inset, 0, bottom_inset, 0);
-+  const auto border_insets =
-+      gfx::Insets::TLBR(top_inset, 0, bottom_inset,
-+                        features::IsThorium2024() ? 8 : 0);
-   if (new_tab_button_) {
-     new_tab_button_->SetBorder(views::CreateEmptyBorder(border_insets));
-   }
-@@ -504,7 +507,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -504,7 +505,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
      new_tab_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
  
      tab_strip_right_margin = new_tab_button_->GetPreferredSize().width() +
@@ -459,17 +838,7 @@ index 17cbbb1eb7f63..72684ae3a2d92 100644
    }
  
    // If the tab search button is before the tab strip, it also overlaps the
-@@ -522,7 +525,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
-     int product_specifications_button_width =
-         product_specifications_button_
-             ? product_specifications_button_->GetPreferredSize().width()
--            : 0;
-+            : features::IsThorium2024() ? GetLayoutConstant(TAB_SEARCH_PADDING)
-+                                        : 0;
-     tab_strip_left_margin = tab_search_container_->GetPreferredSize().width() +
-                             product_specifications_button_width;
- 
-@@ -530,8 +534,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -530,8 +531,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
      // should have 6 px of padding between it and the tab_search button (not
      // including the corner radius).
      tab_strip_left_margin = tab_strip_left_margin.value() +
@@ -501,32 +870,133 @@ index 2ca8611118a21..e360e3afcdc9f 100644
      const int resize_handle_left_margin = 2;
      SetProperty(views::kMarginsKey,
                  gfx::Insets().set_left(resize_handle_left_margin));
-diff --git a/chrome/browser/ui/views/tabs/tab_slot_controller.h b/chrome/browser/ui/views/tabs/tab_slot_controller.h
-index bbfcdbe0dd95e..169d43261a599 100644
---- a/chrome/browser/ui/views/tabs/tab_slot_controller.h
-+++ b/chrome/browser/ui/views/tabs/tab_slot_controller.h
-@@ -170,6 +170,9 @@ class TabSlotController {
-   // 0 if there is no stroke.
-   virtual int GetStrokeThickness() const = 0;
+diff --git a/chrome/browser/ui/views/tab_search_bubble_host.cc b/chrome/browser/ui/views/tab_search_bubble_host.cc
+index fa14797259775..6031b27d539e6 100644
+--- a/chrome/browser/ui/views/tab_search_bubble_host.cc
++++ b/chrome/browser/ui/views/tab_search_bubble_host.cc
+@@ -202,7 +202,7 @@ bool TabSearchBubbleHost::ShowTabSearchBubble(
+     // Place the anchor similar to where the button would be in non-fullscreen
+     // mode.
+     const gfx::Rect bounds = button_->GetWidget()->GetWorkAreaBoundsInScreen();
+-    const int offset = GetLayoutConstant(TAB_STRIP_PADDING);
++    const int offset = GetLayoutConstant(TAB_INACTIVE_PADDING);
  
-+  // Returns the inactive vertical tab offset when strokes are enabled.
-+  virtual int Th24StrokeOffset() const = 0;
+     const int x = tabs::GetTabSearchTrailingTabstrip(profile_)
+                       ? bounds.right() - offset
+diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
+index 65676013fece9..476f9ae26f17e 100644
+--- a/chrome/browser/ui/views/tabs/tab_style_views.cc
++++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
+@@ -18,6 +18,7 @@
+ #include "chrome/browser/ui/layout_constants.h"
+ #include "chrome/browser/ui/tabs/tab_style.h"
+ #include "chrome/browser/ui/tabs/tab_types.h"
++#include "chrome/browser/ui/thorium_2024.h"
+ #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
+ #include "chrome/browser/ui/views/frame/browser_view.h"
+ #include "chrome/browser/ui/views/frame/top_container_background.h"
+@@ -244,7 +245,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+     // this. Detached tab shapes do not need to respect this.
+     if (path_type != TabStyle::PathType::kInteriorClip &&
+         path_type != TabStyle::PathType::kHitTest) {
+-      tab_height -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
++      // Keep this in Thorium
++      tab_height -= GetLayoutConstant(TAB_MARGIN) * scale;
+       tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
+     }
+ 
+@@ -254,8 +256,10 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+     }
+ 
+     int left = aligned_bounds.x() + extension_corner_radius;
+-    int top = aligned_bounds.y() + GetLayoutConstant(TAB_STRIP_PADDING) * scale;
++    // Keep this in Thorium
++    int top = aligned_bounds.y() + GetLayoutConstant(TAB_INACTIVE_PADDING) * scale;
+     int right = aligned_bounds.right() - extension_corner_radius;
++    // Keep this in Thorium
+     const int bottom = top + tab_height;
+ 
+     // For maximized and full screen windows, extend the tab hit test to the top
+@@ -263,7 +267,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+     // tabs by moving the mouse to the top of the screen.
+     if (path_type == TabStyle::PathType::kHitTest &&
+         tab()->controller()->IsFrameCondensed()) {
+-      top -= GetLayoutConstant(TAB_STRIP_PADDING) * scale;
++      // Keep this in Thorium
++      top -= GetLayoutConstant(TAB_MARGIN) * scale;
+       // Don't round the top corners to avoid creating dead space between tabs.
+       top_content_corner_radius = 0;
+     }
+@@ -298,6 +303,13 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+       }
+     }
+ 
++    if (features::IsThorium2024()) {
++      const int Th24StrokeOffset = 1;
++      top -= Th24StrokeOffset;
++      // Experimental int
++      //bottom -= tab()->controller()->Th24StrokeOffset();
++    }
 +
-   // Returns true if tab loading throbbers can be painted to a composited layer.
-   // This can only be done when the TabController can guarantee that nothing
-   // in the same window will redraw on top of the the favicon area of any tab.
-diff --git a/chrome/browser/ui/views/tabs/tab_strip.h b/chrome/browser/ui/views/tabs/tab_strip.h
-index 27b0ff01d4ba9..a7fdc199f873c 100644
---- a/chrome/browser/ui/views/tabs/tab_strip.h
-+++ b/chrome/browser/ui/views/tabs/tab_strip.h
-@@ -290,6 +290,7 @@ class TabStrip : public views::View,
-   bool HoverCardIsShowingForTab(Tab* tab) override;
-   int GetBackgroundOffset() const override;
-   int GetStrokeThickness() const override;
-+  int Th24StrokeOffset() const override;
-   bool CanPaintThrobberToLayer() const override;
-   bool HasVisibleBackgroundTabShapes() const override;
-   SkColor GetTabSeparatorColor() const override;
+     // Radii are clockwise from top left.
+     const SkVector radii[4] = {
+         SkVector(top_content_corner_radius, top_content_corner_radius),
+@@ -731,6 +743,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+   const Tab* const adjacent_tab =
+       tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
+ 
++  // The separator should never appear at the end of the tab strip.
++  //if (!adjacent_tab && !leading) {
++      //return 1.0f;
++  //}
++
+   const Tab* const left_tab = leading ? adjacent_tab : tab();
+   const Tab* const right_tab = leading ? tab() : adjacent_tab;
+   const bool adjacent_to_header =
+@@ -965,6 +982,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+     cc::PaintFlags flags;
+     flags.setAntiAlias(true);
+     flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
++    if (base::CommandLine::ForCurrentProcess()->HasSwitch("transparent-tabs") &&
++        selection_state != TabStyle::TabSelectionState::kActive)
++        flags.setAlphaf(0.7f);
+     canvas->DrawRect(gfx::ScaleToEnclosingRect(tab_->GetLocalBounds(), scale),
+                      flags);
+   }
+diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
+index ed801f34141da..bc24e8c7dfbe9 100644
+--- a/ui/base/ui_base_features.cc
++++ b/ui/base/ui_base_features.cc
+@@ -511,6 +511,14 @@ bool IsLacrosColorManagementEnabled() {
+   return base::FeatureList::IsEnabled(kLacrosColorManagement);
+ }
+ 
++BASE_FEATURE(kThorium2024,
++             "Thorium2024",
++             base::FEATURE_DISABLED_BY_DEFAULT);
++
++bool IsThorium2024() {
++  return base::FeatureList::IsEnabled(kThorium2024);
++}
++
+ BASE_FEATURE(kBubbleMetricsApi,
+              "BubbleMetricsApi",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
+index 2232cc983adbc..1a2888799934e 100644
+--- a/ui/base/ui_base_features.h
++++ b/ui/base/ui_base_features.h
+@@ -228,6 +228,10 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
+ COMPONENT_EXPORT(UI_BASE_FEATURES)
+ bool IsLacrosColorManagementEnabled();
+ 
++// Used to revert some stupid UI decisions for Cr23
++COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kThorium2024);
++COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsThorium2024();
++
+ COMPONENT_EXPORT(UI_BASE_FEATURES)
+ BASE_DECLARE_FEATURE(kBubbleMetricsApi);
+ 
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index 2f1525c8880d4..c7b6d0822ba32 100644
 --- a/ui/views/controls/menu/menu_config.cc
@@ -557,10 +1027,10 @@ index 2f1525c8880d4..c7b6d0822ba32 100644
  
  // static
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..d0ebb10c67d67 100644
+index 09c03d1e87011..0929f0598d52b 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
-@@ -4,12 +4,17 @@
+@@ -4,12 +4,16 @@
  
  #include "ui/views/controls/menu/menu_config.h"
  
@@ -572,10 +1042,9 @@ index 09c03d1e87011..d0ebb10c67d67 100644
  
  void MenuConfig::InitPlatform() {
 -  use_bubble_border = true;
-+  use_bubble_border = features::IsThorium2024() ? false
-+                      : true;
++  use_bubble_border = corner_radius > 0;
 +  arrow_to_edge_padding = features::IsThorium2024() ? 2 : 8;
-+  separator_height = features::IsThorium2024() ? 4 : 17;
++  separator_height = features::IsThorium2024() ? 6 : 17;
  }
  
  }  // namespace views
