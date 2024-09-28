@@ -553,7 +553,6 @@ class TabStripModel : public TabGroupController {
   // for entries in the 'Add to existing group' submenu.
   enum ContextMenuCommand {
     CommandFirst,
-    CommandNewTabToLeft,
     CommandNewTabToRight,
     CommandReload,
     CommandDuplicate,
