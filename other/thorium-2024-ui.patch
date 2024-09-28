@@ -1025,6 +1025,28 @@ index 2232cc983adbc..1a2888799934e 100644
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  BASE_DECLARE_FEATURE(kBubbleMetricsApi);
  
+diff --git a/ui/linux/linux_ui_factory.cc b/ui/linux/linux_ui_factory.cc
+index d21456ab73faa..de14c868fcc26 100644
+--- a/ui/linux/linux_ui_factory.cc
++++ b/ui/linux/linux_ui_factory.cc
+@@ -175,7 +175,7 @@ SystemTheme GetDefaultSystemTheme() {
+     case base::nix::DESKTOP_ENVIRONMENT_PANTHEON:
+     case base::nix::DESKTOP_ENVIRONMENT_UNITY:
+     case base::nix::DESKTOP_ENVIRONMENT_XFCE:
+-      return SystemTheme::kGtk;
++      return SystemTheme::kDefault;
+     case base::nix::DESKTOP_ENVIRONMENT_KDE3:
+     case base::nix::DESKTOP_ENVIRONMENT_KDE4:
+     case base::nix::DESKTOP_ENVIRONMENT_KDE5:
+@@ -183,7 +183,7 @@ SystemTheme GetDefaultSystemTheme() {
+     case base::nix::DESKTOP_ENVIRONMENT_UKUI:
+     case base::nix::DESKTOP_ENVIRONMENT_DEEPIN:
+     case base::nix::DESKTOP_ENVIRONMENT_LXQT:
+-      return SystemTheme::kQt;
++      return SystemTheme::kDefault;
+     case base::nix::DESKTOP_ENVIRONMENT_OTHER:
+       return SystemTheme::kDefault;
+   }
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index 2f1525c8880d4..c7b6d0822ba32 100644
 --- a/ui/views/controls/menu/menu_config.cc
