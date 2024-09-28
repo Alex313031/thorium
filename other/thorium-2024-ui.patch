@@ -17,19 +17,6 @@ index eb515155212c9..1bc09f08c8717 100644
        <!-- Menu and/or quick action(s). -->
        <div role="gridcell" id="action-icon-buttons">
          <cr-icon-button id="more-actions" iron-icon="cr:more-vert"
-diff --git a/chrome/browser/themes/theme_service_factory.cc b/chrome/browser/themes/theme_service_factory.cc
-index 2c5c526f2a42f..57d16cc46df9a 100644
---- a/chrome/browser/themes/theme_service_factory.cc
-+++ b/chrome/browser/themes/theme_service_factory.cc
-@@ -123,7 +123,7 @@ void ThemeServiceFactory::RegisterProfilePrefs(
- #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
-   ui::SystemTheme default_system_theme = ui::SystemTheme::kDefault;
- #if BUILDFLAG(IS_LINUX)
--  default_system_theme = ui::GetDefaultSystemTheme();
-+  default_system_theme = ui::SystemTheme::kDefault;
- #endif
-   registry->RegisterIntegerPref(prefs::kSystemTheme,
-                                 static_cast<int>(default_system_theme));
 diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 index 64948595a4bc6..a568c893736ca 100644
 --- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
@@ -217,7 +204,7 @@ index a35795ee8cc11..60577ba01a5fd 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index d2aae6af7306b..137146e4fe032 100644
+index d2aae6af7306b..da6152848c9e4 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
 @@ -105,6 +105,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
@@ -231,6 +218,47 @@ index d2aae6af7306b..137146e4fe032 100644
    if (tab_strip->delegate()->SupportsReadLater()) {
      AddItem(
          TabStripModel::CommandAddToReadLater,
+diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
+index 89df9a7f7a805..d52782a295e31 100644
+--- a/chrome/browser/ui/tabs/tab_strip_model.cc
++++ b/chrome/browser/ui/tabs/tab_strip_model.cc
+@@ -1295,6 +1295,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+     ContextMenuCommand command_id) const {
+   DCHECK(command_id > CommandFirst && command_id < CommandLast);
+   switch (command_id) {
++    case CommandNewTabToLeft:
+     case CommandNewTabToRight:
+     case CommandCloseTab:
+       return true;
+@@ -1396,6 +1397,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+   if (!ContainsIndex(context_index))
+     return;
+   switch (command_id) {
++
++    case CommandNewTabToLeft: {
++      base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
++      UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
++                                NewTabTypes::NEW_TAB_ENUM_COUNT);
++      delegate()->AddTabAt(GURL(), context_index, true,
++                           GetTabGroupForTab(context_index));
++      break;
++    }
++
+     case CommandNewTabToRight: {
+       base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
+       UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
+diff --git a/chrome/browser/ui/tabs/tab_strip_model.h b/chrome/browser/ui/tabs/tab_strip_model.h
+index 7f2f57facf152..3638494eb0dbf 100644
+--- a/chrome/browser/ui/tabs/tab_strip_model.h
++++ b/chrome/browser/ui/tabs/tab_strip_model.h
+@@ -547,6 +547,7 @@ class TabStripModel : public TabGroupController {
+   // for entries in the 'Add to existing group' submenu.
+   enum ContextMenuCommand {
+     CommandFirst,
++    CommandNewTabToLeft,
+     CommandNewTabToRight,
+     CommandReload,
+     CommandDuplicate,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
 index b32265fa04597..a23850ecead51 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
