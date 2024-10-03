@@ -385,7 +385,7 @@ diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/
 index 89df9a7f7a805..d52782a295e31 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -1295,6 +1295,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+@@ -1296,6 +1296,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
      ContextMenuCommand command_id) const {
    DCHECK(command_id > CommandFirst && command_id < CommandLast);
    switch (command_id) {
@@ -393,7 +393,7 @@ index 89df9a7f7a805..d52782a295e31 100644
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -1396,6 +1397,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+@@ -1397,6 +1398,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    if (!ContainsIndex(context_index))
      return;
    switch (command_id) {
@@ -1148,7 +1148,7 @@ diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui
 index 65676013fece9..476f9ae26f17e 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -18,6 +18,7 @@
+@@ -19,6 +19,7 @@
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/tab_types.h"
@@ -1156,7 +1156,7 @@ index 65676013fece9..476f9ae26f17e 100644
  #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/top_container_background.h"
-@@ -244,7 +245,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -254,7 +255,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // this. Detached tab shapes do not need to respect this.
      if (path_type != TabStyle::PathType::kInteriorClip &&
          path_type != TabStyle::PathType::kHitTest) {
@@ -1166,7 +1166,7 @@ index 65676013fece9..476f9ae26f17e 100644
        tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
      }
  
-@@ -254,8 +256,10 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -264,8 +266,10 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      }
  
      int left = aligned_bounds.x() + extension_corner_radius;
@@ -1178,7 +1178,7 @@ index 65676013fece9..476f9ae26f17e 100644
      const int bottom = top + tab_height;
  
      // For maximized and full screen windows, extend the tab hit test to the top
-@@ -263,7 +267,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -273,7 +277,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // tabs by moving the mouse to the top of the screen.
      if (path_type == TabStyle::PathType::kHitTest &&
          tab()->controller()->IsFrameCondensed()) {
@@ -1188,7 +1188,7 @@ index 65676013fece9..476f9ae26f17e 100644
        // Don't round the top corners to avoid creating dead space between tabs.
        top_content_corner_radius = 0;
      }
-@@ -298,6 +303,13 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -308,6 +313,13 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
        }
      }
  
@@ -1202,7 +1202,7 @@ index 65676013fece9..476f9ae26f17e 100644
      // Radii are clockwise from top left.
      const SkVector radii[4] = {
          SkVector(top_content_corner_radius, top_content_corner_radius),
-@@ -731,6 +743,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+@@ -753,6 +765,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
    const Tab* const adjacent_tab =
        tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
  
@@ -1214,7 +1214,7 @@ index 65676013fece9..476f9ae26f17e 100644
    const Tab* const left_tab = leading ? adjacent_tab : tab();
    const Tab* const right_tab = leading ? tab() : adjacent_tab;
    const bool adjacent_to_header =
-@@ -965,6 +982,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+@@ -987,6 +1004,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
      cc::PaintFlags flags;
      flags.setAntiAlias(true);
      flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
@@ -1691,11 +1691,6 @@ index 3ed4ba49f5b4d..7a9b2a96f7c9a 100644
    }
  }
  
-@@ -1500,3 +1544,4 @@ BEGIN_METADATA(TreeView)
- END_METADATA
- 
- }  // namespace views
-+
 diff --git a/ui/views/controls/tree/tree_view.h b/ui/views/controls/tree/tree_view.h
 index 3a8a79eb69c32..f29814a4fc4b9 100644
 --- a/ui/views/controls/tree/tree_view.h
