@@ -17,6 +17,127 @@ index eb515155212c9..1bc09f08c8717 100644
        <!-- Menu and/or quick action(s). -->
        <div role="gridcell" id="action-icon-buttons">
          <cr-icon-button id="more-actions" iron-icon="cr:more-vert"
+diff --git a/chrome/browser/search/search.cc b/chrome/browser/search/search.cc
+index 916e1c043f3e5..9bc0ea94e459a 100644
+--- a/chrome/browser/search/search.cc
++++ b/chrome/browser/search/search.cc
+@@ -95,17 +95,6 @@ enum NewTabURLState {
+   NEW_TAB_URL_MAX
+ };
+ 
+-const TemplateURL* GetDefaultSearchProviderTemplateURL(Profile* profile) {
+-  if (profile) {
+-    TemplateURLService* template_url_service =
+-        TemplateURLServiceFactory::GetForProfile(profile);
+-    if (template_url_service) {
+-      return template_url_service->GetDefaultSearchProvider();
+-    }
+-  }
+-  return nullptr;
+-}
+-
+ bool IsMatchingServiceWorker(const GURL& my_url, const GURL& document_url) {
+   // The origin should match.
+   if (!MatchesOrigin(my_url, document_url)) {
+@@ -142,21 +131,6 @@ bool IsNTPOrRelatedURLHelper(const GURL& url, Profile* profile) {
+                                     IsMatchingServiceWorker(url, new_tab_url));
+ }
+ 
+-bool IsURLAllowedForSupervisedUser(const GURL& url, Profile& profile) {
+-  if (!supervised_user::IsSubjectToParentalControls(*profile.GetPrefs())) {
+-    return true;
+-  }
+-  supervised_user::SupervisedUserService* supervised_user_service =
+-      SupervisedUserServiceFactory::GetForProfile(&profile);
+-  supervised_user::SupervisedUserURLFilter* url_filter =
+-      supervised_user_service->GetURLFilter();
+-  if (url_filter->GetFilteringBehaviorForURL(url) ==
+-      supervised_user::FilteringBehavior::kBlock) {
+-    return false;
+-  }
+-  return true;
+-}
+-
+ // Used to look up the URL to use for the New Tab page. Also tracks how we
+ // arrived at that URL so it can be logged with UMA.
+ struct NewTabURLDetails {
+@@ -179,33 +153,9 @@ struct NewTabURLDetails {
+     const GURL local_url(default_is_google
+                              ? chrome::kChromeUINewTabPageURL
+                              : chrome::kChromeUINewTabPageThirdPartyURL);
+-    if (default_is_google) {
+-      return NewTabURLDetails(local_url, NEW_TAB_URL_VALID);
+-    }
+ #endif
+ 
+-    const TemplateURL* template_url =
+-        GetDefaultSearchProviderTemplateURL(profile);
+-    if (!profile || !template_url) {
+-      return NewTabURLDetails(local_url, NEW_TAB_URL_BAD);
+-    }
+-
+-    GURL search_provider_url(template_url->new_tab_url_ref().ReplaceSearchTerms(
+-        TemplateURLRef::SearchTermsArgs(std::u16string()),
+-        UIThreadSearchTermsData()));
+-
+-    if (!search_provider_url.is_valid()) {
+-      return NewTabURLDetails(local_url, NEW_TAB_URL_NOT_SET);
+-    }
+-    if (!search_provider_url.SchemeIsCryptographic()) {
+-      return NewTabURLDetails(local_url, NEW_TAB_URL_INSECURE);
+-    }
+-    if (!IsURLAllowedForSupervisedUser(search_provider_url,
+-                                       CHECK_DEREF(profile))) {
+-      return NewTabURLDetails(local_url, NEW_TAB_URL_BLOCKED);
+-    }
+-
+-    return NewTabURLDetails(search_provider_url, NEW_TAB_URL_VALID);
++    return NewTabURLDetails(local_url, NEW_TAB_URL_VALID);
+   }
+ 
+   const GURL url;
+diff --git a/chrome/browser/ui/bookmarks/bookmark_utils.cc b/chrome/browser/ui/bookmarks/bookmark_utils.cc
+index e7858be996ca8..c0b2695b6e00b 100644
+--- a/chrome/browser/ui/bookmarks/bookmark_utils.cc
++++ b/chrome/browser/ui/bookmarks/bookmark_utils.cc
+@@ -318,8 +318,35 @@ ui::ImageModel GetBookmarkFolderIcon(
+                             absl::variant<ui::ColorId, SkColor> color,
+                             const ui::ColorProvider* color_provider) {
+     gfx::ImageSkia folder;
+-    folder =
+-        GetBookmarkFolderImageFromVectorIcon(icon_type, color, color_provider);
++    if (features::IsThorium2024()) {
++#if BUILDFLAG(IS_WIN)
++      // TODO(bsep): vectorize the Windows versions: crbug.com/564112
++      folder = *ui::ResourceBundle::GetSharedInstance().GetImageSkiaNamed(
++          default_id);
++#elif BUILDFLAG(IS_MAC)
++      SkColor sk_color;
++      if (absl::holds_alternative<SkColor>(color)) {
++        sk_color = absl::get<SkColor>(color);
++      } else {
++        DCHECK(color_provider);
++        sk_color = color_provider->GetColor(absl::get<ui::ColorId>(color));
++      }
++      const int white_id = (icon_type == BookmarkFolderIconType::kNormal)
++                               ? IDR_FOLDER_CLOSED_WHITE
++                               : IDR_BOOKMARK_BAR_FOLDER_MANAGED_WHITE;
++      const int resource_id =
++          color_utils::IsDark(sk_color) ? default_id : white_id;
++      folder = *ui::ResourceBundle::GetSharedInstance()
++                    .GetNativeImageNamed(resource_id)
++                    .ToImageSkia();
++#else
++      folder = GetBookmarkFolderImageFromVectorIcon(icon_type, color,
++                                                    color_provider);
++#endif
++    } else {
++      folder =
++          GetBookmarkFolderImageFromVectorIcon(icon_type, color, color_provider);
++    }
+     return gfx::ImageSkia(std::make_unique<RTLFlipSource>(folder),
+                           folder.size());
+   };
 diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 index 64948595a4bc6..a568c893736ca 100644
 --- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
@@ -30,6 +151,35 @@ index 64948595a4bc6..a568c893736ca 100644
  
  static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
  
+diff --git a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
+index 71f9d6ad07da0..246532a09797a 100644
+--- a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
++++ b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
+@@ -133,10 +133,6 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
+   // TODO(pbos): Look at returning -1 here if there's no default index. Right
+   // now a lot of code in Combobox assumes an index within `items_` bounds.
+   auto it = base::ranges::find(items_, Item(parent_node_, Item::TYPE_NODE));
+-  if (it == items_.end()) {
+-    it = base::ranges::find(items_,
+-                            Item(parent_node_, Item::TYPE_ALL_BOOKMARKS_NODE));
+-  }
+   return it == items_.end() ? 0 : static_cast<int>(it - items_.begin());
+ }
+ 
+diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
+index 8837e8baf3025..1d95a1a3ddf46 100644
+--- a/chrome/browser/ui/browser_command_controller.cc
++++ b/chrome/browser/ui/browser_command_controller.cc
+@@ -1433,7 +1433,8 @@ void BrowserCommandController::InitCommandState() {
+   command_updater_.UpdateCommandEnabled(IDC_WINDOW_CLOSE_OTHER_TABS,
+                                         normal_window);
+ 
+-  const bool enable_tab_search_commands = browser_->is_type_normal();
++  const bool enable_tab_search_commands = browser_->is_type_normal() &&
++      !base::CommandLine::ForCurrentProcess()->HasSwitch("remove-tabsearch-button");
+   command_updater_.UpdateCommandEnabled(IDC_TAB_SEARCH,
+                                         enable_tab_search_commands);
+   command_updater_.UpdateCommandEnabled(IDC_TAB_SEARCH_CLOSE,
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
 index ea5c2c05f5fa9..5db2dac1b2fa2 100644
 --- a/chrome/browser/ui/layout_constants.cc
@@ -203,6 +353,19 @@ index a35795ee8cc11..60577ba01a5fd 100644
    // Padding before the tab title.
    TAB_PRE_TITLE_PADDING,
  
+diff --git a/chrome/browser/ui/status_bubble.h b/chrome/browser/ui/status_bubble.h
+index 74a00df155806..00945e93c0afa 100644
+--- a/chrome/browser/ui/status_bubble.h
++++ b/chrome/browser/ui/status_bubble.h
+@@ -18,7 +18,7 @@ class GURL;
+ class StatusBubble {
+  public:
+   // On hover, expand status bubble to fit long URL after this delay.
+-  static const int kExpandHoverDelayMS = 1600;
++  static const int kExpandHoverDelayMS = 0;
+ 
+   virtual ~StatusBubble() {}
+ 
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
 index d2aae6af7306b..da6152848c9e4 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
@@ -260,7 +423,7 @@ index 7f2f57facf152..3638494eb0dbf 100644
      CommandReload,
      CommandDuplicate,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index b32265fa04597..a23850ecead51 100644
+index b32265fa04597..b278d70b78188 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -6,6 +6,7 @@
@@ -290,7 +453,7 @@ index b32265fa04597..a23850ecead51 100644
  constexpr int kChromeRefreshTabHorizontalPadding = 8;
  
  class ChromeRefresh2023TabStyle : public TabStyle {
-@@ -54,8 +60,26 @@ class ChromeRefresh2023TabStyle : public TabStyle {
+@@ -54,8 +60,28 @@ class ChromeRefresh2023TabStyle : public TabStyle {
  TabStyle::~TabStyle() = default;
  
  int ChromeRefresh2023TabStyle::GetStandardWidth() const {
@@ -302,6 +465,8 @@ index b32265fa04597..a23850ecead51 100644
 +    kTabWidthValue = 60;
 +  } else if (custom_tab_width == "120") {
 +    kTabWidthValue = 120;
++  } else if (custom_tab_width == "180") {
++    kTabWidthValue = 180;
 +  } else if (custom_tab_width == "240") {
 +    kTabWidthValue = 240;
 +  } else if (custom_tab_width == "300") {
@@ -318,7 +483,7 @@ index b32265fa04597..a23850ecead51 100644
    // The overlap includes one separator, so subtract it here.
    return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
  }
-@@ -102,19 +126,42 @@ int ChromeRefresh2023TabStyle::GetMinimumInactiveWidth() const {
+@@ -102,19 +128,42 @@ int ChromeRefresh2023TabStyle::GetMinimumInactiveWidth() const {
  }
  
  int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
@@ -367,7 +532,7 @@ index b32265fa04597..a23850ecead51 100644
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
-@@ -124,23 +171,43 @@ gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
+@@ -124,23 +173,43 @@ gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
  }
  
  gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
@@ -419,7 +584,7 @@ index b32265fa04597..a23850ecead51 100644
  }
  
  SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
-@@ -177,11 +244,19 @@ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
+@@ -177,11 +246,19 @@ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
  }
  
  gfx::Insets ChromeRefresh2023TabStyle::GetContentsInsets() const {
@@ -824,10 +989,33 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index 17cbbb1eb7f63..9b81a22dc946d 100644
+index 17cbbb1eb7f63..9bc158f2087b8 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-@@ -227,7 +227,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+@@ -112,7 +112,8 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+ 
+   // Add and configure the TabSearchContainer.
+   std::unique_ptr<TabSearchContainer> tab_search_container;
+-  if (browser && browser->is_type_normal()) {
++  if (browser && browser->is_type_normal() &&
++      !base::CommandLine::ForCurrentProcess()->HasSwitch("remove-tabsearch-button")) {
+     tab_search_container = std::make_unique<TabSearchContainer>(
+         tab_strip_->controller(), browser->tab_strip_model(),
+         render_tab_search_before_tab_strip_, this);
+@@ -201,12 +202,10 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+ 
+     // TODO(crbug.com/40118868): Revisit the macro expression once build flag
+     // switch of lacros-chrome is complete.
+-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
+     // The New Tab Button can be middle-clicked on Linux.
+     new_tab_button_->SetTriggerableEventFlags(
+         new_tab_button_->GetTriggerableEventFlags() |
+         ui::EF_MIDDLE_MOUSE_BUTTON);
+-#endif
+   }
+ 
+   reserved_grab_handle_space_ =
+@@ -227,7 +226,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
      tab_search_container_ = AddChildView(std::move(tab_search_container));
      tab_search_container_->SetProperty(
          views::kMarginsKey,
@@ -836,7 +1024,7 @@ index 17cbbb1eb7f63..9b81a22dc946d 100644
    }
  
    UpdateTabStripMargin();
-@@ -356,7 +356,8 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -356,7 +355,8 @@ void TabStripRegionView::Layout(PassKey) {
      int product_specifications_button_width =
          product_specifications_button_
              ? product_specifications_button_->GetPreferredSize().width()
@@ -846,7 +1034,7 @@ index 17cbbb1eb7f63..9b81a22dc946d 100644
      AdjustViewBoundsRect(tab_search_container_,
                           product_specifications_button_width);
    }
-@@ -371,8 +372,8 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -371,8 +371,8 @@ void TabStripRegionView::Layout(PassKey) {
      gfx::Point new_tab_button_new_position =
          gfx::Point(tab_strip_container_->bounds().right() -
                         TabStyle::Get()->GetBottomCornerRadius() +
@@ -857,7 +1045,7 @@ index 17cbbb1eb7f63..9b81a22dc946d 100644
  
      gfx::Rect new_tab_button_new_bounds =
          gfx::Rect(new_tab_button_new_position, new_tab_button_size);
-@@ -504,7 +505,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -504,7 +504,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
      new_tab_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
  
      tab_strip_right_margin = new_tab_button_->GetPreferredSize().width() +
@@ -866,7 +1054,7 @@ index 17cbbb1eb7f63..9b81a22dc946d 100644
    }
  
    // If the tab search button is before the tab strip, it also overlaps the
-@@ -530,8 +531,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -530,8 +530,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
      // should have 6 px of padding between it and the tab_search button (not
      // including the corner radius).
      tab_strip_left_margin = tab_strip_left_margin.value() +
@@ -877,6 +1065,51 @@ index 17cbbb1eb7f63..9b81a22dc946d 100644
                              TabStyle::Get()->GetBottomCornerRadius();
    }
  
+diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
+index 8ad0bd147a4c2..017a8d3422806 100644
+--- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
++++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
+@@ -209,7 +209,10 @@ LocationBarView::LocationBarView(Browser* browser,
+                  !v->GetOmniboxPopupView()->IsOpen();
+         }));
+     views::FocusRing::Get(this)->SetOutsetFocusRingDisabled(true);
+-    views::InstallPillHighlightPathGenerator(this);
++    static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
++    if (!classic_omnibox) {
++        views::InstallPillHighlightPathGenerator(this);
++    }
+ 
+ #if BUILDFLAG(OS_LEVEL_GEOLOCATION_PERMISSION_SUPPORTED)
+     if (features::IsOsLevelGeolocationPermissionSupportEnabled()) {
+@@ -436,8 +439,13 @@ bool LocationBarView::IsInitialized() const {
+ }
+ 
+ int LocationBarView::GetBorderRadius() const {
+-  return ChromeLayoutProvider::Get()->GetCornerRadiusMetric(
+-      views::Emphasis::kMaximum, size());
++  static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
++  if (classic_omnibox) {
++    return 4;
++  } else {
++    return ChromeLayoutProvider::Get()->GetCornerRadiusMetric(
++        views::Emphasis::kMaximum, size());
++  }
+ }
+ 
+ std::unique_ptr<views::Background> LocationBarView::CreateRoundRectBackground(
+@@ -1158,6 +1166,12 @@ void LocationBarView::RefreshBackground() {
+   }
+ 
+   SkColor border_color = SK_ColorTRANSPARENT;
++
++  static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
++  if (classic_omnibox && !is_caret_visible) {
++      border_color = color_provider->GetColor(kColorLocationBarBorderOnMismatch);
++  }
++
+   if (high_contrast) {
+     // High contrast schemes get a border stroke even on a rounded omnibox.
+     border_color =
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 index 2ca8611118a21..e360e3afcdc9f 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
@@ -991,6 +1224,114 @@ index 65676013fece9..476f9ae26f17e 100644
      canvas->DrawRect(gfx::ScaleToEnclosingRect(tab_->GetLocalBounds(), scale),
                       flags);
    }
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
+index 39e7681c0c708..c73c08f328607 100644
+--- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
+@@ -56,6 +56,7 @@
+ #include "chrome/browser/ui/webui/signin_internals_ui.h"
+ #include "chrome/browser/ui/webui/suggest_internals/suggest_internals_ui.h"
+ #include "chrome/browser/ui/webui/sync_internals/sync_internals_ui.h"
++#include "chrome/browser/ui/webui/thorium_webui.h"
+ #include "chrome/browser/ui/webui/translate_internals/translate_internals_ui.h"
+ #include "chrome/browser/ui/webui/usb_internals/usb_internals_ui.h"
+ #include "chrome/browser/ui/webui/user_actions/user_actions_ui.h"
+@@ -777,6 +778,10 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
+     return &NewWebUI<privacy_sandbox_internals::PrivacySandboxInternalsUI>;
+   }
+ 
++  if (url.host_piece() == chrome::kChromeUIEggsHost) {
++    return &NewWebUI<ThoriumWebUILoad>;
++  }
++
+   return nullptr;
+ }
+ 
+diff --git a/chrome/browser/ui/webui/thorium_webui.h b/chrome/browser/ui/webui/thorium_webui.h
+new file mode 100644
+index 0000000000000..d08b3a414a3e1
+--- /dev/null
++++ b/chrome/browser/ui/webui/thorium_webui.h
+@@ -0,0 +1,54 @@
++// Copyright 2024 Alex313031
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef THORIUM_WEBUI_H_
++#define THORIUM_WEBUI_H_
++
++#include "base/memory/ref_counted_memory.h"
++#include "chrome/browser/profiles/profile.h"
++#include "content/public/browser/url_data_source.h"
++#include "content/public/browser/web_ui.h"
++#include "content/public/browser/web_ui_controller.h"
++#include "services/network/public/mojom/content_security_policy.mojom.h"
++
++class ThoriumDataSource : public content::URLDataSource {
++ public:
++  ThoriumDataSource() {}
++  ThoriumDataSource(const ThoriumDataSource&) = delete;
++  ThoriumDataSource& operator=(const ThoriumDataSource&) = delete;
++  std::string GetSource() override;
++  std::string GetMimeType(const GURL& url) override;
++  std::string GetContentSecurityPolicy(network::mojom::CSPDirectiveName directive) override;
++  void StartDataRequest(const GURL& url,
++                        const content::WebContents::Getter& wc_getter,
++                        GotDataCallback callback) override;
++};
++
++std::string ThoriumDataSource::GetSource() { return "eggs"; }
++std::string ThoriumDataSource::GetMimeType(const GURL& url) { return "text/html"; }
++std::string ThoriumDataSource::GetContentSecurityPolicy(network::mojom::CSPDirectiveName directive) {
++  if (directive == network::mojom::CSPDirectiveName::ScriptSrc)
++    return "script-src 'unsafe-inline'";
++  return std::string();
++}
++void ThoriumDataSource::StartDataRequest(const GURL& url,
++                      const content::WebContents::Getter& wc_getter,
++                      GotDataCallback callback) {
++  std::string source = R"(
++    <title>Thorium Easter Eggs</title>
++    <h3>Thorium Easter Eggs WebUI Page</h3>
++  )";
++  std::move(callback).Run(base::MakeRefCounted<base::RefCountedString>(std::move(source)));
++}
++
++class ThoriumWebUILoad : public content::WebUIController {
++ public:
++  ThoriumWebUILoad(content::WebUI* web_ui) : content::WebUIController(web_ui) {
++    content::URLDataSource::Add(Profile::FromWebUI(web_ui), std::make_unique<ThoriumDataSource>());
++  }
++  ThoriumWebUILoad(const ThoriumWebUILoad&) = delete;
++  ThoriumWebUILoad& operator=(const ThoriumWebUILoad&) = delete;
++};
++
++#endif  // THORIUM_WEBUI_H_
+diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_constants.cc
+index 248b6795e8cbe..488bade160e37 100644
+--- a/chrome/common/webui_url_constants.cc
++++ b/chrome/common/webui_url_constants.cc
+@@ -75,6 +75,7 @@ bool IsSystemWebUIHost(std::string_view host) {
+ // These hosts will also be suggested by BuiltinProvider.
+ base::span<const base::cstring_view> ChromeURLHosts() {
+   static constexpr auto kChromeURLHosts = std::to_array<base::cstring_view>({
++      kChromeUIEggsHost,
+       kChromeUIAboutHost,
+       kChromeUIAccessibilityHost,
+ #if !BUILDFLAG(IS_ANDROID)
+diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
+index 70e366e816db5..a727ed4aa725f 100644
+--- a/chrome/common/webui_url_constants.h
++++ b/chrome/common/webui_url_constants.h
+@@ -31,6 +31,8 @@ namespace chrome {
+ // Not all components have corresponding URLs and vice versa. Only add as
+ // needed.
+ // Please keep in alphabetical order, with OS/feature specific sections below.
++inline constexpr char kChromeUIEggsHost[] = "eggs";
++inline constexpr char kChromeUIEggsURL[] = "chrome://eggs/";
+ inline constexpr char kChromeUIAboutHost[] = "about";
+ inline constexpr char kChromeUIAboutURL[] = "chrome://about/";
+ inline constexpr char kChromeUIAccessCodeCastHost[] = "access-code-cast";
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 index ed801f34141da..bc24e8c7dfbe9 100644
 --- a/ui/base/ui_base_features.cc
@@ -1217,8 +1558,137 @@ index a2dae078ccbd3..41e3452b95f5c 100644
    use_bubble_border = corner_radius > 0;
  }
  
+diff --git a/ui/views/controls/tree/tree_view.cc b/ui/views/controls/tree/tree_view.cc
+index 3ed4ba49f5b4d..7a9b2a96f7c9a 100644
+--- a/ui/views/controls/tree/tree_view.cc
++++ b/ui/views/controls/tree/tree_view.cc
+@@ -19,6 +19,7 @@
+ #include "ui/base/metadata/metadata_impl_macros.h"
+ #include "ui/base/models/image_model.h"
+ #include "ui/base/resource/resource_bundle.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/color/color_id.h"
+ #include "ui/color/color_provider.h"
+ #include "ui/events/event.h"
+@@ -96,12 +97,33 @@ TreeView::TreeView()
+       drawing_provider_(std::make_unique<TreeViewDrawingProvider>()) {
+   // Always focusable, even on Mac (consistent with NSOutlineView).
+   SetFocusBehavior(FocusBehavior::ALWAYS);
++#if BUILDFLAG(IS_MAC)
++  constexpr bool kUseMdIcons = true;
++#else
++  constexpr bool kUseMdIcons = false;
++#endif
++  if (features::IsThorium2024()) {
++    if (kUseMdIcons) {
++      closed_icon_ = open_icon_ = ui::ImageModel::FromVectorIcon(
++          vector_icons::kFolderIcon, ui::kColorIcon);
++    } else {
++      // TODO(ellyjones): if the pre-Harmony codepath goes away, merge
++      // closed_icon_ and open_icon_.
++      closed_icon_ = ui::ImageModel::FromImage(
++          ui::ResourceBundle::GetSharedInstance().GetImageNamed(
++              IDR_FOLDER_CLOSED));
++      open_icon_ = ui::ImageModel::FromImage(
++          ui::ResourceBundle::GetSharedInstance().GetImageNamed(IDR_FOLDER_OPEN));
++    }
++    text_offset_ = closed_icon_.Size().width() + kImagePadding + kImagePadding +
++                   kArrowRegionSize;
++  } else {
++    folder_icon_ = ui::ImageModel::FromVectorIcon(
++        vector_icons::kFolderChromeRefreshIcon, ui::kColorIcon);
+ 
+-  folder_icon_ = ui::ImageModel::FromVectorIcon(
+-      vector_icons::kFolderChromeRefreshIcon, ui::kColorIcon);
+-
+-  text_offset_ = folder_icon_.Size().width() + kImagePadding + kImagePadding +
+-                 kArrowRegionSize;
++    text_offset_ = folder_icon_.Size().width() + kImagePadding + kImagePadding +
++                   kArrowRegionSize;
++  }
+ }
+ 
+ TreeView::~TreeView() {
+@@ -1174,21 +1196,43 @@ void TreeView::PaintNodeIcon(gfx::Canvas* canvas,
+                              const gfx::Rect& bounds) {
+   std::optional<size_t> icon_index = model_->GetIconIndex(node->model_node());
+   int icon_x = kArrowRegionSize + kImagePadding;
+-  if (!icon_index.has_value()) {
+-    // Flip just the |bounds| region of |canvas|.
+-    gfx::ScopedCanvas scoped_canvas(canvas);
+-    canvas->Translate(gfx::Vector2d(bounds.x(), 0));
+-    scoped_canvas.FlipIfRTL(bounds.width());
+-    // Now paint the icon local to that flipped region.
+-    PaintRowIcon(canvas, folder_icon_.Rasterize(GetColorProvider()), icon_x,
+-                 gfx::Rect(0, bounds.y(), bounds.width(), bounds.height()));
++  if (features::IsThorium2024()) {
++    if (!icon_index.has_value()) {
++      // Flip just the |bounds| region of |canvas|.
++      gfx::ScopedCanvas scoped_canvas(canvas);
++      canvas->Translate(gfx::Vector2d(bounds.x(), 0));
++      scoped_canvas.FlipIfRTL(bounds.width());
++      // Now paint the icon local to that flipped region.
++      PaintRowIcon(canvas,
++                   (node->is_expanded() ? open_icon_ : closed_icon_)
++                       .Rasterize(GetColorProvider()),
++                   icon_x,
++                   gfx::Rect(0, bounds.y(), bounds.width(), bounds.height()));
++    } else {
++      const gfx::ImageSkia& icon =
++          icons_[icon_index.value()].Rasterize(GetColorProvider());
++      icon_x += (open_icon_.Size().width() - icon.width()) / 2;
++      if (base::i18n::IsRTL())
++        icon_x = bounds.width() - icon_x - icon.width();
++      PaintRowIcon(canvas, icon, icon_x, bounds);
++    }
+   } else {
+-    const gfx::ImageSkia& icon =
+-        icons_[icon_index.value()].Rasterize(GetColorProvider());
+-    icon_x += (folder_icon_.Size().width() - icon.width()) / 2;
+-    if (base::i18n::IsRTL())
+-      icon_x = bounds.width() - icon_x - icon.width();
+-    PaintRowIcon(canvas, icon, icon_x, bounds);
++    if (!icon_index.has_value()) {
++      // Flip just the |bounds| region of |canvas|.
++      gfx::ScopedCanvas scoped_canvas(canvas);
++      canvas->Translate(gfx::Vector2d(bounds.x(), 0));
++      scoped_canvas.FlipIfRTL(bounds.width());
++      // Now paint the icon local to that flipped region.
++      PaintRowIcon(canvas, folder_icon_.Rasterize(GetColorProvider()), icon_x,
++                   gfx::Rect(0, bounds.y(), bounds.width(), bounds.height()));
++    } else {
++      const gfx::ImageSkia& icon =
++          icons_[icon_index.value()].Rasterize(GetColorProvider());
++      icon_x += (folder_icon_.Size().width() - icon.width()) / 2;
++      if (base::i18n::IsRTL())
++        icon_x = bounds.width() - icon_x - icon.width();
++      PaintRowIcon(canvas, icon, icon_x, bounds);
++    }
+   }
+ }
+ 
+@@ -1500,3 +1544,4 @@ BEGIN_METADATA(TreeView)
+ END_METADATA
+ 
+ }  // namespace views
++
+diff --git a/ui/views/controls/tree/tree_view.h b/ui/views/controls/tree/tree_view.h
+index 3a8a79eb69c32..f29814a4fc4b9 100644
+--- a/ui/views/controls/tree/tree_view.h
++++ b/ui/views/controls/tree/tree_view.h
+@@ -461,6 +461,10 @@ class VIEWS_EXPORT TreeView : public View,
+   // Default folder icon.
+   ui::ImageModel folder_icon_;
+ 
++  // Default icons for closed/open.
++  ui::ImageModel closed_icon_;
++  ui::ImageModel open_icon_;
++
+   // Icons from the model.
+   std::vector<ui::ImageModel> icons_;
+ 
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 01301096ca466..52ba88243bd57 100644
+index 01301096ca466..87c2dbe85a63a 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -8,6 +8,7 @@
@@ -1229,11 +1699,12 @@ index 01301096ca466..52ba88243bd57 100644
  #include "ui/base/ui_base_features.h"
  #include "ui/gfx/font_list.h"
  #include "ui/views/controls/focus_ring.h"
-@@ -208,6 +209,37 @@ ShapeSysTokens GetShapeSysToken(ShapeContextTokens id) {
+@@ -208,6 +209,48 @@ ShapeSysTokens GetShapeSysToken(ShapeContextTokens id) {
  
  int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
                                            const gfx::Size& size) const {
 +
++  static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
 +  if (features::IsThorium2024()) {
 +    switch (id) {
 +      case ShapeContextTokens::kBadgeRadius:
@@ -1251,10 +1722,20 @@ index 01301096ca466..52ba88243bd57 100644
 +        return 0;
 +      case ShapeContextTokens::kMenuTouchRadius:
 +        return 8;
-+      case ShapeContextTokens::kOmniboxExpandedRadius:
-+        return 16;
-+      case ShapeContextTokens::kTextfieldRadius:
-+        return 8;
++      case ShapeContextTokens::kOmniboxExpandedRadius: {
++        if (classic_omnibox) {
++          return 4;
++        } else {
++          return 16;
++        }
++      }
++      case ShapeContextTokens::kTextfieldRadius: {
++        if (classic_omnibox) {
++          return 4;
++        } else {
++          return 8;
++        }
++      }
 +      case ShapeContextTokens::kSidePanelContentRadius:
 +        return 16;
 +      case ShapeContextTokens::kSidePanelPageContentRadius:
@@ -1267,3 +1748,47 @@ index 01301096ca466..52ba88243bd57 100644
    ShapeSysTokens token = GetShapeSysToken(id);
    DCHECK_NE(token, ShapeSysTokens::kDefault)
        << "kDefault token means there is a missing mapping between shape tokens";
+diff --git a/ui/webui/resources/cr_elements/cr_button/cr_button.css b/ui/webui/resources/cr_elements/cr_button/cr_button.css
+index 69dc68d302b63..c0b974153be08 100644
+--- a/ui/webui/resources/cr_elements/cr_button/cr_button.css
++++ b/ui/webui/resources/cr_elements/cr_button/cr_button.css
+@@ -74,7 +74,7 @@
+   user-select: none;
+   -webkit-tap-highlight-color: transparent;
+   border: var(--cr-button-border, 1px solid var(--cr-button-border-color));
+-  border-radius: 100px;
++  border-radius: 4px;
+   background: var(--cr-button-background-color);
+   color: var(--cr-button-text-color);
+   font-weight: 500;
+@@ -92,7 +92,7 @@
+ }
+ 
+ :host(.floating-button) {
+-  border-radius: 8px;
++  border-radius: 4px;
+   height: 40px;
+   transition: box-shadow 80ms linear;
+ }
+diff --git a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
+index c467dbadf8e14..a193f5893743d 100644
+--- a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
++++ b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
+@@ -28,7 +28,7 @@
+       --cr-active-neutral-on-subtle-background-color);
+   --cr-toggle-bar-border-color: var(--cr-toggle-unchecked-button-color);
+   --cr-toggle-bar-border: 1px solid var(--cr-toggle-bar-border-color);
+-  --cr-toggle-bar-width: 26px;
++  --cr-toggle-bar-width: 32px;
+   --cr-toggle-knob-diameter: 8px;
+   -webkit-tap-highlight-color: transparent;
+   cursor: pointer;
+@@ -92,7 +92,7 @@
+   border-radius: 50px;
+   box-sizing: border-box;
+   display: block;
+-  height: 16px;
++  height: 20px;
+   left: 3px;
+   opacity: 1;
+   position: initial;

@@ -162,7 +162,8 @@ void BrowserAppMenuButton::UpdateIcon() {
                                              : kBrowserToolsChromeRefreshThoriumIcon
                                              : disable_thorium_icons ? kBrowserToolsIcon
                                              : kBrowserToolsThoriumIcon);
-  static const int icon_size = 12;
+  // Fix Thorium hamburger menu size
+  static const int icon_size = 22;
   for (auto state : kButtonStates) {
     // `app_menu_icon_controller()->GetIconColor()` set different colors based
     // on the severity. However with chrome refresh all the severities should
