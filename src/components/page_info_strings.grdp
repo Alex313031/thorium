@@ -16,22 +16,7 @@
   <message name="IDS_PAGE_INFO_NOT_SECURE_SUMMARY_SHORT" desc="A shorter one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the connection to the current website is not secure.">
     Connection is not secure
   </message>
-  <message name="IDS_PAGE_INFO_MALWARE_SUMMARY" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as containing malware.">
-    This site contains malware
-  </message>
-  <message name="IDS_PAGE_INFO_MALWARE_SUMMARY_NEW" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as containing malware.">
-    Dangerous site
-  </message>
-  <message name="IDS_PAGE_INFO_SOCIAL_ENGINEERING_SUMMARY" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as social engineering.">
-    This site is deceptive
-  </message>
-  <message name="IDS_PAGE_INFO_SOCIAL_ENGINEERING_SUMMARY_NEW" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as social engineering.">
-    Dangerous site
-  </message>
-  <message name="IDS_PAGE_INFO_UNWANTED_SOFTWARE_SUMMARY" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as containing unwanted software.">
-    This site contains harmful programs
-  </message>
-  <message name="IDS_PAGE_INFO_UNWANTED_SOFTWARE_SUMMARY_NEW" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as containing unwanted software.">
+  <message name="IDS_PAGE_INFO_SAFE_BROWSING_SUMMARY" desc="A one-line summary at the top of the Page Info bubble (which shows when you click the security indicator) if the current website has been flagged as unsafe.">
     Dangerous site
   </message>
 
@@ -89,21 +74,12 @@
     You should not enter any sensitive information on this site (for example, passwords or credit cards), because it could be stolen by attackers.
   </message>
   <message name="IDS_PAGE_INFO_MALWARE_DETAILS" desc="A short paragraph explaining to the user that the current website has been flagged as containing malware.">
-    Attackers on this site might attempt to install dangerous programs on your computer that steal or delete your information (for example, photos, passwords, messages, and credit cards).
-  </message>
-  <message name="IDS_PAGE_INFO_MALWARE_DETAILS_NEW" desc="A short paragraph explaining to the user that the current website has been flagged as containing malware.">
     Attackers on the site you're trying to visit might install harmful software that steals or deletes things like your password, photos, messages, or credit card number.
   </message>
   <message name="IDS_PAGE_INFO_SOCIAL_ENGINEERING_DETAILS" desc="A short paragraph explaining to the user that the current website has been flagged as social engineering.">
-    Attackers on this site may trick you into doing something dangerous like installing software or revealing your personal information (for example, passwords, phone numbers, or credit cards).
-  </message>
-  <message name="IDS_PAGE_INFO_SOCIAL_ENGINEERING_DETAILS_NEW" desc="A short paragraph explaining to the user that the current website has been flagged as social engineering.">
     Attackers on the site you're trying to visit might trick you into installing software or revealing things like your password, phone, or credit card number.
   </message>
   <message name="IDS_PAGE_INFO_UNWANTED_SOFTWARE_DETAILS" desc="A short paragraph explaining to the user that the current website has been flagged as containing unwanted software.">
-    Attackers on this site might try to trick you into installing programs that harm your browsing experience (for example, by changing your homepage or showing extra ads on sites you visit).
-  </message>
-  <message name="IDS_PAGE_INFO_UNWANTED_SOFTWARE_DETAILS_NEW" desc="A short paragraph explaining to the user that the current website has been flagged as containing unwanted software.">
     Attackers on the site you're trying to visit might trick you into installing harmful software that affects the way you browse — for example, by changing your homepage or showing you extra ads on sites you visit.
   </message>
 
@@ -415,6 +391,9 @@
     <message name="IDS_PAGE_INFO_STATE_TEXT_HID_DEVICES_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the HID permission is in the ask state and the site can prompt the user to ask if they allow the site to connect to HID devices.">
       Can ask to connect to HID devices
     </message>
+    <message name="IDS_PAGE_INFO_STATE_TEXT_KEYBOARD_LOCK_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the keyboard lock permission is in the ask state and the site can prompt the user to ask if they allow the site to lock and use the input from their keyboard.">
+      Can ask to lock and use your keyboard
+    </message>
     <message name="IDS_PAGE_INFO_STATE_TEXT_LOCATION_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the location permission is in the ask state and the site can prompt the user to ask if they allow the site to use your location.">
       Can ask for your location
     </message>
@@ -426,6 +405,9 @@
     </message>
     <message name="IDS_PAGE_INFO_STATE_TEXT_NOTIFICATIONS_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the notification permission is in the ask state and the site can prompt the user to ask if they want to receive notifications.">
       Can ask to send notifications
+    </message>
+    <message name="IDS_PAGE_INFO_STATE_TEXT_POINTER_LOCK_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the pointer lock permission is in the ask state and the site can prompt the user to ask if they allow the site to lock and use the input from their mouse pointer.">
+      Can ask to lock and use your mouse
     </message>
     <message name="IDS_PAGE_INFO_STATE_TEXT_USB_ASK" desc="The Page Info permission subpage and the main page info page contain a label which shows the state of the site permission. This is the text shown if the USB permission is in the ask state and the site can prompt the user to ask if they allow the site to connect to USB devices.">
       Can ask to connect to USB devices
@@ -699,8 +681,8 @@
   </message>
 
   <!-- Permissions subpage -->
-  <message name="IDS_PAGE_INFO_PERMISSIONS_SUBPAGE_BUTTON_TOOLTIP" desc="The label of the button to open the Permissions subpage for a specific permission in Page Info bubble.">
-    Show permission details
+  <message name="IDS_PAGE_INFO_PERMISSIONS_SUBPAGE_BUTTON_TOOLTIP" desc="The tooltip/accessibility text of the button to open a Permissions subpage for a specific permission in Page Info bubble, if such a subpage is supported.">
+    Show <ph name="PERMISSION_NAME">$1<ex>location</ex></ph> permission details
   </message>
   <message name="IDS_PAGE_INFO_PERMISSIONS_SUBPAGE_MANAGE_BUTTON" desc="The text on the button, that opens settings page for the permission, in permission's subpage in page info bubble.">
     Manage
@@ -745,7 +727,7 @@
   <message name="IDS_PAGE_INFO_TRACKING_PROTECTION_SITE_INFO_BUTTON_LABEL_ALLOWED" desc="The label for the Tracking Protection button in the Page Info bubble (which shows when you click the site info icon) detailing that third party cookies are allowed." formatter_data="android_java">
     Third-party cookies allowed
   </message>
-  <message name="IDS_PAGE_INFO_TRACKING_PROTECTION_SITE_INFO_BUTTON_LABEL_BLOCKED" desc="The label for the Tracking Protection button in the Page Info bubble (which shows when you click the site info icon) detailing that third party cookies are blocked.">
+  <message name="IDS_PAGE_INFO_TRACKING_PROTECTION_SITE_INFO_BUTTON_LABEL_BLOCKED" desc="The label for the Tracking Protection button in the Page Info bubble (which shows when you click the site info icon) detailing that third party cookies are blocked." formatter_data="android_java">
     Third-party cookies blocked
   </message>
   <message name="IDS_PAGE_INFO_TRACKING_PROTECTION_SITE_INFO_BUTTON_LABEL_LIMITED" desc="The label for the Tracking Protection button in the Page Info bubble (which shows when you click the site info icon) detailing that third party cookies are limited." formatter_data="android_java">

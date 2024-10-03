@@ -313,6 +313,9 @@
   <message name="IDS_SETTINGS_SAVED_TAB_GROUPS_CHECKBOX_LABEL" desc="Label for the checkbox which enables or disables syncing saved tab groups between multiple browser instances.">
     Saved tab groups
   </message>
+  <message name="IDS_SETTINGS_PRODUCT_COMPARISONS_CHECKBOX_LABEL" desc="Label for the checkbox which enables or disables syncing product specifications between multiple browser instances.">
+    Product specifications
+  </message>
   <message name="IDS_SETTINGS_WIFI_CONFIGURATIONS_CHECKBOX_LABEL" desc="Label for the checkbox which enables syncing of Wi-Fi networks across devices.">
     Wi-Fi networks
   </message>
@@ -415,6 +418,9 @@
   <if expr="is_chromeos">
     <message name="IDS_BROWSER_SETTINGS_SYNC_FEATURE_LABEL" desc="Label describing the browser sync feature.">
       Your data will be synced across all Thorium browsers where you have turned on sync for this account. For ThoriumOS sync options, go to <ph name="LINK_BEGIN">&lt;a&gt;</ph>ThoriumOS settings<ph name="LINK_END">&lt;/a&gt;</ph>.
+    </message>
+    <message name="IDS_SETTINGS_COOKIES_CHECKBOX_LABEL" desc="Label for the checkbox which enables or disables syncing cookies between multiple browser instances.">
+      Cookies
     </message>
   </if>
 
