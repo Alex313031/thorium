@@ -42,6 +42,7 @@
 #include "chrome/browser/chrome_resource_bundle_helper.h"
 #include "chrome/browser/defaults.h"
 #include "chrome/browser/lifetime/browser_shutdown.h"
+#include "chrome/browser/mac/code_sign_clone_manager.h"
 #include "chrome/browser/metrics/chrome_feature_list_creator.h"
 #include "chrome/browser/startup_data.h"
 #include "chrome/common/buildflags.h"
@@ -55,6 +56,7 @@
 #include "chrome/common/chrome_switches.h"
 #include "chrome/common/crash_keys.h"
 #include "chrome/common/logging_chrome.h"
+#include "chrome/common/profiler/main_thread_stack_sampling_profiler.h"
 #include "chrome/common/profiler/process_type.h"
 #include "chrome/common/profiler/unwind_util.h"
 #include "chrome/common/url_constants.h"
@@ -155,6 +157,7 @@
 #include "chrome/browser/ash/dbus/ash_dbus_helper.h"
 #include "chrome/browser/ash/dbus_schedqos_state_handler.h"
 #include "chrome/browser/ash/startup_settings_cache.h"
+#include "chromeos/ash/components/memory/memory.h"
 #include "chromeos/ash/components/memory/mglru.h"
 #include "content/public/common/content_features.h"
 #include "ui/lottie/resource.h"  // nogncheck
@@ -219,6 +222,7 @@
 #endif  // BUILDFLAG(ENABLE_PROCESS_SINGLETON)
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
+#include "base/scoped_add_feature_flags.h"
 #include "chrome/common/chrome_paths_lacros.h"
 #include "chromeos/crosapi/cpp/crosapi_constants.h"  // nogncheck
 #include "chromeos/crosapi/mojom/crosapi.mojom.h"    // nogncheck
@@ -234,16 +238,12 @@
 #include "media/base/media_switches.h"
 #include "ui/accessibility/accessibility_features.h"
 #include "ui/base/resource/data_pack_with_resource_sharing_lacros.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/gfx/switches.h"
 #endif
 
 #if BUILDFLAG(IS_OZONE)
-#include "base/scoped_add_feature_flags.h"
-#include "ui/base/ui_base_features.h"
 #include "ui/ozone/public/ozone_platform.h"
-#if BUILDFLAG(IS_LINUX)
-#include "chrome/browser/chrome_browser_main_extra_parts_linux.h"
-#endif
 #endif  // BUILDFLAG(IS_OZONE)
 
 base::LazyInstance<ChromeContentGpuClient>::DestructorAtExit
@@ -327,7 +327,7 @@ void AdjustLinuxOOMScore(const std::string& process_type) {
     // we want to assign a score that is somewhat representative for debugging.
     score = content::kLowestRendererOomScore;
   } else {
-    NOTREACHED() << "Unknown process type";
+    NOTREACHED_IN_MIGRATION() << "Unknown process type";
   }
   // In the case of a 0 score, still try to adjust it. Most likely the score is
   // 0 already, but it may not be if this process inherited a higher score from
@@ -755,23 +755,26 @@ void InitLogging(const std::string& process_type) {
 }
 #endif  // !BUILDFLAG(IS_ANDROID)
 
-void RecordMainStartupMetrics(base::TimeTicks application_start_time) {
+void RecordMainStartupMetrics(const StartupTimestamps& timestamps) {
   const base::TimeTicks now = base::TimeTicks::Now();
 
 #if BUILDFLAG(IS_WIN)
-  DUMP_WILL_BE_CHECK(!application_start_time.is_null());
-  startup_metric_utils::GetCommon().RecordApplicationStartTime(
-      application_start_time);
-#elif BUILDFLAG(IS_ANDROID)
+  startup_metric_utils::GetCommon().RecordPreReadTime(
+      timestamps.preread_begin_ticks, timestamps.preread_end_ticks);
+#endif
+
   // On Android the main entry point time is the time when the Java code starts.
   // This happens before the shared library containing this code is even loaded.
   // The Java startup code has recorded that time, but the C++ code can't fetch
   // it from the Java side until it has initialized the JNI. See
   // ChromeMainDelegateAndroid.
-#else
-  // On other platforms, |application_start_time| == |now| since the application
-  // starts with ChromeMain().
-  startup_metric_utils::GetCommon().RecordApplicationStartTime(now);
+#if !BUILDFLAG(IS_ANDROID)
+  // On all other platforms, `timestamps.exe_entry_point_ticks` contains the exe
+  // entry point time (on some platforms this is ChromeMain, on some it is
+  // before).
+  CHECK(!timestamps.exe_entry_point_ticks.is_null());
+  startup_metric_utils::GetCommon().RecordApplicationStartTime(
+      timestamps.exe_entry_point_ticks);
 #endif
 
 #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || \
@@ -831,15 +834,17 @@ bool IsCanaryDev() {
 
 }  // namespace
 
+#if BUILDFLAG(IS_ANDROID)
 ChromeMainDelegate::ChromeMainDelegate()
-    : ChromeMainDelegate(base::TimeTicks()) {}
+    : ChromeMainDelegate(StartupTimestamps{}) {}
+#endif
 
-ChromeMainDelegate::ChromeMainDelegate(base::TimeTicks exe_entry_point_ticks) {
+ChromeMainDelegate::ChromeMainDelegate(const StartupTimestamps& timestamps) {
   // Record startup metrics in the browser process. For component builds, there
   // is no way to know the type of process (process command line is not yet
   // initialized), so the function below will also be called in renderers.
   // This doesn't matter as it simply sets global variables.
-  RecordMainStartupMetrics(exe_entry_point_ticks);
+  RecordMainStartupMetrics(timestamps);
 }
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -971,14 +976,6 @@ std::optional<int> ChromeMainDelegate::PostEarlyInitialization(
   ui::SetOzonePlatformForLinuxIfNeeded(*base::CommandLine::ForCurrentProcess());
 #endif
   ui::OzonePlatform::PreEarlyInitialization();
-
-  // Disable currently unsupported web features per platform properties.
-  if (!ui::OzonePlatform::GetInstance()
-           ->GetPlatformProperties()
-           .supports_color_picker_dialog) {
-    base::CommandLine::ForCurrentProcess()->AppendSwitch(
-        features::kEyeDropperNotSupported);
-  }
 #endif  // BUILDFLAG(IS_OZONE)
 
   content::InitializeMojoCore();
@@ -1109,6 +1106,17 @@ bool ChromeMainDelegate::ShouldInitializeMojo(InvokedIn invoked_in) {
   return ShouldCreateFeatureList(invoked_in);
 }
 
+void ChromeMainDelegate::CreateThreadPool(std::string_view name) {
+  base::ThreadPoolInstance::Create(name);
+// `ChromeMainDelegateAndroid::PreSandboxStartup` creates the profiler a little
+// later.
+#if !BUILDFLAG(IS_ANDROID)
+  // Start the sampling profiler as early as possible - namely, once the thread
+  // pool has been created.
+  sampling_profiler_ = std::make_unique<MainThreadStackSamplingProfiler>();
+#endif
+}
+
 void ChromeMainDelegate::CommonEarlyInitialization(InvokedIn invoked_in) {
   const base::CommandLine* const command_line =
       base::CommandLine::ForCurrentProcess();
@@ -1131,6 +1139,8 @@ void ChromeMainDelegate::CommonEarlyInitialization(InvokedIn invoked_in) {
   if (is_browser_process) {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
     ash::InitializeMGLRU();
+
+    ash::LockMainProgramText();
 #endif
   }
 
@@ -1734,7 +1744,8 @@ void ChromeMainDelegate::PreSandboxStartup() {
 
 #if BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
   // Zygote needs to call InitCrashReporter() in RunZygote().
-  if (process_type != switches::kZygoteProcess) {
+  if (process_type != switches::kZygoteProcess &&
+      !command_line.HasSwitch(switches::kDisableCrashpadForTesting)) {
     if (command_line.HasSwitch(switches::kPreCrashpadCrashTest)) {
       // Crash for the purposes of testing the handling of crashes that happen
       // before crashpad is initialized. Please leave this check immediately
@@ -1807,7 +1818,7 @@ void ChromeMainDelegate::SandboxInitialized(const std::string& process_type) {
           /*persistent_histograms_enabled=*/true,
           /*storage=*/kPersistentHistogramStorageMappedFile);
     } else {
-      NOTREACHED();
+      NOTREACHED_IN_MIGRATION();
     }
   }
 
@@ -1822,20 +1833,21 @@ absl::variant<int, content::MainFunctionParams> ChromeMainDelegate::RunProcess(
     const std::string& process_type,
     content::MainFunctionParams main_function_params) {
 #if BUILDFLAG(IS_ANDROID)
-  NOTREACHED();  // Android provides a subclass and shares no code here.
+  NOTREACHED_IN_MIGRATION();  // Android provides a subclass and shares no code
+                              // here.
 #else
+
+#if BUILDFLAG(IS_MAC) || (BUILDFLAG(ENABLE_NACL) && !BUILDFLAG(IS_LINUX) && \
+                          !BUILDFLAG(IS_CHROMEOS))
   static const MainFunction kMainFunctions[] = {
 #if BUILDFLAG(IS_MAC)
-    {switches::kRelauncherProcess, mac_relauncher::internal::RelauncherMain},
-#endif
-
-  // This entry is not needed on Linux, where the NaCl loader
-  // process is launched via nacl_helper instead.
-#if BUILDFLAG(ENABLE_NACL) && !BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_CHROMEOS)
-    {switches::kNaClLoaderProcess, NaClMain},
-#else
-    {"<invalid>", nullptr},  // To avoid constant array of size 0
-                             // when NaCl disabled
+      {switches::kRelauncherProcess, mac_relauncher::internal::RelauncherMain},
+      {switches::kCodeSignCloneCleanupProcess,
+       code_sign_clone_manager::internal::ChromeCodeSignCloneCleanupMain},
+#elif BUILDFLAG(ENABLE_NACL) && !BUILDFLAG(IS_LINUX) && !BUILDFLAG(IS_CHROMEOS)
+      // This entry is not needed on Linux, where the NaCl loader
+      // process is launched via nacl_helper instead.
+      {switches::kNaClLoaderProcess, NaClMain},
 #endif
   };
 
@@ -1843,6 +1855,9 @@ absl::variant<int, content::MainFunctionParams> ChromeMainDelegate::RunProcess(
     if (process_type == kMainFunctions[i].name)
       return kMainFunctions[i].function(std::move(main_function_params));
   }
+#endif  // BUILDFLAG(IS_MAC) || (BUILDFLAG(ENABLE_NACL) && !BUILDFLAG(IS_LINUX)
+        // && !BUILDFLAG(IS_CHROMEOS))
+
 #endif  // !BUILDFLAG(IS_ANDROID)
 
   return std::move(main_function_params);
@@ -1914,6 +1929,12 @@ content::ContentBrowserClient*
 ChromeMainDelegate::CreateContentBrowserClient() {
   chrome_content_browser_client_ =
       std::make_unique<ChromeContentBrowserClient>();
+#if !BUILDFLAG(IS_ANDROID)
+  // Android does this in `ChromeMainDelegateAndroid::PreSandboxStartup`.
+  CHECK(sampling_profiler_);
+  chrome_content_browser_client_->SetSamplingProfiler(
+      std::move(sampling_profiler_));
+#endif
   return chrome_content_browser_client_.get();
 }
 

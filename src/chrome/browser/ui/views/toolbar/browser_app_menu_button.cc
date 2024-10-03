@@ -162,6 +162,7 @@ void BrowserAppMenuButton::UpdateIcon() {
                                              : kBrowserToolsChromeRefreshThoriumIcon
                                              : disable_thorium_icons ? kBrowserToolsIcon
                                              : kBrowserToolsThoriumIcon);
+  static const int icon_size = 12;
   for (auto state : kButtonStates) {
     // `app_menu_icon_controller()->GetIconColor()` set different colors based
     // on the severity. However with chrome refresh all the severities should
@@ -173,7 +174,7 @@ void BrowserAppMenuButton::UpdateIcon() {
             ? GetForegroundColor(state)
             : toolbar_view_->app_menu_icon_controller()->GetIconColor(
                   GetForegroundColor(state));
-    SetImageModel(state, ui::ImageModel::FromVectorIcon(icon, icon_color));
+    SetImageModel(state, ui::ImageModel::FromVectorIcon(icon, icon_color, icon_size));
   }
 }
 
