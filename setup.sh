@@ -146,6 +146,10 @@ copyMacOS () {
 	cp -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	cp -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cd ${CR_SRC_DIR} &&
+	python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
+	python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
+	cd ~/thorium &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
@@ -182,6 +186,9 @@ copyWOA () {
 	printf "${YEL}Copying Windows on ARM build files...${c0}\n" &&
 	cp -r -v arm/build/* ${CR_SRC_DIR}/build/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cd ${CR_SRC_DIR} &&
+	python3 tools/update_pgo_profiles.py --target=win-arm64 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
+	cd ~/thorium &&
 	# Use regular arm.gni from src, pending further testing
 	# cp -v arm/woa_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
 	printf "\n"
@@ -241,6 +248,9 @@ copySSE3 () {
 	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cd ${CR_SRC_DIR} &&
+	python3 tools/update_pgo_profiles.py --target=win32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
+	cd ~/thorium &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
@@ -255,6 +265,9 @@ copySSE2 () {
 	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cd ${CR_SRC_DIR} &&
+	python3 tools/update_pgo_profiles.py --target=win32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
+	cd ~/thorium &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
