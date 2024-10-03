@@ -94,6 +94,12 @@ Logo.png: %(VersionDir)s\VisualElements\
 SmallLogo.png: %(VersionDir)s\VisualElements\
 
 #
+# Privacy Sandbox Attestation
+#
+PrivacySandboxAttestationsPreloaded\manifest.json: %(VersionDir)s\PrivacySandboxAttestationsPreloaded\
+PrivacySandboxAttestationsPreloaded\privacy-sandbox-attestations.dat: %(VersionDir)s\PrivacySandboxAttestationsPreloaded\
+
+#
 # MEI Preload sub dir
 #
 MEIPreload\manifest.json: %(VersionDir)s\MEIPreload\
@@ -113,6 +119,7 @@ ffmpeg.dll: %(VersionDir)s\
 [GOOGLE_CHROME]
 # The elevation service is only installed for Google Chrome builds.
 elevation_service.exe: %(VersionDir)s\
+os_update_handler.exe: %(VersionDir)s\
 
 #
 # Sub directories living in the version dir

@@ -38,8 +38,8 @@ config("compiler") {
   ldflags = [ "-Wl,-O3", ] + common_mac_flags
   
   if (current_cpu == "arm64") {
-    cflags += [ "-march=armv8.3-a+simd", ]
-    ldflags += [ "-march=armv8.3-a+simd", ]
+    cflags += [ "-march=armv8.3-a+simd", "-mtune=apple-m1" ]
+    ldflags += [ "-march=armv8.3-a+simd", "-mtune=apple-m1" ]
   }
 
   if (current_cpu == "x64") {
