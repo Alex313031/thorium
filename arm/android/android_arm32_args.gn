@@ -103,4 +103,4 @@ thin_lto_enable_optimizations = true
 enable_rust = true
 enable_all_rust_features = false
 chrome_pgo_phase = 2
-pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-android32-main-1715622766-5cb090821d5d16bde68a6bbd42cb8f45d7ae2227-6f0561e057c75258ac8117e57c522e67d9e20af8.profdata"
+pgo_data_path = "/home/alex/chromium/src/chrome/build/pgo_profiles/chrome-android32-main-1721692744-44d1aa29423beb497bfdbe4ea144a3b53506761b-b4c470c65b0b73144417d44ce36bb63d9334527e.profdata"
