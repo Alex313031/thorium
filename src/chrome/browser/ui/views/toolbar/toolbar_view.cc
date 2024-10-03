@@ -43,7 +43,6 @@
 #include "chrome/browser/ui/global_error/global_error_service_factory.h"
 #include "chrome/browser/ui/intent_picker_tab_helper.h"
 #include "chrome/browser/ui/layout_constants.h"
-#include "chrome/browser/ui/side_panel/companion/companion_utils.h"
 #include "chrome/browser/ui/side_search/side_search_utils.h"
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
 #include "chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.h"
@@ -69,8 +68,8 @@
 #include "chrome/browser/ui/views/page_action/page_action_icon_controller.h"
 #include "chrome/browser/ui/views/performance_controls/battery_saver_button.h"
 #include "chrome/browser/ui/views/performance_controls/performance_intervention_button.h"
+#include "chrome/browser/ui/views/profiles/management_toolbar_button.h"
 #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_toolbar_icon_view.h"
-#include "chrome/browser/ui/views/side_panel/side_panel_toolbar_container.h"
 #include "chrome/browser/ui/views/tabs/tab_strip.h"
 #include "chrome/browser/ui/views/toolbar/app_menu.h"
 #include "chrome/browser/ui/views/toolbar/back_forward_button.h"
@@ -79,7 +78,6 @@
 #include "chrome/browser/ui/views/toolbar/home_button.h"
 #include "chrome/browser/ui/views/toolbar/pinned_toolbar_actions_container.h"
 #include "chrome/browser/ui/views/toolbar/reload_button.h"
-#include "chrome/browser/ui/views/toolbar/side_panel_toolbar_button.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_button.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_controller.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
@@ -148,6 +146,8 @@
 using base::UserMetricsAction;
 using content::WebContents;
 
+DEFINE_UI_CLASS_PROPERTY_KEY(bool, kActionItemUnderlineIndicatorKey, false)
+
 namespace {
 
 // Gets the display mode for a given browser.
@@ -202,6 +202,7 @@ class TabstripLikeBackground : public views::Background {
 
   const raw_ptr<BrowserView> browser_view_;
 };
+
 }  // namespace
 
 class ToolbarView::ContainerView : public views::View {
@@ -232,7 +233,7 @@ ToolbarView::ToolbarView(Browser* browser, BrowserView* browser_view)
 
   container_view_ = AddChildView(std::make_unique<ContainerView>());
 
-  SetAccessibleRole(ax::mojom::Role::kToolbar);
+  GetViewAccessibility().SetRole(ax::mojom::Role::kToolbar);
 
   if (display_mode_ == DisplayMode::NORMAL) {
     container_view_->SetBackground(
@@ -246,8 +247,13 @@ ToolbarView::ToolbarView(Browser* browser, BrowserView* browser_view)
 }
 
 ToolbarView::~ToolbarView() {
-  if (display_mode_ != DisplayMode::NORMAL)
+  if (display_mode_ != DisplayMode::NORMAL) {
     return;
+  }
+
+  if (base::FeatureList::IsEnabled(features::kResponsiveToolbar)) {
+    overflow_button_->set_toolbar_controller(nullptr);
+  }
 
   for (const auto& view_and_command : GetViewCommandMap())
     chrome::RemoveCommandObserver(browser_, view_and_command.second, this);
@@ -263,7 +269,6 @@ void ToolbarView::Init() {
 #endif
 
   // The background views must be behind container_view_.
-  if (features::IsChromeRefresh2023()) {
     background_view_left_ = AddChildViewAt(std::make_unique<View>(), 0);
     background_view_left_->SetBackground(
         std::make_unique<TabstripLikeBackground>(browser_view_));
@@ -274,7 +279,6 @@ void ToolbarView::Init() {
     active_state_subscription_ =
         GetWidget()->RegisterPaintAsActiveChangedCallback(base::BindRepeating(
             &ToolbarView::ActiveStateChanged, base::Unretained(this)));
-  }
 
   auto location_bar = std::make_unique<LocationBarView>(
       browser_, browser_->profile(), browser_->command_controller(), this,
@@ -360,9 +364,7 @@ void ToolbarView::Init() {
     extensions_container =
         std::make_unique<ExtensionsToolbarContainer>(browser_);
 
-    if (features::IsChromeRefresh2023()) {
-      toolbar_divider = std::make_unique<views::View>();
-    }
+    toolbar_divider = std::make_unique<views::View>();
   }
   std::unique_ptr<media_router::CastToolbarButton> cast;
   if (media_router::MediaRouterEnabled(browser_->profile()))
@@ -406,10 +408,8 @@ void ToolbarView::Init() {
                   GetLayoutConstant(TOOLBAR_DIVIDER_HEIGHT)));
   }
 
-  if (features::IsSidePanelPinningEnabled()) {
-    pinned_toolbar_actions_container_ = container_view_->AddChildView(
-        std::make_unique<PinnedToolbarActionsContainer>(browser_view_));
-  }
+  pinned_toolbar_actions_container_ = container_view_->AddChildView(
+      std::make_unique<PinnedToolbarActionsContainer>(browser_view_));
 
   if (IsChromeLabsEnabled()) {
     chrome_labs_model_ = std::make_unique<ChromeLabsModel>();
@@ -431,20 +431,17 @@ void ToolbarView::Init() {
     }
   }
 
-  // Only show the Battery Saver button when it is not controlled by the OS and
-  // the performance side panel is not enabled. On ChromeOS the battery icon in
-  // the shelf shows the same information.
-  if (!performance_manager::user_tuning::IsBatterySaverModeManagedByOS() &&
-      !base::FeatureList::IsEnabled(
-          performance_manager::features::kPerformanceControlsSidePanel)) {
+  // Only show the Battery Saver button when it is not controlled by the OS. On
+  // ChromeOS the battery icon in the shelf shows the same information.
+  if (!performance_manager::user_tuning::IsBatterySaverModeManagedByOS()) {
     battery_saver_button_ = container_view_->AddChildView(
         std::make_unique<BatterySaverButton>(browser_view_));
   }
 
-  if (base::FeatureList::IsEnabled(
-          performance_manager::features::kPerformanceIntervention)) {
+  if (performance_manager::features::
+          ShouldUsePerformanceInterventionBackend()) {
     performance_intervention_button_ = container_view_->AddChildView(
-        std::make_unique<PerformanceInterventionButton>());
+        std::make_unique<PerformanceInterventionButton>(browser_view_));
   }
 
   if (cast)
@@ -461,16 +458,11 @@ void ToolbarView::Init() {
     send_tab_to_self_button_ =
         container_view_->AddChildView(std::move(send_tab_to_self_button));
 
-  if (!features::IsSidePanelPinningEnabled() &&
-      !base::CommandLine::ForCurrentProcess()->HasSwitch("hide-sidepanel-button")) {
-    if (companion::IsCompanionFeatureEnabled()) {
-      side_panel_container_ = container_view_->AddChildView(
-          std::make_unique<SidePanelToolbarContainer>(browser_view_));
-    } else {
-      side_panel_button_ = container_view_->AddChildView(
-          std::make_unique<SidePanelToolbarButton>(browser_));
-    }
-  }
+#if !BUILDFLAG(IS_CHROMEOS)
+  management_toolbar_button_ =
+      container_view_->AddChildView(std::make_unique<ManagementToolbarButton>(
+          browser_view_, browser_->profile()));
+#endif
 
   avatar_ = container_view_->AddChildView(
       std::make_unique<AvatarToolbarButton>(browser_view_));
@@ -485,6 +477,11 @@ void ToolbarView::Init() {
        browser_->profile()->GetOTRProfileID().IsCaptivePortal());
 #elif BUILDFLAG(IS_CHROMEOS_LACROS)
   show_avatar_toolbar_button = !chromeos::IsManagedGuestSession();
+#else
+  // DevTools profiles are OffTheRecord, so hide it there.
+  show_avatar_toolbar_button = browser_->profile()->IsIncognitoProfile() ||
+                               browser_->profile()->IsGuestSession() ||
+                               browser_->profile()->IsRegularProfile();
 #endif
 
   const std::string sab_value = base::CommandLine::ForCurrentProcess()->
@@ -521,7 +518,7 @@ void ToolbarView::Init() {
 
   auto app_menu_button = std::make_unique<BrowserAppMenuButton>(this);
   app_menu_button->SetFlipCanvasOnPaintForRTLUI(true);
-  app_menu_button->SetAccessibleName(
+  app_menu_button->GetViewAccessibility().SetName(
       l10n_util::GetStringUTF16(IDS_ACCNAME_APP));
   app_menu_button->SetTooltipText(
       l10n_util::GetStringUTF16(IDS_APPMENU_TOOLTIP));
@@ -586,10 +583,6 @@ void ToolbarView::Update(WebContents* tab) {
 
   if (pinned_toolbar_actions_container_) {
     pinned_toolbar_actions_container_->UpdateAllIcons();
-  }
-
-  if (side_panel_container_) {
-    side_panel_container_->UpdateAllIcons();
   }
 
   if (reload_)
@@ -704,13 +697,6 @@ ExtensionsToolbarButton* ToolbarView::GetExtensionsButton() const {
   return extensions_container_->GetExtensionsButton();
 }
 
-SidePanelToolbarButton* ToolbarView::GetSidePanelButton() {
-  if (side_panel_container_) {
-    return side_panel_container_->GetSidePanelButton();
-  }
-  return side_panel_button_;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // ToolbarView, LocationBarView::Delegate implementation:
 
@@ -822,14 +808,12 @@ void ToolbarView::Layout(PassKey) {
   // The container view should be the exact same size/position as ToolbarView.
   container_view_->SetSize(size());
 
-  if (features::IsChromeRefresh2023()) {
-    // The background views should be behind the top-left and top-right corners
-    // of the container_view_.
-    const int corner_radius = GetLayoutConstant(TOOLBAR_CORNER_RADIUS);
-    background_view_left_->SetBounds(0, 0, corner_radius, corner_radius);
-    background_view_right_->SetBounds(width() - corner_radius, 0, corner_radius,
-                                      corner_radius);
-  }
+  // The background views should be behind the top-left and top-right corners
+  // of the container_view_.
+  const int corner_radius = GetLayoutConstant(TOOLBAR_CORNER_RADIUS);
+  background_view_left_->SetBounds(0, 0, corner_radius, corner_radius);
+  background_view_right_->SetBounds(width() - corner_radius, 0, corner_radius,
+                                    corner_radius);
 
   if (display_mode_ == DisplayMode::CUSTOM_TAB) {
     custom_tab_bar_->SetBounds(0, 0, width(),
@@ -840,10 +824,7 @@ void ToolbarView::Layout(PassKey) {
 
   if (display_mode_ == DisplayMode::NORMAL) {
     LayoutCommon();
-
-    if (features::IsChromeRefresh2023()) {
-      UpdateClipPath();
-    }
+    UpdateClipPath();
   }
 
   // Use two-pass solution to avoid the overflow button interfering with toolbar
@@ -1018,19 +999,9 @@ void ToolbarView::InitLayout() {
     pinned_toolbar_actions_container_->SetProperty(
         views::kFlexBehaviorKey,
         views::FlexSpecification(
-            base::BindRepeating(
-                &PinnedToolbarActionsContainer::CustomFlexRule,
-                base::Unretained(pinned_toolbar_actions_container_)))
-            .WithOrder(kToolbarActionsFlexOrder));
-  } else if (side_panel_container_) {
-    const views::FlexSpecification side_panel_flex_rule =
-        views::FlexSpecification(
-            side_panel_container_->GetAnimatingLayoutManager()
+            pinned_toolbar_actions_container_->GetAnimatingLayoutManager()
                 ->GetDefaultFlexRule())
-            .WithOrder(kToolbarActionsFlexOrder);
-
-    side_panel_container_->SetProperty(views::kFlexBehaviorKey,
-                                       side_panel_flex_rule);
+            .WithOrder(kToolbarActionsFlexOrder));
   }
 
   if (toolbar_divider_) {
@@ -1047,10 +1018,7 @@ void ToolbarView::InitLayout() {
         ToolbarController::GetDefaultResponsiveElements(browser_),
         ToolbarController::GetDefaultOverflowOrder(), kToolbarFlexOrderStart,
         container_view_, overflow_button_, pinned_toolbar_actions_container_);
-
-    overflow_button_->set_create_menu_model_callback(
-        base::BindRepeating(&ToolbarController::CreateOverflowMenuModel,
-                            base::Unretained(toolbar_controller_.get())));
+    overflow_button_->set_toolbar_controller(toolbar_controller_.get());
   }
 
   LayoutCommon();
@@ -1064,7 +1032,7 @@ void ToolbarView::LayoutCommon() {
                           ? LayoutInset::WEBUI_TAB_STRIP_TOOLBAR_INTERIOR_MARGIN
                           : LayoutInset::TOOLBAR_INTERIOR_MARGIN);
 
-  if (features::IsChromeRefresh2023() && !browser_view_->webui_tab_strip()) {
+  if (!browser_view_->webui_tab_strip()) {
     if (app_menu_button_->IsLabelPresentAndVisible()) {
       // The interior margin in an expanded state should be more than in a
       // collapsed state.
@@ -1127,7 +1095,7 @@ void ToolbarView::UpdateTypeAndSeverity(
     accname_app = l10n_util::GetStringFUTF16(
         IDS_ACCNAME_APP_UPGRADE_RECOMMENDED, accname_app);
   }
-  app_menu_button_->SetAccessibleName(accname_app);
+  app_menu_button_->GetViewAccessibility().SetName(accname_app);
   app_menu_button_->SetTypeAndSeverity(type_and_severity);
 
   if (base::FeatureList::IsEnabled(features::kDefaultBrowserPromptRefresh) &&
@@ -1139,25 +1107,6 @@ void ToolbarView::UpdateTypeAndSeverity(
         type_and_severity.type ==
             AppMenuIconController::IconType::DEFAULT_BROWSER_PROMPT);
   }
-}
-
-SkColor ToolbarView::GetDefaultColorForSeverity(
-    AppMenuIconController::Severity severity) const {
-  ui::ColorId color_id;
-  switch (severity) {
-    case AppMenuIconController::Severity::NONE:
-      return GetColorProvider()->GetColor(kColorToolbarButtonIcon);
-    case AppMenuIconController::Severity::LOW:
-      color_id = kColorAppMenuHighlightSeverityLow;
-      break;
-    case AppMenuIconController::Severity::MEDIUM:
-      color_id = kColorAppMenuHighlightSeverityMedium;
-      break;
-    case AppMenuIconController::Severity::HIGH:
-      color_id = kColorAppMenuHighlightSeverityHigh;
-      break;
-  }
-  return GetColorProvider()->GetColor(color_id);
 }
 
 ExtensionsToolbarContainer* ToolbarView::GetExtensionsToolbarContainer() {
@@ -1210,6 +1159,18 @@ views::AccessiblePaneView* ToolbarView::GetAsAccessiblePaneView() {
 
 views::View* ToolbarView::GetAnchorView(
     std::optional<PageActionIconType> type) {
+  if (features::IsToolbarPinningEnabled()) {
+    if (pinned_toolbar_actions_container_ && type.has_value()) {
+      const std::optional<actions::ActionId> action_id =
+          GetPageActionIconView(type.value())->action_id();
+      if (action_id.has_value() &&
+          pinned_toolbar_actions_container_->IsActionPinnedOrPoppedOut(
+              action_id.value())) {
+        return pinned_toolbar_actions_container_->GetButtonFor(
+            action_id.value());
+      }
+    }
+  }
   return location_bar_;
 }
 
@@ -1219,10 +1180,11 @@ void ToolbarView::ZoomChangedForActiveTab(bool can_show_bubble) {
 }
 
 AvatarToolbarButton* ToolbarView::GetAvatarToolbarButton() {
-  if (avatar_)
-    return avatar_;
+  return avatar_;
+}
 
-  return nullptr;
+ManagementToolbarButton* ToolbarView::GetManagementToolbarButton() {
+  return management_toolbar_button_;
 }
 
 ToolbarButton* ToolbarView::GetBackButton() {

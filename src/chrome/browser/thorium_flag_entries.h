@@ -96,10 +96,6 @@
      "external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
      "This applies for incognito windows as well when not set to a `chrome://` internal page.",
      kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
-    {"hide-sidepanel-button",
-     "Hide Side Panel Button",
-     "Hides the Thorium Side Panel Button.",
-     kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
     {"scroll-tabs",
      "Scroll Switches Active Tab",
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",

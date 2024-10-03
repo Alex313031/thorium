@@ -149,8 +149,10 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_F6, ui::EF_SHIFT_DOWN, IDC_FOCUS_PREVIOUS_PANE},
     {ui::VKEY_F6, ui::EF_CONTROL_DOWN, IDC_FOCUS_WEB_CONTENTS_PANE},
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-    // On Chrome OS, Control + Search + 7 toggles caret browsing.
-    // Note that VKEY_F7 is not a typo; Search + 7 maps to F7 for accelerators.
+    // On Chrome OS, Control + Search + the seventh key from escape (most
+    // commonly Brightness Up) toggles caret browsing.
+    // Note that VKEY_F7 is not a typo; Search + the seventh function key maps
+    // to F7 for accelerators.
     {ui::VKEY_F7, ui::EF_CONTROL_DOWN, IDC_CARET_BROWSING_TOGGLE},
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
     {ui::VKEY_F10, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
@@ -253,11 +255,6 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_OEM_PLUS, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_ZOOM_PLUS},
 #endif  // !BUILDFLAG(IS_CHROMEOS)
 #endif  // !BUILDFLAG(IS_MAC)
-#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE) && \
-    (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
-    {ui::VKEY_S, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN,
-     IDC_CONTENT_CONTEXT_RUN_LAYOUT_EXTRACTION},
-#endif
 };
 
 const AcceleratorMapping kDevToolsAcceleratorMap[] = {
