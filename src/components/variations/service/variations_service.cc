@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -15,6 +16,7 @@
 #include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback.h"
+#include "base/memory/ptr_util.h"
 #include "base/memory/raw_ptr.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/metrics/histogram_macros.h"
@@ -159,14 +161,14 @@ ResourceRequestsAllowedState ResourceRequestStateToHistogramValue(
     case ResourceRequestAllowedNotifier::ALLOWED:
       return RESOURCE_REQUESTS_ALLOWED;
   }
-  NOTREACHED();
+  NOTREACHED_IN_MIGRATION();
   return RESOURCE_REQUESTS_NOT_ALLOWED;
 }
 
 // Returns the header value for |name| from |headers| or an empty string if not
 // set.
 std::string GetHeaderValue(const net::HttpResponseHeaders* headers,
-                           const base::StringPiece& name) {
+                           std::string_view name) {
   std::string value;
   headers->EnumerateHeader(nullptr, name, &value);
   return value;
@@ -176,7 +178,7 @@ std::string GetHeaderValue(const net::HttpResponseHeaders* headers,
 // set, return an empty list.
 std::vector<std::string> GetHeaderValuesList(
     const net::HttpResponseHeaders* headers,
-    const base::StringPiece& name) {
+    std::string_view name) {
   std::vector<std::string> values;
   size_t iter = 0;
   std::string value;
@@ -334,7 +336,9 @@ VariationsService::VariationsService(
       local_state_(local_state),
       synthetic_trial_registry_(synthetic_trial_registry),
       state_manager_(state_manager),
-      limited_entropy_synthetic_trial_(local_state),
+      limited_entropy_synthetic_trial_(
+          local_state,
+          client_.get()->GetChannelForVariations()),
       policy_pref_service_(local_state),
       resource_request_allowed_notifier_(std::move(notifier)),
       safe_seed_manager_(local_state),
@@ -578,15 +582,13 @@ std::unique_ptr<VariationsService> VariationsService::Create(
     web_resource::ResourceRequestAllowedNotifier::NetworkConnectionTrackerGetter
         network_connection_tracker_getter,
     SyntheticTrialRegistry* synthetic_trial_registry) {
-  std::unique_ptr<VariationsService> result;
-  result.reset(new VariationsService(
+  return base::WrapUnique(new VariationsService(
       std::move(client),
       std::make_unique<web_resource::ResourceRequestAllowedNotifier>(
           local_state, disable_network_switch,
           std::move(network_connection_tracker_getter)),
       local_state, state_manager, ui_string_overrider,
       synthetic_trial_registry));
-  return result;
 }
 
 // static

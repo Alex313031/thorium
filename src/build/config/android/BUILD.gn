@@ -95,8 +95,8 @@ config("compiler") {
   }
 
   if (current_cpu == "x86" || current_cpu == "x64") {
-    cflags += [ "-msse3" ]
-    ldflags += [ "-msse3" ]
+    cflags += [ "-msse3", "-mssse3", "-msse4.1" ]
+    ldflags += [ "-msse3", "-mssse3", "-msse4.1" ]
   }
 
   # Assign any flags set for the C compiler to asmflags so that they are sent

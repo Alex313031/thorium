@@ -29,7 +29,7 @@ declare_args() {
   chrome_public_manifest_package = "org.chromium.thorium"
   if (use_stable_package_name_for_trichrome) {
     chrome_public_manifest_package += ".stable"
-    # CHANGED BY ALEX313031 FOR THORIUM
+    # Changed by Alex313031 for Thorium
   } else if (android_channel != "default" && android_channel != "stable") {
     chrome_public_manifest_package += "." + android_channel
   }

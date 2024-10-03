@@ -15,7 +15,7 @@
 #include "media/base/media_client.h"
 #include "media/base/media_switches.h"
 #include "media/media_buildflags.h"
-#include "ui/display/display_switches.h"
+#include "media/mojo/buildflags.h"
 #include "ui/gfx/hdr_metadata.h"
 
 #if BUILDFLAG(ENABLE_LIBVPX)
@@ -253,7 +253,7 @@ bool IsVp9ProfileSupported(const VideoType& type) {
       return vpx_supports_hbd;
 #endif  // BUILDFLAG(IS_ANDROID)
     default:
-      NOTREACHED();
+      NOTREACHED_IN_MIGRATION();
   }
 #endif  // BUILDFLAG(ENABLE_LIBVPX)
   return false;
@@ -272,25 +272,13 @@ bool IsAV1Supported(const VideoType& type) {
 #endif
 }
 
-bool IsMPEG4Supported() {
-#if BUILDFLAG(IS_CHROMEOS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
-  return base::FeatureList::IsEnabled(kCrOSLegacyMediaFormats);
-#else
-  return false;
-#endif
-}
-
 bool IsAACSupported(const AudioType& type) {
-  if (type.profile != AudioCodecProfile::kXHE_AAC)
+  if (type.profile != AudioCodecProfile::kXHE_AAC) {
     return true;
-#if BUILDFLAG(IS_ANDROID)
-  return base::android::BuildInfo::GetInstance()->sdk_int() >=
-         base::android::SDK_VERSION_P;
-#elif BUILDFLAG(IS_MAC)
-  return true;
-#elif BUILDFLAG(IS_WIN)
-  return base::win::GetVersion() >= base::win::Version::WIN11_22H2 &&
-         !base::win::OSInfo::GetInstance()->IsWindowsNSku();
+  }
+#if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && \
+    (BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN))
+  return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
 #else
   return false;
 #endif
@@ -304,6 +292,31 @@ bool IsDolbyVisionProfileSupported(const VideoType& type) {
 #else
   return false;
 #endif
+}
+
+bool IsDolbyAc3Eac3Supported(const AudioType& type) {
+#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+#if BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && \
+    (BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC))
+  return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
+#else
+  // Keep 'true' for other platforms as old code snippet.
+  return true;
+#endif  // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && (BUILDFLAG(IS_WIN) ||
+        // BUILDFLAG(IS_MAC))
+#else
+  return false;
+#endif  // BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+}
+
+bool IsDolbyAc4Supported(const AudioType& type) {
+#if BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) && \
+    BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
+  return GetSupplementalAudioTypeCache()->IsProfileSupported(type);
+#else
+  return false;
+#endif  // BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO) &&
+        // BUILDFLAG(ENABLE_MOJO_AUDIO_DECODER) && BUILDFLAG(IS_WIN)
 }
 
 }  // namespace
@@ -348,14 +361,13 @@ bool IsDefaultSupportedVideoType(const VideoType& type) {
       return IsVp9ProfileSupported(type);
     case VideoCodec::kHEVC:
       return IsHevcProfileSupported(type);
-    case VideoCodec::kMPEG2:
-      return true;
-    case VideoCodec::kMPEG4:
-      return IsMPEG4Supported();
     case VideoCodec::kDolbyVision:
       return IsDolbyVisionProfileSupported(type);
+    case VideoCodec::kMPEG2:
+      return true;
     case VideoCodec::kUnknown:
     case VideoCodec::kVC1:
+    case VideoCodec::kMPEG4:
       return false;
   }
 }
@@ -396,9 +408,9 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
       return BUILDFLAG(ENABLE_PLATFORM_DTS_AUDIO);
     case AudioCodec::kAC3:
     case AudioCodec::kEAC3:
-      return BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO);
+      return IsDolbyAc3Eac3Supported(type);
     case AudioCodec::kAC4:
-      return BUILDFLAG(ENABLE_PLATFORM_AC4_AUDIO);
+      return IsDolbyAc4Supported(type);
   }
 }
 
