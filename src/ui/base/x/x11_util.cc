@@ -359,8 +359,13 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
-  // Never default to using the custom title bar. Thorium should integrate, not be a special little snowflake.
-  return false;
+  // Never default to using the custom title bar, unless the windows manager is a tiling WM.
+  // Thorium should integrate, not be a special little snowflake.
+  if (IsWmTiling(wm)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool IsWmTiling(WindowManagerName window_manager) {
@@ -536,7 +541,7 @@ UMALinuxWindowManager GetWindowManagerUMA() {
     case WM_XMONAD:
       return UMALinuxWindowManager::kXmonad;
   }
-  NOTREACHED();
+  NOTREACHED_IN_MIGRATION();
   return UMALinuxWindowManager::kOther;
 }
 

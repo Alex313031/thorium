@@ -56,7 +56,7 @@ static int64_t AVIOSeekOperation(void* opaque, int64_t offset, int whence) {
       break;
 
     default:
-      NOTREACHED();
+      NOTREACHED_IN_MIGRATION();
   }
   return new_offset;
 }
@@ -78,11 +78,6 @@ static const char* GetAllowedDemuxers() {
                                                  "flac", "mp3",      "mov"};
 #if BUILDFLAG(USE_PROPRIETARY_CODECS)
     allowed_demuxers.push_back("aac");
-#if BUILDFLAG(IS_CHROMEOS)
-    if (base::FeatureList::IsEnabled(kCrOSLegacyMediaFormats)) {
-      allowed_demuxers.push_back("avi");
-    }
-#endif
 #endif
     return base::JoinString(allowed_demuxers, ",");
   }());
@@ -165,11 +160,6 @@ const char* FFmpegGlue::GetAllowedVideoDecoders() {
 #if BUILDFLAG(ENABLE_PLATFORM_HEVC)
     allowed_decoders.push_back("hevc");
 #endif  // BUILDFLAG(ENABLE_PLATFORM_HEVC)
-#if BUILDFLAG(IS_CHROMEOS)
-    if (base::FeatureList::IsEnabled(kCrOSLegacyMediaFormats)) {
-      allowed_decoders.push_back("mpeg4");
-    }
-#endif  // BUILDFLAG(IS_CHROMEOS)
 #endif  // BUILDFLAG(USE_PROPRIETARY_CODECS)
     return base::JoinString(allowed_decoders, ",");
 #else

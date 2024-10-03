@@ -78,18 +78,15 @@ static int GetFFmpegVideoDecoderThreadCount(const VideoDecoderConfig& config) {
     case VideoCodec::kMPEG2:
     case VideoCodec::kVP9:
     case VideoCodec::kAV1:
-      // We do not compile ffmpeg with support for any of these codecs.
-      break;
-
     case VideoCodec::kTheora:
     case VideoCodec::kMPEG4:
-      // No extra threads for these codecs.
-      break;
+    case VideoCodec::kVP8:
+      // We do not compile ffmpeg with support for any of these codecs.
+      NOTREACHED();
 
     case VideoCodec::kH264:
     case VideoCodec::kHEVC:
     case VideoCodec::kDolbyVision:
-    case VideoCodec::kVP8:
       // Normalize to three threads for 1080p content, then scale linearly
       // with number of pixels.
       // Examples:
@@ -123,13 +120,6 @@ static void ReleaseVideoBufferImpl(void* opaque, uint8_t* data) {
 
 // static
 bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
-#if BUILDFLAG(IS_CHROMEOS)
-  if (codec == VideoCodec::kMPEG4 &&
-      !base::FeatureList::IsEnabled(kCrOSLegacyMediaFormats)) {
-    return false;
-  }
-#endif
-
   return avcodec_find_decoder(VideoCodecToCodecID(codec)) != nullptr;
 }
 
@@ -438,22 +428,10 @@ bool FFmpegVideoDecoder::OnNewFrame(AVFrame* frame) {
   auto config_cs = config_.color_space_info().ToGfxColorSpace();
 
   gfx::ColorSpace color_space;
-  if (codec_context_->codec_id == AV_CODEC_ID_VP8 &&
-      frame->color_range == AVCOL_RANGE_JPEG &&
-      frame->color_primaries == AVCOL_PRI_UNSPECIFIED &&
-      frame->color_trc == AVCOL_TRC_UNSPECIFIED &&
-      frame->colorspace == AVCOL_SPC_BT470BG && !config_cs.IsValid()) {
-    // vp8 has no colorspace information, except for the color range, so prefer
-    // the config color space if it exists.
-    //
-    // However, because of a comment in the vp8 spec, ffmpeg sets the
-    // colorspace to BT470BG. We detect this and treat it as unset.
-    // If the color range is set to full range, we use the jpeg color space.
-    color_space = gfx::ColorSpace::CreateJpeg();
-  } else if (codec_context_->codec_id == AV_CODEC_ID_H264 &&
-             frame->colorspace == AVCOL_SPC_RGB &&
-             VideoPixelFormatToChromaSampling(video_frame->format()) !=
-                 VideoChromaSampling::k444) {
+  if (codec_context_->codec_id == AV_CODEC_ID_H264 &&
+      frame->colorspace == AVCOL_SPC_RGB &&
+      VideoPixelFormatToChromaSampling(video_frame->format()) !=
+          VideoChromaSampling::k444) {
     // Some H.264 videos contain a VUI that specifies a color matrix of GBR,
     // when they are actually ordinary YUV. Default to BT.709 if the format is
     // not 4:4:4 as GBR is reasonable for 4:4:4 content. See crbug.com/1067377
