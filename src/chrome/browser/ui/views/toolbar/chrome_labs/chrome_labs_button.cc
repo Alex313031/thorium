@@ -32,15 +32,15 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
                                         base::Unretained(this))),
       browser_view_(browser_view),
       model_(model) {
+  SetProperty(views::kElementIdentifierKey, kToolbarChromeLabsButtonElementId);
+
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
-  SetProperty(views::kElementIdentifierKey, kToolbarChromeLabsButtonElementId);
-  SetVectorIcons(features::IsChromeRefresh2023() ? disable_thorium_icons ? kChromeLabsChromeRefreshIcon
-                                                 : kChromeLabsChromeRefreshThoriumIcon
-                                                 : disable_thorium_icons ? kChromeLabsIcon
-                                                 : kChromeLabsThoriumIcon,
-                 kChromeLabsTouchIcon);
-  SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));
+  SetVectorIcons(disable_thorium_icons ? kScienceIcon, kScienceIcon
+                                       : kScienceThoriumIcon, kScienceThoriumIcon);
+
+  GetViewAccessibility().SetName(
+      l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_CHROMELABS_BUTTON));
   button_controller()->set_notify_action(
       views::ButtonController::NotifyAction::kOnPress);

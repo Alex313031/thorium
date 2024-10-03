@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/342213636): Remove this and spanify to fix the errors.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "content/common/gpu_pre_sandbox_hook_linux.h"
 
 #include <dlfcn.h>
@@ -199,6 +204,8 @@ void AddArmMaliGpuPermissions(std::vector<BrokerFilePermission>* permissions) {
   static const char kMali0Path[] = "/dev/mali0";
 
   permissions->push_back(BrokerFilePermission::ReadWrite(kMali0Path));
+  // Need to be able to dlopen libmali.so from libEGL.so.
+  permissions->push_back(BrokerFilePermission::ReadOnly(kLibMaliPath));
 
 #if BUILDFLAG(IS_CHROMEOS) && defined(ARCH_CPU_ARM_FAMILY)
   // Files needed for protected DMA allocations.
@@ -332,7 +339,7 @@ void AddIntelGpuPermissions(std::vector<BrokerFilePermission>* permissions) {
       "/usr/lib64/libdrm_amdgpu.so.1", "/usr/lib64/libdrm_radeon.so.1",
       "/usr/lib64/libdrm_nouveau.so.2", "/usr/lib64/dri/crocus_dri.so",
       "/usr/lib64/dri/i965_dri.so", "/usr/lib64/dri/iris_dri.so",
-      "/usr/lib64/dri/swrast_dri.so",
+      "/usr/lib64/dri/swrast_dri.so", "/usr/lib64/libzstd.so.1",
       // Allow libglvnd files and libs.
       "/usr/share/glvnd/egl_vendor.d",
       "/usr/share/glvnd/egl_vendor.d/50_mesa.json",
