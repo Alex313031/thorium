@@ -52,6 +52,7 @@ json_data_file = os.path.join(script_dir, 'win_toolchain.json')
 MSVS_VERSIONS = collections.OrderedDict([
     ('2022', '17.0'),  # Default and packaged version of Visual Studio.
     ('2019', '16.0'),
+    ('2017', '15.0'),
 ])
 
 # List of preferred VC toolset version based on MSVS
@@ -59,6 +60,7 @@ MSVS_VERSIONS = collections.OrderedDict([
 MSVC_TOOLSET_VERSION = {
     '2022': 'VC143',
     '2019': 'VC142',
+    '2017': 'VC141',
 }
 
 def _HostIsWindows():

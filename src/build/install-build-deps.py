@@ -148,7 +148,7 @@ def check_distro(options):
   distro_id = subprocess.check_output(["lsb_release", "--id",
                                        "--short"]).decode().strip()
 
-  supported_codenames = ["bionic", "focal", "jammy", "noble"]
+  supported_codenames = ["focal", "jammy", "noble"]
   supported_ids = ["Debian"]
 
   if (distro_codename() not in supported_codenames
@@ -156,12 +156,13 @@ def check_distro(options):
     print(
         "WARNING: The following distributions are supported,",
         "but distributions not in the list below can also try to install",
-        "dependencies by passing the `--unsupported` parameter",
-        "\tUbuntu 18.04 LTS (bionic with EoL April 2028)",
-        "\tUbuntu 20.04 LTS (focal with EoL April 2030)",
-        "\tUbuntu 22.04 LTS (jammy with EoL April 2032)",
-        "\tUbuntu 24.04 LTS (noble with EoL June 2029)",
-        "\tDebian 10 (buster), 11 (bullseye) or 12 (bookworm)",
+        "dependencies by passing the `--unsupported` parameter.",
+        "EoS refers to end of standard support and does not include",
+        "extended security support.",
+        "\tUbuntu 20.04 LTS (focal with EoS April 2025)",
+        "\tUbuntu 22.04 LTS (jammy with EoS June 2027)",
+        "\tUbuntu 24.04 LTS (noble with EoS June 2029)",
+        "\tDebian 11 (bullseye) or 12 (bookworm)",
         sep="\n",
         file=sys.stderr,
     )
@@ -235,6 +236,7 @@ def dev_list():
       "libsctp-dev",
       "libspeechd-dev",
       "libsqlite3-dev",
+      "libssl-dev",
       "libsystemd-dev",
       "libudev-dev",
       "libva-dev",
@@ -246,11 +248,12 @@ def dev_list():
       "libxtst-dev",
       "lighttpd",
       "locales",
+      "openbox",
       "optipng",
       "p7zip",
       "patch",
       "perl",
-      "pkg-config",
+      "pkgconf",
       "pngcrush",
       "rpm",
       "ruby",
@@ -328,17 +331,6 @@ def dev_list():
       packages.append("lib32gcc-s1")
     elif package_exists("lib32gcc1"):
       packages.append("lib32gcc1")
-
-  # TODO(b/339091434): Remove this workaround once this bug is fixed.  This
-  # workaround ensures the newer libssl-dev is used to prevent package conficts.
-  apt_cache_cmd = ["apt-cache", "show", "libssl-dev"]
-  output = subprocess.check_output(apt_cache_cmd).decode()
-  pattern = re.compile(r'^Version: (.+?)$', re.M)
-  versions = re.findall(pattern, output)
-  if set(versions) == {"3.2.1-3", "3.0.10-1"}:
-    packages.append("libssl-dev=3.2.1-3")
-  else:
-    packages.append("libssl-dev")
 
   return packages
 
@@ -439,7 +431,7 @@ def lib_list():
   if package_exists("libinput10"):
     packages.append("libinput10")
 
-  # Work around for dependency on Ubuntu 24.04 LTS (noble)
+  # Work around for dependency On Ubuntu 24.04 LTS (noble)
   if distro_codename() == "noble":
     packages.append("libncurses6")
     packages.append("libasound2t64")
@@ -483,6 +475,7 @@ def lib32_list(options):
       # 32-bit libraries needed e.g. to compile V8 snapshot for Android or armhf
       "linux-libc-dev:i386",
       "linux-libc-dev-i386-cross",
+      "libexpat1:i386",
       "libpci3:i386",
   ]
 
@@ -500,7 +493,7 @@ def lib32_list(options):
     pattern = re.compile(r"g\+\+-[0-9.]+-multilib")
     packages += re.findall(pattern, lines)
 
-  # Work around for 32-bit dependency on Ubuntu 24.04 LTS (noble)
+  # Work around for 32-bit dependency On Ubuntu 24.04 LTS (noble)
   if distro_codename() == "noble":
     packages.append("libncurses6:i386")
   else:
@@ -635,37 +628,26 @@ def arm_list(options):
 
   # arm cross toolchain packages needed to build chrome on armhf
   packages = [
+      "g++-arm-linux-gnueabihf",
+      "gcc-arm-linux-gnueabihf",
       "libc6-dev-armhf-cross",
       "libc6-dev-arm64-cross",
       "linux-libc-dev-armhf-cross",
       "linux-libc-dev-arm64-cross",
-      "g++-arm-linux-gnueabihf",
   ]
 
-  # Work around for dependency issue Ubuntu: http://crbug.com/435056
-  if distro_codename() == "bionic":
-    packages.extend([
-        "g++-5-multilib-arm-linux-gnueabihf",
-        "gcc-5-multilib-arm-linux-gnueabihf",
-        "gcc-arm-linux-gnueabihf",
-    ])
-  elif distro_codename() == "focal":
+  # Work around an Ubuntu dependency issue.
+  # TODO(https://crbug.com/40549424): Remove this when support for Focal
+  # and Jammy are dropped.
+  if distro_codename() == "focal":
     packages.extend([
         "g++-10-multilib-arm-linux-gnueabihf",
         "gcc-10-multilib-arm-linux-gnueabihf",
-        "gcc-arm-linux-gnueabihf",
     ])
   elif distro_codename() == "jammy":
     packages.extend([
         "g++-11-arm-linux-gnueabihf",
         "gcc-11-arm-linux-gnueabihf",
-        "gcc-arm-linux-gnueabihf",
-    ])
-  elif distro_codename() == "noble":
-    packages.extend([
-        "g++-11-arm-linux-gnueabihf",
-        "gcc-11-arm-linux-gnueabihf",
-        "gcc-arm-linux-gnueabihf",
     ])
 
   return packages
@@ -733,7 +715,7 @@ def nacl_list(options):
   else:
     packages.append("libudev0:i386")
 
-  # Work around for NaCl dependency on Ubuntu 24.04 LTS (noble)
+  # Work around for nacl dependency On Ubuntu 24.04 LTS (noble)
   if distro_codename() == "noble":
     packages.append("libncurses6:i386")
     packages.append("lib32ncurses-dev")
@@ -744,11 +726,20 @@ def nacl_list(options):
   return packages
 
 
+# Packages suffixed with t64 are "transition packages" and should be preferred.
+def maybe_append_t64(package):
+  name = package.split(":")
+  name[0] += "t64"
+  renamed = ":".join(name)
+  return renamed if package_exists(renamed) else package
+
+
 # Debian is in the process of transitioning to automatic debug packages, which
 # have the -dbgsym suffix (https://wiki.debian.org/AutomaticDebugPackages).
 # Untransitioned packages have the -dbg suffix.  And on some systems, neither
 # will be available, so exclude the ones that are missing.
 def dbg_package_name(package):
+  package = maybe_append_t64(package)
   if package_exists(package + "-dbgsym"):
     return [package + "-dbgsym"]
   if package_exists(package + "-dbg"):
@@ -787,10 +778,11 @@ def package_list(options):
   packages = (dev_list() + lib_list() + dbg_list(options) +
               lib32_list(options) + arm_list(options) + nacl_list(options) +
               backwards_compatible_list(options))
+  packages = [maybe_append_t64(package) for package in set(packages)]
 
   # Sort all the :i386 packages to the front, to avoid confusing dpkg-query
   # (https://crbug.com/446172).
-  return sorted(set(packages), key=lambda x: (not x.endswith(":i386"), x))
+  return sorted(packages, key=lambda x: (not x.endswith(":i386"), x))
 
 
 def missing_packages(packages):

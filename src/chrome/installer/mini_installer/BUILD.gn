@@ -178,7 +178,7 @@ action("mini_installer_archive") {
     build_timestamp,
 
     # Optional arguments to generate diff installer.
-    #'--last_chrome_installer=C:/Temp/base',
+    #'--last_chrome_installer=C:/src/chromium/src/out/thorium',
     #'--setup_exe_format=DIFF',
     #'--diff_algorithm=COURGETTE',
 
