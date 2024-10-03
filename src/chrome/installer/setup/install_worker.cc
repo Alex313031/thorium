@@ -45,6 +45,7 @@
 #include "chrome/install_static/install_details.h"
 #include "chrome/install_static/install_modes.h"
 #include "chrome/install_static/install_util.h"
+#include "chrome/installer/setup/configure_app_container_sandbox.h"
 #include "chrome/installer/setup/downgrade_cleanup.h"
 #include "chrome/installer/setup/install_params.h"
 #include "chrome/installer/setup/installer_state.h"
@@ -78,13 +79,6 @@ using base::win::RegKey;
 namespace installer {
 
 namespace {
-
-constexpr wchar_t kChromeInstallFilesCapabilitySid[] =
-    L"S-1-15-3-1024-3424233489-972189580-2057154623-747635277-1604371224-"
-    L"316187997-3786583170-1043257646";
-constexpr wchar_t kLpacChromeInstallFilesCapabilitySid[] =
-    L"S-1-15-3-1024-2302894289-466761758-1166120688-1039016420-2430351297-"
-    L"4240214049-4028510897-3317428798";
 
 // Thorium Application dir files
 const wchar_t kInitPref[] = L"initial_preferences";
@@ -361,6 +355,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
       ->set_best_effort(true);
 }
 
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 // Adds work items to register the Elevation Service with Windows. Only for
 // system level installs.
 void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
@@ -382,6 +377,7 @@ void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
   install_service_work_item->set_best_effort(true);
   list->AddWorkItem(install_service_work_item);
 }
+#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING
 
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 // Adds work items to add the "store-dmtoken" command to Chrome's version key.
@@ -929,20 +925,8 @@ void AddInstallWorkItems(const InstallParams& install_params,
       base::BindOnce(
           [](const base::FilePath& target_path, const base::FilePath& temp_path,
              const CallbackWorkItem& work_item) {
-            auto sids = base::win::Sid::FromSddlStringVector(
-                {kChromeInstallFilesCapabilitySid,
-                 kLpacChromeInstallFilesCapabilitySid});
-            bool success = false;
-            if (sids) {
-              bool success_target = base::win::GrantAccessToPath(
-                  target_path, *sids, FILE_GENERIC_READ | FILE_GENERIC_EXECUTE,
-                  CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE);
-              bool success_temp = base::win::GrantAccessToPath(
-                  temp_path, *sids, FILE_GENERIC_READ | FILE_GENERIC_EXECUTE,
-                  CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE);
-              success = success_target && success_temp;
-            }
-            return success;
+            return ConfigureAppContainerSandbox(
+                std::array<const base::FilePath*, 2>{&target_path, &temp_path});
           },
           target_path, temp_path),
       base::DoNothing());
@@ -1004,10 +988,12 @@ void AddInstallWorkItems(const InstallParams& install_params,
       installer_state.root_key(),
       GetNotificationHelperPath(target_path, new_version), install_list);
 
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
   if (installer_state.system_install()) {
     AddElevationServiceWorkItems(
         GetElevationServicePath(target_path, new_version), install_list);
   }
+#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING
 
   AddUpdateDowngradeVersionItem(installer_state.root_key(), current_version,
                                 new_version, install_list);
