@@ -41,8 +41,6 @@ Dino strings in components/error_page_strings.grdp
 
 --M128--
 
-Remove media/filters/win/media_foundation_audio_decoder.cc in M128
-
 https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d03565176f2f481c79e
 
 Make UA and hints report chrome, and set hints

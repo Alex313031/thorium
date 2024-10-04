@@ -132,7 +132,7 @@ index 22a62ad698fdb..ec30208a38bf0 100644
  
    return network_context_params;
 diff --git a/chrome/browser/profiles/profile_io_data.cc b/chrome/browser/profiles/profile_io_data.cc
-index 6373b14b72f1a..554b983bc364d 100644
+index 6373b14b72f1a..f76ba67138de5 100644
 --- a/chrome/browser/profiles/profile_io_data.cc
 +++ b/chrome/browser/profiles/profile_io_data.cc
 @@ -15,6 +15,7 @@
@@ -143,15 +143,12 @@ index 6373b14b72f1a..554b983bc364d 100644
  #include "url/gurl.h"
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -54,6 +55,12 @@ bool ProfileIOData::IsHandledProtocol(const std::string& scheme) {
+@@ -54,6 +55,9 @@ bool ProfileIOData::IsHandledProtocol(const std::string& scheme) {
  #if !BUILDFLAG(IS_ANDROID)
        chrome::kIsolatedAppScheme,
  #endif  // !BUILDFLAG(IS_ANDROID)
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
-+  if (scheme == url::kFtpScheme &&
-+      base::FeatureList::IsEnabled(network::features::kFtpProtocol)) {
-+    return true;
-+  }
++      url::kFtpScheme,
 +#endif  // !BUILDFLAG(DISABLE_FTP_SUPPORT)
    });
  
@@ -6910,7 +6907,7 @@ index 0000000000000..86e34e661ae0a
 +  if (base::StringToInt64(input, &num_blocks))
 +    return ApproximateFilesizeFromBlockCount(num_blocks, size);
 +
-+  std::vector<base::StringPiece16> parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> parts = base::SplitStringPiece(
 +      input, u"/", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (parts.size() != 2)
 +    return false;
@@ -6953,7 +6950,7 @@ index 0000000000000..86e34e661ae0a
 +  // We expect four parts of the file protection listing: for System, Owner,
 +  // Group, and World.
 +  std::vector<std::u16string> parts = base::SplitString(
-+      base::StringPiece16(input).substr(1, input.length() - 2), u",",
++      std::u16string_view(input).substr(1, input.length() - 2), u",",
 +      base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (parts.size() != 4)
 +    return false;
@@ -6994,7 +6991,7 @@ index 0000000000000..86e34e661ae0a
 +  base::Time::Exploded time_exploded = { 0 };
 +
 +  // Date should be in format DD-MMM-YYYY.
-+  std::vector<base::StringPiece16> date_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> date_parts = base::SplitStringPiece(
 +      columns[2], u"-", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (date_parts.size() != 3)
 +    return false;
@@ -7015,7 +7012,7 @@ index 0000000000000..86e34e661ae0a
 +    time_column = time_column.substr(0, 5);
 +  if (time_column.length() != 5)
 +    return false;
-+  std::vector<base::StringPiece16> time_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> time_parts = base::SplitStringPiece(
 +      time_column, u":", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (time_parts.size() != 2)
 +    return false;
@@ -7887,11 +7884,11 @@ index 0000000000000..8c8b965924cca
 +  if (response.lines.size() != 1)
 +    return false;
 +
-+  base::StringPiece epsv_line(response.lines[0]);
++  std::string_view epsv_line(response.lines[0]);
 +  size_t start = epsv_line.find('(');
 +  // If the line doesn't have a '(' or doesn't have enough characters after the
 +  // first '(', fail.
-+  if (start == base::StringPiece::npos || epsv_line.length() - start < 7)
++  if (start == std::string_view::npos || epsv_line.length() - start < 7)
 +    return false;
 +
 +  char separator = epsv_line[start + 1];
@@ -7907,7 +7904,7 @@ index 0000000000000..8c8b965924cca
 +
 +  // Make sure there's a terminal <d>.
 +  size_t end = epsv_line.find(separator, start);
-+  if (end == base::StringPiece::npos)
++  if (end == std::string_view::npos)
 +    return false;
 +
 +  return ParseInt32(epsv_line.substr(start, end - start),
@@ -7953,7 +7950,7 @@ index 0000000000000..8c8b965924cca
 +
 +  // Split the line into comma-separated pieces and extract
 +  // the last two.
-+  std::vector<base::StringPiece> pieces = base::SplitStringPiece(
++  std::vector<std::string_view> pieces = base::SplitStringPiece(
 +      line, ",", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (pieces.size() != 6)
 +    return false;
@@ -11345,7 +11342,7 @@ index 0000000000000..fe7e81c2e8ad7
 +#include "third_party/icu/source/i18n/unicode/dtfmtsym.h"
 +
 +using base::ASCIIToUTF16;
-+using base::StringPiece16;
++using std::u16string_view;
 +
 +// For examples of Unix<->VMS path conversions, see the unit test file. On VMS
 +// a path looks differently depending on whether it's a file or directory.
@@ -11358,7 +11355,7 @@ index 0000000000000..fe7e81c2e8ad7
 +    return std::string();
 +
 +  base::StringTokenizer tokenizer(unix_path, "/");
-+  std::vector<base::StringPiece> tokens;
++  std::vector<std::string_view> tokens;
 +  while (tokenizer.GetNext())
 +    tokens.push_back(tokenizer.token_piece());
 +
@@ -11431,7 +11428,7 @@ index 0000000000000..fe7e81c2e8ad7
 +  if (vms_path[0] == '[') {
 +    // It's a relative path.
 +    base::ReplaceFirstSubstringAfterOffset(
-+        &result, 0, "[.", base::StringPiece());
++        &result, 0, "[.", std::string_view());
 +  } else {
 +    // It's an absolute path.
 +    result.insert(0, "/");
@@ -11617,7 +11614,7 @@ index 0000000000000..fe7e81c2e8ad7
 +  base::Time::Exploded time_exploded = { 0 };
 +
 +  // Date should be in format MM-DD-YY[YY].
-+  std::vector<base::StringPiece16> date_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> date_parts = base::SplitStringPiece(
 +      date, u"-", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (date_parts.size() != 3)
 +    return false;
@@ -11640,8 +11637,8 @@ index 0000000000000..fe7e81c2e8ad7
 +  if (time.length() < 5)
 +    return false;
 +
-+  std::vector<base::StringPiece16> time_parts =
-+      base::SplitStringPiece(base::StringPiece16(time).substr(0, 5), u":",
++  std::vector<std::u16string_view> time_parts =
++      base::SplitStringPiece(std::u16string_view(time).substr(0, 5), u":",
 +                             base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (time_parts.size() != 2)
 +    return false;

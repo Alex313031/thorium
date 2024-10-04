@@ -154,7 +154,7 @@ void BrowserAppMenuButton::UpdateIcon() {
   const gfx::VectorIcon& icon = ui::TouchUiController::Get()->touch_ui()
                                     ? kBrowserToolsTouchIcon
                                     : disable_thorium_icons ? kBrowserToolsChromeRefreshIcon
-                                    : kBrowserToolsChromeRefreshThoriumIcon);
+                                    : kBrowserToolsChromeRefreshThoriumIcon;
   // Fix Thorium hamburger menu size
   static const int icon_size = 22;
   for (auto state : kButtonStates) {

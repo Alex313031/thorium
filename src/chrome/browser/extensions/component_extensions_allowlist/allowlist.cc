@@ -31,7 +31,7 @@
 namespace extensions {
 
 // The UUID of Thorium's external Hangouts component extension
-static const char * const kThoriumHangoutsId = "inomiaajaofonadigcpnaacolkggjjpo";
+static inline constexpr char kThoriumHangoutsId[] = "inomiaajaofonadigcpnaacolkggjjpo";
 
 bool IsComponentExtensionAllowlisted(const std::string& extension_id) {
   constexpr auto kAllowed = base::MakeFixedFlatSet<std::string_view>({

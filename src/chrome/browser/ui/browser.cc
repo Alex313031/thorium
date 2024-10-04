@@ -987,25 +987,25 @@ Browser::WarnBeforeClosingResult Browser::MaybeWarnBeforeClosing(
   // true or there are no pending downloads we need to prompt about) then
   // there's no need to warn.
   if (force_skip_warning_user_on_close_) {
-    if (CanCloseWithMultipleTabs()) {
-      return WarnBeforeClosingResult::kOkToClose;
-    }
-  }
-
-  // `CanCloseWithInProgressDownloads()` may trigger a modal dialog.
-  bool can_close_with_downloads = CanCloseWithInProgressDownloads();
-  if (can_close_with_downloads &&
-      !ShouldShowCookieMigrationNoticeForBrowser(*this)) {
     return WarnBeforeClosingResult::kOkToClose;
   }
 
-  // If there is no download warning, show the cookie migration notice now.
-  // Otherwise, the download warning is being shown. Cookie migration notice
-  // will be shown after, if needed.
-  if (can_close_with_downloads) {
-    ShowCookieClearOnExitMigrationNotice(
-        *this, base::BindOnce(&Browser::CookieMigrationNoticeResponse,
-                              weak_factory_.GetWeakPtr()));
+  if (CanCloseWithMultipleTabs()) {
+    // `CanCloseWithInProgressDownloads()` may trigger a modal dialog.
+    bool can_close_with_downloads = CanCloseWithInProgressDownloads();
+    if (can_close_with_downloads &&
+        !ShouldShowCookieMigrationNoticeForBrowser(*this)) {
+      return WarnBeforeClosingResult::kOkToClose;
+    }
+
+    // If there is no download warning, show the cookie migration notice now.
+    // Otherwise, the download warning is being shown. Cookie migration notice
+    // will be shown after, if needed.
+    if (can_close_with_downloads) {
+      ShowCookieClearOnExitMigrationNotice(
+          *this, base::BindOnce(&Browser::CookieMigrationNoticeResponse,
+                                weak_factory_.GetWeakPtr()));
+    }
   }
 
   DCHECK(!warn_before_closing_callback_)
@@ -3130,10 +3130,6 @@ bool Browser::CanCloseWithMultipleTabs() {
 
   close_multitab_confirmation_state_ = WAITING_FOR_RESPONSE;
 
-  // The dialog eats mouse events which results in the close button
-  // getting stuck in the hover state. Reset the window controls to
-  // prevent this.
-  ((BrowserView*)window_)->frame()->non_client_view()->ResetWindowControls();
   auto callback = base::BindOnce(&Browser::MultitabResponse,
                                  weak_factory_.GetWeakPtr());
   MessageBoxDialog::Show(window_->GetNativeWindow(),

@@ -4,6 +4,7 @@
 
 #include "chrome/browser/ui/tabs/tab_strip_prefs.h"
 
+#include "base/command_line.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/tabs/features.h"
 #include "chrome/browser/ui/ui_features.h"
