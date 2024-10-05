@@ -460,7 +460,7 @@ index b32265fa04597..b278d70b78188 100644
 +
 +  const std::string custom_tab_width = base::CommandLine::ForCurrentProcess()->
 +                                       GetSwitchValueASCII("custom-tab-width");
-+  int kTabWidthValue = 240;
++  int kTabWidthValue;
 +  if (custom_tab_width == "60") {
 +    kTabWidthValue = 60;
 +  } else if (custom_tab_width == "120") {

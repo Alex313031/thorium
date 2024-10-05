@@ -51,6 +51,14 @@
      "Thorium Rectangular Tabs UI",
      "Changes the look of browser tabs to appear with a rectangular shape, similar to Vivaldi or Cent Browser.",
      kOsDesktop, SINGLE_VALUE_TYPE("rectangular-tabs")},
+
+#if BUILDFLAG(IS_WIN)
+    {"transparent-tabs",
+     "Thorium Semi-Transparent Tabs UI",
+     "Reduces the opacity of tabs.",
+     kOsWin, SINGLE_VALUE_TYPE("transparent-tabs")},
+#endif // BUILDFLAG(IS_WIN)
+
     {"custom-tab-width",
      "Custom Tab Width",
      "Allows setting the default tab width, in DIP. Normally 1 DIP = 1 Pixel, and the standard width for tabs is 240.",

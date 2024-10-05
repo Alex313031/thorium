@@ -359,6 +359,13 @@ bool HasWMSpecProperty(const base::flat_set<x11::Atom>& properties,
 }
 
 bool GetCustomFramePrefDefault() {
+  // _NET_WM_MOVERESIZE is needed for frame-drag-initiated window movement.
+  if (!x11::Connection::Get()->WmSupportsHint(
+          x11::GetAtom("_NET_WM_MOVERESIZE"))) {
+    return false;
+  }
+
+  ui::WindowManagerName wm = GuessWindowManager();
   // Never default to using the custom title bar, unless the windows manager is a tiling WM.
   // Thorium should integrate, not be a special little snowflake.
   if (IsWmTiling(wm)) {
