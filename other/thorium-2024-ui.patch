@@ -1356,6 +1356,18 @@ index 70e366e816db5..a727ed4aa725f 100644
  inline constexpr char kChromeUIAboutHost[] = "about";
  inline constexpr char kChromeUIAboutURL[] = "chrome://about/";
  inline constexpr char kChromeUIAccessCodeCastHost[] = "access-code-cast";
+diff --git a/components/resources/search_engine_choice_scaled_resources.grdp b/components/resources/search_engine_choice_scaled_resources.grdp
+index 87d186a04e66c..01beccd365540 100644
+--- a/components/resources/search_engine_choice_scaled_resources.grdp
++++ b/components/resources/search_engine_choice_scaled_resources.grdp
+@@ -6,6 +6,7 @@
+     <structure type="chrome_scaled_image" name="IDR_GOOGLE_COM_PNG" file="google_chrome/google_search_logo.png" />
+   </if>
+   <structure type="chrome_scaled_image" name="IDR_AR_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
++  <structure type="chrome_scaled_image" name="IDR_ASK_COM_PNG" file="search_engine_choice/ask_com.png" />
+   <structure type="chrome_scaled_image" name="IDR_AT_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
+   <structure type="chrome_scaled_image" name="IDR_AU_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
+   <structure type="chrome_scaled_image" name="IDR_BING_COM_PNG" file="search_engine_choice/bing_com.png" />
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 index ed801f34141da..bc24e8c7dfbe9 100644
 --- a/ui/base/ui_base_features.cc

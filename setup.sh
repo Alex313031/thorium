@@ -324,11 +324,6 @@ case $1 in
 	--cros) copyCros;
 esac
 
-cd ${CR_SRC_DIR} &&
-printf "${YEL}Workaround for Ask.com favicon ▾${c0}\n" &&
-python3 ./tools/search_engine_choice/download_search_engine_icons.py &&
-cd ~/thorium &&
-
 printf "\n" &&
 printf "${GRE}Done!${c0}\n" &&
 
