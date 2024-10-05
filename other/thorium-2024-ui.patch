@@ -1196,7 +1196,7 @@ index 65676013fece9..476f9ae26f17e 100644
 +      const int Th24StrokeOffset = 1;
 +      top -= Th24StrokeOffset;
 +      // Experimental int
-+      //bottom -= tab()->controller()->Th24StrokeOffset();
++      bottom -= Th24StrokeOffset;
 +    }
 +
      // Radii are clockwise from top left.
