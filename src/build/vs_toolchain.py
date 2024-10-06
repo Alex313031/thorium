@@ -387,20 +387,21 @@ def CopyDlls(target_dir, configuration, target_cpu):
   elif target_cpu == 'arm64':
     runtime_dir = arm64_runtime
   else:
-    raise Exception('Unknown target_cpu: ' + target_cpu)
-  _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
-  if configuration == 'Debug':
-    _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
-  _CopyDebugger(target_dir, target_cpu)
+    raise Exception(f'Unknown target_cpu: {target_cpu}')
+  CopyDLLConfig(target_dir, runtime_dir, target_cpu, configuration)
   if target_cpu == 'arm64':
     target_dir = os.path.join(target_dir, 'win_clang_x64')
     target_cpu = 'x64'
     runtime_dir = x64_runtime
     os.makedirs(target_dir, exist_ok=True)
-    _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
-    if configuration == 'Debug':
-      _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
-    _CopyDebugger(target_dir, target_cpu)
+    CopyDLLConfig(target_dir, runtime_dir, target_cpu, configuration)
+
+
+def CopyDLLConfig(target_dir, runtime_dir, target_cpu, configuration):
+  _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
+  if configuration == 'Debug':
+    _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
+  _CopyDebugger(target_dir, target_cpu)
 
 
 def _CopyDebugger(target_dir, target_cpu):
