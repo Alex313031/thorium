@@ -68,24 +68,21 @@ def GetVSPath():
             # The path information comes first
             vs_path = line[len(vs_path_marker):]
             vs_installs_count += 1
-        if line.startswith(vs_version_marker):
-            # The version for that path comes later
-            if line[len(vs_version_marker):] == _vs_version:
-                matching_vs_path = vs_path
+        if line.startswith(vs_version_marker) and line[len(vs_version_marker):] == _vs_version:
+            matching_vs_path = vs_path
 
     if vs_installs_count == 0:
-        raise Exception('VS %s path not found in vswhere output' %
-                        (_vs_version))
+        raise Exception(f'VS {_vs_version} path not found in vswhere output')
     if vs_installs_count > 1:
-        if not _allow_multiple_vs_installs:
+        if _allow_multiple_vs_installs:
+            print('Multiple VS installs were detected. This is unsupported. '
+                  'Proceeding anyway')
+        else:
             raise Exception(
                 'Multiple VS installs detected. This is unsupported. '
                 'It is recommended that packaging be done on a clean VM '
                 'with just one version installed. To proceed anyway add '
                 'the --allow_multiple_vs_installs flag to this script')
-        else:
-            print('Multiple VS installs were detected. This is unsupported. '
-                  'Proceeding anyway')
     return matching_vs_path
 
 
@@ -108,7 +105,7 @@ def BuildRepackageFileList(src_dir):
     # doesn't.
     debuggers_path = os.path.join(src_dir, 'Windows Kits', '10', 'Debuggers')
     if not os.path.exists(debuggers_path):
-        raise Exception('Repacking failed. Missing %s.' % (debuggers_path))
+        raise Exception(f'Repacking failed. Missing {debuggers_path}.')
 
     result = []
     for root, _, files in os.walk(src_dir):
@@ -128,23 +125,19 @@ def BuildFileList(override_dir, include_arm, vs_path):
         'DIA SDK/idl',
         'DIA SDK/include',
         'DIA SDK/lib',
-        _vc_tools + '/atlmfc',
-        _vc_tools + '/crt',
+        f'{_vc_tools}/atlmfc',
+        f'{_vc_tools}/crt',
         'VC/redist',
     ]
 
     if override_dir:
         paths += [
-            (os.path.join(override_dir, 'bin'), _vc_tools + '/bin'),
-            (os.path.join(override_dir, 'include'), _vc_tools + '/include'),
-            (os.path.join(override_dir, 'lib'), _vc_tools + '/lib'),
+            (os.path.join(override_dir, 'bin'), f'{_vc_tools}/bin'),
+            (os.path.join(override_dir, 'include'), f'{_vc_tools}/include'),
+            (os.path.join(override_dir, 'lib'), f'{_vc_tools}/lib'),
         ]
     else:
-        paths += [
-            _vc_tools + '/bin',
-            _vc_tools + '/include',
-            _vc_tools + '/lib',
-        ]
+        paths += [f'{_vc_tools}/bin', f'{_vc_tools}/include', f'{_vc_tools}/lib']
 
     paths += [
         ('VC/redist/MSVC/14.*.*/x86/Microsoft.VC*.CRT', 'sys32'),
@@ -177,9 +170,9 @@ def BuildFileList(override_dir, include_arm, vs_path):
         # Note that vs_path is ignored if src is an absolute path.
         combined = ExpandWildcards(vs_path, src)
         if not os.path.exists(combined):
-            raise Exception('%s missing.' % combined)
+            raise Exception(f'{combined} missing.')
         if not os.path.isdir(combined):
-            raise Exception('%s not a directory.' % combined)
+            raise Exception(f'{combined} not a directory.')
         for root, _, files in os.walk(combined):
             for f in files:
                 # vctip.exe doesn't shutdown, leaving locks on directories. It's
@@ -215,7 +208,7 @@ def BuildFileList(override_dir, include_arm, vs_path):
 
     debuggers_path = os.path.join(sdk_path, 'Debuggers')
     if not os.path.exists(debuggers_path):
-        raise Exception('Packaging failed. Missing %s.' % (debuggers_path))
+        raise Exception(f'Packaging failed. Missing {debuggers_path}.')
 
     for root, _, files in os.walk(sdk_path):
         for f in files:
@@ -241,9 +234,8 @@ def BuildFileList(override_dir, include_arm, vs_path):
             # specified version. Note that the SDK version number started being
             # part of the bin path with 10.0.15063.0.
             if (tail.startswith('Include\\') or tail.startswith('Lib\\')
-                    or tail.startswith('Source\\') or tail.startswith('bin\\')):
-                if tail.count(_win_version) == 0:
-                    continue
+                                or tail.startswith('Source\\') or tail.startswith('bin\\')) and tail.count(_win_version) == 0:
+                continue
             to = os.path.join('Windows Kits', '10', tail)
             result.append((combined, to))
 
@@ -254,7 +246,7 @@ def BuildFileList(override_dir, include_arm, vs_path):
     if not os.path.exists(ucrt_dir):
         ucrt_dir = os.path.join(sdk_path, r'redist\ucrt\dlls\x86')
     ucrt_paths = glob.glob(ucrt_dir + r'\*')
-    assert (len(ucrt_paths) > 0)
+    assert ucrt_paths
     for ucrt_path in ucrt_paths:
         ucrt_file = os.path.split(ucrt_path)[1]
         for dest_dir in [r'Windows Kits\10\bin\x86', 'sys32']:
@@ -266,7 +258,7 @@ def BuildFileList(override_dir, include_arm, vs_path):
     if not os.path.exists(ucrt_dir):
         ucrt_dir = os.path.join(sdk_path, r'redist\ucrt\dlls\x64')
     ucrt_paths = glob.glob(ucrt_dir + r'\*')
-    assert (len(ucrt_paths) > 0)
+    assert ucrt_paths
     for ucrt_path in ucrt_paths:
         ucrt_file = os.path.split(ucrt_path)[1]
         for dest_dir in [
@@ -393,7 +385,7 @@ def GenerateSetEnvCmd(target_dir):
         return ';'.join(['%cd%\\' + os.path.join(*d) for d in dirs])
 
     set_env_prefix = os.path.join(target_dir, r'Windows Kits\10\bin\SetEnv')
-    with open(set_env_prefix + '.cmd', 'w') as f:
+    with open(f'{set_env_prefix}.cmd', 'w') as f:
         # The prologue changes the current directory to the root of the
         # toolchain package, so that path entries can be set up without needing
         # ..\..\..\ components.
@@ -424,7 +416,7 @@ def GenerateSetEnvCmd(target_dir):
         f.write(':END\n')
         # Restore the original directory.
         f.write('popd\n')
-    with open(set_env_prefix + '.x86.json', 'wt', newline='') as f:
+    with open(f'{set_env_prefix}.x86.json', 'wt', newline='') as f:
         assert not set(env.keys()) & set(env_x86.keys()), 'dupe keys'
         json.dump(
             {
@@ -432,7 +424,7 @@ def GenerateSetEnvCmd(target_dir):
                 collections.OrderedDict(
                     list(env.items()) + list(env_x86.items()))
             }, f)
-    with open(set_env_prefix + '.x64.json', 'wt', newline='') as f:
+    with open(f'{set_env_prefix}.x64.json', 'wt', newline='') as f:
         assert not set(env.keys()) & set(env_x64.keys()), 'dupe keys'
         json.dump(
             {
@@ -440,7 +432,7 @@ def GenerateSetEnvCmd(target_dir):
                 collections.OrderedDict(
                     list(env.items()) + list(env_x64.items()))
             }, f)
-    with open(set_env_prefix + '.arm64.json', 'wt', newline='') as f:
+    with open(f'{set_env_prefix}.arm64.json', 'wt', newline='') as f:
         assert not set(env.keys()) & set(env_arm64.keys()), 'dupe keys'
         json.dump(
             {
@@ -494,9 +486,9 @@ def RenameToSha1(output):
     sha1 = sha1[:10]
     os.chdir(old_dir)
     shutil.rmtree(tempdir)
-    final_name = sha1 + '.zip'
+    final_name = f'{sha1}.zip'
     os.rename(output, final_name)
-    print('Renamed %s to %s.' % (output, final_name))
+    print(f'Renamed {output} to {final_name}.')
 
 
 def main():
@@ -551,16 +543,15 @@ def main():
             parser.print_help()
             return 1
 
-        if options.override_dir:
-            if (not os.path.exists(os.path.join(options.override_dir, 'bin'))
-                    or not os.path.exists(
-                        os.path.join(options.override_dir, 'include'))
-                    or not os.path.exists(
-                        os.path.join(options.override_dir, 'lib'))):
-                print(
-                    'Invalid override directory - must contain bin/include/lib dirs'
-                )
-                return 1
+        if options.override_dir and (not os.path.exists(os.path.join(options.override_dir, 'bin'))
+                            or not os.path.exists(
+                                os.path.join(options.override_dir, 'include'))
+                            or not os.path.exists(
+                                os.path.join(options.override_dir, 'lib'))):
+            print(
+                'Invalid override directory - must contain bin/include/lib dirs'
+            )
+            return 1
 
         global _vs_version
         _vs_version = args[0]
@@ -575,16 +566,10 @@ def main():
         # separators.
         _vc_tools = temp_tools_path[len(vs_path) + 1:].replace('\\', '/')
 
-        print('Building file list for VS %s Windows %s...' %
-              (_vs_version, _win_version))
+        print(f'Building file list for VS {_vs_version} Windows {_win_version}...')
         files = BuildFileList(options.override_dir, options.arm, vs_path)
 
         AddEnvSetup(files, options.arm)
-
-    if False:
-        for f in files:
-            print(f[0], '->', f[1])
-        return 0
 
     output = 'out.zip'
     if os.path.exists(output):
