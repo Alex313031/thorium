@@ -83,39 +83,9 @@ def SetEnvironmentAndGetRuntimeDllDirs():
   # been downloaded before (in which case json_data_file will exist).
   if ((_HostIsWindows() or os.path.exists(json_data_file))
       and depot_tools_win_toolchain):
-    if ShouldUpdateToolchain():
-      if len(sys.argv) > 1 and sys.argv[1] == 'update':
-        update_result = Update()
-      else:
-        update_result = Update(no_download=True)
-      if update_result != 0:
-        raise Exception('Failed to update, error code %d.' % update_result)
-    with open(json_data_file, 'r') as tempf:
-      toolchain_data = json.load(tempf)
-
-    toolchain = toolchain_data['path']
-    version = toolchain_data['version']
-    win_sdk = toolchain_data.get('win_sdk')
-    wdk = toolchain_data['wdk']
-    # TODO(scottmg): The order unfortunately matters in these. They should be
-    # split into separate keys for x64/x86/arm64. (See CopyDlls call below).
-    # http://crbug.com/345992
-    vs_runtime_dll_dirs = toolchain_data['runtime_dirs']
-    # The number of runtime_dirs in the toolchain_data was two (x64/x86) but
-    # changed to three (x64/x86/arm64) and this code needs to handle both
-    # possibilities, which can change independently from this code.
-    if len(vs_runtime_dll_dirs) == 2:
-      vs_runtime_dll_dirs.append('Arm64Unused')
-
-    os.environ['GYP_MSVS_OVERRIDE_PATH'] = toolchain
-
-    os.environ['WINDOWSSDKDIR'] = win_sdk
-    os.environ['WDK_DIR'] = wdk
-    # Include the VS runtime in the PATH in case it's not machine-installed.
-    runtime_path = os.path.pathsep.join(vs_runtime_dll_dirs)
-    os.environ['PATH'] = runtime_path + os.path.pathsep + os.environ['PATH']
+    vs_runtime_dll_dirs = toolchain_update_environment()
   elif sys.platform == 'win32' and not depot_tools_win_toolchain:
-    if not 'GYP_MSVS_OVERRIDE_PATH' in os.environ:
+    if 'GYP_MSVS_OVERRIDE_PATH' not in os.environ:
       os.environ['GYP_MSVS_OVERRIDE_PATH'] = DetectVisualStudioPath()
 
     # When using an installed toolchain these files aren't needed in the output
@@ -134,6 +104,39 @@ def SetEnvironmentAndGetRuntimeDllDirs():
                            'Arm64Unused']
 
   return vs_runtime_dll_dirs
+
+
+def toolchain_update_environment():
+  if ShouldUpdateToolchain():
+    update_result = (Update() if len(sys.argv) > 1 and sys.argv[1] == 'update'
+                     else Update(no_download=True))
+    if update_result != 0:
+      raise Exception('Failed to update, error code %d.' % update_result)
+  with open(json_data_file, 'r') as tempf:
+    toolchain_data = json.load(tempf)
+
+  toolchain = toolchain_data['path']
+  version = toolchain_data['version']
+  win_sdk = toolchain_data.get('win_sdk')
+  wdk = toolchain_data['wdk']
+    # TODO(scottmg): The order unfortunately matters in these. They should be
+    # split into separate keys for x64/x86/arm64. (See CopyDlls call below).
+    # http://crbug.com/345992
+  result = toolchain_data['runtime_dirs']
+    # The number of runtime_dirs in the toolchain_data was two (x64/x86) but
+    # changed to three (x64/x86/arm64) and this code needs to handle both
+    # possibilities, which can change independently from this code.
+  if len(result) == 2:
+    result.append('Arm64Unused')
+
+  os.environ['GYP_MSVS_OVERRIDE_PATH'] = toolchain
+
+  os.environ['WINDOWSSDKDIR'] = win_sdk
+  os.environ['WDK_DIR'] = wdk
+    # Include the VS runtime in the PATH in case it's not machine-installed.
+  runtime_path = os.path.pathsep.join(result)
+  os.environ['PATH'] = runtime_path + os.path.pathsep + os.environ['PATH']
+  return result
 
 
 def _RegistryGetValueUsingWinReg(key, value):
@@ -159,8 +162,8 @@ def _RegistryGetValueUsingWinReg(key, value):
 def _RegistryGetValue(key, value):
   try:
     return _RegistryGetValueUsingWinReg(key, value)
-  except ImportError:
-    raise Exception('The python library _winreg not found.')
+  except ImportError as e:
+    raise Exception('The python library _winreg not found.') from e
 
 
 def GetVisualStudioVersion():
@@ -173,15 +176,15 @@ def GetVisualStudioVersion():
     return supported_versions[0]
 
   # VS installed in system for external developers
-  supported_versions_str = ', '.join('{} ({})'.format(v,k)
-      for k,v in MSVS_VERSIONS.items())
+  supported_versions_str = ', '.join(f'{v} ({k})'
+                                     for k, v in MSVS_VERSIONS.items())
   available_versions = []
   for version in supported_versions:
     # Checking vs%s_install environment variables.
     # For example, vs2019_install could have the value
     # "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community".
     # Only vs2017_install, vs2019_install and vs2022_install are supported.
-    path = os.environ.get('vs%s_install' % version)
+    path = os.environ.get(f'vs{version}_install')
     if path and os.path.exists(path):
       available_versions.append(version)
       break
@@ -190,8 +193,8 @@ def GetVisualStudioVersion():
       program_files_path_variable = '%ProgramFiles%'
     else:
       program_files_path_variable = '%ProgramFiles(x86)%'
-    path = os.path.expandvars(program_files_path_variable +
-                              '/Microsoft Visual Studio/%s' % version)
+    path = os.path.expandvars(
+        f'{program_files_path_variable}/Microsoft Visual Studio/{version}')
     if path and any(
         os.path.exists(os.path.join(path, edition))
         for edition in ('Enterprise', 'Professional', 'Community', 'Preview',
@@ -221,26 +224,11 @@ def DetectVisualStudioPath():
     program_files_path_variable = '%ProgramFiles%'
   else:
     program_files_path_variable = '%ProgramFiles(x86)%'
-  for path in (os.environ.get('vs%s_install' % version_as_year),
-               os.path.expandvars(program_files_path_variable +
-                                  '/Microsoft Visual Studio/%s/Enterprise' %
-                                  version_as_year),
-               os.path.expandvars(program_files_path_variable +
-                                  '/Microsoft Visual Studio/%s/Professional' %
-                                  version_as_year),
-               os.path.expandvars(program_files_path_variable +
-                                  '/Microsoft Visual Studio/%s/Community' %
-                                  version_as_year),
-               os.path.expandvars(program_files_path_variable +
-                                  '/Microsoft Visual Studio/%s/Preview' %
-                                  version_as_year),
-               os.path.expandvars(program_files_path_variable +
-                                  '/Microsoft Visual Studio/%s/BuildTools' %
-                                  version_as_year)):
+  for path in (os.environ.get(f'vs{version_as_year}_install'), os.path.expandvars(f'{program_files_path_variable}/Microsoft Visual Studio/{version_as_year}/Enterprise'), os.path.expandvars(f'{program_files_path_variable}/Microsoft Visual Studio/{version_as_year}/Professional'), os.path.expandvars(f'{program_files_path_variable}/Microsoft Visual Studio/{version_as_year}/Community'), os.path.expandvars(f'{program_files_path_variable}/Microsoft Visual Studio/{version_as_year}/Preview'), os.path.expandvars(f'{program_files_path_variable}/Microsoft Visual Studio/{version_as_year}/BuildTools')):
     if path and os.path.exists(path):
       return path
 
-  raise Exception('Visual Studio Version %s not found.' % version_as_year)
+  raise Exception(f'Visual Studio Version {version_as_year} not found.')
 
 
 def _CopyRuntimeImpl(target, source, verbose=True):
@@ -253,7 +241,7 @@ def _CopyRuntimeImpl(target, source, verbose=True):
       (not os.path.isfile(target) or
        abs(os.stat(target).st_mtime - os.stat(source).st_mtime) >= 0.01)):
     if verbose:
-      print('Copying %s to %s...' % (source, target))
+      print(f'Copying {source} to {target}...')
     if os.path.exists(target):
       # Make the file writable so that we can delete it now, and keep it
       # readable.
@@ -292,13 +280,12 @@ def _CopyUCRTRuntime(target_dir, source_dir, target_cpu, suffix):
     # Select VC toolset directory based on Visual Studio version
     vc_redist_root = FindVCRedistRoot()
     if suffix.startswith('.'):
-      vc_toolset_dir = 'Microsoft.{}.CRT' \
-         .format(MSVC_TOOLSET_VERSION[GetVisualStudioVersion()])
+      vc_toolset_dir = (
+          f'Microsoft.{MSVC_TOOLSET_VERSION[GetVisualStudioVersion()]}.CRT')
       source_dir = os.path.join(vc_redist_root,
                                 'arm64', vc_toolset_dir)
     else:
-      vc_toolset_dir = 'Microsoft.{}.DebugCRT' \
-         .format(MSVC_TOOLSET_VERSION[GetVisualStudioVersion()])
+      vc_toolset_dir = f'Microsoft.{MSVC_TOOLSET_VERSION[GetVisualStudioVersion()]}.DebugCRT'
       source_dir = os.path.join(vc_redist_root, 'debug_nonredist',
                                 'arm64', vc_toolset_dir)
   file_parts = ('msvcp140', 'vccorlib140', 'vcruntime140')
@@ -312,27 +299,33 @@ def _CopyUCRTRuntime(target_dir, source_dir, target_cpu, suffix):
   # We must copy ucrtbased.dll for all CPU types. The rest of the Universal CRT
   # is installed as part of the OS in Windows 10 and beyond.
   if not suffix.startswith('.'):
-    win_sdk_dir = os.path.normpath(
-        os.environ.get(
-            'WINDOWSSDKDIR',
-            os.path.expandvars('%ProgramFiles(x86)%'
-                               '\\Windows Kits\\10')))
-    # ucrtbased.dll is located at {win_sdk_dir}/bin/{a.b.c.d}/{target_cpu}/
-    # ucrt/.
-    sdk_bin_root = os.path.join(win_sdk_dir, 'bin')
-    sdk_bin_sub_dirs = glob.glob(os.path.join(sdk_bin_root, '10.*'))
-    # Select the most recent SDK if there are multiple versions installed.
-    _SortByHighestVersionNumberFirst(sdk_bin_sub_dirs)
-    for directory in sdk_bin_sub_dirs:
-      sdk_redist_root_version = os.path.join(sdk_bin_root, directory)
-      if not os.path.isdir(sdk_redist_root_version):
-        continue
-      source_dir = os.path.join(sdk_redist_root_version, target_cpu, 'ucrt')
-      if not os.path.isdir(source_dir):
-        continue
-      break
-    _CopyRuntimeImpl(os.path.join(target_dir, 'ucrtbase' + suffix),
-                     os.path.join(source_dir, 'ucrtbase' + suffix))
+    CopyUCRTRuntimeFiles(target_cpu, source_dir, target_dir, suffix)
+
+
+def CopyUCRTRuntimeFiles(target_cpu, source_dir, target_dir, suffix):
+  win_sdk_dir = os.path.normpath(
+      os.environ.get(
+          'WINDOWSSDKDIR',
+          os.path.expandvars('%ProgramFiles(x86)%'
+                             '\\Windows Kits\\10')))
+  # ucrtbased.dll is located at {win_sdk_dir}/bin/{a.b.c.d}/{target_cpu}/
+  # ucrt/.
+  sdk_bin_root = os.path.join(win_sdk_dir, 'bin')
+  sdk_bin_sub_dirs = glob.glob(os.path.join(sdk_bin_root, '10.*'))
+  # Select the most recent SDK if there are multiple versions installed.
+  _SortByHighestVersionNumberFirst(sdk_bin_sub_dirs)
+  for directory in sdk_bin_sub_dirs:
+    sdk_redist_root_version = os.path.join(sdk_bin_root, directory)
+    if not os.path.isdir(sdk_redist_root_version):
+      continue
+    source_dir = os.path.join(sdk_redist_root_version, target_cpu, 'ucrt')
+    if not os.path.isdir(source_dir):
+      continue
+    break
+  _CopyRuntimeImpl(
+      os.path.join(target_dir, f'ucrtbase{suffix}'),
+      os.path.join(source_dir, f'ucrtbase{suffix}'),
+  )
 
 
 def FindVCComponentRoot(component):
@@ -353,7 +346,7 @@ def FindVCComponentRoot(component):
   for directory in vc_component_msvc_contents:
     if os.path.isdir(directory):
       return directory
-  raise Exception('Unable to find the VC %s directory.' % component)
+  raise Exception(f'Unable to find the VC {component} directory.')
 
 
 def FindVCRedistRoot():
@@ -459,7 +452,7 @@ def _GetDesiredVsToolchainHashes():
   to build with."""
   # Third parties that do not have access to the canonical toolchain can map
   # canonical toolchain version to their own toolchain versions.
-  toolchain_hash_mapping_key = 'GYP_MSVS_HASH_%s' % TOOLCHAIN_HASH
+  toolchain_hash_mapping_key = f'GYP_MSVS_HASH_{TOOLCHAIN_HASH}'
   return [os.environ.get(toolchain_hash_mapping_key, TOOLCHAIN_HASH)]
 
 
@@ -483,8 +476,8 @@ def Update(force=False, no_download=False):
   If no_download is true then the toolchain will be configured if present but
   will not be downloaded.
   """
-  if force != False and force != '--force':
-    print('Unknown parameter "%s"' % force, file=sys.stderr)
+  if force not in [False, '--force']:
+    print(f'Unknown parameter "{force}"', file=sys.stderr)
     return 1
   if force == '--force' or os.path.exists(json_data_file):
     force = True
@@ -503,10 +496,7 @@ def Update(force=False, no_download=False):
     # For testing this block, unmount existing mounts with
     # fusermount -u third_party/depot_tools/win_toolchain/vs_files
     if sys.platform.startswith('linux') and not os.path.ismount(toolchain_dir):
-      ciopfs = shutil.which('ciopfs')
-      if not ciopfs:
-        # ciopfs not found in PATH; try the one downloaded from the DEPS hook.
-        ciopfs = os.path.join(script_dir, 'ciopfs')
+      ciopfs = shutil.which('ciopfs') or os.path.join(script_dir, 'ciopfs')
       if not os.path.isdir(toolchain_dir):
         os.mkdir(toolchain_dir)
       if not os.path.isdir(toolchain_dir + '.ciopfs'):
@@ -546,7 +536,7 @@ def SetEnvironmentAndGetSDKDir():
   SetEnvironmentAndGetRuntimeDllDirs()
 
   # If WINDOWSSDKDIR is not set, search the default SDK path and set it.
-  if not 'WINDOWSSDKDIR' in os.environ:
+  if 'WINDOWSSDKDIR' not in os.environ:
     default_sdk_path = os.path.expandvars('%ProgramFiles(x86)%'
                                           '\\Windows Kits\\10')
     if os.path.isdir(default_sdk_path):
@@ -581,7 +571,7 @@ def main():
       'copy_dlls': CopyDlls,
   }
   if len(sys.argv) < 2 or sys.argv[1] not in commands:
-    print('Expected one of: %s' % ', '.join(commands), file=sys.stderr)
+    print(f"Expected one of: {', '.join(commands)}", file=sys.stderr)
     return 1
   return commands[sys.argv[1]](*sys.argv[2:])
 
