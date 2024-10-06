@@ -101,7 +101,7 @@ def GetWinSDKDir():
     dia_path = os.path.join(vs_path, 'DIA SDK', 'bin', 'amd64')
 
   os.environ.clear()
-  os.environ.update(environ_bak)
+  os.environ |= environ_bak
   return win_sdk_dir
 
 
@@ -140,7 +140,7 @@ def RunCommand(command, setenv=False, env=None, fail_hard=True):
 
 def CopyFile(src, dst):
   """Copy a file from src to dst."""
-  print("Copying %s to %s" % (src, dst))
+  print(f"Copying {src} to {dst}")
   shutil.copy(src, dst)
 
 
@@ -172,7 +172,7 @@ def CheckoutGitRepo(name, git_url, commit, dir):
 
     # If we can't use the current repo, delete it.
     os.chdir(CHROMIUM_DIR)  # Can't remove dir if we're in it.
-    print('Removing %s.' % dir)
+    print(f'Removing {dir}.')
     RmTree(dir)
 
   clone_cmd = ['git', 'clone', git_url, dir]
@@ -209,19 +209,19 @@ def GetCommitDescription(commit):
 
 def AddCMakeToPath():
   """Download CMake and add it to PATH."""
-  if sys.platform == 'win32':
-    zip_name = 'cmake-3.26.4-windows-x86_64.zip'
-    dir_name = ['cmake-3.26.4-windows-x86_64', 'bin']
-  elif sys.platform == 'darwin':
+  if sys.platform == 'darwin':
     zip_name = 'cmake-3.26.4-macos-universal.tar.gz'
     dir_name = ['cmake-3.26.4-macos-universal', 'CMake.app', 'Contents', 'bin']
+  elif sys.platform == 'win32':
+    zip_name = 'cmake-3.26.4-windows-x86_64.zip'
+    dir_name = ['cmake-3.26.4-windows-x86_64', 'bin']
   else:
     zip_name = 'cmake-3.26.4-linux-x86_64.tar.gz'
     dir_name = ['cmake-3.26.4-linux-x86_64', 'bin']
 
   cmake_dir = os.path.join(LLVM_BUILD_TOOLS_DIR, *dir_name)
   if not os.path.exists(cmake_dir):
-    DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, LLVM_BUILD_TOOLS_DIR)
+    DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', LLVM_BUILD_TOOLS_DIR)
   os.environ['PATH'] = cmake_dir + os.pathsep + os.environ.get('PATH', '')
 
 
@@ -235,8 +235,8 @@ def AddGnuWinToPath():
   if ReadStampFile(GNUWIN_STAMP) == GNUWIN_VERSION:
     print('GNU Win tools already up to date.')
   else:
-    zip_name = 'gnuwin-%s.zip' % GNUWIN_VERSION
-    DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, LLVM_BUILD_TOOLS_DIR)
+    zip_name = f'gnuwin-{GNUWIN_VERSION}.zip'
+    DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', LLVM_BUILD_TOOLS_DIR)
     WriteStampFile(GNUWIN_VERSION, GNUWIN_STAMP)
 
   os.environ['PATH'] = gnuwin_dir + os.pathsep + os.environ.get('PATH', '')
@@ -259,7 +259,7 @@ def AddZlibToPath():
   if os.path.exists(zlib_dir):
     RmTree(zlib_dir)
   zip_name = 'zlib-1.2.11.tar.gz'
-  DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, LLVM_BUILD_TOOLS_DIR)
+  DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', LLVM_BUILD_TOOLS_DIR)
   os.chdir(zlib_dir)
   zlib_files = [
       'adler32', 'compress', 'crc32', 'deflate', 'gzclose', 'gzlib', 'gzread',
@@ -270,18 +270,14 @@ def AddZlibToPath():
       '/nologo', '/O2', '/DZLIB_DLL', '/c', '/D_CRT_SECURE_NO_DEPRECATE',
       '/D_CRT_NONSTDC_NO_DEPRECATE'
   ]
-  RunCommand(['cl.exe'] + [f + '.c' for f in zlib_files] + cl_flags,
-             setenv=True)
-  RunCommand(['lib.exe'] + [f + '.obj'
-                            for f in zlib_files] + ['/nologo', '/out:zlib.lib'],
-             setenv=True)
+  RunCommand(['cl.exe'] + [f'{f}.c' for f in zlib_files] + cl_flags, setenv=True)
+  RunCommand(((['lib.exe'] + [f'{f}.obj' for f in zlib_files]) + ['/nologo', '/out:zlib.lib']), setenv=True)
   # Remove the test directory so it isn't found when trying to find
   # test.exe.
   shutil.rmtree('test')
 
   os.environ['PATH'] = zlib_dir + os.pathsep + os.environ.get('PATH', '')
   return zlib_dir
-
 
 class LibXmlDirs:
   def __init__(self):
@@ -321,8 +317,8 @@ def BuildLibXml2():
   dirs = GetLibXml2Dirs()
   if os.path.exists(dirs.src_dir):
     RmTree(dirs.src_dir)
-  zip_name = LIBXML2_VERSION + '.tar.gz'
-  DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, dirs.unzip_dir)
+  zip_name = f'{LIBXML2_VERSION}.tar.gz'
+  DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', dirs.unzip_dir)
   os.mkdir(dirs.build_dir)
   os.chdir(dirs.build_dir)
 
@@ -439,8 +435,8 @@ def BuildZStd():
   dirs = ZStdDirs()
   if os.path.exists(dirs.src_dir):
     RmTree(dirs.src_dir)
-  zip_name = ZSTD_VERSION + '.tar.gz'
-  DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, dirs.unzip_dir)
+  zip_name = f'{ZSTD_VERSION}.tar.gz'
+  DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', dirs.unzip_dir)
   os.mkdir(dirs.build_dir)
   os.chdir(dirs.build_dir)
 
@@ -494,7 +490,7 @@ def DownloadRPMalloc():
   # $ gsutil.py cp -n -a public-read rpmalloc-bc1923f.tgz \
   #     gs://chromium-browser-clang/tools/
   zip_name = 'rpmalloc-bc1923f.tgz'
-  DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, LLVM_BUILD_TOOLS_DIR)
+  DownloadAndUnpack(f'{CDS_URL}/tools/{zip_name}', LLVM_BUILD_TOOLS_DIR)
   rpmalloc_dir = rpmalloc_dir.replace('\\', '/')
   return rpmalloc_dir
 
@@ -514,7 +510,7 @@ def VerifyVersionOfBuiltClangMatchesVERSION():
     clang += '-cl.exe'
   version_out = subprocess.check_output([clang, '--version'],
                                         universal_newlines=True)
-  version_out = re.match(r'clang version ([0-9]+)', version_out).group(1)
+  version_out = re.match(r'clang version ([0-9]+)', version_out)[1]
   if version_out != RELEASE_VERSION:
     print(('unexpected clang version %s (not %s), '
            'update RELEASE_VERSION in update.py')
@@ -1138,7 +1134,7 @@ def main():
   if cc is not None:  base_cmake_args.append('-DCMAKE_C_COMPILER=' + cc)
   if cxx is not None: base_cmake_args.append('-DCMAKE_CXX_COMPILER=' + cxx)
   if lld is not None: base_cmake_args.append('-DCMAKE_LINKER=' + lld)
-  final_install_dir = args.install_dir if args.install_dir else LLVM_BUILD_DIR
+  final_install_dir = args.install_dir or LLVM_BUILD_DIR
   cmake_args = base_cmake_args + [
       '-DCMAKE_C_FLAGS=' + ' '.join(cflags),
       '-DCMAKE_CXX_FLAGS=' + ' '.join(cxxflags),
