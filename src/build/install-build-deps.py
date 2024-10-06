@@ -24,8 +24,10 @@ def build_apt_package_list():
   arch_map = {"i386": ":i386"}
   package_regex = re.compile(r"^Package: (.+?)$.+?^Architecture: (.+?)$",
                              re.M | re.S)
-  return set(package + arch_map.get(arch, "")
-             for package, arch in re.findall(package_regex, output))
+  return {
+      package + arch_map.get(arch, "")
+      for package, arch in re.findall(package_regex, output)
+  }
 
 
 def package_exists(package_name: str) -> bool:
@@ -433,12 +435,9 @@ def lib_list():
 
   # Work around for dependency On Ubuntu 24.04 LTS (noble)
   if distro_codename() == "noble":
-    packages.append("libncurses6")
-    packages.append("libasound2t64")
+    packages.extend(("libncurses6", "libasound2t64"))
   else:
-    packages.append("libncurses5")
-    packages.append("libasound2")
-
+    packages.extend(("libncurses5", "libasound2"))
   return packages
 
 
@@ -717,14 +716,10 @@ def nacl_list(options):
 
   # Work around for nacl dependency On Ubuntu 24.04 LTS (noble)
   if distro_codename() == "noble":
-    packages.append("libncurses6:i386")
-    packages.append("lib32ncurses-dev")
+    packages.extend(("libncurses6:i386", "lib32ncurses-dev"))
   else:
-    packages.append("libncurses5:i386")
-    packages.append("lib32ncurses5-dev")
-
+    packages.extend(("libncurses5:i386", "lib32ncurses5-dev"))
   return packages
-
 
 # Packages suffixed with t64 are "transition packages" and should be preferred.
 def maybe_append_t64(package):
@@ -740,11 +735,9 @@ def maybe_append_t64(package):
 # will be available, so exclude the ones that are missing.
 def dbg_package_name(package):
   package = maybe_append_t64(package)
-  if package_exists(package + "-dbgsym"):
-    return [package + "-dbgsym"]
-  if package_exists(package + "-dbg"):
-    return [package + "-dbg"]
-  return []
+  if package_exists(f"{package}-dbgsym"):
+    return [f"{package}-dbgsym"]
+  return [f"{package}-dbg"] if package_exists(f"{package}-dbg") else []
 
 
 def dbg_list(options):
@@ -761,8 +754,8 @@ def dbg_list(options):
   # Debugging symbols packages not following common naming scheme
   if not dbg_package_name("libstdc++6"):
     for version in ["8", "7", "6", "5", "4.9", "4.8", "4.7", "4.6"]:
-      if package_exists("libstdc++6-%s-dbg" % version):
-        packages.append("libstdc++6-%s-dbg" % version)
+      if package_exists(f"libstdc++6-{version}-dbg"):
+        packages.append(f"libstdc++6-{version}-dbg")
         break
 
   if not dbg_package_name("libatk1.0-0"):
@@ -839,7 +832,7 @@ def find_missing_packages(options):
 
   packages = package_list(options)
   packages_str = " ".join(packages)
-  print("Packages required: " + packages_str, file=sys.stderr)
+  print(f"Packages required: {packages_str}", file=sys.stderr)
 
   query_cmd = ["apt-get", "--just-print", "install"] + packages
   env = os.environ.copy()
@@ -863,8 +856,7 @@ def find_missing_packages(options):
 
 def install_packages(options):
   try:
-    packages = find_missing_packages(options)
-    if packages:
+    if packages := find_missing_packages(options):
       quiet = ["-qq", "--assume-yes"] if options.no_prompt else []
       subprocess.check_call(["sudo", "apt-get", "install"] + quiet + packages)
       print(file=sys.stderr)
@@ -873,15 +865,19 @@ def install_packages(options):
             file=sys.stderr)
 
   except subprocess.CalledProcessError as e:
-    # An apt-get exit status of 100 indicates that a real error has occurred.
-    print("`apt-get --just-print install ...` failed", file=sys.stderr)
-    print("It produced the following output:", file=sys.stderr)
-    print(e.output.decode(), file=sys.stderr)
-    print(file=sys.stderr)
-    print("You will have to install the above packages yourself.",
-          file=sys.stderr)
-    print(file=sys.stderr)
-    sys.exit(100)
+    check_package_failure(e)
+
+
+def check_package_failure(e):
+  # An apt-get exit status of 100 indicates that a real error has occurred.
+  print("`apt-get --just-print install ...` failed", file=sys.stderr)
+  print("It produced the following output:", file=sys.stderr)
+  print(e.output.decode(), file=sys.stderr)
+  print(file=sys.stderr)
+  print("You will have to install the above packages yourself.",
+        file=sys.stderr)
+  print(file=sys.stderr)
+  sys.exit(100)
 
 
 # Install the Chrome OS default fonts. This must go after running
@@ -899,24 +895,28 @@ def install_chromeos_fonts(options):
         ["sudo",
          os.path.join(dir, "linux", "install-chromeos-fonts.py")])
   except subprocess.CalledProcessError:
-    print("ERROR: The installation of the Chrome OS default fonts failed.",
-          file=sys.stderr)
-    if (subprocess.check_output(
-        ["stat", "-f", "-c", "%T", dir], ).decode().startswith("nfs")):
-      print(
-          "The reason is that your repo is installed on a remote file system.",
-          file=sys.stderr)
-    else:
-      print(
-          "This is expected if your repo is installed on a remote file system.",
-          file=sys.stderr)
+    check_chromemos_font_installation(dir)
 
-    print("It is recommended to install your repo on a local file system.",
-          file=sys.stderr)
-    print("You can skip the installation of the Chrome OS default fonts with",
-          file=sys.stderr)
-    print("the command line option: --no-chromeos-fonts.", file=sys.stderr)
-    sys.exit(1)
+
+def check_chromemos_font_installation(dir):
+  print("ERROR: The installation of the Chrome OS default fonts failed.",
+        file=sys.stderr)
+  if (subprocess.check_output(
+      ["stat", "-f", "-c", "%T", dir], ).decode().startswith("nfs")):
+    print(
+        "The reason is that your repo is installed on a remote file system.",
+        file=sys.stderr)
+  else:
+    print(
+        "This is expected if your repo is installed on a remote file system.",
+        file=sys.stderr)
+
+  print("It is recommended to install your repo on a local file system.",
+        file=sys.stderr)
+  print("You can skip the installation of the Chrome OS default fonts with",
+        file=sys.stderr)
+  print("the command line option: --no-chromeos-fonts.", file=sys.stderr)
+  sys.exit(1)
 
 
 def install_locales():
@@ -929,8 +929,7 @@ def install_locales():
     old_locale_gen = open(LOCALE_GEN).read()
     for locale in CHROMIUM_LOCALES:
       subprocess.check_call(
-          ["sudo", "sed", "-i",
-           "s/^# %s/%s/" % (locale, locale), LOCALE_GEN])
+          ["sudo", "sed", "-i", f"s/^# {locale}/{locale}/", LOCALE_GEN])
 
     # Regenerating locales can take a while, so only do it if we need to.
     locale_gen = open(LOCALE_GEN).read()
