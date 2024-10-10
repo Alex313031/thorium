@@ -36,7 +36,7 @@ else
     export CR_SRC_DIR
 fi
 
-THOR_VER="128.0.6613.181"
+THOR_VER="128.0.6613.189"
 
 export THOR_VER &&
 
@@ -62,6 +62,7 @@ cp -v thorium-libjxl/src/third_party/.gitignore ${CR_SRC_DIR}/third_party/ &&
 
 cd ${CR_SRC_DIR} &&
 
+git clean -ffd &&
 git clean -ffd &&
 git clean -ffd &&
 

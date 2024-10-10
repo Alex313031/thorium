@@ -36,7 +36,7 @@ else
     export CR_SRC_DIR
 fi
 
-CR_VER="128.0.6613.181"
+CR_VER="128.0.6613.189"
 
 export CR_VER &&
 
@@ -50,6 +50,7 @@ cd ${CR_SRC_DIR} &&
 
 git checkout -f tags/$CR_VER &&
 
+git clean -ffd &&
 git clean -ffd &&
 git clean -ffd &&
 

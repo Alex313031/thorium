@@ -54,6 +54,9 @@ printf "removed \'$HOME/.vpython_cipd_cache\'${c0}\n" &&
 sudo rm -r -f $HOME/.vpython-root &&
 printf "removed \'$HOME/.vpython-root\'${c0}\n" &&
 
+sudo rm -r -f $HOME/.cache/.vpython-root &&
+printf "removed \'$HOME/.cache/.vpython-root\'${c0}\n" &&
+
 printf "\n" &&
 printf "${GRE}Running \`git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git\`...\n" &&
 tput sgr0 &&
@@ -62,6 +65,9 @@ printf "\n" &&
 cd $HOME &&
 
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
+cd depot_tools &&
+git checkout -f 31e21628c3a558d4f2189712e25849d608b3ff8c &&
+cd .. &&
 
 source ~/.bashrc &&
 
