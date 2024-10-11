@@ -36,5 +36,6 @@ Make UA and hints report chrome, and set hints
 fix thorium and shell portable --temp profile
 
 Fix bookmarks bar underline, multiple profiles lag
+Fix tab search button and menu position
 Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, versus vanilla Google Chrome, all at the same revision.
 

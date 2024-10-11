@@ -493,7 +493,7 @@ index b32265fa04597..b278d70b78188 100644
 +  if (features::IsThorium2024() && !rectangular_tabs) {
 +    return 8;
 +  } else if ((rectangular_tabs && features::IsThorium2024()) || (rectangular_tabs && !features::IsThorium2024())) {
-+    return 3;
++    return 4;
 +  } else {
 +    return 10;
 +  }
@@ -506,7 +506,7 @@ index b32265fa04597..b278d70b78188 100644
 +  if (features::IsThorium2024() && !rectangular_tabs) {
 +    return 10;
 +  } else if ((rectangular_tabs && features::IsThorium2024()) || (rectangular_tabs && !features::IsThorium2024())) {
-+    return 3;
++    return 4;
 +  } else {
 +    return 12;
 +  }
@@ -704,7 +704,7 @@ index b57fb5baa52a7..4fc9467f16b6c 100644
 -  const int top_border_thickness = GetLayoutConstant(TAB_STRIP_PADDING);
 +  const int top_border_thickness = features::IsThorium2024()
 +                                   ? GetLayoutConstant(TAB_INACTIVE_PADDING)
-+                                   : FrameTopBorderThickness(false);
++                                   : GetLayoutConstant(TAB_STRIP_PADDING);
  
    const int window_component = GetHTComponentForFrame(
        point, gfx::Insets::TLBR(top_border_thickness, 0, 0, 0),
@@ -894,7 +894,7 @@ index ba129325c8700..fbfa68c2e71b1 100644
  
  int OpaqueBrowserFrameView::GetTopInset(bool restored) const {
 -  return layout_->NonClientTopHeight(restored);
-+  return browser_view()->ShouldDrawTabStrip()
++  return browser_view()->ShouldDrawTabStrip() && features::IsThorium2024() 
 +             ? layout_->GetTabStripInsetsTop(restored)
 +             : layout_->NonClientTopHeight(restored);
  }
@@ -989,7 +989,7 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index 17cbbb1eb7f63..9bc158f2087b8 100644
+index 17cbbb1eb7f63..f965d02b1c583 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -112,7 +112,8 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
@@ -1024,28 +1024,31 @@ index 17cbbb1eb7f63..9bc158f2087b8 100644
    }
  
    UpdateTabStripMargin();
-@@ -356,7 +355,8 @@ void TabStripRegionView::Layout(PassKey) {
-     int product_specifications_button_width =
-         product_specifications_button_
-             ? product_specifications_button_->GetPreferredSize().width()
--            : 0;
-+            : features::IsThorium2024() ? GetLayoutConstant(TAB_SEARCH_PADDING)
-+                                        : 0;
-     AdjustViewBoundsRect(tab_search_container_,
-                          product_specifications_button_width);
-   }
-@@ -371,8 +371,8 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -365,14 +364,20 @@ void TabStripRegionView::Layout(PassKey) {
+     // The NTB needs to be layered on top of the tabstrip to achieve negative
+     // margins.
+     gfx::Size new_tab_button_size = new_tab_button_->GetPreferredSize();
++    int Th24XOffset;
++    if (features::IsThorium2024()) {
++      Th24XOffset = 4;
++    } else {
++      Th24XOffset = GetLayoutConstant(TAB_MARGIN);
++    }
+ 
+     // The y position is measured from the bottom of the tabstrip, and then
+-    // pading and button height are removed.
++    // padding and button height are removed.
      gfx::Point new_tab_button_new_position =
          gfx::Point(tab_strip_container_->bounds().right() -
                         TabStyle::Get()->GetBottomCornerRadius() +
 -                       GetLayoutConstant(TAB_STRIP_PADDING),
 -                   0);
-+                       GetLayoutConstant(TAB_MARGIN),
-+                       0);
++                       Th24XOffset,
++                       GetLayoutConstant(TAB_BUTTON_OFFSET));
  
      gfx::Rect new_tab_button_new_bounds =
          gfx::Rect(new_tab_button_new_position, new_tab_button_size);
-@@ -504,7 +504,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -504,7 +509,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
      new_tab_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
  
      tab_strip_right_margin = new_tab_button_->GetPreferredSize().width() +
@@ -1054,7 +1057,7 @@ index 17cbbb1eb7f63..9bc158f2087b8 100644
    }
  
    // If the tab search button is before the tab strip, it also overlaps the
-@@ -530,8 +530,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -530,8 +535,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
      // should have 6 px of padding between it and the tab_search button (not
      // including the corner radius).
      tab_strip_left_margin = tab_strip_left_margin.value() +
@@ -1065,6 +1068,15 @@ index 17cbbb1eb7f63..9bc158f2087b8 100644
                              TabStyle::Get()->GetBottomCornerRadius();
    }
  
+@@ -549,7 +554,7 @@ void TabStripRegionView::AdjustViewBoundsRect(View* view, int offset) {
+   const gfx::Size view_size = view->GetPreferredSize();
+   const int x =
+       tab_strip_container_->x() + TabStyle::Get()->GetBottomCornerRadius() -
+-      GetLayoutConstant(TAB_STRIP_PADDING) - view_size.width() - offset;
++      GetLayoutConstant(TAB_SEARCH_PADDING) - view_size.width() - offset;
+   const gfx::Rect new_bounds = gfx::Rect(gfx::Point(x, 0), view_size);
+   view->SetBoundsRect(new_bounds);
+ }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
 index 8ad0bd147a4c2..017a8d3422806 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
@@ -1110,6 +1122,69 @@ index 8ad0bd147a4c2..017a8d3422806 100644
    if (high_contrast) {
      // High contrast schemes get a border stroke even on a rounded omnibox.
      border_color =
+diff --git a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
+index a7072a79d61e9..7234aaeae4b56 100644
+--- a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
++++ b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
+@@ -139,7 +139,7 @@ class OmniboxSuggestionRowButton : public views::MdTextButton {
+     SetImageLabelSpacing(8);
+     SetCustomPadding(ChromeLayoutProvider::Get()->GetInsetsMetric(
+         INSETS_OMNIBOX_PILL_BUTTON));
+-    SetCornerRadius(GetLayoutConstant(TOOLBAR_CORNER_RADIUS));
++    SetCornerRadius(4);
+ 
+     auto* const ink_drop = views::InkDrop::Get(this);
+     SetAnimationDuration(base::TimeDelta());
+diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
+index 4bc8f9177f416..4deaee638a5c7 100644
+--- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
++++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
+@@ -244,6 +244,7 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
+       views::BubbleBorder::Shadow::STANDARD_SHADOW);
+   border->SetCornerRadius(corner_radius);
+   border->set_md_shadow_elevation(kElevation);
++  border->set_draw_border_stroke(true);
+   SetBorder(std::move(border));
+ 
+   AddChildView(contents_host_.get());
+@@ -275,11 +276,22 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
+ // static
+ int RoundedOmniboxResultsFrame::GetNonResultSectionHeight() {
+   return GetLayoutConstant(LOCATION_BAR_HEIGHT) +
+-         GetLocationBarAlignmentInsets().height();
++         GetNonResultSectionInsets().height();
+ }
+ 
+ // static
+ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
++  if (ui::TouchUiController::Get()->touch_ui()) {
++    return gfx::Insets::TLBR(6, 1, 5, 1);
++  }
++  if (features::IsThorium2024()) {
++    return gfx::Insets::VH(2, 3);
++  }
++  return gfx::Insets::VH(5, 6);
++}
++
++// static
++gfx::Insets RoundedOmniboxResultsFrame::GetNonResultSectionInsets() {
+   if (ui::TouchUiController::Get()->touch_ui()) {
+     return gfx::Insets::TLBR(6, 1, 5, 1);
+   }
+diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
+index d134918c8538e..7262833fbb715 100644
+--- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
++++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
+@@ -35,6 +35,9 @@ class RoundedOmniboxResultsFrame : public views::View {
+   // How the Widget is aligned relative to the location bar.
+   static gfx::Insets GetLocationBarAlignmentInsets();
+ 
++  // How the text area of the Widget is aligned relative to the location bar.
++  static gfx::Insets GetNonResultSectionInsets();
++
+   // Returns the blur region taken up by the Omnibox popup shadows.
+   static gfx::Insets GetShadowInsets();
+ 
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 index 2ca8611118a21..e360e3afcdc9f 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
@@ -1144,11 +1219,51 @@ index fa14797259775..6031b27d539e6 100644
  
      const int x = tabs::GetTabSearchTrailingTabstrip(profile_)
                        ? bounds.right() - offset
+diff --git a/chrome/browser/ui/views/tabs/tab_search_button.cc b/chrome/browser/ui/views/tabs/tab_search_button.cc
+index a42855ead9dbe..7cfeea92e9efb 100644
+--- a/chrome/browser/ui/views/tabs/tab_search_button.cc
++++ b/chrome/browser/ui/views/tabs/tab_search_button.cc
+@@ -21,6 +21,7 @@
+ #include "ui/views/view_class_properties.h"
+ 
+ namespace {
++constexpr int kTh24CRTabSearchCornerRadius = 8;
+ constexpr int kCRTabSearchCornerRadius = 10;
+ constexpr int kCRTabSearchFlatCornerRadius = 4;
+ }  // namespace
+@@ -29,7 +30,9 @@ TabSearchButton::TabSearchButton(TabStripController* tab_strip_controller,
+                                  Edge flat_edge)
+     : TabStripControlButton(tab_strip_controller,
+                             PressedCallback(),
+-                            vector_icons::kExpandMoreIcon,
++                            features::IsThorium2024()
++                                ? vector_icons::kCaretDownIcon
++                                : vector_icons::kExpandMoreIcon,
+                             flat_edge),
+       tab_search_bubble_host_(std::make_unique<TabSearchBubbleHost>(
+           this,
+@@ -61,7 +64,15 @@ void TabSearchButton::NotifyClick(const ui::Event& event) {
+ }
+ 
+ int TabSearchButton::GetCornerRadius() const {
+-  return kCRTabSearchCornerRadius;
++  static const bool rectangular_tabs =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
++  if (rectangular_tabs) {
++    return kCRTabSearchFlatCornerRadius;
++  } else {
++    return features::IsThorium2024()
++               ? kTh24CRTabSearchCornerRadius
++               : kCRTabSearchCornerRadius;
++  }
+ }
+ 
+ int TabSearchButton::GetFlatCornerRadius() const {
 diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
-index 65676013fece9..476f9ae26f17e 100644
+index 65676013fece9..8041d18f35745 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -19,6 +19,7 @@
+@@ -18,6 +18,7 @@
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/tab_types.h"
@@ -1156,7 +1271,7 @@ index 65676013fece9..476f9ae26f17e 100644
  #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/top_container_background.h"
-@@ -254,7 +255,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -244,7 +245,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // this. Detached tab shapes do not need to respect this.
      if (path_type != TabStyle::PathType::kInteriorClip &&
          path_type != TabStyle::PathType::kHitTest) {
@@ -1166,7 +1281,7 @@ index 65676013fece9..476f9ae26f17e 100644
        tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
      }
  
-@@ -264,8 +266,10 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -254,16 +256,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      }
  
      int left = aligned_bounds.x() + extension_corner_radius;
@@ -1174,11 +1289,12 @@ index 65676013fece9..476f9ae26f17e 100644
 +    // Keep this in Thorium
 +    int top = aligned_bounds.y() + GetLayoutConstant(TAB_INACTIVE_PADDING) * scale;
      int right = aligned_bounds.right() - extension_corner_radius;
+-    const int bottom = top + tab_height;
 +    // Keep this in Thorium
-     const int bottom = top + tab_height;
++    int bottom = top + tab_height;
  
      // For maximized and full screen windows, extend the tab hit test to the top
-@@ -273,7 +277,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+     // of the tab, encompassing the top padding. This makes it easy to click on
      // tabs by moving the mouse to the top of the screen.
      if (path_type == TabStyle::PathType::kHitTest &&
          tab()->controller()->IsFrameCondensed()) {
@@ -1188,21 +1304,20 @@ index 65676013fece9..476f9ae26f17e 100644
        // Don't round the top corners to avoid creating dead space between tabs.
        top_content_corner_radius = 0;
      }
-@@ -308,6 +313,13 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -298,6 +303,12 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
        }
      }
  
 +    if (features::IsThorium2024()) {
-+      const int Th24StrokeOffset = 1;
-+      top -= Th24StrokeOffset;
-+      // Experimental int
++      constexpr int Th24StrokeOffset = 1;
++      //top -= Th24StrokeOffset;
 +      bottom -= Th24StrokeOffset;
 +    }
 +
      // Radii are clockwise from top left.
      const SkVector radii[4] = {
          SkVector(top_content_corner_radius, top_content_corner_radius),
-@@ -753,6 +765,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+@@ -731,6 +742,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
    const Tab* const adjacent_tab =
        tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
  
@@ -1214,7 +1329,7 @@ index 65676013fece9..476f9ae26f17e 100644
    const Tab* const left_tab = leading ? adjacent_tab : tab();
    const Tab* const right_tab = leading ? tab() : adjacent_tab;
    const bool adjacent_to_header =
-@@ -987,6 +1004,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+@@ -965,6 +981,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
      cc::PaintFlags flags;
      flags.setAntiAlias(true);
      flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
@@ -1567,13 +1682,13 @@ index a2dae078ccbd3..41e3452b95f5c 100644
 +      menu_horizontal_border_size = 4;
 +      submenu_horizontal_overlap = 1;
 +      rounded_menu_vertical_border_size = 4;
-+      item_horizontal_padding = 12;
++      item_horizontal_padding = 1;
 +      between_item_vertical_padding = 2;
 +      separator_height = 1;
 +      separator_upper_height = 1;
 +      separator_lower_height = 1;
 +      item_corner_radius = 4;
-+      use_outer_border = false;
++      use_outer_border = true;
 +    } else {
 +      corner_radius = 0;
 +      menu_horizontal_border_size = 3;
@@ -1719,7 +1834,7 @@ index 3a8a79eb69c32..f29814a4fc4b9 100644
    std::vector<ui::ImageModel> icons_;
  
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 01301096ca466..87c2dbe85a63a 100644
+index 01301096ca466..e4854f99dad64 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -8,6 +8,7 @@
@@ -1739,15 +1854,15 @@ index 01301096ca466..87c2dbe85a63a 100644
 +  if (features::IsThorium2024()) {
 +    switch (id) {
 +      case ShapeContextTokens::kBadgeRadius:
-+        return 6;
++        return 4;
 +      case ShapeContextTokens::kButtonRadius:
 +        return 4;
 +      case ShapeContextTokens::kComboboxRadius:
-+        return 6;
++        return 4;
 +      case ShapeContextTokens::kDialogRadius:
-+        return 6;
++        return 4;
 +      case ShapeContextTokens::kFindBarViewRadius:
-+        return 6;
++        return 4;
 +      case ShapeContextTokens::kMenuRadius:
 +      case ShapeContextTokens::kMenuAuxRadius:
 +        return 0;
@@ -1779,6 +1894,19 @@ index 01301096ca466..87c2dbe85a63a 100644
    ShapeSysTokens token = GetShapeSysToken(id);
    DCHECK_NE(token, ShapeSysTokens::kDefault)
        << "kDefault token means there is a missing mapping between shape tokens";
+diff --git a/ui/webui/resources/cr_elements/md_select.css b/ui/webui/resources/cr_elements/md_select.css
+index c6f72014e5f24..9032a51118467 100644
+--- a/ui/webui/resources/cr_elements/md_select.css
++++ b/ui/webui/resources/cr_elements/md_select.css
+@@ -23,7 +23,7 @@
+   background-size: var(--md-arrow-width);
+   border: solid 1px var(--color-combobox-container-outline,
+       var(--cr-fallback-color-neutral-outline));
+-  border-radius: 8px;
++  border-radius: 4px;
+   box-sizing: border-box;
+   color: var(--md-select-text-color);
+   cursor: pointer;
 diff --git a/ui/webui/resources/cr_elements/cr_button/cr_button.css b/ui/webui/resources/cr_elements/cr_button/cr_button.css
 index 69dc68d302b63..c0b974153be08 100644
 --- a/ui/webui/resources/cr_elements/cr_button/cr_button.css
