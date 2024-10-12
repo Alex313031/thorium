@@ -1938,7 +1938,7 @@ index c467dbadf8e14..a193f5893743d 100644
    --cr-toggle-bar-border-color: var(--cr-toggle-unchecked-button-color);
    --cr-toggle-bar-border: 1px solid var(--cr-toggle-bar-border-color);
 -  --cr-toggle-bar-width: 26px;
-+  --cr-toggle-bar-width: 32px;
++  --cr-toggle-bar-width: 34px;
    --cr-toggle-knob-diameter: 8px;
    -webkit-tap-highlight-color: transparent;
    cursor: pointer;
