@@ -423,7 +423,7 @@ index 7f2f57facf152..3638494eb0dbf 100644
      CommandReload,
      CommandDuplicate,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index b32265fa04597..b278d70b78188 100644
+index b32265fa04597..35e5182f22671 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -6,6 +6,7 @@
@@ -438,9 +438,9 @@ index b32265fa04597..b278d70b78188 100644
  
  // Thickness in DIPs of the separator painted on the left and right edges of
  // the tab.
-+constexpr int kThoriumSeparatorThickness = 1;
++constexpr int kThoriumSeparatorThickness = 2;
  constexpr int kChromeRefreshSeparatorThickness = 2;
-+constexpr int kThoriumSeparatorHorizontalMargin = 1;
++constexpr float kThoriumSeparatorHorizontalMargin = 0.0f;
  constexpr int kChromeRefreshSeparatorHorizontalMargin = 2;
  // TODO (crbug.com/1451400): This constant should be in LayoutConstants.
 +constexpr int kThoriumSeparatorHeight = 20;
@@ -894,7 +894,7 @@ index ba129325c8700..fbfa68c2e71b1 100644
  
  int OpaqueBrowserFrameView::GetTopInset(bool restored) const {
 -  return layout_->NonClientTopHeight(restored);
-+  return browser_view()->ShouldDrawTabStrip() && features::IsThorium2024() 
++  return browser_view()->ShouldDrawTabStrip() && features::IsThorium2024()
 +             ? layout_->GetTabStripInsetsTop(restored)
 +             : layout_->NonClientTopHeight(restored);
  }
@@ -1263,7 +1263,7 @@ diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui
 index 65676013fece9..8041d18f35745 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -18,6 +18,7 @@
+@@ -19,6 +19,7 @@
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/tab_types.h"
@@ -1271,7 +1271,7 @@ index 65676013fece9..8041d18f35745 100644
  #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/top_container_background.h"
-@@ -244,7 +245,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -254,7 +255,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // this. Detached tab shapes do not need to respect this.
      if (path_type != TabStyle::PathType::kInteriorClip &&
          path_type != TabStyle::PathType::kHitTest) {
@@ -1281,7 +1281,7 @@ index 65676013fece9..8041d18f35745 100644
        tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
      }
  
-@@ -254,16 +256,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -264,16 +266,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      }
  
      int left = aligned_bounds.x() + extension_corner_radius;
@@ -1304,7 +1304,7 @@ index 65676013fece9..8041d18f35745 100644
        // Don't round the top corners to avoid creating dead space between tabs.
        top_content_corner_radius = 0;
      }
-@@ -298,6 +303,12 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -308,6 +313,12 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
        }
      }
  
@@ -1317,7 +1317,7 @@ index 65676013fece9..8041d18f35745 100644
      // Radii are clockwise from top left.
      const SkVector radii[4] = {
          SkVector(top_content_corner_radius, top_content_corner_radius),
-@@ -731,6 +742,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+@@ -753,6 +764,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
    const Tab* const adjacent_tab =
        tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
  
@@ -1329,7 +1329,7 @@ index 65676013fece9..8041d18f35745 100644
    const Tab* const left_tab = leading ? adjacent_tab : tab();
    const Tab* const right_tab = leading ? tab() : adjacent_tab;
    const bool adjacent_to_header =
-@@ -965,6 +981,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+@@ -978,6 +1003,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
      cc::PaintFlags flags;
      flags.setAntiAlias(true);
      flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
