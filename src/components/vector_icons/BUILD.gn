@@ -113,6 +113,7 @@ aggregate_vector_icons("components_vector_icons") {
     "image_search.icon",
     "info_outline.icon",
     "info_refresh.icon",
+    "info_regular.icon",
     "insert_drive_file_outline.icon",
     "keyboard.icon",
     "keyboard_lock.icon",

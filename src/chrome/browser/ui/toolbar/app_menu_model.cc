@@ -829,7 +829,7 @@ class HelpMenuModel : public ui::SimpleMenuModel {
     int help_string_id = IDS_HELP_PAGE;
 #endif
     AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT,
-                                     vector_icons::kInfoRefreshIcon);
+                                     vector_icons::kInfoRegularIcon);
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
     if (whats_new::IsEnabled()) {
       AddItemWithStringIdAndVectorIcon(this, IDC_CHROME_WHATS_NEW,
