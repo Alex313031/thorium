@@ -232,6 +232,7 @@ Runner.sounds = {
   BUTTON_PRESS: 'offline-sound-press',
   HIT: 'offline-sound-hit',
   SCORE: 'offline-sound-reached',
+  BACKGROUND: 'offline-sound-background',
 };
 
 
@@ -643,6 +644,7 @@ Runner.prototype = {
     this.containerEl.style.webkitAnimation = '';
     this.playCount++;
     this.generatedSoundFx.background();
+    this.playSound(this.soundFx.BACKGROUND);
 
     if (Runner.audioCues) {
       this.containerEl.setAttribute('title', getA11yString(A11Y_STRINGS.jump));
@@ -1268,6 +1270,7 @@ Runner.prototype = {
    */
   gameOver() {
     this.playSound(this.soundFx.HIT);
+    this.stopSound();
     vibrate(200);
 
     this.stop();
@@ -1443,6 +1446,19 @@ Runner.prototype = {
       sourceNode.buffer = soundBuffer;
       sourceNode.connect(this.audioContext.destination);
       sourceNode.start(0);
+    }
+  },
+
+  /**
+   * Stop a sound.
+   * @param {AudioBuffer} soundBuffer
+   */
+  stopSound(soundBuffer) {
+    if (soundBuffer) {
+      const sourceNode = this.audioContext.createBufferSource();
+      sourceNode.buffer = soundBuffer;
+      sourceNode.connect(this.audioContext.destination);
+      sourceNode.stop();
     }
   },
 
