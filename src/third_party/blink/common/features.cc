@@ -939,7 +939,8 @@ const base::FeatureParam<std::string> kFilteringScrollPredictionFilterParam{
 
 // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md
 // Enables FLEDGE implementation. See https://crbug.com/1186444.
-BASE_FEATURE(kFledge, "Fledge", base::FEATURE_ENABLED_BY_DEFAULT);
+// Disabled in Thorium
+BASE_FEATURE(kFledge, "Fledge", base::FEATURE_DISABLED_BY_DEFAULT);
 
 // See
 // https://github.com/WICG/turtledove/blob/main/FLEDGE_browser_bidding_and_auction_API.md
@@ -2343,7 +2344,7 @@ const base::FeatureParam<bool> kSpeculativeServiceWorkerWarmUpOnIdleTimeout{
 // DOMContentLoad (crbug/351953350).
 BASE_FEATURE(kBoostRenderProcessForLoading,
              "BoostRenderProcessForLoading",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // An empty json array means that this feature is applied unconditionally. If
 // specified, it means that the specified URLs will be the target of the new

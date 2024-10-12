@@ -2881,7 +2881,7 @@ if (current_toolchain == default_toolchain) {
   # scoped, and do not leave lingering state after execution.
   # TODO(crbug.com/40193330): Set clear rules for what tests can be added here.
   chrome_public_test_apk_tmpl("chrome_public_unit_test_apk") {
-    apk_name = "ThoriumPublicTest"
+    apk_name = "ThoriumPublicUnitTest"
     deps = [
       ":chrome_unit_test_java",
       "//build/config/android/test/resource_overlay:unit_device_javatests",

@@ -54,7 +54,7 @@ void* memset(void* dest, int c, size_t count) {
   return dest;
 }
 
-#if defined(ARCH_CPU_ARM64)
+//#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
 // The compiler generates calls to memcpy for ARM64 debug builds so we need to
 // supply a memcpy implementation in that configuration.
 // See comments above for why we do this incantation.
@@ -69,5 +69,5 @@ void* memcpy(void* destination, const void* source, size_t count) {
     *dst++ = *src++;
   return destination;
 }
-#endif
+//#endif
 }  // extern "C"

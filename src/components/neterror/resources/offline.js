@@ -440,8 +440,7 @@ Runner.prototype = {
         'hidden';
 
     if (this.isArcadeMode()) {
-      document.title =
-          document.title + ' - ' + getA11yString(A11Y_STRINGS.ariaLabel);
+      document.title = 'Thorium Dino Game'
     }
 
     this.adjustDimensions();
