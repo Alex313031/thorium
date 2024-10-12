@@ -1131,7 +1131,7 @@ index a7072a79d61e9..7234aaeae4b56 100644
      SetCustomPadding(ChromeLayoutProvider::Get()->GetInsetsMetric(
          INSETS_OMNIBOX_PILL_BUTTON));
 -    SetCornerRadius(GetLayoutConstant(TOOLBAR_CORNER_RADIUS));
-+    SetCornerRadius(4);
++    SetCornerRadius(8);
  
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
