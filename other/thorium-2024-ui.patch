@@ -259,7 +259,7 @@ index ea5c2c05f5fa9..5db2dac1b2fa2 100644
 +      }
      case TOOLBAR_DIVIDER_SPACING:
 -      return 9;
-+      return features::IsThorium2024() ? 6 : 9;
++      return features::IsThorium2024() ? 7 : 9;
      case TOOLBAR_DIVIDER_WIDTH:
        return 2;
      case TOOLBAR_ELEMENT_PADDING:
