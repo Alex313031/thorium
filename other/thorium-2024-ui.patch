@@ -1310,8 +1310,8 @@ index 65676013fece9..8041d18f35745 100644
  
 +    if (features::IsThorium2024()) {
 +      constexpr int Th24StrokeOffset = 1;
-+      //top -= Th24StrokeOffset;
-+      bottom -= Th24StrokeOffset;
++      top -= Th24StrokeOffset;
++      //bottom -= Th24StrokeOffset;
 +    }
 +
      // Radii are clockwise from top left.
@@ -1569,7 +1569,7 @@ index 2f1525c8880d4..c7b6d0822ba32 100644
  
  // static
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..0929f0598d52b 100644
+index 09c03d1e87011..cf6722ff8314a 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
 @@ -4,12 +4,16 @@
@@ -1584,7 +1584,7 @@ index 09c03d1e87011..0929f0598d52b 100644
  
  void MenuConfig::InitPlatform() {
 -  use_bubble_border = true;
-+  use_bubble_border = corner_radius > 0;
++  use_bubble_border = features::IsThorium2024() ? false : corner_radius > 0;
 +  arrow_to_edge_padding = features::IsThorium2024() ? 2 : 8;
 +  separator_height = features::IsThorium2024() ? 6 : 17;
  }
