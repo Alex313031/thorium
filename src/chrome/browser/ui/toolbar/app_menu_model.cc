@@ -1940,17 +1940,17 @@ void AppMenuModel::Build() {
   sub_menus_.push_back(std::make_unique<HelpMenuModel>(this, browser_));
   AddSubMenuWithStringIdAndVectorIcon(this, IDC_HELP_MENU, IDS_HELP_MENU,
                                       sub_menus_.back().get(), kHelpMenuIcon);
-#else
-// Add About icon to Thorium menu
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRefreshIcon);
-#else
-  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRefreshIcon);
-#endif
 #endif
 
   AddItemWithStringIdAndVectorIcon(this, IDC_OPTIONS, IDS_SETTINGS,
                                    kSettingsMenuIcon);
+
+// Add About icon to Thorium menu
+#if BUILDFLAG(IS_CHROMEOS_ASH)
+  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRegularIcon);
+#else
+  AddItemWithStringIdAndVectorIcon(this, IDC_ABOUT, IDS_ABOUT, vector_icons::kInfoRegularIcon);
+#endif
 
   if (browser_defaults::kShowExitMenuItem) {
     AddItemWithStringIdAndVectorIcon(this, IDC_EXIT, IDS_EXIT, kExitMenuIcon);
