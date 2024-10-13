@@ -629,6 +629,27 @@ index 0000000000000..de40b42fcc722
 +//static const bool thor24 = features::IsThorium2024();
 +
 +#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
+diff --git a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
+index 6a91493f7c2bc..004fa7b7981c3 100644
+--- a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
++++ b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
+@@ -49,6 +49,16 @@ const std::vector<LabInfo>& GetData() {
+         l10n_util::GetStringUTF16(IDS_TABS_SHRINK_TO_LARGE_WIDTH),
+         l10n_util::GetStringUTF16(IDS_TABS_DO_NOT_SHRINK)};
+ 
++    const char kThorium2024FlagId[] = "thorium-2024";
++    std::u16string kThorium2024FlagName = u"Enable Thorium 2024 UI";
++    std::u16string kThorium2024FlagDescription = u"Enable an experimental UI, which restores many parts of the pre-Chrome Refresh 2023 UI.";
++
++    lab_info.emplace_back(
++        kThorium2024FlagId,
++        kThorium2024FlagName,
++        kThorium2024FlagDescription,
++        "chrome-labs-thorium-2024", version_info::Channel::BETA);
++
+     lab_info.emplace_back(
+         flag_descriptions::kScrollableTabStripFlagId,
+         l10n_util::GetStringUTF16(IDS_TAB_SCROLLING_EXPERIMENT_NAME),
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 index fd011f8983a1d..8000a05951f9b 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
@@ -1161,7 +1182,7 @@ index 4bc8f9177f416..4deaee638a5c7 100644
 +    return gfx::Insets::TLBR(6, 1, 5, 1);
 +  }
 +  if (features::IsThorium2024()) {
-+    return gfx::Insets::VH(2, 3);
++    return gfx::Insets::VH(3, 6);
 +  }
 +  return gfx::Insets::VH(5, 6);
 +}
