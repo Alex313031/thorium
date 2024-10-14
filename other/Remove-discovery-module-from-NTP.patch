@@ -1,7 +1,7 @@
-From 4800c004554158d6307a9de595ee2c7cfea6d4c9 Mon Sep 17 00:00:00 2001
+From 45e172ad614f38a3ce759d2164a0c57d56f39e58 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Sat, 10 Aug 2024 14:19:27 +0800
-Subject: [PATCH] Remove-discovery-module-from-NTP
+Date: Mon, 14 Oct 2024 15:18:21 +0800
+Subject: [PATCH] [Android] Remove-discovery-module-from-NTP
 
 ---
  .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
@@ -10,7 +10,7 @@ Subject: [PATCH] Remove-discovery-module-from-NTP
  3 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
-index e57b3d99ebb27..0faef2a30bdb7 100644
+index 93a3d036f9c49..942100187320b 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 @@ -1,6 +1,6 @@
@@ -32,7 +32,7 @@ index e57b3d99ebb27..0faef2a30bdb7 100644
      <RelativeLayout
          tools:ignore="RelativeOverlap"
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
-index 3889d8d6d2d9b..9f8c355f09566 100644
+index dfa33369d2db4..3246e8689ded7 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 @@ -1,6 +1,6 @@
@@ -73,5 +73,5 @@ index 50f880e715489..ce7c2695ab09f 100644
  }
  
 -- 
-2.46.0.windows.1
+2.43.0
 
