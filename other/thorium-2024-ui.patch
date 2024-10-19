@@ -1329,7 +1329,7 @@ index 65676013fece9..8041d18f35745 100644
        }
      }
  
-+    if (features::IsThorium2024()) {
++    if (features::IsThorium2024() && !is_win) {
 +      constexpr int Th24StrokeOffset = 1;
 +      top -= Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
