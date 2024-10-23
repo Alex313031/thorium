@@ -40,8 +40,8 @@ from gn_helpers import ToGNString
 #   Maps between Visual Studio version and MSVC toolset
 # * MSVS_VERSIONS in this file
 #   Records the packaged and default version of Visual Studio
-TOOLCHAIN_HASH = 'eb715acd3d'
-SDK_VERSION = '10.0.26100.0'
+TOOLCHAIN_HASH = '2fd6fb935f'
+SDK_VERSION = '10.0.22621.0'
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 json_data_file = os.path.join(script_dir, 'win_toolchain.json')
