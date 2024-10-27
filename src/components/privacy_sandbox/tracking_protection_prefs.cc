@@ -70,7 +70,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(prefs::kTrackingProtection3pcdEnabled, false);
   registry->RegisterBooleanPref(
-      prefs::kIpProtectionEnabled, false,
+      prefs::kIpProtectionEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
   registry->RegisterBooleanPref(prefs::kIpProtectionInitializedByDogfood,
                                 false);
