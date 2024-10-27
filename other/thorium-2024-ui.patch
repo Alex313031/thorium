@@ -1,22 +1,16 @@
 diff --git a/chrome/browser/resources/downloads/item.html b/chrome/browser/resources/downloads/item.html
-index eb515155212c9..1bc09f08c8717 100644
+index eb515155212c9..661a173e3e5e6 100644
 --- a/chrome/browser/resources/downloads/item.html
 +++ b/chrome/browser/resources/downloads/item.html
-@@ -427,6 +427,14 @@
-       --></div>
-     </div>
-     <div class="more-options">
-+        <div role="gridcell">
-+          <cr-icon-button class="icon-clear"
-+              style$="[[computeRemoveStyle_(isDangerous_, showCancel_)]]"
-+              id="remove-old" title="$i18n{controlDeleteFromHistory}"
-+              aria-label$="$i18n{controlDeleteFromHistory}"
-+              on-click="onRemoveClick_" focus-row-control focus-type="remove">
-+          </cr-icon-button>
-+        </div>
-       <!-- Menu and/or quick action(s). -->
-       <div role="gridcell" id="action-icon-buttons">
-         <cr-icon-button id="more-actions" iron-icon="cr:more-vert"
+@@ -384,7 +384,7 @@
+             hidden="[[!shouldShowReferrerUrl_(data.displayReferrerUrl)]]">
+           <!-- Text populated dynamically -->
+         </div>
+-        <a id="url" hidden="[[showReferrerUrl_]]" target="_blank"
++        <a id="url" target="_blank"
+           on-click="onUrlClick_" focus-row-control
+           focus-type="url">[[getDisplayUrlStr_(data.displayUrl)]]</a>
+       </div>
 diff --git a/chrome/browser/search/search.cc b/chrome/browser/search/search.cc
 index 916e1c043f3e5..9bc0ea94e459a 100644
 --- a/chrome/browser/search/search.cc
@@ -1144,15 +1138,31 @@ index 8ad0bd147a4c2..017a8d3422806 100644
      // High contrast schemes get a border stroke even on a rounded omnibox.
      border_color =
 diff --git a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
-index a7072a79d61e9..7234aaeae4b56 100644
+index a7072a79d61e9..2ed53a3e48336 100644
 --- a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
 +++ b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
-@@ -139,7 +139,7 @@ class OmniboxSuggestionRowButton : public views::MdTextButton {
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.h"
+ 
++#include "base/command_line.h"
+ #include "base/functional/bind.h"
+ #include "base/memory/raw_ptr.h"
+ #include "base/ranges/algorithm.h"
+@@ -139,7 +140,15 @@ class OmniboxSuggestionRowButton : public views::MdTextButton {
      SetImageLabelSpacing(8);
      SetCustomPadding(ChromeLayoutProvider::Get()->GetInsetsMetric(
          INSETS_OMNIBOX_PILL_BUTTON));
 -    SetCornerRadius(GetLayoutConstant(TOOLBAR_CORNER_RADIUS));
-+    SetCornerRadius(8);
++    static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
++    int corner_radius;
++    if (classic_omnibox) {
++      corner_radius = 4;
++    } else {
++      corner_radius = 8;
++    }
++    static const int kCornerRadius = corner_radius;
++    SetCornerRadius(kCornerRadius);
  
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
@@ -1281,10 +1291,18 @@ index a42855ead9dbe..7cfeea92e9efb 100644
  
  int TabSearchButton::GetFlatCornerRadius() const {
 diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
-index 65676013fece9..8041d18f35745 100644
+index 65676013fece9..e59963fadac56 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -19,6 +19,7 @@
+@@ -11,6 +11,7 @@
+ #include "base/memory/raw_ptr.h"
+ #include "base/numerics/safe_conversions.h"
+ #include "base/strings/strcat.h"
++#include "build/build_config.h"
+ #include "cc/paint/paint_record.h"
+ #include "cc/paint/paint_shader.h"
+ #include "chrome/browser/themes/theme_properties.h"
+@@ -18,6 +19,7 @@
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/tab_types.h"
@@ -1292,7 +1310,7 @@ index 65676013fece9..8041d18f35745 100644
  #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/top_container_background.h"
-@@ -254,7 +255,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -244,7 +246,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // this. Detached tab shapes do not need to respect this.
      if (path_type != TabStyle::PathType::kInteriorClip &&
          path_type != TabStyle::PathType::kHitTest) {
@@ -1302,7 +1320,7 @@ index 65676013fece9..8041d18f35745 100644
        tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
      }
  
-@@ -264,16 +266,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -254,16 +257,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      }
  
      int left = aligned_bounds.x() + extension_corner_radius;
@@ -1325,20 +1343,29 @@ index 65676013fece9..8041d18f35745 100644
        // Don't round the top corners to avoid creating dead space between tabs.
        top_content_corner_radius = 0;
      }
-@@ -308,6 +313,12 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -298,6 +304,21 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
        }
      }
  
-+    if (features::IsThorium2024() && !is_win) {
++  #if !BUILDFLAG(IS_WIN)
++    if (features::IsThorium2024()) {
 +      constexpr int Th24StrokeOffset = 1;
 +      top -= Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
 +    }
++  #else
++    VLOG(0) << "Th24StrokeOffset on Windows is imperfect";
++    if (features::IsThorium2024()) {
++      constexpr int Th24StrokeOffset = 1;
++      top += Th24StrokeOffset;
++      //bottom -= Th24StrokeOffset;
++    }
++  #endif
 +
      // Radii are clockwise from top left.
      const SkVector radii[4] = {
          SkVector(top_content_corner_radius, top_content_corner_radius),
-@@ -753,6 +764,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+@@ -731,6 +752,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
    const Tab* const adjacent_tab =
        tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
  
@@ -1350,13 +1377,14 @@ index 65676013fece9..8041d18f35745 100644
    const Tab* const left_tab = leading ? adjacent_tab : tab();
    const Tab* const right_tab = leading ? tab() : adjacent_tab;
    const bool adjacent_to_header =
-@@ -978,6 +1003,9 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+@@ -965,6 +991,10 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
      cc::PaintFlags flags;
      flags.setAntiAlias(true);
      flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
 +    if (base::CommandLine::ForCurrentProcess()->HasSwitch("transparent-tabs") &&
-+        selection_state != TabStyle::TabSelectionState::kActive)
++        selection_state != TabStyle::TabSelectionState::kActive) {
 +        flags.setAlphaf(0.7f);
++    }
      canvas->DrawRect(gfx::ScaleToEnclosingRect(tab_->GetLocalBounds(), scale),
                       flags);
    }
@@ -1589,6 +1617,19 @@ index 2f1525c8880d4..c7b6d0822ba32 100644
  }
  
  // static
+diff --git a/ui/views/controls/menu/menu_config.h b/ui/views/controls/menu/menu_config.h
+index b087f25b78c94..415c96a2ba60b 100644
+--- a/ui/views/controls/menu/menu_config.h
++++ b/ui/views/controls/menu/menu_config.h
+@@ -167,7 +167,7 @@ struct VIEWS_EXPORT MenuConfig {
+ 
+   // Delay, in ms, between when menus are selected or moused over and the menu
+   // appears.
+-  int show_delay = 400;
++  int show_delay = 1;
+ 
+   // Radius of the rounded corners of the menu border. Must be >= 0.
+   int corner_radius = LayoutProvider::Get()->GetCornerRadiusMetric(
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
 index 09c03d1e87011..cf6722ff8314a 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
@@ -1675,7 +1716,7 @@ index eabfb364890d3..2374c18b0f3d7 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_win.cc b/ui/views/controls/menu/menu_config_win.cc
-index a2dae078ccbd3..41e3452b95f5c 100644
+index a2dae078ccbd3..1a6d66988faa9 100644
 --- a/ui/views/controls/menu/menu_config_win.cc
 +++ b/ui/views/controls/menu/menu_config_win.cc
 @@ -8,6 +8,8 @@
@@ -1688,18 +1729,21 @@ index a2dae078ccbd3..41e3452b95f5c 100644
  
  namespace views {
 @@ -22,9 +24,40 @@ void MenuConfig::InitPlatform() {
+       (SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, &show_cues, 0) &&
         show_cues == TRUE);
  
-   SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
+-  SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
 -  separator_upper_height = 5;
 -  separator_lower_height = 7;
- 
+-
++  //SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
++
 +  bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
 +  use_outer_border = features::IsThorium2024() ? true : false;
 +
 +  if (features::IsThorium2024()) {
 +    if (is_win11) {
-+      corner_radius = 8;
++      corner_radius = 4;
 +      menu_horizontal_border_size = 4;
 +      submenu_horizontal_overlap = 1;
 +      rounded_menu_vertical_border_size = 4;
@@ -1915,6 +1959,36 @@ index 01301096ca466..e4854f99dad64 100644
    ShapeSysTokens token = GetShapeSysToken(id);
    DCHECK_NE(token, ShapeSysTokens::kDefault)
        << "kDefault token means there is a missing mapping between shape tokens";
+diff --git a/ui/views/metrics.cc b/ui/views/metrics.cc
+index 75fc666dfbeb3..ee108f6a31c59 100644
+--- a/ui/views/metrics.cc
++++ b/ui/views/metrics.cc
+@@ -6,6 +6,6 @@
+ 
+ namespace views {
+ 
+-const int kDefaultMenuShowDelay = 400;
++const int kDefaultMenuShowDelay = 1;
+ 
+ }  // namespace views
+diff --git a/ui/views/metrics_aura.cc b/ui/views/metrics_aura.cc
+index c8a9260b6c6e6..129b06e148063 100644
+--- a/ui/views/metrics_aura.cc
++++ b/ui/views/metrics_aura.cc
+@@ -23,12 +23,7 @@ int GetDoubleClickInterval() {
+ 
+ int GetMenuShowDelay() {
+ #if BUILDFLAG(IS_WIN)
+-  static int delay = []() {
+-    DWORD show_delay;
+-    return SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0)
+-               ? static_cast<int>(show_delay)
+-               : kDefaultMenuShowDelay;
+-  }();
++  static int delay = kDefaultMenuShowDelay;
+   return delay;
+ #else
+   return 0;
 diff --git a/ui/webui/resources/cr_elements/md_select.css b/ui/webui/resources/cr_elements/md_select.css
 index c6f72014e5f24..9032a51118467 100644
 --- a/ui/webui/resources/cr_elements/md_select.css
