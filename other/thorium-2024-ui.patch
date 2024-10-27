@@ -1294,7 +1294,7 @@ diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui
 index 65676013fece9..e59963fadac56 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
-@@ -11,6 +11,7 @@
+@@ -12,6 +12,7 @@
  #include "base/memory/raw_ptr.h"
  #include "base/numerics/safe_conversions.h"
  #include "base/strings/strcat.h"
@@ -1302,7 +1302,7 @@ index 65676013fece9..e59963fadac56 100644
  #include "cc/paint/paint_record.h"
  #include "cc/paint/paint_shader.h"
  #include "chrome/browser/themes/theme_properties.h"
-@@ -18,6 +19,7 @@
+@@ -19,6 +20,7 @@
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/tab_types.h"
@@ -1310,7 +1310,7 @@ index 65676013fece9..e59963fadac56 100644
  #include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/top_container_background.h"
-@@ -244,7 +246,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -254,7 +256,8 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      // this. Detached tab shapes do not need to respect this.
      if (path_type != TabStyle::PathType::kInteriorClip &&
          path_type != TabStyle::PathType::kHitTest) {
@@ -1320,7 +1320,7 @@ index 65676013fece9..e59963fadac56 100644
        tab_height -= GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP) * scale;
      }
  
-@@ -254,16 +257,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -264,16 +267,19 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
      }
  
      int left = aligned_bounds.x() + extension_corner_radius;
@@ -1343,7 +1343,7 @@ index 65676013fece9..e59963fadac56 100644
        // Don't round the top corners to avoid creating dead space between tabs.
        top_content_corner_radius = 0;
      }
-@@ -298,6 +304,21 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
+@@ -308,6 +314,21 @@ SkPath TabStyleViewsImpl::GetPath(TabStyle::PathType path_type,
        }
      }
  
@@ -1365,7 +1365,7 @@ index 65676013fece9..e59963fadac56 100644
      // Radii are clockwise from top left.
      const SkVector radii[4] = {
          SkVector(top_content_corner_radius, top_content_corner_radius),
-@@ -731,6 +752,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
+@@ -753,6 +774,11 @@ float TabStyleViewsImpl::GetSeparatorOpacity(bool for_layout,
    const Tab* const adjacent_tab =
        tab()->controller()->GetAdjacentTab(tab(), leading ? -1 : 1);
  
@@ -1377,7 +1377,7 @@ index 65676013fece9..e59963fadac56 100644
    const Tab* const left_tab = leading ? adjacent_tab : tab();
    const Tab* const right_tab = leading ? tab() : adjacent_tab;
    const bool adjacent_to_header =
-@@ -965,6 +991,10 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
+@@ -987,6 +1013,10 @@ void TabStyleViewsImpl::PaintTabBackgroundFill(
      cc::PaintFlags flags;
      flags.setAntiAlias(true);
      flags.setColor(GetCurrentTabBackgroundColor(selection_state, hovered));
@@ -1728,7 +1728,7 @@ index a2dae078ccbd3..1a6d66988faa9 100644
  #include "ui/gfx/system_fonts_win.h"
  
  namespace views {
-@@ -22,9 +24,40 @@ void MenuConfig::InitPlatform() {
+@@ -21,9 +23,40 @@ void MenuConfig::InitPlatform() {
        (SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, &show_cues, 0) &&
         show_cues == TRUE);
  
