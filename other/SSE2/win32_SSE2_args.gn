@@ -67,6 +67,7 @@ enable_media_drm_storage = true
 # enable_media_overlay = true
 enable_hangout_services_extension = false
 rtc_use_h264 = true
+rtc_use_h265 = true
 rtc_include_ilbc = true
 # rtc_build_with_neon = true
 rtc_build_examples = false
