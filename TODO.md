@@ -32,6 +32,10 @@ Dino strings in components/error_page_strings.grdp
 Remove //build/config/unsafe_buffer_paths.txt after fixing //net/ftp
 Remove //components/optimization_guide_core/optimization_guide_features.cc after upstream MacOS fix
 
+Opt with BOLT > https://aaupov.github.io/blog/2022/11/12/bolt-chromium
+SSD Restore > https://github.com/Alex313031/thorium/issues/61
+Add textbox disk cache dir flag > https://github.com/Alex313031/thorium/issues/860
+
 https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d03565176f2f481c79e
 
 Make UA and hints report chrome, and set hints
