@@ -57,27 +57,27 @@ constexpr auto fix_borked_macos_build =
 // hints for what optimizations can be applied on a page load.
 BASE_FEATURE(kOptimizationHints,
              "OptimizationHints",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Enables fetching from a remote Optimization Guide Service.
 BASE_FEATURE(kRemoteOptimizationGuideFetching,
              "OptimizationHintsFetching",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 BASE_FEATURE(kRemoteOptimizationGuideFetchingAnonymousDataConsent,
              "OptimizationHintsFetchingAnonymousDataConsent",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Enables performance info in the context menu and fetching from a remote
 // Optimization Guide Service.
 BASE_FEATURE(kContextMenuPerformanceInfoAndRemoteHintFetching,
              "ContextMenuPerformanceInfoAndRemoteHintFetching",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Enables the prediction of optimization targets.
 BASE_FEATURE(kOptimizationTargetPrediction,
              "OptimizationTargetPrediction",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Enables the downloading of models.
 BASE_FEATURE(kOptimizationGuideModelDownloading,
@@ -115,27 +115,27 @@ BASE_FEATURE(kOverrideNumThreadsForModelExecution,
 
 BASE_FEATURE(kOptGuideEnableXNNPACKDelegateWithTFLite,
              "OptGuideEnableXNNPACKDelegateWithTFLite",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 BASE_FEATURE(kOptimizationHintsComponent,
              "OptimizationHintsComponent",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Killswitch for fetching on search results from a remote Optimization Guide
 // Service.
 BASE_FEATURE(kOptimizationGuideFetchingForSRP,
              "OptimizationHintsFetchingSRP",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Kill switch for disabling model quality logging.
 BASE_FEATURE(kModelQualityLogging,
              "ModelQualityLogging",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // Enables fetching personalized metadata from Optimization Guide Service.
 BASE_FEATURE(kOptimizationGuidePersonalizedFetching,
              "OptimizationPersonalizedHintsFetching",
-             fix_borked_macos_build;
+             fix_borked_macos_build);
 
 // An emergency kill switch feature to stop serving certain model versions per
 // optimization target. This is useful in exceptional situations when a bad

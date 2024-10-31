@@ -36,8 +36,11 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
 
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
-  SetVectorIcons(disable_thorium_icons ? kScienceIcon, kScienceIcon
-                                       : kScienceThoriumIcon, kScienceThoriumIcon);
+  if (disable_thorium_icons) {
+    SetVectorIcons(kScienceIcon, kScienceIcon);
+  } else {
+    SetVectorIcons(kScienceThoriumIcon, kScienceThoriumIcon);
+  }
 
   GetViewAccessibility().SetName(
       l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));

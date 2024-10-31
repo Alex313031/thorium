@@ -142,8 +142,11 @@ HomeButton::HomeButton(PressedCallback callback, PrefService* prefs)
 
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
-  SetVectorIcons(disable_thorium_icons ? kNavigateHomeChromeRefreshIcon, kNavigateHomeTouchIcon
-                                       : kNavigateHomeChromeRefreshThoriumIcon, kNavigateHomeTouchIcon);
+  if (disable_thorium_icons) {
+    SetVectorIcons(kNavigateHomeChromeRefreshIcon, kNavigateHomeTouchIcon);
+  } else {
+    SetVectorIcons(kNavigateHomeChromeRefreshThoriumIcon, kNavigateHomeTouchIcon);
+  }
 
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_HOME));
   GetViewAccessibility().SetName(l10n_util::GetStringUTF16(IDS_ACCNAME_HOME));
