@@ -162,7 +162,6 @@ copyRaspi () {
 	printf "\n" &&
 	printf "${YEL}Copying Raspberry Pi build files...${c0}\n" &&
 	cp -r -v arm/build/* ${CR_SRC_DIR}/build/ &&
-	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
@@ -280,7 +279,6 @@ copyAndroid () {
 	printf "\n" &&
 	printf "${YEL}Copying Android (ARM64 and ARM32) build files...${c0}\n" &&
 	cp -r -v arm/build/* ${CR_SRC_DIR}/build/ &&
-	cp -r -v arm/media/* ${CR_SRC_DIR}/media/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	printf "\n" &&
 	cp -r -v arm/android/* ${CR_SRC_DIR}/ &&
