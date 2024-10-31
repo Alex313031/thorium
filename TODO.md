@@ -27,7 +27,10 @@ Dino strings in components/error_page_strings.grdp
 
  - Add GPC patch
 
---M128--
+--M130--
+
+Remove //build/config/unsafe_buffer_paths.txt after fixing //net/ftp
+Remove //components/optimization_guide_core/optimization_guide_features.cc after upstream MacOS fix
 
 https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d03565176f2f481c79e
 
