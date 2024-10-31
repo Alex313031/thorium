@@ -35,6 +35,9 @@ Remove //components/optimization_guide_core/optimization_guide_features.cc after
 Opt with BOLT > https://aaupov.github.io/blog/2022/11/12/bolt-chromium
 SSD Restore > https://github.com/Alex313031/thorium/issues/61
 Add textbox disk cache dir flag > https://github.com/Alex313031/thorium/issues/860
+Fix outline of omnibox and bookmarks bar underline with themes
+
+Fix .icon files! Review ALL .icon files > https://source.chromium.org/chromium/chromium/src/+/f824ddc5635f14e9fe879df062d8fbd66251f312
 
 https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d03565176f2f481c79e
 
@@ -42,7 +45,7 @@ Make UA and hints report chrome, and set hints
 
 fix thorium and shell portable --temp profile
 
-Fix bookmarks bar underline, multiple profiles lag
+Fix multiple profiles lag
 Fix tab search button and menu position
 Fix download shelf height
 Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, versus vanilla Google Chrome, all at the same revision.
