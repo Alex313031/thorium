@@ -143,7 +143,6 @@
 -storage/
 -testing/
 -third_party/
-+third_party/blink/
 -tools/
 -ui/
 +ui/views/
