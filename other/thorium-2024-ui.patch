@@ -1349,15 +1349,15 @@ index 65676013fece9..e59963fadac56 100644
  
 +  #if !BUILDFLAG(IS_WIN)
 +    if (features::IsThorium2024()) {
-+      constexpr int Th24StrokeOffset = 1;
-+      top -= Th24StrokeOffset;
++      //constexpr int Th24StrokeOffset = 1;
++      //top -= Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
 +    }
 +  #else
 +    VLOG(0) << "Th24StrokeOffset on Windows is imperfect";
 +    if (features::IsThorium2024()) {
-+      constexpr int Th24StrokeOffset = 1;
-+      top += Th24StrokeOffset;
++      //constexpr int Th24StrokeOffset = 1;
++      //top += Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
 +    }
 +  #endif
