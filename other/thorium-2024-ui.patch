@@ -1347,10 +1347,10 @@ index 65676013fece9..e59963fadac56 100644
        }
      }
  
-+  #if !BUILDFLAG(IS_WIN)
++  #if BUILDFLAG(IS_LINUX)
 +    if (features::IsThorium2024()) {
-+      //constexpr int Th24StrokeOffset = 1;
-+      //top -= Th24StrokeOffset;
++      constexpr float Th24StrokeOffset = 1.0f;
++      top -= Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
 +    }
 +  #else
@@ -1738,7 +1738,7 @@ index a2dae078ccbd3..1a6d66988faa9 100644
 -
 +  //SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
 +
-+  bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
++  static const bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
 +  use_outer_border = features::IsThorium2024() ? true : false;
 +
 +  if (features::IsThorium2024()) {
