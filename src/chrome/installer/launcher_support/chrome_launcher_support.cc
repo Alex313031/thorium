@@ -28,7 +28,7 @@ const wchar_t kUpdateClientsRegKey[] = L"Software\\Google\\Update\\Clients";
 const wchar_t kBrowserAppGuid[] = L"{8A69D345-D564-463c-AFF1-A69D9E530F96}";
 const wchar_t kSxSBrowserAppGuid[] = L"{4ea16ac7-fd5a-47c3-875b-dbf4a2008c20}";
 #else
-const wchar_t kInstallationRegKey[] = L"Software\\Chromium";
+const wchar_t kInstallationRegKey[] = L"Software\\Thorium";
 #endif
 
 // Copied from util_constants.cc.
