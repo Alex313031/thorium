@@ -1,5 +1,18 @@
+diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
+index b103bbe61303d..469611cb36e7a 100644
+--- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
++++ b/chrome/browser/extensions/api/messaging/launch_context_win.cc
+@@ -62,7 +62,7 @@ bool GetManifestPathWithFlags(HKEY root_key,
+                               std::wstring* result) {
+ #if BUILDFLAG(CHROMIUM_BRANDING)
+   static constexpr wchar_t kChromiumNativeMessagingRegistryKey[] =
+-      L"SOFTWARE\\Chromium\\NativeMessagingHosts";
++      L"SOFTWARE\\Thorium\\NativeMessagingHosts";
+ 
+   // Try to read the path using the Chromium-specific registry for Chromium.
+   // If that fails, fallback to Chrome-specific registry key below.
 diff --git a/chrome/browser/resources/downloads/item.html b/chrome/browser/resources/downloads/item.html
-index eb515155212c9..661a173e3e5e6 100644
+index eb515155212c9..0633e101be077 100644
 --- a/chrome/browser/resources/downloads/item.html
 +++ b/chrome/browser/resources/downloads/item.html
 @@ -384,7 +384,7 @@
@@ -11,6 +24,32 @@ index eb515155212c9..661a173e3e5e6 100644
            on-click="onUrlClick_" focus-row-control
            focus-type="url">[[getDisplayUrlStr_(data.displayUrl)]]</a>
        </div>
+@@ -430,9 +430,6 @@
+       <!-- Menu and/or quick action(s). -->
+       <div role="gridcell" id="action-icon-buttons">
+         <cr-icon-button id="more-actions" iron-icon="cr:more-vert"
+-            hidden="[[!computeShowActionMenu_(pauseOrResumeText_,
+-                isDangerous_, isReviewable_, showDeepScan_, showCancel_,
+-                showOpenAnyway_, data.state, data.retry, data.dangerType)]]"
+             class="dropdown-trigger" title="$i18n{moreActions}"
+             on-click="onMoreActionsClick_" aria-haspopup="menu"
+             focus-row-control focus-type="actionMenuButton">
+diff --git a/chrome/browser/resources/pdf/manifest.json b/chrome/browser/resources/pdf/manifest.json
+index f355f92ac2f37..e0b69081164fd 100644
+--- a/chrome/browser/resources/pdf/manifest.json
++++ b/chrome/browser/resources/pdf/manifest.json
+@@ -3,8 +3,8 @@
+   "manifest_version": 2,
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDN6hM0rsDYGbzQPQfOygqlRtQgKUXMfnSjhIBL7LnReAVBEd7ZmKtyN2qmSasMl4HZpMhVe2rPWVVwBDl6iyNE/Kok6E6v6V3vCLGsOpQAuuNVye/3QxzIldzG/jQAdWZiyXReRVapOhZtLjGfywCvlWq7Sl/e3sbc0vWybSDI2QIDAQAB",
+   "name": "<NAME>",
+-  "version": "1",
+-  "description": "",
++  "version": "1.0.1",
++  "description": "Internal Component Extension for rendering PDFs.",
+   "offline_enabled": true,
+   "incognito": "split",
+   "permissions": [
+
 diff --git a/chrome/browser/search/search.cc b/chrome/browser/search/search.cc
 index 916e1c043f3e5..9bc0ea94e459a 100644
 --- a/chrome/browser/search/search.cc
@@ -356,7 +395,7 @@ index 74a00df155806..00945e93c0afa 100644
   public:
    // On hover, expand status bubble to fit long URL after this delay.
 -  static const int kExpandHoverDelayMS = 1600;
-+  static const int kExpandHoverDelayMS = 0;
++  static const int kExpandHoverDelayMS = 1;
  
    virtual ~StatusBubble() {}
  
@@ -1130,8 +1169,8 @@ index 8ad0bd147a4c2..017a8d3422806 100644
    SkColor border_color = SK_ColorTRANSPARENT;
 +
 +  static const bool classic_omnibox = base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
-+  if (classic_omnibox && !is_caret_visible) {
-+      border_color = color_provider->GetColor(kColorLocationBarBorderOnMismatch);
++  if (classic_omnibox) {
++      border_color = is_caret_visible ? color_provider->GetColor(kColorOmniboxResultsBackground) : color_provider->GetColor(kColorLocationBarBorder);
 +  }
 +
    if (high_contrast) {
@@ -1192,7 +1231,7 @@ index 4bc8f9177f416..4deaee638a5c7 100644
 +    return gfx::Insets::TLBR(6, 1, 5, 1);
 +  }
 +  if (features::IsThorium2024()) {
-+    return gfx::Insets::VH(3, 6);
++    return gfx::Insets::VH(4, 6);
 +  }
 +  return gfx::Insets::VH(5, 6);
 +}
@@ -1495,6 +1534,47 @@ index 0000000000000..23fe24f51e93e
 +};
 +
 +#endif  // THORIUM_WEBUI_H_
+diff --git a/chrome/common/chrome_paths.cc b/chrome/common/chrome_paths.cc
+index 3c569bc610124..160d1bd4090a3 100644
+--- a/chrome/common/chrome_paths.cc
++++ b/chrome/common/chrome_paths.cc
+@@ -59,7 +59,7 @@ const base::FilePath::CharType kFilepathSinglePrefExtensions[] =
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+     FILE_PATH_LITERAL("/usr/share/google-chrome/extensions");
+ #else
+-    FILE_PATH_LITERAL("/usr/share/chromium/extensions");
++    FILE_PATH_LITERAL("/usr/share/thorium/extensions");
+ #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ 
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+@@ -573,8 +573,7 @@ bool PathProvider(int key, base::FilePath* result) {
+         return false;
+       }
+ 
+-      cur = cur.Append(FILE_PATH_LITERAL("Google"))
+-                .Append(FILE_PATH_LITERAL("Chrome"))
++      cur = cur.Append(FILE_PATH_LITERAL("Thorium"))
+                 .Append(FILE_PATH_LITERAL("External Extensions"));
+ #else
+       if (!base::PathService::Get(base::DIR_MODULE, &cur)) {
+@@ -607,7 +606,7 @@ bool PathProvider(int key, base::FilePath* result) {
+           FILE_PATH_LITERAL("/Library/Google/Chrome/NativeMessagingHosts"));
+ #else
+       cur = base::FilePath(FILE_PATH_LITERAL(
+-          "/Library/Application Support/Chromium/NativeMessagingHosts"));
++          "/Library/Application Support/Thorium/NativeMessagingHosts"));
+ #endif
+ #else  // BUILDFLAG(IS_MAC)
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+@@ -615,7 +614,7 @@ bool PathProvider(int key, base::FilePath* result) {
+           FILE_PATH_LITERAL("/etc/opt/chrome/native-messaging-hosts"));
+ #else
+       cur = base::FilePath(
+-          FILE_PATH_LITERAL("/etc/chromium/native-messaging-hosts"));
++          FILE_PATH_LITERAL("/etc/thorium/native-messaging-hosts"));
+ #endif
+ #endif  // !BUILDFLAG(IS_MAC)
+       break;
 diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_constants.cc
 index 248b6795e8cbe..488bade160e37 100644
 --- a/chrome/common/webui_url_constants.cc

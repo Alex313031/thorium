@@ -81,7 +81,7 @@
 
 // API key for the Speech On-Device API (SODA).
 #if !defined(GOOGLE_API_KEY_SODA)
-#define GOOGLE_API_KEY_SODA DUMMY_API_TOKEN
+#define GOOGLE_API_KEY_SODA "ce04d119-129f-404e-b4fe-6b913fffb6cb"
 #endif
 
 #if !BUILDFLAG(IS_ANDROID)

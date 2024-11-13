@@ -121,7 +121,7 @@ bool IsComponentExtensionAllowlisted(int manifest_resource_id) {
 #endif  // BUILDFLAG(IS_CHROMEOS)
       return true;
   }
-  if (IsThoriumID)
+  if (IsThoriumID) {
     return true;
   }
 

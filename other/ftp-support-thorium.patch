@@ -7716,7 +7716,7 @@ new file mode 100644
 index 0000000000000..0ef5b781eec4e
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.h
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,29 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -7724,6 +7724,7 @@ index 0000000000000..0ef5b781eec4e
 +#ifndef NET_FTP_FTP_NETWORK_SESSION_H_
 +#define NET_FTP_FTP_NETWORK_SESSION_H_
 +
++#include "base/memory/raw_ptr.h"
 +#include "net/base/net_export.h"
 +
 +namespace net {
@@ -7739,7 +7740,7 @@ index 0000000000000..0ef5b781eec4e
 +  HostResolver* host_resolver() { return host_resolver_; }
 +
 + private:
-+  HostResolver* const host_resolver_;
++  raw_ptr<HostResolver> const host_resolver_;
 +};
 +
 +}  // namespace net
@@ -8014,7 +8015,7 @@ index 0000000000000..8c8b965924cca
 +}
 +
 +int FtpNetworkTransaction::Start(
-+    const FtpRequestInfo* request_info,
++    raw_ptr <FtpRequestInfo> request_info,
 +    CompletionOnceCallback callback,
 +    const NetLogWithSource& net_log,
 +    const NetworkTrafficAnnotationTag& traffic_annotation) {
@@ -9054,7 +9055,7 @@ new file mode 100644
 index 0000000000000..c7cb8753f8acf
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.h
-@@ -0,0 +1,267 @@
+@@ -0,0 +1,268 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -9070,6 +9071,7 @@ index 0000000000000..c7cb8753f8acf
 +
 +#include "base/compiler_specific.h"
 +#include "base/gtest_prod_util.h"
++#include "base/memory/raw_ptr.h"
 +#include "base/memory/ref_counted.h"
 +#include "net/base/auth.h"
 +#include "net/base/completion_once_callback.h"
@@ -9096,7 +9098,7 @@ index 0000000000000..c7cb8753f8acf
 +  int Stop(int error);
 +
 +  // FtpTransaction methods:
-+  int Start(const FtpRequestInfo* request_info,
++  int Start(raw_ptr <FtpRequestInfo> request_info,
 +            CompletionOnceCallback callback,
 +            const NetLogWithSource& net_log,
 +            const NetworkTrafficAnnotationTag& traffic_annotation) override;
@@ -9261,11 +9263,11 @@ index 0000000000000..c7cb8753f8acf
 +  CompletionOnceCallback user_callback_;
 +
 +  NetLogWithSource net_log_;
-+  const FtpRequestInfo* request_;
++  raw_ptr<FtpRequestInfo> request_;
 +  MutableNetworkTrafficAnnotationTag traffic_annotation_;
 +  FtpResponseInfo response_;
 +
-+  HostResolver* resolver_;
++  raw_ptr<HostResolver> resolver_;
 +  // Cancels the outstanding request on destruction.
 +  std::unique_ptr<HostResolver::ResolveHostRequest> resolve_request_;
 +
@@ -9306,7 +9308,7 @@ index 0000000000000..c7cb8753f8acf
 +
 +  uint16_t data_connection_port_;
 +
-+  ClientSocketFactory* const socket_factory_;
++  raw_ptr<ClientSocketFactory> const socket_factory_;
 +
 +  std::string unescaped_path_;
 +
@@ -11232,7 +11234,7 @@ index 0000000000000..dcb67243f9dae
 +  // NOTE: The transaction is not responsible for deleting the callback object.
 +  //
 +  // Profiling information for the request is saved to |net_log| if non-NULL.
-+  virtual int Start(const FtpRequestInfo* request_info,
++  virtual int Start(raw_ptr <FtpRequestInfo> request_info,
 +                    CompletionOnceCallback callback,
 +                    const NetLogWithSource& net_log,
 +                    const NetworkTrafficAnnotationTag& traffic_annotation) = 0;
@@ -12110,7 +12112,7 @@ new file mode 100644
 index 0000000000000..3c7e0faebc2bb
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.h
-@@ -0,0 +1,57 @@
+@@ -0,0 +1,59 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -12122,6 +12124,8 @@ index 0000000000000..3c7e0faebc2bb
 +
 +#include "base/memory/raw_ptr.h"
 +#include "base/compiler_specific.h"
++#include "base/memory/raw_ptr.h"
++#include "base/memory/ref_counted.h"
 +#include "net/base/net_export.h"
 +#include "net/url_request/url_request_job_factory.h"
 +
@@ -12724,7 +12728,7 @@ new file mode 100644
 index 0000000000000..fda29bf6cb24c
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.h
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,102 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -12735,6 +12739,7 @@ index 0000000000000..fda29bf6cb24c
 +#include <memory>
 +#include <string>
 +
++#include "base/memory/raw_ptr.h"
 +#include "base/memory/weak_ptr.h"
 +#include "net/base/auth.h"
 +#include "net/base/ip_endpoint.h"
@@ -12806,7 +12811,7 @@ index 0000000000000..fda29bf6cb24c
 +
 +  void LogFtpStartResult(FTPStartResult result);
 +
-+  ProxyResolutionService* proxy_resolution_service_;
++  raw_ptr<ProxyResolutionService> proxy_resolution_service_;
 +  ProxyInfo proxy_info_;
 +  std::unique_ptr<ProxyResolutionRequest> proxy_resolve_request_;
 +
@@ -12817,7 +12822,7 @@ index 0000000000000..fda29bf6cb24c
 +
 +  std::unique_ptr<AuthData> auth_data_;
 +
-+  FtpTransactionFactory* ftp_transaction_factory_;
++  raw_ptr<FtpTransactionFactory> ftp_transaction_factory_;
 +  raw_ptr<FtpAuthCache> ftp_auth_cache_;
 +
 +  base::WeakPtrFactory<URLRequestFtpJob> weak_factory_{this};
