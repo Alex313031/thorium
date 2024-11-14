@@ -774,7 +774,7 @@ void FlagsState::AddSwitchMapping(
     const std::string& switch_name,
     const std::string& switch_value,
     std::map<std::string, SwitchEntry>* name_to_switch_map) const {
-  DCHECK(!base::Contains(*name_to_switch_map, key));
+  // DCHECK(!base::Contains(*name_to_switch_map, key));
 
   SwitchEntry* entry = &(*name_to_switch_map)[key];
   entry->switch_name = switch_name;

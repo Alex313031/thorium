@@ -89,10 +89,6 @@ bool IsComponentExtensionAllowlisted(const std::string& extension_id) {
   return false;
 }
 
-bool IsThoriumID(const std::string& extension_id) {
-  return extension_id == kThoriumHangoutsId;
-}
-
 bool IsComponentExtensionAllowlisted(int manifest_resource_id) {
   switch (manifest_resource_id) {
     // Please keep the list in alphabetical order.
@@ -120,9 +116,6 @@ bool IsComponentExtensionAllowlisted(int manifest_resource_id) {
     case IDR_ECHO_MANIFEST:
 #endif  // BUILDFLAG(IS_CHROMEOS)
       return true;
-  }
-  if (IsThoriumID) {
-    return true;
   }
 
   LOG(ERROR) << "Component extension with manifest resource id "

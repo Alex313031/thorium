@@ -1,7 +1,7 @@
 target_os = "win"
 target_cpu = "x64"
 is_official_build = false
-is_debug = true
+is_debug = false
 enable_stripping = false
 thin_lto_enable_cache = false
 dcheck_always_on = true
