@@ -87,7 +87,14 @@ group("thorium") {
   }
 
   if (is_linux || is_chromeos) {
-    deps += [ "//sandbox/linux:chrome_sandbox" ]
+    deps += [ ":thorium_sandbox" ]
+  }
+}
+
+# Simply to rename the sandbox target
+group("thorium_sandbox") {
+  if (is_linux || is_chromeos) {
+    deps = [ "//sandbox/linux:chrome_sandbox" ]
   }
 }
 
@@ -110,7 +117,7 @@ group("thorium_all") {
   }
 
   if (is_linux) {
-    deps += [ "//sandbox/linux:chrome_sandbox" ]
+    deps += [ ":thorium_sandbox" ]
   }
 
   if (is_win) {

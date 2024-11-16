@@ -784,7 +784,7 @@ index b57fb5baa52a7..4fc9467f16b6c 100644
 +  // Besides the frame border, there's empty space atop the window in restored
 +  // mode, to use to drag the window around.
 +  constexpr int kNonClientRestoredExtraThickness = 8;
-+  const int thickness = kNonClientRestoredExtraThickness;
++  int thickness = kNonClientRestoredExtraThickness;
 +  if (EverHasVisibleBackgroundTabShapes() && features::IsThorium2024()) {
 +    thickness =
 +        std::max(thickness, BrowserNonClientFrameView::kMinimumDragHeight);

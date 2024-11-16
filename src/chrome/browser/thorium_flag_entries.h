@@ -130,7 +130,7 @@
 #if !BUILDFLAG(IS_ANDROID)
     {"disable-download-bubble",
      "Disable Download Bubble",
-     "When enabled, the traditional download shelf is used instead of the download bubble. Thorium flag",
+     "When enabled, the traditional download shelf is used instead of the download bubble in the toolbar. Thorium flag",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-download-bubble")},
 #endif // BUILDFLAG(IS_ANDROID)
 
