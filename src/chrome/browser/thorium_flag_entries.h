@@ -19,9 +19,13 @@
 
     {"thorium-2024",
      "Enable Experimental Thorium 2024 (Th24) UI",
-     "Enable an experimental \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
+     "Enable a new \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
      "who find the new UI ugly or harder to use.",
      kOsDesktop, FEATURE_VALUE_TYPE(features::kThorium2024)},
+    {"restore-tab-button",
+     "Restore Tab Button",
+     "Enable a new toolbar button to restore your recently closed tabs.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kRestoreTabButton)},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
@@ -52,12 +56,12 @@
      "Changes the look of browser tabs to appear with a rectangular shape, similar to Vivaldi or Cent Browser.",
      kOsDesktop, SINGLE_VALUE_TYPE("rectangular-tabs")},
 
-#if BUILDFLAG(IS_WIN)
-    {"transparent-tabs",
-     "Thorium Semi-Transparent Tabs UI",
-     "Reduces the opacity of tabs.",
-     kOsWin, SINGLE_VALUE_TYPE("transparent-tabs")},
-#endif // BUILDFLAG(IS_WIN)
+//#if BUILDFLAG(IS_WIN)
+    //{"transparent-tabs",
+     //"Thorium Semi-Transparent Tabs UI",
+     //"Reduces the opacity of tabs.",
+     //kOsWin, SINGLE_VALUE_TYPE("transparent-tabs")},
+//#endif // BUILDFLAG(IS_WIN)
 
     {"custom-tab-width",
      "Custom Tab Width",

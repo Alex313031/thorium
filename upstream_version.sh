@@ -36,7 +36,7 @@ else
     export CR_SRC_DIR
 fi
 
-CR_VER="130.0.6723.125"
+CR_VER="130.0.6723.135"
 
 export CR_VER &&
 
@@ -56,10 +56,11 @@ git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
 
-gclient runhooks &&
+# gclient runhooks &&
 
-# Install all sysroots (i.e. for ARM64)
-build/linux/sysroot_scripts/install-sysroot.py --all &&
+# Install sysroots (i.e. for ARM64)
+build/linux/sysroot_scripts/install-sysroot.py --arch=amd64 &&
+build/linux/sysroot_scripts/install-sysroot.py --arch=arm64 &&
 
 printf "\n"
 printf "${GRE}Chromium tree is checked out at tag: ${c0}$CR_VER\n"
