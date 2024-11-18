@@ -1,0 +1,90 @@
+# Copyright 2024 Alex313031
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+declare_args() {
+
+  # SIMD compiler optimization flags
+  # Propagated to //build/config/* to allow controlling
+  # x86_64 SIMD optimization levels. This was done to refactor
+  # multiple BUILD.gn file into one copy of each.
+
+  # Flags are not cumulative, so for example, for an AVX build you
+  # would want to turn on use_sse3, use_sse41, use_sse42 too. For AVX2
+  # you would add use_avx, etc.
+
+  # SSE3
+  # Normal Chromium baseline, present since Prescott (2004 Pentium 4)
+  # and AMD SanDiego (2nd Gen. Opteron).
+  # Only applicable to 32 Bit Windows and Linux builds, where
+  # setting it to false allows making an SSE2 build. (`-mmmx -msse2`)
+  # Baseline for Windows since a Windows 7 update.
+  # `-msse3`
+  use_sse3 = true
+
+  # SSE4.1
+  # Normal PrimoBrowser baseline
+  # Normal ThoriumOS baseline because Core 2 Duo is the lowest
+  # hardware that other CrOS subsystems like drivers support.
+  # Present since Penryn (2007 45nm Core 2 Duo die shrink), and
+  # AMD Jaguar (2013 Athlon CPUs) and Bulldozer (2012 AMD FX).
+  # Includes SSSE3 since all SSSE3 `-mssse3 -msse4.1`
+  use_sse41 = false
+
+  # SSE4.2 (x86-64-v2)
+  # Present since Nehalem (2009 1st Generation Core i series), and
+  # the same AMD CPUs as above.
+  # Normal LaCrOS baseline since Sept 2023.
+  # See https://bugs.chromium.org/p/chromium/issues/detail?id=1475858
+  # Baseline for Windows since Windows 10 24H2.
+  # `-msse4.2`
+  use_sse42 = false
+
+  # AVX
+  # Normal Thorium baseline
+  # Present since Sandy Bridge (2011 2nd Gen. Core i series)
+  # and AMD Bulldozer (2012 AMD FX).
+  # Requires Windows 7 SP1 / Linux 2.6.30 or later to use.
+  # Uses new 128 bit registers and CPU blocks; a new era of SIMD.
+  # Includes AES and PCLMUL `-maes -mpclmul -mavx`
+  use_avx = false
+
+  # AVX2 (x86-64-v3)
+  # Second generation AVX, expanded to 256-bit registers.
+  # Used in much professional software.
+  # Present since Haswell (4th Gen. Core i series), and
+  # AMD Excavator (4th Gen. refinement of Bulldozer cores) and 
+  # Zen (1st Gen. Ryzen).
+  # Includes FMA3 `-mfma -mavx2` (`-ffp-contract` see below at FMA)
+  use_avx2 = false
+
+  # AVX-512
+  # Third generation AVX, expanded to 512-bit registers.
+  # Present since Skylake (Specifically Skylake-X "Extreme Edition"
+  # processors), and AMD Zen 4 (4th Gen. Ryzen 7000).
+  # Only uses AVX-512 instructions common to all processors.
+  # `-mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq
+  #  -mf16c -mlzcnt -mbmi2`
+  use_avx512 = false
+
+  # FMA
+  # "Fused Multiply Add" operations
+  # Present since Haswell and AMD Piledriver (2nd Gen. refinement
+  # of Bulldozer).
+  # `-mfma -ffp-contract=fast` (use -mfma3 -mfma4 for Piledriver)
+  use_fma = use_avx2
+}
+
+# 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
+# from anything higher usually.
+if (use_avx || use_avx2 || use_fma) {
+  assert(current_cpu == "x64", "AVX, AVX2, and FMA require x64. current_cpu is x86")
+  assert(!target_cpu == "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
+}
+
+# AVX2 always requires FMA, however, there are times one might want
+# use_fma = true even with AVX2 off, such as when making a build for
+# an AMD Piledriver or Steamroller CPU.
+if (use_avx2) {
+  assert(use_fma, "use_fma must be true when AVX2 is enabled")
+}

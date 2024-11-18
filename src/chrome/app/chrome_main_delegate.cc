@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "chrome/app/chrome_main_delegate.h"
 
 #include <stddef.h>
@@ -56,6 +61,7 @@
 #include "chrome/common/chrome_switches.h"
 #include "chrome/common/crash_keys.h"
 #include "chrome/common/logging_chrome.h"
+#include "chrome/common/profiler/chrome_thread_profiler_client.h"
 #include "chrome/common/profiler/main_thread_stack_sampling_profiler.h"
 #include "chrome/common/profiler/process_type.h"
 #include "chrome/common/profiler/unwind_util.h"
@@ -74,6 +80,7 @@
 #include "components/memory_system/parameters.h"
 #include "components/metrics/persistent_histograms.h"
 #include "components/nacl/common/buildflags.h"
+#include "components/sampling_profiler/thread_profiler.h"
 #include "components/startup_metric_utils/common/startup_metric_utils.h"
 #include "components/version_info/channel.h"
 #include "components/version_info/version_info.h"
@@ -113,7 +120,6 @@
 #include "chrome/browser/win/browser_util.h"
 #include "chrome/child/v8_crashpad_support_win.h"
 #include "chrome/chrome_elf/chrome_elf_main.h"
-#include "chrome/common/child_process_logging.h"
 #include "chrome/common/chrome_version.h"
 #include "sandbox/win/src/sandbox.h"
 #include "sandbox/win/src/sandbox_factory.h"
@@ -153,10 +159,10 @@
 #include "ash/constants/ash_paths.h"
 #include "ash/constants/ash_switches.h"
 #include "base/system/sys_info.h"
-#include "chrome/browser/ash/boot_times_recorder.h"
+#include "chrome/browser/ash/boot_times_recorder/boot_times_recorder.h"
 #include "chrome/browser/ash/dbus/ash_dbus_helper.h"
-#include "chrome/browser/ash/dbus_schedqos_state_handler.h"
-#include "chrome/browser/ash/startup_settings_cache.h"
+#include "chrome/browser/ash/locale/startup_settings_cache.h"
+#include "chrome/browser/ash/schedqos/dbus_schedqos_state_handler.h"
 #include "chromeos/ash/components/memory/memory.h"
 #include "chromeos/ash/components/memory/mglru.h"
 #include "content/public/common/content_features.h"
@@ -190,10 +196,6 @@
 #if BUILDFLAG(IS_LINUX)
 #include "base/nix/scoped_xdg_activation_token_injector.h"
 #include "ui/linux/display_server_utils.h"
-#endif
-
-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
-#include "base/message_loop/message_pump_libevent.h"
 #endif
 
 #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID) || \
@@ -743,7 +745,6 @@ void InitLogging(const std::string& process_type) {
                  << chrome::kChromeVersion << " (not a warning)";
     LOG(WARNING) << "In Loving Memory of Linda Louise Frick: Grandma, Mother, and Sister.";
   }
-
 #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
   static const bool is_forced_tab_scroll =
       base::CommandLine::ForCurrentProcess()->HasSwitch("scroll-tabs=always");
@@ -1108,6 +1109,12 @@ bool ChromeMainDelegate::ShouldInitializeMojo(InvokedIn invoked_in) {
 
 void ChromeMainDelegate::CreateThreadPool(std::string_view name) {
   base::ThreadPoolInstance::Create(name);
+
+  // The ThreadProfiler client must be set before main thread profiling is
+  // started (below).
+  sampling_profiler::ThreadProfiler::SetClient(
+      std::make_unique<ChromeThreadProfilerClient>());
+
 // `ChromeMainDelegateAndroid::PreSandboxStartup` creates the profiler a little
 // later.
 #if !BUILDFLAG(IS_ANDROID)
@@ -1221,12 +1228,7 @@ void ChromeMainDelegate::SetupTracing() {
   // sampler profiler because it can support java frames which is essential for
   // the main thread.
   base::RepeatingCallback tracing_factory =
-#if BUILDFLAG(IS_ANDROID)
-      base::BindRepeating(&CreateCoreUnwindersFactory,
-                          /*is_java_name_hashing_enabled=*/false);
-#else
       base::BindRepeating(&CreateCoreUnwindersFactory);
-#endif  // BUILDFLAG(IS_ANDROID)
   tracing::TracingSamplerProfiler::UnwinderType unwinder_type =
       tracing::TracingSamplerProfiler::UnwinderType::kCustomAndroid;
 #if BUILDFLAG(IS_ANDROID)
@@ -1533,9 +1535,6 @@ void ChromeMainDelegate::PreSandboxStartup() {
   SetUpInstallerPreferences(command_line);
 #endif
 
-#if BUILDFLAG(IS_WIN)
-  child_process_logging::Init();
-#endif
 #if defined(ARCH_CPU_ARM_FAMILY) && \
     (BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
   // Create an instance of the CPU class to parse /proc/cpuinfo and cache
@@ -1605,13 +1604,6 @@ void ChromeMainDelegate::PreSandboxStartup() {
 
   // Register component_updater PathProvider after DIR_USER_DATA overridden by
   // command line flags. Maybe move the chrome PathProvider down here also?
-  int alt_preinstalled_components_dir =
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-      ash::DIR_PREINSTALLED_COMPONENTS;
-#else
-      chrome::DIR_INTERNAL_PLUGINS;
-#endif
-
   int updated_components_dir =
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
       static_cast<int>(chromeos::lacros_paths::LACROS_SHARED_DIR);
@@ -1620,7 +1612,7 @@ void ChromeMainDelegate::PreSandboxStartup() {
 #endif
 
   component_updater::RegisterPathProvider(chrome::DIR_COMPONENTS,
-                                          alt_preinstalled_components_dir,
+                                          chrome::DIR_INTERNAL_PLUGINS,
                                           updated_components_dir);
 
 #if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_WIN)
@@ -2028,7 +2020,7 @@ void ChromeMainDelegate::InitializeMemorySystem() {
   memory_system::Initializer()
       .SetGwpAsanParameters(gwp_asan_boost_sampling, process_type)
       .SetProfilingClientParameters(chrome::GetChannel(),
-                                    GetProfileParamsProcess(*command_line))
+                                    GetProfilerProcessType(*command_line))
       .SetDispatcherParameters(memory_system::DispatcherParameters::
                                    PoissonAllocationSamplerInclusion::kEnforce,
                                allocation_recorder_inclusion, process_type)
