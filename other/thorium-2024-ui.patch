@@ -32,7 +32,6 @@ index 1e0f2c895d708..64347e17d7e42 100644
              class="dropdown-trigger" title="$i18n{moreActions}"
              @click="${this.onMoreActionsClick_}" aria-haspopup="menu"
              focus-row-control focus-type="actionMenuButton">
-
 diff --git a/chrome/browser/resources/pdf/manifest.json b/chrome/browser/resources/pdf/manifest.json
 index f355f92ac2f37..e0b69081164fd 100644
 --- a/chrome/browser/resources/pdf/manifest.json
@@ -48,7 +47,6 @@ index f355f92ac2f37..e0b69081164fd 100644
    "offline_enabled": true,
    "incognito": "split",
    "permissions": [
-
 diff --git a/chrome/browser/search/search.cc b/chrome/browser/search/search.cc
 index 40c586fb4f715..dd7d0943e9c0e 100644
 --- a/chrome/browser/search/search.cc
@@ -172,7 +170,7 @@ index 71f9d6ad07da0..246532a09797a 100644
  }
  
 diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
-index 8837e8baf3025..1d95a1a3ddf46 100644
+index 86af74569f013..1f9cc1696eda4 100644
 --- a/chrome/browser/ui/browser_command_controller.cc
 +++ b/chrome/browser/ui/browser_command_controller.cc
 @@ -1423,7 +1423,8 @@ void BrowserCommandController::InitCommandState() {
@@ -251,7 +249,7 @@ index 9698e807b11df..8bb6a245caeba 100644
    if (key.custom_theme) {
      key.custom_theme->AddColorMixers(provider, key);
 diff --git a/chrome/browser/ui/color/tab_strip_color_mixer.cc b/chrome/browser/ui/color/tab_strip_color_mixer.cc
-index 5d93fcf59adb9..9e253359c40a5 100644
+index 9faa599b47cc1..d683ac878cb0e 100644
 --- a/chrome/browser/ui/color/tab_strip_color_mixer.cc
 +++ b/chrome/browser/ui/color/tab_strip_color_mixer.cc
 @@ -136,10 +136,7 @@ void AddTabStripColorMixer(ui::ColorProvider* provider,
@@ -280,7 +278,7 @@ index e4ccd7fab5421..0eadd6bdd8def 100644
  // that need to be accessible outside of /browser/ui/views.
  class WindowFrameUtil {
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index ea5c2c05f5fa9..9efd5e6d241a6 100644
+index 87c4ee64068a6..2b4af8b61e996 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -7,6 +7,7 @@
@@ -488,7 +486,7 @@ index a35795ee8cc11..60577ba01a5fd 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/status_bubble.h b/chrome/browser/ui/status_bubble.h
-index 74a00df155806..00945e93c0afa 100644
+index 74a00df155806..c8e4a81911d80 100644
 --- a/chrome/browser/ui/status_bubble.h
 +++ b/chrome/browser/ui/status_bubble.h
 @@ -18,7 +18,7 @@ class GURL;
@@ -501,7 +499,7 @@ index 74a00df155806..00945e93c0afa 100644
    virtual ~StatusBubble() {}
  
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index d2aae6af7306b..da6152848c9e4 100644
+index fba81d1815359..88415257b897c 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
 @@ -105,6 +105,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
@@ -516,7 +514,7 @@ index d2aae6af7306b..da6152848c9e4 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
-index 89df9a7f7a805..d52782a295e31 100644
+index 91513d4488166..4fa0ac198e9c6 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
 @@ -1296,6 +1296,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
@@ -545,7 +543,7 @@ index 89df9a7f7a805..d52782a295e31 100644
        base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
        UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.h b/chrome/browser/ui/tabs/tab_strip_model.h
-index 7f2f57facf152..3638494eb0dbf 100644
+index 4d900c4a7f58c..8daa4634abeaf 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.h
 +++ b/chrome/browser/ui/tabs/tab_strip_model.h
 @@ -545,6 +545,7 @@ class TabStripModel : public TabGroupController {
@@ -557,7 +555,7 @@ index 7f2f57facf152..3638494eb0dbf 100644
      CommandReload,
      CommandDuplicate,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index b32265fa04597..35e5182f22671 100644
+index d48223986946d..9e5df278ea2b6 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -11,6 +11,7 @@
@@ -851,7 +849,7 @@ index 9cecb25b41d3b..65fd377e98ae6 100644
  
    const int button_height = GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT);
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index 5291d09d2154f..c8cf8e0ad6037 100644
+index 9b189df8d8ffd..7c2ae3a3c94fa 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
 @@ -7,6 +7,7 @@
@@ -963,7 +961,7 @@ index bda5b2b0ab02d..a8dac38d7b61b 100644
    const raw_ptr<WindowsCaptionButton> maximize_button_;
    const raw_ptr<WindowsCaptionButton> restore_button_;
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
-index af21424e93618..7ab9cd6819469 100644
+index 84930758ab743..8b762a0c37582 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
 +++ b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
 @@ -74,5 +74,5 @@ gfx::Insets BrowserFrameViewLayoutLinux::RestoredFrameEdgeInsets() const {
@@ -974,7 +972,7 @@ index af21424e93618..7ab9cd6819469 100644
 +  return (!features::IsThorium2024() && delegate_->IsTabStripVisible()) ? 0 : kExtraTopBorder;
  }
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_win.cc b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
-index b57fb5baa52a7..91d0c05d7de91 100644
+index eabc844883aca..291633d064be4 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_win.cc
 +++ b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
 @@ -259,6 +259,10 @@ void BrowserFrameViewWin::WindowControlsOverlayEnabledChanged() {
@@ -1099,7 +1097,7 @@ index 3f1568d7a1c94..6483d1cbc5162 100644
      const {
    NOTREACHED();
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view.h b/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
-index c07d6f3561e45..93c1a2af8e4ae 100644
+index 2238e76440194..df37021bf766f 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
 @@ -13,6 +13,7 @@
@@ -1121,9 +1119,8 @@ index c07d6f3561e45..93c1a2af8e4ae 100644
    // Returns the insets from the edge of the native window to the client view in
    // DIPs. The value is left-to-right even on RTL locales. That is,
    // insets.left() will be on the left in screen coordinates.
-
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
-index 480b5be6b3f5e..c1451a07182a3 100644
+index 63cc8cddfe04e..a0c81619fb666 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
 @@ -283,7 +283,11 @@ int BrowserNonClientFrameViewChromeOS::GetTopInset(bool restored) const {
@@ -1152,7 +1149,7 @@ index 480b5be6b3f5e..c1451a07182a3 100644
    gfx::Size current_min_size = GetMinimumSize();
    if (last_minimum_size_ == current_min_size)
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
-index b4ba647bea4eb..d19ddadcf2de6 100644
+index 73458b42a53e7..1a602a719da5a 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
 @@ -69,6 +69,7 @@ class BrowserNonClientFrameViewChromeOS
@@ -1269,7 +1266,7 @@ index 2caa04674d405..85c6d434c537b 100644
    if (!browser_view()->GetTabStripVisible() ||
        !browser_view()->IsFullscreen() ||
 diff --git a/chrome/browser/ui/views/frame/browser_view.cc b/chrome/browser/ui/views/frame/browser_view.cc
-index 41c6c06ccfb21..59c0b5493e350 100644
+index c3241e411d46d..2119bfe02bc32 100644
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
 @@ -1239,6 +1239,10 @@ bool BrowserView::UsesImmersiveFullscreenTabbedMode() const {
@@ -1297,7 +1294,7 @@ index cb14b46b727ca..c6523a0985809 100644
      int height = GetLayoutConstant(TAB_STRIP_HEIGHT) -
                   GetLayoutConstant(TAB_STRIP_PADDING) + retain_some_padding;
 diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
-index ba129325c8700..fbfa68c2e71b1 100644
+index 4c5356d8f20f6..ccbe7a8ead81e 100644
 --- a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
 +++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
 @@ -257,7 +257,9 @@ void OpaqueBrowserFrameView::LayoutWebAppWindowTitle(
@@ -1312,7 +1309,7 @@ index ba129325c8700..fbfa68c2e71b1 100644
  
  void OpaqueBrowserFrameView::UpdateThrobber(bool running) {
 diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
-index 67b69d18a802e..575f4b884791e 100644
+index 5c82d24686e9f..2e7d5d0bbf04e 100644
 --- a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
 +++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
 @@ -78,7 +78,7 @@ gfx::Rect OpaqueBrowserFrameViewLayout::GetBoundsForTabStripRegion(
@@ -1549,7 +1546,7 @@ index e7660352853f2..726ab047decb4 100644
    const gfx::Rect new_bounds = gfx::Rect(gfx::Point(x, 0), view_size);
    view->SetBoundsRect(new_bounds);
 diff --git a/chrome/browser/ui/views/frame/windows_caption_button.cc b/chrome/browser/ui/views/frame/windows_caption_button.cc
-index d8000f801d188..42762b0da24b6 100644
+index d8000f801d188..7f69dd091d42a 100644
 --- a/chrome/browser/ui/views/frame/windows_caption_button.cc
 +++ b/chrome/browser/ui/views/frame/windows_caption_button.cc
 @@ -14,6 +14,7 @@
@@ -1607,7 +1604,7 @@ index d8000f801d188..42762b0da24b6 100644
        NOTREACHED();
    }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index 8ad0bd147a4c2..f347eb9a2ad24 100644
+index eca41f6f37b37..de73402f328d3 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
 @@ -199,18 +199,23 @@ LocationBarView::LocationBarView(Browser* browser,
@@ -1699,7 +1696,7 @@ index 8ad0bd147a4c2..f347eb9a2ad24 100644
      // High contrast schemes get a border stroke even on a rounded omnibox.
      border_color =
 diff --git a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
-index a7072a79d61e9..2ed53a3e48336 100644
+index 5530486ee3bb3..352aacdbfe227 100644
 --- a/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
 +++ b/chrome/browser/ui/views/omnibox/omnibox_suggestion_button_row_view.cc
 @@ -4,6 +4,7 @@
@@ -1728,7 +1725,7 @@ index a7072a79d61e9..2ed53a3e48336 100644
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
 diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-index 4bc8f9177f416..b6d49f5c07642 100644
+index 4bc8f9177f416..5a11b008a76bc 100644
 --- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
 +++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
 @@ -244,6 +244,7 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
@@ -1778,7 +1775,7 @@ index d134918c8538e..7262833fbb715 100644
    static gfx::Insets GetShadowInsets();
  
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index 2ca8611118a21..e360e3afcdc9f 100644
+index e65fda1bf0161..4942eeab45861 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 @@ -12,6 +12,7 @@
@@ -1798,19 +1795,6 @@ index 2ca8611118a21..e360e3afcdc9f 100644
      const int resize_handle_left_margin = 2;
      SetProperty(views::kMarginsKey,
                  gfx::Insets().set_left(resize_handle_left_margin));
-diff --git a/chrome/browser/ui/views/tabs/tab_close_button.cc b/chrome/browser/ui/views/tabs/tab_close_button.cc
-index ac335a68f3fd0..8eef7a2f256c8 100644
---- a/chrome/browser/ui/views/tabs/tab_close_button.cc
-+++ b/chrome/browser/ui/views/tabs/tab_close_button.cc
-@@ -38,7 +38,7 @@
- #endif
- 
- namespace {
--constexpr int kIconSize = 16;
-+constexpr int kIconSize = 18;
- constexpr gfx::Size kButtonSize = {28, 28};
- }  // namespace
- 
 diff --git a/chrome/browser/ui/views/tab_search_bubble_host.cc b/chrome/browser/ui/views/tab_search_bubble_host.cc
 index fa14797259775..6031b27d539e6 100644
 --- a/chrome/browser/ui/views/tab_search_bubble_host.cc
@@ -1824,6 +1808,19 @@ index fa14797259775..6031b27d539e6 100644
  
      const int x = tabs::GetTabSearchTrailingTabstrip(profile_)
                        ? bounds.right() - offset
+diff --git a/chrome/browser/ui/views/tabs/tab_close_button.cc b/chrome/browser/ui/views/tabs/tab_close_button.cc
+index ac335a68f3fd0..8eef7a2f256c8 100644
+--- a/chrome/browser/ui/views/tabs/tab_close_button.cc
++++ b/chrome/browser/ui/views/tabs/tab_close_button.cc
+@@ -38,7 +38,7 @@
+ #endif
+ 
+ namespace {
+-constexpr int kIconSize = 16;
++constexpr int kIconSize = 18;
+ constexpr gfx::Size kButtonSize = {28, 28};
+ }  // namespace
+ 
 diff --git a/chrome/browser/ui/views/tabs/tab_search_button.cc b/chrome/browser/ui/views/tabs/tab_search_button.cc
 index a42855ead9dbe..ba8b4271de1d7 100644
 --- a/chrome/browser/ui/views/tabs/tab_search_button.cc
@@ -1880,7 +1877,7 @@ index a42855ead9dbe..ba8b4271de1d7 100644
  
  int TabSearchButton::GetFlatCornerRadius() const {
 diff --git a/chrome/browser/ui/views/tabs/tab_style_views.cc b/chrome/browser/ui/views/tabs/tab_style_views.cc
-index 65676013fece9..379cc5b3e1c4b 100644
+index 65676013fece9..d45fc4f3e1754 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
 @@ -7,10 +7,12 @@
@@ -2068,7 +2065,7 @@ index e368f860ec9a7..b81b109035cdd 100644
      "toolbar_action_hover_card_bubble_view.h",
      "toolbar_action_hover_card_controller.cc",
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_view.cc b/chrome/browser/ui/views/toolbar/toolbar_view.cc
-index df6dffc7d04ec..e877b9dac6572 100644
+index 577215577d9ac..3d63a1a714ef3 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_view.cc
 +++ b/chrome/browser/ui/views/toolbar/toolbar_view.cc
 @@ -81,6 +81,7 @@
@@ -2175,7 +2172,7 @@ index df6dffc7d04ec..e877b9dac6572 100644
  }
  
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_view.h b/chrome/browser/ui/views/toolbar/toolbar_view.h
-index cb361877682b9..ada0be249024e 100644
+index 1688062ae52ab..55dba3d1d4d45 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_view.h
 +++ b/chrome/browser/ui/views/toolbar/toolbar_view.h
 @@ -54,6 +54,7 @@ class ExtensionsToolbarCoordinator;
@@ -2233,7 +2230,7 @@ index 743fd86a35a10..e7679d12e2c8d 100644
  
 diff --git a/chrome/browser/ui/webui/thorium_webui.h b/chrome/browser/ui/webui/thorium_webui.h
 new file mode 100644
-index 0000000000000..23fe24f51e93e
+index 0000000000000..897bacb966ca8
 --- /dev/null
 +++ b/chrome/browser/ui/webui/thorium_webui.h
 @@ -0,0 +1,78 @@
@@ -2369,10 +2366,10 @@ index 248b6795e8cbe..488bade160e37 100644
        kChromeUIAccessibilityHost,
  #if !BUILDFLAG(IS_ANDROID)
 diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
-index 70e366e816db5..a727ed4aa725f 100644
+index d1a8dc8342177..a407f00138376 100644
 --- a/chrome/common/webui_url_constants.h
 +++ b/chrome/common/webui_url_constants.h
-@@ -33,6 +32,8 @@ namespace chrome {
+@@ -32,6 +32,8 @@ namespace chrome {
  // Not all components have corresponding URLs and vice versa. Only add as
  // needed.
  // Please keep in alphabetical order, with OS/feature specific sections below.
@@ -2394,7 +2391,7 @@ index 87d186a04e66c..01beccd365540 100644
    <structure type="chrome_scaled_image" name="IDR_AU_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
    <structure type="chrome_scaled_image" name="IDR_BING_COM_PNG" file="search_engine_choice/bing_com.png" />
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index ed801f34141da..60e3f3eefb8a0 100644
+index 595af68372edc..5ce90c5dd4e8c 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
 @@ -498,6 +498,24 @@ bool IsLacrosColorManagementEnabled() {
@@ -2423,7 +2420,7 @@ index ed801f34141da..60e3f3eefb8a0 100644
               "BubbleMetricsApi",
               base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index 2232cc983adbc..3b09b34a70769 100644
+index a5c3bb6349099..7ac32505fa800 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
 @@ -224,6 +224,13 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
@@ -2527,7 +2524,7 @@ index 09c03d1e87011..31fda3a23bbf5 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_mac.mm b/ui/views/controls/menu/menu_config_mac.mm
-index eabfb364890d3..2374c18b0f3d7 100644
+index eabfb364890d3..c17ad57190ef1 100644
 --- a/ui/views/controls/menu/menu_config_mac.mm
 +++ b/ui/views/controls/menu/menu_config_mac.mm
 @@ -1,17 +1,55 @@
@@ -2759,7 +2756,7 @@ index b73bd71742381..0fb6d132bd762 100644
  }
  
 diff --git a/ui/views/controls/tree/tree_view.h b/ui/views/controls/tree/tree_view.h
-index 3a8a79eb69c32..f29814a4fc4b9 100644
+index cfee7309a95c6..74108649ba65a 100644
 --- a/ui/views/controls/tree/tree_view.h
 +++ b/ui/views/controls/tree/tree_view.h
 @@ -465,6 +465,10 @@ class VIEWS_EXPORT TreeView : public View,
@@ -2774,7 +2771,7 @@ index 3a8a79eb69c32..f29814a4fc4b9 100644
    std::vector<ui::ImageModel> icons_;
  
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index 01301096ca466..e4854f99dad64 100644
+index 2e4623d72bf80..f79efe3597b97 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -8,6 +8,7 @@
@@ -2864,19 +2861,6 @@ index c8a9260b6c6e6..129b06e148063 100644
    return delay;
  #else
    return 0;
-diff --git a/ui/webui/resources/cr_elements/md_select.css b/ui/webui/resources/cr_elements/md_select.css
-index c6f72014e5f24..9032a51118467 100644
---- a/ui/webui/resources/cr_elements/md_select.css
-+++ b/ui/webui/resources/cr_elements/md_select.css
-@@ -23,7 +23,7 @@
-   background-size: var(--md-arrow-width);
-   border: solid 1px var(--color-combobox-container-outline,
-       var(--cr-fallback-color-neutral-outline));
--  border-radius: 8px;
-+  border-radius: 4px;
-   box-sizing: border-box;
-   color: var(--md-select-text-color);
-   cursor: pointer;
 diff --git a/ui/webui/resources/cr_elements/cr_button/cr_button.css b/ui/webui/resources/cr_elements/cr_button/cr_button.css
 index 69dc68d302b63..c0b974153be08 100644
 --- a/ui/webui/resources/cr_elements/cr_button/cr_button.css
@@ -2900,7 +2884,7 @@ index 69dc68d302b63..c0b974153be08 100644
    transition: box-shadow 80ms linear;
  }
 diff --git a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
-index c467dbadf8e14..79e27e3f995b1 100644
+index 81d33bf3c3f99..d427358823b24 100644
 --- a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 +++ b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 @@ -17,7 +17,6 @@
@@ -3100,3 +3084,16 @@ index c467dbadf8e14..79e27e3f995b1 100644
  #ink {
    --paper-ripple-opacity: 1;
    color: var(--cr-toggle-unchecked-ripple-color);
+diff --git a/ui/webui/resources/cr_elements/md_select.css b/ui/webui/resources/cr_elements/md_select.css
+index c6f72014e5f24..9032a51118467 100644
+--- a/ui/webui/resources/cr_elements/md_select.css
++++ b/ui/webui/resources/cr_elements/md_select.css
+@@ -23,7 +23,7 @@
+   background-size: var(--md-arrow-width);
+   border: solid 1px var(--color-combobox-container-outline,
+       var(--cr-fallback-color-neutral-outline));
+-  border-radius: 8px;
++  border-radius: 4px;
+   box-sizing: border-box;
+   color: var(--md-select-text-color);
+   cursor: pointer;
