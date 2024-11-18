@@ -8,6 +8,7 @@ import("//build/config/clang/clang.gni")
 import("//build/config/compiler/compiler.gni")
 import("//build/config/rust.gni")
 import("//build/config/sanitizers/sanitizers.gni")
+import("//build/config/simd_opt.gni")
 import("//build/config/win/control_flow_guard.gni")
 import("//build/config/win/visual_studio_version.gni")
 import("//build/timestamp.gni")
@@ -125,26 +126,74 @@ config("compiler") {
     # Chrome currently requires SSE3. Clang supports targeting any Intel
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
-    # "/fp:fast", enables FMA.
     if (current_cpu == "x86" || current_cpu == "x64") {
       cflags += [
-        "-msse3",
-        "-mssse3",
-        "-msse4.1",
-        "-msse4.2",
-        "-mpclmul",
-        "-maes",
-        "-mavx",
+        "-mmmx",
+        "-msse2",
         "/clang:-O3",
-        "/clang:-msse3",
-        "/clang:-mssse3",
-        "/clang:-msse4.1",
-        "/clang:-msse4.2",
-        "/clang:-mpclmul",
-        "/clang:-maes",
-        "/clang:-mavx",
         "-Xclang", "-O3",
       ]
+      if (use_sse3) {
+        cflags += [
+          "-msse3",
+          "/clang:-msse3",
+        ]
+      }
+      if (use_sse41) {
+        cflags += [
+          "-mssse3",
+          "-msse4.1",
+          "/clang:-mssse3",
+          "/clang:-msse4.1",
+        ]
+      }
+      if (use_sse42) {
+        cflags += [
+          "-msse4.2",
+          "/clang:-msse4.2",
+        ]
+      }
+      if (use_avx) {
+        cflags += [
+          "-mpclmul",
+          "-maes",
+          "-mavx",
+          "/clang:-mpclmul",
+          "/clang:-maes",
+          "/clang:-mavx",
+        ]
+      }
+      if (use_avx2) {
+        cflags += [
+          "-mavx2",
+          "-mfma",
+          "-mf16c",
+          "-mlzcnt",
+          "-mbmi2",
+          "/clang:-mavx2",
+          "/clang:-mfma",
+          "/clang:-mf16c",
+          "/clang:-mlzcnt",
+          "/clang:-mbmi2",
+          "/clang:-ffp-contract=fast",
+          # "/fp:fast",
+        ]
+      }
+      if (use_avx512) {
+        cflags += [
+          "-mavx512f",
+          "-mavx512cd",
+          "-mavx512vl",
+          "-mavx512bw",
+          "-mavx512dq",
+          "/clang:-mavx2",
+          "/clang:-mavx512f",
+          "/clang:-mavx512cd",
+          "/clang:-mavx512vl",
+          "/clang:-mavx512bw",
+          "/clang:-mavx512dq",
+        ]
+      }
     }
 
     # Enable ANSI escape codes if something emulating them is around (cmd.exe
@@ -212,8 +261,13 @@ config("compiler") {
       "/INCREMENTAL:NO",
       "/FIXED:NO",
       "/OPT:lldlto=3",
-      "-mllvm:-march=sandybridge",
     ]
+    if (use_avx2) {
+      ldflags += [ "-mllvm:-march=haswell", ]
+    }
+    if (use_avx512) {
+      ldflags += [ "-mllvm:-march=skylake-avx512", ]
+    }
 
     if (use_lld) {
       # String tail merging leads to smaller binaries, but they don't compress
@@ -445,6 +499,7 @@ config("delayloads") {
     "/DELAYLOAD:d3d11.dll",
     "/DELAYLOAD:d3d12.dll",
     "/DELAYLOAD:d3d9.dll",
+    "/DELAYLOAD:dcomp.dll",
     "/DELAYLOAD:dwmapi.dll",
     "/DELAYLOAD:dxgi.dll",
     "/DELAYLOAD:dxva2.dll",
