@@ -2930,7 +2930,7 @@ index 69dc68d302b63..c0b974153be08 100644
    transition: box-shadow 80ms linear;
  }
 diff --git a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
-index c467dbadf8e14..d495dafcb45c4 100644
+index c467dbadf8e14..79e27e3f995b1 100644
 --- a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 +++ b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 @@ -17,7 +17,6 @@
@@ -3031,9 +3031,8 @@ index c467dbadf8e14..d495dafcb45c4 100644
 -  position: initial;
 +  position: absolute;
    top: 2px;
--  transition: background-color linear 80ms;
+   transition: background-color linear 80ms;
 -  width: var(--cr-toggle-bar-width);
-+  transition: background-color linear 180ms;
 +  width: 30px;
    z-index: 0;
  }
@@ -3093,7 +3092,7 @@ index c467dbadf8e14..d495dafcb45c4 100644
 -  width: var(--cr-toggle-knob-diameter);
 +  height: 16px;
 +  position: relative;
-+  transition: transform linear 180ms, background-color linear 180ms;
++  transition: transform linear 80ms, background-color linear 80ms;
 +  width: 16px;
    z-index: 1;
  }
@@ -3131,12 +3130,3 @@ index c467dbadf8e14..d495dafcb45c4 100644
  #ink {
    --paper-ripple-opacity: 1;
    color: var(--cr-toggle-unchecked-ripple-color);
-@@ -196,7 +122,7 @@
-   position: absolute;
-   top: 50%;
-   transform: translate(-50%, -50%);
--  transition: color linear 80ms;
-+  transition: color linear 180ms;
-   width: var(--cr-toggle-ripple-diameter);
- }
- 
