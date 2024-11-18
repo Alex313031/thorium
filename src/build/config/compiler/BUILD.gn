@@ -16,6 +16,7 @@ import("//build/config/gclient_args.gni")
 import("//build/config/host_byteorder.gni")
 import("//build/config/pch.gni")
 import("//build/config/rust.gni")
+import("//build/config/simd.gni")
 import("//build/config/ui.gni")
 import("//build/config/unwind.gni")
 import("//build/toolchain/cc_wrapper.gni")
@@ -101,7 +102,7 @@ declare_args() {
   # nonsensical for said projects.
   clang_use_default_sample_profile =
       chrome_pgo_phase == 0 && build_with_chromium && is_official_build &&
-      (is_android || chromeos_is_browser_only)
+      ((is_android && !is_high_end_android) || chromeos_is_browser_only)
 
   # This configuration is used to select a default profile in Chrome OS based on
   # the microarchitectures we are using. This is only used if
@@ -219,10 +220,15 @@ if (is_android) {
   declare_args() {
     chrome_orderfile_path = ""
 
+    # The orderfile is trained on PGO builds (for arm64) and AFDO builds (for
+    # arm32), so apply them only in these cases.
     if (defined(default_chrome_orderfile)) {
-      # Allow downstream tools to set orderfile path with
-      # another variable.
-      chrome_orderfile_path = default_chrome_orderfile
+      if (((current_cpu == "arm64" || current_cpu == "x64") &&
+           chrome_pgo_phase == 2) ||
+          ((current_cpu == "arm" || current_cpu == "x86") &&
+           clang_use_default_sample_profile)) {
+        chrome_orderfile_path = default_chrome_orderfile
+      }
     }
   }
 }
@@ -611,11 +617,19 @@ config("compiler") {
       }
     }
 
-    # TODO(crbug.com/40192287): Investigate why/if this should be needed.
-    if (is_win) {
-      cflags += [ "/clang:-ffp-contract=off" ]
+    if (use_avx2 || use_avx512)
+      if (is_win) {
+        cflags += [ "/clang:-ffp-contract=fast" ]
+      } else {
+        cflags += [ "-ffp-contract=fast" ]
+      }
     } else {
-      cflags += [ "-ffp-contract=off" ]
+      # TODO(crbug.com/40192287): Investigate why/if this should be needed.
+      if (is_win) {
+        cflags += [ "/clang:-ffp-contract=off" ]
+      } else {
+        cflags += [ "-ffp-contract=off" ]
+      }
     }
   }
 
@@ -815,10 +829,6 @@ config("compiler") {
     if (!optimize_for_size) {
       # Ideally the compiler would handle this automatically with PGO (see
       # comments at https://crrev.com/c/5440500).
-      #
-      # Android binary size impact (as of April 2024): The arm64 native code
-      # size increases by ~627KB (or 0.34%: the arm64 native code size in
-      # M124 is 178MB).
       cflags += [
         "-mllvm",
         "-inlinehint-threshold=360",
@@ -948,6 +958,19 @@ config("compiler") {
         "MLGO is currently only supported for targeting Android on a linux host")
     if (use_thin_lto) {
       ldflags += [ "-Wl,-mllvm,-enable-ml-inliner=release" ]
+      if (is_high_end_android) {
+        # Besides using the arm64 - trained model, instruct the inline advisor
+        # to not use the ML policy (which will aim to reduce size) for any
+        # callsites where the caller is not cold. This avoids performance
+        # regressions while still bringing size benefits.
+        # Profile quality is essential here.
+        ldflags += [
+          "-Wl,-mllvm,-ml-inliner-model-selector=arm64-mixed",
+          "-Wl,-mllvm,-ml-inliner-skip-policy=if-caller-not-cold",
+        ]
+      } else {
+        ldflags += [ "-Wl,-mllvm,-ml-inliner-model-selector=arm32-size" ]
+      }
     }
   }
 
@@ -1043,8 +1066,27 @@ config("compiler") {
     "-Zremap-cwd-prefix=.",
 
     # Full RUSTC optimizations.
-    "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes",
+    "-Copt-level=3",
   ]
+
+  if (use_sse3) {
+    rustflags += [ "-Ctarget-feature=+sse3", ]
+  }
+  if (use_sse41) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1", ]
+  }
+  if (use_sse42) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2", ]
+  }
+  if (use_avx) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx", ]
+  }
+  if (use_avx2) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
+  }
+  if (use_avx512) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f,+-mavx512vl", "-Cllvm-args=-fp-contract=fast", ]
+  }
 
   if (!is_win || force_rustc_color_output) {
     # Colorize error output. The analogous flag is passed for clang. This must
@@ -1065,7 +1107,7 @@ config("compiler") {
     rustflags += [ "-Clto=no" ]
   }
   if (is_official_build) {
-    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes", ]
+    rustflags += [ "-Ccodegen-units=1", "-Copt-level=3", ]
   }
   if (!rust_prebuilt_stdlib) {
     # When building against the Chromium Rust stdlib (which we compile) always
@@ -1078,32 +1120,6 @@ config("compiler") {
     ]
   }
 
-  # Normally, this would be defined in the `runtime_library` config but NaCl
-  # saigo libc++ does not use the custom hermetic libc++. Unfortunately, there
-  # isn't really a better config to add this define for the define to
-  # consistently apply in both Chromium and non-Chromium code *and* non-NaCl
-  # and NaCl code.
-  #
-  # TODO(crbug.com/40511454): Move this back to the `runtime_library`
-  # config when NaCl is removed.
-  if (use_safe_libcxx) {
-    # TODO(crbug.com/40275904): Switch saigo to hardened mode once
-    # it's rolled in.
-    if (is_nacl_saigo) {
-      defines += [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
-    } else {
-      defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
-    }
-  } else {
-    defines += [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
-  }
-
-  # Enable libstdc++ hardening lightweight assertions. Those have a low
-  # performance penalty but are considered a bare minimum for security.
-  if (use_safe_libstdcxx) {
-    defines += [ "_GLIBCXX_ASSERTIONS=1" ]
-  }
-
   # 64-bit Android sometimes defines __ARM_NEON but not __ARM_NEON__.
   # 32-bit Android builds and macOS, however, define __ARM_NEON__,
   # and code typically checks for this.
@@ -1112,6 +1128,34 @@ config("compiler") {
   # as NEON is a mandatory part of ARMv8 anyway.
   if (current_cpu == "arm64") {
     defines += [ "__ARM_NEON__=1" ]
+  }
+}
+
+config("libcxx_hardening") {
+  # Normally, this would be defined in the `runtime_library` config but NaCl
+  # saigo libc++ does not use the custom hermetic libc++. Unfortunately, there
+  # isn't really a better config to add this define for the define to
+  # consistently apply in both Chromium and non-Chromium code *and* non-NaCl and
+  # NaCl code.
+  #
+  # TODO(crbug.com/40511454): Move this back to the `runtime_library` config
+  # when NaCl is removed.
+  if (use_safe_libcxx) {
+    # TODO(crbug.com/40275904): Switch saigo to hardened mode once it's rolled
+    # in.
+    if (is_nacl_saigo) {
+      defines = [ "_LIBCPP_ENABLE_ASSERTIONS=1" ]
+    } else {
+      defines = [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_FAST" ]
+    }
+  } else {
+    defines = [ "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE" ]
+  }
+
+  # Enable libstdc++ hardening lightweight assertions. Those have a low
+  # performance penalty but are considered a bare minimum for security.
+  if (use_safe_libstdcxx) {
+    defines += [ "_GLIBCXX_ASSERTIONS=1" ]
   }
 }
 
@@ -1204,25 +1248,126 @@ config("compiler_cpu_abi") {
         "-m64",
         "-O3",
         "-msse3",
-        "-mssse3",
-        "-msse4",
-        "-msse4.1",
-        "-msse4.2",
-        "-mpclmul",
-        "-maes",
-        "-mavx",
       ]
-      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-msse4.2", "-mpclmul", "-maes", "-mavx", "-Wl,-mllvm,-import-instr-limit=100", ]
+      if (use_sse41)
+        cflags += [
+          "-mssse3",
+          "-msse4.1",
+        ]
+      }
+      if (use_sse42)
+        cflags += [
+          "-msse4",
+          "-msse4.2",
+        ]
+      }
+      if (use_avx)
+        cflags += [
+          "-mpclmul",
+          "-maes",
+          "-mavx",
+        ]
+      }
+      if (use_avx2)
+        cflags += [
+          "-mavx2",
+          "-mfma",
+          "-mf16c",
+          "-mlzcnt",
+          "-mbmi2",
+          "-ffp-contract=fast",
+          "-mtune=haswell",
+        ]
+      }
+      if (use_avx512)
+        cflags += [
+          "-mavx512f",
+          "-mavx512cd",
+          "-mavx512vl",
+          "-mavx512bw",
+          "-mavx512dq",
+          "-mtune=skylake-avx512",
+        ]
+      }
+
+      # Minimum SIMD support for devices running lacros.
+      # See https://crbug.com/1475858
+      if (is_chromeos || is_chromeos_lacros) {
+        cflags += [
+          "-msse3",
+          "-mssse3",
+          "-msse4",
+          "-msse4.1",
+        ]
+      }
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-Wl,-mllvm,-import-instr-limit=100", ]
+      if (use_sse41)
+        ldflags += [
+          "-mssse3",
+          "-msse4.1",
+        ]
+      }
+      if (use_sse42)
+        ldflags += [
+          "-msse4.2",
+        ]
+      }
+      if (use_avx)
+        ldflags += [
+          "-mpclmul",
+          "-maes",
+          "-mavx",
+        ]
+      }
+      if (use_avx2)
+        ldflags += [
+          "-mavx2",
+          "-mfma",
+          "-mf16c",
+          "-mlzcnt",
+          "-mbmi2",
+          "-Wl,-mllvm,-fp-contract=fast",
+          "-Wl,-mllvm,-march=haswell",
+        ]
+      }
+      if (use_avx512)
+        ldflags += [
+          "-mavx512f",
+          "-mavx512cd",
+          "-mavx512vl",
+          "-mavx512bw",
+          "-mavx512dq",
+          "-Wl,-mllvm,-march=skylake-avx512",
+        ]
+      }
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
-      ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
+      ldflags += [ "-m32", "-Wl,-O3", ]
+      if (use_sse3) {
+        ldflags += [ "-msse3", ]
+      }
+      if (use_sse41) {
+        ldflags += [ "-mssse3", "-msse4.1", ]
+      }
+      if (use_sse42) {
+        ldflags += [ "-msse4.2", ]
+      }
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
           "-O3",
           "-mmmx",
-          "-msse3",
+          "-msse2",
         ]
+        if (use_sse3)
+          cflags += [ "-msse3", ]
+        }
+        if (use_sse41)
+          cflags += [ "-mssse3", "-msse4.1", ]
+        }
+        if (use_sse42)
+          cflags += [ "-msse4", "-msse4.2", ]
+        }
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
@@ -1746,7 +1891,7 @@ config("runtime_library") {
   # the C++ symbols. This config ensures the C++ symbols exist and are strong in
   # order to cause that replacement to occur by explicitly linking in clang's
   # compiler-rt library.
-  if (is_clang && toolchain_has_rust) {
+  if (is_clang && !is_nacl && !is_cronet_build) {
     configs += [ "//build/config/clang:compiler_builtins" ]
   }
 
@@ -1914,6 +2059,12 @@ config("default_warnings") {
       "-Wno-unused-parameter",  # Unused function parameters.
     ]
 
+    cflags_cc += [
+      # Disables for C++ only
+      "-Wno-invalid-offsetof",  # offsetof on non-standard-layout type
+                                # (crbug.com/40285259)
+    ]
+
     if (!is_nacl || is_nacl_saigo) {
       cflags += [
         # An ABI compat warning we don't care about, https://crbug.com/1102157
@@ -1955,15 +2106,6 @@ config("default_warnings") {
         # TODO(crbug.com/330524456): -Wcast-function-type is under -Wextra now.
         "-Wno-cast-function-type",
 
-        # TODO(crbug.com/40231599) Evaluate and possibly enable.
-        "-Wno-deprecated-builtins",
-
-        # TODO(crbug.com/40255410) Evaluate and possibly enable.
-        "-Wno-deprecated-this-capture",
-
-        # TODO(crbug.com/40285259): Fix and re-enable.
-        "-Wno-invalid-offsetof",
-
         # TODO(crbug.com/40286317): Evaluate and possibly enable.
         "-Wno-vla-extension",
 
@@ -1984,6 +2126,9 @@ config("default_warnings") {
 
         # TODO(crbug.com/344680447): Fix and re-enable.
         cflags_cc += [ "-Wno-missing-template-arg-list-after-template-kw" ]
+
+        # TODO(crbug.com/356172342): Fix and re-enable.
+        cflags_cc += [ "-Wno-dangling-assignment-gsl" ]
       }
     }
 
@@ -2000,8 +2145,13 @@ config("default_warnings") {
   }
 
   # TODO(crbug.com/354162568): Clean up and enable.
-  if (llvm_force_head_revision && is_apple && use_lld) {
+  if (is_apple && use_lld) {
     ldflags += [ "-Wl,--no-warn-duplicate-rpath" ]
+  }
+
+  # TODO(crbug.com/355446806): Clean up and enable.
+  if (is_apple) {
+    ldflags += [ "-Wl,-no_warn_duplicate_libraries" ]
   }
 
   # Rust warnings
@@ -2106,6 +2256,11 @@ config("chromium_code") {
     if (is_mac) {
       cflags_objc += [ "-Wobjc-missing-property-synthesis" ]
       cflags_objcc += [ "-Wobjc-missing-property-synthesis" ]
+    }
+
+    if (is_ios) {
+      cflags_objc += [ "-Widiomatic-parentheses" ]
+      cflags_objcc += [ "-Widiomatic-parentheses" ]
     }
   }
 
@@ -2387,20 +2542,64 @@ if (is_win) {
     "-mllvm", "-enable-gvn-hoist",
     "/O2",
     "/clang:-O3",
-    "/clang:-msse3",
-    "/clang:-mssse3",
-    "/clang:-msse4.1",
-    "/clang:-msse4.2",
-    "/clang:-mavx",
-    "/clang:-maes",
-    "/clang:-mpclmul",
     "-Xclang", "-O3",
   ]
+  if (use_sse3) {
+    common_optimize_on_cflags += [ "/clang:-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_cflags += [
+      "/clang:-mssse3",
+      "/clang:-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_cflags += [
+      "/clang:-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_cflags += [
+      "/clang:-mpclmul",
+      "/clang:-maes",
+      "/clang:-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_cflags += [
+      "/clang:-mavx2",
+      "/clang:-mfma",
+      "/clang:-mf16c",
+      "/clang:-mlzcnt",
+      "/clang:-mbmi2",
+      "/clang:-ffp-contract=fast",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_cflags += [
+      "/clang:-mavx512f",
+      "/clang:-mavx512cd",
+      "/clang:-mavx512vl",
+      "/clang:-mavx512bw",
+      "/clang:-mavx512dq",
+    ]
+  }
 
   common_optimize_on_ldflags += [
     "-mllvm:-aggressive-ext-opt",
     "-mllvm:-enable-gvn-hoist",
   ]
+
+  if (use_avx2) {
+    common_optimize_on_ldflags += [
+      "-mllvm:-march=haswell",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_ldflags += [
+      "-mllvm:-march=skylake-avx512",
+    ]
+  }
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
@@ -2437,11 +2636,96 @@ if (is_win) {
     "-O3",
   ]
 
+  if (use_sse3) {
+    common_optimize_on_cflags += [ "-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_cflags += [
+      "-mssse3",
+      "-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_cflags += [
+      "-msse4",
+      "-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_cflags += [
+      "-mpclmul",
+      "-maes",
+      "-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_cflags += [
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-mlzcnt",
+      "-mbmi2",
+      "-ffp-contract=fast",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_cflags += [
+      "-mavx512f",
+      "-mavx512cd",
+      "-mavx512vl",
+      "-mavx512bw",
+      "-mavx512dq",
+    ]
+  }
+
   common_optimize_on_ldflags += [
     "-Wl,-mllvm,-aggressive-ext-opt",
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
+
+  if (use_sse3) {
+    common_optimize_on_ldflags += [ "-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_ldflags += [
+      "-mssse3",
+      "-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_ldflags += [
+      "-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_ldflags += [
+      "-mpclmul",
+      "-maes",
+      "-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_ldflags += [
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-mlzcnt",
+      "-mbmi2",
+      "-Wl,-mllvm,-fp-contract=fast",
+      "-Wl,-mllvm,-march=haswell",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_ldflags += [
+      "-mavx512f",
+      "-mavx512cd",
+      "-mavx512vl",
+      "-mavx512bw",
+      "-mavx512dq",
+      "-Wl,-mllvm,-march=skylake-avx512",
+    ]
+  }
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
@@ -2482,12 +2766,9 @@ if (is_win) {
       # can be removed at link time with --gc-sections.
       "-fdata-sections",
       "-ffunction-sections",
-      "-funique-section-names",
     ]
     if ((!is_nacl || is_nacl_saigo) && is_clang) {
-      # We don't care about unique section names, this makes object files a bit
-      # smaller.
-      # common_optimize_on_cflags += [ "-fno-unique-section-names" ]
+      common_optimize_on_cflags += [ "-funique-section-names" ]
     }
 
     if (is_official_build) {
@@ -2608,18 +2889,18 @@ config("default_stack_frames") {
 # [2]: https://crrev.com/c/5447532
 config("optimize") {
   if (is_win) {
-    # clang-cl's /O2 corresponds to clang's -O3, and really want -O3 for
+    # clang-cl's /O2 corresponds to clang's -O3, and really want -O2 for
     # consistency with the other platforms.
     cflags = [
                "/O2",
-               "-Xclang", "-O3",
                "/clang:-O3",
+               "-Xclang", "-O3",
              ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes" ]
+    rustflags = [ "-Copt-level=3", ]
   } else if (optimize_for_size || is_chromeos) {
     # Favor size over speed.
     # -Os in clang is more of a size-conscious -O2 than "size at any cost"
@@ -2631,23 +2912,26 @@ config("optimize") {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
 
-    if (is_clang && use_ml_inliner && is_a_target_toolchain && !is_chromeos) {
+    if (is_clang && use_ml_inliner && is_a_target_toolchain && !is_chromeos &&
+        !is_high_end_android) {
       cflags += [
         "-mllvm",
         "-enable-ml-inliner=release",
+        "-mllvm",
+        "-ml-inliner-model-selector=arm32-size",
       ]
     }
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes" ]
+    rustflags = [ "-Copt-level=3", ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes" ]
+    rustflags = [ "-Copt-level=3", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -2718,7 +3002,7 @@ config("optimize_max") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes", ]
+    rustflags = [ "-Copt-level=3", ]
   }
 }
 
@@ -2754,13 +3038,13 @@ config("optimize_speed") {
     } else {
       cflags = [ "-O3" ] + common_optimize_on_cflags
     }
-    rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes", ]
+    rustflags = [ "-Copt-level=3", ]
   }
 }
 
 config("optimize_fuzzing") {
   cflags = [ "-O3" ] + common_optimize_on_cflags
-  rustflags = [ "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes", ]
+  rustflags = [ "-Copt-level=3", ]
   ldflags = common_optimize_on_ldflags
   visibility = [ ":default_optimization" ]
 }
@@ -2891,6 +3175,7 @@ config("win_pdbaltpath") {
 # Full symbols.
 config("symbols") {
   rustflags = []
+  configs = []
   if (is_win) {
     if (is_clang) {
       cflags = [
@@ -2913,7 +3198,7 @@ config("symbols") {
     }
 
     # All configs using /DEBUG should include this:
-    configs = [ ":win_pdbaltpath" ]
+    configs += [ ":win_pdbaltpath" ]
   } else {
     cflags = []
     if (is_mac && enable_dsyms) {
@@ -3007,13 +3292,24 @@ config("symbols") {
     }
   }
 
-  configs = []
-
   # Compress debug on 32-bit ARM to stay under 4GB file size limit.
   # https://b/243982712, https://crbug.com/1354616, https://crbug.com/334073642
   if (symbol_level == 2 && !use_debug_fission && !is_nacl && !is_win &&
       (current_cpu == "arm" || current_cpu == "x86")) {
     configs += [ "//build/config:compress_debug_sections" ]
+  }
+
+  if (is_clang && !is_nacl && is_win && !is_component_build) {
+    # Remove unreferenced methods to reduce type info in symbols.
+    # See: https://github.com/llvm/llvm-project/pull/87018.
+    # The downside with this flag is precisely that: Unreferenced methods get
+    # removed, so that methods only to be used from within a debugger become
+    # unavailable. Therefore, only do this for Windows, which seems to be the
+    # only platform that needs this, due to size limitations in PDF files.
+    # Additionally, this limitation is only likely to be hit in non-component
+    # builds, so only do it then.
+    # See crbug.com/338094922
+    cflags += [ "-gomit-unreferenced-methods" ]
   }
 
   if (is_clang && (!is_nacl || is_nacl_saigo)) {
@@ -3118,7 +3414,7 @@ config("minimal_symbols") {
 
     asmflags = cflags
   }
-  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+aes", ]
+  rustflags += [ "-Cdebuginfo=1", "-Copt-level=3", ]
 }
 
 # This configuration contains function names only. That is, the compiler is
