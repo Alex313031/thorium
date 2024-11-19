@@ -12,6 +12,25 @@ index 6167ef5ed42af..6af9e477c4c8a 100644
    context_params->enable_brotli = true;
    context_params->enable_zstd =
        base::FeatureList::IsEnabled(net::features::kZstdContentEncoding);
+diff --git a/build/config/unsafe_buffers_paths.txt b/build/config/unsafe_buffers_paths.txt
+index 99e985eacda99..15dea18f1fceb 100644
+--- a/build/config/unsafe_buffers_paths.txt
++++ b/build/config/unsafe_buffers_paths.txt
+@@ -112,13 +112,13 @@
+ -ios_internal/
+ -media/
+ -native_client/
++-net/ftp/
+ -net/third_party/
+ -printing/
+ -remoting/host/
+ -remoting/client/input/
+ -testing/iossim/
+ -third_party/
+-+third_party/blink/
+ -tools/
+ -ui/base/clipboard/
+ -ui/base/ime/ash/
 diff --git a/chrome/app/app-Info.plist b/chrome/app/app-Info.plist
 index 5654e5c9d5858..08d00c2005d7b 100644
 --- a/chrome/app/app-Info.plist
@@ -5329,7 +5348,7 @@ new file mode 100644
 index 0000000000000..9bd4059d5fbe4
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.cc
-@@ -0,0 +1,160 @@
+@@ -0,0 +1,159 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -5339,7 +5358,6 @@ index 0000000000000..9bd4059d5fbe4
 +#include <utility>
 +
 +#include "base/check_op.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_util.h"
 +#include "base/values.h"
 +#include "net/base/net_errors.h"
@@ -7731,10 +7749,10 @@ index 0000000000000..0ef5b781eec4e
 +#endif  // NET_FTP_FTP_NETWORK_SESSION_H_
 diff --git a/net/ftp/ftp_network_transaction.cc b/net/ftp/ftp_network_transaction.cc
 new file mode 100644
-index 0000000000000..8c8b965924cca
+index 0000000000000..4fdad5392e0a7
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.cc
-@@ -0,0 +1,1298 @@
+@@ -0,0 +1,1293 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -7835,7 +7853,6 @@ index 0000000000000..8c8b965924cca
 +
 +  // We should not be called on invalid error codes.
 +  NOTREACHED() << response_code;
-+  return ERROR_CLASS_PERMANENT_ERROR;
 +}
 +
 +// Returns network error code for received FTP |response_code|.
@@ -8230,7 +8247,6 @@ index 0000000000000..8c8b965924cca
 +    // Callers should validate the command themselves and return a more specific
 +    // error code.
 +    NOTREACHED();
-+    return Stop(ERR_UNEXPECTED);
 +  }
 +
 +  command_sent_ = cmd;
@@ -8390,8 +8406,6 @@ index 0000000000000..8c8b965924cca
 +        break;
 +      default:
 +        NOTREACHED() << "bad state";
-+        rv = ERR_UNEXPECTED;
-+        break;
 +    }
 +  } while (rv != ERR_IO_PENDING && next_state_ != STATE_NONE);
 +  return rv;
@@ -8678,7 +8692,6 @@ index 0000000000000..8c8b965924cca
 +    command += "I";
 +  } else {
 +    NOTREACHED();
-+    return Stop(ERR_UNEXPECTED);
 +  }
 +  next_state_ = STATE_CTRL_READ;
 +  return SendFtpCommand(command, command, COMMAND_TYPE);
@@ -11299,7 +11312,7 @@ new file mode 100644
 index 0000000000000..fe7e81c2e8ad7
 --- /dev/null
 +++ b/net/ftp/ftp_util.cc
-@@ -0,0 +1,374 @@
+@@ -0,0 +1,373 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -11316,7 +11329,6 @@ index 0000000000000..fe7e81c2e8ad7
 +#include "base/memory/singleton.h"
 +#include "base/strings/strcat.h"
 +#include "base/strings/string_number_conversions.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_split.h"
 +#include "base/strings/string_tokenizer.h"
 +#include "base/strings/string_util.h"

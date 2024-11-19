@@ -200,8 +200,7 @@ esac
 copyAVX512 () {
 	printf "\n" &&
 	printf "${YEL}Copying AVX-512 build files...${c0}\n" &&
-	cp -r -v other/AVX512/build/config/* ${CR_SRC_DIR}/build/config/ &&
-	cp -r -v other/AVX512/third_party/* ${CR_SRC_DIR}/third_party/ &&
+	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX512/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-avx512 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
@@ -215,7 +214,6 @@ esac
 copyAVX2 () {
 	printf "\n" &&
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
-	cp -r -v other/AVX2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-avx2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
@@ -230,7 +228,6 @@ esac
 copySSE4 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE4.1 build files...${c0}\n" &&
-	cp -r -v other/SSE4.1/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse4 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
@@ -244,7 +241,6 @@ esac
 copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
-	cp -r -v other/SSE3/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	cd ${CR_SRC_DIR} &&
@@ -261,7 +257,6 @@ esac
 copySSE2 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
-	cp -r -v other/SSE2/build/config/* ${CR_SRC_DIR}/build/config/ &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
 	cp -v infra/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	cd ${CR_SRC_DIR} &&

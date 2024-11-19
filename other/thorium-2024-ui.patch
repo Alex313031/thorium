@@ -1,3 +1,49 @@
+diff --git a/base/check.cc b/base/check.cc
+index bd63d5a88e34e..de729bfc6db5a 100644
+--- a/base/check.cc
++++ b/base/check.cc
+@@ -323,6 +323,7 @@ std::ostream& CheckError::stream() {
+ }
+ 
+ CheckError::~CheckError() {
++#if !BUILDFLAG(IS_DEBUG)
+   // TODO(crbug.com/40254046): Consider splitting out CHECK from DCHECK so that
+   // the destructor can be marked [[noreturn]] and we don't need to check
+   // severity in the destructor.
+@@ -340,6 +341,7 @@ CheckError::~CheckError() {
+   if (is_fatal) {
+     base::ImmediateCrash();
+   }
++#endif // !BUILDFLAG(IS_DEBUG)
+ }
+ 
+ CheckError::CheckError(LogMessage* log_message) : log_message_(log_message) {}
+diff --git a/base/logging.cc b/base/logging.cc
+index 0d93ca4713624..3df6d90c2539b 100644
+--- a/base/logging.cc
++++ b/base/logging.cc
+@@ -589,6 +589,10 @@ bool ShouldCreateLogMessage(int severity) {
+   if (severity < g_min_log_level)
+     return false;
+ 
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("verbose")) {
++    return true;
++  }
++
+   // Return true here unless we know ~LogMessage won't do anything.
+   return g_logging_destination != LOG_NONE || g_log_message_handler ||
+          severity >= kAlwaysPrintErrorLevel;
+@@ -602,6 +606,10 @@ bool ShouldLogToStderr(int severity) {
+   if (g_logging_destination & LOG_TO_STDERR)
+     return true;
+ 
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("verbose")) {
++    return true;
++  }
++
+ #if BUILDFLAG(IS_FUCHSIA)
+   // Fuchsia will persist data logged to stdio by a component, so do not emit
+   // logs to stderr unless explicitly configured to do so.
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
@@ -48,10 +94,50 @@ index f355f92ac2f37..e0b69081164fd 100644
    "incognito": "split",
    "permissions": [
 diff --git a/chrome/browser/search/search.cc b/chrome/browser/search/search.cc
-index 40c586fb4f715..dd7d0943e9c0e 100644
+index 40c586fb4f715..9bc0ea94e459a 100644
 --- a/chrome/browser/search/search.cc
 +++ b/chrome/browser/search/search.cc
-@@ -179,33 +179,9 @@ struct NewTabURLDetails {
+@@ -95,17 +95,6 @@ enum NewTabURLState {
+   NEW_TAB_URL_MAX
+ };
+ 
+-const TemplateURL* GetDefaultSearchProviderTemplateURL(Profile* profile) {
+-  if (profile) {
+-    TemplateURLService* template_url_service =
+-        TemplateURLServiceFactory::GetForProfile(profile);
+-    if (template_url_service) {
+-      return template_url_service->GetDefaultSearchProvider();
+-    }
+-  }
+-  return nullptr;
+-}
+-
+ bool IsMatchingServiceWorker(const GURL& my_url, const GURL& document_url) {
+   // The origin should match.
+   if (!MatchesOrigin(my_url, document_url)) {
+@@ -142,21 +131,6 @@ bool IsNTPOrRelatedURLHelper(const GURL& url, Profile* profile) {
+                                     IsMatchingServiceWorker(url, new_tab_url));
+ }
+ 
+-bool IsURLAllowedForSupervisedUser(const GURL& url, Profile& profile) {
+-  if (!profile.IsChild()) {
+-    return true;
+-  }
+-  supervised_user::SupervisedUserService* supervised_user_service =
+-      SupervisedUserServiceFactory::GetForProfile(&profile);
+-  supervised_user::SupervisedUserURLFilter* url_filter =
+-      supervised_user_service->GetURLFilter();
+-  if (url_filter->GetFilteringBehaviorForURL(url) ==
+-      supervised_user::FilteringBehavior::kBlock) {
+-    return false;
+-  }
+-  return true;
+-}
+-
+ // Used to look up the URL to use for the New Tab page. Also tracks how we
+ // arrived at that URL so it can be logged with UMA.
+ struct NewTabURLDetails {
+@@ -179,33 +153,9 @@ struct NewTabURLDetails {
      const GURL local_url(default_is_google
                               ? chrome::kChromeUINewTabPageURL
                               : chrome::kChromeUINewTabPageThirdPartyURL);
@@ -183,6 +269,20 @@ index 86af74569f013..1f9cc1696eda4 100644
    command_updater_.UpdateCommandEnabled(IDC_TAB_SEARCH,
                                          enable_tab_search_commands);
    command_updater_.UpdateCommandEnabled(IDC_TAB_SEARCH_CLOSE,
+diff --git a/chrome/browser/ui/color/chrome_color_mixer.cc b/chrome/browser/ui/color/chrome_color_mixer.cc
+index 589c77c52175b..e408764fc6aae 100644
+--- a/chrome/browser/ui/color/chrome_color_mixer.cc
++++ b/chrome/browser/ui/color/chrome_color_mixer.cc
+@@ -748,8 +748,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
+       ui::SetAlpha(kColorToolbarInkDrop, std::ceil(0.06f * 255.0f));
+   mixer[kColorAppMenuChipInkDropHover] = {kColorToolbarInkDropHover};
+   mixer[kColorAppMenuChipInkDropRipple] = {kColorToolbarInkDropRipple};
+-  mixer[kColorToolbarExtensionSeparatorEnabled] = {
+-      kColorTabBackgroundInactiveFrameActive};
++  mixer[kColorToolbarExtensionSeparatorEnabled] = {ui::kColorSysDivider};
+   mixer[kColorToolbarExtensionSeparatorDisabled] = {
+       kColorToolbarButtonIconInactive};
+   mixer[kColorToolbarSeparator] = {kColorToolbarSeparatorDefault};
 diff --git a/chrome/browser/ui/color/chrome_color_mixers.cc b/chrome/browser/ui/color/chrome_color_mixers.cc
 index 9698e807b11df..8bb6a245caeba 100644
 --- a/chrome/browser/ui/color/chrome_color_mixers.cc
@@ -993,7 +1093,7 @@ index eabc844883aca..291633d064be4 100644
 -  const int top_border_thickness = GetLayoutConstant(TAB_STRIP_PADDING);
 +  const int top_border_thickness = features::IsThorium2024()
 +                                   ? GetLayoutConstant(TAB_INACTIVE_PADDING)
-+                                   : GetLayoutConstant(TAB_STRIP_PADDING);
++                                   : FrameTopBorderThickness(false);
  
    const int window_component = GetHTComponentForFrame(
        point, gfx::Insets::TLBR(top_border_thickness, 0, 0, 0),
@@ -1002,7 +1102,7 @@ index eabc844883aca..291633d064be4 100644
        // extends beyond the screen edges. In that case, we must return the
        // default value.
 -      const int kTopResizeFrameArea = 0;
-+      const int kTopResizeFrameArea = features::IsThorium2024() ? 7 : 0;
++      const int kTopResizeFrameArea = features::IsThorium2024() ? 5 : 0;
        return kTopResizeFrameArea;
      }
  
@@ -1351,7 +1451,7 @@ index 5c82d24686e9f..2e7d5d0bbf04e 100644
  }
  
  int OpaqueBrowserFrameViewLayout::CaptionButtonY(views::FrameButton button_id,
-@@ -236,6 +250,21 @@ int OpaqueBrowserFrameViewLayout::GetWindowCaptionSpacing(
+@@ -236,6 +250,22 @@ int OpaqueBrowserFrameViewLayout::GetWindowCaptionSpacing(
    return 0;
  }
  
@@ -1362,7 +1462,8 @@ index 5c82d24686e9f..2e7d5d0bbf04e 100644
 +  }
 +  // Besides the frame border, there's empty space atop the window in restored
 +  // mode, to use to drag the window around.
-+  const int thickness = 8;
++  constexpr int kNonClientRestoredExtraThickness = 8;
++  int thickness = kNonClientRestoredExtraThickness;
 +  if (delegate_->EverHasVisibleBackgroundTabShapes()) {
 +    thickness =
 +        std::max(thickness, BrowserNonClientFrameView::kMinimumDragHeight);
@@ -1397,7 +1498,7 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index e7660352853f2..726ab047decb4 100644
+index e7660352853f2..4f45152a72d4c 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -19,6 +19,7 @@
@@ -1425,7 +1526,7 @@ index e7660352853f2..726ab047decb4 100644
 -            vector_icons::kAddIcon);
 +                                    features::IsThorium2024()
 +                                    ? kAddIcon
-+                                    : vector_icons::kAddChromeRefreshIcon
++                                    : kAddChromeRefreshIcon
 +        );
      tab_strip_control_button->SetProperty(views::kElementIdentifierKey,
                                            kNewTabButtonElementId);
@@ -1488,7 +1589,7 @@ index e7660352853f2..726ab047decb4 100644
        }
      }
 -    gfx::Point new_tab_button_new_position = gfx::Point(x, 0);
-+    gfx::Point new_tab_button_new_position = gfx::Point(x, GetLayoutConstant(TAB_BUTTON_OFFSET);
++    gfx::Point new_tab_button_new_position = gfx::Point(x, GetLayoutConstant(TAB_BUTTON_OFFSET));
  
 -    gfx::Rect new_tab_button_new_bounds =
 +    const gfx::Rect new_tab_button_new_bounds =
@@ -1886,7 +1987,7 @@ index a42855ead9dbe..ba8b4271de1d7 100644
  #include "ui/views/view_class_properties.h"
  
  namespace {
-+constexpr int kTh24CRTabSearchCornerRadius = 8;
++//constexpr int kTh24CRTabSearchCornerRadius = 8;
  constexpr int kCRTabSearchCornerRadius = 10;
  constexpr int kCRTabSearchFlatCornerRadius = 4;
  }  // namespace
@@ -2123,16 +2224,19 @@ index e368f860ec9a7..b81b109035cdd 100644
      "toolbar_action_hover_card_controller.cc",
 diff --git a/chrome/browser/ui/views/toolbar/restore_tab_button.cc b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 new file mode 100644
-index 0000000000000..60be9a17489bf
+index 0000000000000..2650880d470b5
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,70 @@
 +// Copyright 2024 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
 +#include "chrome/browser/ui/views/toolbar/restore_tab_button.h"
 +
++#include "base/command_line.h"
++#include "base/logging.h"
++#include "base/strings/string_number_conversions.h"
 +#include "chrome/app/chrome_command_ids.h"
 +#include "chrome/browser/command_updater.h"
 +#include "chrome/browser/external_protocol/external_protocol_handler.h"
@@ -2164,12 +2268,25 @@ index 0000000000000..60be9a17489bf
 +void RestoreTabButton::ButtonPressed() {
 +  ExternalProtocolHandler::PermitLaunchUrl();
 +
-+  int command = IDC_RESTORE_TAB;
-+  ExecuteBrowserCommand(command);
++  int command;
++  // See chrome/app/chrome_command_ids.h for all possible commands
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch("button-command")) {
++    const std::string button_command =
++        base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("button-command");
++    command = base::StringToInt(button_command, &command);
++    LOG(ERROR) << command;
++  } else {
++    command = IDC_RESTORE_TAB;
++  }
++  const int command_to_exec = command;
++
++  ExecuteBrowserCommand(command_to_exec);
 +}
 +
 +void RestoreTabButton::SetIcon() {
-+  SetVectorIcon(vector_icons::kRestoreIcon);
++  const gfx::VectorIcon& restore_icon =
++      vector_icons::kRestoreIcon;
++  SetVectorIcons(restore_icon, restore_icon);
 +}
 +
 +void RestoreTabButton::ExecuteBrowserCommand(int command) {
