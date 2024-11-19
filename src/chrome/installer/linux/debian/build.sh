@@ -112,7 +112,7 @@ do_package() {
   log_cmd echo "Packaging ${ARCHITECTURE}..."
   PREDEPENDS="$COMMON_PREDEPS"
   DEPENDS="${COMMON_DEPS}"
-  RECOMMENDS="${COMMON_RECOMMENDS}"
+  # RECOMMENDS="${COMMON_RECOMMENDS}"
   PROVIDES="www-browser"
   gen_changelog
   process_template "${SCRIPTDIR}/control.template" "${DEB_CONTROL}"
@@ -159,15 +159,15 @@ verify_channel() {
   case $CHANNEL in
     stable )
       CHANNEL=stable
-      RELEASENOTES="https://chromereleases.googleblog.com/search/label/Stable%20updates"
+      RELEASENOTES="https://github.com/Alex313031/Thorium/releases"
       ;;
     beta|testing )
       CHANNEL=beta
-      RELEASENOTES="https://chromereleases.googleblog.com/search/label/Beta%20updates"
+      RELEASENOTES="https://github.com/Alex313031/Thorium/releases"
       ;;
     dev|unstable|alpha )
       CHANNEL=unstable
-      RELEASENOTES="https://chromereleases.googleblog.com/search/label/Dev%20updates"
+      RELEASENOTES="https://github.com/Alex313031/Thorium/releases"
       ;;
     # Canary is released twice a day automatically, so no release notes
     # attached.
@@ -272,8 +272,8 @@ export ARCHITECTURE="${ARCHITECTURE}"
 DEB_COMMON_DEPS="${OUTPUTDIR}/deb_common.deps"
 COMMON_DEPS=$(sed ':a;N;$!ba;s/\n/, /g' "${DEB_COMMON_DEPS}")
 COMMON_PREDEPS="dpkg (>= 1.14.0)"
-MANUAL_RECOMMENDS="${SCRIPTDIR}/manual_recommends"
-COMMON_RECOMMENDS=$(grep -v ^$ "${MANUAL_RECOMMENDS}" | grep -v ^# |
+# MANUAL_RECOMMENDS="${SCRIPTDIR}/manual_recommends"
+# COMMON_RECOMMENDS=$(grep -v ^$ "${MANUAL_RECOMMENDS}" | grep -v ^# |
                         sed ':a;N;$!ba;s/\n/, /g')
 
 # Make everything happen in the OUTPUTDIR.

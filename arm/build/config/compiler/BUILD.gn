@@ -5,6 +5,7 @@
 import("//build/buildflag_header.gni")
 import("//build/config/android/config.gni")
 import("//build/config/c++/c++.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/chrome_build.gni")
 import("//build/config/chromeos/args.gni")
 import("//build/config/chromeos/ui_mode.gni")
@@ -66,9 +67,6 @@ declare_args() {
   # information to analyze.
   # Requires profiling to be set to true.
   enable_full_stack_frames_for_profiling = false
-
-  # Whether to enable LLVM's Polly optimizations. See https://polly.llvm.org/
-  use_polly = false
 
   # Whether to use Raspberry Pi specific optimizations.
   is_raspi = false

@@ -77,6 +77,8 @@ constexpr char kIsSharedStorageAllowedHistogram[] =
     "PrivacySandbox.IsSharedStorageAllowed";
 constexpr char kIsSharedStorageSelectURLAllowedHistogram[] =
     "PrivacySandbox.IsSharedStorageSelectURLAllowed";
+constexpr char kIsLocalUnpartitionedDataAccessAllowedHistogram[] =
+    "PrivacySandbox.IsLocalUnpartitionedDataAccessAllowed";
 constexpr char kIsPrivateAggregationAllowedHistogram[] =
     "PrivacySandbox.IsPrivateAggregationAllowed";
 
@@ -712,6 +714,40 @@ bool PrivacySandboxSettingsImpl::IsSharedStorageSelectURLAllowed(
   return IsAllowed(status);
 }
 
+bool PrivacySandboxSettingsImpl::IsLocalUnpartitionedDataAccessAllowed(
+    const url::Origin& top_frame_origin,
+    const url::Origin& accessing_origin,
+    content::RenderFrameHost* console_frame) const {
+  // TODO(crbug.com/365788691): Before checking the attestation status, check
+  // the 3PC setting here. If the toggle "Block all third-party cookies" is
+  // enabled, the local unpartitioned data access feature will be disabled.
+  Status attestation_status =
+      PrivacySandboxAttestations::GetInstance()->IsSiteAttested(
+          net::SchemefulSite(accessing_origin),
+          PrivacySandboxAttestationsGatedAPI::kLocalUnpartitionedDataAccess);
+  if (!IsAllowed(attestation_status)) {
+    JoinHistogram(kIsLocalUnpartitionedDataAccessAllowedHistogram,
+                  attestation_status);
+    if (console_frame) {
+      console_frame->AddMessageToConsole(
+          blink::mojom::ConsoleMessageLevel::kError,
+          base::StrCat(
+              {"Attestation check for local unpartitioned data access on ",
+               accessing_origin.Serialize(), " failed."}));
+    }
+    return false;
+  }
+
+  Status status = GetPrivacySandboxAllowedStatus();
+  if (IsAllowed(status)) {
+    status =
+        GetSiteAccessAllowedStatus(top_frame_origin, accessing_origin.GetURL());
+  }
+  JoinHistogram(kIsLocalUnpartitionedDataAccessAllowedHistogram, status);
+
+  return IsAllowed(status);
+}
+
 bool PrivacySandboxSettingsImpl::IsPrivateAggregationAllowed(
     const url::Origin& top_frame_origin,
     const url::Origin& reporting_origin,
@@ -745,13 +781,24 @@ bool PrivacySandboxSettingsImpl::IsPrivateAggregationDebugModeAllowed(
     return false;
   }
 
+  // If this feature is disabled, provide a top-frame origin anyway to match
+  // previous behavior.
+  std::optional<url::Origin> top_frame_origin_to_query;
+  if (!base::FeatureList::IsEnabled(
+          kPrivateAggregationDebugReportingIgnoreSiteExceptions)) {
+    top_frame_origin_to_query = top_frame_origin;
+  }
+
   // Third party cookies must also be available for this context. An empty site
-  // for cookies is provided so the context is always treated as a third party.
+  // for cookies and empty top-frame origin is provided so the context is always
+  // treated as a third party. That is, we ignore any top-level site cookie
+  // exceptions (see crbug.com/364318217).
   content_settings::CookieSettingsBase::CookieSettingWithMetadata
       cookie_setting_with_metadata;
   if (cookie_settings_->IsFullCookieAccessAllowed(
-          reporting_origin.GetURL(), net::SiteForCookies(), top_frame_origin,
-          net::CookieSettingOverrides(), &cookie_setting_with_metadata)) {
+          reporting_origin.GetURL(), net::SiteForCookies(),
+          top_frame_origin_to_query, net::CookieSettingOverrides(),
+          &cookie_setting_with_metadata)) {
     return true;
   }
 
@@ -839,12 +886,12 @@ PrivacySandboxSettingsImpl::GetSiteAccessAllowedStatus(
 
 PrivacySandboxSettingsImpl::Status
 PrivacySandboxSettingsImpl::GetPrivacySandboxAllowedStatus(
-  bool should_ignore_restriction /*=false*/) const {
-    if (delegate_->IsIncognitoProfile()) {
-      return Status::kIncognitoProfile;
-    }
-    // Always return restricted in Thorium
-    return Status::kRestricted;
+    bool should_ignore_restriction /*=false*/) const {
+  if (delegate_->IsIncognitoProfile()) {
+    return Status::kIncognitoProfile;
+  }
+  // Always return restricted in Thorium
+  return Status::kRestricted;
 }
 
 PrivacySandboxSettingsImpl::Status

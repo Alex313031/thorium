@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include <stdint.h>
 
 #include "base/clang_profiling_buildflags.h"
@@ -54,13 +59,13 @@ void* memset(void* dest, int c, size_t count) {
   return dest;
 }
 
+// SET BY ALEX313031 FOR ALL BUILDS BECAUSE IT CAUSES ERRORS
+// DURING CROSS-BUILDING IF UNSET.
 //#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
 // The compiler generates calls to memcpy for ARM64 debug builds so we need to
 // supply a memcpy implementation in that configuration.
 // See comments above for why we do this incantation.
 
-// SET BY ALEX313031 FOR ALL BUILDS BECAUSE IT CAUSES ERRORS
-// DURING CROSS-BUILDING IF UNSET.
 __attribute__((used))
 void* memcpy(void* destination, const void* source, size_t count) {
   auto* dst = reinterpret_cast<uint8_t*>(destination);

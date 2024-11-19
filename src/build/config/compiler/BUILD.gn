@@ -5,6 +5,7 @@
 import("//build/buildflag_header.gni")
 import("//build/config/android/config.gni")
 import("//build/config/c++/c++.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/chrome_build.gni")
 import("//build/config/chromeos/args.gni")
 import("//build/config/chromeos/ui_mode.gni")
@@ -16,7 +17,6 @@ import("//build/config/gclient_args.gni")
 import("//build/config/host_byteorder.gni")
 import("//build/config/pch.gni")
 import("//build/config/rust.gni")
-import("//build/config/simd_opt.gni")
 import("//build/config/ui.gni")
 import("//build/config/unwind.gni")
 import("//build/toolchain/cc_wrapper.gni")
@@ -67,9 +67,6 @@ declare_args() {
   # information to analyze.
   # Requires profiling to be set to true.
   enable_full_stack_frames_for_profiling = false
-
-  # Whether to enable LLVM's Polly optimizations. See https://polly.llvm.org/
-  use_polly = false
 
   # Enable fatal linker warnings. Building Chromium with certain versions
   # of binutils can cause linker warning.

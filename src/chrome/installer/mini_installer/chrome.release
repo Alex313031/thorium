@@ -22,7 +22,7 @@ thor_ver: %(ChromeDir)s\
 #
 # Chrome version dir entries, sorted alphabetically.
 #
-blink_test_plugin.dll: %(VersionDir)s\
+# blink_test_plugin.dll: %(VersionDir)s\
 chrome.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
 chromedriver.exe: %(VersionDir)s\
@@ -37,7 +37,6 @@ eventlog_provider.dll: %(VersionDir)s\
 icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
-mojo_core.dll: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
 optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\

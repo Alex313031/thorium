@@ -2,7 +2,20 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+## For information about compiler flags and optimizations
+## that this uses, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+
+import("//build/config/BUILDCONFIG.gn")
+
 declare_args() {
+
+  # Whether to enable LLVM's Polly optimizations.
+  # See https://polly.llvm.org/
+  use_polly = false
+
+  # Whether to enable LLVM's BOLT optimizations.
+  # See https://github.com/llvm/llvm-project/blob/main/bolt/README.md
+  use_bolt = false
 
   # SIMD compiler optimization flags
   # Propagated to //build/config/* to allow controlling
@@ -18,7 +31,6 @@ declare_args() {
   # and AMD SanDiego (2nd Gen. Opteron).
   # Only applicable to 32 Bit Windows and Linux builds, where
   # setting it to false allows making an SSE2 build. (`-mmmx -msse2`)
-  # Baseline for Windows since a Windows 7 update.
   # `-msse3`
   use_sse3 = true
 
@@ -51,11 +63,10 @@ declare_args() {
 
   # AVX2 (x86-64-v3)
   # Second generation AVX, expanded to 256-bit registers.
-  # Used in much professional software.
   # Present since Haswell (4th Gen. Core i series), and
   # AMD Excavator (4th Gen. refinement of Bulldozer cores) and 
   # Zen (1st Gen. Ryzen).
-  # Includes FMA3 `-mfma -mavx2` (`-ffp-contract` see below at FMA)
+  # Includes FMA3 `-mfma -mavx2` (`-ffp-contract` see below at FMA section)
   use_avx2 = false
 
   # AVX-512
@@ -75,6 +86,11 @@ declare_args() {
   use_fma = use_avx2
 }
 
+if (is_debug || !use_thin_lto) {
+  assert(!use_polly, "use_polly only works with non-debug builds")
+  assert(!use_bolt, "use_bolt only works with non-debug builds")
+}
+
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
 # from anything higher usually.
 if (use_avx || use_avx2 || use_fma) {
@@ -82,9 +98,29 @@ if (use_avx || use_avx2 || use_fma) {
   assert(!target_cpu == "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
 }
 
-# AVX2 always requires FMA, however, there are times one might want
-# use_fma = true even with AVX2 off, such as when making a build for
+# AVX2 always should have FMA, however, there are times one might want
+# to set use_fma = true even with AVX2 off, such as when making a build for
 # an AMD Piledriver or Steamroller CPU.
-if (use_avx2) {
-  assert(use_fma, "use_fma must be true when AVX2 is enabled")
+if (use_avx2 && !use_fma) {
+  print("WARNING: Use_avx2 is true while use_fma is false. This will create a 
+         build compiled with AVX2, but without FMA or floating point contraction.")
+  print("This should only be set intentionally for testing.")
+}
+
+# Not a normal configuration, that normally means a mistake was made configuring
+# your args. However, there are a few CPUs out there for which this makes sense.
+# Alex313031 TODO: Maybe add -mfma3 -mfma4 for this config?
+if (!use_avx2 && use_fma) {
+  print("WARNING: Use_avx2 is false while use_fma true. This will 
+         create an AVX build with FMA.")
+  print("This should only be set intentionally for testing, or for specific CPUs 
+         that have AVX and FMA, but not AVX2, such as AMD Piledriver.")
+}
+
+if (use_fma) {
+  assert(use_avx, "ERROR: use_fma is true while use_avx is false. FMA requires AVX.")
+}
+
+if (!use_sse3 && current_cpu == "x64") {
+  print("use_sse3 is disabled. This should only be done for 32 Bit builds.")
 }

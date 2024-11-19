@@ -4,6 +4,7 @@
 
 import("//build/config/apple/symbols.gni")
 import("//build/config/c++/c++.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/mac/mac_sdk.gni")
 import("//build/config/sysroot.gni")
 import("//build/toolchain/rbe.gni")

@@ -4,6 +4,7 @@
 
 import("//build/config/chromeos/ui_mode.gni")
 import("//build/config/clang/clang.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/compiler/compiler.gni")
 import("//build/config/compiler/pgo/pgo.gni")
 import("//build/config/features.gni")

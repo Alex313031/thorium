@@ -277,7 +277,7 @@ copy("deb_packaging_files") {
     "debian/changelog.template",
     "debian/control.template",
     "debian/debian.menu",
-    "debian/manual_recommends",
+    # "debian/manual_recommends",
     "debian/postinst",
     "debian/postrm",
     "debian/prerm",
@@ -449,6 +449,8 @@ template("linux_package") {
       deb_arch = "mips64el"
     } else if (current_cpu == "loong64") {
       deb_arch = "loong64"
+    } else if (current_cpu == "riscv64") {
+      deb_arch = "riscv64"
     } else {
       assert(false, "Linux installer not configured for this architecture.")
     }
@@ -500,6 +502,8 @@ template("linux_package") {
         rpm_arch = "mips64el"
       } else if (current_cpu == "loong64") {
         rpm_arch = "loongarch64"
+      } else if (current_cpu == "riscv64") {
+        rpm_arch = "riscv64"
       } else {
         assert(false, "Linux installer not configured for this architecture.")
       }

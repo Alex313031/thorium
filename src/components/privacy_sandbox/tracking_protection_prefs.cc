@@ -46,29 +46,21 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterTimePref(prefs::kTrackingProtectionSilentOnboardedSince,
                              base::Time());
 
-  // Full 3PCD prefs.
-  registry->RegisterTimePref(prefs::kTrackingProtectionFull3PCDOnboarded,
-                             base::Time());
+  registry->RegisterBooleanPref(
+      prefs::kEnableDoNotTrack, true,
+      user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterBooleanPref(prefs::kUserBypass3pcExceptionsMigrated, false);
 
-  // Tracking Protection Reminder Prefs
-  registry->RegisterIntegerPref(
-      prefs::kTrackingProtectionReminderStatus,
-      static_cast<int>(TrackingProtectionReminderStatus::kUnset));
-
-  // Tracking Protection Survey Prefs
-  registry->RegisterTimePref(prefs::kTrackingProtectionSurveyWindowStartTime,
-                             base::Time());
-
-  // Tracking Protection Settings Prefs
+  // TODO(https://b/333527273): Deprecate
   registry->RegisterBooleanPref(
       prefs::kBlockAll3pcToggleEnabled, false,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
+  registry->RegisterBooleanPref(prefs::kTrackingProtection3pcdEnabled, false);
   registry->RegisterBooleanPref(prefs::kAllowAll3pcToggleEnabled, false);
   registry->RegisterIntegerPref(
       prefs::kTrackingProtectionLevel,
       static_cast<int>(TrackingProtectionLevel::kStandard),
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(prefs::kTrackingProtection3pcdEnabled, false);
   registry->RegisterBooleanPref(
       prefs::kIpProtectionEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
@@ -77,10 +69,6 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
   registry->RegisterBooleanPref(
       prefs::kFingerprintingProtectionEnabled, true,
       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(
-      prefs::kEnableDoNotTrack, true,
-      user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
-  registry->RegisterBooleanPref(prefs::kUserBypass3pcExceptionsMigrated, false);
 }
 
 }  // namespace privacy_sandbox::tracking_protection

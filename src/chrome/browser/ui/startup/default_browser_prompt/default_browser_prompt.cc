@@ -39,7 +39,7 @@
 namespace {
 
 void ShowPrompt() {
-  return;
+  continue;
 }
 
 // Do not show the prompt if "suppress_default_browser_prompt_for_version" in

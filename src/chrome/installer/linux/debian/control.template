@@ -2,14 +2,14 @@ Source: @@PACKAGE@@
 Section: web
 Priority: optional
 Maintainer: @@MAINTNAME@@ <@@MAINTMAIL@@>
-Build-Depends: dpkg-dev, devscripts, fakeroot, xz-utils
-Standards-Version: 3.8.0
+Build-Depends: dpkg-dev, devscripts, fakeroot, xz-utils, zip
+Standards-Version: 3.9.8
 
 Package: @@PACKAGE@@
 Provides: @@PROVIDES@@
 Pre-Depends: @@PREDEPENDS@@
 Depends: @@DEPENDS@@
-Recommends: @@RECOMMENDS@@
+Recommends: vdpau-driver-all
 Conflicts: thorium-browser-unstable
 Replaces: thorium-browser-unstable
 Architecture: @@ARCHITECTURE@@
