@@ -472,7 +472,7 @@ class DnsHTTPAttempt : public DnsAttempt, public URLRequest::Delegate {
       request_->SetIdempotency(IDEMPOTENT);
       std::unique_ptr<UploadElementReader> reader =
           std::make_unique<UploadBytesElementReader>(
-              query_->io_buffer()->data(), query_->io_buffer()->size());
+              query_->io_buffer()->span());
       request_->set_upload(
           ElementsUploadDataStream::CreateWithReader(std::move(reader), 0));
       extra_request_headers.SetHeader(HttpRequestHeaders::kContentType,
@@ -813,8 +813,7 @@ class DnsTCPAttempt : public DnsAttempt {
     uint16_t query_size = static_cast<uint16_t>(query_->io_buffer()->size());
     if (static_cast<int>(query_size) != query_->io_buffer()->size())
       return ERR_FAILED;
-    base::as_writable_bytes(length_buffer_->span())
-        .copy_from(base::U16ToBigEndian(query_size));
+    length_buffer_->span().copy_from(base::U16ToBigEndian(query_size));
     buffer_ = base::MakeRefCounted<DrainableIOBuffer>(length_buffer_,
                                                       length_buffer_->size());
     next_state_ = STATE_SEND_LENGTH;
@@ -879,8 +878,8 @@ class DnsTCPAttempt : public DnsAttempt {
       return OK;
     }
 
-    response_length_ = base::U16FromBigEndian(
-        base::as_bytes(length_buffer_->span().first<2u>()));
+    response_length_ =
+        base::U16FromBigEndian(length_buffer_->span().first<2u>());
     // Check if advertised response is too short. (Optimization only.)
     if (response_length_ < query_->io_buffer()->size())
       return ERR_DNS_MALFORMED_RESPONSE;

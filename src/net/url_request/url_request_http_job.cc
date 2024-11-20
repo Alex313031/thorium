@@ -111,6 +111,7 @@
 
 #if BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 #include "net/device_bound_sessions/registration_fetcher_param.h"
+#include "net/device_bound_sessions/session_challenge_param.h"
 #include "net/device_bound_sessions/session_service.h"
 #endif  // BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 
@@ -306,7 +307,7 @@ HttpRequestSSLUpgradeDecision GetMetricForSSLUpgradeDecision(
       return is_secure ? HttpRequestSSLUpgradeDecision::kSSLDynamicUpgrade
                        : HttpRequestSSLUpgradeDecision::kInsecureDynamicUpgrade;
   }
-  NOTREACHED_NORETURN();
+  NOTREACHED();
 }
 
 void RecordSTSHistograms(net::SSLUpgradeDecision upgrade_decision,
@@ -445,6 +446,9 @@ void URLRequestHttpJob::Start() {
   request_info_.is_subframe_document_resource =
       request_->isolation_info().request_type() ==
       net::IsolationInfo::RequestType::kSubFrame;
+  request_info_.is_main_frame_navigation =
+      request_->isolation_info().IsMainFrameRequest();
+  request_info_.initiator = request_->initiator();
   request_info_.load_flags = request_->load_flags();
   request_info_.priority_incremental = request_->priority_incremental();
   request_info_.secure_dns_policy = request_->secure_dns_policy();
@@ -496,7 +500,9 @@ bool ShouldBlockAllCookies(PrivacyMode privacy_mode) {
 }  // namespace
 
 void URLRequestHttpJob::MaybeSetSecFetchStorageAccessHeader() {
-  if (!base::FeatureList::IsEnabled(features::kStorageAccessHeaders)) {
+  if (!request_->network_delegate()->IsStorageAccessHeaderEnabled(
+          base::OptionalToPtr(request_->isolation_info().top_frame_origin()),
+          request_->url())) {
     return;
   }
   // Avoid attaching the header in cases where the Cookie header is not included
@@ -1044,10 +1050,7 @@ void URLRequestHttpJob::SaveCookiesAndNotifyHeadersComplete(int result) {
     clear_site_data_prevents_cookies_from_being_stored = true;
   }
 
-  base::Time response_date;
-  std::optional<base::Time> server_time = std::nullopt;
-  if (GetResponseHeaders()->GetDateValue(&response_date))
-    server_time = std::make_optional(response_date);
+  std::optional<base::Time> server_time = GetResponseHeaders()->GetDateValue();
 
   bool force_ignore_site_for_cookies =
       request_->force_ignore_site_for_cookies();
@@ -1167,14 +1170,26 @@ void URLRequestHttpJob::OnSetCookieResult(const CookieOptions& options,
 
 #if BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
 void URLRequestHttpJob::ProcessDeviceBoundSessionsHeader() {
+  device_bound_sessions::SessionService* service =
+      request_->context()->device_bound_session_service();
+  if (!service) {
+    return;
+  }
+
+  const auto& request_url = request_->url();
+  auto* headers = GetResponseHeaders();
   std::vector<device_bound_sessions::RegistrationFetcherParam> params =
       device_bound_sessions::RegistrationFetcherParam::CreateIfValid(
-          request_->url(), GetResponseHeaders());
-  if (auto* service = request_->context()->device_bound_session_service()) {
-    for (auto& param : params) {
-      service->RegisterBoundSession(std::move(param),
-                                    request_->isolation_info());
-    }
+          request_url, headers);
+  for (auto& param : params) {
+    service->RegisterBoundSession(std::move(param), request_->isolation_info());
+  }
+
+  std::vector<device_bound_sessions::SessionChallengeParam> challenge_params =
+      device_bound_sessions::SessionChallengeParam::CreateIfValid(request_url,
+                                                                  headers);
+  for (auto& param : challenge_params) {
+    service->SetChallengeForBoundSession(request_url, std::move(param));
   }
 }
 #endif  // BUILDFLAG(ENABLE_DEVICE_BOUND_SESSIONS)
@@ -1585,7 +1600,9 @@ bool URLRequestHttpJob::NeedsAuth() {
 }
 
 bool URLRequestHttpJob::NeedsRetryWithStorageAccess() {
-  if (!base::FeatureList::IsEnabled(features::kStorageAccessHeaders)) {
+  if (!request_->network_delegate()->IsStorageAccessHeaderEnabled(
+          base::OptionalToPtr(request_->isolation_info().top_frame_origin()),
+          request_->url())) {
     return false;
   }
   if (!ShouldAddCookieHeader() ||
@@ -1601,7 +1618,11 @@ bool URLRequestHttpJob::NeedsRetryWithStorageAccess() {
   }
 
   HttpResponseHeaders* headers = request_->response_headers();
-  return headers && headers->HasStorageAccessRetryHeader();
+  // We use the Origin header's value directly, rather than
+  // `request_.initiator()`, because the header may be "null" in some cases.
+  return headers && headers->HasStorageAccessRetryHeader(base::OptionalToPtr(
+                        request_info_.extra_headers.GetHeader(
+                            HttpRequestHeaders::kOrigin)));
 }
 
 void URLRequestHttpJob::SetSharedDictionaryGetter(

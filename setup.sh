@@ -126,6 +126,16 @@ patchAC3 () {
 	cd ~/thorium
 }
 
+patchSSE2 () {
+	cp -v other/SSE2/angle-lockfree.patch ${CR_SRC_DIR}/third_party/angle/src/ &&
+
+	printf "\n" &&
+	printf "${YEL}Patching ANGLE for SSE2...${c0}\n" &&
+	cd ${CR_SRC_DIR}/third_party/angle/src &&
+	git apply --reject ./angle-lockfree.patch &&
+	cd ~/thorium
+}
+
 cd ~/thorium &&
 
 printf "\n" &&
@@ -144,7 +154,6 @@ copyMacOS () {
 	printf "\n" &&
 	printf "${YEL}Copying files for MacOS...${c0}\n" &&
 	cp -v arm/mac_arm.gni ${CR_SRC_DIR}/build/config/arm.gni &&
-	cp -v other/AVX2/build/config/compiler/BUILD.gn ${CR_SRC_DIR}/build/config/compiler/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cd ${CR_SRC_DIR} &&
 	python3 tools/update_pgo_profiles.py --target=mac update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
@@ -263,6 +272,7 @@ copySSE2 () {
 	python3 tools/update_pgo_profiles.py --target=win32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 	cd ~/thorium &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
+	[ -f ${CR_SRC_DIR}/third_party/angle/src/angle-lockfree.patch ] || patchSSE2;
 	printf "\n"
 }
 case $1 in

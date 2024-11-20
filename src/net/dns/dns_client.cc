@@ -88,7 +88,8 @@ void UpdateConfigForDohUpgrade(DnsConfig* config) {
 }
 
 class DnsClientImpl : public DnsClient {
- const bool disable_thorium_dns_config = base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config");
+ const bool disable_thorium_dns_config =
+     base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-dns-config");
  public:
   DnsClientImpl(NetLog* net_log, const RandIntCallback& rand_int_callback)
       : net_log_(net_log), rand_int_callback_(rand_int_callback) {}
@@ -251,14 +252,12 @@ class DnsClientImpl : public DnsClient {
  private:
   std::optional<DnsConfig> BuildEffectiveConfig() const {
     DnsConfig config;
-    // in Bromite it is sufficient to have secure DoH enabled to give the overrides priority
+    // In Thorium it is sufficient to have secure DoH enabled to give the overrides priority
     if (config_overrides_.dns_over_https_config && config_overrides_.secure_dns_mode && !disable_thorium_dns_config) {
-      config = config_overrides_.ApplyOverrides(DnsConfig());
-    } else if (disable_thorium_dns_config && config_overrides_.OverridesEverything()) {
       config = config_overrides_.ApplyOverrides(DnsConfig());
     } else {
       if (!system_config_) {
-        LOG(WARNING) << "BuildEffectiveConfig(): System configuration not set: No system_config_ ";
+        LOG(WARNING) << "dns_client.cc->BuildEffectiveConfig(): System configuration not set: No system_config_ ";
         return std::nullopt;
       }
 
@@ -276,7 +275,7 @@ class DnsClientImpl : public DnsClient {
       config.nameservers.clear();
 
     if (!config.IsValid()) {
-      LOG(WARNING) << "BuildEffectiveConfig(): invalid configuration";
+      LOG(WARNING) << "dns_client.cc->BuildEffectiveConfig(): Invalid configuration";
       return std::nullopt;
     }
 
