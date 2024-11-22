@@ -2331,6 +2331,9 @@ config("no_chromium_code") {
       # third-party libraries.
       "-Wno-c++11-narrowing",
     ]
+    if (is_full_optimization_build) {
+      cflags += [ "-Xclang", "-O3" ]
+    }
     if (!is_nacl) {
       cflags += [
         # Disabled for similar reasons as -Wunused-variable.

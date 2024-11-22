@@ -173,6 +173,7 @@ copyRaspi () {
 	cp -r -v arm/build/* ${CR_SRC_DIR}/build/ &&
 	cp -r -v arm/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -r -v arm/raspi/* ${CR_SRC_DIR}/ &&
+	cp -v other/thor_ver_linux/wrapper-raspi ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	cp -v pak_src/binaries/pak_arm64 ${CR_SRC_DIR}/out/thorium/pak &&
 	#./infra/fix_libaom.sh &&
 	printf "\n" &&
@@ -211,7 +212,7 @@ copyAVX512 () {
 	printf "${YEL}Copying AVX-512 build files...${c0}\n" &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX512/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-avx512 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cp -v other/thor_ver_linux/wrapper-avx512 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
@@ -225,7 +226,7 @@ copyAVX2 () {
 	printf "${YEL}Copying AVX2 build files...${c0}\n" &&
 	cp -r -v other/AVX2/third_party/* ${CR_SRC_DIR}/third_party/ &&
 	cp -v other/AVX2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-avx2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cp -v other/thor_ver_linux/wrapper-avx2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
@@ -238,7 +239,7 @@ copySSE4 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE4.1 build files...${c0}\n" &&
 	cp -v other/SSE4.1/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse4 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cp -v other/thor_ver_linux/wrapper-sse4 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	[ -f ${CR_SRC_DIR}/third_party/ffmpeg/ffmpeg_hevc_ac3.patch ] || patchAC3;
 	printf "\n"
 }
@@ -251,7 +252,7 @@ copySSE3 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE3 build files...${c0}\n" &&
 	cp -v other/SSE3/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cp -v other/thor_ver_linux/wrapper-sse3 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	cd ${CR_SRC_DIR} &&
 	python3 tools/update_pgo_profiles.py --target=win32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 	cd ~/thorium &&
@@ -267,7 +268,7 @@ copySSE2 () {
 	printf "\n" &&
 	printf "${YEL}Copying SSE2 (32-bit) build files...${c0}\n" &&
 	cp -v other/SSE2/thor_ver ${CR_SRC_DIR}/out/thorium/ &&
-	cp -v infra/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
+	cp -v other/thor_ver_linux/wrapper-sse2 ${CR_SRC_DIR}/chrome/installer/linux/common/wrapper &&
 	cd ${CR_SRC_DIR} &&
 	python3 tools/update_pgo_profiles.py --target=win32 update --gs-url-base=chromium-optimization-profiles/pgo_profiles &&
 	cd ~/thorium &&

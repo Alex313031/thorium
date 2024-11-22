@@ -41,9 +41,11 @@ ReloadButton::ReloadButton(CommandUpdater* command_updater)
                     CreateMenuModel(),
                     nullptr),
       command_updater_(command_updater),
-      reload_icon_(base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons")
-                       ? vector_icons::kReloadChromeRefreshIcon
-                       : vector_icons::kReloadChromeRefreshThoriumIcon),
+      static const bool disable_thorium_icons = 
+          base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+      reload_icon_(disable_thorium_icons
+                   ? vector_icons::kReloadChromeRefreshIcon
+                   : vector_icons::kReloadChromeRefreshThoriumIcon),
       reload_touch_icon_(kReloadTouchIcon),
       stop_icon_(kNavigateStopChromeRefreshIcon),
       stop_touch_icon_(kNavigateStopTouchIcon),

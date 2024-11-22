@@ -1651,7 +1651,7 @@ new file mode 100644
 index 0000000000000..04703d70ecf9b
 --- /dev/null
 +++ b/chrome/browser/ui/views/frame/window_caption_util.cc
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,26 @@
 +// Copyright 2024 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -1670,8 +1670,10 @@ index 0000000000000..04703d70ecf9b
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("remove-tabsearch-button");
 +  static const bool disable_caption_button =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-caption-button");
++  static const bool left_aligned_tab_search_button =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("left-aligned-tab-search-button");
 +  return features::IsThorium2024() && browser->is_type_normal() &&
-+      !remove_tabsearch_button && !disable_caption_button;
++      !remove_tabsearch_button && !disable_caption_button && !left_aligned_tab_search_button;
 +#else
 +  return false;
 +#endif  // BUILDFLAG(IS_WIN)
