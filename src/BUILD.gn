@@ -202,6 +202,12 @@ group("gn_all") {
       "//url:url_unittests",
     ]
 
+    if (current_cpu == "arm64" && is_android && host_os == "linux") {
+      deps += [
+        "//components/allocation_recorder/tools:dump_allocation_recorder_data",
+      ]
+    }
+
     if (!is_component_build) {
       deps += [ "//third_party/abseil-cpp:absl_tests" ]
     }
@@ -631,10 +637,6 @@ group("gn_all") {
 
       if (!is_android && !is_ios) {
         deps += [
-          "//courgette:courgette",
-          "//courgette:courgette_fuzz",
-          "//courgette:courgette_minimal_tool",
-          "//courgette:courgette_unittests",
           "//net:crash_cache",
           "//net:net_watcher",  # TODO(GYP): This should be conditional on
                                 # use_v8_in_net
@@ -1041,23 +1043,17 @@ if (is_win) {
     deps = [
       "//chrome/common/win:eventlog_provider",
       "//chrome/credential_provider",
+      "//chrome/enterprise_companion:enterprise_companion_zip",
       "//chrome/installer/gcapi",
       "//chrome/installer/mini_installer",
       "//chrome/updater/win:updater_zip",
       "//components/policy:pack_policy_templates",
       "//components/zucchini",
       "//components/zucchini:zucchini64",
-      "//courgette",
       "//third_party/hyphenation-patterns",
       "//tools/metrics:metrics_metadata",
     ]
 
-    if (target_cpu == "x86") {
-      deps += [
-        "//courgette:copy_courgette_binaries",
-        "//courgette(//build/toolchain/win:win_clang_x64)",
-      ]
-    }
     if (is_chrome_branded) {
       deps += [ "//remoting/host:remoting_host_installation" ]
     }
@@ -1081,7 +1077,6 @@ if (is_win) {
       "//media:media_unittests",
       "//media/midi:midi_unittests",
       "//net:net_unittests",
-      "//printing:printing_unittests",
       "//sql:sql_unittests",
       "//third_party/breakpad:symupload",
       "//ui/base:ui_base_unittests",
@@ -1090,6 +1085,10 @@ if (is_win) {
       "//ui/views:views_unittests",
       "//url:url_unittests",
     ]
+
+    if (enable_printing || enable_printing_tests) {
+      deps += [ "//printing:printing_unittests" ]
+    }
   }
 }
 
@@ -1194,33 +1193,66 @@ if (use_blink && !is_cronet_build) {
     ]
   }
 
-  # Web tests runner
-  # third_party/blink/tools/run_web_tests.py
-  group("run_web_tests") {
-    testonly = true
-    deps = [
-      ":blink_web_tests",
-      ":blink_wpt_tests",
+  # Options shared by all script test targets that call `run_web_tests.py` or
+  # `run_wpt_tests.py`.
+  _common_web_test_options = [
+    "--no-show-results",
+    "--zero-tests-executed-ok",
+  ]
+  if (is_debug) {
+    _common_web_test_options += [ "--debug" ]
+  } else {
+    _common_web_test_options += [ "--release" ]
+  }
+  if (is_asan) {
+    _common_web_test_options += [
+      "--enable-sanitizer",
+      "--additional-expectations",
+      "@WrappedPath(" +
+          rebase_path("//third_party/blink/web_tests/ASANExpectations",
+                      root_out_dir) + ")",
+    ]
+  }
+  if (is_msan) {
+    _common_web_test_options += [
+      "--enable-sanitizer",
+      "--additional-expectations",
+      "@WrappedPath(" +
+          rebase_path("//third_party/blink/web_tests/MSANExpectations",
+                      root_out_dir) + ")",
+    ]
+  }
+  if (is_fuchsia) {
+    _common_web_test_options += [
+      "--out-dir",
+      "@WrappedPath(.)",
+    ]
+  } else {
+    base_out_dir = rebase_path(get_path_info(root_build_dir, "dir"), ".")
+    out_dir = get_path_info(root_build_dir, "name")
+    _common_web_test_options += [
+      "--build-directory",
+      base_out_dir,
+      "--target",
+      out_dir,
     ]
   }
 
   if (!is_chromeos_ash && !is_ios && !is_fuchsia && !is_android && !is_castos) {
     script_test("chrome_wpt_tests") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [
-        "--product=chrome",
-        "--no-show-results",
-        "--zero-tests-executed-ok",
-      ]
+      args = _common_web_test_options + [ "--product=chrome" ]
       if (dcheck_always_on) {
         args += [ "--timeout-multiplier=2" ]
       } else {
         args += [ "--timeout-multiplier=1" ]
       }
-      data = [
-        "//third_party/blink/web_tests/platform/linux-chrome/",
-        "//third_party/blink/web_tests/ChromeTestExpectations",
-      ]
+      if (is_chrome_branded) {
+        args += [
+          "--driver-name",
+          "Google Chrome",
+        ]
+      }
       data_deps = [
         ":blink_web_tests_expectations",
         ":blink_web_tests_support_data",
@@ -1231,12 +1263,10 @@ if (use_blink && !is_cronet_build) {
     }
     script_test("headless_shell_wpt") {
       script = "//third_party/blink/tools/run_wpt_tests.py"
-      args = [
-        "--product=headless_shell",
-        "--no-wpt-internal",
-        "--no-show-results",
-        "--zero-tests-executed-ok",
-      ]
+      args = _common_web_test_options + [
+               "--product=headless_shell",
+               "--no-wpt-internal",
+             ]
       data_deps = [
         ":blink_web_tests_expectations",
         ":blink_web_tests_support_data",
@@ -1272,13 +1302,13 @@ if (use_blink && !is_cronet_build) {
       "//services/shape_detection/public/mojom:mojom_js_data_deps",
       "//skia/public/mojom:mojom_js_data_deps",
       "//testing/buildbot/filters:blink_web_tests_filter",
+      "//third_party/angle:includes",
       "//third_party/blink/public:blink_devtools_frontend_resources_files",
       "//third_party/blink/public:blink_devtools_inspector_resources",
       "//third_party/blink/public/mojom:mojom_platform_js_data_deps",
       "//third_party/blink/renderer/core:gen_files_for_web_tests",
       "//third_party/catapult/third_party/typ",
       "//third_party/hyphenation-patterns:test_data",
-      "//third_party/mesa_headers",
       "//tools/imagediff",
       "//ui/base:goldctl",
     ]
@@ -1380,26 +1410,19 @@ if (use_blink && !is_cronet_build) {
       "@WrappedPath(" +
           rebase_path("//build/fuchsia/test/run_test.py", root_build_dir) + ")",
       "blink",
-      "--out-dir",
-      "@WrappedPath(.)",
+      "--platform",
+      "fuchsia",
+      "--jobs",
+      "1",
     ]
   } else {
-    base_out_dir = rebase_path(get_path_info(root_build_dir, "dir"), ".")
-    out_dir = get_path_info(root_build_dir, "name")
-    _common_web_test_args = [
-      "@WrappedPath(" +
-          rebase_path("//third_party/blink/tools/run_web_tests.py",
-                      root_build_dir) + ")",
-      "--build-directory",
-      base_out_dir,
-      "--target",
-      out_dir,
-    ]
+    _common_web_test_args = [ "@WrappedPath(" + rebase_path(
+                                  "//third_party/blink/tools/run_web_tests.py",
+                                  root_build_dir) + ")" ]
   }
-  if (is_debug) {
-    _common_web_test_args += [ "--debug" ]
-  } else {
-    _common_web_test_args += [ "--release" ]
+  _common_web_test_args += _common_web_test_options
+
+  if (!is_debug) {
     if (dcheck_always_on) {
       _common_web_test_args += [ "--timeout-ms=12000" ]
     } else if (v8_enable_debugging_features) {
@@ -1419,21 +1442,10 @@ if (use_blink && !is_cronet_build) {
     ]
   }
 
-  if (is_fuchsia) {
-    _common_web_test_args += [
-      "--platform",
-      "fuchsia",
-      "--jobs",
-      "1",
-    ]
-  }
-
   _common_web_test_args += [
     "--seed",
     "4",
     "--debug-rwt-logging",
-    "--no-show-results",
-    "--zero-tests-executed-ok",
     "--clobber-old-results",
   ]
 
@@ -1511,7 +1523,6 @@ if (use_blink && !is_cronet_build) {
       "//third_party/blink/web_tests/rootscroller/",
       "//third_party/blink/web_tests/screen_orientation/",
       "//third_party/blink/web_tests/scrollbars/",
-      "//third_party/blink/web_tests/scrollingcoordinator/",
       "//third_party/blink/web_tests/security/",
       "//third_party/blink/web_tests/handwriting/",
       "//third_party/blink/web_tests/shadow-dom/",
@@ -1549,14 +1560,19 @@ if (use_blink && !is_cronet_build) {
       "//third_party/blink/web_tests/virtual/",
 
       # List all test expectations here
-      "//third_party/blink/web_tests/ASANExpectations",
       "//third_party/blink/web_tests/LeakExpectations",
-      "//third_party/blink/web_tests/MSANExpectations",
       "//third_party/blink/web_tests/NeverFixTests",
       "//third_party/blink/web_tests/SlowTests",
       "//third_party/blink/web_tests/StaleTestExpectations",
       "//third_party/blink/web_tests/TestExpectations",
     ]
+
+    if (is_asan) {
+      data += [ "//third_party/blink/web_tests/ASANExpectations" ]
+    }
+    if (is_msan) {
+      data += [ "//third_party/blink/web_tests/MSANExpectations" ]
+    }
 
     if (is_win || is_linux || is_fuchsia) {
       data += [
@@ -1576,14 +1592,15 @@ if (use_blink && !is_cronet_build) {
     } else if (is_mac) {
       data += [
         "//third_party/blink/web_tests/platform/mac/",
-        "//third_party/blink/web_tests/platform/mac-mac10.15/",
         "//third_party/blink/web_tests/platform/mac-mac11/",
         "//third_party/blink/web_tests/platform/mac-mac11-arm64/",
         "//third_party/blink/web_tests/platform/mac-mac12/",
         "//third_party/blink/web_tests/platform/mac-mac12-arm64/",
         "//third_party/blink/web_tests/platform/mac-mac13/",
         "//third_party/blink/web_tests/platform/mac-mac13-arm64/",
+        "//third_party/blink/web_tests/platform/mac-mac14/",
         "//third_party/blink/web_tests/platform/mac-mac14-arm64/",
+        "//third_party/blink/web_tests/platform/mac-mac15-arm64/",
       ]
     }
 
@@ -1603,7 +1620,17 @@ if (use_blink && !is_cronet_build) {
     args = _common_web_test_args
 
     # Use --wpt-only to skip tests under web_tests/virtual/
-    args += [ "--wpt-only" ]
+    args += [
+      "--wpt-only",
+      "--inverted-test-launcher-filter-file",
+      "@WrappedPath(" +
+          rebase_path("//third_party/blink/web_tests/TestLists/chrome.filter",
+                      root_out_dir) + ")",
+      "--inverted-test-launcher-filter-file",
+      "@WrappedPath(" + rebase_path(
+              "//third_party/blink/web_tests/TestLists/headless_shell.filter",
+              root_out_dir) + ")",
+    ]
 
     data_deps = [
       ":blink_web_tests_expectations",
