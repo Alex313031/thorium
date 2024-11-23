@@ -62,7 +62,7 @@
 #include "components/history/core/browser/url_utils.h"
 #include "components/sync/base/features.h"
 #include "components/sync/base/report_unrecoverable_error.h"
-#include "components/sync/model/client_tag_based_model_type_processor.h"
+#include "components/sync/model/client_tag_based_data_type_processor.h"
 #include "components/url_formatter/url_formatter.h"
 #include "net/base/registry_controlled_domains/registry_controlled_domain.h"
 #include "sql/error_delegate_util.h"
@@ -85,7 +85,7 @@ using favicon::FaviconBitmapID;
 using favicon::FaviconBitmapIDSize;
 using favicon::FaviconBitmapType;
 using favicon::IconMapping;
-using syncer::ClientTagBasedModelTypeProcessor;
+using syncer::ClientTagBasedDataTypeProcessor;
 
 /* The HistoryBackend consists of two components:
 
@@ -163,10 +163,6 @@ const int kCommitIntervalSeconds = 10;
 // The maximum number of items we'll allow in the redirect list before
 // deleting some.
 const int kMaxRedirectCount = 32;
-
-// The number of days old a history entry can be before it is considered "old"
-// and is deleted.
-constexpr int kExpireDaysThreshold = 120;
 
 // The maximum number of days for which domain visit metrics are computed
 // each time HistoryBackend::GetDomainDiversity() is called.
@@ -249,8 +245,7 @@ bool CanAddForeignVisitToSegments(
     const std::string& local_device_originator_cache_guid,
     const SyncDeviceInfoMap& sync_device_info) {
 #if BUILDFLAG(IS_IOS)
-  if (!history::IsSyncSegmentsDataEnabled() ||
-      foreign_visit.originator_cache_guid.empty() ||
+  if (foreign_visit.originator_cache_guid.empty() ||
       !foreign_visit.consider_for_ntp_most_visited) {
     return false;
   }
@@ -289,6 +284,19 @@ bool IsVisitedLinkTransition(ui::PageTransition transition) {
   return ui::PageTransitionCoreTypeIs(transition, ui::PAGE_TRANSITION_LINK) ||
          ui::PageTransitionCoreTypeIs(transition,
                                       ui::PAGE_TRANSITION_MANUAL_SUBFRAME);
+}
+// We require a `top_level_site` and a frame_origin to construct a
+// visited link partition key. So if `top_level_url` and/or `fame_url` are NULL
+// OR the transition type is a context where we know we cannot accurately
+// construct a triple partition key, then we skip the VisitedLinkDatabase.
+// We aren't adding ephemeral keys because inherently, their state shouldn't
+// be persisted across browsing sessions.
+bool AddToVisitedLinkDatabase(ui::PageTransition transition,
+                              std::optional<GURL> top_level_url,
+                              std::optional<GURL> frame_url,
+                              bool is_ephemeral) {
+  return IsVisitedLinkTransition(transition) && top_level_url.has_value() &&
+         frame_url.has_value() && !is_ephemeral;
 }
 
 }  // namespace
@@ -416,7 +424,7 @@ void HistoryBackend::Init(
 
   history_sync_bridge_ = std::make_unique<HistorySyncBridge>(
       this, db_ ? db_->GetHistoryMetadataDB() : nullptr,
-      std::make_unique<ClientTagBasedModelTypeProcessor>(
+      std::make_unique<ClientTagBasedDataTypeProcessor>(
           syncer::HISTORY,
           base::BindRepeating(&syncer::ReportUnrecoverableError,
                               history_database_params.channel)));
@@ -1001,8 +1009,8 @@ void HistoryBackend::AddPage(const HistoryAddPageArgs& request) {
                                          request.opener->url);
   }
 
-  // Every url in the redirect chain gets the same top_level_url and frame_url
-  // values.
+  // Every url in the redirect chain gets the same `top_level_url` and
+  // `frame_url` values.
   std::optional<GURL> top_level_url = std::nullopt;
   if (request.top_level_url.has_value() && request.top_level_url->is_valid()) {
     top_level_url = request.top_level_url;
@@ -1321,7 +1329,8 @@ void HistoryBackend::InitImpl(
   db_->GetStartDate(&first_recorded_time_);
 
   // Start expiring old stuff if flag is unset.
-  static const bool keep_all_history = base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
+  static const bool keep_all_history =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
   if (!keep_all_history) {
     expirer_.StartExpiringOldStuff(base::Days(kExpireDaysThreshold));
   }
@@ -1375,7 +1384,8 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
     std::optional<VisitID> originator_visit_id,
     std::optional<VisitID> originator_referring_visit,
     std::optional<VisitID> originator_opener_visit,
-    bool is_known_to_sync) {
+    bool is_known_to_sync,
+    bool is_ephemeral) {
   DCHECK(url.is_valid());
   // See if this URL is already in the DB.
   URLRow url_info(url);
@@ -1415,12 +1425,10 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
 
   VisitedLinkRow visited_link_info;
   if (base::FeatureList::IsEnabled(kPopulateVisitedLinkDatabase)) {
-    // We require a top_level_site and a frame_origin to construct a
-    // visited link partition key. So if top_level_url and/or fame_url are NULL
-    // OR the transition type is a context where we know we cannot accurately
-    // construct a triple partition key, then we skip the VisitedLinkDatabase.
-    if (IsVisitedLinkTransition(transition) && top_level_url.has_value() &&
-        frame_url.has_value()) {
+    // Returns whether or not the current row should be added to the
+    // VisitedLinkDatabase
+    if (AddToVisitedLinkDatabase(transition, top_level_url, frame_url,
+                                 is_ephemeral)) {
       // Determine if the visited link is already in the database.
       VisitedLinkID existing_row_id = db_->GetRowForVisitedLink(
           url_id, *top_level_url, *frame_url, visited_link_info);
@@ -1492,7 +1500,7 @@ std::pair<URLID, VisitID> HistoryBackend::AddPageVisit(
 }
 
 // TODO(crbug.com/40279741): Determine if we want to record these URLs in the
-// VisitedLinkDatabase, and if so, plumb the correct value for top_level_site.
+// VisitedLinkDatabase, and if so, plumb the correct value for `top_level_site`.
 void HistoryBackend::AddPagesWithDetails(const URLRows& urls,
                                          VisitSource visit_source) {
   TRACE_EVENT0("browser", "HistoryBackend::AddPagesWithDetails");
@@ -1552,7 +1560,8 @@ void HistoryBackend::AddPagesWithDetails(const URLRows& urls,
 }
 
 bool HistoryBackend::IsExpiredVisitTime(const base::Time& time) const {
-  static const bool keep_all_history = base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
+  static const bool keep_all_history =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("keep-all-history");
   if (keep_all_history) {
     return false;
   } else {
@@ -2024,7 +2033,7 @@ std::vector<QueryURLResult> HistoryBackend::QueryURLs(
   return results;
 }
 
-base::WeakPtr<syncer::ModelTypeControllerDelegate>
+base::WeakPtr<syncer::DataTypeControllerDelegate>
 HistoryBackend::GetHistorySyncControllerDelegate() {
   if (history_sync_bridge_) {
     return history_sync_bridge_->change_processor()->GetControllerDelegate();

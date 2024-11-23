@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "chrome/browser/ui/tabs/tab_strip_model.h"
 
 #include <algorithm>
@@ -298,9 +303,7 @@ int TabStripModel::InsertWebContentsAt(
     int add_types,
     std::optional<tab_groups::TabGroupId> group) {
   return InsertDetachedTabAt(
-      index,
-      std::make_unique<tabs::TabModel>(std::move(contents),
-                                       delegate()->IsNormalWindow()),
+      index, std::make_unique<tabs::TabModel>(std::move(contents), this),
       add_types, group);
 }
 
@@ -419,6 +422,9 @@ std::unique_ptr<DetachedWebContents> TabStripModel::DetachWebContentsImpl(
   std::optional<SessionID> id = std::nullopt;
   if (create_historical_tab) {
     id = delegate_->CreateHistoricalTab(tab->contents());
+  }
+  if (reason == TabStripModelChange::RemoveReason::kDeleted) {
+    tab->DestroyTabFeatures();
   }
 
   std::unique_ptr<tabs::TabModel> old_data =
@@ -596,7 +602,7 @@ void TabStripModel::MoveGroupToImpl(const tab_groups::TabGroupId& group,
 
   for (auto notification : notifications) {
     const int final_index = GetIndexOfTab(notification.handle);
-    const tabs::TabModel* const tab = GetTabAtIndex(final_index);
+    tabs::TabModel* tab = GetTabAtIndex(final_index);
     if (notification.initial_index != final_index) {
       SendMoveNotificationForWebContents(notification.initial_index,
                                          final_index, tab->contents(),
@@ -604,8 +610,8 @@ void TabStripModel::MoveGroupToImpl(const tab_groups::TabGroupId& group,
     }
 
     if (notification.intial_group != tab->group()) {
-      TabGroupStateChanged(final_index, tab->contents(),
-                           notification.intial_group, tab->group());
+      TabGroupStateChanged(final_index, tab, notification.intial_group,
+                           tab->group());
     }
   }
 
@@ -909,13 +915,6 @@ bool TabStripModel::IsTabSelected(int index) const {
   return selection_model_.IsSelected(index);
 }
 
-std::optional<base::Time> TabStripModel::GetLastAccessed(int index) const {
-  if (ContainsIndex(index)) {
-    return selection_model_.GetLastAccessed(index);
-  }
-  return std::nullopt;
-}
-
 void TabStripModel::SetSelectionFromModel(ui::ListSelectionModel source) {
   CHECK(source.active().has_value());
   SetSelection(std::move(source), TabStripModelObserver::CHANGE_REASON_NONE,
@@ -934,14 +933,17 @@ std::unique_ptr<ScopedTabStripModalUI> TabStripModel::ShowModalUI() {
   return std::make_unique<ScopedTabStripModalUIImpl>(this);
 }
 
+void TabStripModel::ForceShowingModalUIForTesting(bool showing) {
+  showing_modal_ui_ = showing;
+}
+
 void TabStripModel::AddWebContents(
     std::unique_ptr<WebContents> contents,
     int index,
     ui::PageTransition transition,
     int add_types,
     std::optional<tab_groups::TabGroupId> group) {
-  auto tab = std::make_unique<tabs::TabModel>(std::move(contents),
-                                              delegate()->IsNormalWindow());
+  auto tab = std::make_unique<tabs::TabModel>(std::move(contents), this);
   AddTab(std::move(tab), index, transition, add_types, group);
 }
 
@@ -1794,7 +1796,7 @@ void TabStripModel::ExecuteCloseTabsByIndicesCommand(
 }
 
 bool TabStripModel::WillContextMenuMuteSites(int index) {
-  return !chrome::AreAllSitesMuted(*this, GetIndicesForCommand(index));
+  return !AreAllSitesMuted(*this, GetIndicesForCommand(index));
 }
 
 bool TabStripModel::WillContextMenuPin(int index) {
@@ -2580,6 +2582,7 @@ void TabStripModel::InsertTabAtIndexImpl(
     bool pin,
     bool active) {
   WebContents* web_contents = tab_model->contents();
+  tabs::TabModel* tab_ptr = tab_model.get();
 
   contents_data_->AddTabRecursive(std::move(tab_model), index, group, pin);
 
@@ -2602,7 +2605,7 @@ void TabStripModel::InsertTabAtIndexImpl(
   OnChange(change, selection);
 
   if (group_model_ && group.has_value()) {
-    TabGroupStateChanged(index, web_contents, std::nullopt, group);
+    TabGroupStateChanged(index, tab_ptr, std::nullopt, group);
   }
 }
 
@@ -2642,7 +2645,7 @@ std::unique_ptr<tabs::TabModel> TabStripModel::RemoveTabFromIndexImpl(
   ValidateTabStripModel();
 
   if (group_model_ && old_group) {
-    TabGroupStateChanged(index, tab->contents(), old_group, std::nullopt);
+    TabGroupStateChanged(index, tab, old_group, std::nullopt);
   }
 
   return old_data;
@@ -2687,8 +2690,7 @@ void TabStripModel::MoveTabToIndexImpl(
   }
 
   if (group_model_ && (initial_group != tab->group())) {
-    TabGroupStateChanged(final_index, web_contents, initial_group,
-                         tab->group());
+    TabGroupStateChanged(final_index, tab, initial_group, tab->group());
   }
 }
 
@@ -2722,7 +2724,7 @@ void TabStripModel::MoveTabsToIndexImpl(
 
   for (auto notification : notifications) {
     const int final_index = GetIndexOfTab(notification.handle);
-    const tabs::TabModel* const tab = GetTabAtIndex(final_index);
+    tabs::TabModel* tab = GetTabAtIndex(final_index);
     if (notification.initial_index != final_index) {
       SendMoveNotificationForWebContents(notification.initial_index,
                                          final_index, tab->contents(),
@@ -2730,15 +2732,15 @@ void TabStripModel::MoveTabsToIndexImpl(
     }
 
     if (group_model_ && notification.intial_group != tab->group()) {
-      TabGroupStateChanged(final_index, tab->contents(),
-                           notification.intial_group, tab->group());
+      TabGroupStateChanged(final_index, tab, notification.intial_group,
+                           tab->group());
     }
   }
 }
 
 void TabStripModel::TabGroupStateChanged(
     int index,
-    WebContents* web_contents,
+    tabs::TabModel* tab,
     const std::optional<tab_groups::TabGroupId> initial_group,
     const std::optional<tab_groups::TabGroupId> new_group) {
   if (!group_model_) {
@@ -2752,7 +2754,7 @@ void TabStripModel::TabGroupStateChanged(
   if (initial_group.has_value()) {
     // Send the observation
     for (auto& observer : observers_) {
-      observer.TabGroupedStateChanged(std::nullopt, web_contents, index);
+      observer.TabGroupedStateChanged(std::nullopt, tab, index);
     }
     // Update the group model.
     RemoveTabFromGroupModel(initial_group.value());
@@ -2761,7 +2763,7 @@ void TabStripModel::TabGroupStateChanged(
   if (new_group.has_value()) {
     // Send the observation
     for (auto& observer : observers_) {
-      observer.TabGroupedStateChanged(new_group.value(), web_contents, index);
+      observer.TabGroupedStateChanged(new_group.value(), tab, index);
     }
     // Update the group model.
     AddTabToGroupModel(new_group.value());
@@ -2935,9 +2937,8 @@ void TabStripModel::SetSitesMuted(const std::vector<int>& indices,
     if (url.SchemeIs(content::kChromeUIScheme)) {
       // chrome:// URLs don't have content settings but can be muted, so just
       // mute the WebContents.
-      chrome::SetTabAudioMuted(web_contents, mute,
-                               TabMutedReason::CONTENT_SETTING_CHROME,
-                               std::string());
+      SetTabAudioMuted(web_contents, mute,
+                       TabMutedReason::CONTENT_SETTING_CHROME, std::string());
     } else {
       Profile* profile =
           Profile::FromBrowserContext(web_contents->GetBrowserContext());
