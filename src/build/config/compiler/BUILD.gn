@@ -620,7 +620,7 @@ config("compiler") {
       }
     }
 
-    if (use_avx2 || use_avx512 || current_cpu == "arm64") {
+    if (use_avx2 || use_avx512 || current_cpu == "arm64" || is_mac) {
       if (is_win) {
         cflags += [ "/clang:-ffp-contract=fast" ]
       } else {
@@ -2662,7 +2662,7 @@ if (is_win) {
       common_optimize_on_cflags += [ "-mtune=cortex-a72", ]
     }
     if (is_mac) {
-      common_optimize_on_cflags += [ "-march=armv8.3-a+simd", ]
+      common_optimize_on_cflags += [ "-march=armv8.3-a+simd+crypto", ]
     }
   }
 
@@ -2723,7 +2723,7 @@ if (is_win) {
   if (current_cpu == "arm64") {
     common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
     if (is_mac) {
-      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd", ]
+      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd+crypto", ]
     }
   }
 

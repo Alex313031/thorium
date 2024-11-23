@@ -1,3 +1,5 @@
+use_sse3 = false
+
 # use_polly = true
 target_os = "mac"
 target_cpu = "arm64"

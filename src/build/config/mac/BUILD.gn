@@ -40,8 +40,8 @@ config("compiler") {
   
   if (current_cpu == "arm64") {
     # Alex313031 TODO: Possibly use -mcpu here?
-    cflags += [ "-march=armv8.3-a+simd", "-mtune=apple-m1" ]
-    ldflags += [ "-march=armv8.3-a+simd", "-mtune=apple-m1" ]
+    cflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
+    ldflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
   }
 
   if (current_cpu == "x64") {
