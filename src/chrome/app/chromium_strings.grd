@@ -761,6 +761,10 @@ Permissions you've already given to websites and apps may apply to this account.
                desc="On the downloads page, the label for the link to the help center in the prompt to bypass a dangerous download warning.">
         Learn why Thorium blocks some files
       </message>
+      <message name="IDS_DOWNLOAD_WARNING_BYPASS_PROMPT_LEARN_MORE_LINK_ACCESSIBLE"
+               desc="On the downloads page, accessible text for the link to the help center in the prompt to bypass a dangerous download warning.">
+        Learn why Thorium blocks some files, opens in new tab
+      </message>
 
       <!-- Abandon in-progress downloads confirmation dialog -->
       <if expr="not is_macosx">
@@ -1001,9 +1005,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_ENTERPRISE_SIGNIN_WORK_PROFILE_EXPLANATION" desc="The warning message displayed to an enterprise user about to link their profile to their Google account. This message is followed by a 'Learn more' link.">
           Any Thorium data that is generated during the use of this profile (such as the creation of bookmarks, history, passwords, and other settings) can be removed by the work profile administrator. <ph name="LEARN_MORE">$1<ex>Learn more</ex></ph>
         </message>
-        <message name="IDS_ENTERPRISE_WELCOME_PROFILE_INFORMATION_DETAILS" desc="Paragraph disclaiming to the user what their organization can do with their profile information.">
-          Your organization can see and manage browsing data in your work profile, such as your bookmarks, history, and passwords. It can’t see browsing data in personal Thorium profiles.
-        </message>
         <!-- New one-click sign-in dialog contents for SAML support -->
         <message name="IDS_ONE_CLICK_SIGNIN_DIALOG_TITLE_NEW" desc="The title of the modal dialog window that opens when the user chooses to use one click sign-in.">
           You're signed in to Thorium!
@@ -1012,6 +1013,17 @@ Permissions you've already given to websites and apps may apply to this account.
           You're signed in as <ph name="USER_EMAIL_ADDRESS">$1<ex>foo@gmail.com</ex></ph>. Now you can access your bookmarks, history, and other settings on all your signed in devices.
         </message>
       </if>
+
+      <!-- Management bubble -->
+      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED" desc="Disclosure that an unnamed organization is managing the browser.">
+        Your organization manages Thorium
+      </message>
+      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED_BY" desc="Disclosure that a known organization is managing the browser.">
+        <ph name="MANAGER">$1<ex>The Company</ex></ph> manages Thorium
+      </message>
+      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED_BY_MULTIPLE_ORGANIZATIONS" desc="Disclosure that multiple organization are managing the browser and profile.">
+        Multiple organizations manage Thorium
+      </message>
 
       <!-- Extension requests sign in to Thorium through chrome.identity API -->
       <if expr="enable_extensions">
@@ -1057,8 +1069,35 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
+      <!-- Dice Web Signin Interception Bubble-->
+      <if expr="not use_titlecase">
+        <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
+          desc="Text asking the user to sign into Thorium while the Thorium Signin Bubble intercept is shown.">
+          Sign in to Thorium?
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Make Thorium your own
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
+          desc="Label of the Decline button of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Use Thorium without an account
+        </message>
+      </if>
+      <if expr="use_titlecase">
+        <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
+          desc="Text asking the user to sign into Thorium while the Thorium Signin Bubble intercept is shown.">
+          Sign In to Thorium?
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Make Thorium Your Own
+        </message>
+        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
+          desc="Label of the Decline button of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+          Use Thorium Without an Account
+        </message>
+      </if>
+
       <if expr="not chromeos_ash and not is_android and not chromeos_lacros">
-        <!-- Dice Web Signin Interception Bubble-->
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE" desc="Title of the web signin interception bubble">
           Continue in a new Thorium profile?
         </message>
@@ -1098,6 +1137,12 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_TEXT_SIGNIN_REMINDER_SCREENREADER" desc="This string is the accessibility text of a reminder message, which is intended to help users understand that they have been signed in to Thorium.">
           While you're signed in, you can use your passwords and more from your Google Account in Thorium. <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+M</ex></ph> can change your Google services settings.
         </message>
+        <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_NO_UNSYNCED_TITLE" desc="This is the title of a confirmation dialog and asks the user to confirm that they want to sign out of Thorium. It appears when the user opens the Thorium Profile Menu and chooses 'Sign out of Thorium'. This title is before the 'Your passwords and other Thorium data are saved to your Google Account, and will be removed from this device. To use them in the future, sign back in to Thorium.' string. The tone should be straightforward.">
+          Sign out of Thorium?
+        </message>
+        <message name="CHROME_SIGNOUT_CONFIRMATION_PROMPT_NO_UNSYNCED_BODY" desc="This is the subtitle of a confirmation dialog that asks the user to confirm that they want to sign out of Thorium. It appears when the user opens the Thorium Profile Menu and chooses 'Sign out of Thorium'. This subtitle is after the 'Sign out of Thorium?' string. The tone should be calm, because we want to explain to the user that their data is saved; however, we want to set expectations by clarifying that the data will be removed from the device. This string provides a path to resolution because it explains how the user can see their data again (by signing back in).">
+          Your passwords and other Thorium data are saved in your Google Account, and will be removed from this device. To use them in the future, sign back in to Thorium.
+        </message>
         <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_VERIFY_BODY" desc="This is the subtitle of an error message dialog that appears when the user opens the Thorium Profile Menu and chooses 'Sign out of Thorium'. The error message appears when the user has saved some data (like a password or payment method) to Thorium, but Thorium wasn't able to save the data to the user's Google Account due to a sign-in error; but, the data has been saved locally to Thorium. This subtitle is after the 'Some data isn’t saved yet' string. The tone should be cautionary, because we want to explain to the user that their data is not saved to their Google Account. This string provides a path to resolution because it explains how the user can properly save their data before they sign out of Thorium.">
           Thorium needs to verify it’s you before some data can be saved in your Google Account and used on all your devices. If you sign out, this data will stay on this device.
         </message>
@@ -1107,33 +1152,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_CLOSE_WARNING_FOR_CLEAR_COOKIES_ON_EXIT_TEXT" desc="Body of a notice displayed when closing the last Thorium window, to inform the user about a change in the way the 'Clear cookie on exit' setting works.">
           You’ll be signed out of most sites when you close all Thorium windows, except your Google Account if you’re signed in to Thorium. To let sites remember you, <ph name="SETTINGS_LINK">$1<ex>go to settings</ex></ph>.
         </message>
-
-        <if expr="not use_titlecase">
-          <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
-            desc="Text asking the user to sign into Thorium while the Thorium Signin Bubble intercept is shown.">
-            Sign in to Thorium?
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-            Make Thorium your own
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
-            desc="Label of the Decline button of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-            Use Thorium without an account
-          </message>
-        </if>
-        <if expr="use_titlecase">
-          <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
-            desc="Text asking the user to sign into Thorium while the Thorium Signin Bubble intercept is shown.">
-            Sign In to Thorium?
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-            Make Thorium Your Own
-          </message>
-          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
-            desc="Label of the Decline button of the Thorium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-            Use Thorium Without an Account
-          </message>
-        </if>
         <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_ACCESSIBILITY_LABEL"
           desc="Accessibility label (read by the accessibility tools) of the avatar button when the Thorium Signin bubble is shown. The text implies that the expanded bubble underneath the button is closable by clicking on the button. The actual text is 'Sign in to Thorium?' with a bubble shown under it.">
           Click to close the Thorium sign-in dialog
@@ -1470,6 +1488,9 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SYNC_ERROR_USER_MENU_UPGRADE_BUTTON" desc="Button in the header of desktop user menu that prompts the user to update Thorium to fix the out-of-date Thorium client error.">
         Update Thorium
       </message>
+      <message name="IDS_SYNC_ERROR_PASSPHRASE_USER_MENU_TITLE_SIGNED_IN_ONLY" desc="Title of the sync/signin error header of desktop user menu. Shown for users who are signed-in but not syncing.">
+        To use and save Thorium data in your Google Account, enter your passphrase
+      </message>
 
       <!-- Sync errors. Android uses native UI to handle Sync settings -->
       <if expr="not is_android">
@@ -1538,6 +1559,9 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_INFOBAR_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the camera capabilities, but Thorium is missing the Android camera permission.">
           Thorium needs permission to access your camera for this site
         </message>
+        <message name="IDS_INFOBAR_MISSING_HAND_TRACKING_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to hand tracking capabilities, but Thorium is missing the Android hand tracking permission.">
+          Thorium needs permission to track your hands
+        </message>
         <message name="IDS_INFOBAR_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the microphone capabilities, but Thorium is missing the Android microphone permission.">
           Thorium needs permission to access your microphone for this site
         </message>
@@ -1554,11 +1578,11 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_MESSAGE_MISSING_AR_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to augmented reality capabilities, but Thorium is missing the Android camera permission.">
           Thorium needs camera permission to create a 3D map of your surroundings
         </message>
-        <message name="IDS_MESSAGE_MISSING_XR_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Thorium is missing the Android scene understanding and hand tracking permission.">
-          Thorium needs permission to map your surroundings and track your hands
-        </message>
         <message name="IDS_MESSAGE_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the camera capabilities, but Thorium is missing the Android camera permission.">
           Thorium needs camera permission for this site
+        </message>
+        <message name="IDS_MESSAGE_MISSING_HAND_TRACKING_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Thorium is missing the Android hand tracking permission.">
+          Thorium needs permission to track your hands
         </message>
         <message name="IDS_MESSAGE_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the microphone capabilities, but Thorium is missing the Android microphone permission.">
           Thorium needs microphone permission for this site
@@ -1571,6 +1595,9 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_MESSAGE_STORAGE_ACCESS_PERMISSION_TEXT" desc="Text shown educating the user that Thorium is missing the Android storage permission, which is required to download files.">
           Thorium needs storage access permission to download files
+        </message>
+        <message name="IDS_MESSAGE_MISSING_XR_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Thorium is missing the Android scene understanding and hand tracking permission.">
+          Thorium needs permission to map your surroundings and track your hands
         </message>
       </if>
 
@@ -1729,6 +1756,15 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_ENTERPRISE_OIDC_WELCOME_TIMEOUT_SUBTITLE" desc="Subtitle of a section telling the user that their work profile was created but is not fully ready yet.">
           While we're setting up account access, you can still use Thorium. You may not be able to access some resources until setup is complete.
         </message>
+
+        <!-- Supervised user profile signin IPH -->
+        <!-- TODO(b/351333491): Mark them translateable once the strings are approved. -->
+        <message name="IDS_SUPERVISED_USER_PROFILE_SIGNIN_IPH_TEXT"
+          desc="Informative text shown on the IPH bubble when a supervised user signs-in in a new profile or an existing local profile."
+          translateable="false">
+          The Thorium settings your parent chose in Family Link can help keep you safe online
+        </message>
+
         <!-- Profile Picker -->
         <if expr="chromeos_lacros">
           <message name="IDS_PROFILE_PICKER_MAIN_VIEW_SUBTITLE_LACROS" desc="Profile picker main view subtitle">
@@ -1915,10 +1951,10 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SETTINGS_SECURITY_V8_LINK_DESCRIPTION" desc="Description for the link row of the V8 security settings page.">
         Turn on additional protection in Thorium’s JavaScript and WebAssembly engine
       </message>
-      <message name="IDS_SETTINGS_SITE_SETTINGS_JAVASCRIPT_JIT_DESCRIPTION" desc="Description of the JavaScript optimizer content setting.">
+      <message name="IDS_SETTINGS_SITE_SETTINGS_JAVASCRIPT_OPTIMIZER_DESCRIPTION" desc="Description of the JavaScript optimizer content setting.">
         V8 is Thorium’s JavaScript and WebAssembly engine used to improve site performance
       </message>
-      <message name="IDS_SETTINGS_SITE_SETTINGS_JAVASCRIPT_JIT_ALLOWED_SUB_LABEL" desc="Sub-label for the enabled option of the JavaScript optimizer content setting.">
+      <message name="IDS_SETTINGS_SITE_SETTINGS_JAVASCRIPT_OPTIMIZER_ALLOWED_SUB_LABEL" desc="Sub-label for the enabled option of the JavaScript optimizer content setting.">
         Thorium runs faster and features that use JavaScript should work as designed (recommended)
       </message>
 
@@ -2016,6 +2052,24 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_EXTRA_CODE"
                  desc="The optional extra code for any of the errors below">
           Extra code: <ph name="EXTRA_CODE">$1<ex>0x80071234</ex></ph>.
+        </message>
+
+        <!--Startup errors.-->
+        <message name="IDS_UNABLE_TO_GET_SETUP_LOCK"
+                 desc="Error message displayed in the main dialog when the updater is unable to get the setup lock at startup.">
+          Startup error: another instance of setup is currently running, please try again later.
+        </message>
+        <message name="IDS_WRONG_USER_ELEVATION_REQUIRED_ERROR"
+                 desc="Error message displayed in the main dialog when the updater is run without administrative privileges to install a per-system application.">
+          Startup error: please run the installer as administrator.
+        </message>
+        <message name="IDS_WRONG_USER_DEELEVATION_REQUIRED_ERROR"
+                 desc="Error message displayed in the main dialog when the updater is run with administrative privileges to install a per-user application.">
+          Startup error: please run the installer as a regular user, not as administrator.
+        </message>
+        <message name="IDS_GENERIC_STARTUP_ERROR"
+                 desc="Error message displayed in the main dialog when an error is encountered at startup of the updater.">
+          Startup error: <ph name="STARTUP_ERROR">$1<ex>error-internal</ex></ph>.
         </message>
 
         <!--Network errors.-->

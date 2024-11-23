@@ -146,6 +146,24 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_PDFS_BLOCKED" desc="Label for the disabled option of the pdfs content setting.">
     Open PDFs in Thorium
   </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_CAMERA_BLOCKED_BY_OS" desc="The description for the camera permission with a link to system settings.">
+      To use your camera, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_MICROPHONE_BLOCKED_BY_OS" desc="The description for the microphone permission with a link to system settings.">
+      To use your microphone, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_LOCATION_BLOCKED_BY_OS" desc="The description for the location permission with a link to system settings.">
+      To use your location, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_CAMERA_BLOCKED_BY_OS" desc="Warning for camera content setting when the camera is disabled on OS level." translateable="false">
+    To use your camera on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_LOCATION_BLOCKED_BY_OS" desc="Warning for location content setting when the camera is disabled on OS level." translateable="false">
+    To use your location on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_MIC_BLOCKED_BY_OS" desc="Warning for microphone content setting when the camera is disabled on OS level." translateable="false">
+    To use your microphone on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
 
     <!-- Site Settings - Site Data Page-->
   <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_RADIO_SUBLABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device. In short, a site will remember your preferences, shopping cart content, etc. during this browser session. But once you close all open windows, and then visit the site again, it's as if you're coming to the site for the first time.">
@@ -337,13 +355,13 @@
 
   <!-- Performance Page -->
   <message name="IDS_SETTINGS_PERFORMANCE_MEMORY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the memory saver mode setting">
-    When on, Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
+    Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the energy saver mode setting">
-    When on, Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.
+    Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_PRELOAD_TOGGLE_SUMMARY" desc="Summary for the preload pages setting">
-    When on, Thorium preloads pages which makes browsing and searching faster.
+    Thorium preloads pages which makes browsing and searching faster.
   </message>
 
   <!-- Languages Page -->
@@ -440,7 +458,10 @@
     Dangerous site. Thorium removed notifications.
   </message>
 
-  <!-- HTTPS-First Mode -->
+  <!-- Secure connections -->
+  <message name="IDS_SETTINGS_SECURE_CONNECTIONS_SECTION_DESCRIPTION" desc="Description for the Secure Connections section in Security settings, explaining the baseline behavior of the browser even if the 'Always use secure connections' toggle is disabled.">
+    Thorium upgrades insecure connections to HTTPS automatically when possible
+  </message>
   <message name="IDS_SETTINGS_HTTPS_FIRST_MODE_SUBTITLE" desc="Subtitle for HTTPS-First Mode section in Security settings">
     Thorium will try to upgrade navigations to HTTPS
   </message>

@@ -194,7 +194,7 @@
   </message>
   <if expr="not is_ios and not is_android">
     <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_SECURITY" desc="Explanation of the benefit of credit card upload save on Desktop, using security-focused messaging.">
-      Your card details are encrypted when they’re saved in your Google Account and used to pay online
+      Pay faster when your card is saved. Card details are encrypted in your Google Account.
     </message>
     <message name="IDS_AUTOFILL_SAVE_CARD_PROMPT_UPLOAD_EXPLANATION_CONVENIENCE" desc="Explanation of the benefit of credit card upload save on Desktop, using convenience-focused messaging.">
       Save this card to use online with Google Pay for purchases across your devices
@@ -328,9 +328,18 @@
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_PERMANENT_ERROR_TITLE" desc="Text to be displayed as the title of the error dialog for virtual card permanent error.">
     Virtual card not available
   </message>
-  <message name="IDS_AUTOFILL_VIRTUAL_CARD_TEMPORARY_ERROR_DESCRIPTION" desc="Text to be displayed as the description of the error dialog for virtual card temporary error.">
-    Virtual card is not available right now, please try again later
-  </message>
+  <if expr="is_ios">
+      <then>
+          <message name="IDS_AUTOFILL_VIRTUAL_CARD_TEMPORARY_ERROR_DESCRIPTION" desc="Text to be displayed as the description of the error dialog for virtual card temporary error.">
+            Virtual card is not available right now, please try again later.
+          </message>
+      </then>
+      <else>
+          <message name="IDS_AUTOFILL_VIRTUAL_CARD_TEMPORARY_ERROR_DESCRIPTION" desc="Text to be displayed as the description of the error dialog for virtual card temporary error. Note that the translation should not have period.">
+            Virtual card is not available right now, please try again later
+          </message>
+      </else>
+  </if>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_PERMANENT_ERROR_DESCRIPTION" desc="Text to be displayed as the description of the error dialog for virtual card permanent error.">
     Virtual card is not available right now, please contact your bank
   </message>
@@ -524,8 +533,11 @@
   <message name="IDS_AUTOFILL_CARD_UNMASK_CONFIRMATION_MESSAGE" desc="Message displayed after tapping a card, and the response from the bank indicates that no further verification is required.">
     Verified
   </message>
-  <message name="IDS_AUTOFILL_FIDO_AUTHENTICATION_PROMPT_TITLE" desc="Title for FIDO authentication progress dialog">
-      Verifying...
+  <message name="IDS_AUTOFILL_3DS_FETCH_VCN_PROGRESS_DIALOG_LOADING_MESSAGE" desc="Message to be displayed after a VCN 3DS authentication has completed, and Thorium is attempting to retrieve the virtual card from the Payments server. If the authentication was successful, a confirmation message will display in the progress dialog and then the virtual card will be filled. If the authentication was not successful, an error message will be displayed.">
+    Verifying...
+  </message>
+  <message name="IDS_AUTOFILL_3DS_FETCH_VCN_PROGRESS_DIALOG_CONFIRMATION_MESSAGE" desc="Message to be displayed after a VCN 3DS authentication has successfully completed, and Thorium is going to fill the virtual card.">
+    Your card is verified
   </message>
   <message name="IDS_AUTOFILL_IBAN_UNMASK_ERROR_DIALOG_TITLE" desc="Title displayed when there is a server failure during the process of unmasking a server IBAN.">
     IBAN not filled in
@@ -682,7 +694,7 @@
     Manage payment methods
   </message>
   <message name="IDS_AUTOFILL_SAVE_IBAN_PROMPT_TITLE_SERVER" desc="Title text for the Autofill save IBAN (International Bank Account Number) to the GPay server prompt when a user submits a form with a valid IBAN.">
-    Save IBAN to Google Account?
+    Save IBAN?
   </message>
   <message name="IDS_AUTOFILL_UPLOAD_IBAN_PROMPT_EXPLANATION" desc="Explanation text for the Autofill save IBAN (International Bank Account Number) to the GPay server prompt when a user submits a form with a valid IBAN.">
     To autofill this IBAN next time, save it in your Google account
@@ -886,8 +898,14 @@
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_MANUAL_FALLBACK_BUBBLE_CVC_LABEL_IOS" desc="Text shown above the virtual CVC field in the manual fallback bubble on IOS. The bubble below shows the CVC for the card available to fill the form. Clicking the bubble will populate the field with the CVC.">
       CVC:
   </message>
-  <message name="IDS_AUTOFILL_VIRTUAL_CARD_DISABLED_SUGGESTION_OPTION_VALUE" desc="Text to be displayed for a virtual card option in the credit card suggestion list when the virtual card is disabled(opted-out) by the merchant. This suggestion will be grayed-out and the user will not be able to preview or select this option." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_VIRTUAL_CARD_DISABLED_SUGGESTION_OPTION_VALUE" desc="Text to be displayed for a virtual card option in the credit card suggestion list when the virtual card is disabled(opted-out) by the merchant. This suggestion will be grayed-out and the user will not be able to preview or select this option.">
       Merchant doesn't accept this virtual card
+  </message>
+  <message name="IDS_AUTOFILL_DISABLED_VIRTUAL_CARD_SUGGESTION_IPH_BUBBLE_LABEL_DESKTOP" desc="Text shown in the `In-Product Help(IPH)` bubble for disabled and grayed out virtual card suggestions on Thorium Desktop.">
+      Cards not accepted by this merchant are disabled
+  </message>
+  <message name="IDS_AUTOFILL_DISABLED_VIRTUAL_CARD_SUGGESTION_IPH_BUBBLE_LABEL_DESKTOP_SCREENREADER" is_accessibility_with_no_ui="true" desc="Screenreader text for the `In-Product Help(IPH)` bubble for grayed out virtual card suggestions on Thorium Desktop.">
+      Cards not accepted by this merchant are disabled such as virtual cards.
   </message>
   <!-- virtual cards related strings - end -->
   <message name="IDS_AUTOFILL_CARD_AUTH_SELECTION_DIALOG_TITLE_MULTIPLE_OPTIONS" desc="Title for the credit card unmasking dialog for multiple challenge options. Used in VCN authentication, and once a challenge option is selected a new dialog is rendered where the user authenticates with the selected challenge option." formatter_data="android_java">
@@ -947,7 +965,7 @@
   <message name="IDS_AUTOFILL_CARD_UNMASK_OTP_INPUT_DIALOG_ENTER_CORRECT_CODE_LABEL" desc="This text is shown after an OTP is already sent, when the user enters an incorrect OTP code. It directs the user to enter the correct code that was sent to them.">
     Enter correct code
   </message>
-  <message name="IDS_AUTOFILL_PAYMENTS_WINDOW_USER_CONSENT_DIALOG_TITLE_VCN_3DS" desc="This text is shown as the title for the user consent dialog for VCN 3DS. If the user accepts the dialog, Thorium will open a pop-up and initiate the VCN 3DS flow.">
+  <message name="IDS_AUTOFILL_LOADING_AND_CONSENT_DIALOG_TITLE_VCN_3DS" desc="This text is shown as the title for the user consent dialog and progress dialog for VCN 3DS. If the user accepts the user consent dialog, Thorium will open a pop-up and initiate the VCN 3DS flow. The progress dialog notifies the user when a Payments server call is in progress.">
     Your bank wants to verify it's you
   </message>
   <message name="IDS_AUTOFILL_PAYMENTS_WINDOW_USER_CONSENT_DIALOG_DESCRIPTION_VCN_3DS" desc="This text is shown as the description for the user consent dialog for VCN 3DS. If the user accepts the dialog, Thorium will open a pop-up and initiate the VCN 3DS flow.">
@@ -1105,6 +1123,9 @@
     <message name="IDS_AUTOFILL_PAYMENT_METHOD_A11Y_ITEM_COLLECTION_INFO" desc="A template message for a fillable item content description, provides its position in the list info (e.g. 'Item label, 2 of 4')." formatter_data="android_java">
       <ph name="ITEM_LABEL">%1$s<ex>Card info</ex></ph>, <ph name="ITEM_POSITION">%2$s<ex>2</ex></ph> of <ph name="ITEMS_TOTAL">%3$s<ex>8</ex></ph>.
     </message>
+    <message name="IDS_AUTOFILL_PAYMENT_METHOD_BOTTOM_SHEET_BENEFITS_TERMS_LABEL" desc="The label for the card benefits terms appears on the bottom sheet when at least one of the cards has benefits." formatter_data="android_java">
+      Terms apply for card benefits
+    </message>
   </if>
 
   <!-- Mandatory Reauth related strings -->
@@ -1182,12 +1203,28 @@
     <ph name="EXPIRATION_DATE">%1$s<ex>12/24</ex></ph> | <ph name="SECURITY_CODE">%2$s<ex>123</ex></ph>
   </message>
 
+  <!-- IBAN snackbar confirmation -->
+  <if expr="is_android">
+    <message name="IDS_AUTOFILL_SAVE_SERVER_IBAN_SUCCESS_SNACKBAR_MESSAGE_TEXT" desc="Text to be displayed in the snackbar shown after a server IBAN is saved.">
+      IBAN saved to your Google Account
+    </message>
+    <message name="IDS_AUTOFILL_SAVE_SERVER_IBAN_SUCCESS_SNACKBAR_BUTTON_TEXT" desc="Text shown on the ok button of the confirmation prompt after an IBAN is saved.">
+      Got it
+    </message>
+  </if>
+
   <!-- Card upload and virtual card enrollment confirmation related strings-->
   <message name="IDS_AUTOFILL_SAVE_CARD_CONFIRMATION_SUCCESS_TITLE_TEXT" desc="Title text for confirmation shown after save card is successfully uploaded and saved to the server.">
     Card saved
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_CONFIRMATION_FAILURE_TITLE_TEXT" desc="Title text for confirmation shown after save card upload to the server was unsuccessful.">
     Card saved to device only
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_CONFIRMATION_SUCCESS_TITLE_TEXT" desc="Title text for confirmation shown after upload save IBAN attempt was successful and it was uploaded to the server.">
+    IBAN saved
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_CONFIRMATION_FAILURE_TITLE_TEXT" desc="Title text for confirmation shown after upload save IBAN attempt was failed and and it was not uploaded to the server.">
+    IBAN saved to device only
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLL_CONFIRMATION_SUCCESS_TITLE_TEXT" desc="Title text for confirmation shown after virtual card enrollment is successful.">
     Virtual card turned on
@@ -1201,6 +1238,15 @@
   </message>
   <message name="IDS_AUTOFILL_SAVE_CARD_CONFIRMATION_FAILURE_DESCRIPTION_TEXT" desc="Description text for confirmation shown after save card upload to the server was unsuccessful.">
     This card couldn't be saved in your Google Account. It's saved to Thorium on this device instead.
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_CONFIRMATION_SUCCESS_DESCRIPTION_TEXT" desc="Description text for confirmation shown after upload save IBAN attempt was successful and it was uploaded to the server.">
+    This IBAN is saved in your Google Account so you can use it across Google services.
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_CONFIRMATION_FAILURE_DESCRIPTION_TEXT" desc="Description text for confirmation shown after upload save IBAN attempt was failed and and it was not uploaded to the server.">
+    This IBAN couldn't be saved in your Google Account. It's saved to Thorium on this device instead. Thorium will ask you again the next time you use this IBAN.
+  </message>
+  <message name="IDS_AUTOFILL_SAVE_IBAN_CONFIRMATION_FAILURE_HIT_MAX_STRIKE_DESCRIPTION_TEXT" desc="Description text for confirmation shown after upload save IBAN attempt was failed and and it was not uploaded to the server. Other than that, the number of offer-to-upload has hit the max strike.">
+    This IBAN couldn't be saved in your Google Account. It's saved to Thorium on this device instead.
   </message>
   <message name="IDS_AUTOFILL_VIRTUAL_CARD_ENROLL_CONFIRMATION_SUCCESS_DESCRIPTION_TEXT" desc="Description text for confirmation shown after virtual card enrollment is successful.">
     You can now use a virtual card to check out more securely with autofill.

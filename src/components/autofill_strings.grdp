@@ -99,12 +99,12 @@
   <message name="IDS_AUTOFILL_ADDRESS_SUMMARY_SEPARATOR" desc="The separator character used in the summary of an address." formatter_data="android_java">
     , '''
   </message>
-
-  <!-- TODO(crbug.com/40270486): Make translatable once strings are finalized. -->
-  <message name="IDS_AUTOFILL_ADDRESS_TEST_DATA" desc="The text displayed as a secondary label in the test addresses devtools suggestion." translateable="false">
-    Address test data
+  <message name="IDS_AUTOFILL_DEVELOPER_TOOLS" desc="Displayed as the main text in the top level devtools suggestion.">
+    Developer tools
   </message>
-
+  <message name="IDS_AUTOFILL_TEST_ADDRESS_BY_COUNTRY" desc="The text displayed as the main text in the second level popup for a devtools suggestion. Used to give developers about which countries Autofill has test addresses available.">
+    Test address by country
+  </message>
   <message name="IDS_AUTOFILL_TEST_ADDRESS_SELECTED_A11Y_HINT" desc="Voice over text that is read out when a test address is accepted from the subpopup." translateable="false">
     Test address from <ph name="ENTRY_VOICEOVER">$1<ex>United states</ex></ph> selected.
   </message>
@@ -291,25 +291,25 @@
   <message name="IDS_AUTOFILL_ENABLE_CREDIT_CARDS_TOGGLE_SUBLABEL" desc="Sublabel for a toggle that allows users to control whether credit cards should be saved and forms should be autofilled with it." formatter_data="android_java">
     Fills in payment forms with your saved payment methods
   </message>
-  <message name="IDS_AUTOFILL_DELETE_ACCOUNT_ADDRESS_SOURCE_NOTICE" desc="The notice/warning for the user before the address deletion." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_DELETE_ACCOUNT_ADDRESS_RECORD_TYPE_NOTICE" desc="The notice/warning for the user before the address deletion." formatter_data="android_java">
     This address will be deleted from your Google Account, <ph name="ACCOUNT">$1<ex>alexpark@gmail.com</ex></ph>
   </message>
-  <message name="IDS_AUTOFILL_DELETE_SYNC_ADDRESS_SOURCE_NOTICE" desc="The notice/warning for the user before the address deletion (with syncing enabled)." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_DELETE_SYNC_ADDRESS_RECORD_TYPE_NOTICE" desc="The notice/warning for the user before the address deletion (with syncing enabled)." formatter_data="android_java">
     This address will be deleted from this and your other signed-in devices
   </message>
-  <message name="IDS_AUTOFILL_DELETE_LOCAL_ADDRESS_SOURCE_NOTICE" desc="The notice/warning for the user before a local (syncing is disabled) address deletion." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_DELETE_LOCAL_ADDRESS_RECORD_TYPE_NOTICE" desc="The notice/warning for the user before a local (syncing is disabled) address deletion." formatter_data="android_java">
     This address will be deleted from this device
   </message>
-  <message name="IDS_AUTOFILL_SAVE_IN_ACCOUNT_MESSAGE_ADDRESS_SOURCE_NOTICE" desc="The notice/warning message for the user that this address is going to be stored in their account.">
+  <message name="IDS_AUTOFILL_SAVE_IN_ACCOUNT_MESSAGE_ADDRESS_RECORD_TYPE_NOTICE" desc="The notice/warning message for the user that this address is going to be stored in their account.">
     In your Google Account, <ph name="ACCOUNT">$1<ex>alexpark@gmail.com</ex></ph>
   </message>
-  <message name="IDS_AUTOFILL_SAVE_IN_ACCOUNT_MESSAGE_ADDRESS_MIGRATION_SOURCE_NOTICE" desc="The notice/warning message for the user that this address is going to be migrated in their account.">
+  <message name="IDS_AUTOFILL_SAVE_IN_ACCOUNT_MESSAGE_ADDRESS_MIGRATION_RECORD_TYPE_NOTICE" desc="The notice/warning message for the user that this address is going to be migrated in their account.">
     You will be able to use it across Google products
   </message>
-  <message name="IDS_AUTOFILL_ADDRESS_ALREADY_SAVED_IN_ACCOUNT_SOURCE_NOTICE" desc="The footer message used to notify user that their address is stored in their account." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_ADDRESS_ALREADY_SAVED_IN_ACCOUNT_RECORD_TYPE_NOTICE" desc="The footer message used to notify user that their address is stored in their account." formatter_data="android_java">
     You can use saved addresses across Google products. This address is saved in your Google Account, <ph name="ACCOUNT">$1<ex>alexpark@gmail.com</ex></ph>.
   </message>
-  <message name="IDS_AUTOFILL_ADDRESS_WILL_BE_SAVED_IN_ACCOUNT_SOURCE_NOTICE" desc="The footer message used to notify user that their address will be saved in their account." formatter_data="android_java">
+  <message name="IDS_AUTOFILL_ADDRESS_WILL_BE_SAVED_IN_ACCOUNT_RECORD_TYPE_NOTICE" desc="The footer message used to notify user that their address will be saved in their account." formatter_data="android_java">
     You can use saved addresses across Google products. This address will be saved in your Google Account, <ph name="ACCOUNT">$1<ex>alexpark@gmail.com</ex></ph>.
   </message>
   <message name="IDS_AUTOFILL_EDIT_ADDRESS_REQUIRED_FIELD_FORM_ERROR" desc="The form error message shown to the user in case of a single required field missing.">
@@ -369,21 +369,17 @@
     </else>
   </if>
   <if expr="is_android">
-    <!-- TODO(crbug.com/40068611): Use finalized string.-->
-    <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT" desc="Title of the option to use the default Thorium autofill experience." formatter_data="android_java">
-      Default
+    <message name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT" desc="Title of the option to use the default Thorium autofill experience." formatter_data="android_java">
+      Autofill with Google
     </message>
-    <!-- TODO(crbug.com/40068611): Use finalized string.-->
-    <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN" desc="Title of the option to use third-party autofill in Thorium." formatter_data="android_java">
-      Use other providers
+    <message name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN" desc="Title of the option to use third-party autofill in Thorium." formatter_data="android_java">
+      Autofill using another service
     </message>
-    <!-- TODO(crbug.com/40068611): Use finalized string.-->
-    <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT_DESCRIPTION" desc="Description shown on the option to use the default Thorium autofill experience." formatter_data="android_java">
-      Use Google Password Manager and Thorium Autofill to save and fill passwords, passkeys, payment methods, and addresses
+    <message name="IDS_AUTOFILL_THIRD_PARTY_FILLING_DEFAULT_DESCRIPTION" desc="Description shown on the option to use the default Thorium autofill experience." formatter_data="android_java">
+      Use Google Password Manager and Thorium Autofill to save and fill passwords, payment methods, and addresses
     </message>
-    <!-- TODO(crbug.com/40068611): Use finalized string.-->
-    <message translateable="false" name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN_DESCRIPTION" desc="Description shown on the option enabling the use of third-party autofill in Thorium." formatter_data="android_java">
-      Use password managers and autofill services that are turned on in Android Settings
+    <message name="IDS_AUTOFILL_THIRD_PARTY_FILLING_OPT_IN_DESCRIPTION" desc="Description shown on the option enabling the use of third-party autofill in Thorium." formatter_data="android_java">
+      To use another autofill service in Thorium, turn it on in Android settings and here
     </message>
   </if>
 
@@ -403,9 +399,6 @@
 
   <!-- Manual filling (keyboard accessory) strings -->
   <if expr="is_android">
-    <message name="IDS_MANUAL_FILLING_CREDIT_CARD_SHEET_TITLE" desc="Title shown at the top of a sheet where users can select indiviual data pieces (e.g., the cardholder name) related to their stored payment methods (e.g., credit cards) to fill that data piece into the focused form field. Sentence-cased.">
-      Payment methods
-    </message>
     <message name="IDS_MANUAL_FILLING_CREDIT_CARD_SHEET_ALL_ADDRESSES_LINK" desc="The text of the link in the address sheet that opens the address management section.">
       Manage payment methods
     </message>
