@@ -37,6 +37,7 @@
 #include "chrome/browser/dom_distiller/tab_utils.h"
 #include "chrome/browser/download/download_prefs.h"
 #include "chrome/browser/favicon/favicon_utils.h"
+#include "chrome/browser/feedback/show_feedback_page.h"
 #include "chrome/browser/lifetime/application_lifetime.h"
 #include "chrome/browser/media/router/media_router_feature.h"
 #include "chrome/browser/prefs/incognito_mode_prefs.h"
@@ -72,7 +73,7 @@
 #include "chrome/browser/ui/browser_navigator_params.h"
 #include "chrome/browser/ui/browser_tabstrip.h"
 #include "chrome/browser/ui/browser_window.h"
-#include "chrome/browser/ui/chrome_pages.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
 #include "chrome/browser/ui/exclusive_access/exclusive_access_manager.h"
 #include "chrome/browser/ui/exclusive_access/fullscreen_controller.h"
 #include "chrome/browser/ui/find_bar/find_bar.h"
@@ -96,6 +97,7 @@
 #include "chrome/browser/ui/tabs/organization/tab_organization_session.h"
 #include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_keyed_service.h"
 #include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_service_factory.h"
+#include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_utils.h"
 #include "chrome/browser/ui/tabs/tab_enums.h"
 #include "chrome/browser/ui/tabs/tab_group.h"
 #include "chrome/browser/ui/tabs/tab_group_model.h"
@@ -104,6 +106,7 @@
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
 #include "chrome/browser/ui/web_applications/web_app_launch_utils.h"
 #include "chrome/browser/ui/web_applications/web_app_tabbed_utils.h"
+#include "chrome/browser/ui/webui/commerce/product_specifications_disclosure_dialog.h"
 #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #include "chrome/browser/web_applications/web_app_constants.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
@@ -119,6 +122,7 @@
 #include "components/bookmarks/common/bookmark_pref_names.h"
 #include "components/browsing_data/content/browsing_data_helper.h"
 #include "components/commerce/core/commerce_utils.h"
+#include "components/commerce/core/pref_names.h"
 #include "components/content_settings/browser/page_specific_content_settings.h"
 #include "components/content_settings/core/browser/cookie_settings.h"
 #include "components/content_settings/core/common/content_settings.h"
@@ -140,6 +144,7 @@
 #include "components/reading_list/core/reading_list_entry.h"
 #include "components/reading_list/core/reading_list_model.h"
 #include "components/reading_list/core/reading_list_pref_names.h"
+#include "components/saved_tab_groups/tab_group_sync_service.h"
 #include "components/services/app_service/public/cpp/app_launch_util.h"
 #include "components/sessions/core/live_tab_context.h"
 #include "components/sessions/core/tab_restore_service.h"
@@ -178,6 +183,7 @@
 #include "ui/base/models/list_selection_model.h"
 #include "ui/base/window_open_disposition.h"
 #include "ui/events/keycodes/keyboard_codes.h"
+#include "ui/webui/resources/cr_components/commerce/shopping_service.mojom.h"
 #include "url/gurl.h"
 #include "url/url_constants.h"
 
@@ -227,6 +233,12 @@
 #include "chrome/browser/lens/region_search/lens_region_search_controller.h"
 #include "chrome/browser/lens/region_search/lens_region_search_helper.h"
 #include "components/lens/lens_features.h"
+#endif
+
+#if !BUILDFLAG(IS_ANDROID)
+#include "chrome/browser/ui/toasts/api/toast_id.h"
+#include "chrome/browser/ui/toasts/toast_controller.h"
+#include "chrome/browser/ui/toasts/toast_features.h"
 #endif
 
 namespace {
@@ -1078,6 +1090,20 @@ void MoveActiveTabToNewWindow(Browser* browser) {
   MoveTabsToNewWindow(browser,
                       std::vector<int>(selection.begin(), selection.end()));
 }
+
+void ToggleCompactMode(Browser* browser) {
+  const bool current_pref =
+      browser->profile()->GetPrefs()->GetBoolean(prefs::kCompactModeEnabled);
+  browser->profile()->GetPrefs()->SetBoolean(prefs::kCompactModeEnabled,
+                                             !current_pref);
+}
+
+bool ShouldUseCompactMode(Profile* profile) {
+  CHECK(profile);
+  return base::FeatureList::IsEnabled(features::kCompactMode) &&
+         profile->GetPrefs()->GetBoolean(prefs::kCompactModeEnabled);
+}
+
 bool CanMoveTabsToNewWindow(Browser* browser,
                             const std::vector<int>& tab_indices) {
   if (browser->is_type_app()) {
@@ -1110,11 +1136,9 @@ void MoveTabsToNewWindow(Browser* browser,
         Browser::Create(Browser::CreateParams(browser->profile(), true));
   }
 
-  std::optional<base::Uuid> paused_saved_guid = std::nullopt;
-
-  tab_groups::SavedTabGroupKeyedService* const service =
-      tab_groups::SavedTabGroupServiceFactory::GetForProfile(
-          browser->profile());
+  tab_groups::TabGroupSyncService* tab_group_service =
+      tab_groups::SavedTabGroupUtils::GetServiceForProfile(browser->profile());
+  std::unique_ptr<tab_groups::ScopedLocalObservationPauser> observation_pauser;
 
   tab_groups::TabGroupVisualData visual_data;
 
@@ -1128,10 +1152,8 @@ void MoveTabsToNewWindow(Browser* browser,
     visual_data = tab_groups::TabGroupVisualData(old_visual_data->title(),
                                                  old_visual_data->color(),
                                                  false /* is_collapsed */);
-
-    if (service && service->model()->Contains(group.value())) {
-      paused_saved_guid = service->model()->Get(group.value())->saved_guid();
-      service->PauseTrackingLocalTabGroup(group.value());
+    if (tab_group_service && tab_group_service->GetGroup(group.value())) {
+      observation_pauser = tab_group_service->CreateScopedLocalObserverPauser();
     }
   }
 
@@ -1164,9 +1186,8 @@ void MoveTabsToNewWindow(Browser* browser,
     new_browser->tab_strip_model()->AddToNewGroup(indices, group.value(),
                                                   visual_data);
 
-    if (paused_saved_guid.has_value()) {
-      service->ResumeTrackingLocalTabGroup(paused_saved_guid.value(),
-                                           group.value());
+    if (observation_pauser) {
+      observation_pauser.reset();
     }
   }
 
@@ -1310,6 +1331,11 @@ bool HasKeyboardFocusedTab(const Browser* browser) {
 void ConvertPopupToTabbedBrowser(Browser* browser) {
   base::RecordAction(UserMetricsAction("ShowAsTab"));
   TabStripModel* tab_strip = browser->tab_strip_model();
+  // If this popup is the last browser object, removing it from the browser-list
+  // will trigger OnShutdownStarting for Window close. Create the new browser
+  // object first, before removing the existing object from the browser-list in
+  // order to avoid incorrectly triggering a shutdown.
+  Browser* b = Browser::Create(Browser::CreateParams(browser->profile(), true));
   std::unique_ptr<tabs::TabModel> tab_model =
       tab_strip->DetachTabAtForInsertion(tab_strip->active_index());
   // This method moves a WebContents from a non-normal browser window to a
@@ -1319,7 +1345,6 @@ void ConvertPopupToTabbedBrowser(Browser* browser) {
   // tab to begin with.
   std::unique_ptr<content::WebContents> contents_move =
       tabs::TabModel::DestroyAndTakeWebContents(std::move(tab_model));
-  Browser* b = Browser::Create(Browser::CreateParams(browser->profile(), true));
 
   // This method moves a WebContents from a non-normal browser window to a
   // normal browser window. We cannot move the Tab over directly since TabModel
@@ -1454,6 +1479,23 @@ bool MoveTabToReadLater(Browser* browser, content::WebContents* web_contents) {
   base::UmaHistogramEnumeration(
       "ReadingList.BookmarkBarState.OnEveryAddToReadingList",
       browser->bookmark_bar_state());
+#if !BUILDFLAG(IS_ANDROID)
+  if (toast_features::IsEnabled(toast_features::kReadingListToast)) {
+    // Don't show the reading list toast if the side panel is visible.
+    std::optional<SidePanelEntry::Id> id =
+        browser->GetFeatures().side_panel_ui()->GetCurrentEntryId();
+    if (id.has_value() && id.value() == SidePanelEntryId::kReadingList) {
+      return true;
+    }
+
+    ToastController* const toast_controller =
+        browser->GetFeatures().toast_controller();
+    if (toast_controller) {
+      toast_controller->MaybeShowToast(
+          ToastParams(ToastId::kAddedToReadingList));
+    }
+  }
+#endif
   return true;
 }
 
@@ -1801,17 +1843,6 @@ void RouteMediaInvokedFromAppMenu(Browser* browser) {
       media_router::MediaRouterDialogActivationLocation::APP_MENU);
 }
 
-void CutCopyPaste(Browser* browser, int command_id) {
-  if (command_id == IDC_CUT) {
-    base::RecordAction(UserMetricsAction("Cut"));
-  } else if (command_id == IDC_COPY) {
-    base::RecordAction(UserMetricsAction("Copy"));
-  } else {
-    base::RecordAction(UserMetricsAction("Paste"));
-  }
-  browser->window()->CutCopyPaste(command_id);
-}
-
 void Find(Browser* browser) {
   base::RecordAction(UserMetricsAction("Find"));
   FindInPage(browser, false, true);
@@ -2088,9 +2119,19 @@ bool IsDebuggerAttachedToCurrentTab(Browser* browser) {
                   : false;
 }
 
-void CopyURL(content::WebContents* web_contents) {
+void CopyURL(Browser* browser, content::WebContents* web_contents) {
   ui::ScopedClipboardWriter scw(ui::ClipboardBuffer::kCopyPaste);
   scw.WriteText(base::UTF8ToUTF16(web_contents->GetVisibleURL().spec()));
+
+#if !BUILDFLAG(IS_ANDROID)
+  if (toast_features::IsEnabled(toast_features::kLinkCopiedToast)) {
+    ToastController* const toast_controller =
+        browser->GetFeatures().toast_controller();
+    if (toast_controller) {
+      toast_controller->MaybeShowToast(ToastParams(ToastId::kLinkCopied));
+    }
+  }
+#endif
 }
 
 bool CanCopyUrl(const Browser* browser) {
@@ -2309,6 +2350,22 @@ void OpenCommerceProductSpecificationsTab(Browser* browser,
                                           const int position) {
   if (static_cast<int>(urls.size()) <
       commerce::kProductSpecificationsMinTabsCount) {
+    return;
+  }
+
+  auto* prefs = browser->profile()->GetPrefs();
+  // If user has not accepted the latest disclosure, show the disclosure dialog
+  // first.
+  if (prefs &&
+      prefs->GetInteger(
+          commerce::kProductSpecificationsAcceptedDisclosureVersion) !=
+          static_cast<int>(shopping_service::mojom::
+                               ProductSpecificationsDisclosureVersion::kV1)) {
+    commerce::DialogArgs dialog_args(urls, std::string(), /*set_id=*/"",
+                                     /*in_new_tab=*/true);
+    commerce::ProductSpecificationsDisclosureDialog::ShowDialog(
+        browser->profile(), browser->tab_strip_model()->GetActiveWebContents(),
+        std::move(dialog_args));
     return;
   }
 

@@ -4,6 +4,11 @@
 //
 // This file declares util functions for setup project.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "chrome/installer/setup/setup_util.h"
 
 #include <objbase.h>
@@ -34,14 +39,14 @@
 #include "base/metrics/histogram_macros.h"
 #include "base/numerics/safe_conversions.h"
 #include "base/ranges/algorithm.h"
-#include "base/strings/string_number_conversions.h"
-#include "base/strings/string_split_win.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/version.h"
 #include "base/win/registry.h"
 #include "base/win/win_util.h"
 #include "base/win/windows_version.h"
+#include "build/branding_buildflags.h"
+#include "build/build_config.h"
 #include "chrome/install_static/install_details.h"
 #include "chrome/install_static/install_modes.h"
 #include "chrome/install_static/install_util.h"
@@ -59,10 +64,6 @@
 #include "chrome/installer/util/util_constants.h"
 #include "chrome/installer/util/work_item.h"
 #include "chrome/installer/util/work_item_list.h"
-#include "components/zucchini/zucchini.h"
-#include "components/zucchini/zucchini_integration.h"
-#include "courgette/courgette.h"
-#include "courgette/third_party/bsdiff/bsdiff.h"
 #include "third_party/abseil-cpp/absl/cleanup/cleanup.h"
 
 namespace installer {
@@ -136,74 +137,6 @@ void RemoveLegacyChromeAppCommands(const InstallerState& installer_state) {
 }  // namespace
 
 const char kUnPackStatusMetricsName[] = "Setup.Install.LzmaUnPackStatus";
-
-int CourgettePatchFiles(const base::FilePath& src,
-                        const base::FilePath& patch,
-                        const base::FilePath& dest) {
-  VLOG(1) << "Applying Courgette patch " << patch.value() << " to file "
-          << src.value() << " and generating file " << dest.value();
-
-  if (src.empty() || patch.empty() || dest.empty())
-    return installer::PATCH_INVALID_ARGUMENTS;
-
-  const courgette::Status patch_status = courgette::ApplyEnsemblePatch(
-      src.value().c_str(), patch.value().c_str(), dest.value().c_str());
-  const int exit_code =
-      (patch_status != courgette::C_OK)
-          ? static_cast<int>(patch_status) + kCourgetteErrorOffset
-          : 0;
-
-  LOG_IF(ERROR, exit_code) << "Failed to apply Courgette patch "
-                           << patch.value() << " to file " << src.value()
-                           << " and generating file " << dest.value()
-                           << ". err=" << exit_code;
-
-  return exit_code;
-}
-
-int BsdiffPatchFiles(const base::FilePath& src,
-                     const base::FilePath& patch,
-                     const base::FilePath& dest) {
-  VLOG(1) << "Applying bsdiff patch " << patch.value() << " to file "
-          << src.value() << " and generating file " << dest.value();
-
-  if (src.empty() || patch.empty() || dest.empty())
-    return installer::PATCH_INVALID_ARGUMENTS;
-
-  const int patch_status = bsdiff::ApplyBinaryPatch(src, patch, dest);
-  const int exit_code =
-      patch_status != bsdiff::OK ? patch_status + kBsdiffErrorOffset : 0;
-
-  LOG_IF(ERROR, exit_code) << "Failed to apply bsdiff patch " << patch.value()
-                           << " to file " << src.value()
-                           << " and generating file " << dest.value()
-                           << ". err=" << exit_code;
-
-  return exit_code;
-}
-
-int ZucchiniPatchFiles(const base::FilePath& src,
-                       const base::FilePath& patch,
-                       const base::FilePath& dest) {
-  VLOG(1) << "Applying Zucchini patch " << patch.value() << " to file "
-          << src.value() << " and generating file " << dest.value();
-
-  if (src.empty() || patch.empty() || dest.empty())
-    return installer::PATCH_INVALID_ARGUMENTS;
-
-  const zucchini::status::Code patch_status = zucchini::Apply(src, patch, dest);
-  const int exit_code =
-      (patch_status != zucchini::status::kStatusSuccess)
-          ? static_cast<int>(patch_status) + kZucchiniErrorOffset
-          : 0;
-
-  LOG_IF(ERROR, exit_code) << "Failed to apply Zucchini patch " << patch.value()
-                           << " to file " << src.value()
-                           << " and generating file " << dest.value()
-                           << ". err=" << exit_code;
-
-  return exit_code;
-}
 
 base::Version* GetMaxVersionFromArchiveDir(const base::FilePath& chrome_path) {
   VLOG(1) << "Looking for Chrome version folder under " << chrome_path.value();
@@ -837,29 +770,5 @@ void AddUpdateDowngradeVersionItem(HKEY root,
                                     kRegDowngradeVersion);
   }
 }
-
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-std::wstring UpdateLastWindowsVersion(base::wcstring_view os_version) {
-  constexpr wchar_t kLastWindowsVersion[] = L"LastWindowsVersion";
-
-  base::win::RegKey key;
-  std::wstring last_version;
-  if (key.Create(HKEY_CURRENT_USER, install_static::GetRegistryPath().c_str(),
-                 KEY_QUERY_VALUE | KEY_SET_VALUE) == ERROR_SUCCESS) {
-    key.ReadValue(kLastWindowsVersion, &last_version);
-    if (last_version == os_version) {
-      return last_version;
-    }
-    base::Version version(base::WideToASCII(last_version));
-    // Verify that last_version has a valid Windows version format, and if not,
-    // return an empty string.
-    if (!version.IsValid() || version.components().size() != 4) {
-      last_version.clear();
-    }
-    key.WriteValue(kLastWindowsVersion, os_version.c_str());
-  }
-  return last_version;
-}
-#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
 
 }  // namespace installer
