@@ -68,7 +68,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 index c9e74052c7afb..d271ccc0dca71 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8537,6 +8537,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8540,6 +8540,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           heavy_ad_intervention::features::kHeavyAdPrivacyMitigations)},
  

@@ -617,7 +617,7 @@ diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/
 index 91513d4488166..4fa0ac198e9c6 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -1296,6 +1296,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+@@ -1298,6 +1298,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
      ContextMenuCommand command_id) const {
    DCHECK(command_id > CommandFirst && command_id < CommandLast);
    switch (command_id) {
@@ -625,7 +625,7 @@ index 91513d4488166..4fa0ac198e9c6 100644
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -1397,6 +1398,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+@@ -1399,6 +1400,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    if (!ContainsIndex(context_index))
      return;
    switch (command_id) {
@@ -1526,7 +1526,7 @@ index e7660352853f2..4f45152a72d4c 100644
 -            vector_icons::kAddIcon);
 +                                    features::IsThorium2024()
 +                                    ? kAddIcon
-+                                    : kAddChromeRefreshIcon
++                                    : vector_icons::kAddIcon
 +        );
      tab_strip_control_button->SetProperty(views::kElementIdentifierKey,
                                            kNewTabButtonElementId);

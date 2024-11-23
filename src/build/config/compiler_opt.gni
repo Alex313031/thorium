@@ -5,8 +5,6 @@
 ## For information about compiler flags and optimizations
 ## that this uses, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
 
-import("//build/config/BUILDCONFIG.gn")
-
 declare_args() {
 
   # Whether to enable LLVM's Polly optimizations.
@@ -77,7 +75,9 @@ declare_args() {
   # `-mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq
   #  -mf16c -mlzcnt -mbmi2`
   use_avx512 = false
+}
 
+declare_args() {
   # FMA
   # "Fused Multiply Add" operations
   # Present since Haswell and AMD Piledriver (2nd Gen. refinement
@@ -86,7 +86,7 @@ declare_args() {
   use_fma = use_avx2
 }
 
-if (is_debug || !use_thin_lto) {
+if (is_debug) {
   assert(!use_polly, "use_polly only works with non-debug builds")
   assert(!use_bolt, "use_bolt only works with non-debug builds")
 }
@@ -102,8 +102,7 @@ if (use_avx || use_avx2 || use_fma) {
 # to set use_fma = true even with AVX2 off, such as when making a build for
 # an AMD Piledriver or Steamroller CPU.
 if (use_avx2 && !use_fma) {
-  print("WARNING: Use_avx2 is true while use_fma is false. This will create a 
-         build compiled with AVX2, but without FMA or floating point contraction.")
+  print("WARNING: Use_avx2 is true while use_fma is false. This will create a build compiled with AVX2, but without FMA or floating point contraction.")
   print("This should only be set intentionally for testing.")
 }
 
@@ -111,10 +110,8 @@ if (use_avx2 && !use_fma) {
 # your args. However, there are a few CPUs out there for which this makes sense.
 # Alex313031 TODO: Maybe add -mfma3 -mfma4 for this config?
 if (!use_avx2 && use_fma) {
-  print("WARNING: Use_avx2 is false while use_fma true. This will 
-         create an AVX build with FMA.")
-  print("This should only be set intentionally for testing, or for specific CPUs 
-         that have AVX and FMA, but not AVX2, such as AMD Piledriver.")
+  print("WARNING: Use_avx2 is false while use_fma true. This will create an AVX build with FMA.")
+  print("This should only be set intentionally for testing, or for specific CPUs that have AVX and FMA, but not AVX2, such as AMD Piledriver.")
 }
 
 if (use_fma) {

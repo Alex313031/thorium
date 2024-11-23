@@ -614,7 +614,7 @@ config("compiler") {
       }
     }
 
-    if (use_avx2 || use_avx512)
+    if (use_avx2 || use_avx512) {
       if (is_win) {
         cflags += [ "/clang:-ffp-contract=fast" ]
       } else {
@@ -1246,26 +1246,26 @@ config("compiler_cpu_abi") {
         "-O3",
         "-msse3",
       ]
-      if (use_sse41)
+      if (use_sse41) {
         cflags += [
           "-mssse3",
           "-msse4.1",
         ]
       }
-      if (use_sse42)
+      if (use_sse42) {
         cflags += [
           "-msse4",
           "-msse4.2",
         ]
       }
-      if (use_avx)
+      if (use_avx) {
         cflags += [
           "-mpclmul",
           "-maes",
           "-mavx",
         ]
       }
-      if (use_avx2)
+      if (use_avx2) {
         cflags += [
           "-mavx2",
           "-mfma",
@@ -1276,7 +1276,7 @@ config("compiler_cpu_abi") {
           "-mtune=haswell",
         ]
       }
-      if (use_avx512)
+      if (use_avx512) {
         cflags += [
           "-mavx512f",
           "-mavx512cd",
@@ -1298,25 +1298,25 @@ config("compiler_cpu_abi") {
         ]
       }
       ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-Wl,-mllvm,-import-instr-limit=100", ]
-      if (use_sse41)
+      if (use_sse41) {
         ldflags += [
           "-mssse3",
           "-msse4.1",
         ]
       }
-      if (use_sse42)
+      if (use_sse42) {
         ldflags += [
           "-msse4.2",
         ]
       }
-      if (use_avx)
+      if (use_avx) {
         ldflags += [
           "-mpclmul",
           "-maes",
           "-mavx",
         ]
       }
-      if (use_avx2)
+      if (use_avx2) {
         ldflags += [
           "-mavx2",
           "-mfma",
@@ -1327,7 +1327,7 @@ config("compiler_cpu_abi") {
           "-Wl,-mllvm,-march=haswell",
         ]
       }
-      if (use_avx512)
+      if (use_avx512) {
         ldflags += [
           "-mavx512f",
           "-mavx512cd",
@@ -1356,13 +1356,13 @@ config("compiler_cpu_abi") {
           "-mmmx",
           "-msse2",
         ]
-        if (use_sse3)
+        if (use_sse3) {
           cflags += [ "-msse3", ]
         }
-        if (use_sse41)
+        if (use_sse41) {
           cflags += [ "-mssse3", "-msse4.1", ]
         }
-        if (use_sse42)
+        if (use_sse42) {
           cflags += [ "-msse4", "-msse4.2", ]
         }
       }
@@ -2331,7 +2331,7 @@ config("no_chromium_code") {
       # third-party libraries.
       "-Wno-c++11-narrowing",
     ]
-    if (is_full_optimization_build) {
+    if (is_official_build) {
       cflags += [ "-Xclang", "-O3" ]
     }
     if (!is_nacl) {
