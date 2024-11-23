@@ -174,7 +174,9 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
       high_contrast ? ui::NativeThemeBase::PreferredContrast::kMore
                     : ui::NativeThemeBase::PreferredContrast::kNoPreference);
 
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("auto-dark-mode")) {
+  static const bool auto_dark_mode =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("auto-dark-mode");
+  if (auto_dark_mode) {
     // Brute force NativeUI to update
     ui::NativeTheme::GetInstanceForNativeUi()->set_use_dark_colors(color_utils::IsDark(window_bg_color));
     ui::NativeTheme::GetInstanceForNativeUi()->set_preferred_color_scheme(CalculatePreferredColorScheme());

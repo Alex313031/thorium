@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "components/os_crypt/async/browser/dpapi_key_provider.h"
 
 #include <windows.h>
@@ -37,7 +42,10 @@ constexpr uint8_t kDPAPIKeyPrefix[] = {'D', 'P', 'A', 'P', 'I'};
 std::optional<std::vector<uint8_t>> DecryptKeyWithDPAPI(
     base::span<const uint8_t> ciphertext) {
 
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption")) {
+static const bool disable_encryption =
+    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption");
+
+  if (disable_encryption) {
     return std::vector<uint8_t>(ciphertext.begin(), ciphertext.end());
   }
 

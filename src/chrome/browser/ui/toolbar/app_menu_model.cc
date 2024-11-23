@@ -35,12 +35,14 @@
 #include "chrome/browser/profiles/profile_manager.h"
 #include "chrome/browser/profiles/profile_window.h"
 #include "chrome/browser/profiles/profiles_state.h"
+#include "chrome/browser/search/background/ntp_custom_background_service_factory.h"
 #include "chrome/browser/search/search.h"
 #include "chrome/browser/sharing_hub/sharing_hub_features.h"
 #include "chrome/browser/signin/identity_manager_factory.h"
 #include "chrome/browser/signin/signin_util.h"
 #include "chrome/browser/sync/sync_service_factory.h"
 #include "chrome/browser/sync/sync_ui_util.h"
+#include "chrome/browser/themes/theme_service_factory.h"
 #include "chrome/browser/ui/bookmarks/bookmark_utils.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_commands.h"
@@ -75,6 +77,7 @@
 #include "chrome/browser/ui/views/side_panel/companion/companion_utils.h"
 #include "chrome/browser/ui/web_applications/web_app_dialog_utils.h"
 #include "chrome/browser/ui/web_applications/web_app_launch_utils.h"
+#include "chrome/browser/ui/webui/side_panel/customize_chrome/customize_chrome_page_handler.h"
 #include "chrome/browser/ui/webui/whats_new/whats_new_util.h"
 #include "chrome/browser/upgrade_detector/upgrade_detector.h"
 #include "chrome/browser/web_applications/mojom/user_display_mode.mojom.h"
@@ -227,13 +230,6 @@ std::u16string GetUpgradeDialogTitleText() {
 #endif
   return l10n_util::GetStringUTF16(IDS_RELAUNCH_TO_UPDATE);
 }
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-// Returns the menu item name for Lacros data migration.
-std::u16string GetLacrosDataMigrationMenuItemName() {
-  return l10n_util::GetStringUTF16(IDS_LACROS_DATA_MIGRATION_RELAUNCH);
-}
-#endif
 
 // Returns the appropriate menu label for the IDC_INSTALL_PWA command if
 // available.
@@ -497,6 +493,7 @@ ProfileSubMenuModel::ProfileSubMenuModel(
     if (BuildSyncSection()) {
       AddSeparator(ui::NORMAL_SEPARATOR);
     }
+
     ProfileAttributesEntry* profile_attributes =
         GetProfileAttributesFromProfile(profile);
     // If the profile is being deleted, profile_attributes may be null.
@@ -506,8 +503,10 @@ ProfileSubMenuModel::ProfileSubMenuModel(
           account_info.IsEmpty()
               ? profile_attributes->GetAvatarIcon(
                     avatar_icon_size, /*use_high_res_file=*/true,
-                    /*icon_params=*/
-                    {.has_padding = false, .has_background = false})
+                    GetPlaceholderAvatarIconParamsDependingOnTheme(
+                        ThemeServiceFactory::GetForProfile(profile),
+                        /*background_color_id=*/ui::kColorMenuBackground,
+                        *color_provider))
               : account_info.account_image;
       // The avatar image can be empty if the account image hasn't been
       // fetched yet, if there is no image, or in tests.
@@ -870,6 +869,19 @@ ToolsMenuModel::~ToolsMenuModel() = default;
 // - Developer tools.
 // - Option to enable profiling.
 void ToolsMenuModel::Build(Browser* browser) {
+  if (base::FeatureList::IsEnabled(features::kTabOrganizationAppMenuItem) &&
+      TabOrganizationUtils::GetInstance()->IsEnabled(browser->profile())) {
+    auto* const tab_organization_service =
+        TabOrganizationServiceFactory::GetForProfile(browser->profile());
+    if (tab_organization_service) {
+      AddItemWithStringIdAndVectorIcon(
+          this, IDC_ORGANIZE_TABS, IDS_TAB_ORGANIZE_MENU, kAutoTabGroupsIcon);
+      SetIsNewFeatureAt(
+          GetIndexOfCommandId(IDC_ORGANIZE_TABS).value(),
+          browser->window()->MaybeShowNewBadgeFor(features::kTabOrganization));
+    }
+  }
+
   AddItemWithStringIdAndVectorIcon(this, IDC_NAME_WINDOW, IDS_NAME_WINDOW,
                                    kNameWindowIcon);
 
@@ -880,7 +892,10 @@ void ToolsMenuModel::Build(Browser* browser) {
       GetIndexOfCommandId(IDC_SHOW_READING_MODE_SIDE_PANEL).value(),
       kReadingModeMenuItem);
 
-  if (base::FeatureList::IsEnabled(features::kToolbarPinning)) {
+  if (base::FeatureList::IsEnabled(features::kToolbarPinning) &&
+      CustomizeChromePageHandler::IsSupported(
+          NtpCustomBackgroundServiceFactory::GetForProfile(browser->profile()),
+          browser->profile())) {
     AddItemWithStringIdAndVectorIcon(this, IDC_SHOW_CUSTOMIZE_CHROME_SIDE_PANEL,
                                      IDS_SHOW_CUSTOMIZE_CHROME_SIDE_PANEL,
                                      kEditChromeRefreshIcon);
@@ -1052,11 +1067,6 @@ void AppMenuModel::LogMenuMetrics(int command_id) {
     case IDC_UPGRADE_DIALOG:
       LogMenuAction(MENU_ACTION_UPGRADE_DIALOG);
       break;
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    case IDC_LACROS_DATA_MIGRATION:
-      LogMenuAction(MENU_ACTION_LACROS_DATA_MIGRATION);
-      break;
-#endif
     case IDC_NEW_TAB:
       if (!uma_action_recorded_) {
         base::UmaHistogramMediumTimes("WrenchMenu.TimeToAction.NewTab", delta);
@@ -1730,7 +1740,6 @@ void AppMenuModel::Build() {
   // Build (and, by extension, Init) should only be called once.
   DCHECK_EQ(0u, GetItemCount());
 
-  bool need_separator = false;
   if (app_menu_icon_controller_ &&
       app_menu_icon_controller_->GetTypeAndSeverity().type ==
           AppMenuIconController::IconType::UPGRADE_NOTIFICATION) {
@@ -1743,15 +1752,10 @@ void AppMenuModel::Build() {
                       update_icon);
       AddSeparator(ui::SPACING_SEPARATOR);
     }
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    AddItemWithIcon(IDC_LACROS_DATA_MIGRATION,
-                    GetLacrosDataMigrationMenuItemName(), update_icon);
-    need_separator = true;
-#endif
   }
 
   if (AddSafetyHubMenuItem() || AddGlobalErrorMenuItems() ||
-      AddDefaultBrowserMenuItems() || need_separator) {
+      AddDefaultBrowserMenuItems()) {
     AddSeparator(ui::NORMAL_SEPARATOR);
   }
 
@@ -1885,18 +1889,6 @@ void AppMenuModel::Build() {
         kShowSearchCompanion);
   }
 #endif
-  if (base::FeatureList::IsEnabled(features::kTabOrganizationAppMenuItem) &&
-      TabOrganizationUtils::GetInstance()->IsEnabled(browser_->profile())) {
-    auto* const tab_organization_service =
-        TabOrganizationServiceFactory::GetForProfile(browser_->profile());
-    if (tab_organization_service) {
-      AddItemWithStringIdAndVectorIcon(
-          this, IDC_ORGANIZE_TABS, IDS_TAB_ORGANIZE_MENU, kAutoTabGroupsIcon);
-      SetIsNewFeatureAt(GetIndexOfCommandId(IDC_ORGANIZE_TABS).value(),
-                        browser()->window()->MaybeShowNewBadgeFor(
-                            features::kTabOrganization));
-    }
-  }
 
   AddItemWithStringIdAndVectorIcon(this, IDC_SHOW_TRANSLATE, IDS_SHOW_TRANSLATE,
                                    kTranslateIcon);
@@ -1940,6 +1932,7 @@ void AppMenuModel::Build() {
   sub_menus_.push_back(std::make_unique<HelpMenuModel>(this, browser_));
   AddSubMenuWithStringIdAndVectorIcon(this, IDC_HELP_MENU, IDS_HELP_MENU,
                                       sub_menus_.back().get(), kHelpMenuIcon);
+#else
 #endif
 
   AddItemWithStringIdAndVectorIcon(this, IDC_OPTIONS, IDS_SETTINGS,
