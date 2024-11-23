@@ -85,4 +85,4 @@ use_thin_lto = true
 thin_lto_enable_optimizations = true
 enable_rust = true
 chrome_pgo_phase = 2
-pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/chrome-mac-main-1714331010-b3f7981accee1225faa63f208ce12a58504f49f7-95ecaa23bab87a4b7dab8148cfa9126a5456f1cc.profdata"
+pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/chrome-mac-6723-1732295315-8f9cf47a13b24b0713c4f78b2e3985d5d476d89d-74da9411216ab49f72b5ea57c6e907e5cf436f73.profdata"
