@@ -7,6 +7,9 @@
 
 declare_args() {
 
+  # Whether to use Raspberry Pi specific optimizations.
+  is_raspi = false
+
   # Whether to enable LLVM's Polly optimizations.
   # See https://polly.llvm.org/
   use_polly = false
@@ -84,6 +87,10 @@ declare_args() {
   # of Bulldozer).
   # `-mfma -ffp-contract=fast` (use -mfma3 -mfma4 for Piledriver)
   use_fma = use_avx2
+}
+
+if (current_cpu == "arm" || current_cpu == "arm64") {
+  use_sse3 = false
 }
 
 if (is_debug) {

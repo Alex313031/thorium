@@ -493,10 +493,16 @@ config("compiler") {
   # Linux/Android/Fuchsia common flags setup.
   # ---------------------------------
   if (is_linux || is_chromeos || is_android || is_fuchsia) {
-    asmflags += [ "-fPIC", "-fno-emulated-tls", "-w", ]
-    cflags += [ "-fPIC","-fno-emulated-tls", "-w", ]
-    ldflags += [ "-fPIC", "-Wl,-plugin-opt=-emulated-tls=0", "-w", ]
-    rustflags += [ "-Crelocation-model=pic", "-Awarnings", ]
+    asmflags += [ "-fPIC" ]
+    cflags += [ "-fPIC" ]
+    ldflags += [ "-fPIC" ]
+    rustflags += [ "-Crelocation-model=pic" ]
+    if (current_cpu == "x86" || current_cpu == "x64") {
+      asmflags += [ "-fno-emulated-tls", "-w", ]
+      cflags += [ "-fno-emulated-tls", "-w", ]
+      ldflags += [ "-Wl,-plugin-opt=-emulated-tls=0", "-w", ]
+      rustflags += [ "-Awarnings", ]
+    }
 
     if (is_clang && chrome_pgo_phase == 2 && !is_android) {
       asmflags += [ "-fbasic-block-sections=labels" ]
@@ -614,7 +620,7 @@ config("compiler") {
       }
     }
 
-    if (use_avx2 || use_avx512) {
+    if (use_avx2 || use_avx512 || current_cpu == "arm64") {
       if (is_win) {
         cflags += [ "/clang:-ffp-contract=fast" ]
       } else {
@@ -860,6 +866,10 @@ config("compiler") {
       }
     }
 
+    if (is_win && target_cpu == "arm64") {
+      cflags += [ "-Wno-error", "-Wno-unreachable-code", ]
+    }
+
     # This flag causes LTO to create an .ARM.attributes section with the correct
     # architecture. This is necessary because LLD will refuse to link a program
     # unless the architecture revision in .ARM.attributes is sufficiently new.
@@ -1065,6 +1075,10 @@ config("compiler") {
     # Full RUSTC optimizations.
     "-Copt-level=3",
   ]
+
+  if (current_cpu == "arm64") {
+    rustflags += [ "-Cllvm-args=-fp-contract=fast", "-Ctarget-feature=+neon", ]
+  }
 
   if (use_sse3) {
     rustflags += [ "-Ctarget-feature=+sse3", ]
@@ -1372,6 +1386,10 @@ config("compiler_cpu_abi") {
         cflags += [ "--target=arm-linux-gnueabihf", "-O3", ]
         ldflags += [ "--target=arm-linux-gnueabihf", "-Wl,-O3", ]
       }
+      if (is_android) {
+        cflags += [ "-O3", ]
+        ldflags += [ "-Wl,-O3", ]
+      }
       if (!is_nacl) {
         cflags += [
           "-march=$arm_arch",
@@ -1386,6 +1404,10 @@ config("compiler_cpu_abi") {
           !(is_chromeos_lacros && is_chromeos_device)) {
         cflags += [ "--target=aarch64-linux-gnu", "-O3", ]
         ldflags += [ "--target=aarch64-linux-gnu", "-Wl,-O3", ]
+      }
+      if (is_android) {
+        cflags += [ "-O3", ]
+        ldflags += [ "-Wl,-O3", ]
       }
     } else if (current_cpu == "mipsel" && !is_nacl) {
       ldflags += [ "-Wl,--hash-style=sysv" ]
@@ -2537,6 +2559,10 @@ if (is_win) {
     ]
   }
 
+  if (current_cpu == "arm64") {
+    common_optimize_on_cflags += [ "-march=armv8-a+simd", ]
+  }
+
   common_optimize_on_cflags += [
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-gvn-hoist",
@@ -2630,6 +2656,16 @@ if (is_win) {
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
 
+  if (current_cpu == "arm64") {
+    common_optimize_on_cflags += [ "-march=armv8-a+simd", ]
+    if (is_raspi == true) {
+      common_optimize_on_cflags += [ "-mtune=cortex-a72", ]
+    }
+    if (is_mac) {
+      common_optimize_on_cflags += [ "-march=armv8.3-a+simd", ]
+    }
+  }
+
   common_optimize_on_cflags += [
     "-mllvm", "-aggressive-ext-opt",
     "-mllvm", "-enable-gvn-hoist",
@@ -2683,6 +2719,13 @@ if (is_win) {
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
+
+  if (current_cpu == "arm64") {
+    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
+    if (is_mac) {
+      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd", ]
+    }
+  }
 
   if (use_sse3) {
     common_optimize_on_ldflags += [ "-msse3", ]
@@ -3422,7 +3465,11 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG:NONE" ]
+    if (current_cpu == "arm64" || target_cpu == "arm64")
+      ldflags = [ "/DEBUG" ]
+    } else {
+      ldflags = [ "/DEBUG:NONE" ]
+    }
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]

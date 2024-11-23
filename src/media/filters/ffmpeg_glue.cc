@@ -180,9 +180,10 @@ const char* FFmpegGlue::GetAllowedVideoDecoders() {
   return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264,hevc" : "";
 #else
   return IsBuiltInVideoCodec(VideoCodec::kH264) ? "h264" : "";
+#endif // BUILDFLAG(ENABLE_PLATFORM_HEVC)
 #else
   return "";
-#endif
+#endif // BUILDFLAG(USE_PROPRIETARY_CODECS) && BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS)
 }
 
 bool FFmpegGlue::OpenContext(bool is_local_file) {

@@ -68,9 +68,6 @@ declare_args() {
   # Requires profiling to be set to true.
   enable_full_stack_frames_for_profiling = false
 
-  # Whether to use Raspberry Pi specific optimizations.
-  is_raspi = false
-
   # Enable fatal linker warnings. Building Chromium with certain versions
   # of binutils can cause linker warning.
   fatal_linker_warnings = true
@@ -500,8 +497,14 @@ config("compiler") {
     cflags += [ "-fPIC" ]
     ldflags += [ "-fPIC" ]
     rustflags += [ "-Crelocation-model=pic" ]
+    if (current_cpu == "x86" || current_cpu == "x64") {
+      asmflags += [ "-fno-emulated-tls", "-w", ]
+      cflags += [ "-fno-emulated-tls", "-w", ]
+      ldflags += [ "-Wl,-plugin-opt=-emulated-tls=0", "-w", ]
+      rustflags += [ "-Awarnings", ]
+    }
 
-    if (is_clang && chrome_pgo_phase == 2 && !is_android && !(target_cpu == "arm64" || target_cpu == "arm")) {
+    if (is_clang && chrome_pgo_phase == 2 && !is_android) {
       asmflags += [ "-fbasic-block-sections=labels" ]
       cflags += [ "-fbasic-block-sections=labels" ]
       rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
@@ -617,11 +620,19 @@ config("compiler") {
       }
     }
 
-    # TODO(crbug.com/40192287): Investigate why/if this should be needed.
-    if (is_win) {
-      cflags += [ "/clang:-ffp-contract=fast" ]
+    if (use_avx2 || use_avx512 || current_cpu == "arm64") {
+      if (is_win) {
+        cflags += [ "/clang:-ffp-contract=fast" ]
+      } else {
+        cflags += [ "-ffp-contract=fast" ]
+      }
     } else {
-      cflags += [ "-ffp-contract=fast" ]
+      # TODO(crbug.com/40192287): Investigate why/if this should be needed.
+      if (is_win) {
+        cflags += [ "/clang:-ffp-contract=off" ]
+      } else {
+        cflags += [ "-ffp-contract=off" ]
+      }
     }
   }
 
@@ -1069,6 +1080,25 @@ config("compiler") {
     rustflags += [ "-Cllvm-args=-fp-contract=fast", "-Ctarget-feature=+neon", ]
   }
 
+  if (use_sse3) {
+    rustflags += [ "-Ctarget-feature=+sse3", ]
+  }
+  if (use_sse41) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1", ]
+  }
+  if (use_sse42) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2", ]
+  }
+  if (use_avx) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx", ]
+  }
+  if (use_avx2) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
+  }
+  if (use_avx512) {
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f,+-mavx512vl", "-Cllvm-args=-fp-contract=fast", ]
+  }
+
   if (!is_win || force_rustc_color_output) {
     # Colorize error output. The analogous flag is passed for clang. This must
     # be platform-gated since rustc will unconditionally output ANSI escape
@@ -1229,14 +1259,48 @@ config("compiler_cpu_abi") {
         "-m64",
         "-O3",
         "-msse3",
-        "-mssse3",
-        "-msse4",
-        "-msse4.1",
-        "-msse4.2",
-        "-mpclmul",
-        "-maes",
-        "-mavx",
       ]
+      if (use_sse41) {
+        cflags += [
+          "-mssse3",
+          "-msse4.1",
+        ]
+      }
+      if (use_sse42) {
+        cflags += [
+          "-msse4",
+          "-msse4.2",
+        ]
+      }
+      if (use_avx) {
+        cflags += [
+          "-mpclmul",
+          "-maes",
+          "-mavx",
+        ]
+      }
+      if (use_avx2) {
+        cflags += [
+          "-mavx2",
+          "-mfma",
+          "-mf16c",
+          "-mlzcnt",
+          "-mbmi2",
+          "-ffp-contract=fast",
+          "-mtune=haswell",
+        ]
+      }
+      if (use_avx512) {
+        cflags += [
+          "-mavx512f",
+          "-mavx512cd",
+          "-mavx512vl",
+          "-mavx512bw",
+          "-mavx512dq",
+          "-mtune=skylake-avx512",
+        ]
+      }
+
       # Minimum SIMD support for devices running lacros.
       # See https://crbug.com/1475858
       if (is_chromeos || is_chromeos_lacros) {
@@ -1247,17 +1311,74 @@ config("compiler_cpu_abi") {
           "-msse4.1",
         ]
       }
-      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-mssse3", "-msse4", "-msse4.1", "-msse4.2", "-mpclmul", "-maes", "-mavx", "-Wl,-mllvm,-import-instr-limit=100", ]
+      ldflags += [ "-m64", "-Wl,-O3", "-msse3", "-Wl,-mllvm,-import-instr-limit=100", ]
+      if (use_sse41) {
+        ldflags += [
+          "-mssse3",
+          "-msse4.1",
+        ]
+      }
+      if (use_sse42) {
+        ldflags += [
+          "-msse4.2",
+        ]
+      }
+      if (use_avx) {
+        ldflags += [
+          "-mpclmul",
+          "-maes",
+          "-mavx",
+        ]
+      }
+      if (use_avx2) {
+        ldflags += [
+          "-mavx2",
+          "-mfma",
+          "-mf16c",
+          "-mlzcnt",
+          "-mbmi2",
+          "-Wl,-mllvm,-fp-contract=fast",
+          "-Wl,-mllvm,-march=haswell",
+        ]
+      }
+      if (use_avx512) {
+        ldflags += [
+          "-mavx512f",
+          "-mavx512cd",
+          "-mavx512vl",
+          "-mavx512bw",
+          "-mavx512dq",
+          "-Wl,-mllvm,-march=skylake-avx512",
+        ]
+      }
     } else if (current_cpu == "x86") {
       cflags += [ "-m32" ]
-      ldflags += [ "-m32", "-Wl,-O3", "-msse3", ]
+      ldflags += [ "-m32", "-Wl,-O3", ]
+      if (use_sse3) {
+        ldflags += [ "-msse3", ]
+      }
+      if (use_sse41) {
+        ldflags += [ "-mssse3", "-msse4.1", ]
+      }
+      if (use_sse42) {
+        ldflags += [ "-msse4.2", ]
+      }
       if (!is_nacl) {
         cflags += [
           "-mfpmath=sse",
           "-O3",
           "-mmmx",
-          "-msse3",
+          "-msse2",
         ]
+        if (use_sse3) {
+          cflags += [ "-msse3", ]
+        }
+        if (use_sse41) {
+          cflags += [ "-mssse3", "-msse4.1", ]
+        }
+        if (use_sse42) {
+          cflags += [ "-msse4", "-msse4.2", ]
+        }
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl &&
@@ -2443,15 +2564,68 @@ if (is_win) {
   }
 
   common_optimize_on_cflags += [
+    "-mllvm", "-aggressive-ext-opt",
+    "-mllvm", "-enable-gvn-hoist",
     "/O2",
     "/clang:-O3",
     "-Xclang", "-O3",
   ]
+  if (use_sse3) {
+    common_optimize_on_cflags += [ "/clang:-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_cflags += [
+      "/clang:-mssse3",
+      "/clang:-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_cflags += [
+      "/clang:-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_cflags += [
+      "/clang:-mpclmul",
+      "/clang:-maes",
+      "/clang:-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_cflags += [
+      "/clang:-mavx2",
+      "/clang:-mfma",
+      "/clang:-mf16c",
+      "/clang:-mlzcnt",
+      "/clang:-mbmi2",
+      "/clang:-ffp-contract=fast",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_cflags += [
+      "/clang:-mavx512f",
+      "/clang:-mavx512cd",
+      "/clang:-mavx512vl",
+      "/clang:-mavx512bw",
+      "/clang:-mavx512dq",
+    ]
+  }
 
   common_optimize_on_ldflags += [
     "-mllvm:-aggressive-ext-opt",
     "-mllvm:-enable-gvn-hoist",
   ]
+
+  if (use_avx2) {
+    common_optimize_on_ldflags += [
+      "-mllvm:-march=haswell",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_ldflags += [
+      "-mllvm:-march=skylake-avx512",
+    ]
+  }
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
@@ -2498,11 +2672,46 @@ if (is_win) {
     "-O3",
   ]
 
-  if (current_cpu == "arm64") {
-    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
-    if (is_mac) {
-      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd", ]
-    }
+  if (use_sse3) {
+    common_optimize_on_cflags += [ "-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_cflags += [
+      "-mssse3",
+      "-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_cflags += [
+      "-msse4",
+      "-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_cflags += [
+      "-mpclmul",
+      "-maes",
+      "-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_cflags += [
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-mlzcnt",
+      "-mbmi2",
+      "-ffp-contract=fast",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_cflags += [
+      "-mavx512f",
+      "-mavx512cd",
+      "-mavx512vl",
+      "-mavx512bw",
+      "-mavx512dq",
+    ]
   }
 
   common_optimize_on_ldflags += [
@@ -2510,6 +2719,56 @@ if (is_win) {
     "-Wl,-mllvm,-enable-gvn-hoist",
     "-Wl,-O3",
   ]
+
+  if (current_cpu == "arm64") {
+    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
+    if (is_mac) {
+      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd", ]
+    }
+  }
+
+  if (use_sse3) {
+    common_optimize_on_ldflags += [ "-msse3", ]
+  }
+  if (use_sse41) {
+    common_optimize_on_ldflags += [
+      "-mssse3",
+      "-msse4.1",
+    ]
+  }
+  if (use_sse42) {
+    common_optimize_on_ldflags += [
+      "-msse4.2",
+    ]
+  }
+  if (use_avx) {
+    common_optimize_on_ldflags += [
+      "-mpclmul",
+      "-maes",
+      "-mavx",
+    ]
+  }
+  if (use_avx2) {
+    common_optimize_on_ldflags += [
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-mlzcnt",
+      "-mbmi2",
+      "-Wl,-mllvm,-fp-contract=fast",
+      "-Wl,-mllvm,-march=haswell",
+    ]
+  }
+  if (use_avx512) {
+    common_optimize_on_ldflags += [
+      "-mavx512f",
+      "-mavx512cd",
+      "-mavx512vl",
+      "-mavx512bw",
+      "-mavx512dq",
+      "-Wl,-mllvm,-march=skylake-avx512",
+    ]
+  }
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
@@ -2684,7 +2943,7 @@ config("optimize") {
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   } else if (optimize_for_size || is_chromeos) {
     # Favor size over speed.
     # -Os in clang is more of a size-conscious -O2 than "size at any cost"
@@ -2708,14 +2967,14 @@ config("optimize") {
 
     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
     # vectorization while otherwise optimizing for size.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   } else {
     cflags = [ "-O3" ] + common_optimize_on_cflags
 
     # The `-O3` for clang turns on extra optimizations compared to the standard
     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
     # to use.
-    rustflags = [ "-Copt-level=3" ]
+    rustflags = [ "-Copt-level=3", ]
   }
   ldflags = common_optimize_on_ldflags
 }
@@ -3206,7 +3465,11 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    ldflags = [ "/DEBUG" ]
+    if (current_cpu == "arm64" || target_cpu == "arm64")
+      ldflags = [ "/DEBUG" ]
+    } else {
+      ldflags = [ "/DEBUG:NONE" ]
+    }
 
     # All configs using /DEBUG should include this:
     configs = [ ":win_pdbaltpath" ]
