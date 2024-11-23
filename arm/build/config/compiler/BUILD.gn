@@ -3465,7 +3465,7 @@ config("minimal_symbols") {
 # names in the final debug information.
 config("no_symbols") {
   if (is_win) {
-    if (current_cpu == "arm64" || target_cpu == "arm64")
+    if (current_cpu == "arm64" || target_cpu == "arm64") {
       ldflags = [ "/DEBUG" ]
     } else {
       ldflags = [ "/DEBUG:NONE" ]
