@@ -154,7 +154,7 @@ index fe2ce670da340..2d4493a3800c6 100644
  BASE_EXPORT int GetMinLogLevel();
  
 +// For Thorium --verbose flag
-+BASE_EXPORT int IsVerbose();
++BASE_EXPORT bool IsVerbose();
 +
  // Used by LOG_IS_ON to lazy-evaluate stream arguments.
  BASE_EXPORT bool ShouldCreateLogMessage(int severity);
