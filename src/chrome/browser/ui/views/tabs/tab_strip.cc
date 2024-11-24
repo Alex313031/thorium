@@ -1844,11 +1844,9 @@ void TabStrip::OnMouseEventInTab(views::View* source,
 }
 
 void TabStrip::UpdateHoverCard(Tab* tab, HoverCardUpdateType update_type) {
-  static const std::u16string tab_hover_cards_tooltip =
-      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("tab-hover-cards") == "tooltip";
-  static const std::u16string tab_hover_cards_none =
-      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("tab-hover-cards") == "none";
-  if (tab_hover_cards_tooltip || tab_hover_cards_none) {
+  static const bool disable_hover_cards =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("tab-hover-cards");
+  if (disable_hover_cards) {
     return;
   } else {
     tab_container_->UpdateHoverCard(tab, update_type);

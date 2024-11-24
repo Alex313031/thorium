@@ -321,16 +321,6 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
                            std::end(kDevToolsAcceleratorMap));
     }
 
-    // See https://devblogs.microsoft.com/oldnewthing/20040329-00/?p=40003
-    // Doing this check here and not at the bottom since kUIDebugAcceleratorMap
-    // contains Ctrl+Alt keys but we don't enable those for the public.
-#if DCHECK_IS_ON()
-    constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
-    for (auto& mapping : *accelerators)
-      VLOG((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
-          << "Accelerators with Ctrl+Alt are reserved by Windows.";
-#endif
-
 #if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
     if (base::FeatureList::IsEnabled(
             lens::features::kEnableRegionSearchKeyboardShortcut)) {

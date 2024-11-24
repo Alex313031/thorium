@@ -5,6 +5,7 @@
 #ifndef CHROME_BROWSER_UI_VIEWS_TOOLBAR_RELOAD_BUTTON_H_
 #define CHROME_BROWSER_UI_VIEWS_TOOLBAR_RELOAD_BUTTON_H_
 
+#include "base/command_line.h"
 #include "base/memory/raw_ptr.h"
 #include "base/time/time.h"
 #include "base/timer/timer.h"
@@ -68,6 +69,9 @@ class ReloadButton : public ToolbarButton,
 
  private:
   friend class ReloadButtonTest;
+
+  const bool disable_thorium_icons =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
 
   std::unique_ptr<ui::SimpleMenuModel> CreateMenuModel();
 

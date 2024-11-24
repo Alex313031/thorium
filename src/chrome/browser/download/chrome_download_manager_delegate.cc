@@ -1888,24 +1888,13 @@ bool ChromeDownloadManagerDelegate::ShouldBlockFile(
 void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadOpenedReport(
     DownloadItem* download,
     bool show_download_in_folder) {
-#if BUILDFLAG(FULL_SAFE_BROWSING)
   return;
-#endif
-  if (!download->GetAutoOpened()) {
-    download::DownloadContent download_content =
-        download::DownloadContentFromMimeType(download->GetMimeType(), false);
-    safe_browsing::RecordDownloadOpenedLatency(
-        download->GetDangerType(), download_content, base::Time::Now(),
-        download->GetEndTime(), show_download_in_folder);
-  }
 }
 
 void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadCanceledReport(
     DownloadItem* download,
-    bool is_shutdown) {
-#if BUILDFLAG(FULL_SAFE_BROWSING)
+    bool is_shutdown) {a
   return;
-#endif
 }
 
 void ChromeDownloadManagerDelegate::CheckDownloadAllowed(

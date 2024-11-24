@@ -729,7 +729,7 @@ void Tab::OnGestureEvent(ui::GestureEvent* event) {
 
 std::u16string Tab::GetTooltipText(const gfx::Point& p) const {
   // Tab hover cards don't replace tooltips for tabs in all cases.
-  static const std::u16string tab_hover_cards_tooltip =
+  const auto tab_hover_cards_tooltip =
       base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("tab-hover-cards") == "tooltip";
   if (tab_hover_cards_tooltip) {
     return GetTooltipText(data_.title, GetAlertStateToShow(data_.alert_state));
