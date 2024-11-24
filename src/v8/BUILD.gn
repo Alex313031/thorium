@@ -1485,7 +1485,7 @@ config("toolchain") {
       # applies only to executables and shared libraries produced by V8 since
       # ldflags are not pushed to dependants.
       cflags += [ "/O2", "-Xclang", "-O3", "/clang:-msse3", ]
-      ldflags += [ "/STACK:2097152" ]
+      ldflags += [ "/STACK:2097152", ]
       if (use_sse41) {
         cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
       }
@@ -1522,8 +1522,11 @@ config("toolchain") {
   }
   if (is_linux || is_chromeos || is_android || is_mac) {
     # Full optimization for V8.
-    cflags += [ "-O3", "-msse3" ]
-    ldflags += [ "-Wl,-O3" ]
+    cflags += [ "-O3", ]
+    ldflags += [ "-Wl,-O3", ]
+    if (use_sse3) {
+      cflags += [ "-msse3", ]
+    }
     if (use_sse41) {
       cflags += [ "-mssse3", "-msse4.1", ]
     }
