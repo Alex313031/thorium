@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-PATH_COLOR_ARGB, 0xFF, 0xE5, 0x1C, 0x23,
 CANVAS_DIMENSIONS, 16,
+PATH_COLOR_ARGB, 0xFF, 0xE5, 0x1C, 0x23,
 CIRCLE, 8, 8, 8,
 CLOSE,
 NEW_PATH,
