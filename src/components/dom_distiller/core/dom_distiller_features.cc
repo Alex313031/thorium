@@ -13,15 +13,16 @@
 
 namespace dom_distiller {
 
-static const bool kReaderModeDesktop =
-    base::CommandLine::ForCurrentProcess()->HasSwitch("reader-mode");
-
 bool IsDomDistillerEnabled() {
+  static const bool kReaderModeDesktop =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("reader-mode");
   return base::CommandLine::ForCurrentProcess()->HasSwitch(
       switches::kEnableDomDistiller) || kReaderModeDesktop;
 }
 
 bool ShouldStartDistillabilityService() {
+  static const bool kReaderModeDesktop =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("reader-mode");
   return base::CommandLine::ForCurrentProcess()->HasSwitch(
       switches::kEnableDistillabilityService) || kReaderModeDesktop;
 }

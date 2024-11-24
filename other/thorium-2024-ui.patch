@@ -1,12 +1,24 @@
+diff --git a/base/BUILD.gn b/base/BUILD.gn
+index 9247e9b3f4c92..c73f6fdd5e4f2 100644
+--- a/base/BUILD.gn
++++ b/base/BUILD.gn
+@@ -2532,6 +2532,7 @@ buildflag_header("debugging_buildflags") {
+     "ENABLE_ALLOCATION_STACK_TRACE_RECORDER=$build_allocation_stack_trace_recorder",
+     "ENABLE_ALLOCATION_TRACE_RECORDER_FULL_REPORTING=$build_allocation_trace_recorder_full_reporting",
+     "PRINT_UNSYMBOLIZED_STACK_TRACES=$print_unsymbolized_stack_traces",
++    "THORIUM_DEBUG=$thorium_debug",
+   ]
+ }
+ 
 diff --git a/base/check.cc b/base/check.cc
-index bd63d5a88e34e..de729bfc6db5a 100644
+index bd63d5a88e34e..1bed253cb50ee 100644
 --- a/base/check.cc
 +++ b/base/check.cc
 @@ -323,6 +323,7 @@ std::ostream& CheckError::stream() {
  }
  
  CheckError::~CheckError() {
-+#if !BUILDFLAG(IS_DEBUG)
++#if !BUILDFLAG(THORIUM_DEBUG)
    // TODO(crbug.com/40254046): Consider splitting out CHECK from DCHECK so that
    // the destructor can be marked [[noreturn]] and we don't need to check
    // severity in the destructor.
@@ -14,36 +26,139 @@ index bd63d5a88e34e..de729bfc6db5a 100644
    if (is_fatal) {
      base::ImmediateCrash();
    }
-+#endif // !BUILDFLAG(IS_DEBUG)
++#endif // !BUILDFLAG(THORIUM_DEBUG)
  }
  
  CheckError::CheckError(LogMessage* log_message) : log_message_(log_message) {}
+diff --git a/base/debug/debug.gni b/base/debug/debug.gni
+index 1d236d210a16f..b5059c81559ec 100644
+--- a/base/debug/debug.gni
++++ b/base/debug/debug.gni
+@@ -26,6 +26,13 @@ declare_args() {
+   # Even if it's disabled we still collect some data, i.e. total number of
+   # allocations. All other data will be set to a default value.
+   build_allocation_trace_recorder_full_reporting = false
++
++  # A special build flag for the Thorium debug builds.
++  #
++  # This enables stack traces in logs and non-fatalizes DCHECKs.
++  # Ultimately, it should help users collect necessary data for browser issues
++  # without setting up a dedicated debugger.
++  thorium_debug = is_debug
+ }
+ 
+ assert(!(build_allocation_stack_trace_recorder && is_fuchsia),
+diff --git a/base/files/file_util_win.cc b/base/files/file_util_win.cc
+index 7cda11126e61e..fe82b35a1a5d1 100644
+--- a/base/files/file_util_win.cc
++++ b/base/files/file_util_win.cc
+@@ -883,8 +883,9 @@ bool IsLink(const FilePath& file_path) {
+ }
+ 
+ bool GetFileInfo(const FilePath& file_path, File::Info* results) {
++#if !BUILDFLAG(THORIUM_DEBUG)
+   ScopedBlockingCall scoped_blocking_call(FROM_HERE, BlockingType::MAY_BLOCK);
+-
++#endif
+   WIN32_FILE_ATTRIBUTE_DATA attr;
+   if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
+                            &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index 0d93ca4713624..3df6d90c2539b 100644
+index 0d93ca4713624..98f6a32b1962a 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
-@@ -589,6 +589,10 @@ bool ShouldCreateLogMessage(int severity) {
-   if (severity < g_min_log_level)
-     return false;
+@@ -457,6 +457,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
+   }
+ }
  
-+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("verbose")) {
++#if !BUILDFLAG(THORIUM_DEBUG)
+ void SetLogFatalCrashKey(LogMessage* log_message) {
+ #if !BUILDFLAG(IS_NACL)
+   // In case of an out-of-memory condition, this code could be reentered when
+@@ -477,6 +478,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
+ 
+ #endif  // !BUILDFLAG(IS_NACL)
+ }
++#endif
+ 
+ std::string BuildCrashString(const char* file,
+                              int line,
+@@ -585,9 +587,17 @@ int GetMinLogLevel() {
+   return g_min_log_level;
+ }
+ 
++bool IsVerbose() {
++  return base::CommandLine::ForCurrentProcess()->HasSwitch("verbose");
++}
++
+ bool ShouldCreateLogMessage(int severity) {
+-  if (severity < g_min_log_level)
++  if (severity < g_min_log_level) {
+     return false;
++  }
++  if (IsVerbose()) {
 +    return true;
 +  }
-+
+ 
    // Return true here unless we know ~LogMessage won't do anything.
    return g_logging_destination != LOG_NONE || g_log_message_handler ||
-          severity >= kAlwaysPrintErrorLevel;
-@@ -602,6 +606,10 @@ bool ShouldLogToStderr(int severity) {
-   if (g_logging_destination & LOG_TO_STDERR)
+@@ -599,8 +609,12 @@ bool ShouldCreateLogMessage(int severity) {
+ // set, or only LOG_TO_FILE is set, since that is useful for local development
+ // and debugging.
+ bool ShouldLogToStderr(int severity) {
+-  if (g_logging_destination & LOG_TO_STDERR)
++  if (g_logging_destination & LOG_TO_STDERR) {
      return true;
- 
-+  if (base::CommandLine::ForCurrentProcess()->HasSwitch("verbose")) {
++  }
++  if (IsVerbose()) {
 +    return true;
 +  }
-+
+ 
  #if BUILDFLAG(IS_FUCHSIA)
    // Fuchsia will persist data logged to stdio by a component, so do not emit
-   // logs to stderr unless explicitly configured to do so.
+@@ -731,9 +745,11 @@ void LogMessage::Flush() {
+   // Don't let actions from this method affect the system error after returning.
+   base::ScopedClearLastError scoped_clear_last_error;
+ 
++#if !BUILDFLAG(THORIUM_DEBUG)
+   size_t stack_start = stream_.str().length();
++#endif
+ #if !defined(OFFICIAL_BUILD) && !BUILDFLAG(IS_NACL) && !defined(__UCLIBC__) && \
+-    !BUILDFLAG(IS_AIX)
++    !BUILDFLAG(IS_AIX) || BUILDFLAG(THORIUM_DEBUG)
+   // Include a stack trace on a fatal, unless a debugger is attached.
+   if (severity_ == LOGGING_FATAL && !base::debug::BeingDebugged()) {
+     base::debug::StackTrace stack_trace;
+@@ -766,6 +782,7 @@ void LogMessage::Flush() {
+   std::string str_newline(stream_.str());
+   TraceLogMessage(file_, line_, str_newline.substr(message_start_));
+ 
++#if !BUILDFLAG(THORIUM_DEBUG)
+   // FATAL messages should always run the assert handler and crash, even if a
+   // message handler marks them as otherwise handled.
+   absl::Cleanup handle_fatal_message = [&] {
+@@ -776,6 +793,7 @@ void LogMessage::Flush() {
+ 
+   if (severity_ == LOGGING_FATAL)
+     SetLogFatalCrashKey(this);
++#endif
+ 
+   // Give any log message handler first dibs on the message.
+   if (g_log_message_handler &&
+diff --git a/base/logging.h b/base/logging.h
+index fe2ce670da340..2d4493a3800c6 100644
+--- a/base/logging.h
++++ b/base/logging.h
+@@ -301,6 +301,9 @@ BASE_EXPORT void SetMinLogLevel(int level);
+ // Gets the current log level.
+ BASE_EXPORT int GetMinLogLevel();
+ 
++// For Thorium --verbose flag
++BASE_EXPORT int IsVerbose();
++
+ // Used by LOG_IS_ON to lazy-evaluate stream arguments.
+ BASE_EXPORT bool ShouldCreateLogMessage(int severity);
+ 
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
@@ -426,7 +541,7 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      case LOCATION_BAR_HEIGHT:
 -      return touch_ui ? 36 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 34 : 30;
++        return touch_ui ? 34 : 32;
 +      } else {
 +        return touch_ui ? 36 : 34;
 +      }
@@ -465,7 +580,7 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      case TOOLBAR_BUTTON_HEIGHT:
 -      return touch_ui ? 48 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 46 : 30;
++        return touch_ui ? 46 : 32;
 +      } else {
 +        return touch_ui ? 48 : 34;
 +      }
@@ -2663,6 +2778,19 @@ index 87d186a04e66c..01beccd365540 100644
    <structure type="chrome_scaled_image" name="IDR_AT_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
    <structure type="chrome_scaled_image" name="IDR_AU_YAHOO_COM_PNG" file="search_engine_choice/yahoo_com.png" />
    <structure type="chrome_scaled_image" name="IDR_BING_COM_PNG" file="search_engine_choice/bing_com.png" />
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+index 9e5567aec56dc..0e3978ff8da39 100644
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -3538,7 +3538,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
+     }
+   }
+ 
+-#if BUILDFLAG(IS_WIN) && !defined(OFFICIAL_BUILD)
++#if BUILDFLAG(IS_WIN) && !defined(OFFICIAL_BUILD) || BUILDFLAG(THORIUM_DEBUG)
+   // Needed because we can't show the dialog from the sandbox. Don't pass
+   // --no-sandbox in official builds because that would bypass the bad_flgs
+   // prompt.
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
 index 595af68372edc..5ce90c5dd4e8c 100644
 --- a/ui/base/ui_base_features.cc

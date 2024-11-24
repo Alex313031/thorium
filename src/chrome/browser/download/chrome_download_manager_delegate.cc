@@ -1893,7 +1893,7 @@ void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadOpenedReport(
 
 void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadCanceledReport(
     DownloadItem* download,
-    bool is_shutdown) {a
+    bool is_shutdown) {
   return;
 }
 
