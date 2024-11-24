@@ -130,7 +130,7 @@ std::unique_ptr<content::CdmInfo> CreateCdmInfoFromWidevineDirectory(
         // BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT)) && (BUILDFLAG(IS_LINUX) ||
         // BUILDFLAG(IS_CHROMEOS))
 
-#if (BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) || BUILDFLAG(BUNDLE_WIDEVINE_CDM)) && \
+#if BUILDFLAG(BUNDLE_WIDEVINE_CDM) && \
     (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
 // On Linux/ChromeOS we have to preload the CDM since it uses the zygote
 // sandbox. On Windows and Mac, CDM registration is handled by Component
@@ -151,8 +151,8 @@ std::unique_ptr<content::CdmInfo> GetBundledWidevine() {
 
   return CreateCdmInfoFromWidevineDirectory(install_dir);
 }
-#endif  // (BUILDFLAG(ENABLE_WIDEVINE_CDM_COMPONENT) || BUILDFLAG(BUNDLE_WIDEVINE_CDM)) && (BUILDFLAG(IS_LINUX) ||
-        // BUILDFLAG(IS_CHROMEOS))
+#endif  // BUILDFLAG(BUNDLE_WIDEVINE_CDM) &&
+        // (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
 
 #if BUILDFLAG(IS_CHROMEOS_LACROS)
 // ChromeOS Lacros should use the Widevine CDM bundled with ChromeOS Ash.
