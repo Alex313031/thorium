@@ -82,4 +82,4 @@ enable_rust = true
 # enable_all_rust_features = false
 # init_stack_vars_zero = true
 pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/speedometer2.profdata"
-# chrome-mac-arm-6478-1718140332-a5d624b0263722fc03c4f7de8132b821227e92a0-0f6ccde38577332705f7d4c9f054388ecf6f0e23.profdata
+# chrome-mac-arm-6723-1732403664-6b096b117dfedda5f55cd1031be458f9d51fb14d-01471df40b957d1278882145f18381d751cee7da.profdata

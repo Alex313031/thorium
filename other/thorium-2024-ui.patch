@@ -1613,7 +1613,7 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index e7660352853f2..4f45152a72d4c 100644
+index e7660352853f2..61d1358944afe 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -19,6 +19,7 @@
