@@ -362,7 +362,7 @@ diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
 index c279607332..012c89422f 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
-@@ -232,7 +232,19 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
+@@ -235,7 +235,19 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
      "libavcodec/hevc_sei.c",
      "libavcodec/hevcdec.c",
      "libavcodec/hevcdsp.c",
@@ -383,7 +383,7 @@ index c279607332..012c89422f 100644
    ]
  
    ffmpeg_c_sources += [
-@@ -287,7 +299,10 @@ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
+@@ -469,7 +481,10 @@ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      "libavcodec/x86/hevc_mc.asm",
      "libavcodec/x86/hevc_sao.asm",
      "libavcodec/x86/hevc_sao_10bit.asm",

@@ -99,7 +99,7 @@ index 0d93ca4713624..98abb80818124 100644
 +  if (severity < g_min_log_level) {
      return false;
 +  }
-+  if (IsVerbose()) {
++  if (features::IsVerbose()) {
 +    return true;
 +  }
  
@@ -113,7 +113,7 @@ index 0d93ca4713624..98abb80818124 100644
 +  if (g_logging_destination & LOG_TO_STDERR) {
      return true;
 +  }
-+  if (IsVerbose()) {
++  if (features::IsVerbose()) {
 +    return true;
 +  }
  

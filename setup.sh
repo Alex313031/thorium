@@ -93,6 +93,7 @@ patchThor () {
 	cp -v other/fix-policy-templates.patch ${CR_SRC_DIR}/ &&
 	cp -v other/ftp-support-thorium.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium-2024-ui.patch ${CR_SRC_DIR}/ &&
+	cp -v other/GPC.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -108,6 +109,11 @@ patchThor () {
 	printf "${YEL}Patching FTP support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./ftp-support-thorium.patch &&
+
+	printf "\n" &&
+	printf "${YEL}Patching in GPC support...${c0}\n" &&
+	cd ${CR_SRC_DIR} &&
+	git apply --reject ./GPC.patch
 
 	printf "\n" &&
 	printf "${YEL}Patching for Thorium 2024 UI...${c0}\n" &&
