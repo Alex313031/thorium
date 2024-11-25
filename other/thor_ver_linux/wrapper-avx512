@@ -112,7 +112,7 @@ if [ $want_temp_profile -eq 1 ] ; then
   CACHE="$TEMP_PROFILE/cache"
   export PROFILE
   export CACHE
-  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --user-data-dir=$TEMP_PROFILE --disk-cache-dir=$CACHE"
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --disk-cache-dir=$CACHE --user-data-dir=$TEMP_PROFILE"
 else
   PROFILE="$XDG_CONFIG_HOME/thorium"
   CACHE="$XDG_CONFIG_HOME/thorium"

@@ -64,10 +64,18 @@ index 7cda11126e61e..fe82b35a1a5d1 100644
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index 0d93ca4713624..98f6a32b1962a 100644
+index 0d93ca4713624..98abb80818124 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
-@@ -457,6 +457,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
+@@ -62,6 +62,7 @@
+ #include "build/chromeos_buildflags.h"
+ #include "third_party/abseil-cpp/absl/base/internal/raw_logging.h"
+ #include "third_party/abseil-cpp/absl/cleanup/cleanup.h"
++#include "ui/base/ui_base_features.h"
+ 
+ #if !BUILDFLAG(IS_NACL)
+ #include "base/auto_reset.h"
+@@ -457,6 +458,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
    }
  }
  
@@ -75,7 +83,7 @@ index 0d93ca4713624..98f6a32b1962a 100644
  void SetLogFatalCrashKey(LogMessage* log_message) {
  #if !BUILDFLAG(IS_NACL)
    // In case of an out-of-memory condition, this code could be reentered when
-@@ -477,6 +478,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
+@@ -477,6 +479,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
  
  #endif  // !BUILDFLAG(IS_NACL)
  }
@@ -83,14 +91,9 @@ index 0d93ca4713624..98f6a32b1962a 100644
  
  std::string BuildCrashString(const char* file,
                               int line,
-@@ -585,9 +587,17 @@ int GetMinLogLevel() {
-   return g_min_log_level;
+@@ -586,8 +589,12 @@ int GetMinLogLevel() {
  }
  
-+bool IsVerbose() {
-+  return base::CommandLine::ForCurrentProcess()->HasSwitch("verbose");
-+}
-+
  bool ShouldCreateLogMessage(int severity) {
 -  if (severity < g_min_log_level)
 +  if (severity < g_min_log_level) {
@@ -102,7 +105,7 @@ index 0d93ca4713624..98f6a32b1962a 100644
  
    // Return true here unless we know ~LogMessage won't do anything.
    return g_logging_destination != LOG_NONE || g_log_message_handler ||
-@@ -599,8 +609,12 @@ bool ShouldCreateLogMessage(int severity) {
+@@ -599,8 +606,12 @@ bool ShouldCreateLogMessage(int severity) {
  // set, or only LOG_TO_FILE is set, since that is useful for local development
  // and debugging.
  bool ShouldLogToStderr(int severity) {
@@ -116,7 +119,7 @@ index 0d93ca4713624..98f6a32b1962a 100644
  
  #if BUILDFLAG(IS_FUCHSIA)
    // Fuchsia will persist data logged to stdio by a component, so do not emit
-@@ -731,9 +745,11 @@ void LogMessage::Flush() {
+@@ -731,9 +742,11 @@ void LogMessage::Flush() {
    // Don't let actions from this method affect the system error after returning.
    base::ScopedClearLastError scoped_clear_last_error;
  
@@ -129,7 +132,7 @@ index 0d93ca4713624..98f6a32b1962a 100644
    // Include a stack trace on a fatal, unless a debugger is attached.
    if (severity_ == LOGGING_FATAL && !base::debug::BeingDebugged()) {
      base::debug::StackTrace stack_trace;
-@@ -766,6 +782,7 @@ void LogMessage::Flush() {
+@@ -766,6 +779,7 @@ void LogMessage::Flush() {
    std::string str_newline(stream_.str());
    TraceLogMessage(file_, line_, str_newline.substr(message_start_));
  
@@ -137,7 +140,7 @@ index 0d93ca4713624..98f6a32b1962a 100644
    // FATAL messages should always run the assert handler and crash, even if a
    // message handler marks them as otherwise handled.
    absl::Cleanup handle_fatal_message = [&] {
-@@ -776,6 +793,7 @@ void LogMessage::Flush() {
+@@ -776,6 +790,7 @@ void LogMessage::Flush() {
  
    if (severity_ == LOGGING_FATAL)
      SetLogFatalCrashKey(this);
@@ -145,20 +148,6 @@ index 0d93ca4713624..98f6a32b1962a 100644
  
    // Give any log message handler first dibs on the message.
    if (g_log_message_handler &&
-diff --git a/base/logging.h b/base/logging.h
-index fe2ce670da340..2d4493a3800c6 100644
---- a/base/logging.h
-+++ b/base/logging.h
-@@ -301,6 +301,9 @@ BASE_EXPORT void SetMinLogLevel(int level);
- // Gets the current log level.
- BASE_EXPORT int GetMinLogLevel();
- 
-+// For Thorium --verbose flag
-+BASE_EXPORT bool IsVerbose();
-+
- // Used by LOG_IS_ON to lazy-evaluate stream arguments.
- BASE_EXPORT bool ShouldCreateLogMessage(int severity);
- 
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
@@ -370,6 +359,38 @@ index 71f9d6ad07da0..246532a09797a 100644
    return it == items_.end() ? 0 : static_cast<int>(it - items_.begin());
  }
  
+diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
+index d65691f1aa1a5..da4fff1f928f7 100644
+--- a/chrome/browser/ui/browser_actions.cc
++++ b/chrome/browser/ui/browser_actions.cc
+@@ -9,6 +9,7 @@
+ #include <string>
+ 
+ #include "base/check_op.h"
++#include "base/command_line.h"
+ #include "chrome/app/vector_icons/vector_icons.h"
+ #include "chrome/browser/devtools/devtools_window.h"
+ #include "chrome/browser/profiles/profile.h"
+@@ -410,6 +411,8 @@ void BrowserActions::InitializeBrowserActions() {
+     if (IsChromeLabsEnabled()) {
+       // TODO(b/354758327): Update `ShouldShowChromeLabsUI()` to not require
+       // `model` as a parameter, then use to set visibility of action item.
++      static const bool disable_thorium_icons =
++          base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+       root_action_item_->AddChild(
+           ChromeMenuAction(base::BindRepeating(
+                                [](Browser* browser, actions::ActionItem* item,
+@@ -418,7 +421,9 @@ void BrowserActions::InitializeBrowserActions() {
+                                },
+                                base::Unretained(browser)),
+                            kActionShowChromeLabs, IDS_CHROMELABS,
+-                           IDS_CHROMELABS, kScienceIcon)
++                           IDS_CHROMELABS, disable_thorium_icons
++                                           ? kScienceIcon
++                                           : kScienceThoriumIcon)
+               .SetVisible(false)
+               .Build());
+     }
 diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
 index 86af74569f013..1f9cc1696eda4 100644
 --- a/chrome/browser/ui/browser_command_controller.cc
@@ -493,7 +514,7 @@ index e4ccd7fab5421..0eadd6bdd8def 100644
  // that need to be accessible outside of /browser/ui/views.
  class WindowFrameUtil {
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index 87c4ee64068a6..2b4af8b61e996 100644
+index 87c4ee64068a6..9dd4397f0e88b 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -7,6 +7,7 @@
@@ -535,20 +556,34 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
        return 6;
      case WEB_APP_MENU_BUTTON_SIZE:
-@@ -72,7 +78,11 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -68,11 +74,23 @@ int GetLayoutConstant(LayoutConstant constant) {
+       //   here once we decide on a permutation.
+       NOTREACHED();
+     case LOCATION_BAR_TRAILING_DECORATION_EDGE_PADDING:
+-      return touch_ui ? 3 : 12;
++      if (features::IsThorium2024()) {
++        return touch_ui ? 3 : 5;
++      } else {
++        return touch_ui ? 3 : 12;
++      }
      case LOCATION_BAR_TRAILING_DECORATION_INNER_PADDING:
-       return touch_ui ? 3 : 8;
+-      return touch_ui ? 3 : 8;
++      if (features::IsThorium2024()) {
++        return touch_ui ? 3 : 4;
++      } else {
++        return touch_ui ? 3 : 8;
++      }
      case LOCATION_BAR_HEIGHT:
 -      return touch_ui ? 36 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 34 : 32;
++        return touch_ui ? 34 : 30;
 +      } else {
 +        return touch_ui ? 36 : 34;
 +      }
      case LOCATION_BAR_ICON_SIZE:
        return touch_ui ? 20 : 16;
      case LOCATION_BAR_LEADING_ICON_SIZE:
-@@ -85,15 +95,23 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -85,15 +103,23 @@ int GetLayoutConstant(LayoutConstant constant) {
        return 16;
      case TAB_ALERT_INDICATOR_ICON_WIDTH:
        return touch_ui ? 12 : 16;
@@ -574,13 +609,13 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      case TAB_SEPARATOR_HEIGHT:
        return touch_ui ? 24 : 20;
      case TAB_PRE_TITLE_PADDING:
-@@ -108,13 +126,21 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -108,13 +134,21 @@ int GetLayoutConstant(LayoutConstant constant) {
        }
        return 1;
      case TOOLBAR_BUTTON_HEIGHT:
 -      return touch_ui ? 48 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 46 : 32;
++        return touch_ui ? 46 : 30;
 +      } else {
 +        return touch_ui ? 48 : 34;
 +      }
@@ -599,7 +634,7 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      case TOOLBAR_DIVIDER_WIDTH:
        return 2;
      case TOOLBAR_ELEMENT_PADDING:
-@@ -122,13 +148,17 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -122,13 +156,17 @@ int GetLayoutConstant(LayoutConstant constant) {
      case TOOLBAR_ICON_DEFAULT_MARGIN:
        return touch_ui ? 0 : 2;
      case TOOLBAR_STANDARD_SPACING:
@@ -619,7 +654,7 @@ index 87c4ee64068a6..2b4af8b61e996 100644
      default:
        break;
    }
-@@ -146,7 +176,11 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+@@ -146,7 +184,11 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
        return gfx::Insets::VH(8, 20);
  
      case LOCATION_BAR_ICON_INTERIOR_PADDING:
@@ -632,7 +667,7 @@ index 87c4ee64068a6..2b4af8b61e996 100644
  
      case LOCATION_BAR_PAGE_INFO_ICON_PADDING:
        return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 4);
-@@ -161,27 +195,36 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+@@ -161,27 +203,36 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
      }
  
      case TOOLBAR_BUTTON:
@@ -1613,7 +1648,7 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index e7660352853f2..61d1358944afe 100644
+index e7660352853f2..e36d7b187168d 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -19,6 +19,7 @@
@@ -1753,14 +1788,15 @@ index e7660352853f2..61d1358944afe 100644
                              TabStyle::Get()->GetBottomCornerRadius();
    }
  
-@@ -564,6 +591,7 @@ void TabStripRegionView::AdjustViewBoundsRect(View* view, int offset) {
+@@ -564,7 +591,7 @@ void TabStripRegionView::AdjustViewBoundsRect(View* view, int offset) {
    const gfx::Size view_size = view->GetPreferredSize();
    const int x =
        tab_strip_container_->x() + TabStyle::Get()->GetBottomCornerRadius() -
-+      // Alex313031 TODO: Check if use tab search padding
-       GetLayoutConstant(TAB_STRIP_PADDING) - view_size.width() - offset;
+-      GetLayoutConstant(TAB_STRIP_PADDING) - view_size.width() - offset;
++      GetLayoutConstant(TAB_SEARCH_PADDING) - view_size.width() - offset;
    const gfx::Rect new_bounds = gfx::Rect(gfx::Point(x, 0), view_size);
    view->SetBoundsRect(new_bounds);
+ }
 diff --git a/chrome/browser/ui/views/frame/window_caption_util.cc b/chrome/browser/ui/views/frame/window_caption_util.cc
 new file mode 100644
 index 0000000000000..04703d70ecf9b
@@ -1879,7 +1915,7 @@ index d8000f801d188..7f69dd091d42a 100644
        NOTREACHED();
    }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index eca41f6f37b37..de73402f328d3 100644
+index eca41f6f37b37..cb07f8510f298 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
 @@ -199,18 +199,23 @@ LocationBarView::LocationBarView(Browser* browser,
@@ -1918,7 +1954,38 @@ index eca41f6f37b37..de73402f328d3 100644
  
  #if BUILDFLAG(OS_LEVEL_GEOLOCATION_PERMISSION_SUPPORTED)
      if (features::IsOsLevelGeolocationPermissionSupportEnabled()) {
-@@ -405,7 +410,7 @@ void LocationBarView::Init() {
+@@ -258,10 +263,16 @@ void LocationBarView::Init() {
+   const gfx::FontList& font_list = typography_provider.GetFont(
+       CONTEXT_OMNIBOX_PRIMARY, views::style::STYLE_PRIMARY);
+ 
+-  const gfx::FontList& omnibox_chip_font_list = typography_provider.GetFont(
+-      CONTEXT_OMNIBOX_PRIMARY, views::style::STYLE_BODY_4_EMPHASIS);
+-  const gfx::FontList& page_action_font_list = typography_provider.GetFont(
+-      CONTEXT_OMNIBOX_PRIMARY, views::style::STYLE_BODY_3_EMPHASIS);
++  const gfx::FontList& omnibox_chip_font_list =
++      features::IsThorium2024()
++          ? font_list
++          : typography_provider.GetFont(CONTEXT_OMNIBOX_PRIMARY,
++                                        views::style::STYLE_BODY_4_EMPHASIS);
++  const gfx::FontList& page_action_font_list =
++      features::IsThorium2024()
++          ? font_list
++          : typography_provider.GetFont(CONTEXT_OMNIBOX_PRIMARY,
++                                        views::style::STYLE_BODY_3_EMPHASIS);
+ 
+   auto location_icon_view =
+       std::make_unique<LocationIconView>(omnibox_chip_font_list, this, this);
+@@ -400,12 +411,17 @@ void LocationBarView::Init() {
+     }
+   }
+ 
++  if (browser_) {
++    if (sharing_hub::HasPageAction(profile_, is_popup_mode_)) {
++      params.types_enabled.push_back(PageActionIconType::kSharingHub);
++    }
++  }
+   if (browser_ && !is_popup_mode_) {
+     params.types_enabled.push_back(PageActionIconType::kBookmarkStar);
    }
  
    params.icon_color = color_provider->GetColor(kColorPageActionIcon);
@@ -1927,7 +1994,7 @@ index eca41f6f37b37..de73402f328d3 100644
    params.font_list = &page_action_font_list;
    params.browser = browser_;
    params.command_updater = command_updater();
-@@ -438,8 +443,13 @@ bool LocationBarView::IsInitialized() const {
+@@ -438,8 +454,13 @@ bool LocationBarView::IsInitialized() const {
  }
  
  int LocationBarView::GetBorderRadius() const {
@@ -1943,7 +2010,27 @@ index eca41f6f37b37..de73402f328d3 100644
  }
  
  std::unique_ptr<views::Background> LocationBarView::CreateRoundRectBackground(
-@@ -1135,6 +1145,7 @@ gfx::Rect LocationBarView::GetLocalBoundsWithoutEndcaps() const {
+@@ -703,7 +724,7 @@ void LocationBarView::Layout(PassKey) {
+   // The padding between the left edges of the location bar and the LHS icon
+   // (e.g. the page info icon, the google G icon, the selected suggestion icon,
+   // etc)
+-  int icon_left = 5;
++  int icon_left = features::IsThorium2024() ? 4 : 5;
+   // The padding between the LHS icon and the text.
+   int text_left = 8;
+   // Indentation to match the suggestion icons & texts.
+@@ -738,7 +759,9 @@ void LocationBarView::Layout(PassKey) {
+   // positioned relative to them (e.g. the "bookmark added" bubble if the user
+   // hits ctrl-d).
+   const int vertical_padding =
+-      GetLayoutConstant(LOCATION_BAR_PAGE_INFO_ICON_VERTICAL_PADDING);
++      features::IsThorium2024()
++      ? 4
++      : GetLayoutConstant(LOCATION_BAR_PAGE_INFO_ICON_VERTICAL_PADDING);
+   const int trailing_decorations_edge_padding =
+       GetLayoutConstant(LOCATION_BAR_TRAILING_DECORATION_EDGE_PADDING);
+ 
+@@ -1135,6 +1158,7 @@ gfx::Rect LocationBarView::GetLocalBoundsWithoutEndcaps() const {
  void LocationBarView::RefreshBackground() {
    const double opacity = hover_animation_.GetCurrentValue();
    const bool is_caret_visible = omnibox_view_->model()->is_caret_visible();
@@ -1951,7 +2038,7 @@ index eca41f6f37b37..de73402f328d3 100644
    const bool input_in_progress =
        omnibox_view_->model()->user_input_in_progress();
    const bool high_contrast = GetNativeTheme()->UserHasContrastPreference();
-@@ -1160,6 +1171,18 @@ void LocationBarView::RefreshBackground() {
+@@ -1160,6 +1184,18 @@ void LocationBarView::RefreshBackground() {
    }
  
    SkColor border_color = SK_ColorTRANSPARENT;
@@ -2339,9 +2426,31 @@ index e368f860ec9a7..b81b109035cdd 100644
      "toolbar_action_hover_card_bubble_view.cc",
      "toolbar_action_hover_card_bubble_view.h",
      "toolbar_action_hover_card_controller.cc",
+diff --git a/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc b/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
+index b071682471a32..94123478b7fab 100644
+--- a/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
++++ b/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
+@@ -112,7 +112,7 @@ ChromeLabsBubbleView::ChromeLabsBubbleView(views::Button* anchor_view,
+   SetLayoutManager(std::make_unique<views::BoxLayout>())
+       ->SetOrientation(views::BoxLayout::Orientation::kVertical);
+   set_fixed_width(views::LayoutProvider::Get()->GetDistanceMetric(
+-      views::DISTANCE_BUBBLE_PREFERRED_WIDTH));
++      views::DISTANCE_MODAL_DIALOG_PREFERRED_WIDTH));
+   set_margins(gfx::Insets(0));
+   SetEnableArrowKeyTraversal(true);
+   // Set `kDialog` to avoid the BubbleDialogDelegate returning a default of
+@@ -124,7 +124,7 @@ ChromeLabsBubbleView::ChromeLabsBubbleView(views::Button* anchor_view,
+   // TODO(crbug.com/40797818): Currently basing this off what extension menu
+   // uses for sizing as suggested as an initial fix by UI. Discuss a more formal
+   // solution.
+-  constexpr int kMaxChromeLabsHeightDp = 448;
++  constexpr int kMaxChromeLabsHeightDp = 540;
+   auto scroll_view = std::make_unique<views::ScrollView>(
+       views::ScrollView::ScrollWithLayers::kEnabled);
+   // TODO(elainechien): Check with UI whether we want to draw overflow
 diff --git a/chrome/browser/ui/views/toolbar/restore_tab_button.cc b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 new file mode 100644
-index 0000000000000..2650880d470b5
+index 0000000000000..d80d7b69ce583
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 @@ -0,0 +1,70 @@
@@ -2402,7 +2511,7 @@ index 0000000000000..2650880d470b5
 +
 +void RestoreTabButton::SetIcon() {
 +  const gfx::VectorIcon& restore_icon =
-+      vector_icons::kRestoreIcon;
++      vector_icons::kRestoreTabIcon;
 +  SetVectorIcons(restore_icon, restore_icon);
 +}
 +
@@ -2792,10 +2901,10 @@ index 9e5567aec56dc..0e3978ff8da39 100644
    // --no-sandbox in official builds because that would bypass the bad_flgs
    // prompt.
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index 595af68372edc..5ce90c5dd4e8c 100644
+index 595af68372edc..16dcfea0bc7d3 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -498,6 +498,24 @@ bool IsLacrosColorManagementEnabled() {
+@@ -498,6 +498,30 @@ bool IsLacrosColorManagementEnabled() {
    return base::FeatureList::IsEnabled(kLacrosColorManagement);
  }
  
@@ -2817,14 +2926,20 @@ index 595af68372edc..5ce90c5dd4e8c 100644
 +  return base::FeatureList::IsEnabled(kRestoreTabButton);
 +}
 +
++bool IsVerbose() {
++  static const bool is_verbose =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("verbose");
++  return is_verbose;
++}
++
  BASE_FEATURE(kBubbleMetricsApi,
               "BubbleMetricsApi",
               base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index a5c3bb6349099..7ac32505fa800 100644
+index a5c3bb6349099..3944f157575c8 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -224,6 +224,13 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
+@@ -224,6 +224,15 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  bool IsLacrosColorManagementEnabled();
  
@@ -2834,6 +2949,8 @@ index a5c3bb6349099..7ac32505fa800 100644
 +
 +COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kRestoreTabButton);
 +COMPONENT_EXPORT(UI_BASE_FEATURES) bool EnableRestoreTabButton();
++
++COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsVerbose();
 +
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  BASE_DECLARE_FEATURE(kBubbleMetricsApi);

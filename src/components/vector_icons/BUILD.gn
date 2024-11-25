@@ -183,6 +183,7 @@ aggregate_vector_icons("components_vector_icons") {
     "radio_button_checked.icon",
     "reload.icon",
     "reload_chrome_refresh.icon",
+    "restore.icon",
     "replay.icon",
     "replay_10.icon",
     "save_cloud.icon",
@@ -257,7 +258,7 @@ aggregate_vector_icons("components_vector_icons") {
     sources += [
       "thorium/reload_thorium.icon",
       "thorium/reload_chrome_refresh_thorium.icon",
-      "thorium/restore.icon"
+      "thorium/restore_tab.icon"
     ]
   }
 

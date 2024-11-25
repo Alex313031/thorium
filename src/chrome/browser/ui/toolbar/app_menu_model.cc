@@ -1858,7 +1858,7 @@ void AppMenuModel::Build() {
   }
   AddItemWithStringIdAndVectorIcon(this, IDC_CLEAR_BROWSING_DATA,
                                    IDS_CLEAR_BROWSING_DATA,
-                                   kTrashCanRefreshIcon);
+                                   kTrashCanRegularIcon);
 
   AddSeparator(ui::NORMAL_SEPARATOR);
   CreateZoomMenu();

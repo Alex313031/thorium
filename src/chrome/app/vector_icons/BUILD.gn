@@ -202,6 +202,7 @@ aggregate_vector_icons("chrome_vector_icons") {
     "translate.icon",
     "trash_can.icon",
     "trash_can_refresh.icon",
+    "trash_can_regular.icon",
     "tv.icon",
     "ungroup_refresh.icon",
     "usb_cable.icon",
