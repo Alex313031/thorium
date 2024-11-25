@@ -102,7 +102,7 @@ if (is_debug) {
 # from anything higher usually.
 if (use_avx || use_avx2 || use_fma) {
   assert(current_cpu == "x64", "AVX, AVX2, and FMA require x64. current_cpu is x86")
-  assert(!target_cpu == "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
+  assert(target_cpu != "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
 }
 
 # AVX2 always should have FMA, however, there are times one might want
@@ -111,6 +111,7 @@ if (use_avx || use_avx2 || use_fma) {
 if (use_avx2 && !use_fma) {
   print("WARNING: Use_avx2 is true while use_fma is false. This will create a build compiled with AVX2, but without FMA or floating point contraction.")
   print("This should only be set intentionally for testing.")
+  print("")
 }
 
 # Not a normal configuration, that normally means a mistake was made configuring
@@ -119,12 +120,15 @@ if (use_avx2 && !use_fma) {
 if (!use_avx2 && use_fma) {
   print("WARNING: Use_avx2 is false while use_fma true. This will create an AVX build with FMA.")
   print("This should only be set intentionally for testing, or for specific CPUs that have AVX and FMA, but not AVX2, such as AMD Piledriver.")
+  print("")
 }
 
-if (use_fma) {
-  assert(use_avx, "ERROR: use_fma is true while use_avx is false. FMA requires AVX.")
+if (use_fma && !use_avx) {
+  print("WARNING: use_fma is true while use_avx is false. FMA requires AVX.")
+  print("")
 }
 
 if (!use_sse3 && current_cpu == "x64") {
   print("use_sse3 is disabled. This should only be done for 32 Bit builds.")
+  print("")
 }

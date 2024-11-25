@@ -1476,6 +1476,12 @@ config("toolchain") {
       } else {
         cflags += [ "/O2", "-Xclang", "-O3", "/arch:SSE2", ]
       }
+      if (use_sse41) {
+        cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "/clang:-msse4.2", ]
+      }
     }
   }
   if (v8_current_cpu == "x64") {
@@ -1505,6 +1511,9 @@ config("toolchain") {
           "/clang:-ffp-contract=fast",
           "/clang:-mavx2",
         ]
+      }
+      if (use_fma) {
+        cflags += [ "/clang:-ffp-contract=fast", ]
       }
       if (use_avx512) {
         cflags += [
@@ -1546,6 +1555,9 @@ config("toolchain") {
         "-ffp-contract=fast",
         "-mavx2",
       ]
+    }
+    if (use_fma) {
+      cflags += [ "-ffp-contract=fast", ]
     }
     if (use_avx512) {
       cflags += [
