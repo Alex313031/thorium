@@ -64,10 +64,18 @@ index 7cda11126e61e..fe82b35a1a5d1 100644
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index 0d93ca4713624..98abb80818124 100644
+index 0d93ca4713624..3815fe60b4776 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
-@@ -62,6 +62,7 @@
+@@ -8,6 +8,7 @@
+ #endif
+ 
+ #include "base/logging.h"
++#include "base/environment.h"
+ 
+ #ifdef BASE_CHECK_H_
+ #error "logging.h should not include check.h"
+@@ -62,6 +63,7 @@
  #include "build/chromeos_buildflags.h"
  #include "third_party/abseil-cpp/absl/base/internal/raw_logging.h"
  #include "third_party/abseil-cpp/absl/cleanup/cleanup.h"
@@ -75,7 +83,7 @@ index 0d93ca4713624..98abb80818124 100644
  
  #if !BUILDFLAG(IS_NACL)
  #include "base/auto_reset.h"
-@@ -457,6 +458,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
+@@ -457,6 +459,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
    }
  }
  
@@ -83,7 +91,7 @@ index 0d93ca4713624..98abb80818124 100644
  void SetLogFatalCrashKey(LogMessage* log_message) {
  #if !BUILDFLAG(IS_NACL)
    // In case of an out-of-memory condition, this code could be reentered when
-@@ -477,6 +479,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
+@@ -477,6 +480,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
  
  #endif  // !BUILDFLAG(IS_NACL)
  }
@@ -91,35 +99,47 @@ index 0d93ca4713624..98abb80818124 100644
  
  std::string BuildCrashString(const char* file,
                               int line,
-@@ -586,8 +589,12 @@ int GetMinLogLevel() {
+@@ -585,9 +589,24 @@ int GetMinLogLevel() {
+   return g_min_log_level;
  }
  
++bool IsVerbose() {
++  const char* const env = getenv("THORIUM_DEBUG");
++  const std::string_view env_str =
++      env ? std::string_view(env) : std::string_view();
++  if (env_str == "1" || env_str == "true") {
++    return true;
++  } else {
++    return false;
++  }
++}
++
  bool ShouldCreateLogMessage(int severity) {
 -  if (severity < g_min_log_level)
 +  if (severity < g_min_log_level) {
      return false;
 +  }
-+  if (features::IsVerbose()) {
++  if (IsVerbose()) {
 +    return true;
 +  }
  
    // Return true here unless we know ~LogMessage won't do anything.
    return g_logging_destination != LOG_NONE || g_log_message_handler ||
-@@ -599,8 +606,12 @@ bool ShouldCreateLogMessage(int severity) {
+@@ -599,8 +618,12 @@ bool ShouldCreateLogMessage(int severity) {
  // set, or only LOG_TO_FILE is set, since that is useful for local development
  // and debugging.
  bool ShouldLogToStderr(int severity) {
 -  if (g_logging_destination & LOG_TO_STDERR)
 +  if (g_logging_destination & LOG_TO_STDERR) {
-     return true;
-+  }
-+  if (features::IsVerbose()) {
 +    return true;
++  }
++  if (IsVerbose()) {
+     return true;
 +  }
  
  #if BUILDFLAG(IS_FUCHSIA)
    // Fuchsia will persist data logged to stdio by a component, so do not emit
-@@ -731,9 +742,11 @@ void LogMessage::Flush() {
+@@ -731,9 +754,11 @@ void LogMessage::Flush() {
    // Don't let actions from this method affect the system error after returning.
    base::ScopedClearLastError scoped_clear_last_error;
  
@@ -132,7 +152,7 @@ index 0d93ca4713624..98abb80818124 100644
    // Include a stack trace on a fatal, unless a debugger is attached.
    if (severity_ == LOGGING_FATAL && !base::debug::BeingDebugged()) {
      base::debug::StackTrace stack_trace;
-@@ -766,6 +779,7 @@ void LogMessage::Flush() {
+@@ -766,6 +791,7 @@ void LogMessage::Flush() {
    std::string str_newline(stream_.str());
    TraceLogMessage(file_, line_, str_newline.substr(message_start_));
  
@@ -140,7 +160,7 @@ index 0d93ca4713624..98abb80818124 100644
    // FATAL messages should always run the assert handler and crash, even if a
    // message handler marks them as otherwise handled.
    absl::Cleanup handle_fatal_message = [&] {
-@@ -776,6 +790,7 @@ void LogMessage::Flush() {
+@@ -776,6 +802,7 @@ void LogMessage::Flush() {
  
    if (severity_ == LOGGING_FATAL)
      SetLogFatalCrashKey(this);
@@ -148,6 +168,20 @@ index 0d93ca4713624..98abb80818124 100644
  
    // Give any log message handler first dibs on the message.
    if (g_log_message_handler &&
+diff --git a/base/logging.h b/base/logging.h
+index fe2ce670da340..82bbda21a16e5 100644
+--- a/base/logging.h
++++ b/base/logging.h
+@@ -301,6 +301,9 @@ BASE_EXPORT void SetMinLogLevel(int level);
+ // Gets the current log level.
+ BASE_EXPORT int GetMinLogLevel();
+ 
++// Whether to always log in verbose mode
++BASE_EXPORT bool IsVerbose();
++
+ // Used by LOG_IS_ON to lazy-evaluate stream arguments.
+ BASE_EXPORT bool ShouldCreateLogMessage(int severity);
+ 
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
@@ -2444,7 +2478,7 @@ index b071682471a32..94123478b7fab 100644
    // uses for sizing as suggested as an initial fix by UI. Discuss a more formal
    // solution.
 -  constexpr int kMaxChromeLabsHeightDp = 448;
-+  constexpr int kMaxChromeLabsHeightDp = 540;
++  constexpr int kMaxChromeLabsHeightDp = 550;
    auto scroll_view = std::make_unique<views::ScrollView>(
        views::ScrollView::ScrollWithLayers::kEnabled);
    // TODO(elainechien): Check with UI whether we want to draw overflow
@@ -2977,6 +3011,293 @@ index d21456ab73faa..de14c868fcc26 100644
      case base::nix::DESKTOP_ENVIRONMENT_OTHER:
        return SystemTheme::kDefault;
    }
+diff --git a/ui/views/controls/button/toggle_button.cc b/ui/views/controls/button/toggle_button.cc
+index 1380921296fcf..9410570b9bb83 100644
+--- a/ui/views/controls/button/toggle_button.cc
++++ b/ui/views/controls/button/toggle_button.cc
+@@ -11,6 +11,7 @@
+ #include "base/callback_list.h"
+ #include "base/functional/bind.h"
+ #include "cc/paint/paint_flags.h"
++#include "chrome/browser/ui/thorium_2024.h"
+ #include "third_party/skia/include/core/SkRect.h"
+ #include "ui/accessibility/ax_enums.mojom.h"
+ #include "ui/accessibility/ax_node_data.h"
+@@ -42,6 +43,11 @@ namespace {
+ 
+ // Constants are measured in dip.
+ constexpr gfx::Size kTrackSize = gfx::Size(26, 16);
++constexpr gfx::Size kTh24TrackSize = gfx::Size(30, 12);
++constexpr int kTrackVerticalMargin = 5;
++constexpr int kTrackHorizontalMargin = 6;
++// Inset from the rounded edge of the thumb to the rounded edge of the track.
++constexpr int kTh24ThumbInset = 2;
+ constexpr int kThumbInset = -4;
+ constexpr int kThumbInsetSelected = -2;
+ constexpr int kThumbPressedOutset = 1;
+@@ -49,11 +55,19 @@ constexpr int kHoverDiameter = 20;
+ constexpr float kBorderStrokeWidth = 1.0f;
+ 
+ const gfx::Size GetTrackSize() {
+-  return kTrackSize;
++  if (features::IsThorium2024()) {
++    return kTh24TrackSize;
++  } else {
++    return kTrackSize;
++  }
+ }
+ 
+ int GetThumbInset(bool is_on) {
+-  return is_on ? kThumbInsetSelected : kThumbInset;
++  if (features::IsThorium2024()) {
++     return kTh24ThumbInset;
++  } else {
++    return is_on ? kThumbInsetSelected : kThumbInset;
++  }
+ }
+ 
+ std::optional<SkColor> GetSkColorFromVariant(
+@@ -148,7 +162,7 @@ class ToggleButton::ThumbView : public View {
+         ConvertVariantToSkColor(thumb_off_color_, color_provider);
+     SkColor thumb_color =
+         color_utils::AlphaBlend(thumb_on_color, thumb_off_color, color_ratio_);
+-    if (is_hovered_ && is_on_) {
++    if (!features::IsThorium2024() && is_hovered_ && is_on_) {
+       // This will blend and additional color into the "on" state thumb color
+       // while the view is hovered. This will also take into account both the
+       // off->on color animating along with the hover animation. Those
+@@ -208,7 +222,7 @@ class ToggleButton::ThumbView : public View {
+ };
+ 
+ ToggleButton::ToggleButton(PressedCallback callback)
+-    : ToggleButton(std::move(callback), /*has_thumb_shadow=*/false) {}
++    : ToggleButton(std::move(callback), /*has_thumb_shadow=*/features::IsThorium2024()) {}
+ 
+ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+     : Button(std::move(callback)) {
+@@ -225,14 +239,17 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+   // InkDrop event triggering is handled in NotifyClick().
+   SetHasInkDropActionOnClick(false);
+   InkDrop::UseInkDropForSquareRipple(InkDrop::Get(this),
+-                                     /*highlight_on_hover=*/true,
++                                     /*highlight_on_hover=*/!features::IsThorium2024(),
+                                      /*highlight_on_focus=*/false,
+-                                     /*show_highlight_on_ripple=*/true);
++                                     /*show_highlight_on_ripple=*/!features::IsThorium2024());
+   InkDrop::Get(this)->SetCreateRippleCallback(base::BindRepeating(
+       [](ToggleButton* host,
+          gfx::Insets insets) -> std::unique_ptr<InkDropRipple> {
+         gfx::Rect rect = host->thumb_view_->GetLocalBounds();
+         rect.Inset(insets);
++        if (features::IsThorium2024()) {
++          return InkDrop::Get(host)->CreateSquareRipple(rect.CenterPoint());
++        }
+         const SkColor pressed_color = host->GetPressedColor();
+         const float pressed_alpha = SkColorGetA(pressed_color);
+         std::unique_ptr<SquareInkDropRipple> ripple =
+@@ -251,20 +268,22 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+         return host->GetTrackColor(host->GetIsOn() || host->HasFocus());
+       },
+       this));
+-  InkDrop::Get(this)->SetCreateHighlightCallback(base::BindRepeating(
+-      [](ToggleButton* host) {
+-        const gfx::Rect thumb_bounds = host->thumb_view_->GetLocalBounds();
+-        const gfx::Size thumb_size(kHoverDiameter, kHoverDiameter);
+-        const SkColor hover_color = host->GetHoverColor();
+-        const float hover_alpha = SkColorGetA(hover_color);
+-        auto ink_drop_highlight = std::make_unique<InkDropHighlight>(
+-            thumb_size, thumb_size.height() / 2,
+-            gfx::PointF(thumb_bounds.CenterPoint()),
+-            SkColorSetA(hover_color, SK_AlphaOPAQUE));
+-        ink_drop_highlight->set_visible_opacity(hover_alpha / SK_AlphaOPAQUE);
+-        return ink_drop_highlight;
+-      },
+-      this));
++  if (!features::IsThorium2024()) {
++    InkDrop::Get(this)->SetCreateHighlightCallback(base::BindRepeating(
++        [](ToggleButton* host) {
++          const gfx::Rect thumb_bounds = host->thumb_view_->GetLocalBounds();
++          const gfx::Size thumb_size(kHoverDiameter, kHoverDiameter);
++          const SkColor hover_color = host->GetHoverColor();
++          const float hover_alpha = SkColorGetA(hover_color);
++          auto ink_drop_highlight = std::make_unique<InkDropHighlight>(
++              thumb_size, thumb_size.height() / 2,
++              gfx::PointF(thumb_bounds.CenterPoint()),
++              SkColorSetA(hover_color, SK_AlphaOPAQUE));
++          ink_drop_highlight->set_visible_opacity(hover_alpha / SK_AlphaOPAQUE);
++          return ink_drop_highlight;
++        },
++        this));
++  }
+ 
+   // Even though ToggleButton doesn't paint anything, declare us as flipped in
+   // RTL mode so that FocusRing correctly flips as well.
+@@ -370,6 +389,10 @@ bool ToggleButton::GetAcceptsEvents() const {
+   return accepts_events_;
+ }
+ 
++int ToggleButton::GetVisualHorizontalMargin() const {
++  return kTrackHorizontalMargin - kThumbInset;
++}
++
+ void ToggleButton::AddLayerToRegion(ui::Layer* layer,
+                                     views::LayerRegion region) {
+   // Ink-drop layers should go above/below the ThumbView.
+@@ -383,6 +406,9 @@ void ToggleButton::RemoveLayerFromRegions(ui::Layer* layer) {
+ gfx::Size ToggleButton::CalculatePreferredSize(
+     const SizeBounds& /*available_size*/) const {
+   gfx::Rect rect(GetTrackSize());
++  if (features::IsThorium2024()) {
++    rect.Inset(gfx::Insets::VH(-kTrackVerticalMargin, -kTrackHorizontalMargin));
++  }
+   rect.Inset(-GetInsets());
+   return rect.size();
+ }
+@@ -402,7 +428,7 @@ gfx::Rect ToggleButton::GetThumbBounds() const {
+   // The thumb is a circle, so the width should match the height.
+   thumb_bounds.set_width(thumb_bounds.height());
+   thumb_bounds.Inset(thumb_view_->GetShadowOutsets());
+-  if (GetState() == STATE_PRESSED) {
++  if (GetState() == STATE_PRESSED && !features::IsThorium2024()) {
+     thumb_bounds.Outset(kThumbPressedOutset);
+   }
+   return thumb_bounds;
+@@ -417,7 +443,7 @@ void ToggleButton::UpdateThumb() {
+                       static_cast<float>(slide_animation_.GetCurrentValue()),
+                       static_cast<float>(hover_animation_.GetCurrentValue()),
+                       GetIsOn(), IsMouseHovered());
+-  if (IsMouseHovered()) {
++  if (!features::IsThorium2024() && IsMouseHovered()) {
+     InkDrop::Get(this)->GetInkDrop()->SetHovered(
+         !slide_animation_.is_animating());
+   }
+@@ -458,8 +484,10 @@ void ToggleButton::OnThemeChanged() {
+ void ToggleButton::NotifyClick(const ui::Event& event) {
+   AnimateIsOn(!GetIsOn());
+ 
+-  InkDrop::Get(this)->AnimateToState(InkDropState::ACTION_TRIGGERED,
+-                                     ui::LocatedEvent::FromIfValid(&event));
++  if (!features::IsThorium2024()) {
++    InkDrop::Get(this)->AnimateToState(InkDropState::ACTION_TRIGGERED,
++                                       ui::LocatedEvent::FromIfValid(&event));
++  }
+ 
+   Button::NotifyClick(event);
+ }
+@@ -482,27 +510,59 @@ void ToggleButton::StateChanged(ButtonState old_state) {
+   thumb_view_->SetEnabled(enabled);
+ 
+   // Update thumb bounds.
+-  if (GetState() == STATE_PRESSED || old_state == STATE_PRESSED) {
+-    UpdateThumb();
+-  } else if (GetState() == STATE_HOVERED || old_state == STATE_HOVERED) {
+-    if (old_state == STATE_HOVERED) {
+-      hover_animation_.Hide();
+-    } else {
+-      hover_animation_.Show();
++  if (!features::IsThorium2024()) {
++    if (GetState() == STATE_PRESSED || old_state == STATE_PRESSED) {
++      UpdateThumb();
++    } else if (GetState() == STATE_HOVERED || old_state == STATE_HOVERED) {
++      if (old_state == STATE_HOVERED) {
++        hover_animation_.Hide();
++      } else {
++        hover_animation_.Show();
++      }
++      UpdateThumb();
+     }
+-    UpdateThumb();
+   }
+ }
+ 
+ SkPath ToggleButton::GetFocusRingPath() const {
+   SkPath path;
+-  gfx::RectF bounds(GetTrackBounds());
+-  const SkRect sk_rect = gfx::RectFToSkRect(bounds);
+-  const float corner_radius = sk_rect.height() / 2;
+-  path.addRoundRect(sk_rect, corner_radius, corner_radius);
++  if (!features::IsThorium2024()) {
++    gfx::RectF bounds(GetTrackBounds());
++    const SkRect sk_rect = gfx::RectFToSkRect(bounds);
++    const float corner_radius = sk_rect.height() / 2;
++    path.addRoundRect(sk_rect, corner_radius, corner_radius);
++  } else {
++    const gfx::Point center = GetThumbBounds().CenterPoint();
++    constexpr int kFocusRingRadius = 16;
++    path.addCircle(center.x(), center.y(), kFocusRingRadius);
++  }
+   return path;
+ }
+ 
++void ToggleButton::OnFocus() {
++  Button::OnFocus();
++  if (features::IsThorium2024()) {
++    InkDrop::Get(this)->AnimateToState(views::InkDropState::ACTION_PENDING,
++                                       nullptr);
++    SchedulePaint();
++  }
++}
++
++void ToggleButton::OnBlur() {
++  Button::OnBlur();
++
++  if (features::IsThorium2024()) {
++    // The ink drop may have already gone away if the user clicked after
++    // focusing.
++    if (InkDrop::Get(this)->GetInkDrop()->GetTargetInkDropState() ==
++        views::InkDropState::ACTION_PENDING) {
++      InkDrop::Get(this)->AnimateToState(views::InkDropState::ACTION_TRIGGERED,
++                                         nullptr);
++    }
++    SchedulePaint();
++  }
++}
++
+ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+   // Paint the toggle track. To look sharp even at fractional scale factors,
+   // round up to pixel boundaries.
+@@ -519,7 +579,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+   track_flags.setColor(color_utils::AlphaBlend(
+       GetTrackColor(true), GetTrackColor(false), color_ratio));
+   canvas->DrawRoundRect(track_rect, radius, track_flags);
+-  if (!GetIsOn() && inner_border_enabled_) {
++  if (!GetIsOn() && inner_border_enabled_ && !features::IsThorium2024()) {
+     track_rect.Inset(kBorderStrokeWidth * dsf / 2.0f);
+     track_flags.setColor(
+         GetColorProvider()->GetColor(ui::kColorToggleButtonShadow));
+@@ -531,7 +591,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+ }
+ 
+ void ToggleButton::AnimationEnded(const gfx::Animation* animation) {
+-  if (animation == &slide_animation_ && IsMouseHovered()) {
++  if (!features::IsThorium2024() && animation == &slide_animation_ && IsMouseHovered()) {
+     InkDrop::Get(this)->GetInkDrop()->SetHovered(true);
+   }
+ }
+diff --git a/ui/views/controls/button/toggle_button.h b/ui/views/controls/button/toggle_button.h
+index 5c465d0f8377c..637e853bec669 100644
+--- a/ui/views/controls/button/toggle_button.h
++++ b/ui/views/controls/button/toggle_button.h
+@@ -58,6 +58,10 @@ class VIEWS_EXPORT ToggleButton : public Button {
+   void SetAcceptsEvents(bool accepts_events);
+   bool GetAcceptsEvents() const;
+ 
++  // Gets the horizontal margin between the rounded edge of the thumb and the
++  // edge of the view.
++  int GetVisualHorizontalMargin() const;
++
+   // views::View:
+   void AddLayerToRegion(ui::Layer* layer, LayerRegion region) override;
+   void RemoveLayerFromRegions(ui::Layer* layer) override;
+@@ -100,6 +104,8 @@ class VIEWS_EXPORT ToggleButton : public Button {
+   // views::View:
+   bool CanAcceptEvent(const ui::Event& event) override;
+   void OnBoundsChanged(const gfx::Rect& previous_bounds) override;
++  void OnFocus() override;
++  void OnBlur() override;
+ 
+   // Button:
+   void PaintButtonContents(gfx::Canvas* canvas) override;
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
 index cc2b21432f010..21cf9ba102902 100644
 --- a/ui/views/controls/menu/menu_config.cc
@@ -3431,7 +3752,7 @@ index 81d33bf3c3f99..d427358823b24 100644
 -  min-width: initial;
 +  min-width: 34px;
    outline: none;
-+   height: fit-content;
++  height: fit-content;
    position: relative;
 -  width: fit-content;
 +  width: 34px;
