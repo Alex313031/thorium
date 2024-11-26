@@ -1,8 +1,16 @@
 diff --git a/base/BUILD.gn b/base/BUILD.gn
-index 9247e9b3f4c92..c73f6fdd5e4f2 100644
+index 9247e9b3f4c92..eacd7f76564df 100644
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -2532,6 +2532,7 @@ buildflag_header("debugging_buildflags") {
+@@ -1085,6 +1085,7 @@ component("base") {
+     "//build:chromecast_buildflags",
+     "//build:chromeos_buildflags",
+     "//third_party/abseil-cpp:absl",
++    "//ui/base:buildflags",
+   ]
+ 
+   if (build_rust_base_conversions) {
+@@ -2532,6 +2533,7 @@ buildflag_header("debugging_buildflags") {
      "ENABLE_ALLOCATION_STACK_TRACE_RECORDER=$build_allocation_stack_trace_recorder",
      "ENABLE_ALLOCATION_TRACE_RECORDER_FULL_REPORTING=$build_allocation_trace_recorder_full_reporting",
      "PRINT_UNSYMBOLIZED_STACK_TRACES=$print_unsymbolized_stack_traces",
