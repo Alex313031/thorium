@@ -266,21 +266,6 @@ config("no_unresolved_symbols") {
   }
 }
 
-# Emit relocations for BOLT
-config("emit-relocs") {
-  if (!using_sanitizer && use_bolt) {
-    if (is_win) {
-      ldflags = [
-        "-mllvm:--emit-relocs",
-      ]
-    } else {
-      ldflags = [
-        "-Wl,--emit-relocs",
-      ]
-    }
-  }
-}
-
 # compiler ---------------------------------------------------------------------
 #
 # Base compiler configuration.
@@ -2642,16 +2627,6 @@ if (is_win) {
     ]
   }
 
-  if (use_polly == true) {
-    common_optimize_on_ldflags += [
-      "-mllvm:-polly",
-      "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
-      #"-mllvm:-polly-invariant-load-hoisting",
-      "-mllvm:-polly-run-dce",
-      "-mllvm:-polly-vectorizer=stripmine",
-    ]
-  }
-
   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in
   # misleading symbols in stack traces.
   if (!is_debug && !is_component_build) {
@@ -2782,16 +2757,6 @@ if (is_win) {
       "-mavx512bw",
       "-mavx512dq",
       "-Wl,-mllvm,-march=skylake-avx512",
-    ]
-  }
-
-  if (use_polly == true) {
-    common_optimize_on_ldflags += [
-      "-Wl,-mllvm,-polly",
-      "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
-      #"-Wl,-mllvm,-polly-invariant-load-hoisting",
-      "-Wl,-mllvm,-polly-run-dce",
-      "-Wl,-mllvm,-polly-vectorizer=stripmine",
     ]
   }
 
@@ -3032,6 +2997,45 @@ config("no_optimize") {
   }
 }
 
+# Emit relocs for BOLT
+config("emit-relocs") {
+  if (!using_sanitizer && use_bolt) {
+    if (is_win) {
+      ldflags = [
+        "-mllvm:--emit-relocs",
+      ]
+    } else {
+      ldflags = [
+        "-Wl,--emit-relocs",
+      ]
+    }
+  }
+}
+
+# Use LLVM's Polly optimizer
+config("polly") {
+  if (use_polly == true) {
+  ldflags = common_optimize_on_ldflags
+    if (is_win) {
+      ldflags += [
+        "-mllvm:-polly",
+        "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
+        #"-mllvm:-polly-invariant-load-hoisting",
+        "-mllvm:-polly-run-dce",
+        "-mllvm:-polly-vectorizer=stripmine",
+      ]
+    } else {
+      ldflags += [
+        "-Wl,-mllvm,-polly",
+        "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
+        #"-Wl,-mllvm,-polly-invariant-load-hoisting",
+        "-Wl,-mllvm,-polly-run-dce",
+        "-Wl,-mllvm,-polly-vectorizer=stripmine",
+      ]
+    }
+  }
+}
+
 # Turns up the optimization level. Used to explicitly enable -O2 instead of
 # -Os for select targets on platforms that use optimize_for_size. No-op
 # elsewhere.
@@ -3062,6 +3066,7 @@ config("optimize_max") {
     }
     rustflags = [ "-Copt-level=3", ]
   }
+  configs = [ ":polly" ]
 }
 
 # This config can be used to override the default settings for per-component
@@ -3098,6 +3103,7 @@ config("optimize_speed") {
     }
     rustflags = [ "-Copt-level=3", ]
   }
+  configs = [ ":polly" ]
 }
 
 config("optimize_fuzzing") {

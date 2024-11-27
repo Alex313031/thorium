@@ -1,0 +1,135 @@
+[1mdiff --git a/src/build/config/compiler/BUILD.gn b/src/build/config/compiler/BUILD.gn[m
+[1mindex 2e0cfdf6..f933f6cc 100644[m
+[1m--- a/src/build/config/compiler/BUILD.gn[m
+[1m+++ b/src/build/config/compiler/BUILD.gn[m
+[36m@@ -266,21 +266,6 @@[m [mconfig("no_unresolved_symbols") {[m
+   }[m
+ }[m
+ [m
+[31m-# Emit relocations for BOLT[m
+[31m-config("emit-relocs") {[m
+[31m-  if (!using_sanitizer && use_bolt) {[m
+[31m-    if (is_win) {[m
+[31m-      ldflags = [[m
+[31m-        "-mllvm:--emit-relocs",[m
+[31m-      ][m
+[31m-    } else {[m
+[31m-      ldflags = [[m
+[31m-        "-Wl,--emit-relocs",[m
+[31m-      ][m
+[31m-    }[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+ # compiler ---------------------------------------------------------------------[m
+ #[m
+ # Base compiler configuration.[m
+[36m@@ -2642,16 +2627,6 @@[m [mif (is_win) {[m
+     ][m
+   }[m
+ [m
+[31m-  if (use_polly == true) {[m
+[31m-    common_optimize_on_ldflags += [[m
+[31m-      "-mllvm:-polly",[m
+[31m-      "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",[m
+[31m-      #"-mllvm:-polly-invariant-load-hoisting",[m
+[31m-      "-mllvm:-polly-run-dce",[m
+[31m-      "-mllvm:-polly-vectorizer=stripmine",[m
+[31m-    ][m
+[31m-  }[m
+[31m-[m
+   # /OPT:ICF is not desirable in Debug builds, since code-folding can result in[m
+   # misleading symbols in stack traces.[m
+   if (!is_debug && !is_component_build) {[m
+[36m@@ -2785,16 +2760,6 @@[m [mif (is_win) {[m
+     ][m
+   }[m
+ [m
+[31m-  if (use_polly == true) {[m
+[31m-    common_optimize_on_ldflags += [[m
+[31m-      "-Wl,-mllvm,-polly",[m
+[31m-      "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",[m
+[31m-      #"-Wl,-mllvm,-polly-invariant-load-hoisting",[m
+[31m-      "-Wl,-mllvm,-polly-run-dce",[m
+[31m-      "-Wl,-mllvm,-polly-vectorizer=stripmine",[m
+[31m-    ][m
+[31m-  }[m
+[31m-[m
+   if (is_android) {[m
+     # TODO(jdduke) Re-enable on mips after resolving linking[m
+     # issues with libc++ (crbug.com/456380).[m
+[36m@@ -3032,6 +2997,45 @@[m [mconfig("no_optimize") {[m
+   }[m
+ }[m
+ [m
+[32m+[m[32m# Emit relocs for BOLT[m
+[32m+[m[32mconfig("emit-relocs") {[m
+[32m+[m[32m  if (!using_sanitizer && use_bolt) {[m
+[32m+[m[32m    if (is_win) {[m
+[32m+[m[32m      ldflags = [[m
+[32m+[m[32m        "-mllvm:--emit-relocs",[m
+[32m+[m[32m      ][m
+[32m+[m[32m    } else {[m
+[32m+[m[32m      ldflags = [[m
+[32m+[m[32m        "-Wl,--emit-relocs",[m
+[32m+[m[32m      ][m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m# Use LLVM's Polly optimizer[m
+[32m+[m[32mconfig("polly") {[m
+[32m+[m[32m  if (use_polly == true) {[m
+[32m+[m[32m  ldflags = common_optimize_on_ldflags[m
+[32m+[m[32m    if (is_win) {[m
+[32m+[m[32m      ldflags += [[m
+[32m+[m[32m        "-mllvm:-polly",[m
+[32m+[m[32m        "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",[m
+[32m+[m[32m        #"-mllvm:-polly-invariant-load-hoisting",[m
+[32m+[m[32m        "-mllvm:-polly-run-dce",[m
+[32m+[m[32m        "-mllvm:-polly-vectorizer=stripmine",[m
+[32m+[m[32m      ][m
+[32m+[m[32m    } else {[m
+[32m+[m[32m      ldflags += [[m
+[32m+[m[32m        "-Wl,-mllvm,-polly",[m
+[32m+[m[32m        "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",[m
+[32m+[m[32m        #"-Wl,-mllvm,-polly-invariant-load-hoisting",[m
+[32m+[m[32m        "-Wl,-mllvm,-polly-run-dce",[m
+[32m+[m[32m        "-Wl,-mllvm,-polly-vectorizer=stripmine",[m
+[32m+[m[32m      ][m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[32m+[m
+ # Turns up the optimization level. Used to explicitly enable -O2 instead of[m
+ # -Os for select targets on platforms that use optimize_for_size. No-op[m
+ # elsewhere.[m
+[36m@@ -3062,6 +3066,7 @@[m [mconfig("optimize_max") {[m
+     }[m
+     rustflags = [ "-Copt-level=3", ][m
+   }[m
+[32m+[m[32m  configs = [ ":polly" ][m
+ }[m
+ [m
+ # This config can be used to override the default settings for per-component[m
+[36m@@ -3098,6 +3103,7 @@[m [mconfig("optimize_speed") {[m
+     }[m
+     rustflags = [ "-Copt-level=3", ][m
+   }[m
+[32m+[m[32m  configs = [ ":polly" ][m
+ }[m
+ [m
+ config("optimize_fuzzing") {[m
+[1mdiff --git a/src/media/base/media_switches.cc b/src/media/base/media_switches.cc[m
+[1mindex d2f8bec3..0f528844 100644[m
+[1m--- a/src/media/base/media_switches.cc[m
+[1m+++ b/src/media/base/media_switches.cc[m
+[36m@@ -755,7 +755,7 @@[m [mBASE_FEATURE(kVaapiVideoDecodeLinux,[m
+ [m
+ BASE_FEATURE(kVaapiVideoDecodeLinuxGL,[m
+              "VaapiVideoDecodeLinuxGL",[m
+[31m-             base::FEATURE_ENABLED_BY_DEFAULT);[m
+[32m+[m[32m             base::FEATURE_DISABLED_BY_DEFAULT);[m
+ [m
+ BASE_FEATURE(kVaapiVideoEncodeLinux,[m
+              "VaapiVideoEncoder",[m

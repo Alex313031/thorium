@@ -121,30 +121,6 @@ source_set("libvpx_test_generic_headers") {
   sources = libvpx_test_srcs_generic_headers
 }
 
-config("gtest_config") {
-  include_dirs = [
-    "source/libvpx/third_party/googletest/src/include/",
-    "source/libvpx/third_party/googletest/src/",
-  ]
-}
-
-source_set("gtest") {
-  sources = [ "source/libvpx/third_party/googletest/src/src/gtest-all.cc" ]
-
-  configs -= [ "//build/config/compiler:chromium_code" ]
-  configs += [ "//build/config/compiler:no_chromium_code" ]
-
-  public_configs = [ ":gtest_config" ]
-
-  # gtest-death-test dependency on fdio for fuchsia builds
-  if (is_fuchsia) {
-    deps = [
-      "//third_party/fuchsia-sdk/sdk/pkg/fdio",
-      "//third_party/fuchsia-sdk/sdk/pkg/zx",
-    ]
-  }
-}
-
 executable("decode_encode_profile_test") {
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
@@ -166,9 +142,9 @@ executable("decode_encode_profile_test") {
     "tests/pgo/decode_encode_profile_test.cc",
   ]
   deps = [
-    ":gtest",
     ":libvpx",
     ":libvpx_test_generic_headers",
+    "//testing/gtest",
   ]
 }
 
@@ -179,7 +155,12 @@ if (current_cpu == "x86" || (current_cpu == "x64" && !is_msan)) {
     } else if (current_cpu == "x64") {
       sources = libvpx_srcs_x86_64_assembly
     }
-
+    inputs = [
+      "$platform_include_dir/vpx_config.asm",
+      "source/libvpx/third_party/x86inc/x86inc.asm",
+      "source/libvpx/vpx_dsp/x86/bitdepth_conversion_sse2.asm",
+      "source/libvpx/vpx_ports/x86_abi_support.asm",
+    ]
     defines = [ "CHROMIUM" ]
     if (is_android) {
       # On Android, define __ANDROID__ to use alternative standard library
@@ -693,9 +674,9 @@ test("test_libvpx") {
   include_dirs = [ "source/libvpx/third_party/libwebm/" ]
 
   deps = [
-    ":gtest",
     ":libvpx",
     ":libvpx_test_generic_headers",
+    "//testing/gtest",
   ]
 
   if (is_android) {

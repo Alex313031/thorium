@@ -190,6 +190,18 @@ index fe2ce670da340..82bbda21a16e5 100644
  // Used by LOG_IS_ON to lazy-evaluate stream arguments.
  BASE_EXPORT bool ShouldCreateLogMessage(int severity);
  
+diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
+index c9a3ce41465b3..9203ec5c7c75c 100644
+--- a/build/config/BUILDCONFIG.gn
++++ b/build/config/BUILDCONFIG.gn
+@@ -348,6 +348,7 @@ default_compiler_configs = [
+   "//build/config/compiler:default_optimization",
+   "//build/config/compiler:default_stack_frames",
+   "//build/config/compiler:default_symbols",
++  "//build/config/compiler:emit-relocs",
+   "//build/config/compiler:libcxx_hardening",
+   "//build/config/compiler:libcxx_module",
+   "//build/config/compiler:no_exceptions",
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
