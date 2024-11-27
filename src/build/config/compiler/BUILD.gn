@@ -1090,13 +1090,13 @@ config("compiler") {
     rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2", ]
   }
   if (use_avx) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx", ]
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+avx", ]
   }
   if (use_avx2) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
   }
   if (use_avx512) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+pclmul,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f,+-mavx512vl", "-Cllvm-args=-fp-contract=fast", ]
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f,+-mavx512vl", "-Cllvm-args=-fp-contract=fast", ]
   }
 
   if (!is_win || force_rustc_color_output) {
