@@ -776,9 +776,7 @@ def main():
   ldflags = []
 
   targets = 'AArch64;ARM;LoongArch;Mips;PowerPC;RISCV;SystemZ;WebAssembly;X86'
-  projects = 'clang;lld;clang-tools-extra;polly'
-  if args.bolt:
-    projects += ';bolt'
+  projects = 'clang;lld;clang-tools-extra;polly;bolt'
 
   pic_default = sys.platform == 'win32'
   pic_mode = 'ON' if args.pic or pic_default else 'OFF'

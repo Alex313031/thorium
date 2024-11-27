@@ -266,6 +266,21 @@ config("no_unresolved_symbols") {
   }
 }
 
+# Emit relocations for BOLT
+config("emit-relocs") {
+  if (!using_sanitizer && use_bolt) {
+    if (is_win) {
+      ldflags = [
+        "-mllvm:--emit-relocs",
+      ]
+    } else {
+      ldflags = [
+        "-Wl,--emit-relocs",
+      ]
+    }
+  }
+}
+
 # compiler ---------------------------------------------------------------------
 #
 # Base compiler configuration.
@@ -2629,11 +2644,11 @@ if (is_win) {
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
-    "-mllvm:-polly",
-    "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
-    "-mllvm:-polly-invariant-load-hoisting",
-    "-mllvm:-polly-run-dce",
-    "-mllvm:-polly-vectorizer=stripmine",
+      "-mllvm:-polly",
+      "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
+      #"-mllvm:-polly-invariant-load-hoisting",
+      "-mllvm:-polly-run-dce",
+      "-mllvm:-polly-vectorizer=stripmine",
     ]
   }
 
@@ -2772,11 +2787,11 @@ if (is_win) {
 
   if (use_polly == true) {
     common_optimize_on_ldflags += [
-    "-Wl,-mllvm,-polly",
-    "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
-    "-Wl,-mllvm,-polly-invariant-load-hoisting",
-    "-Wl,-mllvm,-polly-run-dce",
-    "-Wl,-mllvm,-polly-vectorizer=stripmine",
+      "-Wl,-mllvm,-polly",
+      "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
+      #"-Wl,-mllvm,-polly-invariant-load-hoisting",
+      "-Wl,-mllvm,-polly-run-dce",
+      "-Wl,-mllvm,-polly-vectorizer=stripmine",
     ]
   }
 
