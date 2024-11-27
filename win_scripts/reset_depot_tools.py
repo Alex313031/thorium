@@ -52,7 +52,9 @@ def unlock_and_delete(path):
             subprocess.run(f'rmdir /S /Q "{path}"', shell=True, check=True)
         except subprocess.CalledProcessError as e:
             print(f"Failed to unlock and delete directory '{path}' via CMD: {e}")
-            raise PermissionError(f"Failed to unlock and delete directory '{path}' via CMD: {e}")
+            raise PermissionError(
+                f"Failed to unlock and delete directory '{path}' via CMD: {e}"
+            )
     else:
         # For other platforms, just use shutil.rmtree
         shutil.rmtree(path)
@@ -64,14 +66,17 @@ def display_help():
     print("from your disk, and then re-clone depot_tools.")
     print("\n")
 
-if '--help' in sys.argv:
+
+if "--help" in sys.argv:
     display_help()
     sys.exit(0)
 
 
-depot_tools_dir = os.getenv('DEPOT_TOOLS_DIR', r"C:\src\depot_tools")
-gsutil_dir = os.path.expandvars(os.getenv('GSUTIL_DIR', r'%USERPROFILE%\.gsutil'))
-vpython_root_dir = os.path.expandvars(os.getenv('VPYTHON_ROOT_DIR', r'%LOCALAPPDATA%\.vpython-root'))
+depot_tools_dir = os.getenv("DEPOT_TOOLS_DIR", r"C:\src\depot_tools")
+gsutil_dir = os.path.expandvars(os.getenv("GSUTIL_DIR", r"%USERPROFILE%\.gsutil"))
+vpython_root_dir = os.path.expandvars(
+    os.getenv("VPYTHON_ROOT_DIR", r"%LOCALAPPDATA%\.vpython-root")
+)
 
 print("\nRemoving depot_tools, etc\n")
 
