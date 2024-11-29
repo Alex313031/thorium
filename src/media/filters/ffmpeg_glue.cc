@@ -88,6 +88,8 @@ static const char* GetAllowedDemuxers() {
                                                  "flac", "mp3",      "mov"};
 #if BUILDFLAG(USE_PROPRIETARY_CODECS)
     allowed_demuxers.push_back("aac");
+    allowed_demuxers.push_back("ac3");
+    allowed_demuxers.push_back("eac3");
 #endif
     return base::JoinString(allowed_demuxers, ",");
   }());

@@ -71,6 +71,7 @@ process_template() (
     local TMPLOUT="$2"
   fi
   # Process includes first so included text also gets substitutions.
+  # -e "s#@@RECOMMENDS@@#${RECOMMENDS}#g" \
   TMPLINCL="$(process_template_includes "$TMPLIN")"
   sed \
     -e "s#@@PACKAGE@@#${PACKAGE}#g" \
@@ -92,7 +93,6 @@ process_template() (
     -e "s#@@PRODUCTURL@@#${PRODUCTURL}#g" \
     -e "s#@@PREDEPENDS@@#${PREDEPENDS}#g" \
     -e "s#@@DEPENDS@@#${DEPENDS}#g" \
-    # -e "s#@@RECOMMENDS@@#${RECOMMENDS}#g" \
     -e "s#@@PROVIDES@@#${PROVIDES}#g" \
     -e "s#@@ARCHITECTURE@@#${ARCHITECTURE}#g" \
     -e "s#@@MAINTNAME@@#${MAINTNAME}#g" \

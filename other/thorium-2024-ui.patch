@@ -2498,7 +2498,7 @@ index b071682471a32..94123478b7fab 100644
    // uses for sizing as suggested as an initial fix by UI. Discuss a more formal
    // solution.
 -  constexpr int kMaxChromeLabsHeightDp = 448;
-+  constexpr int kMaxChromeLabsHeightDp = 550;
++  constexpr int kMaxChromeLabsHeightDp = 560;
    auto scroll_view = std::make_unique<views::ScrollView>(
        views::ScrollView::ScrollWithLayers::kEnabled);
    // TODO(elainechien): Check with UI whether we want to draw overflow
@@ -2929,6 +2929,32 @@ index d1a8dc8342177..a407f00138376 100644
  inline constexpr char kChromeUIAboutHost[] = "about";
  inline constexpr char kChromeUIAboutURL[] = "chrome://about/";
  inline constexpr char kChromeUIAccessCodeCastHost[] = "access-code-cast";
+diff --git a/components/lens/lens_features.cc b/components/lens/lens_features.cc
+index e821793248fe3..9a890315945d7 100644
+--- a/components/lens/lens_features.cc
++++ b/components/lens/lens_features.cc
+@@ -7,6 +7,7 @@
+ #include "base/feature_list.h"
+ #include "base/metrics/field_trial_params.h"
+ #include "build/build_config.h"
++#include "chrome/browser/ui/thorium_2024.h"
+ 
+ namespace lens::features {
+ 
+@@ -44,12 +45,7 @@ BASE_FEATURE(kEnableContextMenuInLensSidePanel,
+ 
+ BASE_FEATURE(kLensOverlay,
+              "LensOverlay",
+-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_IOS)
+-             base::FEATURE_DISABLED_BY_DEFAULT
+-#else
+-             base::FEATURE_ENABLED_BY_DEFAULT
+-#endif
+-);
++             base::FEATURE_DISABLED_BY_DEFAULT);
+ 
+ BASE_FEATURE(kLensOverlayTranslateButton,
+              "LensOverlayTranslateButton",
 diff --git a/components/resources/search_engine_choice_scaled_resources.grdp b/components/resources/search_engine_choice_scaled_resources.grdp
 index 87d186a04e66c..01beccd365540 100644
 --- a/components/resources/search_engine_choice_scaled_resources.grdp
@@ -3032,7 +3058,7 @@ index d21456ab73faa..de14c868fcc26 100644
        return SystemTheme::kDefault;
    }
 diff --git a/ui/views/controls/button/toggle_button.cc b/ui/views/controls/button/toggle_button.cc
-index 1380921296fcf..9410570b9bb83 100644
+index 1380921296fcf..cacb1c78add37 100644
 --- a/ui/views/controls/button/toggle_button.cc
 +++ b/ui/views/controls/button/toggle_button.cc
 @@ -11,6 +11,7 @@
@@ -3043,28 +3069,26 @@ index 1380921296fcf..9410570b9bb83 100644
  #include "third_party/skia/include/core/SkRect.h"
  #include "ui/accessibility/ax_enums.mojom.h"
  #include "ui/accessibility/ax_node_data.h"
-@@ -42,6 +43,11 @@ namespace {
+@@ -42,6 +43,13 @@ namespace {
  
  // Constants are measured in dip.
  constexpr gfx::Size kTrackSize = gfx::Size(26, 16);
 +constexpr gfx::Size kTh24TrackSize = gfx::Size(30, 12);
++
 +constexpr int kTrackVerticalMargin = 5;
 +constexpr int kTrackHorizontalMargin = 6;
-+// Inset from the rounded edge of the thumb to the rounded edge of the track.
++
++// Insets from the rounded edge of the thumb to the rounded edge of the track.
 +constexpr int kTh24ThumbInset = 2;
  constexpr int kThumbInset = -4;
  constexpr int kThumbInsetSelected = -2;
  constexpr int kThumbPressedOutset = 1;
-@@ -49,11 +55,19 @@ constexpr int kHoverDiameter = 20;
+@@ -49,11 +57,15 @@ constexpr int kHoverDiameter = 20;
  constexpr float kBorderStrokeWidth = 1.0f;
  
  const gfx::Size GetTrackSize() {
 -  return kTrackSize;
-+  if (features::IsThorium2024()) {
-+    return kTh24TrackSize;
-+  } else {
-+    return kTrackSize;
-+  }
++  return features::IsThorium2024() ? kTh24TrackSize : kTrackSize;
  }
  
  int GetThumbInset(bool is_on) {
@@ -3077,7 +3101,7 @@ index 1380921296fcf..9410570b9bb83 100644
  }
  
  std::optional<SkColor> GetSkColorFromVariant(
-@@ -148,7 +162,7 @@ class ToggleButton::ThumbView : public View {
+@@ -148,7 +160,7 @@ class ToggleButton::ThumbView : public View {
          ConvertVariantToSkColor(thumb_off_color_, color_provider);
      SkColor thumb_color =
          color_utils::AlphaBlend(thumb_on_color, thumb_off_color, color_ratio_);
@@ -3086,7 +3110,7 @@ index 1380921296fcf..9410570b9bb83 100644
        // This will blend and additional color into the "on" state thumb color
        // while the view is hovered. This will also take into account both the
        // off->on color animating along with the hover animation. Those
-@@ -208,7 +222,7 @@ class ToggleButton::ThumbView : public View {
+@@ -208,7 +220,7 @@ class ToggleButton::ThumbView : public View {
  };
  
  ToggleButton::ToggleButton(PressedCallback callback)
@@ -3095,7 +3119,7 @@ index 1380921296fcf..9410570b9bb83 100644
  
  ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
      : Button(std::move(callback)) {
-@@ -225,14 +239,17 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+@@ -225,14 +237,17 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
    // InkDrop event triggering is handled in NotifyClick().
    SetHasInkDropActionOnClick(false);
    InkDrop::UseInkDropForSquareRipple(InkDrop::Get(this),
@@ -3115,7 +3139,7 @@ index 1380921296fcf..9410570b9bb83 100644
          const SkColor pressed_color = host->GetPressedColor();
          const float pressed_alpha = SkColorGetA(pressed_color);
          std::unique_ptr<SquareInkDropRipple> ripple =
-@@ -251,20 +268,22 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+@@ -251,20 +266,22 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
          return host->GetTrackColor(host->GetIsOn() || host->HasFocus());
        },
        this));
@@ -3152,18 +3176,18 @@ index 1380921296fcf..9410570b9bb83 100644
  
    // Even though ToggleButton doesn't paint anything, declare us as flipped in
    // RTL mode so that FocusRing correctly flips as well.
-@@ -370,6 +389,10 @@ bool ToggleButton::GetAcceptsEvents() const {
+@@ -370,6 +387,10 @@ bool ToggleButton::GetAcceptsEvents() const {
    return accepts_events_;
  }
  
 +int ToggleButton::GetVisualHorizontalMargin() const {
-+  return kTrackHorizontalMargin - kThumbInset;
++  return kTrackHorizontalMargin - kTh24ThumbInset;
 +}
 +
  void ToggleButton::AddLayerToRegion(ui::Layer* layer,
                                      views::LayerRegion region) {
    // Ink-drop layers should go above/below the ThumbView.
-@@ -383,6 +406,9 @@ void ToggleButton::RemoveLayerFromRegions(ui::Layer* layer) {
+@@ -383,6 +404,9 @@ void ToggleButton::RemoveLayerFromRegions(ui::Layer* layer) {
  gfx::Size ToggleButton::CalculatePreferredSize(
      const SizeBounds& /*available_size*/) const {
    gfx::Rect rect(GetTrackSize());
@@ -3173,7 +3197,7 @@ index 1380921296fcf..9410570b9bb83 100644
    rect.Inset(-GetInsets());
    return rect.size();
  }
-@@ -402,7 +428,7 @@ gfx::Rect ToggleButton::GetThumbBounds() const {
+@@ -402,7 +426,7 @@ gfx::Rect ToggleButton::GetThumbBounds() const {
    // The thumb is a circle, so the width should match the height.
    thumb_bounds.set_width(thumb_bounds.height());
    thumb_bounds.Inset(thumb_view_->GetShadowOutsets());
@@ -3182,7 +3206,7 @@ index 1380921296fcf..9410570b9bb83 100644
      thumb_bounds.Outset(kThumbPressedOutset);
    }
    return thumb_bounds;
-@@ -417,7 +443,7 @@ void ToggleButton::UpdateThumb() {
+@@ -417,7 +441,7 @@ void ToggleButton::UpdateThumb() {
                        static_cast<float>(slide_animation_.GetCurrentValue()),
                        static_cast<float>(hover_animation_.GetCurrentValue()),
                        GetIsOn(), IsMouseHovered());
@@ -3191,7 +3215,7 @@ index 1380921296fcf..9410570b9bb83 100644
      InkDrop::Get(this)->GetInkDrop()->SetHovered(
          !slide_animation_.is_animating());
    }
-@@ -458,8 +484,10 @@ void ToggleButton::OnThemeChanged() {
+@@ -458,8 +482,10 @@ void ToggleButton::OnThemeChanged() {
  void ToggleButton::NotifyClick(const ui::Event& event) {
    AnimateIsOn(!GetIsOn());
  
@@ -3204,7 +3228,7 @@ index 1380921296fcf..9410570b9bb83 100644
  
    Button::NotifyClick(event);
  }
-@@ -482,27 +510,59 @@ void ToggleButton::StateChanged(ButtonState old_state) {
+@@ -482,27 +508,59 @@ void ToggleButton::StateChanged(ButtonState old_state) {
    thumb_view_->SetEnabled(enabled);
  
    // Update thumb bounds.
@@ -3276,7 +3300,7 @@ index 1380921296fcf..9410570b9bb83 100644
  void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
    // Paint the toggle track. To look sharp even at fractional scale factors,
    // round up to pixel boundaries.
-@@ -519,7 +579,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+@@ -519,7 +577,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
    track_flags.setColor(color_utils::AlphaBlend(
        GetTrackColor(true), GetTrackColor(false), color_ratio));
    canvas->DrawRoundRect(track_rect, radius, track_flags);
@@ -3285,7 +3309,7 @@ index 1380921296fcf..9410570b9bb83 100644
      track_rect.Inset(kBorderStrokeWidth * dsf / 2.0f);
      track_flags.setColor(
          GetColorProvider()->GetColor(ui::kColorToggleButtonShadow));
-@@ -531,7 +591,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+@@ -531,7 +589,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
  }
  
  void ToggleButton::AnimationEnded(const gfx::Animation* animation) {

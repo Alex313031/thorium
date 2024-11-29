@@ -2843,6 +2843,13 @@ config("march_dotprod_fp16") {
   }
 }
 
+config("march_dotprod_i8mm") {
+  if (!is_win || is_clang) {
+    cflags = [ "-march=armv8-a+dotprod+i8mm" ]
+    asmflags = cflags
+  }
+}
+
 config("march_dotprod_i8mm_sve") {
   if (!is_win || is_clang) {
     cflags = [ "-march=armv8.2-a+dotprod+i8mm+sve" ]
@@ -2866,6 +2873,11 @@ config("march_i8mm_f16") {
 
 config("march_sve2") {
   cflags = [ "-march=armv9-a+sve2" ]
+  asmflags = cflags
+}
+
+config("march_sme") {
+  cflags = [ "-march=armv9-a+sme" ]
   asmflags = cflags
 }
 

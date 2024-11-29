@@ -77,12 +77,6 @@ enum class SecureDnsModeDetailsForHistogram {
   kMaxValue = kSecureByEnterprisePolicy,
 };
 
-#if BUILDFLAG(IS_WIN)
-bool ShouldDisableDohForWindowsParentalControls() {
-  return false;
-}
-#endif  // BUILDFLAG(IS_WIN)
-
 // Check the AsyncDns field trial and return true if it should be enabled. On
 // Android this includes checking the Android version in the field trial.
 bool ShouldEnableAsyncDns() {

@@ -223,7 +223,14 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
 #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
 
 bool IsHevcProfileSupported(const VideoType& type) {
-   return true;
+#if BUILDFLAG(IS_ANDROID)
+  if (base::FeatureList::IsEnabled(kBuiltInH264Decoder)) {
+    return true;
+  }
+  return GetSupplementalProfileCache()->IsProfileSupported(type.profile);
+#else
+  return true;
+#endif  // BUILDFLAG(IS_ANDROID)
 }
 
 bool IsVp9ProfileSupported(const VideoType& type) {
@@ -417,7 +424,10 @@ bool IsDefaultSupportedAudioType(const AudioType& type) {
 
 bool IsBuiltInVideoCodec(VideoCodec codec) {
 #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)
-  if (codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) {
+  // Android does bundle `FFMpegVideoDecoder` for `non-arm32` devices,
+  // but not enabled by default.
+  if ((codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
+       base::FeatureList::IsEnabled(kBuiltInH264Decoder)) {
     return true;
   }
 #endif  // BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) &&
