@@ -554,7 +554,11 @@ config("compiler") {
 
     # TODO(crbug.com/345541122): investigate the fuchsia binary size increase.
     if (is_win) {
-      cflags += [ "/Zc:sizedDealloc" ]
+      if (is_debug) {
+        cflags += [ "/Zc:sizedDealloc-" ]
+      } else {
+        cflags += [ "/Zc:sizedDealloc" ]
+      }
     } else {
       cflags += [ "-fsized-deallocation" ]
     }
