@@ -125,12 +125,6 @@ group("thorium_all") {
       "//chrome:chrome_dll",
       "//components/policy:pack_policy_templates"
     ]
-    if (is_official_build) {
-      deps += [
-        "//chrome/installer/mini_installer:mini_installer",
-        "//chrome/installer/setup:setup"
-      ]
-    }
   }
 
   if (is_android) {

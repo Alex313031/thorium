@@ -1169,7 +1169,7 @@ index 9b189df8d8ffd..7c2ae3a3c94fa 100644
        // Spec says height of button should be 36dp, vertical padding on both
        // top and bottom should be 8dp.
 -      return 36 + 2 * 8;
-+      return features::IsThorium2024() ? 42 : 36 + 2 * 8;
++      return features::IsThorium2024() ? 44 : 36 + 2 * 8;
      case DISTANCE_PERMISSION_PROMPT_HORIZONTAL_ICON_LABEL_PADDING:
        return 8;
      case DISTANCE_RICH_HOVER_BUTTON_ICON_HORIZONTAL:
