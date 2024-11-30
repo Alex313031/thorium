@@ -3,11 +3,11 @@ use_sse41 = true
 use_sse42 = true
 use_avx = true
 use_avx2 = true
-use_avx512 = false  # 禁用 AVX-512，适用于非必要场景
+use_avx512 = false
 use_fma = true
 
 target_os = "linux"
-target_cpu = "x64"  # 明确目标架构
+target_cpu = "x64" 
 enable_linux_installer = true
 enable_distro_version_check = false
 is_official_build = true
