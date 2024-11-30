@@ -2400,8 +2400,8 @@ index 65676013fece9..d45fc4f3e1754 100644
 +      //bottom -= Th24StrokeOffset;
 +    }
 +  #else
-+    VLOG(0) << "Th24StrokeOffset on Windows is imperfect";
 +    if (features::IsThorium2024()) {
++      VLOG(0) << "Th24StrokeOffset on Windows is imperfect";
 +      constexpr float Th24StrokeOffset = 1.0f;
 +      top -= Th24StrokeOffset;
 +      //bottom -= Th24StrokeOffset;
@@ -2417,10 +2417,10 @@ index 65676013fece9..d45fc4f3e1754 100644
  
 +const gfx::FontList& TabStyleViewsImpl::GetFontList() const {
 +  // Don't want to have to keep re-computing this value.
-+  static const bool prominent_dark_mode_titles =
++  static const bool prominent_active_tab_titles =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("prominent-active-tab-titles");
 +
-+  if (prominent_dark_mode_titles && tab_->IsActive()) {
++  if (prominent_active_tab_titles && tab_->IsActive()) {
 +    return heavy_font_;
 +  }
 +

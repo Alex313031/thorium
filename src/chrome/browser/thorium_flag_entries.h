@@ -47,6 +47,15 @@
      "Remove Tab Search Button",
      "Removes the tabsearch button from the tabstrip.",
      kOsDesktop, SINGLE_VALUE_TYPE("remove-tabsearch-button")},
+
+#if BUILDFLAG(IS_WIN)
+    {"tab-search-caption-button",
+     "Disable Windows Tab Search Caption Button",
+     "Disables the tab search caption button (i.e. the version of the button that's adjacent to, and mimics, the minimize/maximize/close buttons), and "
+     "restores the standard rounded tab search button on the right of the tabstrip.",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-caption-button")},
+#endif // BUILDFLAG(IS_WIN)
+
     {"classic-omnibox",
      "Classic Omnibox UI",
      "Changes the omnibox shape to be more square.",

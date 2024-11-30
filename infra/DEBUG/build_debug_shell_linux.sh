@@ -90,5 +90,6 @@ cp -r -f -v ${CR_SRC_DIR}/out/thorium/ClearKeyCdm/_platform_specific/linux_x64/l
 cd ${CR_SRC_DIR}/out/thorium/Thorium_UI_Debug_Shell &&
 zip -r ../Thorium_UI_Debug_Shell.zip * &&
 
+printf "\n" &&
 printf "${GRE}Thorium UI Debug Shell Build Completed!\n" &&
 tput sgr0
