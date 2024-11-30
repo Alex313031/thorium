@@ -38,13 +38,12 @@ icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
-optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
 shell_resources.pak: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
 thorium_shell.ico: %(VersionDir)s\
 ui_resources_100_percent.pak: %(VersionDir)s\
-resources\*.*: %(VersionDir)s\resources\
+resources\inspector_overlay\*.*: %(VersionDir)s\resources\inspector_overlay\
 vk_swiftshader.dll: %(VersionDir)s\
 vk_swiftshader_icd.json: %(VersionDir)s\
 vulkan-1.dll: %(VersionDir)s\
@@ -119,6 +118,7 @@ ffmpeg.dll: %(VersionDir)s\
 # The elevation service is only installed for Google Chrome builds.
 elevation_service.exe: %(VersionDir)s\
 os_update_handler.exe: %(VersionDir)s\
+optimization_guide_internal.dll: %(VersionDir)s\
 
 #
 # Sub directories living in the version dir
