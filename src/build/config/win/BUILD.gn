@@ -132,9 +132,13 @@ config("compiler") {
       cflags += [
         "-mmmx",
         "-msse2",
-        "/clang:-O3",
-        "-Xclang", "-O3",
       ]
+      if (is_official_build) {
+        cflags += [
+          "/clang:-O3",
+          "-Xclang", "-O3",
+        ]
+      }
       if (use_sse3) {
         cflags += [
           "-msse3",
@@ -235,7 +239,9 @@ config("compiler") {
 
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
-    ldflags += [ "/opt:lldlto=3", ]
+    if (is_official_build) {
+      ldflags += [ "/opt:lldlto=3", ]
+    }
   }
 
   # Some binaries create PDBs larger than 4 GiB. Increasing the PDB page size
