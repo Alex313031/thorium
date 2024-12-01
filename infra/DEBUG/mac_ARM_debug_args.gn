@@ -1,11 +1,3 @@
-use_sse3 = false
-use_sse41 = true
-use_sse42 = true
-use_avx = true
-use_avx2 = true
-use_avx512 = false
-use_fma = true
-
 # use_polly = true
 # use_bolt = true
 target_os = "mac"
@@ -60,7 +52,7 @@ enable_library_cdms = true
 enable_widevine = true
 bundle_widevine_cdm = true
 enable_cdm_host_verification = true
-enable_widevine_cdm_host_verification = true
+enable_widevine_cdm_host_verification = false
 ignore_missing_widevine_signing_cert = true
 enable_media_drm_storage = true
 enable_hangout_services_extension = false
