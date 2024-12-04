@@ -174,7 +174,7 @@ $ out/thorium/Thorium.app/Contents/MacOS/Thorium
 To generate a *.dmg* installation package, run (from within the Thorium repo):
 
 ```shell
-$ ./build_dmg.sh
+$ ./create_dmg.sh
 ```
 
 ### Avoiding repetitive system permissions dialogs after each build
