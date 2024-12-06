@@ -12,25 +12,6 @@ index 6167ef5ed42af..6af9e477c4c8a 100644
    context_params->enable_brotli = true;
    context_params->enable_zstd =
        base::FeatureList::IsEnabled(net::features::kZstdContentEncoding);
-diff --git a/build/config/unsafe_buffers_paths.txt b/build/config/unsafe_buffers_paths.txt
-index 99e985eacda99..15dea18f1fceb 100644
---- a/build/config/unsafe_buffers_paths.txt
-+++ b/build/config/unsafe_buffers_paths.txt
-@@ -112,13 +112,13 @@
- -ios_internal/
- -media/
- -native_client/
-+-net/ftp/
- -net/third_party/
- -printing/
- -remoting/host/
- -remoting/client/input/
- -testing/iossim/
- -third_party/
--+third_party/blink/
- -tools/
- -ui/base/clipboard/
- -ui/base/ime/ash/
 diff --git a/chrome/app/app-Info.plist b/chrome/app/app-Info.plist
 index 5654e5c9d5858..08d00c2005d7b 100644
 --- a/chrome/app/app-Info.plist
@@ -5860,13 +5841,18 @@ index 0000000000000..459379e3eef89
 +}
 diff --git a/net/ftp/ftp_directory_listing_parser.cc b/net/ftp/ftp_directory_listing_parser.cc
 new file mode 100644
-index 0000000000000..0e51c8dd4e99c
+index 0000000000000..57013a78c6e72
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.cc
-@@ -0,0 +1,126 @@
+@@ -0,0 +1,131 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_directory_listing_parser.h"
 +
@@ -6819,13 +6805,18 @@ index 0000000000000..9dfc44acfd999
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_UNITTEST_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_vms.cc b/net/ftp/ftp_directory_listing_parser_vms.cc
 new file mode 100644
-index 0000000000000..86e34e661ae0a
+index 0000000000000..7d0ca2a045f75
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.cc
-@@ -0,0 +1,308 @@
+@@ -0,0 +1,313 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_directory_listing_parser_vms.h"
 +
@@ -7749,13 +7740,18 @@ index 0000000000000..0ef5b781eec4e
 +#endif  // NET_FTP_FTP_NETWORK_SESSION_H_
 diff --git a/net/ftp/ftp_network_transaction.cc b/net/ftp/ftp_network_transaction.cc
 new file mode 100644
-index 0000000000000..4fdad5392e0a7
+index 0000000000000..85053f403f224
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.cc
-@@ -0,0 +1,1293 @@
+@@ -0,0 +1,1298 @@
 +// Copyright (c) 2012 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_network_transaction.h"
 +
@@ -11309,13 +11305,18 @@ index 0000000000000..5f4270f25ca7d
 +#endif  // NET_FTP_FTP_TRANSACTION_FACTORY_H_
 diff --git a/net/ftp/ftp_util.cc b/net/ftp/ftp_util.cc
 new file mode 100644
-index 0000000000000..fe7e81c2e8ad7
+index 0000000000000..5d06d8d81d459
 --- /dev/null
 +++ b/net/ftp/ftp_util.cc
-@@ -0,0 +1,373 @@
+@@ -0,0 +1,378 @@
 +// Copyright (c) 2011 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_util.h"
 +
