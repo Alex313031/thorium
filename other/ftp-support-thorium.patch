@@ -4910,7 +4910,7 @@ index 0000000000000..eb4acff145d95
 --- /dev/null
 +++ b/net/data/fuzzer_dictionaries/net_url_request_ftp_fuzzer.dict
 @@ -0,0 +1,59 @@
-+# Copyright 2016 The Chromium Authors. All rights reserved.
++# Copyright 2016 The Chromium Authors
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
 +
@@ -5026,7 +5026,7 @@ index 0000000000000..359d5460db859
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.cc
 @@ -0,0 +1,62 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5094,7 +5094,7 @@ index 0000000000000..e7f3057e153bf
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.h
 @@ -0,0 +1,63 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5163,7 +5163,7 @@ index 0000000000000..9c5dea5303895
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache_unittest.cc
 @@ -0,0 +1,161 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5330,7 +5330,7 @@ index 0000000000000..9bd4059d5fbe4
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.cc
 @@ -0,0 +1,159 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5495,7 +5495,7 @@ index 0000000000000..149097185dafc
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.h
 @@ -0,0 +1,101 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5602,7 +5602,7 @@ index 0000000000000..a133aa441d7fc
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer_unittest.cc
 @@ -0,0 +1,184 @@
-+// Copyright (c) 2009 The Chromium Authors. All rights reserved.
++// Copyright (c) 2009 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5792,7 +5792,7 @@ index 0000000000000..f3a9ee3c6dfbb
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_fuzzer.cc
 @@ -0,0 +1,21 @@
-+// Copyright 2015 The Chromium Authors. All rights reserved.
++// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5819,7 +5819,7 @@ index 0000000000000..459379e3eef89
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_fuzzer.cc
 @@ -0,0 +1,20 @@
-+// Copyright 2015 The Chromium Authors. All rights reserved.
++// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5845,7 +5845,7 @@ index 0000000000000..57013a78c6e72
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.cc
 @@ -0,0 +1,131 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5982,7 +5982,7 @@ index 0000000000000..f813bb04e5209
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.h
 @@ -0,0 +1,46 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6034,7 +6034,7 @@ index 0000000000000..5388146beff3c
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.cc
 @@ -0,0 +1,227 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6267,7 +6267,7 @@ index 0000000000000..42ec4fc6a3a27
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.h
 @@ -0,0 +1,29 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6302,7 +6302,7 @@ index 0000000000000..d64a564b413e0
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls_unittest.cc
 @@ -0,0 +1,222 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6530,7 +6530,7 @@ index 0000000000000..de08f99478562
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.cc
 @@ -0,0 +1,186 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6722,7 +6722,7 @@ index 0000000000000..9dfc44acfd999
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.h
 @@ -0,0 +1,81 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6809,7 +6809,7 @@ index 0000000000000..7d0ca2a045f75
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.cc
 @@ -0,0 +1,313 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7128,7 +7128,7 @@ index 0000000000000..e59a679303e23
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.h
 @@ -0,0 +1,24 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7158,7 +7158,7 @@ index 0000000000000..88deedd5e2d28
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms_unittest.cc
 @@ -0,0 +1,197 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7361,7 +7361,7 @@ index 0000000000000..0d7906f5d68db
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.cc
 @@ -0,0 +1,74 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7441,7 +7441,7 @@ index 0000000000000..39aefe2929328
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.h
 @@ -0,0 +1,24 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7471,7 +7471,7 @@ index 0000000000000..08b01b88f6017
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows_unittest.cc
 @@ -0,0 +1,128 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7605,7 +7605,7 @@ index 0000000000000..8a467f8896487
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.cc
 @@ -0,0 +1,34 @@
-+// Copyright (c) 2008 The Chromium Authors. All rights reserved.
++// Copyright (c) 2008 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7645,7 +7645,7 @@ index 0000000000000..59c4d2b04bdf3
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.h
 @@ -0,0 +1,38 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7689,7 +7689,7 @@ index 0000000000000..9de9796b08bf3
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.cc
 @@ -0,0 +1,14 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7709,7 +7709,7 @@ index 0000000000000..0ef5b781eec4e
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.h
 @@ -0,0 +1,29 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7744,7 +7744,7 @@ index 0000000000000..85053f403f224
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.cc
 @@ -0,0 +1,1298 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -9048,7 +9048,7 @@ index 0000000000000..c7cb8753f8acf
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.h
 @@ -0,0 +1,268 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -9322,7 +9322,7 @@ index 0000000000000..fb2facdd3c653
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction_unittest.cc
 @@ -0,0 +1,1722 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11050,7 +11050,7 @@ index 0000000000000..be7702fd3d9c0
 --- /dev/null
 +++ b/net/ftp/ftp_request_info.h
 @@ -0,0 +1,20 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11076,7 +11076,7 @@ index 0000000000000..51b3c0e3aa367
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.cc
 @@ -0,0 +1,17 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11099,7 +11099,7 @@ index 0000000000000..576ef2501b465
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.h
 @@ -0,0 +1,46 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11151,7 +11151,7 @@ index 0000000000000..18b0595bd9500
 --- /dev/null
 +++ b/net/ftp/ftp_server_type.h
 @@ -0,0 +1,27 @@
-+// Copyright (c) 2009 The Chromium Authors. All rights reserved.
++// Copyright (c) 2009 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11184,7 +11184,7 @@ index 0000000000000..dcb67243f9dae
 --- /dev/null
 +++ b/net/ftp/ftp_transaction.h
 @@ -0,0 +1,82 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11272,7 +11272,7 @@ index 0000000000000..5f4270f25ca7d
 --- /dev/null
 +++ b/net/ftp/ftp_transaction_factory.h
 @@ -0,0 +1,31 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11309,7 +11309,7 @@ index 0000000000000..5d06d8d81d459
 --- /dev/null
 +++ b/net/ftp/ftp_util.cc
 @@ -0,0 +1,378 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11693,7 +11693,7 @@ index 0000000000000..6647df1569862
 --- /dev/null
 +++ b/net/ftp/ftp_util.h
 @@ -0,0 +1,57 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11756,7 +11756,7 @@ index 0000000000000..ffeaaa541d7d8
 --- /dev/null
 +++ b/net/ftp/ftp_util_unittest.cc
 @@ -0,0 +1,268 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12045,7 +12045,7 @@ index 0000000000000..03783e50cfc0b
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.cc
 @@ -0,0 +1,58 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12109,7 +12109,7 @@ index 0000000000000..3c7e0faebc2bb
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.h
 @@ -0,0 +1,59 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12297,7 +12297,7 @@ index 0000000000000..e589091fb92e4
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_fuzzer.cc
 @@ -0,0 +1,92 @@
-+// Copyright 2016 The Chromium Authors. All rights reserved.
++// Copyright 2016 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12395,7 +12395,7 @@ index 0000000000000..1e8bacb3d9ac9
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.cc
 @@ -0,0 +1,324 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12725,7 +12725,7 @@ index 0000000000000..fda29bf6cb24c
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.h
 @@ -0,0 +1,102 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12833,7 +12833,7 @@ index 0000000000000..62e4719adc72d
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job_unittest.cc
 @@ -0,0 +1,245 @@
-+// Copyright (c) 2019 The Chromium Authors. All rights reserved.
++// Copyright (c) 2019 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -13922,7 +13922,7 @@ index 0000000000000..fbee10b1875a7
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.cc
 @@ -0,0 +1,109 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -14037,7 +14037,7 @@ index 0000000000000..c5f9bda28b5c0
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.h
 @@ -0,0 +1,24 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -14067,7 +14067,7 @@ index 0000000000000..9f52cba0c1222
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing_test.cc
 @@ -0,0 +1,114 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
