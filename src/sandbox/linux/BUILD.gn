@@ -303,7 +303,7 @@ if (is_linux || is_chromeos) {
 
       # These files have a suspicious comparison.
       # TODO fix this and re-enable this warning.
-      # "-Wno-sign-compare",
+      "-Wno-sign-compare",
       "-O3",
       "-fPIE",
     ]

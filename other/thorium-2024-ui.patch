@@ -1296,8 +1296,8 @@ index eabc844883aca..291633d064be4 100644
  
 -  const int top_border_thickness = GetLayoutConstant(TAB_STRIP_PADDING);
 +  const int top_border_thickness = features::IsThorium2024()
-+                                   ? GetLayoutConstant(TAB_INACTIVE_PADDING)
-+                                   : FrameTopBorderThickness(false);
++                                   ? FrameTopBorderThickness(false)
++                                   : GetLayoutConstant(TAB_STRIP_PADDING);
  
    const int window_component = GetHTComponentForFrame(
        point, gfx::Insets::TLBR(top_border_thickness, 0, 0, 0),

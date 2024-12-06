@@ -3013,7 +3013,7 @@ config("no_optimize") {
   }
 }
 
-# Emit relocs for BOLT
+# Emit relocations for BOLT
 config("emit-relocs") {
   if (!using_sanitizer && use_bolt) {
     if (is_win) {
