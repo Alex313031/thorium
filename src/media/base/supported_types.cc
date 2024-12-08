@@ -226,8 +226,9 @@ bool IsHevcProfileSupported(const VideoType& type) {
 #if BUILDFLAG(IS_ANDROID)
   if (base::FeatureList::IsEnabled(kBuiltInH264Decoder)) {
     return true;
+  } else {
+    return GetSupplementalProfileCache()->IsProfileSupported(type.profile);
   }
-  return GetSupplementalProfileCache()->IsProfileSupported(type.profile);
 #else
   return true;
 #endif  // BUILDFLAG(IS_ANDROID)

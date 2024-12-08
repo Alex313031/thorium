@@ -134,10 +134,12 @@ AVCodecID AudioCodecToCodecID(AudioCodec audio_codec,
   switch (audio_codec) {
     case AudioCodec::kAAC:
       return AV_CODEC_ID_AAC;
+#if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
     case AudioCodec::kAC3:
       return AV_CODEC_ID_AC3;
     case AudioCodec::kEAC3:
       return AV_CODEC_ID_EAC3;
+#endif
     case AudioCodec::kALAC:
       return AV_CODEC_ID_ALAC;
     case AudioCodec::kMP3:

@@ -14,7 +14,7 @@ __<a id="2"></a>2. Q: Why are Netflix, Spotify, Twitch, etc. not playing?__
  piracy by preventing downloading these videos in any format that would be readable by an external application. However, there are various "security
  levels" for Widevine. There is L3 "software secure", which is the least secure. It is used on Linux. Then there is L2 "VMP secure", which is what
  Windows and MacOS uses. Then there is L1 "hardware secure", which is only used on specific Windows, MacOS, and ChromeOS devices that are very new
- and have a hardware decoding chip for H.264 or H.264 (HEVC) videos that supports integration with Widevine to prevent tampering or circumvention
+ and have a hardware decoding chip for H.264 or H.265 (HEVC) videos that supports integration with Widevine to prevent tampering or circumvention
  at the hardware level. Anyway, VMP Secure means that the application has been signed by widevine.org. On Windows with Google Chrome or Firefox, this
  can be seen by the fact that next to widevine.dll, there is a widevine.sig, and next to the main program .exes, there is a corresponding .sig file.
  For example firefox.sig or chrome.sig. While Widevine includes the widevine.sig file always, and is publicly available, this only contains the public
@@ -49,7 +49,7 @@ __<a id="3"></a>3. Q: Why is Thorium always behind Chromium/Chrome as far as the
  or something privately relayed to me as per the [SECURITY.md](https://github.com/Alex313031/thorium/blob/main/SECURITY.md) file), I try my best to fix/update it and get
  releases out as soon as possible. Another thing that people keep
  suggesting is to use some kind of CI build service. This wouldn't help with the rebasing/development time, and because of the amount of resources needed to compile Thorium,
- there are no services that I am aware of that have a free tier with hardware capable of the compilation. Again, this comes down to money and is prohibitively expensive.
+ there are no services that I am aware of that have a free tier with hardware capable of doing the compilation. Again, this comes down to money and is prohibitively expensive.
 
 __<a id="4"></a>4. Q: Why isn't Thorium UnGoogled?__  
  __A:__ Thorium integrates many patches from UnGoogled Chromium (see [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/docs/PATCHES.md)), but one of the project

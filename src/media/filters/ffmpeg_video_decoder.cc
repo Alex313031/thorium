@@ -29,6 +29,7 @@
 #include "media/base/supported_types.h"
 #include "media/base/timestamp_constants.h"
 #include "media/base/video_aspect_ratio.h"
+#include "media/base/video_codecs.h"
 #include "media/base/video_frame.h"
 #include "media/base/video_util.h"
 #include "media/ffmpeg/ffmpeg_common.h"
@@ -84,6 +85,7 @@ static int GetFFmpegVideoDecoderThreadCount(const VideoDecoderConfig& config) {
     case VideoCodec::kMPEG2:
     case VideoCodec::kVP9:
     case VideoCodec::kAV1:
+    case VideoCodec::kDolbyVision:
     case VideoCodec::kTheora:
     case VideoCodec::kMPEG4:
     case VideoCodec::kVP8:
@@ -92,7 +94,6 @@ static int GetFFmpegVideoDecoderThreadCount(const VideoDecoderConfig& config) {
 
     case VideoCodec::kH264:
     case VideoCodec::kHEVC:
-    case VideoCodec::kDolbyVision:
       // Normalize to three threads for 1080p content, then scale linearly
       // with number of pixels.
       // Examples:

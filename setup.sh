@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/bin/bash
 
 # Copyright (c) 2024 Alex313031.
 
@@ -170,6 +171,9 @@ copyMacOS () {
 }
 case $1 in
 	--mac) copyMacOS;
+esac
+case $1 in
+	--macos) copyMacOS;
 esac
 
 # Raspberry Pi Source Files

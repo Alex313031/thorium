@@ -70,6 +70,7 @@
 #include "ui/base/pointer/touch_ui_controller.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/base/theme_provider.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/compositor/clip_recorder.h"
 #include "ui/compositor/compositor.h"
 #include "ui/gfx/animation/tween.h"
@@ -116,7 +117,9 @@ constexpr int kPinnedTabExtraWidthToRenderAsNormal = 30;
 // Additional padding of close button to the right of the tab
 // indicator when `extra_alert_indicator_padding_` is true.
 constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI = 8;
+constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentTh24 = 6;
 constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustment = 4;
+constexpr int kExtraLeftPaddingToBalanceCloseButtonPadding = 2;
 
 // When the DiscardRingImprovements feature is enabled, increase the radius of
 // the discard ring by this amount if there is enough space.
@@ -320,12 +323,23 @@ void Tab::Layout(PassKey) {
   const bool was_showing_icon = showing_icon_;
   UpdateIconVisibility();
 
-  const int start = contents_rect.x();
+  int start = contents_rect.x();
+
+  if (extra_padding_before_content_ && features::IsThorium2024()) {
+    start += kExtraLeftPaddingToBalanceCloseButtonPadding;
+  }
 
   // The bounds for the favicon will include extra width for the attention
   // indicator, but visually it will be smaller at kFaviconSize wide.
   gfx::Rect favicon_bounds(start, contents_rect.y(), 0, 0);
   if (showing_icon_) {
+    // Height should go to the bottom of the tab for the crashed tab animation
+    // to pop out of the bottom in Thorium 2024 UI.
+    favicon_bounds.set_y(contents_rect.y() +
+                         Center(features::IsThorium2024()
+                                    ? contents_rect.height()
+                                    : gfx::kFaviconSize,
+                                gfx::kFaviconSize));
     if (center_icon_) {
       // When centering the favicon, the favicon is allowed to escape the normal
       // contents rect.
@@ -389,7 +403,9 @@ void Tab::Layout(PassKey) {
       if (extra_alert_indicator_padding_) {
         right -= ui::TouchUiController::Get()->touch_ui()
                      ? kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI
-                     : kTabAlertIndicatorCloseButtonPaddingAdjustment;
+                     : (features::IsThorium2024()
+                           ? kTabAlertIndicatorCloseButtonPaddingAdjustmentTh24
+                           : kTabAlertIndicatorCloseButtonPaddingAdjustment);
       }
     }
     const gfx::Size image_size = alert_indicator_button_->GetPreferredSize();
@@ -1055,6 +1071,7 @@ void Tab::UpdateIconVisibility() {
   // a non-narrow tab.
   if (!closing_) {
     center_icon_ = false;
+    extra_padding_before_content_ = false;
   }
 
   showing_icon_ = showing_alert_indicator_ = false;
@@ -1082,6 +1099,7 @@ void Tab::UpdateIconVisibility() {
     // While animating to or from the pinned state, pinned tabs are rendered as
     // normal tabs. Force the extra padding on so the favicon doesn't jitter
     // left and then back right again as it resizes through layout regimes.
+    extra_padding_before_content_ = true;
     extra_alert_indicator_padding_ = true;
     return;
   }
@@ -1154,6 +1172,16 @@ void Tab::UpdateIconVisibility() {
         center_icon_ = true;
       }
     }
+  }
+
+  // Don't update padding while the tab is closing, to avoid glitchy-looking
+  // behaviour when the close animation causes the tab to get very small
+  if (!closing_) {
+    // The extra padding is intended to visually balance the close button, so
+    // only include it when the close button is shown or will be shown on hover.
+    // We also check this for active tabs so that the extra padding doesn't pop
+    // in and out as you switch tabs.
+    extra_padding_before_content_ = large_enough_for_close_button;
   }
 
   extra_alert_indicator_padding_ = showing_alert_indicator_ &&

@@ -119,8 +119,8 @@ First, configure Git (you may want to backup your current .gitconfig file if it 
 
 ```shell
 git config --global user.name "My Name"
-git config --global user.email "my-name@chromium.org"
-git config --global core.autocrlf false
+git config --global user.email "my-name@chromium.org" # Or whatever your Git email is
+# git config --global core.autocrlf false # May want to uncomment this
 git config --global core.filemode false
 git config --global branch.autosetuprebase always
 git config --global core.longpaths true

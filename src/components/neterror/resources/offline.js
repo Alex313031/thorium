@@ -439,9 +439,24 @@ Runner.prototype = {
     // Hide the static icon.
     document.querySelector('.' + Runner.classes.ICON).style.visibility =
         'hidden';
+    document.head = document.head || document.getElementsByTagName('head')[0];
+    var favicon100 = document.createElement('link');
+    var favicon200 = document.createElement('link');
+    favicon100.id = 'dynamic-favicon';
+    favicon200.id = 'dynamic-favicon';
+    favicon100.rel = 'shortcut icon';
+    favicon200.rel = 'shortcut icon';
+    favicon100.type = 'image/png';
+    favicon200.type = 'image/png';
+    favicon100.sizes = '16x16';
+    favicon200.sizes = '32x32';
+    favicon100.href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAABCUlEQVQ4y5WSK2/DMBSFv1RFwSuJZIWYBHe0wystTumCRze+/zC84NFqtMHDISaRJZMal27kZqqsm7Q7kiU/7uPc45NxBYV3G6BWnt6CscOS6zgCrVLkCcgW3IZ66uHWApNY/jO+BTogAsMfg8K73YyAIyJwBtZAHoz9vmTwAnwmyR/A48XVEIxt0iaZBP8IvWdgBRyAMomNwAnYj91TDWoglwKlMtEgDQZNxB6ogN2cgsHYbuobH0TdueT7SR8EYyOwB76UmCjUVWSFdyVwJ+cz8A5sZCyALhjbFN6tteILRahW9ltZs8gS06yETRmMfZX7I9AEY3vVyjJCPipceFcp9tVcWgVj+1+cIE8di05TcgAAAABJRU5ErkJggg==';
+    favicon200.href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA3XAAAN1wFCKJt4AAABxklEQVRYw81XoW7DMBB9mYKKM2LJKjEJTmn4cPFG23/oB+QfGjpePB7a4BCDZZaMiks3cp28yE7s1G13UqUmju13d+/e2QkiGFOyBJB7ft5pLprLQ4o49gpg4/ltDeAXQBLB+2/6ewbQUSQWU/M0FwkAPCGedZqLFYHwtpgAcqbkMYALUTkACnsROilmBGbZwwGkN15/+2gAraVSzvcEcBw8r4agUkNQjgAqzcXBU4DWAHaO4QOAyqYVYykoAGQeG+cASvq5yu6kuWhvRcISwD5WjhKLprckqUPP9wEN508laC7qEB1YMiX3TMnlYPMyYNPGpwRdKcjI0xNTsqd3oZ53mouaKVlMNacxDuyuza/mYjIK/6oXbM2Tyt17AeUsIw7kV6z5FuJIYim3wiKhIbbyFSEXBzrS7C6U+XPmJSOSuwPw4ln/DYAPzUU1WwkdIDaesjuqdqMkJOItXWICoDZk2myrhQ0cNauF5/59CuDZ0dV6OusP31XG2NYCIvfpqsZdwu/ywZT8ZEq+O8Y2V+uAsWAGYG25x1Vz8xxahmc6NrUAvszeYIuAx9gkCXOj1BrNRWc5TNYGBxAw5izxS8kmDgB3sx9qpKWGIYm9DgAAAABJRU5ErkJggg==';
 
     if (this.isArcadeMode()) {
       document.title = 'Thorium Dino Game'
+      document.head.appendChild(favicon100);
+      document.head.appendChild(favicon200);
     }
 
     this.adjustDimensions();

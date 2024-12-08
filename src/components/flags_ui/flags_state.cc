@@ -228,7 +228,11 @@ std::string GetCombinedOriginListValue(const FlagsStorage& flags_storage,
       command_line.GetSwitchValueASCII(command_line_switch);
   const std::string new_value =
       flags_storage.GetOriginListFlag(internal_entry_name);
-  if (command_line_switch == "custom-ntp") return existing_value.empty() ? new_value : existing_value;
+  if (command_line_switch == "custom-ntp") {
+    return existing_value.empty()
+           ? new_value
+           : existing_value;
+  }
   return CombineAndSanitizeOriginLists(existing_value, new_value);
 }
 
@@ -467,8 +471,9 @@ void FlagsState::SetOriginListFlag(const std::string& internal_name,
                                    const std::string& value,
                                    FlagsStorage* flags_storage) {
   const std::string new_value =
-      internal_name == "custom-ntp" ? value :
-      CombineAndSanitizeOriginLists(std::string(), value);
+      internal_name == "custom-ntp"
+          ? value
+          : CombineAndSanitizeOriginLists(std::string(), value);
   flags_storage->SetOriginListFlag(internal_name, new_value);
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -664,6 +669,7 @@ void FlagsState::GetFlagFeatureEntries(
   for (const FeatureEntry& entry : feature_entries_) {
     std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry)) {
+      // Alex313031: Comment the next three lines for component builds.
       if (flags::IsFlagExpired(flags_storage, entry.internal_name))
         desc.insert(0, " NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON! ");
       else
@@ -1076,9 +1082,11 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
       continue;
     if (!entry.InternalNameMatches(name))
       continue;
-    if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry))
+    if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry)) {
+      // Alex313031: Comment this line for component builds.
       if (!flags::IsFlagExpired(storage, entry.internal_name))
-      continue;
+        continue;
+    }
     return true;
   }
   return false;
