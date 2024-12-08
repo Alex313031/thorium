@@ -344,7 +344,7 @@ index 40c586fb4f715..9bc0ea94e459a 100644
  
    const GURL url;
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
-index bc6e4008f2c5a..3aa6a7368c3a2 100644
+index bc6e4008f2c5a..9b6dffa76b9dc 100644
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
 @@ -182,6 +182,7 @@ static_library("ui") {
@@ -355,7 +355,7 @@ index bc6e4008f2c5a..3aa6a7368c3a2 100644
      "toolbar/chrome_labs/chrome_labs_model.cc",
      "toolbar/chrome_labs/chrome_labs_model.h",
      "toolbar/chrome_labs/chrome_labs_prefs.cc",
-@@ -4430,7 +4430,9 @@ static_library("ui") {
+@@ -4430,6 +4431,8 @@ static_library("ui") {
        "views/frame/top_container_view.cc",
        "views/frame/top_container_view.h",
        "views/frame/top_controls_slide_controller.h",
@@ -4123,7 +4123,7 @@ index a2dae078ccbd3..03acda295f50b 100644
 +  static const bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
 +  use_outer_border = true;
 +  always_reserve_check_region = false;
-+  
++
 +
 +  if (features::IsThorium2024()) {
 +    nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;

@@ -90,4 +90,4 @@ enable_rust = true
 enable_updater = false
 enable_update_notifications = false
 chrome_pgo_phase = 2
-pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/chrome-mac-6723-1732295315-8f9cf47a13b24b0713c4f78b2e3985d5d476d89d-74da9411216ab49f72b5ea57c6e907e5cf436f73.profdata"
+pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/chrome-mac-6723-1733159130-e9daa1e19cd5d96c46f5e0d31490e74066db968a-d101f8bd9ceed464c1d066b8bffa18d791485d3e.profdata"
