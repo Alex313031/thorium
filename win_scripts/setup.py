@@ -132,6 +132,7 @@ patches = [
   'other/fix-policy-templates.patch',
   'other/ftp-support-thorium.patch',
   'other/thorium-2024-ui.patch',
+  'other/GPC.patch',
 ]
 for patch in patches:
     relative_path = patch.replace('other/', '', 1)
@@ -164,6 +165,10 @@ print( "\nPatching FTP support\n")
 os.chdir(cr_src_dir)
 try_run(f'git apply --reject ftp-support-thorium.patch')
 
+print( "\nPatching in GPC support\n")
+# Change directory to cr_src_dir and run commands
+os.chdir(cr_src_dir)
+try_run(f'git apply --reject GPC.patch')
 
 print( "\nPatching for Thorium 2024 UI\n")
 # Change directory to cr_src_dir and run commands
@@ -233,11 +238,7 @@ if '--woa' in sys.argv:
 def copy_avx512():
     print("\nCopying AVX-512 build files\n")
     copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'AVX512', 'build')),
-      os.path.normpath(os.path.join(cr_src_dir, 'build'))
-    )
-    copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'AVX512', 'third_party')),
+      os.path.normpath(os.path.join(thor_src_dir, 'other', 'AVX2', 'third_party')),
       os.path.normpath(os.path.join(cr_src_dir, 'third_party'))
     )
     copy(
@@ -264,10 +265,6 @@ if '--avx512' in sys.argv:
 # Copy AVX2 build files
 def copy_avx2():
     print("\nCopying AVX2 build files\n")
-    copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'AVX2', 'build')),
-      os.path.normpath(os.path.join(cr_src_dir, 'build'))
-    )
     copy_directory(
       os.path.normpath(os.path.join(thor_src_dir, 'other', 'AVX2', 'third_party')),
       os.path.normpath(os.path.join(cr_src_dir, 'third_party'))
@@ -296,10 +293,6 @@ if '--avx2' in sys.argv:
 # Copy SSE4.1 build files
 def copy_sse4():
     print("\nCopying SSE4.1 build files\n")
-    copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE4.1', 'build')),
-      os.path.normpath(os.path.join(cr_src_dir, 'build'))
-    )
     copy(
       os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE4.1', 'thor_ver')),
       os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium'))
@@ -324,10 +317,6 @@ if '--sse4' in sys.argv:
 # Copy SSE3 build files
 def copy_sse3():
     print("\nCopying SSE3 build files\n")
-    copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE3', 'build')),
-      os.path.normpath(os.path.join(cr_src_dir, 'build'))
-    )
     copy(
       os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE3', 'thor_ver')),
       os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium'))
@@ -357,10 +346,6 @@ if '--sse3' in sys.argv:
 # Copy SSE2 build files
 def copy_sse2():
     print("\nCopying SSE2 build files\n")
-    copy_directory(
-      os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE2', 'build')),
-      os.path.normpath(os.path.join(cr_src_dir, 'build'))
-    )
     copy(
       os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE2', 'thor_ver')),
       os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium'))
@@ -380,6 +365,17 @@ def copy_sse2():
 
 if '--sse2' in sys.argv:
     copy_sse2()
+
+    print("\nPatching ANGLE for SSE2\n")
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, 'other', 'SSE2', 'angle-lockfree.patch')),
+        os.path.normpath(os.path.join(cr_src_dir, 'third_party', 'angle', 'src'))
+    )
+    
+    # Change directory to angle_dir and run commands
+    angle_dir = os.path.join(cr_src_dir, 'third_party', 'angle', 'src')
+    os.chdir(angle_dir)
+    try_run(f'git apply --reject angle-lockfree.patch')
 
 
 print("\nDone!\n")
