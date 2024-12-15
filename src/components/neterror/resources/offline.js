@@ -443,8 +443,8 @@ Runner.prototype = {
     document.head = document.head || document.getElementsByTagName('head')[0];
     var favicon100 = document.createElement('link');
     var favicon200 = document.createElement('link');
-    favicon100.id = 'dynamic-favicon';
-    favicon200.id = 'dynamic-favicon';
+    //favicon100.id = 'dynamic-favicon';
+    //favicon200.id = 'dynamic-favicon';
     favicon100.rel = 'shortcut icon';
     favicon200.rel = 'shortcut icon';
     favicon100.type = 'image/png';
@@ -1406,7 +1406,7 @@ Runner.prototype = {
   isChromeDino() {
     // In RTL languages the title is wrapped with the left to right mark
     // control characters &#x202A; and &#x202C but are invisible.
-    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 
+    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 1
                                   : document.title === ARCADE_MODE_URL;
     return is_chrome_dino;
            
@@ -1415,7 +1415,7 @@ Runner.prototype = {
   isArcadeMode() {
     // In RTL languages the title is wrapped with the left to right mark
     // control characters &#x202A; and &#x202C but are invisible.
-    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 
+    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 1
                                   : document.title === ARCADE_MODE_URL;
     const is_thorium_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE2_URL) == 1
                                    : document.title === ARCADE_MODE2_URL;

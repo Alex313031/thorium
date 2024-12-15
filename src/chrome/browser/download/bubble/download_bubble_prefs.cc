@@ -13,6 +13,7 @@
 #include "chrome/common/pref_names.h"
 #include "components/prefs/pref_service.h"
 #include "components/safe_browsing/core/common/features.h"
+#include "ui/base/ui_base_features.h"
 
 namespace download {
 
@@ -20,12 +21,10 @@ bool IsDownloadBubbleEnabled() {
 // Download bubble won't replace the old download notification in
 // Ash. See https://crbug.com/1323505.
 
-static const bool disable_bubble = base::CommandLine::ForCurrentProcess()->HasSwitch("disable-download-bubble");
-
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return false;
 #else
-  if (disable_bubble) {
+  if (features::DownloadShelf) {
     return false;
   } else {
     return true;

@@ -633,7 +633,7 @@ index e4ccd7fab5421..0eadd6bdd8def 100644
  // that need to be accessible outside of /browser/ui/views.
  class WindowFrameUtil {
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index 87c4ee64068a6..1e86e30ad3280 100644
+index 87c4ee64068a6..d900607d59819 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -7,6 +7,7 @@
@@ -644,7 +644,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
  #include "chrome/browser/ui/tabs/features.h"
  #include "chrome/browser/ui/ui_features.h"
  #include "components/omnibox/common/omnibox_features.h"
-@@ -20,22 +21,29 @@
+@@ -20,24 +21,31 @@
  
  int GetLayoutConstant(LayoutConstant constant) {
    const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
@@ -678,8 +678,11 @@ index 87c4ee64068a6..1e86e30ad3280 100644
 -      return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
 +      return features::IsThorium2024() ? 2 : GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
      case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
-       return 6;
+-      return 6;
++      return features::IsThorium2024() ? 6 : 6;
      case WEB_APP_MENU_BUTTON_SIZE:
+       return 24;
+     case WEB_APP_PAGE_ACTION_ICON_SIZE:
 @@ -51,7 +59,7 @@ int GetLayoutConstant(LayoutConstant constant) {
      case LOCATION_BAR_CHILD_INTERIOR_PADDING:
        return 3;
@@ -689,7 +692,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
      case LOCATION_BAR_CHIP_ICON_SIZE:
        return 16;
      case LOCATION_BAR_CHIP_PADDING:
-@@ -59,20 +67,40 @@ int GetLayoutConstant(LayoutConstant constant) {
+@@ -59,41 +67,69 @@ int GetLayoutConstant(LayoutConstant constant) {
      case LOCATION_BAR_ELEMENT_PADDING:
        return touch_ui ? 3 : 2;
      case LOCATION_BAR_PAGE_INFO_ICON_VERTICAL_PADDING:
@@ -721,21 +724,27 @@ index 87c4ee64068a6..1e86e30ad3280 100644
      case LOCATION_BAR_TRAILING_DECORATION_INNER_PADDING:
 -      return touch_ui ? 3 : 8;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 3 : 4;
++        return touch_ui ? 3 : 6;
 +      } else {
 +        return touch_ui ? 3 : 8;
 +      }
      case LOCATION_BAR_HEIGHT:
 -      return touch_ui ? 36 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 34 : 28;
++        return touch_ui ? 34 : 30;
 +      } else {
 +        return touch_ui ? 36 : 34;
 +      }
      case LOCATION_BAR_ICON_SIZE:
        return touch_ui ? 20 : 16;
      case LOCATION_BAR_LEADING_ICON_SIZE:
-@@ -85,15 +113,23 @@ int GetLayoutConstant(LayoutConstant constant) {
+       return GetLayoutConstant(LOCATION_BAR_ICON_SIZE);
+     case LOCATION_BAR_TRAILING_ICON_SIZE:
+-      return 20;
++      return features::IsThorium2024() ? 20 : 20;
+     case TAB_AFTER_TITLE_PADDING:
+       return touch_ui ? 8 : 4;
+     case TAB_ALERT_INDICATOR_CAPTURE_ICON_WIDTH:
        return 16;
      case TAB_ALERT_INDICATOR_ICON_WIDTH:
        return touch_ui ? 12 : 16;
@@ -767,7 +776,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
      case TOOLBAR_BUTTON_HEIGHT:
 -      return touch_ui ? 48 : 34;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 46 : 28;
++        return touch_ui ? 46 : 30;
 +      } else {
 +        return touch_ui ? 48 : 34;
 +      }
@@ -791,7 +800,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
      case TOOLBAR_ICON_DEFAULT_MARGIN:
 -      return touch_ui ? 0 : 2;
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? 0 : 2;
++        return touch_ui ? 2 : 2;
 +      } else {
 +        return touch_ui ? 0 : 2;
 +      }
@@ -826,7 +835,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
 +      if (features::IsThorium2024()) {
 +        return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 4);
 +      } else {
-+        return gfx::Insets::VH(2, 2);
++        return touch_ui ? gfx::Insets::VH(2, 4) : gfx::Insets::VH(2, 2);
 +      }
  
      case LOCATION_BAR_PAGE_INFO_ICON_PADDING:
@@ -858,7 +867,7 @@ index 87c4ee64068a6..1e86e30ad3280 100644
      case TOOLBAR_INTERIOR_MARGIN:
 -      return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
 +      if (features::IsThorium2024()) {
-+        return touch_ui ? gfx::Insets() : gfx::Insets::VH(3, 7);
++        return touch_ui ? gfx::Insets() : gfx::Insets::VH(3, 6);
 +      } else {
 +        return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
 +      }
@@ -1256,7 +1265,7 @@ index fb9afeed5a60e..d40af6311e073 100644
    VIEW_ID_MAXIMIZE_BUTTON,
    VIEW_ID_RESTORE_BUTTON,
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
-index 9cecb25b41d3b..558faaaf1b816 100644
+index 9cecb25b41d3b..ad63624d72625 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 @@ -56,6 +56,7 @@
@@ -1274,32 +1283,49 @@ index 9cecb25b41d3b..558faaaf1b816 100644
 -    const int leading_padding = 8;
 -    const int trailing_padding = 8;
 +    const int leading_padding = features::IsThorium2024() ? 4 : 8;
-+    const int trailing_padding = features::IsThorium2024() ? 3 : 8;
++    const int trailing_padding = features::IsThorium2024() ? 3 : 8; // 4
      separator_thickness_ = kBookmarkBarSeparatorThickness;
      const gfx::Insets border_insets =
          gfx::Insets::TLBR(0, leading_padding, 0, trailing_padding);
-@@ -702,7 +703,7 @@ void BookmarkBarView::Layout(PassKey) {
+@@ -571,8 +572,15 @@ void BookmarkBarView::GetAnchorPositionForButton(
+ }
+ 
+ int BookmarkBarView::GetLeadingMargin() const {
+-  static constexpr int kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
+-  static constexpr int kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
++  int kBookmarksBarLeadingMarginWithoutSavedTabGroups;
++  int kBookmarksBarLeadingMarginWithSavedTabGroups;
++  if (features::IsThorium2024()) {
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 8;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 14;
++  } else {
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
++  }
+ 
+   if (saved_tab_groups_separator_view_ &&
+       saved_tab_groups_separator_view_->GetVisible()) {
+@@ -702,7 +710,7 @@ void BookmarkBarView::Layout(PassKey) {
    }
  
    int x = GetLeadingMargin();
 -  static constexpr int kBookmarkBarTrailingMargin = 8;
-+  static const int kBookmarkBarTrailingMargin = features::IsThorium2024() ? -4 : 8;
++  static const int kBookmarkBarTrailingMargin = features::IsThorium2024() ? 0 : 8;
    int width = View::width() - x - kBookmarkBarTrailingMargin;
  
    const int button_height = GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT);
-@@ -902,6 +903,9 @@ void BookmarkBarView::Layout(PassKey) {
+@@ -902,6 +910,9 @@ void BookmarkBarView::Layout(PassKey) {
    x = max_x + bookmark_bar_button_padding;
  
    // The overflow button.
 +  if (features::IsThorium2024() && all_bookmarks_button_->GetVisible()) {
-+    x -= 14;
++    x -= 10;
 +  }
    overflow_button_->SetBounds(x, y, overflow_pref.width(), button_height);
    overflow_button_->SetVisible(show_bookmarks_overflow);
    x += overflow_pref.width();
-
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index 9b189df8d8ffd..74de08124e803 100644
+index 9b189df8d8ffd..83bee2c7bac9a 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
 @@ -7,9 +7,11 @@
@@ -1372,9 +1398,9 @@ index 9b189df8d8ffd..74de08124e803 100644
        // Spec says height of button should be 36dp, vertical padding on both
 -      // top and bottom should be 8dp.
 -      return 36 + 2 * 8;
-+      // top and bottom should be 8dp, 2dp in Th24 case.
++      // top and bottom should be 8dp, 2dp in Th24 case + 1px top padding.
 +      return features::IsThorium2024()
-+                 ? 36 + 2 * 2
++                 ? 36 + 1 + 2 * 2
 +                 : 36 + 2 * 8;
      case DISTANCE_PERMISSION_PROMPT_HORIZONTAL_ICON_LABEL_PADDING:
 -      return 8;
@@ -1410,7 +1436,7 @@ index 147193abed0f0..3a4acb12b6d5f 100644
  
  DownloadBubbleRowView* DownloadBubblePrimaryView::GetRow(
 diff --git a/chrome/browser/ui/views/download/download_item_view.cc b/chrome/browser/ui/views/download/download_item_view.cc
-index 31a271a03e5e6..efaa798cb9e6d 100644
+index 31a271a03e5e6..ad03a301e1177 100644
 --- a/chrome/browser/ui/views/download/download_item_view.cc
 +++ b/chrome/browser/ui/views/download/download_item_view.cc
 @@ -67,6 +67,7 @@
@@ -1435,20 +1461,87 @@ index 31a271a03e5e6..efaa798cb9e6d 100644
    }
  
 +  if (features::IsThorium2024()) {
-+    height -= 12;
++    height -= 16;
 +  }
    // The normal height of the item which may be exceeded if text is large.
    constexpr int kDefaultDownloadItemHeight = 48;
    return gfx::Size(width, std::max(kDefaultDownloadItemHeight,
-@@ -596,7 +600,7 @@ void DownloadItemView::OnPaintBackground(gfx::Canvas* canvas) {
+@@ -593,13 +597,6 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
  
-   // Draw the separator as part of the background. It will be covered by the
-   // focus ring when the view has focus.
+ void DownloadItemView::OnPaintBackground(gfx::Canvas* canvas) {
+   View::OnPaintBackground(canvas);
+-
+-  // Draw the separator as part of the background. It will be covered by the
+-  // focus ring when the view has focus.
 -  gfx::Rect rect(width() - 1, 0, 1, height());
-+  gfx::Rect rect(width() + 1, 0, 1, height());
-   rect.Inset(gfx::Insets::VH(kTopBottomPadding, 0));
-   canvas->FillRect(GetMirroredRect(rect),
-                    GetColorProvider()->GetColor(kColorToolbarSeparator));
+-  rect.Inset(gfx::Insets::VH(kTopBottomPadding, 0));
+-  canvas->FillRect(GetMirroredRect(rect),
+-                   GetColorProvider()->GetColor(kColorToolbarSeparator));
+ }
+ 
+ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+@@ -675,6 +672,14 @@ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+     canvas->DrawImageInt(icon, bounds.x(), bounds.y());
+   }
+ 
++  // Draw the separator as part of the background. It will be covered by the
++  // focus ring when the view has focus.
++  // Alex313031: TODO: Use NTB method to pop out to overlay and move right 1px
++  gfx::Rect rect(width() - 1, 0, 1, height());
++  rect.Inset(gfx::Insets::VH(kTopBottomPadding, 0));
++  canvas->FillRect(GetMirroredRect(rect),
++                   GetColorProvider()->GetColor(kColorToolbarSeparator));
++
+   OnPaintBorder(canvas);
+ }
+diff --git a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
+index 92157b05edc4f..53793a7062b31 100644
+--- a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
++++ b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
+@@ -28,6 +28,7 @@
+ #include "extensions/common/extension_features.h"
+ #include "ui/accessibility/ax_enums.mojom-shared.h"
+ #include "ui/base/l10n/l10n_util.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/base/metadata/metadata_impl_macros.h"
+ #include "ui/base/models/image_model.h"
+ #include "ui/color/color_id.h"
+@@ -189,7 +190,10 @@ views::Builder<HoverButton> GetSitePermissionsButtonBuilder(
+     // Add right-aligned arrow icon for non-enterprise extensions when the
+     // button is not disabled.
+     auto arrow_icon = ui::ImageModel::FromVectorIcon(
+-        vector_icons::kSubmenuArrowChromeRefreshIcon, ui::kColorIcon,
++        features::IsThorium2024()
++            ? vector_icons::kSubmenuArrowIcon
++            : vector_icons::kSubmenuArrowChromeRefreshIcon,
++        ui::kColorIcon,
+         small_icon_size);
+ 
+     button_builder.SetHorizontalAlignment(gfx::ALIGN_RIGHT)
+@@ -247,12 +251,12 @@ ExtensionMenuItemView::ExtensionMenuItemView(
+                       controller_->GetActionName()))
+                   .SetImageModel(views::Button::STATE_NORMAL,
+                                  ui::ImageModel::FromVectorIcon(
+-                                     kBrowserToolsChromeRefreshIcon,
++                                     kBrowserToolsIcon,
+                                      kColorExtensionMenuIcon, icon_size))
+                   .SetImageModel(
+                       views::Button::STATE_DISABLED,
+                       ui::ImageModel::FromVectorIcon(
+-                          kBrowserToolsChromeRefreshIcon,
++                          kBrowserToolsIcon,
+                           kColorExtensionMenuIconDisabled, icon_size)));
+ 
+   if (allow_pinning) {
+@@ -480,7 +484,7 @@ void ExtensionMenuItemView::UpdateContextMenuButton(bool is_action_pinned) {
+   const int icon_size = ChromeLayoutProvider::Get()->GetDistanceMetric(
+       DISTANCE_EXTENSIONS_MENU_BUTTON_ICON_SIZE);
+   auto three_dot_icon = ui::ImageModel::FromVectorIcon(
+-      kBrowserToolsChromeRefreshIcon, kColorExtensionMenuIcon, icon_size);
++      kBrowserToolsIcon, kColorExtensionMenuIcon, icon_size);
+ 
+   // Show a pin button for the context menu normal state icon when the action is
+   // pinned in the toolbar. All other states should look, and behave, the same.
 diff --git a/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc b/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
 index b4ed00fe214a9..cbd69f5565a61 100644
 --- a/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
@@ -2265,7 +2358,7 @@ index d8000f801d188..7f69dd091d42a 100644
        NOTREACHED();
    }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index eca41f6f37b37..d5dc0cba25bf3 100644
+index eca41f6f37b37..a0252c0eae77e 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
 @@ -199,18 +199,24 @@ LocationBarView::LocationBarView(Browser* browser,
@@ -2431,7 +2524,7 @@ index eca41f6f37b37..d5dc0cba25bf3 100644
  int LocationBarView::GetAvailableTextHeight() {
    return std::max(0, GetLayoutConstant(LOCATION_BAR_HEIGHT) -
 -                         2 * GetLayoutConstant(LOCATION_BAR_ELEMENT_PADDING));
-+                     GetLayoutConstant(LOCATION_BAR_ELEMENT_PADDING));
++                     2 * GetLayoutConstant(LOCATION_BAR_ELEMENT_PADDING));
  }
  
  // static
@@ -2459,7 +2552,7 @@ index eca41f6f37b37..d5dc0cba25bf3 100644
 +
 +  static const bool classic_omnibox =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
-+  if ((classic_omnibox) && !is_caret_visible ) {
++  if (classic_omnibox && !is_caret_visible ) {
 +    border_color = color_provider->GetColor(kColorLocationBarBorderOnMismatch);
 +  }
 +
@@ -2589,18 +2682,44 @@ index 5530486ee3bb3..352aacdbfe227 100644
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
 diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-index 4bc8f9177f416..bc262eb86f94e 100644
+index 4bc8f9177f416..9fc3598a5f1a8 100644
 --- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
 +++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-@@ -244,6 +244,7 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
+@@ -35,9 +35,6 @@
+ 
+ namespace {
+ 
+-// Value from the spec controlling appearance of the shadow.
+-constexpr int kElevation = 16;
+-
+ #if !defined(USE_AURA)
+ 
+ struct WidgetEventPair {
+@@ -243,7 +240,10 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
+       views::BubbleBorder::Arrow::NONE,
        views::BubbleBorder::Shadow::STANDARD_SHADOW);
    border->SetCornerRadius(corner_radius);
-   border->set_md_shadow_elevation(kElevation);
-+  if (features::IsThorium2024()) { border->set_draw_border_stroke(true); }
+-  border->set_md_shadow_elevation(kElevation);
++  border->set_md_shadow_elevation(GetBubbleElevation());
++  if (features::IsThorium2024()) {
++    border->set_draw_border_stroke(true);
++  }
    SetBorder(std::move(border));
  
    AddChildView(contents_host_.get());
-@@ -275,11 +276,22 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
+@@ -272,10 +272,19 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
+   params->shadow_type = views::Widget::InitParams::ShadowType::kNone;
+ }
+ 
++// Static value from the spec controlling appearance of the shadow.
++int RoundedOmniboxResultsFrame::GetBubbleElevation() {
++  if (features::IsThorium2024()) {
++    return 6;
++  } else {
++    return 16;
++  }
++}
++
  // static
  int RoundedOmniboxResultsFrame::GetNonResultSectionHeight() {
    return GetLayoutConstant(LOCATION_BAR_HEIGHT) +
@@ -2609,10 +2728,10 @@ index 4bc8f9177f416..bc262eb86f94e 100644
  }
  
  // static
- gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
-+  if (ui::TouchUiController::Get()->touch_ui()) {
-+    return gfx::Insets::TLBR(6, 1, 5, 1);
-+  }
+@@ -283,12 +292,26 @@ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
+   if (ui::TouchUiController::Get()->touch_ui()) {
+     return gfx::Insets::TLBR(6, 1, 5, 1);
+   }
 +  if (features::IsThorium2024()) {
 +    return gfx::Insets::VH(3, 6);
 +  }
@@ -2621,14 +2740,36 @@ index 4bc8f9177f416..bc262eb86f94e 100644
 +
 +// static
 +gfx::Insets RoundedOmniboxResultsFrame::GetNonResultSectionInsets() {
-   if (ui::TouchUiController::Get()->touch_ui()) {
-     return gfx::Insets::TLBR(6, 1, 5, 1);
-   }
++  if (ui::TouchUiController::Get()->touch_ui()) {
++    return gfx::Insets::TLBR(6, 1, 5, 1);
++  }
++  if (features::IsThorium2024()) {
++    return gfx::Insets::VH(4.0f, 6);
++  }
+   return gfx::Insets::VH(5, 6);
+ }
+ 
+ // static
+ gfx::Insets RoundedOmniboxResultsFrame::GetShadowInsets() {
+-  return views::BubbleBorder::GetBorderAndShadowInsets(kElevation);
++  return views::BubbleBorder::GetBorderAndShadowInsets(GetBubbleElevation());
+ }
+ 
+ void RoundedOmniboxResultsFrame::Layout(PassKey) {
 diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
-index d134918c8538e..7262833fbb715 100644
+index d134918c8538e..04c405a754962 100644
 --- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
 +++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h
-@@ -35,6 +35,9 @@ class RoundedOmniboxResultsFrame : public views::View {
+@@ -29,12 +29,18 @@ class RoundedOmniboxResultsFrame : public views::View {
+   static void OnBeforeWidgetInit(views::Widget::InitParams* params,
+                                  views::Widget* widget);
+ 
++  // Bubble elevation metric for Omnibox popup shadows.
++  static int GetBubbleElevation();
++
+   // The height of the location bar view part of the omnibox popup.
+   static int GetNonResultSectionHeight();
+ 
    // How the Widget is aligned relative to the location bar.
    static gfx::Insets GetLocationBarAlignmentInsets();
  
@@ -2638,8 +2779,61 @@ index d134918c8538e..7262833fbb715 100644
    // Returns the blur region taken up by the Omnibox popup shadows.
    static gfx::Insets GetShadowInsets();
  
+diff --git a/chrome/browser/ui/views/page_info/page_info_view_factory.cc b/chrome/browser/ui/views/page_info/page_info_view_factory.cc
+index 0a86475f8db19..9d599fa3f880a 100644
+--- a/chrome/browser/ui/views/page_info/page_info_view_factory.cc
++++ b/chrome/browser/ui/views/page_info/page_info_view_factory.cc
+@@ -34,6 +34,7 @@
+ #include "components/strings/grit/components_strings.h"
+ #include "components/vector_icons/vector_icons.h"
+ #include "ui/base/l10n/l10n_util.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/color/color_id.h"
+ #include "ui/gfx/paint_vector_icon.h"
+ #include "ui/views/bubble/bubble_frame_view.h"
+@@ -87,6 +88,12 @@ std::unique_ptr<views::View> PageInfoViewFactory::CreateSeparator(
+     int horizontal_inset) {
+   int separator_spacing = ChromeLayoutProvider::Get()->GetDistanceMetric(
+       DISTANCE_CONTENT_LIST_VERTICAL_MULTI);
++  if (features::IsThorium2024()) {
++    // Distance for multi content list is used, but split in half, since there
++    // is a separator in the middle of it. For ChromeRefresh2023, the separator
++    // spacing is larger hence no need to split in half.
++    separator_spacing /= 2;
++  }
+   auto separator = std::make_unique<views::Separator>();
+   separator->SetProperty(views::kMarginsKey,
+                          gfx::Insets::VH(separator_spacing, horizontal_inset));
+@@ -648,9 +655,12 @@ const ui::ImageModel PageInfoViewFactory::GetConnectionSecureIcon() {
+ const ui::ImageModel PageInfoViewFactory::GetOpenSubpageIcon() {
+   // GetIconSize() does not work for subpage icons because the default size of
+   // kSubmenuArrowIcon is 8 rather than 16.
+-  constexpr int kIconSize = 20;
++  const int kIconSize = features::IsThorium2024() ? 10 : 20;
+   return ui::ImageModel::FromVectorIcon(
+-      vector_icons::kSubmenuArrowChromeRefreshIcon, ui::kColorIcon, kIconSize);
++      features::IsThorium2024()
++          ? vector_icons::kSubmenuArrowIcon
++          : vector_icons::kSubmenuArrowChromeRefreshIcon,
++      ui::kColorIcon, kIconSize);
+ }
+ 
+ // static
+diff --git a/chrome/browser/ui/views/side_panel/side_panel.cc b/chrome/browser/ui/views/side_panel/side_panel.cc
+index 12f3662bee633..d4295bb1f3785 100644
+--- a/chrome/browser/ui/views/side_panel/side_panel.cc
++++ b/chrome/browser/ui/views/side_panel/side_panel.cc
+@@ -55,7 +55,7 @@ namespace {
+ // This thickness includes the solid-color background and the inner round-rect
+ // border-color stroke. It does not include the outer-color separator.
+ int GetBorderThickness() {
+-  return (lens::features::IsLensOverlayEnabled() ? 8 : 16) +
++  return (lens::features::IsLensOverlayEnabled() ? 12 : 12) +
+          views::Separator::kThickness;
+ }
+ 
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index e65fda1bf0161..ede48f5cf2ea8 100644
+index e65fda1bf0161..37c474deb5ffc 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 @@ -12,6 +12,7 @@
@@ -2650,22 +2844,39 @@ index e65fda1bf0161..ede48f5cf2ea8 100644
  #include "ui/color/color_provider.h"
  #include "ui/compositor/layer.h"
  #include "ui/gfx/geometry/size.h"
-@@ -36,7 +37,8 @@ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
-     const int resize_handle_left_margin = 2;
+@@ -26,17 +27,22 @@ namespace views {
+ 
+ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
+     : side_panel_(side_panel) {
+-  gfx::Size preferred_size((lens::features::IsLensOverlayEnabled() ? 4 : 16),
++  gfx::Size preferred_size((lens::features::IsLensOverlayEnabled()
++                                ? (features::IsThorium2024() ? 8 : 4)
++                                : 8),
+                            24);
+   SetPreferredSize(preferred_size);
+   SetCanProcessEventsWithinSubtree(false);
+   SetFocusBehavior(FocusBehavior::ALWAYS);
+   FocusRing::Install(this);
+-  if (lens::features::IsLensOverlayEnabled()) {
+-    const int resize_handle_left_margin = 2;
++  if (lens::features::IsLensOverlayEnabled() && !features::IsThorium2024()) {
++    constexpr int resize_handle_left_margin = 2;
      SetProperty(views::kMarginsKey,
                  gfx::Insets().set_left(resize_handle_left_margin));
 -  } else {
-+  }
-+  if (features::IsThorium2024()) {
++  } else if (!lens::features::IsLensOverlayEnabled() || features::IsThorium2024()) {
++    constexpr int resize_handle_right_margin = 1;
++    SetProperty(views::kMarginsKey,
++                gfx::Insets().set_left(resize_handle_right_margin));
      constexpr int kIconSize = 16;
      SetImage(ui::ImageModel::FromVectorIcon(
          kDragHandleIcon, kColorSidePanelResizeAreaHandle, kIconSize));
-@@ -47,7 +49,7 @@ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
+@@ -47,7 +53,7 @@ SidePanelResizeHandle::SidePanelResizeHandle(SidePanel* side_panel)
  }
  
  void SidePanelResizeHandle::UpdateVisibility(bool visible) {
 -  if (visible) {
-+  if (visible && !features::IsThorium2024()) {
++  if (visible && !features::IsThorium2024() && lens::features::IsLensOverlayEnabled()) {
      const SkColor resize_handle_color =
          GetColorProvider()->GetColor(kColorSidePanelHoverResizeAreaHandle);
      SetBackground(CreateRoundedRectBackground(resize_handle_color, 2));
@@ -2682,6 +2893,198 @@ index fa14797259775..6031b27d539e6 100644
  
      const int x = tabs::GetTabSearchTrailingTabstrip(profile_)
                        ? bounds.right() - offset
+diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
+index 30ec5058583ed..3103949fe60ec 100644
+--- a/chrome/browser/ui/views/tabs/tab.cc
++++ b/chrome/browser/ui/views/tabs/tab.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2024 The Chromium Authors, Alex313031, and gz83
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -16,6 +16,7 @@
+ #include <memory>
+ #include <utility>
+ 
++#include "base/command_line.h"
+ #include "base/debug/alias.h"
+ #include "base/functional/bind.h"
+ #include "base/i18n/rtl.h"
+@@ -69,6 +70,7 @@
+ #include "ui/base/pointer/touch_ui_controller.h"
+ #include "ui/base/resource/resource_bundle.h"
+ #include "ui/base/theme_provider.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/compositor/clip_recorder.h"
+ #include "ui/compositor/compositor.h"
+ #include "ui/gfx/animation/tween.h"
+@@ -115,7 +117,9 @@ constexpr int kPinnedTabExtraWidthToRenderAsNormal = 30;
+ // Additional padding of close button to the right of the tab
+ // indicator when `extra_alert_indicator_padding_` is true.
+ constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI = 8;
++constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustmentTh24 = 6;
+ constexpr int kTabAlertIndicatorCloseButtonPaddingAdjustment = 4;
++constexpr int kExtraLeftPaddingToBalanceCloseButtonPadding = 2;
+ 
+ // When the DiscardRingImprovements feature is enabled, increase the radius of
+ // the discard ring by this amount if there is enough space.
+@@ -231,6 +235,7 @@ Tab::Tab(TabSlotController* controller)
+   title_->SetHandlesTooltips(false);
+   title_->SetAutoColorReadabilityEnabled(false);
+   title_->SetText(CoreTabHelper::GetDefaultTitle());
++  title_->SetFontList(tab_style_views_->GetFontList());
+   title_->SetBackgroundColor(SK_ColorTRANSPARENT);
+   // |title_| paints on top of an opaque region (the tab background) of a
+   // non-opaque layer (the tabstrip's layer), which cannot currently be detected
+@@ -318,12 +323,23 @@ void Tab::Layout(PassKey) {
+   const bool was_showing_icon = showing_icon_;
+   UpdateIconVisibility();
+ 
+-  const int start = contents_rect.x();
++  int start = contents_rect.x();
++
++  if (extra_padding_before_content_ && features::IsThorium2024()) {
++    start += kExtraLeftPaddingToBalanceCloseButtonPadding;
++  }
+ 
+   // The bounds for the favicon will include extra width for the attention
+   // indicator, but visually it will be smaller at kFaviconSize wide.
+   gfx::Rect favicon_bounds(start, contents_rect.y(), 0, 0);
+   if (showing_icon_) {
++    // Height should go to the bottom of the tab for the crashed tab animation
++    // to pop out of the bottom in Thorium 2024 UI.
++    favicon_bounds.set_y(contents_rect.y() +
++                         Center(features::IsThorium2024()
++                                    ? contents_rect.height()
++                                    : gfx::kFaviconSize,
++                                gfx::kFaviconSize));
+     if (center_icon_) {
+       // When centering the favicon, the favicon is allowed to escape the normal
+       // contents rect.
+@@ -387,7 +403,9 @@ void Tab::Layout(PassKey) {
+       if (extra_alert_indicator_padding_) {
+         right -= ui::TouchUiController::Get()->touch_ui()
+                      ? kTabAlertIndicatorCloseButtonPaddingAdjustmentTouchUI
+-                     : kTabAlertIndicatorCloseButtonPaddingAdjustment;
++                     : (features::IsThorium2024()
++                           ? kTabAlertIndicatorCloseButtonPaddingAdjustmentTh24
++                           : kTabAlertIndicatorCloseButtonPaddingAdjustment);
+       }
+     }
+     const gfx::Size image_size = alert_indicator_button_->GetPreferredSize();
+@@ -566,10 +584,34 @@ void Tab::OnMouseReleased(const ui::MouseEvent& event) {
+     return;
+   }
+ 
++  // Close tab on double click, mirror of IsOnlyMiddleMouseButton
++  // Based on gz83's work.
++  // if (base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab")) {
++  //   if (event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) {
++  //      if (HitTestPoint(event.location())) {
++  //        controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
++  //      }
++  //    }
++  //  } else if (closing_) {
++      // We're animating closed and a middle mouse button was pushed on us but
++      // we don't contain the mouse anymore. We assume the user is clicking
++      // quicker than the animation and we should close the tab that falls under
++      // the mouse.
++  //      gfx::Point location_in_parent = event.location();
++  //      ConvertPointToTarget(this, parent(), &location_in_parent);
++  //      Tab* closest_tab = controller_->GetTabAt(location_in_parent);
++  //      if (closest_tab)
++  //        controller_->CloseTab(closest_tab, CLOSE_TAB_FROM_MOUSE);
++  //  }
++
+   // Close tab on middle click, but only if the button is released over the tab
+   // (normal windows behavior is to discard presses of a UI element where the
+   // releases happen off the element).
+-  if (event.IsOnlyMiddleMouseButton()) {
++  if (event.IsOnlyMiddleMouseButton() ||
++    // Close tab on double click, mirror of IsOnlyMiddleMouseButton
++    // Based on gz83's work.
++    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) && 
++      base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab"))) {
+     if (HitTestPoint(event.location())) {
+       controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
+     } else if (closing_) {
+@@ -702,8 +744,14 @@ void Tab::OnGestureEvent(ui::GestureEvent* event) {
+ }
+ 
+ std::u16string Tab::GetTooltipText(const gfx::Point& p) const {
+-  // Tab hover cards replace tooltips for tabs.
+-  return std::u16string();
++  // Tab hover cards don't replace tooltips for tabs in all cases.
++  const auto tab_hover_cards_tooltip =
++      base::CommandLine::ForCurrentProcess()->GetSwitchValueASCII("tab-hover-cards") == "tooltip";
++  if (tab_hover_cards_tooltip) {
++    return GetTooltipText(data_.title, GetAlertStateToShow(data_.alert_state));
++  } else {
++    return std::u16string();
++  }
+ }
+ 
+ void Tab::GetAccessibleNodeData(ui::AXNodeData* node_data) {
+@@ -859,6 +907,7 @@ void Tab::ActiveStateChanged() {
+   UpdateForegroundColors();
+   icon_->SetActiveState(IsActive());
+   alert_indicator_button_->OnParentTabButtonColorChanged();
++  title_->SetFontList(tab_style_views_->GetFontList());
+   DeprecatedLayoutImmediately();
+ }
+ 
+@@ -1022,6 +1071,7 @@ void Tab::UpdateIconVisibility() {
+   // a non-narrow tab.
+   if (!closing_) {
+     center_icon_ = false;
++    extra_padding_before_content_ = false;
+   }
+ 
+   showing_icon_ = showing_alert_indicator_ = false;
+@@ -1049,6 +1099,7 @@ void Tab::UpdateIconVisibility() {
+     // While animating to or from the pinned state, pinned tabs are rendered as
+     // normal tabs. Force the extra padding on so the favicon doesn't jitter
+     // left and then back right again as it resizes through layout regimes.
++    extra_padding_before_content_ = true;
+     extra_alert_indicator_padding_ = true;
+     return;
+   }
+@@ -1123,6 +1174,16 @@ void Tab::UpdateIconVisibility() {
+     }
+   }
+ 
++  // Don't update padding while the tab is closing, to avoid glitchy-looking
++  // behaviour when the close animation causes the tab to get very small
++  if (!closing_) {
++    // The extra padding is intended to visually balance the close button, so
++    // only include it when the close button is shown or will be shown on hover.
++    // We also check this for active tabs so that the extra padding doesn't pop
++    // in and out as you switch tabs.
++    extra_padding_before_content_ = large_enough_for_close_button;
++  }
++
+   extra_alert_indicator_padding_ = showing_alert_indicator_ &&
+                                    showing_close_button_ &&
+                                    large_enough_for_close_button;
+diff --git a/chrome/browser/ui/views/tabs/tab.h b/chrome/browser/ui/views/tabs/tab.h
+index 832881025a66b..23b5cdd8a67e9 100644
+--- a/chrome/browser/ui/views/tabs/tab.h
++++ b/chrome/browser/ui/views/tabs/tab.h
+@@ -276,6 +276,13 @@ class Tab : public gfx::AnimationDelegate,
+   // Whether the tab is currently animating from a pinned to an unpinned state.
+   bool is_animating_from_pinned_ = false;
+ 
++  // If there's room, we add additional padding to the left of the favicon to
++  // balance the whitespace inside the non-hovered close button image;
++  // otherwise, the tab contents look too close to the left edge. Once the tabs
++  // get too small, we let the tab contents take the full width, to maximize
++  // visible area.
++  bool extra_padding_before_content_ = false;
++
+   // When both the close button and alert indicator are visible, we add extra
+   // padding between them to space them out visually.
+   bool extra_alert_indicator_padding_ = false;
 diff --git a/chrome/browser/ui/views/tabs/tab_close_button.cc b/chrome/browser/ui/views/tabs/tab_close_button.cc
 index ac335a68f3fd0..8eef7a2f256c8 100644
 --- a/chrome/browser/ui/views/tabs/tab_close_button.cc
@@ -3128,14 +3531,20 @@ index 36ba4fcfc2683..584c2b6e10941 100644
    return kDefaultIconSizeChromeRefresh;
  }
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_button.h b/chrome/browser/ui/views/toolbar/toolbar_button.h
-index d85292e244d48..65bf4d40a6363 100644
+index d85292e244d48..f3775f4cd4ec0 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_button.h
 +++ b/chrome/browser/ui/views/toolbar/toolbar_button.h
-@@ -226,6 +226,7 @@ class ToolbarButton : public views::LabelButton,
+@@ -226,6 +226,13 @@ class ToolbarButton : public views::LabelButton,
  
    static constexpr int kDefaultIconSize = 16;
    static constexpr int kDefaultIconSizeChromeRefresh = 20;
-+  static constexpr int kDefaultIconSizeThorium2024 = 22;
++  // Force drawing the <20DP version of .icon files
++  // We still want it to look like 20 like above, but by making
++  // it ever so slightly less, the vector icon painter will choose
++  // the smaller version, if it exists in the .icon file as a
++  // separate canvas. Chose 4 9's as even on an 8K screen, the
++  // difference should be less than 1 pixel.
++  static constexpr float kDefaultIconSizeThorium2024 = 20.0f;
    static constexpr int kDefaultTouchableIconSize = 24;
  
   private:
@@ -3303,6 +3712,28 @@ index 743fd86a35a10..e7679d12e2c8d 100644
    return nullptr;
  }
  
+diff --git a/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h b/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
+index f7dcd7cbfee20..6a0be3307f6c6 100644
+--- a/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
++++ b/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
+@@ -27,6 +27,17 @@ constexpr int kCustomizeChromeColorIds[] = {
+     6,   // Yellow and white.
+     5,   // Beige and white.
+     1,   // Warm grey.
++    7,   // Green and white.
++    8,   // Light teal and white.
++    9,   // Light purple and white.
++    10,  // Pink and white.
++    11,  // Beige.
++    12,  // Orange.
++    18,  // Dark red and orange.
++    19,  // Dark green.
++    12,  // Orange.
++    18,  // Dark red and orange.
++    19,  // Dark green.
+ };
+ 
+ // The chrome colors selected and ordered by |kCustomizeChromeColorIds|.
 diff --git a/chrome/browser/ui/webui/thorium_webui.h b/chrome/browser/ui/webui/thorium_webui.h
 new file mode 100644
 index 0000000000000..897bacb966ca8
@@ -3500,10 +3931,10 @@ index 9e5567aec56dc..0e3978ff8da39 100644
    // --no-sandbox in official builds because that would bypass the bad_flgs
    // prompt.
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index 595af68372edc..16dcfea0bc7d3 100644
+index 595af68372edc..348d245dfc586 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -498,6 +498,30 @@ bool IsLacrosColorManagementEnabled() {
+@@ -498,6 +498,41 @@ bool IsLacrosColorManagementEnabled() {
    return base::FeatureList::IsEnabled(kLacrosColorManagement);
  }
  
@@ -3513,8 +3944,19 @@ index 595af68372edc..16dcfea0bc7d3 100644
 +
 +bool IsThorium2024() {
 +  static const bool Th24flag =
-+    base::CommandLine::ForCurrentProcess()->HasSwitch("th24");
++      base::CommandLine::ForCurrentProcess()->HasSwitch("th24");
 +  return base::FeatureList::IsEnabled(kThorium2024) || Th24flag;
++}
++
++BASE_FEATURE(kDownloadShelf,
++             "DownloadShelf",
++             base::FEATURE_DISABLED_BY_DEFAULT);
++
++bool DownloadShelf() {
++  //if (features::IsThorium2024()) {
++    //return base::FeatureList::IsEnabled(kThorium2024);
++  //}
++  return base::FeatureList::IsEnabled(kDownloadShelf);
 +}
 +
 +BASE_FEATURE(kRestoreTabButton,
@@ -3535,16 +3977,19 @@ index 595af68372edc..16dcfea0bc7d3 100644
               "BubbleMetricsApi",
               base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index a5c3bb6349099..3944f157575c8 100644
+index a5c3bb6349099..4624cb7005e43 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -224,6 +224,15 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
+@@ -224,6 +224,18 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kLacrosColorManagement);
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  bool IsLacrosColorManagementEnabled();
  
 +// Used to revert some stupid UI decisions for Cr23
 +COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kThorium2024);
 +COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsThorium2024();
++
++COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kDownloadShelf);
++COMPONENT_EXPORT(UI_BASE_FEATURES) bool DownloadShelf();
 +
 +COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kRestoreTabButton);
 +COMPONENT_EXPORT(UI_BASE_FEATURES) bool EnableRestoreTabButton();
@@ -3986,14 +4431,13 @@ index aec943d266793..98ee677630ff3 100644
 +  //use_bubble_border = corner_radius > 0;
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..cd97a0558557e 100644
+index 09c03d1e87011..6649de56c8b13 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
-@@ -4,12 +4,26 @@
+@@ -4,12 +4,25 @@
  
  #include "ui/views/controls/menu/menu_config.h"
  
-+#include "base/logging.h"
 +#include "chrome/browser/ui/thorium_2024.h"
 +#include "ui/base/ui_base_features.h"
  #include "ui/ozone/public/ozone_platform.h"
@@ -4086,7 +4530,7 @@ index eabfb364890d3..b31a7d3867a31 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_win.cc b/ui/views/controls/menu/menu_config_win.cc
-index a2dae078ccbd3..03acda295f50b 100644
+index a2dae078ccbd3..d5a1248da8204 100644
 --- a/ui/views/controls/menu/menu_config_win.cc
 +++ b/ui/views/controls/menu/menu_config_win.cc
 @@ -8,6 +8,8 @@
@@ -4098,7 +4542,7 @@ index a2dae078ccbd3..03acda295f50b 100644
  #include "ui/gfx/system_fonts_win.h"
  
  namespace views {
-@@ -16,15 +18,54 @@ void MenuConfig::InitPlatform() {
+@@ -16,15 +18,52 @@ void MenuConfig::InitPlatform() {
    context_menu_font_list = font_list =
        gfx::FontList(gfx::win::GetSystemFont(gfx::win::SystemFont::kMenu));
  
@@ -4122,11 +4566,10 @@ index a2dae078ccbd3..03acda295f50b 100644
  
 +  static const bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
 +  use_outer_border = true;
++  nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
 +  always_reserve_check_region = false;
 +
-+
 +  if (features::IsThorium2024()) {
-+    nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
 +    use_outer_border = true;
 +    if (is_win11) {
 +      corner_radius = 8;
@@ -4134,7 +4577,7 @@ index a2dae078ccbd3..03acda295f50b 100644
 +      menu_horizontal_border_size = 4;
 +      submenu_horizontal_overlap = 1;
 +      rounded_menu_vertical_border_size = 4;
-+      item_horizontal_padding = 12;
++      item_horizontal_padding = 8;
 +      between_item_vertical_padding = 2;
 +      separator_height = 1;
 +      separator_upper_height = 1;
@@ -4145,13 +4588,12 @@ index a2dae078ccbd3..03acda295f50b 100644
 +      arrow_to_edge_padding = 2;
 +      menu_horizontal_border_size = 3;
 +      submenu_horizontal_overlap = 0;
-+      nonrounded_menu_vertical_border_size = 3;
 +      item_vertical_margin = 3;
 +      item_horizontal_border_padding = 0;
 +      icon_label_spacing = 10;
 +      separator_height = 5;
 +      separator_upper_height = 3;
-+      separator_lower_height = 4;
++      separator_lower_height = 3;
 +    }
 +  } else {
 +    separator_upper_height = 5;
@@ -4161,30 +4603,26 @@ index a2dae078ccbd3..03acda295f50b 100644
  }
  
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
-index 81fabd16b2ce3..072ff8a5381b7 100644
+index 81fabd16b2ce3..4b5b8781dd541 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
 +++ b/ui/views/controls/menu/menu_item_view.cc
 @@ -30,6 +30,7 @@
  #include "ui/base/metadata/metadata_impl_macros.h"
  #include "ui/base/models/image_model.h"
  #include "ui/base/models/menu_model.h"
-+#include "ui/base/thorium_2024.h"
++#include "chrome/browser/ui/thorium_2024.h"
  #include "ui/base/ui_base_features.h"
  #include "ui/color/color_id.h"
  #include "ui/color/color_provider.h"
-@@ -1465,8 +1466,13 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
-   last_paint_as_selected_ = paint_as_selected;
+@@ -1466,7 +1467,10 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
    const Colors colors = CalculateColors(paint_as_selected);
    if (submenu_arrow_image_view_) {
--    submenu_arrow_image_view_->SetImage(ui::ImageModel::FromVectorIcon(
+     submenu_arrow_image_view_->SetImage(ui::ImageModel::FromVectorIcon(
 -        vector_icons::kSubmenuArrowChromeRefreshIcon, colors.icon_color));
-+    if (features::IsThorium2024()) {
-+      submenu_arrow_image_view_->SetImage(ui::ImageModel::FromVectorIcon(
-+          vector_icons::kSubmenuArrowIcon, colors.icon_color));
-+    } else {
-+      submenu_arrow_image_view_->SetImage(ui::ImageModel::FromVectorIcon(
-+          vector_icons::kSubmenuArrowChromeRefreshIcon, colors.icon_color));
-+    }
++        features::IsThorium2024()
++            ? vector_icons::kSubmenuArrowIcon
++            : vector_icons::kSubmenuArrowChromeRefreshIcon,
++        colors.icon_color));
    }
    MenuDelegate* delegate = GetDelegate();
    if (type_ == Type::kCheckbox && delegate &&

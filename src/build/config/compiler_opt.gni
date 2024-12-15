@@ -94,7 +94,7 @@ declare_args() {
   # Present since Haswell and AMD Piledriver (2nd Gen. refinement
   # of Bulldozer).
   # `-mfma -ffp-contract=fast` (use -mfma3 -mfma4 for Piledriver)
-  use_fma = use_avx2
+  use_fma = use_avx2 || use_avx512
 }
 
 if (is_debug) {
@@ -103,8 +103,13 @@ if (is_debug) {
 }
 
 # Make sure we are a x86 arch
-if (use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use_avx512) {
+if (use_sse2 || use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use_avx512) {
   assert(current_cpu != "arm" && current_cpu != "arm64", "x86 SIMD intrinsic optimizations cannot be used with ARM targets.")
+}
+
+# FMA doesn't work on 32 bit architectures
+if (use_fma) {
+  assert(current_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
 }
 
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
@@ -114,11 +119,18 @@ if (use_avx || use_avx2 || use_fma) {
   assert(target_cpu != "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
 }
 
-# AVX2 always should have FMA, however, there are times one might want
+# AVX2 should always have FMA, however, there are times one might want
 # to set use_fma = true even with AVX2 off, such as when making a build for
 # an AMD Piledriver or Steamroller CPU.
 if (use_avx2 && !use_fma) {
   print("WARNING: Use_avx2 is true while use_fma is false. This will create a build compiled with AVX2, but without FMA or floating point contraction.")
+  print("This should only be set intentionally for testing.")
+  print("")
+}
+
+# Same for AVX-512
+if (use_avx512 && !use_fma) {
+  print("WARNING: Use_avx512 is true while use_fma is false. This will create a build compiled with AVX-512, but without FMA or floating point contraction.")
   print("This should only be set intentionally for testing.")
   print("")
 }
