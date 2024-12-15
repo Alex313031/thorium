@@ -624,7 +624,7 @@ config("compiler") {
       }
     }
 
-    if (use_avx2 || use_avx512 || current_cpu == "arm64" || is_mac) {
+    if (use_avx2 || use_avx512 || use_fma || current_cpu == "arm64" || is_mac) {
       if (is_win) {
         cflags += [ "/clang:-ffp-contract=fast" ]
       } else {
@@ -1284,14 +1284,19 @@ config("compiler_cpu_abi") {
           "-mavx",
         ]
       }
+      if (use_fma) {
+        cflags += [
+          "-mfma",
+          "-ffp-contract=fast",
+          #"-ffast-math",
+        ]
+      }
       if (use_avx2) {
         cflags += [
           "-mavx2",
-          "-mfma",
           "-mf16c",
           "-mlzcnt",
           "-mbmi2",
-          "-ffp-contract=fast",
           "-mtune=haswell",
         ]
       }
@@ -1335,14 +1340,18 @@ config("compiler_cpu_abi") {
           "-mavx",
         ]
       }
+      if (use_fma) {
+        ldflags += [
+          "-mfma",
+          "-Wl,-mllvm,-fp-contract=fast",
+        ]
+      }
       if (use_avx2) {
         ldflags += [
           "-mavx2",
-          "-mfma",
           "-mf16c",
           "-mlzcnt",
           "-mbmi2",
-          "-Wl,-mllvm,-fp-contract=fast",
           "-Wl,-mllvm,-march=haswell",
         ]
       }
@@ -2596,14 +2605,18 @@ if (is_win) {
       "/clang:-mavx",
     ]
   }
+  if (use_fma) {
+    common_optimize_on_cflags += [
+      "/clang:-mfma",
+      "/clang:-ffp-contract=fast",
+    ]
+  }
   if (use_avx2) {
     common_optimize_on_cflags += [
       "/clang:-mavx2",
-      "/clang:-mfma",
       "/clang:-mf16c",
       "/clang:-mlzcnt",
       "/clang:-mbmi2",
-      "/clang:-ffp-contract=fast",
     ]
   }
   if (use_avx512) {
@@ -2689,14 +2702,18 @@ if (is_win) {
       "-mavx",
     ]
   }
+  if (use_fma) {
+    common_optimize_on_cflags += [
+      "-mfma",
+      "-ffp-contract=fast",
+    ]
+  }
   if (use_avx2) {
     common_optimize_on_cflags += [
       "-mavx2",
-      "-mfma",
       "-mf16c",
       "-mlzcnt",
       "-mbmi2",
-      "-ffp-contract=fast",
     ]
   }
   if (use_avx512) {
@@ -2743,14 +2760,18 @@ if (is_win) {
       "-mavx",
     ]
   }
+  if (use_fma) {
+    common_optimize_on_ldflags += [
+      "-mfma",
+      "-Wl,-mllvm,-fp-contract=fast",
+    ]
+  }
   if (use_avx2) {
     common_optimize_on_ldflags += [
       "-mavx2",
-      "-mfma",
       "-mf16c",
       "-mlzcnt",
       "-mbmi2",
-      "-Wl,-mllvm,-fp-contract=fast",
       "-Wl,-mllvm,-march=haswell",
     ]
   }
