@@ -3901,7 +3901,7 @@ index 81bd9ac032b1f..da73d1d14d456 100644
        std::max(control_elements_container_->GetPreferredSize({}).width() -
 -                   kComboboxArrowPaddingWidth,
 +                   (features::IsThorium2024()
-+                        ? kComboboxArrowPaddingWidth
++                        ? 8
 +                        : kComboboxArrowPaddingWidth),
                 0)));
  }

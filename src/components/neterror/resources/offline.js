@@ -129,6 +129,7 @@ const IS_RTL = document.querySelector('html').dir == 'rtl';
 /** @const */
 /** const ARCADE_MODE_URL = 'Thorium Dino'; */
 const ARCADE_MODE_URL = 'chrome://dino/';
+const ARCADE_MODE2_URL = 'Thorium Dino Game';
 
 /** @const */
 const RESOURCE_POSTFIX = 'offline-resources-';
@@ -453,8 +454,8 @@ Runner.prototype = {
     favicon100.href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAABCUlEQVQ4y5WSK2/DMBSFv1RFwSuJZIWYBHe0wystTumCRze+/zC84NFqtMHDISaRJZMal27kZqqsm7Q7kiU/7uPc45NxBYV3G6BWnt6CscOS6zgCrVLkCcgW3IZ66uHWApNY/jO+BTogAsMfg8K73YyAIyJwBtZAHoz9vmTwAnwmyR/A48XVEIxt0iaZBP8IvWdgBRyAMomNwAnYj91TDWoglwKlMtEgDQZNxB6ogN2cgsHYbuobH0TdueT7SR8EYyOwB76UmCjUVWSFdyVwJ+cz8A5sZCyALhjbFN6tteILRahW9ltZs8gS06yETRmMfZX7I9AEY3vVyjJCPipceFcp9tVcWgVj+1+cIE8di05TcgAAAABJRU5ErkJggg==';
     favicon200.href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA3XAAAN1wFCKJt4AAABxklEQVRYw81XoW7DMBB9mYKKM2LJKjEJTmn4cPFG23/oB+QfGjpePB7a4BCDZZaMiks3cp28yE7s1G13UqUmju13d+/e2QkiGFOyBJB7ft5pLprLQ4o49gpg4/ltDeAXQBLB+2/6ewbQUSQWU/M0FwkAPCGedZqLFYHwtpgAcqbkMYALUTkACnsROilmBGbZwwGkN15/+2gAraVSzvcEcBw8r4agUkNQjgAqzcXBU4DWAHaO4QOAyqYVYykoAGQeG+cASvq5yu6kuWhvRcISwD5WjhKLprckqUPP9wEN508laC7qEB1YMiX3TMnlYPMyYNPGpwRdKcjI0xNTsqd3oZ53mouaKVlMNacxDuyuza/mYjIK/6oXbM2Tyt17AeUsIw7kV6z5FuJIYim3wiKhIbbyFSEXBzrS7C6U+XPmJSOSuwPw4ln/DYAPzUU1WwkdIDaesjuqdqMkJOItXWICoDZk2myrhQ0cNauF5/59CuDZ0dV6OusP31XG2NYCIvfpqsZdwu/ywZT8ZEq+O8Y2V+uAsWAGYG25x1Vz8xxahmc6NrUAvszeYIuAx9gkCXOj1BrNRWc5TNYGBxAw5izxS8kmDgB3sx9qpKWGIYm9DgAAAABJRU5ErkJggg==';
 
-    if (this.isArcadeMode()) {
-      document.title = 'Thorium Dino Game'
+    if (this.isChromeDino()) {
+      document.title = ARCADE_MODE2_URL;
       document.head.appendChild(favicon100);
       document.head.appendChild(favicon200);
     }
@@ -1402,11 +1403,24 @@ Runner.prototype = {
    * Whether the game should go into arcade mode.
    * @return {boolean}
    */
+  isChromeDino() {
+    // In RTL languages the title is wrapped with the left to right mark
+    // control characters &#x202A; and &#x202C but are invisible.
+    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 
+                                  : document.title === ARCADE_MODE_URL;
+    return is_chrome_dino;
+           
+  },
+
   isArcadeMode() {
     // In RTL languages the title is wrapped with the left to right mark
     // control characters &#x202A; and &#x202C but are invisible.
-    return IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 1 :
-                    document.title === ARCADE_MODE_URL;
+    const is_chrome_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE_URL) == 
+                                  : document.title === ARCADE_MODE_URL;
+    const is_thorium_dino = IS_RTL ? document.title.indexOf(ARCADE_MODE2_URL) == 1
+                                   : document.title === ARCADE_MODE2_URL;
+    return is_chrome_dino || is_thorium_dino;
+           
   },
 
   /**

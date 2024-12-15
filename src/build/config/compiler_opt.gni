@@ -27,6 +27,14 @@ declare_args() {
   # would want to turn on use_sse3, use_sse41, use_sse42 too. For AVX2
   # you would add use_avx, etc.
 
+  # SSE2
+  # Normal x64 compiler baseline, present since Willamette (Original
+  # 2001 Pentium 4) and AMD SledgeHammer (1st Gen. Opteron) and
+  # the Athlon 64. Big step from MMX, x87, and SSE (i.e. SSE1)
+  # Baseline requirement to run Windows since update KB4103718
+  # for Windows 7 SP1/Server 2008 R2 SP1/Home Server 2011.
+  use_sse2 = current_cpu == "x86"
+
   # SSE3
   # Normal Chromium baseline, present since Prescott (2004 Pentium 4)
   # and AMD SanDiego (2nd Gen. Opteron).

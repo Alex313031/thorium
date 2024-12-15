@@ -157,6 +157,7 @@ config("compiler") {
         cflags += [
           "-msse4.2",
           "/clang:-msse4.2",
+          # "/arch:SSE4.2",
         ]
       }
       if (use_avx) {
@@ -167,6 +168,7 @@ config("compiler") {
           "/clang:-mpclmul",
           "/clang:-maes",
           "/clang:-mavx",
+          # "/arch:AVX",
         ]
       }
       if (use_avx2) {
@@ -182,6 +184,7 @@ config("compiler") {
           "/clang:-mlzcnt",
           "/clang:-mbmi2",
           "/clang:-ffp-contract=fast",
+          # "/arch:AVX2",
           # "/fp:fast",
         ]
       }

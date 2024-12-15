@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 # Copyright (c) 2024 Alex313031.
 

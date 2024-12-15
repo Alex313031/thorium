@@ -554,7 +554,11 @@ config("compiler") {
 
     # TODO(crbug.com/345541122): investigate the fuchsia binary size increase.
     if (is_win) {
-      cflags += [ "/Zc:sizedDealloc" ]
+      if (is_debug) {
+        cflags += [ "/Zc:sizedDealloc-" ]
+      } else {
+        cflags += [ "/Zc:sizedDealloc" ]
+      }
     } else {
       cflags += [ "-fsized-deallocation" ]
     }
@@ -846,7 +850,7 @@ config("compiler") {
     # TODO(crbug.com/40182783): investigate why this isn't effective on
     # arm32.
     if (!is_android || current_cpu == "arm64") {
-      cflags += [ "-fwhole-program-vtables" ]
+      cflags += [ "-fwhole-program-vtables", "-fstrict-vtable-pointers", ]
 
       if (toolchain_supports_rust_thin_lto) {
         # whole-program-vtables implies -fsplit-lto-unit, and Rust needs to match
@@ -862,7 +866,7 @@ config("compiler") {
       }
 
       if (!is_win) {
-        ldflags += [ "-fwhole-program-vtables" ]
+        ldflags += [ "-fwhole-program-vtables", "-fstrict-vtable-pointers", ]
       }
     }
 
@@ -1174,7 +1178,7 @@ config("libcxx_hardening") {
 # building with ThinLTO, no optimization is performed in the link step.
 config("thinlto_optimize_default") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
-    lto_opt_level = 3
+    lto_opt_level = 2
 
     if (is_win) {
       ldflags = [ "/opt:lldlto=" + lto_opt_level ]
@@ -1209,9 +1213,10 @@ config("thinlto_optimize_default") {
 config("thinlto_optimize_max") {
   if (!is_debug && use_thin_lto && is_a_target_toolchain) {
     if (thin_lto_enable_optimizations) {
-      lto_opt_level = 3
+      lto_opt_level = 2
     } else {
-      lto_opt_level = 3
+      # Alex313031 TODO: Set back to 3 when LLVM bug is fixed
+      lto_opt_level = 2
     }
 
     if (is_win) {
