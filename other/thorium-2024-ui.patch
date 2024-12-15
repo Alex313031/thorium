@@ -1494,6 +1494,7 @@ index 31a271a03e5e6..ad03a301e1177 100644
 +
    OnPaintBorder(canvas);
  }
+ 
 diff --git a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
 index 92157b05edc4f..53793a7062b31 100644
 --- a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
@@ -3004,7 +3005,7 @@ index 30ec5058583ed..3103949fe60ec 100644
 +  if (event.IsOnlyMiddleMouseButton() ||
 +    // Close tab on double click, mirror of IsOnlyMiddleMouseButton
 +    // Based on gz83's work.
-+    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) && 
++    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) &&
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab"))) {
      if (HitTestPoint(event.location())) {
        controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
