@@ -850,7 +850,8 @@ config("compiler") {
     # TODO(crbug.com/40182783): investigate why this isn't effective on
     # arm32.
     if (!is_android || current_cpu == "arm64") {
-      cflags += [ "-fwhole-program-vtables", "-fstrict-vtable-pointers", ]
+      # Add "-fstrict-vtable-pointers",
+      cflags += [ "-fwhole-program-vtables", ]
 
       if (toolchain_supports_rust_thin_lto) {
         # whole-program-vtables implies -fsplit-lto-unit, and Rust needs to match
@@ -866,7 +867,7 @@ config("compiler") {
       }
 
       if (!is_win) {
-        ldflags += [ "-fwhole-program-vtables", "-fstrict-vtable-pointers", ]
+        ldflags += [ "-fwhole-program-vtables", ]
       }
     }
 
@@ -3053,7 +3054,7 @@ config("emit-relocs") {
 # Use LLVM's Polly optimizer
 config("polly") {
   if (use_polly == true) {
-  ldflags = common_optimize_on_ldflags
+    ldflags = common_optimize_on_ldflags
     if (is_win) {
       ldflags += [
         "-mllvm:-polly",

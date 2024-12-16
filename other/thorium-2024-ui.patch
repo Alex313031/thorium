@@ -1296,8 +1296,8 @@ index 9cecb25b41d3b..ad63624d72625 100644
 +  int kBookmarksBarLeadingMarginWithoutSavedTabGroups;
 +  int kBookmarksBarLeadingMarginWithSavedTabGroups;
 +  if (features::IsThorium2024()) {
-+    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 8;
-+    kBookmarksBarLeadingMarginWithSavedTabGroups = 14;
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 10;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 16;
 +  } else {
 +    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
 +    kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
@@ -2833,6 +2833,31 @@ index 12f3662bee633..d4295bb1f3785 100644
           views::Separator::kThickness;
  }
  
+diff --git a/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc b/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
+index 37c51b5605017..f0809f4b50eb5 100644
+--- a/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
++++ b/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
+@@ -776,6 +776,20 @@ std::unique_ptr<views::View> SidePanelCoordinator::CreateHeader() {
+   auto* const layout =
+       header->SetLayoutManager(std::make_unique<views::FlexLayout>());
+ 
++  if (features::IsThorium2024()) {
++    // ChromeLayoutProvider for providing margins.
++    ChromeLayoutProvider* const chrome_layout_provider =
++        ChromeLayoutProvider::Get();
++    // Set the interior margins of the header on the left and right sides.
++    const int horizontal_margin = chrome_layout_provider->GetDistanceMetric(
++        ChromeDistanceMetric::
++            DISTANCE_SIDE_PANEL_HEADER_INTERIOR_MARGIN_HORIZONTAL);
++    layout->SetInteriorMargin(
++        gfx::Insets::TLBR(0, horizontal_margin, 0, horizontal_margin * 2));
++    header->SetBackground(
++        views::CreateThemedSolidBackground(ui::kColorWindowBackground));
++  }
++
+   // Set alignments for horizontal (main) and vertical (cross) axes.
+   layout->SetMainAxisAlignment(views::LayoutAlignment::kStart);
+   layout->SetCrossAxisAlignment(views::LayoutAlignment::kCenter);
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 index e65fda1bf0161..37c474deb5ffc 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
@@ -4432,7 +4457,7 @@ index aec943d266793..98ee677630ff3 100644
 +  //use_bubble_border = corner_radius > 0;
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..6649de56c8b13 100644
+index 09c03d1e87011..0388c7ceefe77 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
 @@ -4,12 +4,25 @@
@@ -4455,13 +4480,14 @@ index 09c03d1e87011..6649de56c8b13 100644
 +  submenu_horizontal_overlap = features::IsThorium2024() ? 1 : 0;
 +  arrow_to_edge_padding = features::IsThorium2024() ? 0 : 8;
 +  separator_height = features::IsThorium2024() ? 5 : 13;
-+  separator_upper_height = features::IsThorium2024() ? 3 : 3;
-+  separator_lower_height = features::IsThorium2024() ? 3 : 4;
++  separator_upper_height = features::IsThorium2024() ? 2 : 3;
++  separator_lower_height = features::IsThorium2024() ? 2 : 4;
 +  separator_spacing_height = features::IsThorium2024() ? 2 : 3;
 +  nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
  }
  
  }  // namespace views
+
 diff --git a/ui/views/controls/menu/menu_config_mac.mm b/ui/views/controls/menu/menu_config_mac.mm
 index eabfb364890d3..b31a7d3867a31 100644
 --- a/ui/views/controls/menu/menu_config_mac.mm
