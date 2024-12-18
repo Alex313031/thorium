@@ -41,7 +41,7 @@ config("mini_installer_compiler_flags") {
 
   if (!use_sse3 && use_sse2) {
     cflags += [ "/arch:SSE2", ]
-  if ((!use_avx && use_sse3) {
+  if (!use_avx && use_sse3) {
     cflags += [ "/clang:-msse3", ]
   } else if (!use_avx && use_sse41) {
     cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]

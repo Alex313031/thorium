@@ -27,7 +27,7 @@ Dino strings in components/error_page_strings.grdp
 
 --M132--
 
-Remove //build/config/unsafe_buffer_paths.txt after fixing //net/ftp
+Add full version renaming support for Linux and Windows, and partial for MacOS.
 Remove //components/optimization_guide_core/optimization_guide_features.cc after upstream MacOS fix
 
 Opt with BOLT > https://aaupov.github.io/blog/2022/11/12/bolt-chromium

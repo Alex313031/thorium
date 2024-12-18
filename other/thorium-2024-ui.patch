@@ -1296,8 +1296,8 @@ index 9cecb25b41d3b..ad63624d72625 100644
 +  int kBookmarksBarLeadingMarginWithoutSavedTabGroups;
 +  int kBookmarksBarLeadingMarginWithSavedTabGroups;
 +  if (features::IsThorium2024()) {
-+    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 10;
-+    kBookmarksBarLeadingMarginWithSavedTabGroups = 16;
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 8;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 14;
 +  } else {
 +    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
 +    kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
@@ -2683,10 +2683,18 @@ index 5530486ee3bb3..352aacdbfe227 100644
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
 diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-index 4bc8f9177f416..9fc3598a5f1a8 100644
+index 4bc8f9177f416..a880929c5196d 100644
 --- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
 +++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-@@ -35,9 +35,6 @@
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h"
+ 
++#include "base/command_line.h"
+ #include "base/feature_list.h"
+ #include "base/memory/raw_ptr.h"
+ #include "build/build_config.h"
+@@ -35,9 +36,6 @@
  
  namespace {
  
@@ -2696,7 +2704,7 @@ index 4bc8f9177f416..9fc3598a5f1a8 100644
  #if !defined(USE_AURA)
  
  struct WidgetEventPair {
-@@ -243,7 +240,10 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
+@@ -243,7 +241,10 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
        views::BubbleBorder::Arrow::NONE,
        views::BubbleBorder::Shadow::STANDARD_SHADOW);
    border->SetCornerRadius(corner_radius);
@@ -2708,13 +2716,17 @@ index 4bc8f9177f416..9fc3598a5f1a8 100644
    SetBorder(std::move(border));
  
    AddChildView(contents_host_.get());
-@@ -272,10 +272,19 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
+@@ -272,10 +273,23 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
    params->shadow_type = views::Widget::InitParams::ShadowType::kNone;
  }
  
 +// Static value from the spec controlling appearance of the shadow.
 +int RoundedOmniboxResultsFrame::GetBubbleElevation() {
++  static const bool classic_omnibox =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
 +  if (features::IsThorium2024()) {
++    return 8;
++  } else if (classic_omnibox) {
 +    return 6;
 +  } else {
 +    return 16;
@@ -2729,7 +2741,7 @@ index 4bc8f9177f416..9fc3598a5f1a8 100644
  }
  
  // static
-@@ -283,12 +292,26 @@ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
+@@ -283,12 +297,26 @@ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
    if (ui::TouchUiController::Get()->touch_ui()) {
      return gfx::Insets::TLBR(6, 1, 5, 1);
    }
@@ -2833,33 +2845,8 @@ index 12f3662bee633..d4295bb1f3785 100644
           views::Separator::kThickness;
  }
  
-diff --git a/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc b/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
-index 37c51b5605017..f0809f4b50eb5 100644
---- a/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
-+++ b/chrome/browser/ui/views/side_panel/side_panel_coordinator.cc
-@@ -776,6 +776,20 @@ std::unique_ptr<views::View> SidePanelCoordinator::CreateHeader() {
-   auto* const layout =
-       header->SetLayoutManager(std::make_unique<views::FlexLayout>());
- 
-+  if (features::IsThorium2024()) {
-+    // ChromeLayoutProvider for providing margins.
-+    ChromeLayoutProvider* const chrome_layout_provider =
-+        ChromeLayoutProvider::Get();
-+    // Set the interior margins of the header on the left and right sides.
-+    const int horizontal_margin = chrome_layout_provider->GetDistanceMetric(
-+        ChromeDistanceMetric::
-+            DISTANCE_SIDE_PANEL_HEADER_INTERIOR_MARGIN_HORIZONTAL);
-+    layout->SetInteriorMargin(
-+        gfx::Insets::TLBR(0, horizontal_margin, 0, horizontal_margin * 2));
-+    header->SetBackground(
-+        views::CreateThemedSolidBackground(ui::kColorWindowBackground));
-+  }
-+
-   // Set alignments for horizontal (main) and vertical (cross) axes.
-   layout->SetMainAxisAlignment(views::LayoutAlignment::kStart);
-   layout->SetCrossAxisAlignment(views::LayoutAlignment::kCenter);
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index e65fda1bf0161..37c474deb5ffc 100644
+index e65fda1bf0161..53a99f0575c20 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 @@ -12,6 +12,7 @@
@@ -2891,7 +2878,7 @@ index e65fda1bf0161..37c474deb5ffc 100644
                  gfx::Insets().set_left(resize_handle_left_margin));
 -  } else {
 +  } else if (!lens::features::IsLensOverlayEnabled() || features::IsThorium2024()) {
-+    constexpr int resize_handle_right_margin = 1;
++    constexpr float resize_handle_right_margin = 2.0f;
 +    SetProperty(views::kMarginsKey,
 +                gfx::Insets().set_left(resize_handle_right_margin));
      constexpr int kIconSize = 16;
@@ -3030,7 +3017,7 @@ index 30ec5058583ed..3103949fe60ec 100644
 +  if (event.IsOnlyMiddleMouseButton() ||
 +    // Close tab on double click, mirror of IsOnlyMiddleMouseButton
 +    // Based on gz83's work.
-+    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) &&
++    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) && 
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab"))) {
      if (HitTestPoint(event.location())) {
        controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
@@ -4457,13 +4444,14 @@ index aec943d266793..98ee677630ff3 100644
 +  //use_bubble_border = corner_radius > 0;
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..0388c7ceefe77 100644
+index 09c03d1e87011..55a19743f0757 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
-@@ -4,12 +4,25 @@
+@@ -4,12 +4,28 @@
  
  #include "ui/views/controls/menu/menu_config.h"
  
++#include "base/command_line.h"
 +#include "chrome/browser/ui/thorium_2024.h"
 +#include "ui/base/ui_base_features.h"
  #include "ui/ozone/public/ozone_platform.h"
@@ -4472,22 +4460,23 @@ index 09c03d1e87011..0388c7ceefe77 100644
  
  void MenuConfig::InitPlatform() {
 -  use_bubble_border = true;
-+  use_bubble_border = corner_radius > 0;
++  static const bool bubble_borders =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("bubble-borders");
++  use_bubble_border = corner_radius > 0 || bubble_borders;
 +  use_outer_border = true;
 +  menu_horizontal_border_size = features::IsThorium2024()
-+                                ? 2
++                                ? 1
 +                                : 0;
 +  submenu_horizontal_overlap = features::IsThorium2024() ? 1 : 0;
 +  arrow_to_edge_padding = features::IsThorium2024() ? 0 : 8;
 +  separator_height = features::IsThorium2024() ? 5 : 13;
-+  separator_upper_height = features::IsThorium2024() ? 2 : 3;
-+  separator_lower_height = features::IsThorium2024() ? 2 : 4;
++  separator_upper_height = features::IsThorium2024() ? 3 : 3;
++  separator_lower_height = features::IsThorium2024() ? 3 : 4;
 +  separator_spacing_height = features::IsThorium2024() ? 2 : 3;
 +  nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
  }
  
  }  // namespace views
-
 diff --git a/ui/views/controls/menu/menu_config_mac.mm b/ui/views/controls/menu/menu_config_mac.mm
 index eabfb364890d3..b31a7d3867a31 100644
 --- a/ui/views/controls/menu/menu_config_mac.mm
@@ -4557,19 +4546,20 @@ index eabfb364890d3..b31a7d3867a31 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_win.cc b/ui/views/controls/menu/menu_config_win.cc
-index a2dae078ccbd3..d5a1248da8204 100644
+index a2dae078ccbd3..16100afdb3e77 100644
 --- a/ui/views/controls/menu/menu_config_win.cc
 +++ b/ui/views/controls/menu/menu_config_win.cc
-@@ -8,6 +8,8 @@
+@@ -8,6 +8,9 @@
  
  #include <Vssym32.h>
  
++#include "base/command_line.h"
 +#include "base/win/windows_version.h"
 +#include "ui/base/ui_base_features.h"
  #include "ui/gfx/system_fonts_win.h"
  
  namespace views {
-@@ -16,15 +18,52 @@ void MenuConfig::InitPlatform() {
+@@ -16,16 +19,57 @@ void MenuConfig::InitPlatform() {
    context_menu_font_list = font_list =
        gfx::FontList(gfx::win::GetSystemFont(gfx::win::SystemFont::kMenu));
  
@@ -4591,14 +4581,18 @@ index a2dae078ccbd3..d5a1248da8204 100644
 -  separator_lower_height = 7;
 +  //SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, &show_delay, 0);
  
+-  use_bubble_border = corner_radius > 0;
 +  static const bool is_win11 = base::win::GetVersion() >= base::win::Version::WIN11;
++  static const bool force_win11_for_testing =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("force-win11");
++  static const bool bubble_borders =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("bubble-borders");
 +  use_outer_border = true;
 +  nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
 +  always_reserve_check_region = false;
 +
 +  if (features::IsThorium2024()) {
-+    use_outer_border = true;
-+    if (is_win11) {
++    if (is_win11 || force_win11_for_testing) {
 +      corner_radius = 8;
 +      arrow_to_edge_padding = 4;
 +      menu_horizontal_border_size = 4;
@@ -4621,14 +4615,16 @@ index a2dae078ccbd3..d5a1248da8204 100644
 +      separator_height = 5;
 +      separator_upper_height = 3;
 +      separator_lower_height = 3;
++      separator_spacing_height = 2;
 +    }
 +  } else {
 +    separator_upper_height = 5;
 +    separator_lower_height = 7;
 +  }
-   use_bubble_border = corner_radius > 0;
++  use_bubble_border = corner_radius > 0 || bubble_borders;
  }
  
+ }  // namespace views
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
 index 81fabd16b2ce3..4b5b8781dd541 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
