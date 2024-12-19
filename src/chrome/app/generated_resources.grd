@@ -276,6 +276,9 @@ are declared in tools/grit/grit_rule.gni.
   </translations>
   <release seq="1">
     <messages fallback_to_english="true">
+      <!-- Thorium Browser specific strings -->
+      <part file="thorium_strings.grdp" />
+
       <!-- Access Code Cast specific strings -->
       <part file="access_code_cast_strings.grdp" />
 

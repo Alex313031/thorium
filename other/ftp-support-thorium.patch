@@ -70,7 +70,7 @@ index e2a95fa3aadaa..5b608e9272838 100644
      "(raster, webgl, video) "
      " continues using the gpu main thread.";
  
-+const char kEnableFtpName[] = "Enable support for FTP URLs";
++const char kEnableFtpName[] = "Enable support for FTP URLs. Enabled by default. Thorium Flag.";
 +const char kEnableFtpDescription[] =
 +    "When enabled, the browser will handle navigations to ftp:// URLs by "
 +    "either showing a directory listing or downloading the resource over FTP. "

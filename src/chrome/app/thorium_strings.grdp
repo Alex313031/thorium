@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grit-part>
+  <message name="IDS_RESTORE_TAB_BUTTON_NAME" desc="">
+    Restore Tab Button
+  </message>
+  <message name="IDS_RESTORE_TAB_BUTTON_TOOLTIP" desc="">
+    Restore Tab
+  </message>
+  <message name="IDS_ALTERNATE_HOME_PAGE" desc="">
+    Open alternate home page
+  </message>
+
+</grit-part>

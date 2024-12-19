@@ -1084,7 +1084,7 @@ index d48223986946d..9e5df278ea2b6 100644
 +  static const bool rectangular_tabs =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
 +  if (features::IsThorium2024() && !rectangular_tabs) {
-+    return 10;
++    return 8;
 +  } else if ((rectangular_tabs && features::IsThorium2024()) || (rectangular_tabs && !features::IsThorium2024())) {
 +    return 4;
 +  } else {
