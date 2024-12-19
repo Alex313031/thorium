@@ -122,6 +122,7 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
      "force-gpu-mem-available-mb", "1024"},
 };
 
+#if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kGtkVersionChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"3",
@@ -129,6 +130,7 @@ const FeatureEntry::Choice kGtkVersionChoices[] = {
     {"4",
      "gtk-version", "4"},
 };
+#endif // BUILDFLAG(IS_LINUX)
 
 const FeatureEntry::Choice kTabHoverCardChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
