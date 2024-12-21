@@ -1265,7 +1265,7 @@ index fb9afeed5a60e..d40af6311e073 100644
    VIEW_ID_MAXIMIZE_BUTTON,
    VIEW_ID_RESTORE_BUTTON,
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
-index 9cecb25b41d3b..ad63624d72625 100644
+index 9cecb25b41d3b..a0662f288a022 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 @@ -56,6 +56,7 @@
@@ -1296,8 +1296,8 @@ index 9cecb25b41d3b..ad63624d72625 100644
 +  int kBookmarksBarLeadingMarginWithoutSavedTabGroups;
 +  int kBookmarksBarLeadingMarginWithSavedTabGroups;
 +  if (features::IsThorium2024()) {
-+    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 8;
-+    kBookmarksBarLeadingMarginWithSavedTabGroups = 14;
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 10;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 16;
 +  } else {
 +    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
 +    kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
@@ -2683,18 +2683,10 @@ index 5530486ee3bb3..352aacdbfe227 100644
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
 diff --git a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-index 4bc8f9177f416..a880929c5196d 100644
+index 4bc8f9177f416..9fc3598a5f1a8 100644
 --- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
 +++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
-@@ -4,6 +4,7 @@
- 
- #include "chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.h"
- 
-+#include "base/command_line.h"
- #include "base/feature_list.h"
- #include "base/memory/raw_ptr.h"
- #include "build/build_config.h"
-@@ -35,9 +36,6 @@
+@@ -35,9 +35,6 @@
  
  namespace {
  
@@ -2704,7 +2696,7 @@ index 4bc8f9177f416..a880929c5196d 100644
  #if !defined(USE_AURA)
  
  struct WidgetEventPair {
-@@ -243,7 +241,10 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
+@@ -243,7 +240,10 @@ RoundedOmniboxResultsFrame::RoundedOmniboxResultsFrame(
        views::BubbleBorder::Arrow::NONE,
        views::BubbleBorder::Shadow::STANDARD_SHADOW);
    border->SetCornerRadius(corner_radius);
@@ -2716,17 +2708,13 @@ index 4bc8f9177f416..a880929c5196d 100644
    SetBorder(std::move(border));
  
    AddChildView(contents_host_.get());
-@@ -272,10 +273,23 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
+@@ -272,10 +272,19 @@ void RoundedOmniboxResultsFrame::OnBeforeWidgetInit(
    params->shadow_type = views::Widget::InitParams::ShadowType::kNone;
  }
  
 +// Static value from the spec controlling appearance of the shadow.
 +int RoundedOmniboxResultsFrame::GetBubbleElevation() {
-+  static const bool classic_omnibox =
-+      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
 +  if (features::IsThorium2024()) {
-+    return 8;
-+  } else if (classic_omnibox) {
 +    return 6;
 +  } else {
 +    return 16;
@@ -2741,7 +2729,7 @@ index 4bc8f9177f416..a880929c5196d 100644
  }
  
  // static
-@@ -283,12 +297,26 @@ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
+@@ -283,12 +292,26 @@ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
    if (ui::TouchUiController::Get()->touch_ui()) {
      return gfx::Insets::TLBR(6, 1, 5, 1);
    }
@@ -2846,7 +2834,7 @@ index 12f3662bee633..d4295bb1f3785 100644
  }
  
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index e65fda1bf0161..53a99f0575c20 100644
+index e65fda1bf0161..63a226c4bbf6e 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 @@ -12,6 +12,7 @@
@@ -2878,7 +2866,7 @@ index e65fda1bf0161..53a99f0575c20 100644
                  gfx::Insets().set_left(resize_handle_left_margin));
 -  } else {
 +  } else if (!lens::features::IsLensOverlayEnabled() || features::IsThorium2024()) {
-+    constexpr float resize_handle_right_margin = 2.0f;
++    constexpr float resize_handle_right_margin = 1.5f;
 +    SetProperty(views::kMarginsKey,
 +                gfx::Insets().set_left(resize_handle_right_margin));
      constexpr int kIconSize = 16;
@@ -2907,7 +2895,7 @@ index fa14797259775..6031b27d539e6 100644
      const int x = tabs::GetTabSearchTrailingTabstrip(profile_)
                        ? bounds.right() - offset
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
-index 30ec5058583ed..3103949fe60ec 100644
+index 30ec5058583ed..1b1b144a965aa 100644
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
 @@ -1,4 +1,4 @@
@@ -3017,7 +3005,7 @@ index 30ec5058583ed..3103949fe60ec 100644
 +  if (event.IsOnlyMiddleMouseButton() ||
 +    // Close tab on double click, mirror of IsOnlyMiddleMouseButton
 +    // Based on gz83's work.
-+    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) && 
++    ((event.IsOnlyLeftMouseButton() && event.GetClickCount() == 2) &&
 +      base::CommandLine::ForCurrentProcess()->HasSwitch("double-click-close-tab"))) {
      if (HitTestPoint(event.location())) {
        controller_->CloseTab(this, CLOSE_TAB_FROM_MOUSE);
@@ -3409,10 +3397,10 @@ index b071682471a32..94123478b7fab 100644
    // TODO(elainechien): Check with UI whether we want to draw overflow
 diff --git a/chrome/browser/ui/views/toolbar/restore_tab_button.cc b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 new file mode 100644
-index 0000000000000..d80d7b69ce583
+index 0000000000000..4bd2f5fa3eb41
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
-@@ -0,0 +1,70 @@
+@@ -0,0 +1,71 @@
 +// Copyright 2024 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -3426,8 +3414,9 @@ index 0000000000000..d80d7b69ce583
 +#include "chrome/browser/command_updater.h"
 +#include "chrome/browser/external_protocol/external_protocol_handler.h"
 +#include "chrome/browser/ui/browser.h"
++#include "chrome/grit/generated_resources.h"
 +#include "components/vector_icons/vector_icons.h"
-+//#include "ui/base/l10n/l10n_util.h"
++#include "ui/base/l10n/l10n_util.h"
 +#include "ui/base/metadata/metadata_impl_macros.h"
 +#include "ui/base/ui_base_features.h"
 +#include "ui/views/accessibility/view_accessibility.h"
@@ -3440,12 +3429,12 @@ index 0000000000000..d80d7b69ce583
 +
 +  SetIcon();
 +
-+  constexpr char16_t RestoreTabAccessName[] = u"Restore Tab Button";
-+  GetViewAccessibility().SetName(RestoreTabAccessName);
-+  constexpr char16_t RestoreTabAccessToolTipName[] = u"Restore Tab";
-+  SetTooltipText(RestoreTabAccessToolTipName);
++  SetTooltipText(l10n_util::GetStringUTF16(IDS_RESTORE_TAB_BUTTON_TOOLTIP));
++  SetAccessibleName(l10n_util::GetStringUTF16(IDS_RESTORE_TAB_BUTTON_NAME));
 +  button_controller()->set_notify_action(
 +      views::ButtonController::NotifyAction::kOnPress);
++  SetID(VIEW_ID_RESTORE_TAB_BUTTON);
++  SizeToPreferredSize();
 +}
 +
 +RestoreTabButton::~RestoreTabButton() = default;
@@ -4444,14 +4433,13 @@ index aec943d266793..98ee677630ff3 100644
 +  //use_bubble_border = corner_radius > 0;
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_config_linux.cc b/ui/views/controls/menu/menu_config_linux.cc
-index 09c03d1e87011..55a19743f0757 100644
+index 09c03d1e87011..9e661b29b27e6 100644
 --- a/ui/views/controls/menu/menu_config_linux.cc
 +++ b/ui/views/controls/menu/menu_config_linux.cc
-@@ -4,12 +4,28 @@
+@@ -4,12 +4,26 @@
  
  #include "ui/views/controls/menu/menu_config.h"
  
-+#include "base/command_line.h"
 +#include "chrome/browser/ui/thorium_2024.h"
 +#include "ui/base/ui_base_features.h"
  #include "ui/ozone/public/ozone_platform.h"
@@ -4460,18 +4448,17 @@ index 09c03d1e87011..55a19743f0757 100644
  
  void MenuConfig::InitPlatform() {
 -  use_bubble_border = true;
-+  static const bool bubble_borders =
-+      base::CommandLine::ForCurrentProcess()->HasSwitch("bubble-borders");
-+  use_bubble_border = corner_radius > 0 || bubble_borders;
++  use_bubble_border = corner_radius > 0;
 +  use_outer_border = true;
 +  menu_horizontal_border_size = features::IsThorium2024()
 +                                ? 1
 +                                : 0;
-+  submenu_horizontal_overlap = features::IsThorium2024() ? 1 : 0;
++  submenu_horizontal_overlap = features::IsThorium2024() ? 2 : 0;
++  separator_horizontal_border_padding = features::IsThorium2024() ? 5 : 0;
 +  arrow_to_edge_padding = features::IsThorium2024() ? 0 : 8;
 +  separator_height = features::IsThorium2024() ? 5 : 13;
-+  separator_upper_height = features::IsThorium2024() ? 3 : 3;
-+  separator_lower_height = features::IsThorium2024() ? 3 : 4;
++  separator_upper_height = features::IsThorium2024() ? 2 : 3;
++  separator_lower_height = features::IsThorium2024() ? 2 : 4;
 +  separator_spacing_height = features::IsThorium2024() ? 2 : 3;
 +  nonrounded_menu_vertical_border_size = features::IsThorium2024() ? 3 : 4;
  }
