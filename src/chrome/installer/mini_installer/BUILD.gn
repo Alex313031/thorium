@@ -41,7 +41,7 @@ config("mini_installer_compiler_flags") {
 
   if (!use_sse3 && use_sse2) {
     cflags += [ "/arch:SSE2", ]
-  if (!use_avx && use_sse3) {
+  } else if (!use_avx && use_sse3) {
     cflags += [ "/clang:-msse3", ]
   } else if (!use_avx && use_sse41) {
     cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
@@ -283,7 +283,7 @@ source_set("mini_installer_sources") {
 # Generates a mini_installer executable containing the resources provided in the
 # caller's `rc_file`.
 template("generate_mini_installer") {
-  executable(invoker.filename) {
+  executable(target_name) {
     sources = [ invoker.rc_file ]
 
     # This target is special so we manually override most linker flags and
@@ -336,29 +336,71 @@ template("generate_mini_installer") {
   }
 }
 
-generate_mini_installer("mini_installer") {
-  rc_file = packed_files_rc_file
-  if (use_sse2) {
-    filename = "thorium_WIN32_SSE2_mini_installer"
-  } else if (use_sse3) {
-      if (current_cpu == "x86") {
-        filename = "thorium_WIN32_SSE3_mini_installer"
-      } else {
-        filename = "thorium_SSE3_mini_installer"
-      }
-  } else if (use_sse41) {
-    filename = "thorium_SSE4_mini_installer"
-  } else if (use_sse42) {
-    filename = "thorium_SSE4.2_mini_installer"
-  } else if (use_avx) {
-    filename = "thorium_AVX_mini_installer"
-  } else if (use_avx2) {
-    filename = "thorium_AVX2_mini_installer"
-  } else if (use_avx512) {
-    filename = "thorium_AVX512_mini_installer"
-  } else {
-    filename = "thorium_mini_installer"
+group("mini_installer") {
+  deps = []
+  if (use_sse2 && !use_sse3) {
+    deps += [ ":thorium_WIN32_SSE2_mini_installer" ]
   }
+  if (use_sse3 && !use_sse41 && !use_sse42) {
+    if (current_cpu == "x86") {
+      deps += [ ":thorium_WIN32_SSE2_mini_installer"  ]
+    } else {
+      deps += [ ":thorium_SSE3_mini_installer" ]
+    }
+  }
+  if (use_sse41 && !use_sse42) {
+    deps += [ ":thorium_SSE4_mini_installer" ]
+  }
+  if (use_sse42 && !use_avx) {
+    deps += [ ":thorium_SSE4.2_mini_installer" ]
+  }
+  if (use_avx && !use_avx2) {
+    deps += [ ":thorium_AVX_mini_installer" ]
+  }
+  if (use_avx2 && !use_avx512) {
+    deps += [":thorium_AVX2_mini_installer"  ]
+  }
+  if (use_avx512) {
+    deps += [ ":thorium_AVX512_mini_installer" ]
+  } else {
+    deps += [ ":thorium_mini_installer" ]
+  }
+}
+
+generate_mini_installer("thorium_WIN32_SSE2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_WIN32_SSE3_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE3_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE4_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE4.2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX512_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_mini_installer") {
+  rc_file = packed_files_rc_file
 }
 
 if (enable_uncompressed_archive) {
