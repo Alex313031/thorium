@@ -40,9 +40,8 @@ jobs = sys.argv[1] if len(sys.argv) > 1 else str(os.cpu_count())
 
 try_run(f'autoninja -C out/thorium thorium_all -j{jobs}')
 
-# Move the installer
-installer_src = os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium', 'mini_installer.exe'))
-installer_dest = os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium', 'thorium_mini_installer.exe'))
-os.rename(installer_src, installer_dest)
+try_run(f'autoninja -C out/thorium setup mini_installer -j{jobs}')
+
+installer_dest = os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium'))
 
 print(f"Build Completed. Installer at '{installer_dest}'")
