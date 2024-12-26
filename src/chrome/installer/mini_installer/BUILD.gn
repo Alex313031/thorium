@@ -340,27 +340,21 @@ group("mini_installer") {
   deps = []
   if (use_sse2 && !use_sse3) {
     deps += [ ":thorium_WIN32_SSE2_mini_installer" ]
-  }
-  if (use_sse3 && !use_sse41 && !use_sse42) {
+  } else if (use_sse3 && !use_sse41 && !use_sse42) {
     if (current_cpu == "x86") {
       deps += [ ":thorium_WIN32_SSE2_mini_installer"  ]
     } else {
       deps += [ ":thorium_SSE3_mini_installer" ]
     }
-  }
-  if (use_sse41 && !use_sse42) {
+  } else if (use_sse41 && !use_sse42) {
     deps += [ ":thorium_SSE4_mini_installer" ]
-  }
-  if (use_sse42 && !use_avx) {
+  } else if (use_sse42 && !use_avx) {
     deps += [ ":thorium_SSE4.2_mini_installer" ]
-  }
-  if (use_avx && !use_avx2) {
+  } else if (use_avx && !use_avx2) {
     deps += [ ":thorium_AVX_mini_installer" ]
-  }
-  if (use_avx2 && !use_avx512) {
+  } else if (use_avx2 && !use_avx512) {
     deps += [":thorium_AVX2_mini_installer"  ]
-  }
-  if (use_avx512) {
+  } else if (use_avx512) {
     deps += [ ":thorium_AVX512_mini_installer" ]
   } else {
     deps += [ ":thorium_mini_installer" ]

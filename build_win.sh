@@ -49,7 +49,7 @@ cd ${CR_SRC_DIR} &&
 autoninja -C out/thorium thorium_all -j$@ &&
 autoninja -C out/thorium setup mini_installer -j$@ &&
 
-mv -v -f ${CR_SRC_DIR}/out/thorium/mini_installer.exe ${CR_SRC_DIR}/out/thorium/thorium_mini_installer.exe &&
+#mv -v -f ${CR_SRC_DIR}/out/thorium/mini_installer.exe ${CR_SRC_DIR}/out/thorium/thorium_mini_installer.exe &&
 
 printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
