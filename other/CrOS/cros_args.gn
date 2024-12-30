@@ -24,6 +24,7 @@ enable_resource_allowlist_generation = false
 enable_profiling = false
 is_component_build = false
 symbol_level = 0
+# use_debug_fission = true
 enable_nacl = false
 optimize_webui = true
 enable_webui_tab_strip = true
@@ -46,8 +47,8 @@ media_use_ffmpeg = true
 media_use_libvpx = true
 enable_hls_demuxer = true
 enable_ink = false
-enable_discovery = true
 enable_cros_media_app = false
+enable_discovery = true
 proprietary_codecs = true
 ffmpeg_branding = "Chrome"
 # Set to false for Polly build

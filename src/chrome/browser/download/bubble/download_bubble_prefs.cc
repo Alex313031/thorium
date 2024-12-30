@@ -4,7 +4,6 @@
 
 #include "chrome/browser/download/bubble/download_bubble_prefs.h"
 
-#include "base/command_line.h"
 #include "base/feature_list.h"
 #include "build/chromeos_buildflags.h"
 #include "chrome/browser/download/download_core_service.h"
@@ -24,7 +23,7 @@ bool IsDownloadBubbleEnabled() {
 #if BUILDFLAG(IS_CHROMEOS_ASH)
   return false;
 #else
-  if (features::DownloadShelf) {
+  if (features::DownloadShelf()) {
     return false;
   } else {
     return true;

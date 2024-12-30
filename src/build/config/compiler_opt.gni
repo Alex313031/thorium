@@ -5,7 +5,15 @@
 ## For information about compiler flags and optimizations
 ## that this uses, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
 
+import("//build/config/compiler/compiler.gni")
+
 declare_args() {
+  ## General Optimization settings
+  ## For LLVM or OS specific stuff
+
+  # Turn this on to have compiler optimization turned up to the max.
+  # Such as using -O3 instead of -O2 for CFLAGS.
+  is_full_optimization_build = is_official_build
 
   # Whether to use Raspberry Pi specific optimizations.
   is_raspi = false
@@ -17,15 +25,16 @@ declare_args() {
   # Whether to enable LLVM's BOLT optimizations.
   # See https://github.com/llvm/llvm-project/blob/main/bolt/README.md
   use_bolt = false
+}
 
-  # SIMD compiler optimization flags
-  # Propagated to //build/config/* to allow controlling
-  # x86_64 SIMD optimization levels. This was done to refactor
-  # multiple BUILD.gn file into one copy of each.
-
-  # Flags are not cumulative, so for example, for an AVX build you
-  # would want to turn on use_sse3, use_sse41, use_sse42 too. For AVX2
-  # you would add use_avx, etc.
+declare_args() {
+  ## SIMD compiler optimization flags
+  ## Propagated to //build/config/* to allow controlling
+  ## x86_64 SIMD optimization levels. This was done to refactor
+  ## multiple BUILD.gn file into one copy of each.
+  ## Flags are not cumulative, so for example, for an AVX build you
+  ## would want to turn on use_sse3, use_sse41, use_sse42 too. For AVX2
+  ## you would add use_avx, etc.
 
   # SSE2
   # Normal x64 compiler baseline, present since Willamette (Original
@@ -98,6 +107,7 @@ declare_args() {
 }
 
 if (is_debug) {
+  assert(!is_full_optimization_build, "is_full_optimization_build only works with non-debug builds")
   assert(!use_polly, "use_polly only works with non-debug builds")
   assert(!use_bolt, "use_bolt only works with non-debug builds")
 }
@@ -112,11 +122,15 @@ if (use_fma) {
   assert(current_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
 }
 
+if ((use_avx || use_avx2 || use_avx512 || use_fma) && is_debug || symbol_level == "2") {
+  print("WARNING: Using AVX with debug builds is known to cause undefined symbol: FallbackCrcMemcpyEngine linker errors.")
+}
+
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
 # from anything higher usually.
-if (use_avx || use_avx2 || use_fma) {
-  assert(current_cpu == "x64", "AVX, AVX2, and FMA require x64. current_cpu is x86")
-  assert(target_cpu != "x86", "AVX, AVX2, and FMA require x64. Set target_cpu to x64")
+if (use_avx || use_avx2 || use_avx512 || use_fma) {
+  assert(current_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. current_cpu is x86")
+  assert(target_cpu != "x86", "AVX, AVX2, AVX-512, or FMA require x64. Set target_cpu to x64")
 }
 
 # AVX2 should always have FMA, however, there are times one might want
@@ -135,7 +149,7 @@ if (use_avx512 && !use_fma) {
   print("")
 }
 
-# Not a normal configuration, that normally means a mistake was made configuring
+# Not a normal configuration, that usually means a mistake was made configuring
 # your args. However, there are a few CPUs out there for which this makes sense.
 # Alex313031 TODO: Maybe add -mfma3 -mfma4 for this config?
 if (!use_avx2 && use_fma) {

@@ -25,3 +25,9 @@ use_vr_assets_component = true # Removed upstream
 enable_widevine_cdm_component = true # Set internally
 
 visual_studio_version = "2022" # Not needed anymore
+
+use_large_pdbs = true # Was used in debug builds to allow larger PDB files.
+
+enable_ink = false # Cannot set to true anyway, without Chrome internal code
+
+enable_cros_media_app = false # Only for ChromiumOS, was removed from most args.gns, but still enabled for ThoriumOS and in cros_args.gn

@@ -190,18 +190,6 @@ index fe2ce670da340..82bbda21a16e5 100644
  // Used by LOG_IS_ON to lazy-evaluate stream arguments.
  BASE_EXPORT bool ShouldCreateLogMessage(int severity);
  
-diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index c9a3ce41465b3..9203ec5c7c75c 100644
---- a/build/config/BUILDCONFIG.gn
-+++ b/build/config/BUILDCONFIG.gn
-@@ -348,6 +348,7 @@ default_compiler_configs = [
-   "//build/config/compiler:default_optimization",
-   "//build/config/compiler:default_stack_frames",
-   "//build/config/compiler:default_symbols",
-+  "//build/config/compiler:emit-relocs",
-   "//build/config/compiler:libcxx_hardening",
-   "//build/config/compiler:libcxx_module",
-   "//build/config/compiler:no_exceptions",
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
@@ -909,30 +897,39 @@ index a35795ee8cc11..60577ba01a5fd 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
-index 3ae6b02a62d64..85c9e9ee1b724 100644
+index 3ae6b02a62d64..63ef3fc6483fb 100644
 --- a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
 +++ b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
-@@ -25,6 +25,7 @@
- #include "components/search/search.h"
- #include "components/strings/grit/components_strings.h"
- #include "components/vector_icons/vector_icons.h"
-+#include "ui/base/ui_base_features.h"
+@@ -12,6 +12,7 @@
+ #include "build/chromeos_buildflags.h"
+ #include "chrome/browser/shell_integration.h"
+ #include "chrome/common/chrome_features.h"
++#include "chrome/common/thorium_2024.h"
+ #include "chrome/common/webui_url_constants.h"
+ #include "components/omnibox/browser/actions/omnibox_pedal.h"
+ #include "components/omnibox/browser/autocomplete_input.h"
+@@ -1972,14 +1973,18 @@ class OmniboxPedalSetChromeAsDefaultBrowser : public OmniboxPedal {
+ // =============================================================================
  
- #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
- #include "chrome/app/vector_icons/vector_icons.h"
-@@ -1977,7 +1978,11 @@ const gfx::VectorIcon& GetSharingHubVectorIcon() {
+ const gfx::VectorIcon& GetSharingHubVectorIcon() {
++  const bool thorium_2024 = features::IsThorium2024();
+ #if BUILDFLAG(IS_MAC)
+   return omnibox::kShareMacChromeRefreshIcon;
  #elif BUILDFLAG(IS_WIN)
-   return omnibox::kShareWinChromeRefreshIcon;
+-  return omnibox::kShareWinChromeRefreshIcon;
++  return thorium_2024 ? omnibox::kShareChromeRefreshIcon
++                      : omnibox::kShareWinChromeRefreshIcon;
  #elif BUILDFLAG(IS_LINUX)
 -  return omnibox::kShareLinuxChromeRefreshIcon;
-+  if (features::IsThorium2024()) {
-+    return omnibox::kShareChromeRefreshIcon;
-+  } else {
-+    return omnibox::kShareLinuxChromeRefreshIcon;
-+  }
++  return thorium_2024 ? omnibox::kShareChromeRefreshIcon
++                      : omnibox::kShareLinuxChromeRefreshIcon;
  #else
-   return omnibox::kShareChromeRefreshIcon;
+-  return omnibox::kShareChromeRefreshIcon;
++  return thorium_2024 ? omnibox::kShareIcon
++                      : omnibox::kShareChromeRefreshIcon;
  #endif
+ }
+ 
 diff --git a/chrome/browser/ui/status_bubble.h b/chrome/browser/ui/status_bubble.h
 index 74a00df155806..c8e4a81911d80 100644
 --- a/chrome/browser/ui/status_bubble.h
@@ -1296,8 +1293,8 @@ index 9cecb25b41d3b..a0662f288a022 100644
 +  int kBookmarksBarLeadingMarginWithoutSavedTabGroups;
 +  int kBookmarksBarLeadingMarginWithSavedTabGroups;
 +  if (features::IsThorium2024()) {
-+    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 10;
-+    kBookmarksBarLeadingMarginWithSavedTabGroups = 16;
++    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 9;
++    kBookmarksBarLeadingMarginWithSavedTabGroups = 15;
 +  } else {
 +    kBookmarksBarLeadingMarginWithoutSavedTabGroups = 6;
 +    kBookmarksBarLeadingMarginWithSavedTabGroups = 12;
@@ -2810,7 +2807,7 @@ index 0a86475f8db19..9d599fa3f880a 100644
    // GetIconSize() does not work for subpage icons because the default size of
    // kSubmenuArrowIcon is 8 rather than 16.
 -  constexpr int kIconSize = 20;
-+  const int kIconSize = features::IsThorium2024() ? 10 : 20;
++  const int kIconSize = features::IsThorium2024() ? 9 : 20;
    return ui::ImageModel::FromVectorIcon(
 -      vector_icons::kSubmenuArrowChromeRefreshIcon, ui::kColorIcon, kIconSize);
 +      features::IsThorium2024()

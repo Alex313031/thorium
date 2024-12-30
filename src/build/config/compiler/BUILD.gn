@@ -497,18 +497,18 @@ config("compiler") {
     cflags += [ "-fPIC" ]
     ldflags += [ "-fPIC" ]
     rustflags += [ "-Crelocation-model=pic" ]
-    if (current_cpu == "x86" || current_cpu == "x64") {
-      asmflags += [ "-fno-emulated-tls", "-w", ]
-      cflags += [ "-fno-emulated-tls", "-w", ]
-      ldflags += [ "-Wl,-plugin-opt=-emulated-tls=0", "-w", ]
-      rustflags += [ "-Awarnings", ]
-    }
+    #if (current_cpu == "x86" || current_cpu == "x64") {
+      #asmflags += [ "-fno-emulated-tls", "-w", ]
+      #cflags += [ "-fno-emulated-tls", "-w", ]
+      #ldflags += [ "-Wl,-plugin-opt=-emulated-tls=0", "-w", ]
+      #rustflags += [ "-Awarnings", ]
+    #}
 
-    if (is_clang && chrome_pgo_phase == 2 && !is_android) {
-      asmflags += [ "-fbasic-block-sections=labels" ]
-      cflags += [ "-fbasic-block-sections=labels" ]
-      rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
-    }
+    #if (is_clang && chrome_pgo_phase == 2 && !is_android) {
+      #asmflags += [ "-fbasic-block-sections=labels" ]
+      #cflags += [ "-fbasic-block-sections=labels" ]
+      #rustflags += [ "-Cllvm-args=-basic-block-sections=labels" ]
+    #}
 
     if (!is_clang) {
       # Use pipes for communicating between sub-processes. Faster.
@@ -560,7 +560,11 @@ config("compiler") {
         cflags += [ "/Zc:sizedDealloc" ]
       }
     } else {
-      cflags += [ "-fsized-deallocation" ]
+      if (is_debug) {
+        cflags += [ "-fno-sized-deallocation" ]
+      } else {
+        cflags += [ "-fsized-deallocation" ]
+      }
     }
   }
 
@@ -851,7 +855,7 @@ config("compiler") {
     # arm32.
     if (!is_android || current_cpu == "arm64") {
       # Add "-fstrict-vtable-pointers",
-      cflags += [ "-fwhole-program-vtables", ]
+      cflags += [ "-fwhole-program-vtables" ]
 
       if (toolchain_supports_rust_thin_lto) {
         # whole-program-vtables implies -fsplit-lto-unit, and Rust needs to match
@@ -867,7 +871,7 @@ config("compiler") {
       }
 
       if (!is_win) {
-        ldflags += [ "-fwhole-program-vtables", ]
+        ldflags += [ "-fwhole-program-vtables" ]
       }
     }
 
@@ -1076,9 +1080,6 @@ config("compiler") {
     # For deterministic builds, keep the local machine's current working
     # directory from appearing in build outputs.
     "-Zremap-cwd-prefix=.",
-
-    # Full RUSTC optimizations.
-    "-Copt-level=3",
   ]
 
   if (current_cpu == "arm64") {
@@ -3036,45 +3037,6 @@ config("no_optimize") {
   }
 }
 
-# Emit relocations for BOLT
-config("emit-relocs") {
-  if (!using_sanitizer && use_bolt) {
-    if (is_win) {
-      ldflags = [
-        "-mllvm:--emit-relocs",
-      ]
-    } else {
-      ldflags = [
-        "-Wl,--emit-relocs",
-      ]
-    }
-  }
-}
-
-# Use LLVM's Polly optimizer
-config("polly") {
-  if (use_polly == true) {
-    ldflags = common_optimize_on_ldflags
-    if (is_win) {
-      ldflags += [
-        "-mllvm:-polly",
-        "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
-        #"-mllvm:-polly-invariant-load-hoisting",
-        "-mllvm:-polly-run-dce",
-        "-mllvm:-polly-vectorizer=stripmine",
-      ]
-    } else {
-      ldflags += [
-        "-Wl,-mllvm,-polly",
-        "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
-        #"-Wl,-mllvm,-polly-invariant-load-hoisting",
-        "-Wl,-mllvm,-polly-run-dce",
-        "-Wl,-mllvm,-polly-vectorizer=stripmine",
-      ]
-    }
-  }
-}
-
 # Turns up the optimization level. Used to explicitly enable -O2 instead of
 # -Os for select targets on platforms that use optimize_for_size. No-op
 # elsewhere.
@@ -3105,7 +3067,6 @@ config("optimize_max") {
     }
     rustflags = [ "-Copt-level=3", ]
   }
-  configs = [ ":polly" ]
 }
 
 # This config can be used to override the default settings for per-component
@@ -3142,7 +3103,6 @@ config("optimize_speed") {
     }
     rustflags = [ "-Copt-level=3", ]
   }
-  configs = [ ":polly" ]
 }
 
 config("optimize_fuzzing") {
@@ -3172,6 +3132,41 @@ config("default_optimization") {
     configs = [ ":optimize_fuzzing" ]
   } else {
     configs = [ ":optimize" ]
+  }
+}
+
+# Emit relocations for BOLT
+config("emit-relocs") {
+  if (!using_sanitizer && use_bolt) {
+    if (is_win) {
+      ldflags = [ "-mllvm:--emit-relocs", ]
+    } else {
+      ldflags = [ "-Wl,--emit-relocs", ]
+    }
+  }
+}
+
+# Use LLVM's Polly optimizer
+config("polly") {
+  if (use_polly == true) {
+    ldflags = common_optimize_on_ldflags
+    if (is_win) {
+      ldflags += [
+        "-mllvm:-polly",
+        "-mllvm:-polly-detect-profitability-min-per-loop-insts=40",
+        #"-mllvm:-polly-invariant-load-hoisting",
+        "-mllvm:-polly-run-dce",
+        "-mllvm:-polly-vectorizer=stripmine",
+      ]
+    } else {
+      ldflags += [
+        "-Wl,-mllvm,-polly",
+        "-Wl,-mllvm,-polly-detect-profitability-min-per-loop-insts=40",
+        #"-Wl,-mllvm,-polly-invariant-load-hoisting",
+        "-Wl,-mllvm,-polly-run-dce",
+        "-Wl,-mllvm,-polly-vectorizer=stripmine",
+      ]
+    }
   }
 }
 
