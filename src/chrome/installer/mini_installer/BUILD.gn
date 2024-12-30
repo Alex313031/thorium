@@ -446,6 +446,7 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
     ]
     deps = [
       ":mini_installer",
+      ":thorium_mini_installer",
       alternate_version_generator_target,
     ]
   }
