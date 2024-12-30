@@ -1250,7 +1250,7 @@ index 6a91493f7c2bc..fdeb2a4a0916e 100644
          flag_descriptions::kScrollableTabStripFlagId,
          l10n_util::GetStringUTF16(IDS_TAB_SCROLLING_EXPERIMENT_NAME),
 diff --git a/chrome/browser/ui/view_ids.h b/chrome/browser/ui/view_ids.h
-index fb9afeed5a60e..d40af6311e073 100644
+index fb9afeed5a60e..7b47ee8281b99 100644
 --- a/chrome/browser/ui/view_ids.h
 +++ b/chrome/browser/ui/view_ids.h
 @@ -16,6 +16,7 @@ enum ViewID {
@@ -1261,6 +1261,14 @@ index fb9afeed5a60e..d40af6311e073 100644
    VIEW_ID_MINIMIZE_BUTTON,
    VIEW_ID_MAXIMIZE_BUTTON,
    VIEW_ID_RESTORE_BUTTON,
+@@ -51,6 +52,7 @@ enum ViewID {
+   VIEW_ID_FORWARD_BUTTON,
+   VIEW_ID_RELOAD_BUTTON,
+   VIEW_ID_HOME_BUTTON,
++  VIEW_ID_RESTORE_TAB_BUTTON,
+   VIEW_ID_STAR_BUTTON,
+   VIEW_ID_EXTENSIONS_MENU_BUTTON,
+   VIEW_ID_APP_MENU,
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 index 9cecb25b41d3b..a0662f288a022 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
@@ -3326,7 +3334,7 @@ index 65676013fece9..d45fc4f3e1754 100644
  
 +  // The separator should never appear at the end of the tab strip.
 +  //if (!adjacent_tab && !leading) {
-+      //return 1.0f;
++      //return 0.0f;
 +  //}
 +
    const Tab* const left_tab = leading ? adjacent_tab : tab();
@@ -3394,10 +3402,10 @@ index b071682471a32..94123478b7fab 100644
    // TODO(elainechien): Check with UI whether we want to draw overflow
 diff --git a/chrome/browser/ui/views/toolbar/restore_tab_button.cc b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 new file mode 100644
-index 0000000000000..4bd2f5fa3eb41
+index 0000000000000..97d29250ae49d
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
-@@ -0,0 +1,71 @@
+@@ -0,0 +1,72 @@
 +// Copyright 2024 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -3411,6 +3419,7 @@ index 0000000000000..4bd2f5fa3eb41
 +#include "chrome/browser/command_updater.h"
 +#include "chrome/browser/external_protocol/external_protocol_handler.h"
 +#include "chrome/browser/ui/browser.h"
++#include "chrome/browser/ui/view_ids.h"
 +#include "chrome/grit/generated_resources.h"
 +#include "components/vector_icons/vector_icons.h"
 +#include "ui/base/l10n/l10n_util.h"

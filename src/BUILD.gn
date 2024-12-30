@@ -78,9 +78,7 @@ if (is_official_build) {
 
 # Thorium target that simply pulls in the chrome target as a dependency
 group("thorium") {
-  if (is_win || is_linux || is_mac || is_chromeos || is_fuchsia) {
-    deps = [ "//chrome:chrome" ]
-  }
+  deps = [ "//chrome:chrome" ]
 
   if (is_win) {
     deps += [ "//chrome:chrome_dll" ]
@@ -95,6 +93,10 @@ group("thorium") {
 group("thorium_sandbox") {
   if (is_linux || is_chromeos) {
     deps = [ "//sandbox/linux:chrome_sandbox" ]
+  } else if (is_win) {
+    deps = [ "//sandbox/win:sandbox" ]
+  } else {
+    deps = [ "//sandbox:sandbox" ]
   }
 }
 
@@ -103,9 +105,10 @@ group("thorium_sandbox") {
 group("thorium_all") {
   testonly = true
 
+  deps = [ ":thorium" ]
+
   if (is_win || is_linux || is_mac) {
-    deps = [
-      "//chrome:chrome",
+    deps += [
       "//chrome/test/chromedriver:chromedriver",
       "//components/policy:policy_templates",
       "//content/shell:thorium_shell",
@@ -116,8 +119,10 @@ group("thorium_all") {
     }
   }
 
-  if (is_linux) {
-    deps += [ ":thorium_sandbox" ]
+  if (is_linux || is_chromeos) {
+    deps += [
+      "//chrome/test/chromedriver:chromedriver"
+    ]
   }
 
   if (is_win) {
@@ -125,6 +130,10 @@ group("thorium_all") {
       "//chrome:chrome_dll",
       "//components/policy:pack_policy_templates"
     ]
+  }
+
+  if ((is_posix && is_debug) || is_mac) {
+    deps += [ "//third_party/breakpad:minidump_stackwalk" ]
   }
 
   if (is_android) {

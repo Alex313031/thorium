@@ -41,15 +41,21 @@ config("mini_installer_compiler_flags") {
 
   if (!use_sse3 && use_sse2) {
     cflags += [ "/arch:SSE2", ]
-  } else if (!use_avx && use_sse3) {
+  } else if (use_sse3) {
     cflags += [ "/clang:-msse3", ]
-  } else if (!use_avx && use_sse41) {
+  } else if (use_sse41) {
     cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
   } else if (!use_avx && use_sse42) {
-    cflags += [ "/arch:SSE42", ]
-  } else if (use_avx) {
+    if (current_cpu == "x86") {
+      cflags += [ "/clang:-msse4.2", ]
+    } else {
+      cflags += [ "/arch:SSE42", ]
+    }
+  } else if (!use_avx2 && use_avx) {
     cflags += [ "/arch:AVX", ]
-  } else if (use_avx2 || use_avx512) {
+  } else if (!use_avx512 && use_avx2) {
+    cflags += [ "/arch:AVX2", ]
+  } else if (use_avx512) {
     cflags += [ "/arch:AVX2", ]
   } else {
     print("No SIMD")
@@ -425,14 +431,14 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
             root_out_dir)
     inputs = [
       "$root_out_dir/" + alternate_version_generator_rel_path,
-      "$root_out_dir/mini_installer.exe",
+      "$root_out_dir/thorium_mini_installer.exe",
     ]
     outputs = [ "$root_out_dir/$target_name.exe" ]
     args = [
       "--alternate_version_generator",
       alternate_version_generator_rel_path,
       "--mini_installer",
-      "mini_installer.exe",
+      "thorium_mini_installer.exe",
       "--out",
       "$target_name.exe",
       "--path_7za",
