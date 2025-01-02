@@ -157,7 +157,7 @@ void BrowserAppMenuButton::UpdateIcon() {
                                           ? kBrowserToolsChromeRefreshIcon
                                           : kBrowserToolsChromeRefreshThoriumIcon;
   // Fix Thorium hamburger menu size
-  static const int icon_size = 22;
+  static const int icon_size = features::IsChromeRefresh2023() ? 22 : 22;
   for (auto state : kButtonStates) {
     SkColor icon_color = GetForegroundColor(state);
     SetImageModel(state, ui::ImageModel::FromVectorIcon(icon, icon_color, icon_size));
