@@ -35,7 +35,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 index ceabbced0f67e..c298005d46bc3 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -13571,6 +13571,9 @@ This can include information about installed software, files, your browser, and
+@@ -13574,6 +13574,9 @@ This can include information about installed software, files, your browser, and
        <message name="IDS_DIRECTORY_LISTING_DATE_MODIFIED" desc="When viewing a local directory, this is the text for the column above the last modified dates.">
          Date Modified
        </message>
