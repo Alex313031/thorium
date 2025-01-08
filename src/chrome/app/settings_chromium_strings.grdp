@@ -146,6 +146,24 @@
   <message name="IDS_SETTINGS_SITE_SETTINGS_PDFS_BLOCKED" desc="Label for the disabled option of the pdfs content setting.">
     Open PDFs in Thorium
   </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_CAMERA_BLOCKED_BY_OS" desc="The description for the camera permission with a link to system settings.">
+      To use your camera, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_MICROPHONE_BLOCKED_BY_OS" desc="The description for the microphone permission with a link to system settings.">
+      To use your microphone, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SITE_DETAILS_LOCATION_BLOCKED_BY_OS" desc="The description for the location permission with a link to system settings.">
+      To use your location, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_CAMERA_BLOCKED_BY_OS" desc="Warning for camera content setting when the camera is disabled on OS level." translateable="false">
+    To use your camera on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_LOCATION_BLOCKED_BY_OS" desc="Warning for location content setting when the camera is disabled on OS level." translateable="false">
+    To use your location on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SITE_SETTINGS_MIC_BLOCKED_BY_OS" desc="Warning for microphone content setting when the camera is disabled on OS level." translateable="false">
+    To use your microphone on these sites, give Thorium access in <ph name="BEGIN_LINK">&lt;a href="#" id="openSystemSettingsLink" &gt;</ph>system settings<ph name="END_LINK">&lt;/a&gt;<ex>&lt;/a&gt;</ex></ph>
+  </message>
 
     <!-- Site Settings - Site Data Page-->
   <message name="IDS_SETTINGS_SITE_DATA_PAGE_CLEAR_ON_EXIT_RADIO_SUBLABEL" desc="A description of the benefit/cost of choosing 'Sites can save content on your device. In short, a site will remember your preferences, shopping cart content, etc. during this browser session. But once you close all open windows, and then visit the site again, it's as if you're coming to the site for the first time.">
@@ -301,13 +319,7 @@
     Sign in to Thorium when you sign in to other Google services
   </message>
   <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTIONS_DESC" desc="Description of the settings that controls whether a user gets signed in to Thorium when signing in to Google Services.">
-    When signing into Google services like Gmail or Youtube with <ph name="USER_EMAIL">$1<ex>foo@example.com</ex></ph>, you can sign in to Thorium with the same account
-  </message>
-  <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_SIGNIN" desc="One of three options for the setting is called 'Sign in to Thorium when you sign in to other Google services'. When the user chooses this option, the user will automatically sign in to Thorium after they sign in to a Google service (like Gmail) using Thorium. The verb tense should be descriptive, not imperative.">
-    Automatically sign me in to Thorium
-  </message>
-  <message name="IDS_SETTINGS_SIGNIN_CHROME_SIGNIN_OPTION_DO_NOT_SIGNIN" desc="One of three options for the setting is called 'Sign in to Thorium when you sign in to other Google services'. When the user chooses this option, the user will NOT automatically sign in to Thorium after they sign in to a Google service (like Gmail) using Thorium. The verb tense should be descriptive, not imperative.">
-    Don’t sign me in to Thorium
+    When signing into Google services like Gmail or Youtube with <ph name="USER_EMAIL">$1<ex>foo@example.com</ex></ph>, you can automatically sign in to Thorium with the same account
   </message>
 
   <!-- Sync Page -->
@@ -343,13 +355,13 @@
 
   <!-- Performance Page -->
   <message name="IDS_SETTINGS_PERFORMANCE_MEMORY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the memory saver mode setting">
-    When on, Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
+    Thorium frees up memory from inactive tabs. This gives active tabs and other apps more computer resources and keeps Thorium fast. Your inactive tabs automatically become active again when you go back to them.
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_BATTERY_SAVER_MODE_SETTING_DESCRIPTION" desc="Description for the energy saver mode setting">
-    When on, Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.
+    Thorium conserves battery power by limiting background activity and visual effects, such as smooth scrolling and video frame rates.
   </message>
   <message name="IDS_SETTINGS_PERFORMANCE_PRELOAD_TOGGLE_SUMMARY" desc="Summary for the preload pages setting">
-    When on, Thorium preloads pages which makes browsing and searching faster.
+    Thorium preloads pages which makes browsing and searching faster.
   </message>
 
   <!-- Languages Page -->
@@ -425,13 +437,31 @@
     </message>
   </if>
   <message name="IDS_SETTINGS_SAFETY_HUB_VERSION_NAVIGATION_ARIA_LABEL" desc="Safety Check settings page (chrome://settings/safetyCheck) gives users an overview over their safety status. The version card, which this text is a part of, informs the user whether their Thorium is up to date. This string is for the accesibility label for the card to call out where to navigation will happen (chrome://settings/help) if the card is clicked.">
-    Go to Thorium version settings
+    Go to About Thorium page
   </message>
   <message name="IDS_SETTINGS_SAFETY_HUB_VERSION_RELAUNCH_ARIA_LABEL" desc="Safety Check settings page (chrome://settings/safetyCheck) gives users an overview over their safety status. The version card, which this text is a part of, informs the user whether their Thorium is up to date. This string is for the accesibility label for the card to call out the click on card will result restarting the browser.">
     Relaunch Thorium
   </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_UNUSED_SITE_PERMISSIONS_REMOVED_ONE_PERMISSION_LABEL" desc="'Revoked Permissions' shows the revoked permissions of unused websites. This text describes which permission was removed from an unused site and is shown if there is exactly one permission.">
+    You haven't visited recently. Thorium removed <ph name="PERMISSION">$1<ex>location</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_UNUSED_SITE_PERMISSIONS_REMOVED_TWO_PERMISSIONS_LABEL" desc="'Revoked Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed from an unused site and is shown if there are exactly two permissions.">
+    You haven't visited recently. Thorium removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_UNUSED_SITE_PERMISSIONS_REMOVED_THREE_PERMISSIONS_LABEL" desc="'Revoked Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed from an unused site and is shown if there are exactly three permissions.">
+    You haven't visited recently. Thorium removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>, <ph name="PERMISSION_3">$3<ex>camera</ex></ph>
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_UNUSED_SITE_PERMISSIONS_REMOVED_FOUR_OR_MORE_PERMISSIONS_LABEL" desc="'Revoked Permissions' shows the revoked permissions of unused websites. This text describes which permissions were removed from an unused site and is shown if there are four or more permissions. The number indicates the count of permisions that are not shown explicitly. The number is always two or larger.">
+    You haven't visited recently. Thorium removed <ph name="PERMISSION_1">$1<ex>location</ex></ph>, <ph name="PERMISSION_2">$2<ex>notifications</ex></ph>, and <ph name="COUNT">$3<ex>2</ex></ph> more
+  </message>
+  <message name="IDS_SETTINGS_SAFETY_HUB_ABUSIVE_NOTIFICATION_PERMISSIONS_SETTING_SUBLABEL" desc="'Revoked Permissions' module shows the revoked permissions of websites. This text describes that abusive notification permissions were removed.">
+    Dangerous site. Thorium removed notifications.
+  </message>
 
-  <!-- HTTPS-First Mode -->
+  <!-- Secure connections -->
+  <message name="IDS_SETTINGS_SECURE_CONNECTIONS_SECTION_DESCRIPTION" desc="Description for the Secure Connections section in Security settings, explaining the baseline behavior of the browser even if the 'Always use secure connections' toggle is disabled.">
+    Thorium upgrades insecure connections to HTTPS automatically when possible
+  </message>
   <message name="IDS_SETTINGS_HTTPS_FIRST_MODE_SUBTITLE" desc="Subtitle for HTTPS-First Mode section in Security settings">
     Thorium will try to upgrade navigations to HTTPS
   </message>

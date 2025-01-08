@@ -2,7 +2,7 @@ diff --git a/chromium/config/Chrome/linux/x64/config.h b/chromium/config/Chrome/
 index a98fdf201a..421b1cff30 100644
 --- a/chromium/config/Chrome/linux/x64/config.h
 +++ b/chromium/config/Chrome/linux/x64/config.h
-@@ -668,7 +668,7 @@
+@@ -674,7 +674,7 @@
  #define CONFIG_MUXERS 0
  #define CONFIG_PROTOCOLS 0
  #define CONFIG_AANDCTTABLES 0
@@ -21,9 +21,9 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_DV_ERROR_MARKER_BSF 0
 -#define CONFIG_EAC3_CORE_BSF 0
 +#define CONFIG_EAC3_CORE_BSF 1
+ #define CONFIG_EVC_FRAME_MERGE_BSF 0
  #define CONFIG_EXTRACT_EXTRADATA_BSF 0
  #define CONFIG_FILTER_UNITS_BSF 0
- #define CONFIG_H264_METADATA_BSF 0
 @@ -338,8 +338,8 @@
  #define CONFIG_AAC_DECODER 1
  #define CONFIG_AAC_FIXED_DECODER 0
@@ -67,7 +67,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_ADX_PARSER 0
  #define CONFIG_AMR_PARSER 0
  #define CONFIG_AV1_PARSER 0
-@@ -1619,7 +1619,7 @@
+@@ -1621,7 +1621,7 @@
  #define CONFIG_AA_DEMUXER 0
  #define CONFIG_AAC_DEMUXER 1
  #define CONFIG_AAX_DEMUXER 0
@@ -76,7 +76,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_AC4_DEMUXER 0
  #define CONFIG_ACE_DEMUXER 0
  #define CONFIG_ACM_DEMUXER 0
-@@ -1703,7 +1703,7 @@
+@@ -1705,7 +1705,7 @@
  #define CONFIG_DXA_DEMUXER 0
  #define CONFIG_EA_DEMUXER 0
  #define CONFIG_EA_CDATA_DEMUXER 0
@@ -122,7 +122,7 @@ diff --git a/chromium/config/Chrome/mac/x64/config.h b/chromium/config/Chrome/ma
 index 92151a92d2..69194a7959 100644
 --- a/chromium/config/Chrome/mac/x64/config.h
 +++ b/chromium/config/Chrome/mac/x64/config.h
-@@ -668,7 +668,7 @@
+@@ -674,7 +674,7 @@
  #define CONFIG_MUXERS 0
  #define CONFIG_PROTOCOLS 0
  #define CONFIG_AANDCTTABLES 0
@@ -141,9 +141,9 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_DV_ERROR_MARKER_BSF 0
 -#define CONFIG_EAC3_CORE_BSF 0
 +#define CONFIG_EAC3_CORE_BSF 1
+ #define CONFIG_EVC_FRAME_MERGE_BSF 0
  #define CONFIG_EXTRACT_EXTRADATA_BSF 0
  #define CONFIG_FILTER_UNITS_BSF 0
- #define CONFIG_H264_METADATA_BSF 0
 @@ -338,8 +338,8 @@
  #define CONFIG_AAC_DECODER 1
  #define CONFIG_AAC_FIXED_DECODER 0
@@ -187,7 +187,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_ADX_PARSER 0
  #define CONFIG_AMR_PARSER 0
  #define CONFIG_AV1_PARSER 0
-@@ -1619,7 +1619,7 @@
+@@ -1621,7 +1621,7 @@
  #define CONFIG_AA_DEMUXER 0
  #define CONFIG_AAC_DEMUXER 1
  #define CONFIG_AAX_DEMUXER 0
@@ -196,7 +196,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_AC4_DEMUXER 0
  #define CONFIG_ACE_DEMUXER 0
  #define CONFIG_ACM_DEMUXER 0
-@@ -1703,7 +1703,7 @@
+@@ -1705,7 +1705,7 @@
  #define CONFIG_DXA_DEMUXER 0
  #define CONFIG_EA_DEMUXER 0
  #define CONFIG_EA_CDATA_DEMUXER 0
@@ -242,7 +242,7 @@ diff --git a/chromium/config/Chrome/win/x64/config.h b/chromium/config/Chrome/wi
 index 01114d6539..2bf150657a 100644
 --- a/chromium/config/Chrome/win/x64/config.h
 +++ b/chromium/config/Chrome/win/x64/config.h
-@@ -668,7 +668,7 @@
+@@ -674,7 +674,7 @@
  #define CONFIG_MUXERS 0
  #define CONFIG_PROTOCOLS 0
  #define CONFIG_AANDCTTABLES 0
@@ -261,9 +261,9 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_DV_ERROR_MARKER_BSF 0
 -#define CONFIG_EAC3_CORE_BSF 0
 +#define CONFIG_EAC3_CORE_BSF 1
+ #define CONFIG_EVC_FRAME_MERGE_BSF 0
  #define CONFIG_EXTRACT_EXTRADATA_BSF 0
  #define CONFIG_FILTER_UNITS_BSF 0
- #define CONFIG_H264_METADATA_BSF 0
 @@ -338,8 +338,8 @@
  #define CONFIG_AAC_DECODER 1
  #define CONFIG_AAC_FIXED_DECODER 0
@@ -307,7 +307,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_ADX_PARSER 0
  #define CONFIG_AMR_PARSER 0
  #define CONFIG_AV1_PARSER 0
-@@ -1619,7 +1619,7 @@
+@@ -1621,7 +1621,7 @@
  #define CONFIG_AA_DEMUXER 0
  #define CONFIG_AAC_DEMUXER 1
  #define CONFIG_AAX_DEMUXER 0
@@ -316,7 +316,7 @@ index 66c41749ef..cc3ded1a8b 100644
  #define CONFIG_AC4_DEMUXER 0
  #define CONFIG_ACE_DEMUXER 0
  #define CONFIG_ACM_DEMUXER 0
-@@ -1703,7 +1703,7 @@
+@@ -1705,7 +1705,7 @@
  #define CONFIG_DXA_DEMUXER 0
  #define CONFIG_EA_DEMUXER 0
  #define CONFIG_EA_CDATA_DEMUXER 0
@@ -362,7 +362,7 @@ diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
 index c279607332..012c89422f 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
-@@ -267,7 +267,19 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
+@@ -235,7 +235,19 @@ if ((is_apple && ffmpeg_branding == "Chrome") ||
      "libavcodec/hevc_sei.c",
      "libavcodec/hevcdec.c",
      "libavcodec/hevcdsp.c",
@@ -383,7 +383,7 @@ index c279607332..012c89422f 100644
    ]
  
    ffmpeg_c_sources += [
-@@ -326,7 +338,10 @@ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
+@@ -469,7 +481,10 @@ if ((is_apple && current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      "libavcodec/x86/hevc_mc.asm",
      "libavcodec/x86/hevc_sao.asm",
      "libavcodec/x86/hevc_sao_10bit.asm",

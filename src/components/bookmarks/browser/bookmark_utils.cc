@@ -152,8 +152,9 @@ std::string TruncateUrl(const std::string& url) {
 GURL GetUrlFromClipboard(bool notify_if_restricted) {
   std::u16string url_text;
 #if !BUILDFLAG(IS_IOS)
-  ui::DataTransferEndpoint data_dst = ui::DataTransferEndpoint(
-      ui::EndpointType::kDefault, notify_if_restricted);
+  ui::DataTransferEndpoint data_dst =
+      ui::DataTransferEndpoint(ui::EndpointType::kDefault,
+                               {.notify_if_restricted = notify_if_restricted});
   ui::Clipboard::GetForCurrentThread()->ReadText(
       ui::ClipboardBuffer::kCopyPaste, &data_dst, &url_text);
 #endif
@@ -244,7 +245,7 @@ void CloneBookmarkNode(BookmarkModel* model,
                        size_t index_to_add_at,
                        bool reset_node_times) {
   if (!parent->is_folder() || !model) {
-    NOTREACHED();
+    NOTREACHED_IN_MIGRATION();
     return;
   }
   for (size_t i = 0; i < elements.size(); ++i) {
@@ -310,7 +311,7 @@ void MakeTitleUnique(const BookmarkModel* model,
       return;
     }
   }
-  NOTREACHED();
+  NOTREACHED_IN_MIGRATION();
 }
 
 void PasteFromClipboard(BookmarkModel* model,

@@ -5,6 +5,28 @@
 #ifndef CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 #define CHROME_BROWSER_THORIUM_FLAG_CHOICES_H_
 
+const FeatureEntry::Choice kCustomTabWidthChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"60",
+     "custom-tab-width",
+     "60"},
+    {"120",
+     "custom-tab-width",
+     "120"},
+    {"180",
+     "custom-tab-width",
+     "180"},
+    {"240",
+     "custom-tab-width",
+     "240"},
+    {"300",
+     "custom-tab-width",
+     "300"},
+    {"400",
+     "custom-tab-width",
+     "400"}
+};
+
 const FeatureEntry::Choice kScrollEventChangesTab[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"Always",
@@ -100,6 +122,7 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
      "force-gpu-mem-available-mb", "1024"},
 };
 
+#if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kGtkVersionChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"3",
@@ -107,6 +130,7 @@ const FeatureEntry::Choice kGtkVersionChoices[] = {
     {"4",
      "gtk-version", "4"},
 };
+#endif // BUILDFLAG(IS_LINUX)
 
 const FeatureEntry::Choice kTabHoverCardChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},

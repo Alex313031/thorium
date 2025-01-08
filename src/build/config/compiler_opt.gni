@@ -1,0 +1,169 @@
+# Copyright 2024 Alex313031
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+## For information about compiler flags and optimizations
+## that this uses, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+
+import("//build/config/compiler/compiler.gni")
+
+declare_args() {
+  ## General Optimization settings
+  ## For LLVM or OS specific stuff
+
+  # Turn this on to have compiler optimization turned up to the max.
+  # Such as using -O3 instead of -O2 for CFLAGS.
+  is_full_optimization_build = is_official_build
+
+  # Whether to use Raspberry Pi specific optimizations.
+  is_raspi = false
+
+  # Whether to enable LLVM's Polly optimizations.
+  # See https://polly.llvm.org/
+  use_polly = false
+
+  # Whether to enable LLVM's BOLT optimizations.
+  # See https://github.com/llvm/llvm-project/blob/main/bolt/README.md
+  use_bolt = false
+}
+
+declare_args() {
+  ## SIMD compiler optimization flags
+  ## Propagated to //build/config/* to allow controlling
+  ## x86_64 SIMD optimization levels. This was done to refactor
+  ## multiple BUILD.gn file into one copy of each.
+  ## Flags are not cumulative, so for example, for an AVX build you
+  ## would want to turn on use_sse3, use_sse41, use_sse42 too. For AVX2
+  ## you would add use_avx, etc.
+
+  # SSE2
+  # Normal x64 compiler baseline, present since Willamette (Original
+  # 2001 Pentium 4) and AMD SledgeHammer (1st Gen. Opteron) and
+  # the Athlon 64. Big step from MMX, x87, and SSE (i.e. SSE1)
+  # Baseline requirement to run Windows since update KB4103718
+  # for Windows 7 SP1/Server 2008 R2 SP1/Home Server 2011.
+  use_sse2 = current_cpu == "x86"
+
+  # SSE3
+  # Normal Chromium baseline, present since Prescott (2004 Pentium 4)
+  # and AMD SanDiego (2nd Gen. Opteron).
+  # Only applicable to 32 Bit Windows and Linux builds, where
+  # setting it to false allows making an SSE2 build. (`-mmmx -msse2`)
+  # `-msse3`
+  use_sse3 = current_cpu == "x86" || current_cpu == "x64"
+
+  # SSE4.1
+  # Normal PrimoBrowser baseline
+  # Normal ThoriumOS baseline because Core 2 Duo is the lowest
+  # hardware that other CrOS subsystems like drivers support.
+  # Present since Penryn (2007 45nm Core 2 Duo die shrink), and
+  # AMD Jaguar (2013 Athlon CPUs) and Bulldozer (2012 AMD FX).
+  # Includes SSSE3 since all SSSE3 `-mssse3 -msse4.1`
+  use_sse41 = false
+
+  # SSE4.2 (x86-64-v2)
+  # Present since Nehalem (2009 1st Generation Core i series), and
+  # the same AMD CPUs as above.
+  # Normal LaCrOS baseline since Sept 2023.
+  # See https://bugs.chromium.org/p/chromium/issues/detail?id=1475858
+  # Baseline for Windows since Windows 10 24H2.
+  # `-msse4.2`
+  use_sse42 = false
+
+  # AVX
+  # Normal Thorium baseline
+  # Present since Sandy Bridge (2011 2nd Gen. Core i series)
+  # and AMD Bulldozer (2012 AMD FX).
+  # Requires Windows 7 SP1 / Linux 2.6.30 or later to use.
+  # Uses new 128 bit registers and CPU blocks; a new era of SIMD.
+  # Includes AES and PCLMUL `-maes -mpclmul -mavx`
+  use_avx = false
+
+  # AVX2 (x86-64-v3)
+  # Second generation AVX, expanded to 256-bit registers.
+  # Present since Haswell (4th Gen. Core i series), and
+  # AMD Excavator (4th Gen. refinement of Bulldozer cores) and 
+  # Zen (1st Gen. Ryzen).
+  # Includes FMA3 `-mfma -mavx2` (`-ffp-contract` see below at FMA section)
+  use_avx2 = false
+
+  # AVX-512
+  # Third generation AVX, expanded to 512-bit registers.
+  # Present since Skylake (Specifically Skylake-X "Extreme Edition"
+  # processors), and AMD Zen 4 (4th Gen. Ryzen 7000).
+  # Only uses AVX-512 instructions common to all processors.
+  # `-mavx512f -mavx512cd -mavx512vl -mavx512bw -mavx512dq
+  #  -mf16c -mlzcnt -mbmi2`
+  use_avx512 = false
+}
+
+declare_args() {
+  # FMA
+  # "Fused Multiply Add" operations
+  # Present since Haswell and AMD Piledriver (2nd Gen. refinement
+  # of Bulldozer).
+  # `-mfma -ffp-contract=fast` (use -mfma3 -mfma4 for Piledriver)
+  use_fma = use_avx2 || use_avx512
+}
+
+if (is_debug) {
+  assert(!is_full_optimization_build, "is_full_optimization_build only works with non-debug builds")
+  assert(!use_polly, "use_polly only works with non-debug builds")
+  assert(!use_bolt, "use_bolt only works with non-debug builds")
+}
+
+# Make sure we are a x86 arch
+if (use_sse2 || use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use_avx512) {
+  assert(current_cpu != "arm" && current_cpu != "arm64", "x86 SIMD intrinsic optimizations cannot be used with ARM targets.")
+}
+
+# FMA doesn't work on 32 bit architectures
+if (use_fma) {
+  assert(current_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
+}
+
+if ((use_avx || use_avx2 || use_avx512 || use_fma) && is_debug || symbol_level == "2") {
+  print("WARNING: Using AVX with debug builds is known to cause undefined symbol: FallbackCrcMemcpyEngine linker errors.")
+}
+
+# 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
+# from anything higher usually.
+if (use_avx || use_avx2 || use_avx512 || use_fma) {
+  assert(current_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. current_cpu is x86")
+  assert(target_cpu != "x86", "AVX, AVX2, AVX-512, or FMA require x64. Set target_cpu to x64")
+}
+
+# AVX2 should always have FMA, however, there are times one might want
+# to set use_fma = true even with AVX2 off, such as when making a build for
+# an AMD Piledriver or Steamroller CPU.
+if (use_avx2 && !use_fma) {
+  print("WARNING: Use_avx2 is true while use_fma is false. This will create a build compiled with AVX2, but without FMA or floating point contraction.")
+  print("This should only be set intentionally for testing.")
+  print("")
+}
+
+# Same for AVX-512
+if (use_avx512 && !use_fma) {
+  print("WARNING: Use_avx512 is true while use_fma is false. This will create a build compiled with AVX-512, but without FMA or floating point contraction.")
+  print("This should only be set intentionally for testing.")
+  print("")
+}
+
+# Not a normal configuration, that usually means a mistake was made configuring
+# your args. However, there are a few CPUs out there for which this makes sense.
+# Alex313031 TODO: Maybe add -mfma3 -mfma4 for this config?
+if (!use_avx2 && use_fma) {
+  print("WARNING: Use_avx2 is false while use_fma true. This will create an AVX build with FMA.")
+  print("This should only be set intentionally for testing, or for specific CPUs that have AVX and FMA, but not AVX2, such as AMD Piledriver.")
+  print("")
+}
+
+if (use_fma && !use_avx) {
+  print("WARNING: use_fma is true while use_avx is false. FMA requires AVX.")
+  print("")
+}
+
+if (!use_sse3 && current_cpu == "x64") {
+  print("use_sse3 is disabled. This should only be done for 32 Bit builds.")
+  print("")
+}

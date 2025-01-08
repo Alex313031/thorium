@@ -2,16 +2,16 @@ diff --git a/android_webview/browser/aw_browser_context.cc b/android_webview/bro
 index 6167ef5ed42af..6af9e477c4c8a 100644
 --- a/android_webview/browser/aw_browser_context.cc
 +++ b/android_webview/browser/aw_browser_context.cc
-@@ -571,6 +571,9 @@ void AwBrowserContext::ConfigureNetworkContextParams(
+@@ -574,6 +574,9 @@ void AwBrowserContext::ConfigureNetworkContextParams(
    // (http://crbug.com/921750).
    context_params->enforce_chrome_ct_policy = false;
  
 +  // WebView does not support ftp yet.
 +  context_params->enable_ftp_url_support = false;
 +
-   context_params->enable_brotli = base::FeatureList::IsEnabled(
-       android_webview::features::kWebViewBrotliSupport);
+   context_params->enable_brotli = true;
    context_params->enable_zstd =
+       base::FeatureList::IsEnabled(net::features::kZstdContentEncoding);
 diff --git a/chrome/app/app-Info.plist b/chrome/app/app-Info.plist
 index 5654e5c9d5858..08d00c2005d7b 100644
 --- a/chrome/app/app-Info.plist
@@ -35,7 +35,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 index ceabbced0f67e..c298005d46bc3 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -13162,6 +13162,9 @@ This can include information about installed software, files, your browser, and
+@@ -13574,6 +13574,9 @@ This can include information about installed software, files, your browser, and
        <message name="IDS_DIRECTORY_LISTING_DATE_MODIFIED" desc="When viewing a local directory, this is the text for the column above the last modified dates.">
          Date Modified
        </message>
@@ -49,7 +49,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 index c9e74052c7afb..d271ccc0dca71 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8162,6 +8162,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8542,6 +8542,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           heavy_ad_intervention::features::kHeavyAdPrivacyMitigations)},
  
@@ -66,11 +66,11 @@ diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descripti
 index e2a95fa3aadaa..5b608e9272838 100644
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
-@@ -325,6 +325,13 @@ const char kEnableDrDcDescription[] =
+@@ -355,6 +355,13 @@ const char kEnableDrDcDescription[] =
      "(raster, webgl, video) "
      " continues using the gpu main thread.";
  
-+const char kEnableFtpName[] = "Enable support for FTP URLs";
++const char kEnableFtpName[] = "Enable support for FTP URLs. Enabled by default. Thorium Flag.";
 +const char kEnableFtpDescription[] =
 +    "When enabled, the browser will handle navigations to ftp:// URLs by "
 +    "either showing a directory listing or downloading the resource over FTP. "
@@ -84,7 +84,7 @@ diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptio
 index 4ef2b219f1d74..69f9c4f7d9e1a 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -240,6 +240,9 @@ extern const char
+@@ -255,6 +255,9 @@ extern const char
  extern const char
      kEnableExtensionsPermissionsForSupervisedUsersOnDesktopDescription[];
  
@@ -98,7 +98,7 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
 index e50641649a959..0f0ef6bd2b0fd 100644
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
-@@ -1120,6 +1120,15 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
+@@ -1190,6 +1190,15 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
      network_context_params->hsts_policy_bypass_list.push_back(*string_value);
    }
  
@@ -118,7 +118,7 @@ diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/brows
 index 22a62ad698fdb..ec30208a38bf0 100644
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
-@@ -1045,6 +1045,12 @@ SystemNetworkContextManager::CreateNetworkContextParams() {
+@@ -1042,6 +1042,12 @@ SystemNetworkContextManager::CreateNetworkContextParams() {
  
    network_context_params->http_cache_enabled = false;
  
@@ -132,30 +132,27 @@ index 22a62ad698fdb..ec30208a38bf0 100644
  
    return network_context_params;
 diff --git a/chrome/browser/profiles/profile_io_data.cc b/chrome/browser/profiles/profile_io_data.cc
-index 214f806bac055..d530fde475ac9 100644
+index 39f96f45bca3a..123e400761e0f 100644
 --- a/chrome/browser/profiles/profile_io_data.cc
 +++ b/chrome/browser/profiles/profile_io_data.cc
-@@ -14,6 +14,7 @@
+@@ -15,6 +15,7 @@
  #include "components/dom_distiller/core/url_constants.h"
  #include "extensions/buildflags/buildflags.h"
  #include "net/net_buildflags.h"
 +#include "services/network/public/cpp/features.h"
  #include "url/gurl.h"
  
- #if BUILDFLAG(ENABLE_EXTENSIONS)
-@@ -57,6 +58,12 @@ bool ProfileIOData::IsHandledProtocol(const std::string& scheme) {
-     if (scheme == supported_protocol)
-       return true;
-   }
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+@@ -54,6 +55,9 @@ bool ProfileIOData::IsHandledProtocol(const std::string& scheme) {
+ #if !BUILDFLAG(IS_ANDROID)
+       chrome::kIsolatedAppScheme,
+ #endif  // !BUILDFLAG(IS_ANDROID)
 +#if !BUILDFLAG(DISABLE_FTP_SUPPORT)
-+  if (scheme == url::kFtpScheme &&
-+      base::FeatureList::IsEnabled(network::features::kFtpProtocol)) {
-+    return true;
-+  }
++      url::kFtpScheme,
 +#endif  // !BUILDFLAG(DISABLE_FTP_SUPPORT)
-   return false;
- }
+   });
  
+   return kProtocolList.contains(scheme);
 diff --git a/chrome/browser/ui/login/login_tab_helper.cc b/chrome/browser/ui/login/login_tab_helper.cc
 index f6702ac512f8d..a54956a7ec00a 100644
 --- a/chrome/browser/ui/login/login_tab_helper.cc
@@ -197,6 +194,29 @@ index 88d43505881b5..92a452fc5f9e9 100644
      value.Set("textdirection", base::i18n::IsRTL() ? "rtl" : "ltr");
      std::string str = webui::GetI18nTemplateHtml(
          ui::ResourceBundle::GetSharedInstance().LoadDataResourceString(
+diff --git a/chrome/installer/util/shell_util.cc b/chrome/installer/util/shell_util.cc
+index c087d1c02bca4..aa5d721c5ea93 100644
+--- a/chrome/installer/util/shell_util.cc
++++ b/chrome/installer/util/shell_util.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ //
+@@ -1545,10 +1545,10 @@ const wchar_t* ShellUtil::kDefaultFileAssociations[] = {
+ const wchar_t* ShellUtil::kPotentialFileAssociations[] = {
+     L".htm", L".html", L".mhtml", L".pdf",  L".shtml",
+     L".svg", L".xht",  L".xhtml", L".webp", nullptr};
+-const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"http", L"https",
++const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"ftp", L"http", L"https",
+                                                             nullptr};
+ const wchar_t* ShellUtil::kPotentialProtocolAssociations[] = {
+-    L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
++    L"ftp", L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
+     L"sms",  L"smsto", L"snews", L"tel",    L"urn", L"webcal", nullptr};
+ const wchar_t* ShellUtil::kRegUrlProtocol = L"URL Protocol";
+ const wchar_t* ShellUtil::kRegApplication = L"\\Application";
 diff --git a/chrome/test/data/ftp/dir1/test.html b/chrome/test/data/ftp/dir1/test.html
 new file mode 100644
 index 0000000000000..ce0c4c91818cd
@@ -208,22 +228,6 @@ index 0000000000000..ce0c4c91818cd
 +<title>PASS</title>
 +</head>
 +</html>
-diff --git a/components/content_settings/renderer/content_settings_agent_impl.cc b/components/content_settings/renderer/content_settings_agent_impl.cc
-index 0ff900e700ba8..50ddf23b7610f 100644
---- a/components/content_settings/renderer/content_settings_agent_impl.cc
-+++ b/components/content_settings/renderer/content_settings_agent_impl.cc
-@@ -357,6 +357,11 @@ bool ContentSettingsAgentImpl::IsAllowlistedForContentSettings() const {
-   if (should_allowlist_)
-     return true;
- 
-+  // Allowlist ftp directory listings, as they require JavaScript to function
-+  // properly.
-+  if (render_frame()->IsFTPDirectoryListing())
-+    return true;
-+
-   const WebDocument& document = render_frame()->GetWebFrame()->GetDocument();
-   WebSecurityOrigin origin = document.GetSecurityOrigin();
-   WebURL document_url = document.Url();
 diff --git a/components/safe_browsing/content/browser/safe_browsing_network_context.cc b/components/safe_browsing/content/browser/safe_browsing_network_context.cc
 index 37852c47b90d4..8be654c440fc9 100644
 --- a/components/safe_browsing/content/browser/safe_browsing_network_context.cc
@@ -240,22 +244,22 @@ index 37852c47b90d4..8be654c440fc9 100644
  
      return network_context_params;
 diff --git a/content/browser/browser_url_handler_impl.cc b/content/browser/browser_url_handler_impl.cc
-index 6e96af056f62c..1e3dbc90f441a 100644
+index 3158ee1460b5b..8f62b65b2ee3e 100644
 --- a/content/browser/browser_url_handler_impl.cc
 +++ b/content/browser/browser_url_handler_impl.cc
-@@ -30,6 +30,7 @@ static bool HandleViewSource(GURL* url, BrowserContext* browser_context) {
-     static const char* const default_allowed_sub_schemes[] = {
-         url::kHttpScheme,
-         url::kHttpsScheme,
-+        url::kFtpScheme,
-         kChromeUIScheme,
-         url::kFileScheme,
-         url::kFileSystemScheme
+@@ -34,6 +34,7 @@ static bool HandleViewSource(GURL* url, BrowserContext* browser_context) {
+   std::vector<std::string> all_allowed_sub_schemes({
+       url::kHttpScheme,
+       url::kHttpsScheme,
++      url::kFtpScheme,
+       kChromeUIScheme,
+       url::kFileScheme,
+       url::kFileSystemScheme,
 diff --git a/content/public/common/content_switches.cc b/content/public/common/content_switches.cc
 index 30f63bfc1750f..a38a1839d7207 100644
 --- a/content/public/common/content_switches.cc
 +++ b/content/public/common/content_switches.cc
-@@ -331,6 +331,9 @@ const char kEnableFakeNoAllocDirectCallForTesting[] =
+@@ -329,6 +329,9 @@ const char kEnableFakeNoAllocDirectCallForTesting[] =
  // status:"experimental", which are enabled when running web tests.
  const char kEnableBlinkTestFeatures[] = "enable-blink-test-features";
  
@@ -269,7 +273,7 @@ diff --git a/content/public/common/content_switches.h b/content/public/common/co
 index b6f3b21a2b1ff..d01af10dcec28 100644
 --- a/content/public/common/content_switches.h
 +++ b/content/public/common/content_switches.h
-@@ -107,6 +107,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
+@@ -106,6 +106,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
  CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
  CONTENT_EXPORT extern const char kEnableExperimentalWebPlatformFeatures[];
  CONTENT_EXPORT extern const char kEnableBlinkTestFeatures[];
@@ -295,7 +299,7 @@ diff --git a/content/renderer/render_frame_impl.cc b/content/renderer/render_fra
 index f362ee7c23241..d34f9fbe475b2 100644
 --- a/content/renderer/render_frame_impl.cc
 +++ b/content/renderer/render_frame_impl.cc
-@@ -2478,6 +2478,10 @@ RenderFrameImpl::GetRemoteAssociatedInterfaces() {
+@@ -2500,6 +2500,10 @@ RenderFrameImpl::GetRemoteAssociatedInterfaces() {
    return remote_associated_interfaces_.get();
  }
  
@@ -310,7 +314,7 @@ diff --git a/content/renderer/render_frame_impl.h b/content/renderer/render_fram
 index b32fbb5887cb2..626bbdd3b1e5d 100644
 --- a/content/renderer/render_frame_impl.h
 +++ b/content/renderer/render_frame_impl.h
-@@ -402,6 +402,7 @@ class CONTENT_EXPORT RenderFrameImpl
+@@ -400,6 +400,7 @@ class CONTENT_EXPORT RenderFrameImpl
        mojo::ScopedMessagePipeHandle interface_pipe) override;
    blink::AssociatedInterfaceRegistry* GetAssociatedInterfaceRegistry() override;
    blink::AssociatedInterfaceProvider* GetRemoteAssociatedInterfaces() override;
@@ -318,10 +322,10 @@ index b32fbb5887cb2..626bbdd3b1e5d 100644
    void SetSelectedText(const std::u16string& selection_text,
                         size_t offset,
                         const gfx::Range& range) override;
-diff --git a/ios/chrome/browser/browser_state/model/off_the_record_chrome_browser_state_io_data.mm b/ios/chrome/browser/browser_state/model/off_the_record_chrome_browser_state_io_data.mm
-index b20d661a62641..d2cfd8b508c60 100644
---- a/ios/chrome/browser/browser_state/model/off_the_record_chrome_browser_state_io_data.mm
-+++ b/ios/chrome/browser/browser_state/model/off_the_record_chrome_browser_state_io_data.mm
+diff --git a/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm b/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
+index 00516bebc6fa3..62b2eceb8e48a 100644
+--- a/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
++++ b/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
 @@ -26,6 +26,7 @@
  #import "ios/web/public/thread/web_thread.h"
  #import "net/cookies/cookie_store.h"
@@ -330,11 +334,10 @@ index b20d661a62641..d2cfd8b508c60 100644
  #import "net/http/http_cache.h"
  #import "net/http/http_network_session.h"
  #import "net/http/http_server_properties.h"
-diff --git a/net/BUILD.gn b/net/BUILD.gn
-index f35c35e21f2b6..b8e8fd53bdf01 100644
+index e229ec4c97bb6..dd33fcf48c550 100644
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
-@@ -94,6 +94,7 @@ buildflag_header("buildflags") {
+@@ -95,6 +95,7 @@ buildflag_header("buildflags") {
    flags = [
      "POSIX_BYPASS_MMAP=$posix_bypass_mmap",
      "DISABLE_FILE_SUPPORT=$disable_file_support",
@@ -342,7 +345,7 @@ index f35c35e21f2b6..b8e8fd53bdf01 100644
      "ENABLE_MDNS=$enable_mdns",
      "ENABLE_REPORTING=$enable_reporting",
      "ENABLE_WEBSOCKETS=$enable_websockets",
-@@ -1506,6 +1507,41 @@ component("net") {
+@@ -1587,6 +1588,41 @@ component("net") {
      ]
    }
  
@@ -383,8 +386,8 @@ index f35c35e21f2b6..b8e8fd53bdf01 100644
 +
    if (enable_websockets) {
      sources += [
-       "websockets/websocket_basic_handshake_stream.cc",
-@@ -3114,6 +3150,21 @@ test("net_unittests") {
+       "server/http_connection.cc",
+@@ -3203,6 +3239,21 @@ target(_test_target_type, "net_unittests") {
      ]
    }
  
@@ -406,7 +409,7 @@ index f35c35e21f2b6..b8e8fd53bdf01 100644
    if (enable_built_in_dns) {
      sources += [ "url_request/http_with_dns_over_https_unittest.cc" ]
    }
-@@ -3604,6 +3655,46 @@ fuzzer_test("net_spdy_headers_to_http_response_headers_fuzzer") {
+@@ -3720,6 +3771,46 @@ fuzzer_test("net_spdy_headers_to_http_response_headers_fuzzer") {
    libfuzzer_options = [ "max_len = 512" ]
  }
  
@@ -457,7 +460,7 @@ diff --git a/net/DEPS b/net/DEPS
 index 82956220ad000..d016bd9e7d052 100644
 --- a/net/DEPS
 +++ b/net/DEPS
-@@ -44,6 +44,14 @@ specific_include_rules = {
+@@ -45,6 +45,14 @@ specific_include_rules = {
      "+base/i18n",
    ],
  
@@ -541,7 +544,7 @@ index dff37088d6c11..31fa5e6ad19a2 100644
  //   700-799 Certificate manager errors
  //   800-899 DNS resolver errors
  
-@@ -915,14 +915,36 @@ NET_ERROR(TRUST_TOKEN_OPERATION_FAILED, -506)
+@@ -913,14 +913,36 @@ NET_ERROR(TRUST_TOKEN_OPERATION_FAILED, -506)
  // to a local provider (for "platform-provided" issuance).
  NET_ERROR(TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST, -507)
  
@@ -4907,7 +4910,7 @@ index 0000000000000..eb4acff145d95
 --- /dev/null
 +++ b/net/data/fuzzer_dictionaries/net_url_request_ftp_fuzzer.dict
 @@ -0,0 +1,59 @@
-+# Copyright 2016 The Chromium Authors. All rights reserved.
++# Copyright 2016 The Chromium Authors
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
 +
@@ -4970,7 +4973,7 @@ diff --git a/net/docs/proxy.md b/net/docs/proxy.md
 index a0ea9f52d1779..589b499e2d4c4 100644
 --- a/net/docs/proxy.md
 +++ b/net/docs/proxy.md
-@@ -110,6 +110,7 @@ about an HTTP proxy.
+@@ -109,6 +109,7 @@ about an HTTP proxy.
  
  When using an HTTP proxy in Chrome, name resolution is always deferred to the
  proxy. HTTP proxies can proxy `http://`, `https://`, `ws://` and `wss://` URLs.
@@ -5023,7 +5026,7 @@ index 0000000000000..359d5460db859
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.cc
 @@ -0,0 +1,62 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5091,7 +5094,7 @@ index 0000000000000..e7f3057e153bf
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.h
 @@ -0,0 +1,63 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5160,7 +5163,7 @@ index 0000000000000..9c5dea5303895
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache_unittest.cc
 @@ -0,0 +1,161 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5326,8 +5329,8 @@ new file mode 100644
 index 0000000000000..9bd4059d5fbe4
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.cc
-@@ -0,0 +1,160 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,159 @@
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5336,7 +5339,6 @@ index 0000000000000..9bd4059d5fbe4
 +#include <utility>
 +
 +#include "base/check_op.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_util.h"
 +#include "base/values.h"
 +#include "net/base/net_errors.h"
@@ -5493,7 +5495,7 @@ index 0000000000000..149097185dafc
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.h
 @@ -0,0 +1,101 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5600,7 +5602,7 @@ index 0000000000000..a133aa441d7fc
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer_unittest.cc
 @@ -0,0 +1,184 @@
-+// Copyright (c) 2009 The Chromium Authors. All rights reserved.
++// Copyright (c) 2009 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5790,7 +5792,7 @@ index 0000000000000..f3a9ee3c6dfbb
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_fuzzer.cc
 @@ -0,0 +1,21 @@
-+// Copyright 2015 The Chromium Authors. All rights reserved.
++// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5817,7 +5819,7 @@ index 0000000000000..459379e3eef89
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_fuzzer.cc
 @@ -0,0 +1,20 @@
-+// Copyright 2015 The Chromium Authors. All rights reserved.
++// Copyright 2015 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -5839,13 +5841,18 @@ index 0000000000000..459379e3eef89
 +}
 diff --git a/net/ftp/ftp_directory_listing_parser.cc b/net/ftp/ftp_directory_listing_parser.cc
 new file mode 100644
-index 0000000000000..0e51c8dd4e99c
+index 0000000000000..57013a78c6e72
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.cc
-@@ -0,0 +1,126 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,131 @@
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_directory_listing_parser.h"
 +
@@ -5975,7 +5982,7 @@ index 0000000000000..f813bb04e5209
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.h
 @@ -0,0 +1,46 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6027,7 +6034,7 @@ index 0000000000000..5388146beff3c
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.cc
 @@ -0,0 +1,227 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6260,7 +6267,7 @@ index 0000000000000..42ec4fc6a3a27
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.h
 @@ -0,0 +1,29 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6295,7 +6302,7 @@ index 0000000000000..d64a564b413e0
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls_unittest.cc
 @@ -0,0 +1,222 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6523,7 +6530,7 @@ index 0000000000000..de08f99478562
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.cc
 @@ -0,0 +1,186 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6715,7 +6722,7 @@ index 0000000000000..9dfc44acfd999
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.h
 @@ -0,0 +1,81 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -6798,13 +6805,18 @@ index 0000000000000..9dfc44acfd999
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_UNITTEST_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_vms.cc b/net/ftp/ftp_directory_listing_parser_vms.cc
 new file mode 100644
-index 0000000000000..86e34e661ae0a
+index 0000000000000..7d0ca2a045f75
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.cc
-@@ -0,0 +1,308 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,313 @@
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_directory_listing_parser_vms.h"
 +
@@ -6887,7 +6899,7 @@ index 0000000000000..86e34e661ae0a
 +  if (base::StringToInt64(input, &num_blocks))
 +    return ApproximateFilesizeFromBlockCount(num_blocks, size);
 +
-+  std::vector<base::StringPiece16> parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> parts = base::SplitStringPiece(
 +      input, u"/", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (parts.size() != 2)
 +    return false;
@@ -6930,7 +6942,7 @@ index 0000000000000..86e34e661ae0a
 +  // We expect four parts of the file protection listing: for System, Owner,
 +  // Group, and World.
 +  std::vector<std::u16string> parts = base::SplitString(
-+      base::StringPiece16(input).substr(1, input.length() - 2), u",",
++      std::u16string_view(input).substr(1, input.length() - 2), u",",
 +      base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (parts.size() != 4)
 +    return false;
@@ -6971,7 +6983,7 @@ index 0000000000000..86e34e661ae0a
 +  base::Time::Exploded time_exploded = { 0 };
 +
 +  // Date should be in format DD-MMM-YYYY.
-+  std::vector<base::StringPiece16> date_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> date_parts = base::SplitStringPiece(
 +      columns[2], u"-", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (date_parts.size() != 3)
 +    return false;
@@ -6992,7 +7004,7 @@ index 0000000000000..86e34e661ae0a
 +    time_column = time_column.substr(0, 5);
 +  if (time_column.length() != 5)
 +    return false;
-+  std::vector<base::StringPiece16> time_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> time_parts = base::SplitStringPiece(
 +      time_column, u":", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (time_parts.size() != 2)
 +    return false;
@@ -7116,7 +7128,7 @@ index 0000000000000..e59a679303e23
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.h
 @@ -0,0 +1,24 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7146,7 +7158,7 @@ index 0000000000000..88deedd5e2d28
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms_unittest.cc
 @@ -0,0 +1,197 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7349,7 +7361,7 @@ index 0000000000000..0d7906f5d68db
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.cc
 @@ -0,0 +1,74 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7429,7 +7441,7 @@ index 0000000000000..39aefe2929328
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.h
 @@ -0,0 +1,24 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7459,7 +7471,7 @@ index 0000000000000..08b01b88f6017
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows_unittest.cc
 @@ -0,0 +1,128 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7593,7 +7605,7 @@ index 0000000000000..8a467f8896487
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.cc
 @@ -0,0 +1,34 @@
-+// Copyright (c) 2008 The Chromium Authors. All rights reserved.
++// Copyright (c) 2008 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7633,7 +7645,7 @@ index 0000000000000..59c4d2b04bdf3
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.h
 @@ -0,0 +1,38 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7677,7 +7689,7 @@ index 0000000000000..9de9796b08bf3
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.cc
 @@ -0,0 +1,14 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -7696,14 +7708,15 @@ new file mode 100644
 index 0000000000000..0ef5b781eec4e
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.h
-@@ -0,0 +1,28 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,29 @@
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
 +#ifndef NET_FTP_FTP_NETWORK_SESSION_H_
 +#define NET_FTP_FTP_NETWORK_SESSION_H_
 +
++#include "base/memory/raw_ptr.h"
 +#include "net/base/net_export.h"
 +
 +namespace net {
@@ -7719,7 +7732,7 @@ index 0000000000000..0ef5b781eec4e
 +  HostResolver* host_resolver() { return host_resolver_; }
 +
 + private:
-+  HostResolver* const host_resolver_;
++  raw_ptr<HostResolver> const host_resolver_;
 +};
 +
 +}  // namespace net
@@ -7727,13 +7740,18 @@ index 0000000000000..0ef5b781eec4e
 +#endif  // NET_FTP_FTP_NETWORK_SESSION_H_
 diff --git a/net/ftp/ftp_network_transaction.cc b/net/ftp/ftp_network_transaction.cc
 new file mode 100644
-index 0000000000000..8c8b965924cca
+index 0000000000000..85053f403f224
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.cc
 @@ -0,0 +1,1298 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_network_transaction.h"
 +
@@ -7831,7 +7849,6 @@ index 0000000000000..8c8b965924cca
 +
 +  // We should not be called on invalid error codes.
 +  NOTREACHED() << response_code;
-+  return ERROR_CLASS_PERMANENT_ERROR;
 +}
 +
 +// Returns network error code for received FTP |response_code|.
@@ -7864,11 +7881,11 @@ index 0000000000000..8c8b965924cca
 +  if (response.lines.size() != 1)
 +    return false;
 +
-+  base::StringPiece epsv_line(response.lines[0]);
++  std::string_view epsv_line(response.lines[0]);
 +  size_t start = epsv_line.find('(');
 +  // If the line doesn't have a '(' or doesn't have enough characters after the
 +  // first '(', fail.
-+  if (start == base::StringPiece::npos || epsv_line.length() - start < 7)
++  if (start == std::string_view::npos || epsv_line.length() - start < 7)
 +    return false;
 +
 +  char separator = epsv_line[start + 1];
@@ -7884,7 +7901,7 @@ index 0000000000000..8c8b965924cca
 +
 +  // Make sure there's a terminal <d>.
 +  size_t end = epsv_line.find(separator, start);
-+  if (end == base::StringPiece::npos)
++  if (end == std::string_view::npos)
 +    return false;
 +
 +  return ParseInt32(epsv_line.substr(start, end - start),
@@ -7930,7 +7947,7 @@ index 0000000000000..8c8b965924cca
 +
 +  // Split the line into comma-separated pieces and extract
 +  // the last two.
-+  std::vector<base::StringPiece> pieces = base::SplitStringPiece(
++  std::vector<std::string_view> pieces = base::SplitStringPiece(
 +      line, ",", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (pieces.size() != 6)
 +    return false;
@@ -7994,7 +8011,7 @@ index 0000000000000..8c8b965924cca
 +}
 +
 +int FtpNetworkTransaction::Start(
-+    const FtpRequestInfo* request_info,
++    raw_ptr <FtpRequestInfo> request_info,
 +    CompletionOnceCallback callback,
 +    const NetLogWithSource& net_log,
 +    const NetworkTrafficAnnotationTag& traffic_annotation) {
@@ -8226,7 +8243,6 @@ index 0000000000000..8c8b965924cca
 +    // Callers should validate the command themselves and return a more specific
 +    // error code.
 +    NOTREACHED();
-+    return Stop(ERR_UNEXPECTED);
 +  }
 +
 +  command_sent_ = cmd;
@@ -8386,8 +8402,6 @@ index 0000000000000..8c8b965924cca
 +        break;
 +      default:
 +        NOTREACHED() << "bad state";
-+        rv = ERR_UNEXPECTED;
-+        break;
 +    }
 +  } while (rv != ERR_IO_PENDING && next_state_ != STATE_NONE);
 +  return rv;
@@ -8674,7 +8688,6 @@ index 0000000000000..8c8b965924cca
 +    command += "I";
 +  } else {
 +    NOTREACHED();
-+    return Stop(ERR_UNEXPECTED);
 +  }
 +  next_state_ = STATE_CTRL_READ;
 +  return SendFtpCommand(command, command, COMMAND_TYPE);
@@ -9034,8 +9047,8 @@ new file mode 100644
 index 0000000000000..c7cb8753f8acf
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.h
-@@ -0,0 +1,267 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,268 @@
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -9050,6 +9063,7 @@ index 0000000000000..c7cb8753f8acf
 +
 +#include "base/compiler_specific.h"
 +#include "base/gtest_prod_util.h"
++#include "base/memory/raw_ptr.h"
 +#include "base/memory/ref_counted.h"
 +#include "net/base/auth.h"
 +#include "net/base/completion_once_callback.h"
@@ -9076,7 +9090,7 @@ index 0000000000000..c7cb8753f8acf
 +  int Stop(int error);
 +
 +  // FtpTransaction methods:
-+  int Start(const FtpRequestInfo* request_info,
++  int Start(raw_ptr <FtpRequestInfo> request_info,
 +            CompletionOnceCallback callback,
 +            const NetLogWithSource& net_log,
 +            const NetworkTrafficAnnotationTag& traffic_annotation) override;
@@ -9241,11 +9255,11 @@ index 0000000000000..c7cb8753f8acf
 +  CompletionOnceCallback user_callback_;
 +
 +  NetLogWithSource net_log_;
-+  const FtpRequestInfo* request_;
++  raw_ptr<FtpRequestInfo> request_;
 +  MutableNetworkTrafficAnnotationTag traffic_annotation_;
 +  FtpResponseInfo response_;
 +
-+  HostResolver* resolver_;
++  raw_ptr<HostResolver> resolver_;
 +  // Cancels the outstanding request on destruction.
 +  std::unique_ptr<HostResolver::ResolveHostRequest> resolve_request_;
 +
@@ -9286,7 +9300,7 @@ index 0000000000000..c7cb8753f8acf
 +
 +  uint16_t data_connection_port_;
 +
-+  ClientSocketFactory* const socket_factory_;
++  raw_ptr<ClientSocketFactory> const socket_factory_;
 +
 +  std::string unescaped_path_;
 +
@@ -9308,7 +9322,7 @@ index 0000000000000..fb2facdd3c653
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction_unittest.cc
 @@ -0,0 +1,1722 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11036,7 +11050,7 @@ index 0000000000000..be7702fd3d9c0
 --- /dev/null
 +++ b/net/ftp/ftp_request_info.h
 @@ -0,0 +1,20 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11062,7 +11076,7 @@ index 0000000000000..51b3c0e3aa367
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.cc
 @@ -0,0 +1,17 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11085,7 +11099,7 @@ index 0000000000000..576ef2501b465
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.h
 @@ -0,0 +1,46 @@
-+// Copyright (c) 2010 The Chromium Authors. All rights reserved.
++// Copyright (c) 2010 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11137,7 +11151,7 @@ index 0000000000000..18b0595bd9500
 --- /dev/null
 +++ b/net/ftp/ftp_server_type.h
 @@ -0,0 +1,27 @@
-+// Copyright (c) 2009 The Chromium Authors. All rights reserved.
++// Copyright (c) 2009 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11170,7 +11184,7 @@ index 0000000000000..dcb67243f9dae
 --- /dev/null
 +++ b/net/ftp/ftp_transaction.h
 @@ -0,0 +1,82 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11212,7 +11226,7 @@ index 0000000000000..dcb67243f9dae
 +  // NOTE: The transaction is not responsible for deleting the callback object.
 +  //
 +  // Profiling information for the request is saved to |net_log| if non-NULL.
-+  virtual int Start(const FtpRequestInfo* request_info,
++  virtual int Start(raw_ptr <FtpRequestInfo> request_info,
 +                    CompletionOnceCallback callback,
 +                    const NetLogWithSource& net_log,
 +                    const NetworkTrafficAnnotationTag& traffic_annotation) = 0;
@@ -11258,7 +11272,7 @@ index 0000000000000..5f4270f25ca7d
 --- /dev/null
 +++ b/net/ftp/ftp_transaction_factory.h
 @@ -0,0 +1,31 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11291,13 +11305,18 @@ index 0000000000000..5f4270f25ca7d
 +#endif  // NET_FTP_FTP_TRANSACTION_FACTORY_H_
 diff --git a/net/ftp/ftp_util.cc b/net/ftp/ftp_util.cc
 new file mode 100644
-index 0000000000000..fe7e81c2e8ad7
+index 0000000000000..5d06d8d81d459
 --- /dev/null
 +++ b/net/ftp/ftp_util.cc
-@@ -0,0 +1,374 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,378 @@
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
++
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
++#pragma allow_unsafe_buffers
++#endif
 +
 +#include "net/ftp/ftp_util.h"
 +
@@ -11311,7 +11330,6 @@ index 0000000000000..fe7e81c2e8ad7
 +#include "base/memory/singleton.h"
 +#include "base/strings/strcat.h"
 +#include "base/strings/string_number_conversions.h"
-+#include "base/strings/string_piece.h"
 +#include "base/strings/string_split.h"
 +#include "base/strings/string_tokenizer.h"
 +#include "base/strings/string_util.h"
@@ -11322,7 +11340,7 @@ index 0000000000000..fe7e81c2e8ad7
 +#include "third_party/icu/source/i18n/unicode/dtfmtsym.h"
 +
 +using base::ASCIIToUTF16;
-+using base::StringPiece16;
++using std::u16string_view;
 +
 +// For examples of Unix<->VMS path conversions, see the unit test file. On VMS
 +// a path looks differently depending on whether it's a file or directory.
@@ -11335,7 +11353,7 @@ index 0000000000000..fe7e81c2e8ad7
 +    return std::string();
 +
 +  base::StringTokenizer tokenizer(unix_path, "/");
-+  std::vector<base::StringPiece> tokens;
++  std::vector<std::string_view> tokens;
 +  while (tokenizer.GetNext())
 +    tokens.push_back(tokenizer.token_piece());
 +
@@ -11408,7 +11426,7 @@ index 0000000000000..fe7e81c2e8ad7
 +  if (vms_path[0] == '[') {
 +    // It's a relative path.
 +    base::ReplaceFirstSubstringAfterOffset(
-+        &result, 0, "[.", base::StringPiece());
++        &result, 0, "[.", std::string_view());
 +  } else {
 +    // It's an absolute path.
 +    result.insert(0, "/");
@@ -11594,7 +11612,7 @@ index 0000000000000..fe7e81c2e8ad7
 +  base::Time::Exploded time_exploded = { 0 };
 +
 +  // Date should be in format MM-DD-YY[YY].
-+  std::vector<base::StringPiece16> date_parts = base::SplitStringPiece(
++  std::vector<std::u16string_view> date_parts = base::SplitStringPiece(
 +      date, u"-", base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (date_parts.size() != 3)
 +    return false;
@@ -11617,8 +11635,8 @@ index 0000000000000..fe7e81c2e8ad7
 +  if (time.length() < 5)
 +    return false;
 +
-+  std::vector<base::StringPiece16> time_parts =
-+      base::SplitStringPiece(base::StringPiece16(time).substr(0, 5), u":",
++  std::vector<std::u16string_view> time_parts =
++      base::SplitStringPiece(std::u16string_view(time).substr(0, 5), u":",
 +                             base::TRIM_WHITESPACE, base::SPLIT_WANT_ALL);
 +  if (time_parts.size() != 2)
 +    return false;
@@ -11675,7 +11693,7 @@ index 0000000000000..6647df1569862
 --- /dev/null
 +++ b/net/ftp/ftp_util.h
 @@ -0,0 +1,57 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -11738,7 +11756,7 @@ index 0000000000000..ffeaaa541d7d8
 --- /dev/null
 +++ b/net/ftp/ftp_util_unittest.cc
 @@ -0,0 +1,268 @@
-+// Copyright (c) 2011 The Chromium Authors. All rights reserved.
++// Copyright (c) 2011 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12027,7 +12045,7 @@ index 0000000000000..03783e50cfc0b
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.cc
 @@ -0,0 +1,58 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12090,8 +12108,8 @@ new file mode 100644
 index 0000000000000..3c7e0faebc2bb
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.h
-@@ -0,0 +1,57 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,59 @@
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12102,6 +12120,8 @@ index 0000000000000..3c7e0faebc2bb
 +
 +#include "base/memory/raw_ptr.h"
 +#include "base/compiler_specific.h"
++#include "base/memory/raw_ptr.h"
++#include "base/memory/ref_counted.h"
 +#include "net/base/net_export.h"
 +#include "net/url_request/url_request_job_factory.h"
 +
@@ -12152,7 +12172,7 @@ diff --git a/net/url_request/url_request.h b/net/url_request/url_request.h
 index 859dcb00e8153..d0791fdace3c5 100644
 --- a/net/url_request/url_request.h
 +++ b/net/url_request/url_request.h
-@@ -734,7 +734,8 @@ class NET_EXPORT URLRequest : public base::SupportsUserData {
+@@ -749,7 +749,8 @@ class NET_EXPORT URLRequest : public base::SupportsUserData {
    }
  
    // The number of bytes in the raw response body (before any decompression,
@@ -12177,7 +12197,7 @@ index 5618d02062989..e71e085486f2f 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  class NetworkErrorLoggingService;
  class PersistentReportingAndNelStore;
-@@ -233,6 +237,13 @@ class NET_EXPORT URLRequestContext final {
+@@ -235,6 +239,13 @@ class NET_EXPORT URLRequestContext final {
    // context has been bound to.
    handles::NetworkHandle bound_network() const { return bound_network_; }
  
@@ -12191,7 +12211,7 @@ index 5618d02062989..e71e085486f2f 100644
    void AssertCalledOnValidThread() {
      DCHECK_CALLED_ON_VALID_THREAD(thread_checker_);
    }
-@@ -360,6 +371,10 @@ class NET_EXPORT URLRequestContext final {
+@@ -363,6 +374,10 @@ class NET_EXPORT URLRequestContext final {
  
    std::unique_ptr<TransportSecurityPersister> transport_security_persister_;
  
@@ -12206,7 +12226,7 @@ diff --git a/net/url_request/url_request_context_builder.cc b/net/url_request/ur
 index c4ba7328234bf..4f5bb37448ccd 100644
 --- a/net/url_request/url_request_context_builder.cc
 +++ b/net/url_request/url_request_context_builder.cc
-@@ -52,6 +52,12 @@
+@@ -53,6 +53,12 @@
  #include "net/url_request/url_request_job_factory.h"
  #include "url/url_constants.h"
  
@@ -12219,7 +12239,7 @@ index c4ba7328234bf..4f5bb37448ccd 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  #include "net/network_error_logging/network_error_logging_service.h"
  #include "net/network_error_logging/persistent_reporting_and_nel_store.h"
-@@ -578,12 +584,23 @@ std::unique_ptr<URLRequestContext> URLRequestContextBuilder::Build() {
+@@ -592,12 +598,23 @@ std::unique_ptr<URLRequestContext> URLRequestContextBuilder::Build() {
  
    std::unique_ptr<URLRequestJobFactory> job_factory =
        std::make_unique<URLRequestJobFactory>();
@@ -12247,7 +12267,7 @@ diff --git a/net/url_request/url_request_context_builder.h b/net/url_request/url
 index 66fd979ebae17..996f83526a69c 100644
 --- a/net/url_request/url_request_context_builder.h
 +++ b/net/url_request/url_request_context_builder.h
-@@ -203,6 +203,11 @@ class NET_EXPORT URLRequestContextBuilder {
+@@ -217,6 +217,11 @@ class NET_EXPORT URLRequestContextBuilder {
    void set_http_user_agent_settings(
        std::unique_ptr<HttpUserAgentSettings> http_user_agent_settings);
  
@@ -12259,7 +12279,7 @@ index 66fd979ebae17..996f83526a69c 100644
    // Sets a valid ProtocolHandler for a scheme.
    // A ProtocolHandler already exists for |scheme| will be overwritten.
    void SetProtocolHandler(
-@@ -421,6 +426,11 @@ class NET_EXPORT URLRequestContextBuilder {
+@@ -441,6 +446,11 @@ class NET_EXPORT URLRequestContextBuilder {
  
    std::optional<std::string> cookie_deprecation_label_;
  
@@ -12277,7 +12297,7 @@ index 0000000000000..e589091fb92e4
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_fuzzer.cc
 @@ -0,0 +1,92 @@
-+// Copyright 2016 The Chromium Authors. All rights reserved.
++// Copyright 2016 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12375,7 +12395,7 @@ index 0000000000000..1e8bacb3d9ac9
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.cc
 @@ -0,0 +1,324 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12704,8 +12724,8 @@ new file mode 100644
 index 0000000000000..fda29bf6cb24c
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.h
-@@ -0,0 +1,101 @@
-+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+@@ -0,0 +1,102 @@
++// Copyright (c) 2012 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -12715,6 +12735,7 @@ index 0000000000000..fda29bf6cb24c
 +#include <memory>
 +#include <string>
 +
++#include "base/memory/raw_ptr.h"
 +#include "base/memory/weak_ptr.h"
 +#include "net/base/auth.h"
 +#include "net/base/ip_endpoint.h"
@@ -12786,7 +12807,7 @@ index 0000000000000..fda29bf6cb24c
 +
 +  void LogFtpStartResult(FTPStartResult result);
 +
-+  ProxyResolutionService* proxy_resolution_service_;
++  raw_ptr<ProxyResolutionService> proxy_resolution_service_;
 +  ProxyInfo proxy_info_;
 +  std::unique_ptr<ProxyResolutionRequest> proxy_resolve_request_;
 +
@@ -12797,7 +12818,7 @@ index 0000000000000..fda29bf6cb24c
 +
 +  std::unique_ptr<AuthData> auth_data_;
 +
-+  FtpTransactionFactory* ftp_transaction_factory_;
++  raw_ptr<FtpTransactionFactory> ftp_transaction_factory_;
 +  raw_ptr<FtpAuthCache> ftp_auth_cache_;
 +
 +  base::WeakPtrFactory<URLRequestFtpJob> weak_factory_{this};
@@ -12812,7 +12833,7 @@ index 0000000000000..62e4719adc72d
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job_unittest.cc
 @@ -0,0 +1,245 @@
-+// Copyright (c) 2019 The Chromium Authors. All rights reserved.
++// Copyright (c) 2019 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -13078,8 +13099,8 @@ diff --git a/net/url_request/url_request_test_util.h b/net/url_request/url_reque
 index 575a510b7e188..2ada1ead4c8f8 100644
 --- a/net/url_request/url_request_test_util.h
 +++ b/net/url_request/url_request_test_util.h
-@@ -34,6 +34,7 @@
- #include "net/cookies/cookie_setting_override.h"
+@@ -35,6 +35,7 @@
+ #include "net/cookies/cookie_util.h"
  #include "net/disk_cache/disk_cache.h"
  #include "net/first_party_sets/first_party_set_metadata.h"
 +#include "net/ftp/ftp_network_layer.h"
@@ -13090,7 +13111,7 @@ diff --git a/net/url_request/url_request_unittest.cc b/net/url_request/url_reque
 index 18b16b9d46f01..24c0efb4f2cef 100644
 --- a/net/url_request/url_request_unittest.cc
 +++ b/net/url_request/url_request_unittest.cc
-@@ -161,10 +161,15 @@
+@@ -173,10 +173,15 @@
  
  #include <shlobj.h>
  #include <wrl/client.h>
@@ -13107,7 +13128,7 @@ index 18b16b9d46f01..24c0efb4f2cef 100644
  #if BUILDFLAG(IS_APPLE)
  #include "base/mac/mac_util.h"
  #endif
-@@ -206,6 +211,12 @@ const std::u16string kUser(u"user");
+@@ -218,6 +223,12 @@ const std::u16string kUser(u"user");
  const base::FilePath::CharType kTestFilePath[] =
      FILE_PATH_LITERAL("net/data/url_request_unittest");
  
@@ -13120,7 +13141,7 @@ index 18b16b9d46f01..24c0efb4f2cef 100644
  // Tests load timing information in the case a fresh connection was used, with
  // no proxy.
  void TestLoadTimingNotReused(const LoadTimingInfo& load_timing_info,
-@@ -307,6 +318,29 @@ void TestLoadTimingCacheHitNoNetwork(const LoadTimingInfo& load_timing_info) {
+@@ -319,6 +330,29 @@ void TestLoadTimingCacheHitNoNetwork(const LoadTimingInfo& load_timing_info) {
    EXPECT_TRUE(load_timing_info.proxy_resolve_end.is_null());
  }
  
@@ -13150,7 +13171,7 @@ index 18b16b9d46f01..24c0efb4f2cef 100644
  // Job that allows monitoring of its priority.
  class PriorityMonitoringURLRequestJob : public URLRequestTestJob {
   public:
-@@ -11758,6 +11792,404 @@ TEST_F(HTTPSLocalCRLSetTest, InterceptionBlockedAllowOverrideOnHSTS) {
+@@ -11822,6 +11856,404 @@ TEST_F(HTTPSLocalCRLSetTest, InterceptionBlockedAllowOverrideOnHSTS) {
  }
  #endif  // !BUILDFLAG(IS_IOS)
  
@@ -13559,7 +13580,7 @@ diff --git a/services/network/network_context.cc b/services/network/network_cont
 index 16e8cf435e4b0..2d06e601e9376 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -161,6 +161,10 @@
+@@ -164,6 +164,10 @@
  #include "services/network/sct_auditing/sct_auditing_handler.h"
  #endif  // BUILDFLAG(IS_CT_SUPPORTED)
  
@@ -13570,7 +13591,7 @@ index 16e8cf435e4b0..2d06e601e9376 100644
  #if BUILDFLAG(IS_CHROMEOS)
  #include "services/network/cert_verifier_with_trust_anchors.h"
  #endif  // BUILDFLAG(IS_CHROMEOS)
-@@ -2168,6 +2172,14 @@ void NetworkContext::AddAuthCacheEntry(
+@@ -2313,6 +2317,14 @@ void NetworkContext::AddAuthCacheEntry(
      const net::NetworkAnonymizationKey& network_anonymization_key,
      const net::AuthCredentials& credentials,
      AddAuthCacheEntryCallback callback) {
@@ -13585,7 +13606,7 @@ index 16e8cf435e4b0..2d06e601e9376 100644
    net::HttpAuthCache* http_auth_cache =
        url_request_context_->http_transaction_factory()
            ->GetSession()
-@@ -2179,6 +2191,7 @@ void NetworkContext::AddAuthCacheEntry(
+@@ -2324,6 +2336,7 @@ void NetworkContext::AddAuthCacheEntry(
                         net::HttpAuth::StringToScheme(challenge.scheme),
                         network_anonymization_key, challenge.challenge,
                         credentials, challenge.path);
@@ -13593,7 +13614,7 @@ index 16e8cf435e4b0..2d06e601e9376 100644
    std::move(callback).Run();
  }
  
-@@ -2592,6 +2605,12 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2734,6 +2747,12 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
    }
    builder.set_hsts_policy_bypass_list(params_->hsts_policy_bypass_list);
  
@@ -13610,7 +13631,7 @@ diff --git a/services/network/network_context_unittest.cc b/services/network/net
 index 6d3382b4de9ff..a4d5cdd555ad8 100644
 --- a/services/network/network_context_unittest.cc
 +++ b/services/network/network_context_unittest.cc
-@@ -158,6 +158,10 @@
+@@ -180,6 +180,10 @@
  #include "url/scheme_host_port.h"
  #include "url/url_constants.h"
  
@@ -13621,7 +13642,7 @@ index 6d3382b4de9ff..a4d5cdd555ad8 100644
  #if BUILDFLAG(ENABLE_REPORTING)
  #include "net/network_error_logging/network_error_logging_service.h"
  #include "net/reporting/reporting_cache.h"
-@@ -816,7 +820,8 @@ TEST_F(NetworkContextTest, UnhandedProtocols) {
+@@ -927,7 +931,8 @@ TEST_F(NetworkContextTest, UnhandedProtocols) {
        GURL("file:///not/a/path/that/leads/anywhere/but/it/should/not/matter/"
             "anyways"),
  
@@ -13631,7 +13652,7 @@ index 6d3382b4de9ff..a4d5cdd555ad8 100644
        GURL("ftp://foo.test/"),
    };
  
-@@ -6969,6 +6974,37 @@ TEST_F(NetworkContextTest, BlockAllCookies) {
+@@ -7438,6 +7443,37 @@ TEST_F(NetworkContextTest, BlockAllCookies) {
    EXPECT_EQ("None", response_body);
  }
  
@@ -13673,7 +13694,7 @@ diff --git a/services/network/public/cpp/features.cc b/services/network/public/c
 index d38116aca078f..18b3daef09f8e 100644
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -214,6 +214,11 @@ BASE_FEATURE(kAcceptCHFrame, "AcceptCHFrame", base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -225,6 +225,11 @@ BASE_FEATURE(kAcceptCHFrame, "AcceptCHFrame", base::FEATURE_ENABLED_BY_DEFAULT);
  BASE_FEATURE(kGetCookiesStringUma,
               "GetCookiesStringUma",
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -13689,7 +13710,7 @@ diff --git a/services/network/public/cpp/features.h b/services/network/public/cp
 index 66221223e2c55..31dc4e14bfe10 100644
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -83,6 +83,8 @@ extern uint32_t GetDataPipeDefaultAllocationSize(
+@@ -92,6 +92,8 @@ extern uint32_t GetDataPipeDefaultAllocationSize(
  COMPONENT_EXPORT(NETWORK_CPP)
  extern size_t GetNetAdapterMaxBufSize();
  
@@ -13702,7 +13723,7 @@ diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network
 index 517777afcfeae..9b2469197b537 100644
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
-@@ -1773,7 +1773,7 @@ void SimpleURLLoaderImpl::OnReceiveResponse(
+@@ -1848,7 +1848,7 @@ void SimpleURLLoaderImpl::OnReceiveResponse(
  
    // Assume a 200 response unless headers were received indicating otherwise.
    // No headers indicates this was not a real HTTP response (Could be a file
@@ -13757,7 +13778,7 @@ index c774dfca15ae1..e972bac69d2e5 100644
    // Whether or not to check the Android platform's cleartext policy for
    // requests. Under some conditions, Android may advise us to block cleartext
    // traffic.
-@@ -1581,12 +1585,14 @@ interface NetworkContext {
+@@ -1620,12 +1624,14 @@ interface NetworkContext {
    LoadHttpAuthCacheProxyEntries(mojo_base.mojom.UnguessableToken cache_key)
        => ();
  
@@ -13782,7 +13803,7 @@ diff --git a/third_party/blink/public/web/web_document_loader.h b/third_party/bl
 index f9d3219990dcf..d2b95cce4c380 100644
 --- a/third_party/blink/public/web/web_document_loader.h
 +++ b/third_party/blink/public/web/web_document_loader.h
-@@ -134,6 +134,9 @@ class BLINK_EXPORT WebDocumentLoader {
+@@ -135,6 +135,9 @@ class BLINK_EXPORT WebDocumentLoader {
    // committed in this WebDocumentLoader had transient activation.
    virtual bool LastNavigationHadTransientUserActivation() const = 0;
  
@@ -13796,7 +13817,7 @@ diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_p
 index 15c696731f42b..61659b43bc89a 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
-@@ -155,6 +155,7 @@
+@@ -160,6 +160,7 @@
  #include "third_party/blink/renderer/platform/loader/fetch/resource_timing_utils.h"
  #include "third_party/blink/renderer/platform/loader/fetch/unique_identifier.h"
  #include "third_party/blink/renderer/platform/loader/fetch/url_loader/navigation_body_loader.h"
@@ -13804,7 +13825,7 @@ index 15c696731f42b..61659b43bc89a 100644
  #include "third_party/blink/renderer/platform/loader/static_data_navigation_body_loader.h"
  #include "third_party/blink/renderer/platform/mhtml/archive_resource.h"
  #include "third_party/blink/renderer/platform/mhtml/mhtml_archive.h"
-@@ -302,6 +303,7 @@ struct SameSizeAsDocumentLoader
+@@ -309,6 +310,7 @@ struct SameSizeAsDocumentLoader
    bool is_same_origin_navigation;
    bool has_text_fragment_token;
    bool was_discarded;
@@ -13812,7 +13833,7 @@ index 15c696731f42b..61659b43bc89a 100644
    bool loading_main_document_from_mhtml_archive;
    bool loading_srcdoc;
    KURL fallback_base_url;
-@@ -1230,7 +1232,7 @@ void DocumentLoader::BodyDataReceivedImpl(BodyData& data) {
+@@ -1279,7 +1281,7 @@ void DocumentLoader::BodyDataReceivedImpl(BodyData& data) {
    DCHECK(!frame_->GetPage()->Paused());
    time_of_last_data_received_ = clock_->NowTicks();
  
@@ -13821,7 +13842,7 @@ index 15c696731f42b..61659b43bc89a 100644
      // 1) Ftp directory listings accumulate data buffer and transform it later
      //    to the actual document content.
      // 2) Mhtml archives accumulate data buffer and parse it as mhtml later
-@@ -1353,6 +1355,12 @@ void DocumentLoader::FinishedLoading(base::TimeTicks finish_time) {
+@@ -1402,6 +1404,12 @@ void DocumentLoader::FinishedLoading(base::TimeTicks finish_time) {
           MainThreadDebugger::Instance(frame_->DomWindow()->GetIsolate())
               ->IsPaused());
  
@@ -13834,7 +13855,7 @@ index 15c696731f42b..61659b43bc89a 100644
    if (loading_main_document_from_mhtml_archive_ && state_ < kCommitted) {
      // The browser process should block any navigation to an MHTML archive
      // inside iframes. See NavigationRequest::OnResponseStarted().
-@@ -1493,6 +1501,17 @@ DocumentPolicy::ParsedDocumentPolicy DocumentLoader::CreateDocumentPolicy() {
+@@ -1542,6 +1550,17 @@ DocumentPolicy::ParsedDocumentPolicy DocumentLoader::CreateDocumentPolicy() {
  void DocumentLoader::HandleResponse() {
    DCHECK(frame_);
  
@@ -13856,7 +13877,7 @@ diff --git a/third_party/blink/renderer/core/loader/document_loader.h b/third_pa
 index 4b0cc3793ecb9..337cd1eea6a70 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.h
 +++ b/third_party/blink/renderer/core/loader/document_loader.h
-@@ -351,6 +351,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
+@@ -359,6 +359,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
      return devtools_navigation_token_;
    }
  
@@ -13865,7 +13886,7 @@ index 4b0cc3793ecb9..337cd1eea6a70 100644
    UseCounterImpl& GetUseCounter() { return use_counter_; }
  
    PrefetchedSignedExchangeManager* GetPrefetchedSignedExchangeManager() const;
-@@ -770,6 +772,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
+@@ -778,6 +780,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
    // See WebNavigationParams for definition.
    const bool was_discarded_ = false;
  
@@ -13878,7 +13899,7 @@ diff --git a/third_party/blink/renderer/platform/loader/BUILD.gn b/third_party/b
 index da5070066fd47..39fc54f713ec4 100644
 --- a/third_party/blink/renderer/platform/loader/BUILD.gn
 +++ b/third_party/blink/renderer/platform/loader/BUILD.gn
-@@ -159,6 +159,8 @@ blink_platform_sources("loader") {
+@@ -161,6 +161,8 @@ blink_platform_sources("loader") {
      "fetch/worker_resource_timing_notifier.h",
      "internet_disconnected_url_loader.cc",
      "internet_disconnected_url_loader.h",
@@ -13887,7 +13908,7 @@ index da5070066fd47..39fc54f713ec4 100644
      "link_header.cc",
      "link_header.h",
      "mixed_content.cc",
-@@ -242,6 +244,7 @@ source_set("unit_tests") {
+@@ -244,6 +246,7 @@ source_set("unit_tests") {
      "fetch/url_loader/sync_load_context_unittest.cc",
      "fetch/url_loader/url_loader_unittest.cc",
      "fetch/url_loader/worker_main_script_loader_unittest.cc",
@@ -13901,7 +13922,7 @@ index 0000000000000..fbee10b1875a7
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.cc
 @@ -0,0 +1,109 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -14016,7 +14037,7 @@ index 0000000000000..c5f9bda28b5c0
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.h
 @@ -0,0 +1,24 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -14046,7 +14067,7 @@ index 0000000000000..9f52cba0c1222
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing_test.cc
 @@ -0,0 +1,114 @@
-+// Copyright 2018 The Chromium Authors. All rights reserved.
++// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +

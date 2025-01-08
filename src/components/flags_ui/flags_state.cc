@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "components/flags_ui/flags_state.h"
 
 #include <algorithm>
@@ -17,6 +22,7 @@
 #include "base/logging.h"
 #include "base/metrics/field_trial.h"
 #include "base/metrics/field_trial_params.h"
+#include "base/not_fatal_until.h"
 #include "base/stl_util.h"
 #include "base/strings/strcat.h"
 #include "base/strings/string_tokenizer.h"
@@ -93,7 +99,7 @@ bool IsDefaultValue(const FeatureEntry& entry,
       }
       return true;
   }
-  NOTREACHED();
+  NOTREACHED_IN_MIGRATION();
   return true;
 }
 
@@ -222,7 +228,11 @@ std::string GetCombinedOriginListValue(const FlagsStorage& flags_storage,
       command_line.GetSwitchValueASCII(command_line_switch);
   const std::string new_value =
       flags_storage.GetOriginListFlag(internal_entry_name);
-  if (command_line_switch == "custom-ntp") return existing_value.empty() ? new_value : existing_value;
+  if (command_line_switch == "custom-ntp") {
+    return existing_value.empty()
+           ? new_value
+           : existing_value;
+  }
   return CombineAndSanitizeOriginLists(existing_value, new_value);
 }
 
@@ -361,7 +371,7 @@ void FlagsState::GetSwitchesAndFeaturesFromFlags(
 
   for (const std::string& entry_name : enabled_entries) {
     const auto& entry_it = name_to_switch_map.find(entry_name);
-    DCHECK(entry_it != name_to_switch_map.end());
+    CHECK(entry_it != name_to_switch_map.end(), base::NotFatalUntil::M130);
 
     const SwitchEntry& entry = entry_it->second;
     if (!entry.switch_name.empty())
@@ -461,8 +471,9 @@ void FlagsState::SetOriginListFlag(const std::string& internal_name,
                                    const std::string& value,
                                    FlagsStorage* flags_storage) {
   const std::string new_value =
-      internal_name == "custom-ntp" ? value :
-      CombineAndSanitizeOriginLists(std::string(), value);
+      internal_name == "custom-ntp"
+          ? value
+          : CombineAndSanitizeOriginLists(std::string(), value);
   flags_storage->SetOriginListFlag(internal_name, new_value);
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
@@ -658,6 +669,7 @@ void FlagsState::GetFlagFeatureEntries(
   for (const FeatureEntry& entry : feature_entries_) {
     std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry)) {
+      // Alex313031: Comment the next three lines for component builds.
       if (flags::IsFlagExpired(flags_storage, entry.internal_name))
         desc.insert(0, " NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON! ");
       else
@@ -675,6 +687,14 @@ void FlagsState::GetFlagFeatureEntries(
     // True if the switch is not currently passed.
     bool is_default_value = IsDefaultValue(entry, enabled_entries);
     data.Set("is_default", is_default_value);
+
+    if (!entry.links.empty()) {
+      base::Value::List links;
+      for (auto* link : entry.links) {
+        links.Append(link);
+      }
+      data.Set("links", std::move(links));
+    }
 
     switch (entry.type) {
       case FeatureEntry::SINGLE_VALUE:
@@ -765,7 +785,7 @@ void FlagsState::AddSwitchMapping(
     const std::string& switch_name,
     const std::string& switch_value,
     std::map<std::string, SwitchEntry>* name_to_switch_map) const {
-  DCHECK(!base::Contains(*name_to_switch_map, key));
+  // DCHECK(!base::Contains(*name_to_switch_map, key));
 
   SwitchEntry* entry = &(*name_to_switch_map)[key];
   entry->switch_name = switch_name;
@@ -778,7 +798,7 @@ void FlagsState::AddFeatureMapping(
     bool feature_state,
     const std::string& variation_id,
     std::map<std::string, SwitchEntry>* name_to_switch_map) const {
-  DCHECK(!base::Contains(*name_to_switch_map, key));
+  // DCHECK(!base::Contains(*name_to_switch_map, key));
 
   SwitchEntry* entry = &(*name_to_switch_map)[key];
   entry->feature_name = feature_name;
@@ -804,7 +824,7 @@ void FlagsState::AddSwitchesToCommandLine(
   for (const std::string& entry_name : enabled_entries) {
     const auto& entry_it = name_to_switch_map.find(entry_name);
     if (entry_it == name_to_switch_map.end()) {
-      NOTREACHED();
+      NOTREACHED_IN_MIGRATION();
       continue;
     }
 
@@ -1062,9 +1082,11 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
       continue;
     if (!entry.InternalNameMatches(name))
       continue;
-    if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry))
+    if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry)) {
+      // Alex313031: Comment this line for component builds.
       if (!flags::IsFlagExpired(storage, entry.internal_name))
-      continue;
+        continue;
+    }
     return true;
   }
   return false;

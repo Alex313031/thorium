@@ -4,7 +4,7 @@
     "manifest_version": 2,
     "name": "WidevineCdm",
     "os": "win",
-    "version": "4.10.2710.0",
+    "version": "4.10.2830.0",
     "x-cdm-codecs": "vp8,vp09,avc1,av01",
     "x-cdm-host-versions": "10",
     "x-cdm-interface-versions": "10",

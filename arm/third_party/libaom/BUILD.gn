@@ -61,8 +61,8 @@ if (is_nacl) {
 
 libaom_include_dirs = [
   "source/config",
-  platform_include_dir,
   "source/libaom",
+  platform_include_dir,
 ]
 
 # Private configuration used in building libaom.
@@ -73,6 +73,10 @@ config("libaom_config") {
 # This config is applied to targets that depend on libaom.
 config("libaom_public_config") {
   include_dirs = [
+    # libaom_public_config does not have "source/config" (which gives access to
+    # the private header config/aom_version.h) because code outside the libaom
+    # library should use the aom_codec_version*() functions and macros declared
+    # in the public header aom_codec.h.
     "source/libaom",
     platform_include_dir,
   ]
@@ -93,6 +97,11 @@ if (current_cpu == "x86" || (current_cpu == "x64" && !is_msan)) {
     }
     defines = [ "CHROMIUM" ]
     include_dirs = libaom_include_dirs
+    inputs = [
+      "$platform_include_dir/config/aom_config.asm",
+      "source/libaom/aom_ports/x86_abi_support.asm",
+      "source/libaom/third_party/x86inc/x86inc.asm",
+    ]
   }
 
   # The following targets are deliberately source_set rather than
@@ -143,7 +152,6 @@ if (current_cpu == "x86" || (current_cpu == "x64" && !is_msan)) {
       cflags = [ "-mssse3" ]
     }
     sources = aom_av1_common_intrin_ssse3
-    sources += aom_av1_encoder_intrin_ssse3
     sources += aom_dsp_common_intrin_ssse3
     sources += aom_dsp_encoder_intrin_ssse3
     if (current_cpu == "x86") {
@@ -250,7 +258,6 @@ if (current_cpu == "arm64") {
     configs -= [ "//build/config/compiler:default_init_stack_vars" ]
     sources = aom_av1_common_intrin_neon_dotprod
     sources += aom_dsp_common_intrin_neon_dotprod
-    sources += aom_av1_encoder_intrin_neon_dotprod
     sources += aom_dsp_encoder_intrin_neon_dotprod
   }
 
@@ -384,7 +391,7 @@ test("test_libaom") {
 
   deps = [
     ":libaom",
-    "//third_party/googletest:gtest",
+    "//testing/gtest",
   ]
 
   defines = [ "CHROMIUM" ]

@@ -54,6 +54,8 @@
         <structure type="chrome_scaled_image" name="IDR_AUTOFILL_OFFERS" file="common/autofill_offers.png" />
         <structure type="chrome_scaled_image" name="IDR_AUTOFILL_OFFERS_DARK_CHROME_REFRESH_2023" file="common/autofill_offers_dark_chrome_refresh_2023.png" />
         <structure type="chrome_scaled_image" name="IDR_AUTOFILL_OFFERS_LIGHT_CHROME_REFRESH_2023" file="common/autofill_offers_light_chrome_refresh_2023.png" />
+        <structure type="chrome_scaled_image" name="IDR_DISCOUNTS_BUBBLE_HEADER_DARK" file="common/discounts_bubble_header_dark.png" />
+        <structure type="chrome_scaled_image" name="IDR_DISCOUNTS_BUBBLE_HEADER_LIGHT" file="common/discounts_bubble_header_light.png" />
 
       </if>
       <if expr="chromeos_ash">
@@ -208,6 +210,12 @@
               <structure type="chrome_scaled_image" name="IDR_PRODUCT_MASCOT" file="chromium/thorium_mascot.png" />
               <structure type="chrome_scaled_image" name="IDR_PRODUCT_NETERROR_FAVICON" file="chromium/dino_favicon.png" />
               <structure type="chrome_scaled_image" name="IDR_PRODUCT_ROBOT" file="chromium/technical_error.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_AI_CHROME" file="chromium/ai_chrome.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_CHROMIUM_BLANK" file="chromium/chromium_blank.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_CHROMIUM_QUESTION" file="chromium/chromium_question.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_THORIUM_ATOMIC" file="chromium/thorium_atomic.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_THORIUM_ELEMENT" file="chromium/thorium_element.png" />
+              <structure type="chrome_scaled_image" name="IDR_PRODUCT_THORIUM_GUY" file="chromium/thorium_guy.png" />
             </else>
           </if> <!-- _is_chrome_for_testing_branded -->
         </else>
@@ -290,7 +298,13 @@
         <structure type="chrome_scaled_image" name="IDR_SAVE_PASSWORD" file="common/save_password.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_PASSWORD_DARK" file="common/save_password_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CARD" file="common/save_card.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_CONVENIENCE" file="common/save_card_convenience.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_CONVENIENCE_DARK" file="common/save_card_convenience_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_DARK" file="common/save_card_dark.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_EDUCATION" file="common/save_card_education.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_EDUCATION_DARK" file="common/save_card_education_dark.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_SECURITY" file="common/save_card_security.png" />
+        <structure type="chrome_scaled_image" name="IDR_SAVE_CARD_SECURITY_DARK" file="common/save_card_security_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CVC" file="common/save_cvc.png" />
         <structure type="chrome_scaled_image" name="IDR_SAVE_CVC_DARK" file="common/save_cvc_dark.png" />
         <structure type="chrome_scaled_image" name="IDR_MIGRATE_ADDRESS_AVATAR50_X135_Y54" file="common/migrate_address_avatar50_x135_y54.png" />

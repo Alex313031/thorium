@@ -4,6 +4,7 @@
 
 import("//build/config/apple/symbols.gni")
 import("//build/config/c++/c++.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/mac/mac_sdk.gni")
 import("//build/config/sysroot.gni")
 import("//build/toolchain/rbe.gni")
@@ -38,13 +39,14 @@ config("compiler") {
   ldflags = [ "-Wl,-O3", ] + common_mac_flags
   
   if (current_cpu == "arm64") {
-    cflags += [ "-march=armv8.3-a+simd", ]
-    ldflags += [ "-march=armv8.3-a+simd", ]
+    # Alex313031 TODO: Possibly use -mcpu here?
+    cflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
+    ldflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
   }
 
   if (current_cpu == "x64") {
     cflags += [ "-O3", "-march=x86-64-v3", "-ffp-contract=fast", ]
-    ldflags += [ "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=30", ]
+    ldflags += [ "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=100", ]
   }
 
   if (save_unstripped_output) {
@@ -109,8 +111,7 @@ config("mac_dynamic_flags") {
 #
 # The symbolic link for $mac_sdk_path is set up by
 # //build/config/apple/sdk_info.py in //build/config/mac/mac_sdk.gni.
-if (use_system_xcode && (use_remoteexec || use_siso) && target_os == "mac" &&
-    current_toolchain == default_toolchain) {
+if (mac_use_xcode_symlinks && current_toolchain == default_toolchain) {
   action("sdk_inputs") {
     script = "//build/noop.py"
     outputs = [

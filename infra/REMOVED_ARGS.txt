@@ -1,0 +1,33 @@
+## List of arguments that were commented out from any of the args.gn files
+
+### Kept for posterity
+
+is_chancie_wancie_build = true # Was used to build ChromiumOS FFMPEG on Linux
+
+clang_base_path = "/usr/lib/llvm-18" # Not needed anymore
+
+clang_version = "18" # Not needed anymore
+
+enable_debugallocation = false # Removed upstream
+
+enable_hls_sample_aes = true # Removed upstream
+
+use_webaudio_ffmpeg = false # Removed upstream
+
+enable_av1_decoder = true # Removed upstream
+
+enable_dav1d_decoder = true # Not needed anymore
+
+enable_media_overlay = true # Removed upstream
+
+use_vr_assets_component = true # Removed upstream
+
+enable_widevine_cdm_component = true # Set internally
+
+visual_studio_version = "2022" # Not needed anymore
+
+use_large_pdbs = true # Was used in debug builds to allow larger PDB files.
+
+enable_ink = false # Cannot set to true anyway, without Chrome internal code
+
+enable_cros_media_app = false # Only for ChromiumOS, was removed from most args.gns, but still enabled for ThoriumOS and in cros_args.gn

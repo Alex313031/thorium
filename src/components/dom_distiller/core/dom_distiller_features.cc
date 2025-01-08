@@ -13,16 +13,18 @@
 
 namespace dom_distiller {
 
-BASE_FEATURE(kReaderMode, "ReaderMode", base::FEATURE_ENABLED_BY_DEFAULT);
-
 bool IsDomDistillerEnabled() {
-  return true;
+  static const bool kReaderModeDesktop =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("reader-mode");
+  return base::CommandLine::ForCurrentProcess()->HasSwitch(
+      switches::kEnableDomDistiller) || kReaderModeDesktop;
 }
 
 bool ShouldStartDistillabilityService() {
+  static const bool kReaderModeDesktop =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("reader-mode");
   return base::CommandLine::ForCurrentProcess()->HasSwitch(
-      switches::kEnableDistillabilityService) ||
-      base::FeatureList::IsEnabled(kReaderMode);
+      switches::kEnableDistillabilityService) || kReaderModeDesktop;
 }
 
 }  // namespace dom_distiller

@@ -22,7 +22,7 @@ thor_ver: %(ChromeDir)s\
 #
 # Chrome version dir entries, sorted alphabetically.
 #
-blink_test_plugin.dll: %(VersionDir)s\
+# blink_test_plugin.dll: %(VersionDir)s\
 chrome.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
 chromedriver.exe: %(VersionDir)s\
@@ -37,15 +37,13 @@ eventlog_provider.dll: %(VersionDir)s\
 icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
-mojo_core.dll: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
-optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
 shell_resources.pak: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
 thorium_shell.ico: %(VersionDir)s\
 ui_resources_100_percent.pak: %(VersionDir)s\
-resources\*.*: %(VersionDir)s\resources\
+resources\inspector_overlay\*.*: %(VersionDir)s\resources\inspector_overlay\
 vk_swiftshader.dll: %(VersionDir)s\
 vk_swiftshader_icd.json: %(VersionDir)s\
 vulkan-1.dll: %(VersionDir)s\
@@ -94,6 +92,12 @@ Logo.png: %(VersionDir)s\VisualElements\
 SmallLogo.png: %(VersionDir)s\VisualElements\
 
 #
+# Privacy Sandbox Attestation
+#
+PrivacySandboxAttestationsPreloaded\manifest.json: %(VersionDir)s\PrivacySandboxAttestationsPreloaded\
+PrivacySandboxAttestationsPreloaded\privacy-sandbox-attestations.dat: %(VersionDir)s\PrivacySandboxAttestationsPreloaded\
+
+#
 # MEI Preload sub dir
 #
 MEIPreload\manifest.json: %(VersionDir)s\MEIPreload\
@@ -113,6 +117,8 @@ ffmpeg.dll: %(VersionDir)s\
 [GOOGLE_CHROME]
 # The elevation service is only installed for Google Chrome builds.
 elevation_service.exe: %(VersionDir)s\
+os_update_handler.exe: %(VersionDir)s\
+optimization_guide_internal.dll: %(VersionDir)s\
 
 #
 # Sub directories living in the version dir

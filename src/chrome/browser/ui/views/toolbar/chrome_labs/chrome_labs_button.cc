@@ -11,8 +11,10 @@
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_element_identifiers.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
 #include "chrome/browser/ui/toolbar/chrome_labs/chrome_labs_prefs.h"
 #include "chrome/browser/ui/toolbar/chrome_labs/chrome_labs_utils.h"
+#include "chrome/browser/ui/ui_features.h"
 #include "chrome/browser/ui/views/frame/browser_view.h"
 #include "chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.h"
 #include "chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_coordinator.h"
@@ -32,15 +34,23 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
                                         base::Unretained(this))),
       browser_view_(browser_view),
       model_(model) {
+  if (features::IsToolbarPinningEnabled()) {
+    LOG(DFATAL) << "This button should not be created, and instead be replaced "
+                   "by its PinnedToolbarActionButton counterpart";
+  }
+
+  SetProperty(views::kElementIdentifierKey, kToolbarChromeLabsButtonElementId);
+
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
-  SetProperty(views::kElementIdentifierKey, kToolbarChromeLabsButtonElementId);
-  SetVectorIcons(features::IsChromeRefresh2023() ? disable_thorium_icons ? kChromeLabsChromeRefreshIcon
-                                                 : kChromeLabsChromeRefreshThoriumIcon
-                                                 : disable_thorium_icons ? kChromeLabsIcon
-                                                 : kChromeLabsThoriumIcon,
-                 kChromeLabsTouchIcon);
-  SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));
+  if (disable_thorium_icons) {
+    SetVectorIcons(kScienceIcon, kScienceIcon);
+  } else {
+    SetVectorIcons(kScienceThoriumIcon, kScienceThoriumIcon);
+  }
+
+  GetViewAccessibility().SetName(
+      l10n_util::GetStringUTF16(IDS_ACCNAME_CHROMELABS_BUTTON));
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_CHROMELABS_BUTTON));
   button_controller()->set_notify_action(
       views::ButtonController::NotifyAction::kOnPress);
@@ -49,9 +59,6 @@ ChromeLabsButton::ChromeLabsButton(BrowserView* browser_view,
   new_experiments_indicator_ =
       views::DotIndicator::Install(image_container_view());
   UpdateDotIndicator();
-
-  chrome_labs_coordinator_ = std::make_unique<ChromeLabsCoordinator>(
-      this, browser_view_->browser(), model_);
 }
 
 ChromeLabsButton::~ChromeLabsButton() = default;
@@ -73,7 +80,10 @@ void ChromeLabsButton::HideDotIndicator() {
 }
 
 void ChromeLabsButton::ButtonPressed() {
-  chrome_labs_coordinator_->ShowOrHide();
+  browser_view_->browser()
+      ->GetFeatures()
+      .chrome_labs_coordinator()
+      ->ShowOrHide();
 }
 
 void ChromeLabsButton::UpdateDotIndicator() {

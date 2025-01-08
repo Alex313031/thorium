@@ -15,7 +15,9 @@ namespace metrics {
 
 // Checks if hardware model name is available.
 bool MachineIdProvider::HasId() {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
+  static const bool disable_machine_id =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
+  if (disable_machine_id) {
     return false;
   }
   return !base::SysInfo::HardwareModelName().empty();

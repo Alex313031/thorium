@@ -84,5 +84,6 @@ cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/s
 cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ClearKeyCdm ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
+printf "\n" &&
 printf "${GRE}Debug Linux Build Completed.\n" &&
 tput sgr0

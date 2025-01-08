@@ -59,12 +59,6 @@ ANDROID_NDK_TOOLCHAIN_RELATIVE_DIR = os.path.join('toolchains', 'llvm',
                                                   'prebuilt', 'linux-x86_64')
 ANDROID_NDK_TOOLCHAIN_DIR = os.path.join(ANDROID_NDK_DIR,
                                          ANDROID_NDK_TOOLCHAIN_RELATIVE_DIR)
-# NOTE(nathaniel): Using the canary Android NDK in this manner is forecast
-# to be temporary (~months; will be done differently by 2024).
-ANDROID_NDK_CANARY_DIR = os.path.join(CHROMIUM_DIR, 'third_party',
-                                      'android_toolchain_canary', 'ndk')
-ANDROID_NDK_CANARY_TOOLCHAIN_DIR = os.path.join(
-    ANDROID_NDK_CANARY_DIR, ANDROID_NDK_TOOLCHAIN_RELATIVE_DIR)
 FUCHSIA_SDK_DIR = os.path.join(CHROMIUM_DIR, 'third_party', 'fuchsia-sdk',
                                'sdk')
 PINNED_CLANG_DIR = os.path.join(LLVM_BUILD_TOOLS_DIR, 'pinned-clang')
@@ -184,6 +178,23 @@ def CheckoutGitRepo(name, git_url, commit, dir):
 
   print('CheckoutGitRepo failed.')
   sys.exit(1)
+
+
+def GitCherryPick(git_repository, git_remote, commit):
+  print(f'Cherry-picking {commit} in {git_repository} from {git_remote}')
+  git_cmd = ['git', '-C', git_repository]
+  RunCommand(git_cmd + ['remote', 'add', 'github', git_remote], fail_hard=False)
+  RunCommand(git_cmd + ['fetch', '--recurse-submodules=no', 'github', commit])
+  is_ancestor = RunCommand(git_cmd +
+                           ['merge-base', '--is-ancestor', commit, 'HEAD'],
+                           fail_hard=False)
+  if is_ancestor:
+    print('Commit already an ancestor; skipping.')
+    return
+  RunCommand([
+      'git', '-C', git_repository, 'cherry-pick', '--keep-redundant-commits',
+      commit
+  ])
 
 
 def GetLatestLLVMCommit():
@@ -335,11 +346,6 @@ def BuildLibXml2():
           '-GNinja',
           '-DCMAKE_BUILD_TYPE=Release',
           '-DCMAKE_INSTALL_PREFIX=install',
-          # The mac_arm bot builds a clang arm binary, but currently on an intel
-          # host. If we ever move it to run on an arm mac, this can go. We
-          # could pass this only if args.build_mac_arm, but libxml is small, so
-          # might as well build it universal always for a few years.
-          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64',
           '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded',  # /MT to match LLVM.
           '-DBUILD_SHARED_LIBS=OFF',
           '-DLIBXML2_WITH_C14N=OFF',
@@ -450,11 +456,6 @@ def BuildZStd():
           '-GNinja',
           '-DCMAKE_BUILD_TYPE=Release',
           '-DCMAKE_INSTALL_PREFIX=install',
-          # The mac_arm bot builds a clang arm binary, but currently on an intel
-          # host. If we ever move it to run on an arm mac, this can go. We
-          # could pass this only if args.build_mac_arm, but zstd is small, so
-          # might as well build it universal always for a few years.
-          '-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64',
           '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded',  # /MT to match LLVM.
           '-DZSTD_BUILD_SHARED=OFF',
           '../build/cmake',
@@ -475,28 +476,6 @@ def BuildZStd():
   extra_cflags = []
 
   return extra_cmake_flags, extra_cflags
-
-
-def DownloadRPMalloc():
-  """Download rpmalloc."""
-  rpmalloc_dir = os.path.join(LLVM_BUILD_TOOLS_DIR, 'rpmalloc')
-  if os.path.exists(rpmalloc_dir):
-    RmTree(rpmalloc_dir)
-
-  # Using rpmalloc bc1923f rather than the latest release (1.4.1) because
-  # it contains the fix for https://github.com/mjansson/rpmalloc/pull/186
-  # which would cause lld to deadlock.
-  # The zip file was created and uploaded as follows:
-  # $ mkdir rpmalloc
-  # $ curl -L https://github.com/mjansson/rpmalloc/archive/bc1923f436539327707b08ef9751a7a87bdd9d2f.tar.gz \
-  #     | tar -C rpmalloc --strip-components=1 -xzf -
-  # $ GZIP=-9 tar vzcf rpmalloc-bc1923f.tgz rpmalloc
-  # $ gsutil.py cp -n -a public-read rpmalloc-bc1923f.tgz \
-  #     gs://chromium-browser-clang/tools/
-  zip_name = 'rpmalloc-bc1923f.tgz'
-  DownloadAndUnpack(CDS_URL + '/tools/' + zip_name, LLVM_BUILD_TOOLS_DIR)
-  rpmalloc_dir = rpmalloc_dir.replace('\\', '/')
-  return rpmalloc_dir
 
 
 def DownloadPinnedClang():
@@ -576,25 +555,24 @@ def DownloadDebianSysroot(platform_name, skip_download=False):
   #   work (clang can require 2.18; chromium currently doesn't)
   # - libcrypt.so.1 reversioned so that crypt() is picked up from glibc
   # The sysroot was built at
-  # https://chromium-review.googlesource.com/c/chromium/src/+/3684954/1
+  # https://chromium-review.googlesource.com/c/chromium/src/+/5506275/1
   # and the hashes here are from sysroots.json in that CL.
-  toolchain_bucket = 'https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/'
+  toolchain_bucket = 'https://commondatastorage.googleapis.com/chrome-linux-sysroot/'
 
   hashes = {
-      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/3684954/1/build/linux/sysroot_scripts/sysroots.json#3
-      'amd64': '2028cdaf24259d23adcff95393b8cc4f0eef714b',
-      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/3684954/1/build/linux/sysroot_scripts/sysroots.json#23
-      'i386': 'a033618b5e092c86e96d62d3c43f7363df6cebe7',
-      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/3684954/1/build/linux/sysroot_scripts/sysroots.json#8
-      'arm': '0b9a3c54d2d5f6b1a428369aaa8d7ba7b227f701',
-      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/3684954/1/build/linux/sysroot_scripts/sysroots.json#12
-      'arm64': '0e28d9832614729bb5b731161ff96cb4d516f345',
+      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/5506275/1/build/linux/sysroot_scripts/sysroots.json#3
+      'amd64': 'dec7a3a0fc5b83b909cba1b6d119077e0429a138eadef6bf5a0f2e03b1904631',
+      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/5506275/1/build/linux/sysroot_scripts/sysroots.json#21
+      'i386': 'b53933120bb08ffc38140a817e3f0f99782254a6bf9622271574fa004e8783a4',
+      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/5506275/1/build/linux/sysroot_scripts/sysroots.json#15
+      'arm': 'fe81e7114b97440262bce004caf02c1514732e2fa7f99693b2836932ad1c4626',
+      # hash from https://chromium-review.googlesource.com/c/chromium/src/+/5506275/1/build/linux/sysroot_scripts/sysroots.json#21
+      'arm64': '308e23faba3174bd01accfe358467b8a40fad4db4c49ef629da30219f65a275f',
   }
 
   toolchain_name = f'debian_bullseye_{platform_name}_sysroot'
   output = os.path.join(LLVM_BUILD_TOOLS_DIR, toolchain_name)
-  U = toolchain_bucket + hashes[platform_name] + '/' + toolchain_name + \
-      '.tar.xz'
+  U = toolchain_bucket + hashes[platform_name]
   if not skip_download:
     DownloadAndUnpack(U, output)
 
@@ -637,10 +615,9 @@ def gn_arg(v):
 
 def main():
   parser = argparse.ArgumentParser(description='Build Clang.')
-  parser.add_argument('--bootstrap', action='store_true',
+  parser.add_argument('--bootstrap',
+                      action='store_true',
                       help='first build clang with CC, then with itself.')
-  parser.add_argument('--build-mac-arm', action='store_true',
-                      help='Build arm binaries. Only valid on macOS.')
   parser.add_argument('--disable-asserts', action='store_true',
                       help='build with asserts disabled')
   parser.add_argument('--host-cc',
@@ -740,12 +717,6 @@ def main():
     print('for general Fuchsia build instructions.')
     return 1
 
-  if args.build_mac_arm and sys.platform != 'darwin':
-    print('--build-mac-arm only valid on macOS')
-    return 1
-  if args.build_mac_arm and platform.machine() == 'arm64':
-    print('--build-mac-arm only valid on intel to cross-build arm')
-    return 1
   if args.with_ml_inliner_model and not sys.platform.startswith('linux'):
     print('--with-ml-inliner-model only supports linux hosts')
     return 1
@@ -805,9 +776,7 @@ def main():
   ldflags = []
 
   targets = 'AArch64;ARM;LoongArch;Mips;PowerPC;RISCV;SystemZ;WebAssembly;X86'
-  projects = 'clang;lld;clang-tools-extra;polly'
-  if args.bolt:
-    projects += ';bolt'
+  projects = 'clang;lld;clang-tools-extra;polly;bolt'
 
   pic_default = sys.platform == 'win32'
   pic_mode = 'ON' if args.pic or pic_default else 'OFF'
@@ -909,8 +878,7 @@ def main():
     ldflags.append('-LIBPATH:' + zlib_dir)
 
     # Use rpmalloc. For faster ThinLTO linking.
-    rpmalloc_dir = DownloadRPMalloc()
-    base_cmake_args.append('-DLLVM_INTEGRATED_CRT_ALLOC=' + rpmalloc_dir)
+    base_cmake_args.append('-DLLVM_ENABLE_RPMALLOC=ON')
 
     # Set a sysroot to make the build more hermetic.
     base_cmake_args.append('-DLLVM_WINSYSROOT="%s"' %
@@ -948,7 +916,18 @@ def main():
         # Fails with a recent ld, crbug.com/332589870
         '^.*ContinuousSyncMode/darwin-proof-of-concept.c$',
         '^.*instrprof-darwin-exports.c$',
+        # Fails on our mac builds, crbug.com/346289767
+        '^.*Interpreter/pretty-print.c$',
     ]
+    if platform.machine() == 'arm64':
+      lit_excludes += [
+          # TODO(https://crbug.com/40270881): fix and re-enable
+          '^.*tools/dsymutil.*$',
+          '^.*AddressSanitizer-arm64-darwin.*$',
+          '^.*SanitizerCommon-lsan-arm64-Darwin.*$',
+          '^.*SanitizerCommon-ubsan-arm64-Darwin.*Posix/dedup_token_length_test.cpp$',
+      ]
+
   test_env = None
   if lit_excludes:
     test_env = os.environ.copy()
@@ -1130,7 +1109,9 @@ def main():
 
   chrome_tools = []
   if not args.no_tools:
-    default_tools = ['plugins', 'blink_gc_plugin', 'translation_unit']
+    default_tools = [
+        'plugins', 'blink_gc_plugin', 'raw_ptr_plugin', 'translation_unit'
+    ]
     chrome_tools = list(set(default_tools + args.extra_tools))
   if cc is not None:  base_cmake_args.append('-DCMAKE_C_COMPILER=' + cc)
   if cxx is not None: base_cmake_args.append('-DCMAKE_CXX_COMPILER=' + cxx)
@@ -1158,17 +1139,11 @@ def main():
   if sys.platform == 'win32':
     cmake_args.append('-DLLVM_ENABLE_ZLIB=FORCE_ON')
 
-  if args.build_mac_arm:
-    assert platform.machine() != 'arm64', 'build_mac_arm for cross build only'
-    cmake_args += [
-        '-DCMAKE_OSX_ARCHITECTURES=arm64', '-DCMAKE_SYSTEM_NAME=Darwin'
-    ]
-
   # The default LLVM_DEFAULT_TARGET_TRIPLE depends on the host machine.
   # Set it explicitly to make the build of clang more hermetic, and also to
   # set it to arm64 when cross-building clang for mac/arm.
   if sys.platform == 'darwin':
-    if args.build_mac_arm or platform.machine() == 'arm64':
+    if platform.machine() == 'arm64':
       cmake_args.append('-DLLVM_DEFAULT_TARGET_TRIPLE=arm64-apple-darwin')
     else:
       cmake_args.append('-DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-apple-darwin')
@@ -1308,7 +1283,6 @@ def main():
       api_level = '21'
       if target_arch == 'riscv64':
         api_level = '35'
-        toolchain_dir = ANDROID_NDK_CANARY_TOOLCHAIN_DIR
       target_triple += '-linux-android' + api_level
       android_cflags = [
           '--sysroot=%s/sysroot' % toolchain_dir,
@@ -1355,9 +1329,7 @@ def main():
       # Build the Fuchsia profile and asan runtimes.  This is done after the rt
       # builtins have been created because the CMake build runs link checks that
       # require that the builtins already exist to succeed.
-      # TODO(thakis): Figure out why this doesn't build with the stage0
-      # compiler in arm cross builds.
-      build_profile = target_arch == 'x86_64' and not args.build_mac_arm
+      build_profile = target_arch == 'x86_64'
       # Build the asan runtime only on non-Mac platforms.  Macs are excluded
       # because the asan install changes library RPATHs which CMake only
       # supports on ELF platforms and MacOS uses Mach-O instead of ELF.
@@ -1388,7 +1360,7 @@ def main():
   if args.with_ml_inliner_model:
     if args.with_ml_inliner_model == 'default':
       model_path = ('https://commondatastorage.googleapis.com/'
-                    'chromium-browser-clang/tools/mlgo_model2.tgz')
+                    'chromium-browser-clang/tools/mlgo_model3.tgz')
     else:
       model_path = args.with_ml_inliner_model
     if not args.tf_path:
@@ -1432,8 +1404,6 @@ def main():
   cmake_args.append('-DLLVM_BUILTIN_TARGETS=' + all_triples)
   cmake_args.append('-DLLVM_RUNTIME_TARGETS=' + all_triples)
 
-  # If we're bootstrapping, Goma doesn't know about the bootstrap compiler
-  # we're using as the host compiler.
   if not args.bootstrap:
     cmake_args.extend(ccache_cmake_args)
 
@@ -1512,18 +1482,16 @@ def main():
     RunCommand(['touch', '-r', 'bin/clang', 'bin/clang-bolt.opt'])
     RunCommand(['mv', 'bin/clang-bolt.opt', 'bin/clang'])
 
-  if not args.build_mac_arm:
-    VerifyVersionOfBuiltClangMatchesVERSION()
-    VerifyZlibSupport()
+  VerifyVersionOfBuiltClangMatchesVERSION()
+  VerifyZlibSupport()
   if args.with_zstd:
     VerifyZStdSupport()
 
   # Run tests.
-  if (not args.build_mac_arm and
-      (args.run_tests or args.llvm_force_head_revision)):
+  if (chrome_tools and (args.run_tests or args.llvm_force_head_revision)):
     RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'cr-check-all'], setenv=True)
 
-  if not args.build_mac_arm and args.run_tests:
+  if args.run_tests:
     RunCommand(['ninja', '-C', LLVM_BUILD_DIR, 'check-all'],
                env=test_env,
                setenv=True)

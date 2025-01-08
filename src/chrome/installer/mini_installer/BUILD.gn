@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config/compiler_opt.gni")
 import("//build/config/compiler/compiler.gni")
 import("//build/config/features.gni")
 import("//build/config/python.gni")
@@ -36,7 +37,33 @@ declare_args() {
 
 config("mini_installer_compiler_flags") {
   # Disable buffer security checking.
-  cflags = [ "/GS-", "/clang:-O3" ]
+  cflags = [ "/GS-", "/clang:-O3", ]
+
+  if (!use_sse3 && use_sse2) {
+    cflags += [ "/arch:SSE2", ]
+  } else if (use_sse3) {
+    cflags += [ "/clang:-msse3", ]
+  } else if (use_sse41) {
+    cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
+  } else if (!use_avx && use_sse42) {
+    if (current_cpu == "x86") {
+      cflags += [ "/clang:-msse4.2", ]
+    } else {
+      cflags += [ "/arch:SSE42", ]
+    }
+  } else if (!use_avx2 && use_avx) {
+    cflags += [ "/arch:AVX", ]
+  } else if (!use_avx512 && use_avx2) {
+    cflags += [ "/arch:AVX2", ]
+  } else if (use_avx512) {
+    cflags += [ "/arch:AVX2", ]
+  } else {
+    print("No SIMD")
+  }
+
+  if (use_fma) {
+    cflags += [ "/fp:fast", ]
+  }
 }
 
 source_set("lib") {
@@ -178,9 +205,9 @@ action("mini_installer_archive") {
     build_timestamp,
 
     # Optional arguments to generate diff installer.
-    #'--last_chrome_installer=C:/Temp/base',
+    #'--last_chrome_installer=C:/src/chromium/src/out/thorium',
     #'--setup_exe_format=DIFF',
-    #'--diff_algorithm=COURGETTE',
+    #'--diff_algorithm=ZUCCHINI',
 
     # Optional argument for verbose archiving output.
     "--verbose",
@@ -194,7 +221,6 @@ action("mini_installer_archive") {
     "//chrome/browser/extensions/default_extensions",
     "//chrome/common/win:eventlog_provider",
     "//chrome/installer/setup",
-    "//mojo/core:shared_library",
     "//third_party/icu:icudata",
   ]
 
@@ -316,7 +342,64 @@ template("generate_mini_installer") {
   }
 }
 
-generate_mini_installer("mini_installer") {
+group("mini_installer") {
+  deps = []
+  if (use_sse2 && !use_sse3) {
+    deps += [ ":thorium_WIN32_SSE2_mini_installer" ]
+  } else if (use_sse3 && !use_sse41 && !use_sse42) {
+    if (current_cpu == "x86") {
+      deps += [ ":thorium_WIN32_SSE2_mini_installer"  ]
+    } else {
+      deps += [ ":thorium_SSE3_mini_installer" ]
+    }
+  } else if (use_sse41 && !use_sse42) {
+    deps += [ ":thorium_SSE4_mini_installer" ]
+  } else if (use_sse42 && !use_avx) {
+    deps += [ ":thorium_SSE4.2_mini_installer" ]
+  } else if (use_avx && !use_avx2) {
+    deps += [ ":thorium_AVX_mini_installer" ]
+  } else if (use_avx2 && !use_avx512) {
+    deps += [":thorium_AVX2_mini_installer"  ]
+  } else if (use_avx512) {
+    deps += [ ":thorium_AVX512_mini_installer" ]
+  } else {
+    deps += [ ":thorium_mini_installer" ]
+  }
+}
+
+generate_mini_installer("thorium_WIN32_SSE2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_WIN32_SSE3_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE3_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE4_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_SSE4.2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX2_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_AVX512_mini_installer") {
+  rc_file = packed_files_rc_file
+}
+
+generate_mini_installer("thorium_mini_installer") {
   rc_file = packed_files_rc_file
 }
 
@@ -348,14 +431,14 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
             root_out_dir)
     inputs = [
       "$root_out_dir/" + alternate_version_generator_rel_path,
-      "$root_out_dir/mini_installer.exe",
+      "$root_out_dir/thorium_mini_installer.exe",
     ]
     outputs = [ "$root_out_dir/$target_name.exe" ]
     args = [
       "--alternate_version_generator",
       alternate_version_generator_rel_path,
       "--mini_installer",
-      "mini_installer.exe",
+      "thorium_mini_installer.exe",
       "--out",
       "$target_name.exe",
       "--path_7za",
@@ -363,6 +446,7 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
     ]
     deps = [
       ":mini_installer",
+      ":thorium_mini_installer",
       alternate_version_generator_target,
     ]
   }

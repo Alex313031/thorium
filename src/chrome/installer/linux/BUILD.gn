@@ -36,21 +36,19 @@ packaging_files_executables = [
   "$root_out_dir/chrome_management_service",
   "$root_out_dir/chrome_sandbox",
 ]
-packaging_files_shlibs = []
+
+packaging_files_shlibs = [
+  "$root_out_dir/libEGL.so",
+  "$root_out_dir/libGLESv2.so",
+]
 
 if (bundle_widevine_cdm) {
   packaging_files_shlibs +=
       [ "$root_out_dir/$widevine_cdm_path/libwidevinecdm.so" ]
 }
 
-if (use_egl) {
-  packaging_files_shlibs += [
-    "$root_out_dir/libEGL.so",
-    "$root_out_dir/libGLESv2.so",
-  ]
-  if (angle_shared_libvulkan && !is_chromeos) {
-    packaging_files_shlibs += [ "$root_out_dir/libvulkan.so.1" ]
-  }
+if (angle_shared_libvulkan && !is_chromeos) {
+  packaging_files_shlibs += [ "$root_out_dir/libvulkan.so.1" ]
 }
 
 if (enable_swiftshader) {
@@ -72,6 +70,8 @@ packaging_files = packaging_files_binaries + [
                     "$root_out_dir/locales/en-US.pak",
                     "$root_out_dir/MEIPreload/manifest.json",
                     "$root_out_dir/MEIPreload/preloaded_data.pb",
+                    "$root_out_dir/PrivacySandboxAttestationsPreloaded/manifest.json",
+                    "$root_out_dir/PrivacySandboxAttestationsPreloaded/privacy-sandbox-attestations.dat",
                   ]
 if (enable_swiftshader) {
   packaging_files += [ "$root_out_dir/vk_swiftshader_icd.json" ]
@@ -191,7 +191,7 @@ strip_binary("strip_libGLESv2_shlib") {
 
 strip_binary("strip_libvulkan_shlib") {
   binary_input = "$root_out_dir/libvulkan.so.1"
-  deps = [ "//third_party/vulkan-deps/vulkan-loader/src:libvulkan" ]
+  deps = [ "//third_party/vulkan-loader/src:libvulkan" ]
 }
 
 strip_binary("strip_libvk_swiftshader.shlib") {
@@ -277,7 +277,7 @@ copy("deb_packaging_files") {
     "debian/changelog.template",
     "debian/control.template",
     "debian/debian.menu",
-    "debian/manual_recommends",
+    # "debian/manual_recommends",
     "debian/postinst",
     "debian/postrm",
     "debian/prerm",
@@ -366,30 +366,27 @@ group("installer_deps") {
     ":strip_chrome_crashpad_handler",
     ":strip_chrome_management_service",
     ":strip_chrome_sandbox",
+    ":strip_libEGL_shlib",
+    ":strip_libGLESv2_shlib",
     ":theme_files",
     "//chrome",
     "//chrome:packed_resources",
     "//chrome/browser/enterprise/connectors/device_trust/key_management/installer/management_service:chrome_management_service",
     "//chrome/browser/resources/media/mei_preload:component",
     "//components/crash/core/app:chrome_crashpad_handler",
+    "//components/privacy_sandbox/privacy_sandbox_attestations/preload:component",
     "//sandbox/linux:chrome_sandbox",
+    "//third_party/angle:libEGL",
+    "//third_party/angle:libGLESv2",
   ]
   if (bundle_widevine_cdm) {
     public_deps += [ "//third_party/widevine/cdm" ]
   }
-  if (use_egl) {
+  if (angle_shared_libvulkan && !is_chromeos) {
     public_deps += [
-      ":strip_libEGL_shlib",
-      ":strip_libGLESv2_shlib",
-      "//third_party/angle:libEGL",
-      "//third_party/angle:libGLESv2",
+      ":strip_libvulkan_shlib",
+      "//third_party/vulkan-loader/src:libvulkan",
     ]
-    if (angle_shared_libvulkan && !is_chromeos) {
-      public_deps += [
-        ":strip_libvulkan_shlib",
-        "//third_party/vulkan-deps/vulkan-loader/src:libvulkan",
-      ]
-    }
   }
   if (enable_swiftshader) {
     public_deps += [
@@ -452,6 +449,8 @@ template("linux_package") {
       deb_arch = "mips64el"
     } else if (current_cpu == "loong64") {
       deb_arch = "loong64"
+    } else if (current_cpu == "riscv64") {
+      deb_arch = "riscv64"
     } else {
       assert(false, "Linux installer not configured for this architecture.")
     }
@@ -503,6 +502,8 @@ template("linux_package") {
         rpm_arch = "mips64el"
       } else if (current_cpu == "loong64") {
         rpm_arch = "loongarch64"
+      } else if (current_cpu == "riscv64") {
+        rpm_arch = "riscv64"
       } else {
         assert(false, "Linux installer not configured for this architecture.")
       }

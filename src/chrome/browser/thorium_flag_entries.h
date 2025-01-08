@@ -19,9 +19,13 @@
 
     {"thorium-2024",
      "Enable Experimental Thorium 2024 (Th24) UI",
-     "Enable an experimental \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
+     "Enable a new \"hybrid\" UI, which restores many parts of the pre-Chrome Refresh 2023 UI. Good for people "
      "who find the new UI ugly or harder to use.",
      kOsDesktop, FEATURE_VALUE_TYPE(features::kThorium2024)},
+    {"restore-tab-button",
+     "Restore Tab Button",
+     "Enable a new toolbar button to restore your recently closed tabs.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kRestoreTabButton)},
     {"prominent-active-tab-titles",
      "Prominent Active Tab Titles",
      "Makes the active tab title bolder so that it is easier to identify.",
@@ -39,19 +43,48 @@
      "The default placement of the tab search button was changed to the left of the tabstrip in M125, but Thorium has reverted this back "
      "to the original righthand placement. This flag is for people who want the new CR23 left aligned behavior.",
      kOsDesktop, SINGLE_VALUE_TYPE("left-aligned-tab-search-button")},
+    {"remove-tabsearch-button",
+     "Remove Tab Search Button",
+     "Removes the tabsearch button from the tabstrip.",
+     kOsDesktop, SINGLE_VALUE_TYPE("remove-tabsearch-button")},
+
+#if BUILDFLAG(IS_WIN)
+    {"tab-search-caption-button",
+     "Disable Windows Tab Search Caption Button",
+     "Disables the tab search caption button (i.e. the version of the button that's adjacent to, and mimics, the minimize/maximize/close buttons), and "
+     "restores the standard rounded tab search button on the right of the tabstrip.",
+     kOsDesktop, SINGLE_VALUE_TYPE("disable-caption-button")},
+#endif // BUILDFLAG(IS_WIN)
+
+    {"classic-omnibox",
+     "Classic Omnibox UI",
+     "Changes the omnibox shape to be more square.",
+     kOsDesktop, SINGLE_VALUE_TYPE("classic-omnibox")},
     {"rectangular-tabs",
      "Thorium Rectangular Tabs UI",
      "Changes the look of browser tabs to appear with a rectangular shape, similar to Vivaldi or Cent Browser.",
      kOsDesktop, SINGLE_VALUE_TYPE("rectangular-tabs")},
+
+//#if BUILDFLAG(IS_WIN)
+    //{"transparent-tabs",
+     //"Thorium Semi-Transparent Tabs UI",
+     //"Reduces the opacity of tabs.",
+     //kOsWin, SINGLE_VALUE_TYPE("transparent-tabs")},
+//#endif // BUILDFLAG(IS_WIN)
+
+    {"custom-tab-width",
+     "Custom Tab Width",
+     "Allows setting the default tab width, in DIP. Normally 1 DIP = 1 Pixel, and the standard width for tabs is 240.",
+     kOsAll, MULTI_VALUE_TYPE(kCustomTabWidthChoices)},
     {"disable-thorium-dns-config",
      "Disable Thorium Custom DNS Config",
      "Disables the custom DNS configuration used by default in Thorium. Useful when this config breaks something, "
      "due to external apps or a non-standard system DNS config setting.",
      kOsDesktop, SINGLE_VALUE_TYPE("disable-thorium-dns-config")},
-    {"side-panel-journeys",
-     "Side Panel Journeys",
-     "Enables Journeys within the Side Panel.",
-     kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
+    //{"side-panel-journeys",
+     //"Side Panel Journeys",
+     //"Enables Journeys within the Side Panel.",
+     //kOsDesktop, FEATURE_VALUE_TYPE(history_clusters::kSidePanelJourneys)},
     // {"customize-chrome-side-panel-no-cr23",
      // "Customize Chrome Side Panel (Non-Cr23 Variant)",
      // "Enables the \"Customize Chrome\" item in the Side Panel, without the Cr23 UI, and without having to also enable Chrome Refresh 2023.",
@@ -84,10 +117,6 @@
      "external (e.g. `example.com`), or local (e.g. `file:///tmp/startpage.html`). "
      "This applies for incognito windows as well when not set to a `chrome://` internal page.",
      kOsDesktop, ORIGIN_LIST_VALUE_TYPE("custom-ntp", "")},
-    {"hide-sidepanel-button",
-     "Hide Side Panel Button",
-     "Hides the Thorium Side Panel Button.",
-     kOsDesktop, SINGLE_VALUE_TYPE("hide-sidepanel-button")},
     {"scroll-tabs",
      "Scroll Switches Active Tab",
      "Switch to the left/right tab if a scroll wheel event happens over the tabstrip, or the empty space beside the tabstrip.",
@@ -112,10 +141,10 @@
      kOsAll, SINGLE_VALUE_TYPE("allow-insecure-downloads")},
 
 #if !BUILDFLAG(IS_ANDROID)
-    {"disable-download-bubble",
-     "Disable Download Bubble",
-     "When enabled, the traditional download shelf is used instead of the download bubble. Thorium flag",
-     kOsDesktop, SINGLE_VALUE_TYPE("disable-download-bubble")},
+    {"download-shelf",
+     "Restore Download Shelf",
+     "When enabled, the traditional download shelf is used instead of the download bubble in the toolbar. Thorium flag",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kDownloadShelf)},
 #endif // BUILDFLAG(IS_ANDROID)
 
     {"show-avatar-button",

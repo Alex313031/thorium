@@ -36,6 +36,7 @@ export LC_ALL=C
 BASE=$(pwd)
 SRC="${BASE}/source/libaom"
 CFG="${BASE}/source/config"
+TMP="$(mktemp -d "${BASE}/build.XXXX")"
 
 function cleanup() {
   rm -rf "${TMP}"
@@ -100,7 +101,6 @@ EOF
 # $1 - File to modify.
 function convert_to_windows() {
   sed -i.bak \
-    -e 's/\(#define[[:space:]]INLINE[[:space:]]*\)inline/\1 __inline/' \
     -e 's/\(#define[[:space:]]HAVE_PTHREAD_H[[:space:]]*\)1/\1 0/' \
     -e 's/\(#define[[:space:]]HAVE_UNISTD_H[[:space:]]*\)1/\1 0/' \
     -e 's/\(#define[[:space:]]CONFIG_GCC[[:space:]]*\)1/\1 0/' \
@@ -114,7 +114,6 @@ git -C "${SRC}" fetch --tags
 
 # Scope 'trap' error reporting to configuration generation.
 (
-TMP=$(mktemp -d "${BASE}/build.XXXX")
 cd "${TMP}"
 
 trap '{
@@ -181,17 +180,17 @@ gen_config_files linux/arm \
 
 reset_dirs linux/arm-neon
 gen_config_files linux/arm-neon \
-  "${toolchain}/armv7-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=0 -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
+  "${toolchain}/armv7-linux-gcc.cmake -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
    ${all_platforms}"
 
 reset_dirs linux/arm-neon-cpu-detect
 gen_config_files linux/arm-neon-cpu-detect \
-  "${toolchain}/armv7-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=1 -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
+  "${toolchain}/armv7-linux-gcc.cmake -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
    ${all_platforms}"
 
 reset_dirs linux/arm64-cpu-detect
 gen_config_files linux/arm64-cpu-detect \
-  "${toolchain}/arm64-linux-gcc.cmake -DCONFIG_RUNTIME_CPU_DETECT=1 -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
+  "${toolchain}/arm64-linux-gcc.cmake -DENABLE_ARM_CRC32=0 -DENABLE_NEON_DOTPROD=0 -DENABLE_NEON_I8MM=0 \
    ${all_platforms}"
 
 # Copy linux configurations and modify for Windows.

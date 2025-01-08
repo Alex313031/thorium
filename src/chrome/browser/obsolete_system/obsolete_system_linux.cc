@@ -12,11 +12,30 @@
 const char kLinuxObsoleteUrl[] =
     "https://support.google.com/chrome/?p=unsupported_linux";
 
-// This list contains the 2 most recently obsoleted distros according to
+// This list contains the most recently obsoleted distros according to
 // `kLinuxObsoleteUrl`.
 const char* const kObsoleteDistros[] = {
-    "Ubuntu 12.04", "Ubuntu 14.04", "Debian 7",           "Debian 8",
-    "Fedora 30",    "Fedora 31",    "openSUSE Leap 15.0", "openSUSE Leap 15.1",
+    // Prevent clang-format from adding multiple entries per line.
+    // clang-format off
+    "Debian 8",
+    "Debian 9",
+    "Fedora 30",
+    "Fedora 31",
+    "Fedora 32",
+    "Fedora 33",
+    "Fedora 34",
+    "Fedora 35",
+    "Fedora 36",
+    "Fedora 37",
+    "Fedora 38",
+    "Ubuntu 14.04",
+    "Ubuntu 16.04",
+    "openSUSE Leap 15.0",
+    "openSUSE Leap 15.1",
+    "openSUSE Leap 15.2",
+    "openSUSE Leap 15.3",
+    "openSUSE Leap 15.4",
+    // clang-format on
 };
 
 namespace ObsoleteSystem {

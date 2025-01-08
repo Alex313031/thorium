@@ -27,24 +27,24 @@ fix upstream; probably a revert combined with dropping the "constexpr".
 
 # This goes in //chromium/src/third_party/angle/src
 
---- a/libANGLE/renderer/serial_utils.h
-+++ b/libANGLE/renderer/serial_utils.h
+--- a/src/libANGLE/renderer/serial_utils.h
++++ b/src/libANGLE/renderer/serial_utils.h
 @@ -119,6 +119,7 @@ class Serial final
- class AtomicQueueSerial final
+ class alignas(8) AtomicQueueSerial final
  {
    public:
 +    constexpr AtomicQueueSerial() : mValue(kInvalid) { ASSERT(mValue.is_lock_free()); }
      AtomicQueueSerial &operator=(const Serial &other)
      {
          mValue.store(other.mValue, std::memory_order_release);
-@@ -127,9 +128,8 @@ class AtomicQueueSerial final
+@@ -127,8 +128,8 @@ class alignas(8) AtomicQueueSerial final
      Serial getSerial() const { return Serial(mValue.load(std::memory_order_consume)); }
  
    private:
 +    std::atomic<uint64_t> mValue;
      static constexpr uint64_t kInvalid = 0;
 -    std::atomic<uint64_t> mValue       = kInvalid;
--    static_assert(decltype(mValue)::is_always_lock_free, "Must always be lock free");
  };
  
  // Used as default/initial serial
+

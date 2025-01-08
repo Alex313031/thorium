@@ -5,7 +5,7 @@
 
 CANVAS_DIMENSIONS, 24,
 FILL_RULE_NONZERO,
-MOVE_TO, 15.12f, 3.17f,
+MOVE_TO, 14.80f, 3.17f,
 R_ARC_TO, 0.92f, 0.92f, 0, 1, 1, 1.3f, 1.3f,
 R_LINE_TO, -7.1f, 7.1f,
 R_CUBIC_TO, -0.24f, 0.24f, -0.24f, 0.63f, 0, 0.87f,
@@ -13,5 +13,5 @@ R_LINE_TO, 7.1f, 7.1f,
 R_ARC_TO, 0.92f, 0.92f, 0, 1, 1, -1.3f, 1.3f,
 R_LINE_TO, -7.1f, -7.1f,
 R_ARC_TO, 2.45f, 2.45f, 0, 0, 1, 0, -3.47f,
-R_LINE_TO, 7.1f, -7.1f,
+//R_LINE_TO, 7.1f, -7.1f,
 CLOSE

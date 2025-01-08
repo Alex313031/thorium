@@ -28,9 +28,9 @@ fi
 # Always use our versions of ffmpeg libs.
 # This also makes RPMs find the compatibly-named library symlinks.
 if [[ -n "$LD_LIBRARY_PATH" ]]; then
-  LD_LIBRARY_PATH="$HERE:$HERE/lib:$LD_LIBRARY_PATH"
+  LD_LIBRARY_PATH="$HERE/lib:$LD_LIBRARY_PATH"
 else
-  LD_LIBRARY_PATH="$HERE:$HERE/lib"
+  LD_LIBRARY_PATH="$HERE/lib"
 fi
 export LD_LIBRARY_PATH
 
@@ -77,7 +77,7 @@ want_temp_profile=0
 is_safe_mode=0
 while [ $# -gt 0 ]; do
   case "$1" in
-    -h | --help | -help )
+    -h | --h | -help | --help )
       usage
       exit 0 ;;
     --temp-profile )
@@ -112,7 +112,7 @@ if [ $want_temp_profile -eq 1 ] ; then
   CACHE="$TEMP_PROFILE/cache"
   export PROFILE
   export CACHE
-  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --user-data-dir=$TEMP_PROFILE --disk-cache-dir=$CACHE"
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --disk-cache-dir=$CACHE --user-data-dir=$TEMP_PROFILE"
 else
   PROFILE="$XDG_CONFIG_HOME/thorium"
   CACHE="$XDG_CONFIG_HOME/thorium"

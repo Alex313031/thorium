@@ -39,7 +39,7 @@ void TrackedSplitPreference::OnNewValue(
     const base::Value* value,
     PrefHashStoreTransaction* transaction) const {
   if (value && !value->is_dict()) {
-    NOTREACHED();
+    NOTREACHED_IN_MIGRATION();
     return;
   }
 
@@ -85,7 +85,6 @@ bool TrackedSplitPreference::EnforceAndReport(
         pref_path_, invalid_keys, external_validation_invalid_keys, value_state,
         external_validation_value_state, helper_.IsPersonal());
   }
-
   TrackedPreferenceHelper::ResetAction reset_action =
       helper_.GetAction(value_state);
 

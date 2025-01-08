@@ -149,8 +149,10 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_F6, ui::EF_SHIFT_DOWN, IDC_FOCUS_PREVIOUS_PANE},
     {ui::VKEY_F6, ui::EF_CONTROL_DOWN, IDC_FOCUS_WEB_CONTENTS_PANE},
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-    // On Chrome OS, Control + Search + 7 toggles caret browsing.
-    // Note that VKEY_F7 is not a typo; Search + 7 maps to F7 for accelerators.
+    // On Chrome OS, Control + Search + the seventh key from escape (most
+    // commonly Brightness Up) toggles caret browsing.
+    // Note that VKEY_F7 is not a typo; Search + the seventh function key maps
+    // to F7 for accelerators.
     {ui::VKEY_F7, ui::EF_CONTROL_DOWN, IDC_CARET_BROWSING_TOGGLE},
 #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
     {ui::VKEY_F10, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
@@ -253,11 +255,6 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_OEM_PLUS, ui::EF_SHIFT_DOWN | ui::EF_CONTROL_DOWN, IDC_ZOOM_PLUS},
 #endif  // !BUILDFLAG(IS_CHROMEOS)
 #endif  // !BUILDFLAG(IS_MAC)
-#if BUILDFLAG(ENABLE_SCREEN_AI_SERVICE) && \
-    (BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS))
-    {ui::VKEY_S, ui::EF_CONTROL_DOWN | ui::EF_SHIFT_DOWN,
-     IDC_CONTENT_CONTEXT_RUN_LAYOUT_EXTRACTION},
-#endif
 };
 
 const AcceleratorMapping kDevToolsAcceleratorMap[] = {
@@ -324,16 +321,6 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
                            std::end(kDevToolsAcceleratorMap));
     }
 
-    // See https://devblogs.microsoft.com/oldnewthing/20040329-00/?p=40003
-    // Doing this check here and not at the bottom since kUIDebugAcceleratorMap
-    // contains Ctrl+Alt keys but we don't enable those for the public.
-#if DCHECK_IS_ON()
-    constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
-    for (auto& mapping : *accelerators)
-      DCHECK((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
-          << "Accelerators with Ctrl+Alt are reserved by Windows.";
-#endif
-
 #if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
     if (base::FeatureList::IsEnabled(
             lens::features::kEnableRegionSearchKeyboardShortcut)) {
@@ -364,7 +351,7 @@ bool GetStandardAcceleratorForCommandId(int command_id,
   // On macOS, the cut/copy/paste accelerators are defined in the main menu
   // built in main_menu_builder.mm and the accelerator is user configurable. All
   // of this is handled by CommandDispatcher.
-  NOTREACHED_NORETURN();
+  NOTREACHED();
 #else
   // The standard Ctrl-X, Ctrl-V and Ctrl-C are not defined as accelerators
   // anywhere else.

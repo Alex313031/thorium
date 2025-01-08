@@ -27,6 +27,8 @@
 #include "ui/base/metadata/metadata_header_macros.h"
 #include "ui/base/metadata/metadata_impl_macros.h"
 #include "ui/base/models/menu_model.h"
+#include "ui/base/mojom/dialog_button.mojom.h"
+#include "ui/views/accessibility/view_accessibility.h"
 #include "ui/views/bubble/bubble_dialog_delegate_view.h"
 #include "ui/views/controls/styled_label.h"
 #include "ui/views/layout/fill_layout.h"
@@ -70,7 +72,7 @@ HomePageUndoBubble::HomePageUndoBubble(views::View* anchor_view,
       undo_url_(undo_url),
       undo_value_is_ntp_(undo_value_is_ntp) {
   DCHECK(prefs_);
-  SetButtons(ui::DIALOG_BUTTON_NONE);
+  SetButtons(static_cast<int>(ui::mojom::DialogButton::kNone));
   set_margins(
       ChromeLayoutProvider::Get()->GetInsetsMetric(views::INSETS_DIALOG));
 }
@@ -135,19 +137,20 @@ HomeButton::HomeButton(PressedCallback callback, PrefService* prefs)
     : ToolbarButton(std::move(callback)),
       prefs_(prefs),
       coordinator_(this, prefs) {
-  static const bool disable_thorium_icons =
-      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
   SetProperty(views::kElementIdentifierKey, kToolbarHomeButtonElementId);
   SetTriggerableEventFlags(ui::EF_LEFT_MOUSE_BUTTON |
                            ui::EF_MIDDLE_MOUSE_BUTTON);
-  SetVectorIcons(features::IsChromeRefresh2023()
-                     ? disable_thorium_icons ? kNavigateHomeChromeRefreshIcon
-                     : kNavigateHomeChromeRefreshThoriumIcon
-                     : disable_thorium_icons ? kNavigateHomeIcon
-                     : kNavigateHomeThoriumIcon,
-                 kNavigateHomeTouchIcon);
+
+  static const bool disable_thorium_icons =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+  if (disable_thorium_icons) {
+    SetVectorIcons(kNavigateHomeChromeRefreshIcon, kNavigateHomeTouchIcon);
+  } else {
+    SetVectorIcons(kNavigateHomeChromeRefreshThoriumIcon, kNavigateHomeTouchIcon);
+  }
+
   SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_HOME));
-  SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_HOME));
+  GetViewAccessibility().SetName(l10n_util::GetStringUTF16(IDS_ACCNAME_HOME));
   SetID(VIEW_ID_HOME_BUTTON);
   SizeToPreferredSize();
 }

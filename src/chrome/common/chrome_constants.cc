@@ -10,32 +10,20 @@
 
 #define FPL FILE_PATH_LITERAL
 
-#if BUILDFLAG(IS_MAC)
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-#define PRODUCT_STRING "Google Chrome"
-#elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
-#define PRODUCT_STRING "Google Chrome for Testing"
-#elif BUILDFLAG(CHROMIUM_BRANDING)
-#define PRODUCT_STRING "Thorium"
-#else
-#error Unknown branding
-#endif
-#endif  // BUILDFLAG(IS_MAC)
-
 namespace chrome {
 
 #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-#define PRODUCT_STRING "Google Chrome"
+#define PRODUCT_FULLNAME_STRING "Google Chrome"
 #elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
-#define PRODUCT_STRING "Google Chrome for Testing"
+#define PRODUCT_FULLNAME_STRING "Google Chrome for Testing"
 #elif BUILDFLAG(CHROMIUM_BRANDING)
-#define PRODUCT_STRING "Thorium"
+#define PRODUCT_FULLNAME_STRING "Thorium"
 #else
 #error Unknown branding
 #endif
 
 const char kChromeVersion[] = CHROME_VERSION_STRING;
-const char kBrandName[] = PRODUCT_STRING;
+const char kBrandName[] = PRODUCT_FULLNAME_STRING;
 
 // The following should not be used for UI strings; they are meant
 // for system strings only. UI changes should be made in the GRD.
@@ -61,9 +49,9 @@ const base::FilePath::CharType kHelperProcessExecutableName[] =
     FPL("thorium.exe");
 #elif BUILDFLAG(IS_MAC)
 const base::FilePath::CharType kBrowserProcessExecutableName[] =
-    FPL(PRODUCT_STRING);
+    FPL(PRODUCT_FULLNAME_STRING);
 const base::FilePath::CharType kHelperProcessExecutableName[] =
-    FPL(PRODUCT_STRING " Helper");
+    FPL(PRODUCT_FULLNAME_STRING " Helper");
 #elif BUILDFLAG(IS_ANDROID)
 // NOTE: Keep it synced with the process names defined in AndroidManifest.xml.
 const base::FilePath::CharType kBrowserProcessExecutableName[] = FPL("thorium");
@@ -83,7 +71,7 @@ const base::FilePath::CharType kHelperProcessExecutablePath[] =
     FPL("thorium.exe");
 #elif BUILDFLAG(IS_MAC)
 const base::FilePath::CharType kBrowserProcessExecutablePath[] =
-    FPL(PRODUCT_STRING ".app/Contents/MacOS/" PRODUCT_STRING);
+    FPL(PRODUCT_FULLNAME_STRING ".app/Contents/MacOS/" PRODUCT_FULLNAME_STRING);
 const base::FilePath::CharType
     kGoogleChromeForTestingBrowserProcessExecutablePath[] =
         FPL("Google Chrome for Testing.app/Contents/MacOS/Google Chrome for "
@@ -93,7 +81,7 @@ const base::FilePath::CharType kGoogleChromeBrowserProcessExecutablePath[] =
 const base::FilePath::CharType kChromiumBrowserProcessExecutablePath[] =
     FPL("Thorium.app/Contents/MacOS/Thorium");
 const base::FilePath::CharType kHelperProcessExecutablePath[] =
-    FPL(PRODUCT_STRING " Helper.app/Contents/MacOS/" PRODUCT_STRING " Helper");
+    FPL(PRODUCT_FULLNAME_STRING " Helper.app/Contents/MacOS/" PRODUCT_FULLNAME_STRING " Helper");
 #elif BUILDFLAG(IS_ANDROID)
 const base::FilePath::CharType kBrowserProcessExecutablePath[] = FPL("thorium");
 const base::FilePath::CharType kHelperProcessExecutablePath[] = FPL("thorium");
@@ -104,9 +92,9 @@ const base::FilePath::CharType kHelperProcessExecutablePath[] = FPL("thorium");
 
 #if BUILDFLAG(IS_MAC)
 const base::FilePath::CharType kFrameworkName[] =
-    FPL(PRODUCT_STRING " Framework.framework");
+    FPL(PRODUCT_FULLNAME_STRING " Framework.framework");
 const base::FilePath::CharType kFrameworkExecutableName[] =
-    FPL(PRODUCT_STRING " Framework");
+    FPL(PRODUCT_FULLNAME_STRING " Framework");
 const char kMacHelperSuffixAlerts[] = " (Alerts)";
 #endif  // BUILDFLAG(IS_MAC)
 
@@ -191,6 +179,8 @@ const base::FilePath::CharType kJumpListIconDirname[] = FPL("JumpListIcons");
 // directory names
 #if BUILDFLAG(IS_WIN)
 const wchar_t kUserDataDirname[] = L"User Data";
+#elif BUILDFLAG(IS_ANDROID)
+const base::FilePath::CharType kOTRTempStateDirname[] = FPL("OTRTempState");
 #endif
 
 const float kMaxShareOfExtensionProcesses = 0.30f;

@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/342213636): Remove this and spanify to fix the errors.
+#pragma allow_unsafe_buffers
+#endif
+
 #include <stddef.h>
 
 #include <algorithm>
@@ -210,6 +215,7 @@ class ShellView : public views::BoxLayoutView,
                       .SetProperty(
                           views::kFlexBehaviorKey,
                           views::FlexSpecification(
+                              views::LayoutOrientation::kHorizontal,
                               views::MinimumFlexSizeRule::kScaleToMinimum,
                               views::MaximumFlexSizeRule::kUnbounded))
                       // Left padding  = 2, Right padding = 2
@@ -251,8 +257,8 @@ class ShellView : public views::BoxLayoutView,
                        const std::u16string& new_contents) override {}
   bool HandleKeyEvent(views::Textfield* sender,
                       const ui::KeyEvent& key_event) override {
-    if (key_event.type() == ui::ET_KEY_PRESSED && sender == url_entry_ &&
-        key_event.key_code() == ui::VKEY_RETURN) {
+    if (key_event.type() == ui::EventType::kKeyPressed &&
+        sender == url_entry_ && key_event.key_code() == ui::VKEY_RETURN) {
       std::string text = base::UTF16ToUTF8(url_entry_->GetText());
       GURL url(text);
       if (!url.has_scheme()) {
@@ -365,7 +371,8 @@ void ShellPlatformDelegate::CreatePlatformWindow(
       gfx::Rect(initial_size));
 #else
   shell_data.window_widget = new views::Widget();
-  views::Widget::InitParams params;
+  views::Widget::InitParams params(
+      views::Widget::InitParams::NATIVE_WIDGET_OWNS_WIDGET);
   params.bounds = gfx::Rect(initial_size);
   params.delegate = delegate.release();
   params.wm_class_class = "thorium_shell";

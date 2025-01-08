@@ -21,7 +21,9 @@ namespace metrics {
 
 // static
 bool MachineIdProvider::HasId() {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
+  static const bool disable_machine_id =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
+  if (disable_machine_id) {
     return false;
   }
   return true;
@@ -31,7 +33,9 @@ bool MachineIdProvider::HasId() {
 // is running from.
 // static
 std::string MachineIdProvider::GetMachineId() {
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
+  static const bool disable_machine_id =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
+  if (disable_machine_id) {
     return std::string();
   }
   base::ScopedBlockingCall scoped_blocking_call(FROM_HERE,
@@ -43,14 +47,14 @@ std::string MachineIdProvider::GetMachineId() {
   base::FilePath executable_path;
 
   if (!base::PathService::Get(base::FILE_EXE, &executable_path)) {
-    NOTREACHED();
+    NOTREACHED_IN_MIGRATION();
     return std::string();
   }
 
   std::vector<base::FilePath::StringType> path_components =
       executable_path.GetComponents();
   if (path_components.empty()) {
-    NOTREACHED();
+    NOTREACHED_IN_MIGRATION();
     return std::string();
   }
   base::FilePath::StringType drive_name = L"\\\\.\\" + path_components[0];

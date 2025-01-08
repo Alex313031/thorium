@@ -67,5 +67,6 @@ cp -r -f -v ~/chromium/src/out/thorium/ui_test_200_percent.pak ~/chromium/src/ou
 cp -r -f -v ~/chromium/src/out/thorium/views_examples_resources.pak ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 cp -r -f -v ~/chromium/src/out/thorium/thorium_ui_debug_shell.exe ~/chromium/src/out/thorium/Thorium_UI_Debug_Shell/ &&
 
+printf "\n" &&
 printf "${GRE}Debug Windows Build Completed.\n" &&
 tput sgr0

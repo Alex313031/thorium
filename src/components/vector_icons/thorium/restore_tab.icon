@@ -1,0 +1,25 @@
+// Copyright 2024 The Brave Authors and Alex313031
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at http://mozilla.org/MPL/2.0/.
+
+CANVAS_DIMENSIONS, 24,
+PATH_COLOR_ARGB, 0xFF, 0x1A, 0x73, 0xE8,
+MOVE_TO, 17.27f, 18.96f,
+R_ARC_TO, 0.83f, 0.83f, 0, 1, 1, -0.94f, -1.38f,
+R_CUBIC_TO, 2.03f, -1.38f, 3.34f, -3.9f, 3.34f, -6.41f,
+R_CUBIC_TO, 0, -4.14f, -3.36f, -7.5f, -7.5f, -7.5f,
+R_CUBIC_TO, -4.14f, 0, -7.5f, 3.37f, -7.5f, 7.5f,
+R_CUBIC_TO, 0, 3.97f, 3.1f, 7.22f, 7, 7.48f,
+R_LINE_TO, -1.18f, -2.07f,
+R_ARC_TO, 0.83f, 0.83f, 0, 0, 1, 1.45f, -0.83f,
+R_LINE_TO, 1.79f, 3.14f,
+R_ARC_TO, 0.83f, 0.83f, 0, 0, 1, -0.32f, 1.14f,
+R_LINE_TO, -3.33f, 1.87f,
+R_ARC_TO, 0.84f, 0.84f, 0, 0, 1, -0.81f, -1.45f,
+R_LINE_TO, 0.69f, -0.38f,
+CUBIC_TO, 5.96f, 19.06f, 3, 15.46f, 3, 11.17f,
+CUBIC_TO, 3, 6.11f, 7.11f, 2, 12.17f, 2,
+R_CUBIC_TO, 5.05f, 0, 9.17f, 4.11f, 9.17f, 9.17f,
+R_CUBIC_TO, 0, 3.05f, -1.6f, 6.1f, -4.07f, 7.79f,
+CLOSE

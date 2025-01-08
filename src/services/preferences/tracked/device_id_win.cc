@@ -16,8 +16,10 @@
 
 MachineIdStatus GetDeterministicMachineSpecificId(std::string* machine_id) {
   DCHECK(machine_id);
-  
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id")) {
+
+  static const bool disable_machine_id =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
+  if (disable_machine_id) {
     return MachineIdStatus::NOT_IMPLEMENTED;
   }
 

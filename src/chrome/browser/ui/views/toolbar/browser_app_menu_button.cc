@@ -29,6 +29,7 @@
 #include "chrome/browser/ui/views/toolbar/toolbar_button.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_ink_drop_util.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_view.h"
+#include "chrome/browser/user_education/tutorial_identifiers.h"
 #include "chrome/browser/user_education/user_education_service.h"
 #include "chrome/browser/user_education/user_education_service_factory.h"
 #include "chrome/grit/branded_strings.h"
@@ -72,13 +73,11 @@ BrowserAppMenuButton::BrowserAppMenuButton(ToolbarView* toolbar_view)
                                         base::Unretained(this))),
       toolbar_view_(toolbar_view) {
   SetHorizontalAlignment(gfx::ALIGN_RIGHT);
-  if (features::IsChromeRefresh2023()) {
-    SetImageLabelSpacing(kChromeRefreshImageLabelPadding);
-    label()->SetPaintToLayer();
-    label()->SetSkipSubpixelRenderingOpacityCheck(true);
-    label()->layer()->SetFillsBoundsOpaquely(false);
-    label()->SetSubpixelRenderingEnabled(false);
-  }
+  SetImageLabelSpacing(kChromeRefreshImageLabelPadding);
+  label()->SetPaintToLayer();
+  label()->SetSkipSubpixelRenderingOpacityCheck(true);
+  label()->layer()->SetFillsBoundsOpaquely(false);
+  label()->SetSubpixelRenderingEnabled(false);
 }
 
 BrowserAppMenuButton::~BrowserAppMenuButton() {}
@@ -142,44 +141,30 @@ void BrowserAppMenuButton::UpdateThemeBasedState() {
   // Call `UpdateIcon()` after `UpdateTextAndHighlightColor()` as the icon color
   // depends on if the container is in an expanded state.
   UpdateIcon();
-  if (features::IsChromeRefresh2023()) {
-    UpdateInkdrop();
-    // Outset focus ring should be present for the chip but not when only
-    // the icon is visible.
-    views::FocusRing::Get(this)->SetOutsetFocusRingDisabled(
-        !IsLabelPresentAndVisible());
-  }
+  UpdateInkdrop();
+  // Outset focus ring should be present for the chip but not when only
+  // the icon is visible.
+  views::FocusRing::Get(this)->SetOutsetFocusRingDisabled(
+      !IsLabelPresentAndVisible());
 }
 
 void BrowserAppMenuButton::UpdateIcon() {
   static const bool disable_thorium_icons =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
-
-  const gfx::VectorIcon& icon =
-      ui::TouchUiController::Get()->touch_ui()
-          ? kBrowserToolsTouchIcon
-          : (features::IsChromeRefresh2023() ? disable_thorium_icons ? kBrowserToolsChromeRefreshIcon
-                                             : kBrowserToolsChromeRefreshThoriumIcon
-                                             : disable_thorium_icons ? kBrowserToolsIcon
-                                             : kBrowserToolsThoriumIcon);
+  const gfx::VectorIcon& icon = ui::TouchUiController::Get()->touch_ui()
+                                    ? kBrowserToolsTouchIcon
+                                    : disable_thorium_icons
+                                          ? kBrowserToolsChromeRefreshIcon
+                                          : kBrowserToolsChromeRefreshThoriumIcon;
+  // Fix Thorium hamburger menu size
+  constexpr int icon_size = 22;
   for (auto state : kButtonStates) {
-    // `app_menu_icon_controller()->GetIconColor()` set different colors based
-    // on the severity. However with chrome refresh all the severities should
-    // have the same color. Decouple the logic from
-    // `app_menu_icon_controller()->GetIconColor()` to avoid impact from
-    // multiple call sites.
-    SkColor icon_color =
-        features::IsChromeRefresh2023()
-            ? GetForegroundColor(state)
-            : toolbar_view_->app_menu_icon_controller()->GetIconColor(
-                  GetForegroundColor(state));
-    SetImageModel(state, ui::ImageModel::FromVectorIcon(icon, icon_color));
+    SkColor icon_color = GetForegroundColor(state);
+    SetImageModel(state, ui::ImageModel::FromVectorIcon(icon, icon_color, icon_size));
   }
 }
 
 void BrowserAppMenuButton::UpdateInkdrop() {
-  CHECK(features::IsChromeRefresh2023());
-
   if (IsLabelPresentAndVisible()) {
     ConfigureToolbarInkdropForRefresh2023(this, kColorAppMenuChipInkDropHover,
                                           kColorAppMenuChipInkDropRipple);
@@ -197,7 +182,7 @@ bool BrowserAppMenuButton::IsLabelPresentAndVisible() const {
 }
 
 SkColor BrowserAppMenuButton::GetForegroundColor(ButtonState state) const {
-  if (features::IsChromeRefresh2023() && IsLabelPresentAndVisible()) {
+  if (IsLabelPresentAndVisible()) {
     const auto* const color_provider = GetColorProvider();
     if (type_and_severity_.use_primary_colors) {
       return color_provider->GetColor(kColorAppMenuExpandedForegroundPrimary);
@@ -253,14 +238,10 @@ void BrowserAppMenuButton::UpdateTextAndHighlightColor() {
 }
 
 bool BrowserAppMenuButton::ShouldPaintBorder() const {
-  return !features::IsChromeRefresh2023();
+  return false;
 }
 
 void BrowserAppMenuButton::UpdateLayoutInsets() {
-  if (!features::IsChromeRefresh2023()) {
-    return;
-  }
-
   if (IsLabelPresentAndVisible()) {
     SetLayoutInsets(::GetLayoutInsets(BROWSER_APP_MENU_CHIP_PADDING));
   } else {
@@ -269,7 +250,7 @@ void BrowserAppMenuButton::UpdateLayoutInsets() {
 }
 
 std::optional<SkColor> BrowserAppMenuButton::GetHighlightTextColor() const {
-  if (features::IsChromeRefresh2023() && IsLabelPresentAndVisible()) {
+  if (IsLabelPresentAndVisible()) {
     const auto* const color_provider = GetColorProvider();
     if (type_and_severity_.use_primary_colors) {
       return color_provider->GetColor(kColorAppMenuExpandedForegroundPrimary);
@@ -281,19 +262,12 @@ std::optional<SkColor> BrowserAppMenuButton::GetHighlightTextColor() const {
 
 std::optional<SkColor> BrowserAppMenuButton::GetHighlightColor() const {
   const auto* const color_provider = GetColorProvider();
-  if (features::IsChromeRefresh2023() &&
-      type_and_severity_.use_primary_colors) {
-    return color_provider->GetColor(kColorAppMenuHighlightPrimary);
-  }
-  switch (type_and_severity_.severity) {
-    case AppMenuIconController::Severity::NONE:
-      return std::nullopt;
-    case AppMenuIconController::Severity::LOW:
-      return color_provider->GetColor(kColorAppMenuHighlightSeverityLow);
-    case AppMenuIconController::Severity::MEDIUM:
-      return color_provider->GetColor(kColorAppMenuHighlightSeverityMedium);
-    case AppMenuIconController::Severity::HIGH:
-      return color_provider->GetColor(kColorAppMenuHighlightSeverityHigh);
+  if (type_and_severity_.severity == AppMenuIconController::Severity::NONE) {
+    return std::nullopt;
+  } else {
+    return color_provider->GetColor(type_and_severity_.use_primary_colors
+                                        ? kColorAppMenuHighlightPrimary
+                                        : kColorAppMenuHighlightDefault);
   }
 }
 

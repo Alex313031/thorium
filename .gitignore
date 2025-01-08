@@ -7,6 +7,7 @@ API_KEYS.txt
 *.zip
 *.apk
 /release/
+/test/
 mini_installer.exe
 thorium_mini_installer.exe
 thorium_SSE2_mini_installer.exe
