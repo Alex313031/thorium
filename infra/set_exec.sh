@@ -33,7 +33,7 @@ sudo chmod -v +x g &&
 
 sudo chmod -v +x build_android.sh &&
 
-sudo chmod -v +x build_dmg.sh &&
+sudo chmod -v +x create_dmg.sh &&
 
 sudo chmod -v +x build_mac.sh &&
 
@@ -57,13 +57,13 @@ sudo chmod -v +x version.sh &&
 
 sudo chmod -v +x upstream_version.sh &&
 
+sudo chmod -v +x get_repo.sh &&
+
 sudo chmod -v +x infra/arch-prerequisites.sh &&
 
 sudo chmod -v +x infra/fetch_api_keys.sh &&
 
 sudo chmod -v +x infra/fix_libaom.sh &&
-
-sudo chmod -v +x infra/install_deps.sh &&
 
 sudo chmod -v +x infra/build_dmg_cr.sh &&
 
