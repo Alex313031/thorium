@@ -112,7 +112,7 @@ if [ $want_temp_profile -eq 1 ] ; then
   CACHE="$TEMP_PROFILE/cache"
   export PROFILE
   export CACHE
-  CHROME_USER_FLAGS="$CHROME_USER_FLAGS"
+  CHROME_USER_FLAGS="$CHROME_USER_FLAGS --disk-cache-dir=$CACHE --user-data-dir=$TEMP_PROFILE"
 else
   PROFILE="$HERE/.config/thorium"
   CACHE="$HERE/.config/cache"
@@ -127,4 +127,4 @@ fi
 
 # Launch Thorium
 # Note: exec -a below is a bashism.
-exec -a "$0" "$HERE/thorium" "--disable-machine-id" "--disable-encryption" "--user-data-dir=$PROFILE" "--disk-cache-dir=$CACHE" "$CHROME_USER_FLAGS" "$@"
+exec -a "$0" "$HERE/thorium" "--disable-machine-id" "--disable-encryption" "--user-data-dir=$PROFILE" "--disk-cache-dir=$CACHE" $CHROME_USER_FLAGS "$@"
