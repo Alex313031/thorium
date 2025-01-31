@@ -52,7 +52,7 @@ thor_src_dir = os.path.expandvars(os.getenv('THOR_DIR', r'%USERPROFILE%/thorium'
 
 
 # Set thor_ver
-thor_ver = "128.0.6613.194"
+thor_ver = "130.0.6723.174"
 
 
 print(f"\nCurrent Thorium version is: {thor_ver}\n")
