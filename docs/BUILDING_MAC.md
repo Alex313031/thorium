@@ -99,10 +99,11 @@ to enable Sync.
 ## Setting up the build
 
 First, we need to make sure we have all the tags/branches and are on Tip of Tree.
-For this, run (from within the Thorium repo):
+For this, run (may take up to an hour):
 
 ```shell
-./trunk.sh
+cd /path/to/thorium
+caffeinate ./trunk.sh
 ```
 
 Secondly, we need to check out the revision that Thorium is currently using. 
