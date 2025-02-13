@@ -1,6 +1,6 @@
-From 45e172ad614f38a3ce759d2164a0c57d56f39e58 Mon Sep 17 00:00:00 2001
+From bfb08f0ab9a320a76bddfc36ee358cb6174c6626 Mon Sep 17 00:00:00 2001
 From: Ho Cheung
-Date: Mon, 14 Oct 2024 15:18:21 +0800
+Date: Thu, 13 Feb 2025 10:19:37 +0800
 Subject: [PATCH] [Android] Remove-discovery-module-from-NTP
 
 ---
@@ -73,5 +73,5 @@ index 50f880e715489..ce7c2695ab09f 100644
  }
  
 -- 
-2.43.0
+2.47.1.windows.2
 
