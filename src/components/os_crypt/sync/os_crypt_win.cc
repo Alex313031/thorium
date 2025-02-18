@@ -48,15 +48,16 @@ constexpr char kEncryptionVersionPrefix[] = "v10";
 // Key prefix for a key encrypted with DPAPI.
 constexpr char kDPAPIKeyPrefix[] = "DPAPI";
 
-static const bool disable_encryption =
-    base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption");
-
 bool EncryptStringWithDPAPI(const std::string& plaintext,
                             std::string* ciphertext) {
+  static const bool disable_encryption =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption");
+
   if (disable_encryption) {
     *ciphertext = plaintext;
     return true;
   }
+
   DATA_BLOB input;
   input.pbData =
       const_cast<BYTE*>(reinterpret_cast<const BYTE*>(plaintext.data()));
@@ -91,10 +92,14 @@ bool EncryptStringWithDPAPI(const std::string& plaintext,
 
 bool DecryptStringWithDPAPI(const std::string& ciphertext,
                             std::string* plaintext) {
+  static const bool disable_encryption =
+      base::CommandLine::ForCurrentProcess()->HasSwitch("disable-encryption");
+
   if (disable_encryption) {
     *plaintext = ciphertext;
     return true;
   }
+
   DATA_BLOB input;
   input.pbData =
       const_cast<BYTE*>(reinterpret_cast<const BYTE*>(ciphertext.data()));

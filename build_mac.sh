@@ -44,7 +44,7 @@ buildShell () {
 	cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 	printf "\n" &&
 	
-	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\', and copy the Thorium Shell.app out.\n" &&
+	printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./create_dmg.sh\', and copy the Thorium Shell.app out.\n" &&
 	tput sgr0
 }
 case $1 in
@@ -72,10 +72,11 @@ cd ${CR_SRC_DIR} &&
 # For restoring individual build targets for customization
 #autoninja -C out/thorium thorium chromedriver policy_templates -j$@ &&
 autoninja -C out/thorium thorium_all -j$@ &&
+autoninja -C out/thorium chrome/installer/mac -j$@ &&
 
 printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 printf "\n" &&
 
-printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./build_dmg.sh\'\n" &&
+printf "${GRE}${bold}Build Completed. ${YEL}${bold}You can now run \'./create_dmg.sh\'\n" &&
 tput sgr0
