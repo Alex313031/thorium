@@ -67,7 +67,7 @@ index 7cda11126e61e..fe82b35a1a5d1 100644
 +#if !BUILDFLAG(THORIUM_DEBUG)
    ScopedBlockingCall scoped_blocking_call(FROM_HERE, BlockingType::MAY_BLOCK);
 -
-+#endif
++#endif // !BUILDFLAG(THORIUM_DEBUG)
    WIN32_FILE_ATTRIBUTE_DATA attr;
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
@@ -103,7 +103,7 @@ index 0d93ca4713624..3815fe60b4776 100644
  
  #endif  // !BUILDFLAG(IS_NACL)
  }
-+#endif
++#endif // !BUILDFLAG(THORIUM_DEBUG)
  
  std::string BuildCrashString(const char* file,
                               int line,
@@ -153,7 +153,7 @@ index 0d93ca4713624..3815fe60b4776 100644
  
 +#if !BUILDFLAG(THORIUM_DEBUG)
    size_t stack_start = stream_.str().length();
-+#endif
++#endif // !BUILDFLAG(THORIUM_DEBUG)
  #if !defined(OFFICIAL_BUILD) && !BUILDFLAG(IS_NACL) && !defined(__UCLIBC__) && \
 -    !BUILDFLAG(IS_AIX)
 +    !BUILDFLAG(IS_AIX) || BUILDFLAG(THORIUM_DEBUG)
@@ -172,7 +172,7 @@ index 0d93ca4713624..3815fe60b4776 100644
  
    if (severity_ == LOGGING_FATAL)
      SetLogFatalCrashKey(this);
-+#endif
++#endif // !BUILDFLAG(THORIUM_DEBUG)
  
    // Give any log message handler first dibs on the message.
    if (g_log_message_handler &&
