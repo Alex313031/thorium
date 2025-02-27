@@ -52,9 +52,10 @@ git checkout -f tags/$CR_VER &&
 
 git clean -ffd &&
 git clean -ffd &&
-git clean -ffd &&
 
 gclient sync --with_branch_heads --with_tags -f -R -D &&
+
+git clean -ffd &&
 
 # gclient runhooks &&
 
@@ -66,7 +67,7 @@ printf "\n"
 printf "${GRE}Chromium tree is checked out at tag: ${c0}$CR_VER\n"
 printf "\n"
 	
-printf "${YEL}Downloading PGO Profiles for Linux, Windows, and Mac...\n" &&
+printf "${YEL}Downloading PGO Profiles for Linux & Windows...\n" &&
 printf "\n" &&
 tput sgr0 &&
 
