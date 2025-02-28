@@ -7,7 +7,6 @@ import os
 import shutil
 import subprocess
 import sys
-import time
 import zipfile
 
 
@@ -24,77 +23,110 @@ def try_run(command):
 
 def display_help():
     print("\nScript to make a portable Thorium .zip for Windows.\n")
-    print("\nPlease place the thorium_mini_installer.exe file in this directory before running.\n")
 
-if '--help' in sys.argv:
+
+if "--help" in sys.argv:
     display_help()
     sys.exit(0)
 
 
 def copy_installer():
-    cr_src_dir = os.getenv('CR_DIR', r'C:/src/chromium/src')
-    src_path = os.path.normpath(os.path.join(cr_src_dir, 'out', 'thorium', 'thorium_mini_installer.exe'))
-    dest_path = os.path.normpath(os.path.join(os.getcwd(), 'thorium_mini_installer.exe'))
+    cr_src_dir = os.getenv("CR_DIR", r"C:/src/chromium/src")
+    installer_files = [
+        "thorium_mini_installer.exe",
+        "thorium_AVX_mini_installer.exe",
+        "thorium_AVX2_mini_installer.exe",
+        "thorium_SSE3_mini_installer.exe",
+        "thorium_SSE4_mini_installer.exe",
+    ]
 
-    if not os.path.exists(src_path):
-        fail(f"thorium_mini_installer.exe not found at {src_path}")
+    existing_files = [
+        installer_file
+        for installer_file in installer_files
+        if os.path.exists(os.path.join(os.getcwd(), installer_file))
+    ]
 
-    print(f"Copying thorium_mini_installer.exe from {src_path} to {dest_path}...\n")
-    shutil.copy(src_path, dest_path)
+    if existing_files:
+        print(f"Skipping copy for existing files: {', '.join(existing_files)}\n")
+        print("Starting portable version creation.")
+        return existing_files[0]
+
+    for installer_file in installer_files:
+        src_path = os.path.normpath(
+            os.path.join(cr_src_dir, "out", "thorium", installer_file)
+        )
+        dest_path = os.path.normpath(os.path.join(os.getcwd(), installer_file))
+
+        if os.path.exists(src_path):
+            print(f"Copying {installer_file} from {src_path} to {dest_path}...\n")
+            shutil.copy(src_path, dest_path)
+            return installer_file
+
+    fail("No installer file found.")
 
 
-def extract_and_copy_files():
-    # Extract and copy files
-    os.makedirs('./temp/USER_DATA', exist_ok=True)
-    try_run('7z x thorium_mini_installer.exe')
-    try_run('7z x chrome.7z')
-    shutil.move('Chrome-bin', './temp/BIN')
-    shutil.copy('./README.win', './temp/README.txt')
-    shutil.copy('./THORIUM.BAT', './temp/')
-    shutil.copy('./THORIUM_SHELL.BAT', './temp/')
+def extract_and_copy_files(installer_name):
+    os.makedirs("./temp/USER_DATA", exist_ok=True)
+    try_run(f"7z x {installer_name}")
+    try_run("7z x chrome.7z")
+    shutil.move("Chrome-bin", "./temp/BIN")
+    shutil.copy("./README.win", "./temp/README.txt")
+    shutil.copy("./THORIUM.BAT", "./temp/")
+    shutil.copy("./THORIUM_SHELL.BAT", "./temp/")
 
-def zip_files():
-    # Create zip archive
-    with zipfile.ZipFile('thorium_portable.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        for root, _, files in os.walk('./temp'):
+
+def zip_files(installer_name):
+    version = "130.0.6723.174"
+
+    if "AVX2" in installer_name:
+        zip_filename = f"Thorium_AVX2_{version}.zip"
+    elif "AVX" in installer_name:
+        zip_filename = f"Thorium_AVX_{version}.zip"
+    elif "SSE3" in installer_name:
+        zip_filename = f"Thorium_SSE3_{version}.zip"
+    elif "SSE4" in installer_name:
+        zip_filename = f"Thorium_SSE4_{version}.zip"
+    else:
+        zip_filename = f"thorium_portable.zip"
+
+    with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zf:
+        for root, _, files in os.walk("./temp"):
+            if not files:
+                zf.write(root, os.path.relpath(root, "./temp"))
             for file in files:
                 file_path = os.path.join(root, file)
-                zf.write(file_path, os.path.relpath(file_path, './temp'))
+                zf.write(file_path, os.path.relpath(file_path, "./temp"))
+
+    print(f"Created zip archive: {zip_filename}")
+
 
 def clean_up():
-    # Cleanup extracted files
     try:
-        os.remove('chrome.7z')
-        shutil.rmtree('temp')
+        os.remove("chrome.7z")
+        shutil.rmtree("temp")
     except FileNotFoundError:
         pass
 
+
 def main():
+    print(
+        "\nNOTE: Place the Thorium .exe in this directory and ensure 7-Zip is in PATH.\n"
+    )
 
-    print("\nNOTE: You must place the thorium .exe file in this directory before running.")
-    print("   AND you must have 7-Zip installed and in your PATH.")
-    print("   Make sure to rename the .zip properly as per the release instructions.")
-    print("   AND make sure to edit the THORIUM_SHELL.BAT to match the version number of this release.\n")
-
-    copy_installer()
-
+    installer_name = copy_installer()
     input("Press Enter to continue or Ctrl + C to abort.")
 
-    print("Extracting & Copying files from thorium .exe file...\n")
-    time.sleep(2)
-
-    extract_and_copy_files()
+    print("Extracting files from installer file...\n")
+    extract_and_copy_files(installer_name)
 
     print("\nZipping up...\n")
-    zip_files()
+    zip_files(installer_name)
 
     print("\nCleaning up...\n")
-    time.sleep(2)
-
     clean_up()
 
-    print("\nDone! Zip is at ./thorium_portable.zip")
-    print("Remember to rename it with the version before distributing it.\n")
+    print("\nDone! Zip is at //infra/portable.\n")
+
 
 if __name__ == "__main__":
     main()
