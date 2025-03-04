@@ -27,7 +27,7 @@ __The scripts to build Thorium assume that depot_tools, thorium and chromium are
 Clone the `depot_tools` repository:
 
 ```shell
-$ git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 ```
 
 Add *depot_tools* to the end of your *$PATH* (you will probably want to put this
@@ -36,11 +36,11 @@ in your `~/.bashrc` or `~/.zshrc`). When setting the path after cloning *depot_t
 `$HOME` or the absolute path. So, assuming you cloned *depot_tools* to *$HOME*:
 
 ```shell
-$ export PATH="${HOME}/depot_tools:$PATH"
+export PATH="${HOME}/depot_tools:$PATH"
 ```
 or
 ```shell
-$ export PATH="/home/alex/depot_tools:$PATH"
+export PATH="/home/alex/depot_tools:$PATH"
 ```
 
 ## Get the code <a name="get-the-code"></a>
@@ -50,7 +50,7 @@ $ export PATH="/home/alex/depot_tools:$PATH"
 Clone the Thorium repo into *$HOME*
 
 ```shell
-$ git clone --recursive https://github.com/Alex313031/thorium.git
+git clone --recursive https://github.com/Alex313031/thorium.git
 ```
 
 ### Chromium Code
@@ -58,14 +58,14 @@ $ git clone --recursive https://github.com/Alex313031/thorium.git
 Create a *chromium* directory for the checkout and change to it.
 
 ```shell
-$ mkdir ~/chromium && cd ~/chromium
+mkdir ~/chromium && cd ~/chromium
 ```
 
 Run the *fetch* tool from depot_tools to check out the code and its
 dependencies.
 
 ```shell
-$ fetch --nohooks chromium
+fetch --nohooks chromium
 ```
 
 The `--nohooks` flag is ommitted on other platforms, we just use it on linux to explicitly run the hooks
@@ -88,7 +88,7 @@ directory called `src` in the *chromium* directory. The remaining instructions
 assume you have switched to the `src` directory, so:
 
 ```shell
-$ cd src
+cd src
 ```
 
 ### Install additional build dependencies
@@ -97,7 +97,7 @@ Once you have checked out the code, and assuming you're using Ubuntu, run the
 [*`install-build-deps.sh`*](https://chromium.googlesource.com/chromium/src/+/main/build/install-build-deps.sh) script.
 
 ```shell
-$ ./build/install-build-deps.sh --no-nacl
+./build/install-build-deps.sh --no-nacl
 ```
 
 You can run it with the flag `--help` to see arguments. For example, you would want `--lib32` if building for 32 bit Linux, `--arm` for building
@@ -114,7 +114,7 @@ Chromium-specific hooks, which will download additional binaries and other
 things like LLVM and a Debian Sysroot.:
 
 ```shell
-$ gclient runhooks
+gclient runhooks
 ```
 
 *Optional:* You can also [build with API
@@ -148,7 +148,7 @@ with different configurations. Create the build output directory by running:
 You can list all the possible build arguments and pipe it to a text file by running:
 
 ```shell
-$ gn args out/thorium --list >> /path/to/ARGS.list
+gn args out/thorium --list >> /path/to/ARGS.list
 ```
 
 * You only have to run this once for each new build directory, Ninja will
@@ -198,13 +198,13 @@ working directories going at once.
 Build Thorium (the "chrome" target), as well as [chrome_sandbox](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/linux/sandboxing.md), [chromedriver](https://chromedriver.chromium.org/home), and [thorium_shell](https://github.com/Alex313031/thorium/tree/main/thorium_shell#readme) (based on [content_shell](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md#as-a-simple-browser) ), using the `build.sh` script in the root of the Thorium repo (where the # is the number of jobs). Assuming you have an 8 Core system:
 
 ```shell
-$ ./build.sh 8
+./build.sh 8
 ```
 
 You could also manually issue the command (where -j is the number of jobs):
 
 ```shell
-$ autoninja -C ~/chromium/src/out/thorium thorium chrome_sandbox chromedriver thorium_shell -j8
+autoninja -C ~/chromium/src/out/thorium thorium chrome_sandbox chromedriver thorium_shell -j8
 ```
 
 `autoninja` is a wrapper that automatically provides optimal values for the
@@ -220,7 +220,7 @@ out/thorium chrome/test:unit_tests`).
 Once it is built, you can simply run the browser:
 
 ```shell
-$ out/thorium/thorium
+out/thorium/thorium
 ```
 *Note - Copy and run [clean.sh](https://github.com/Alex313031/thorium/blob/main/clean.sh) within this dir to clean up build artifacts.*
 
@@ -229,7 +229,7 @@ $ out/thorium/thorium
 Of course, you will probably want to make installation packages. To make .deb and .rpm packages run `package.sh` (where the # is the number of jobs) in the root of the repo:
 
 ```shell
-$ ./package.sh 8
+./package.sh 8
 ```
 To make an appimage, copy the .deb to `//thorium/infra/APPIMAGE/`
 and follow the [Instructions](https://github.com/Alex313031/thorium/blob/main/infra/APPIMAGE/README.md#instructions) therein.
@@ -247,7 +247,7 @@ Learn about [how to use Chromedriver](https://chromedriver.chromium.org/getting-
 Simply run `trunk.sh` in the root of the Thorium repo or execute the commands inside.
 
 ```shell
-$ ./trunk.sh
+./trunk.sh
 ```
 
 ## Running test targets
@@ -257,7 +257,7 @@ exist in the directory structure. To see what target a given unit test or
 browser test file corresponds to, the following command can be used:
 
 ```shell
-$ gn refs out/Default --testonly=true --type=executable --all chrome/browser/ui/browser_list_unittest.cc
+gn refs out/Default --testonly=true --type=executable --all chrome/browser/ui/browser_list_unittest.cc
 //chrome/test:unit_tests
 ```
 
@@ -265,7 +265,7 @@ In the example above, the target is unit_tests. The unit_tests binary can be
 built by running the following command:
 
 ```shell
-$ autoninja -C out/Default unit_tests
+autoninja -C out/Default unit_tests
 ```
 
 ## Tips, tricks, and troubleshooting
@@ -291,7 +291,7 @@ If you have problems building, join us in the Thorium IRC Channel at
 Instead of running `install-build-deps.sh` to install build dependencies, run:
 
 ```shell
-$ sudo pacman -S --needed automake autoconf base-devel curl xz squashfs-tools p7zip \
+sudo pacman -S --needed automake autoconf base-devel curl xz squashfs-tools p7zip \
 git tk python python-pkgconfig python-virtualenv python-oauth2client python-oauthlib \
 perl gcc gcc-libs bison flex gperf pkgconfig dbus icoutils \
 nss alsa-lib glib2 gtk3 nspr freetype2 cairo \
@@ -309,14 +309,14 @@ For the optional packages on Arch Linux:
 First install the `file` and `lsb-release` commands for the script to run properly:
 
 ```shell
-$ sudo apt-get install file lsb-release
+sudo apt-get install file lsb-release
 ```
 
 Then invoke install-build-deps.sh with the `--no-arm` argument,
 because the ARM toolchain doesn't exist for this configuration:
 
 ```shell
-$ sudo build/install-build-deps.sh --no-arm
+sudo build/install-build-deps.sh --no-arm
 ```
 
 ### Fedora
