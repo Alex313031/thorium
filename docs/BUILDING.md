@@ -36,7 +36,11 @@ in your `~/.bashrc` or `~/.zshrc`). When setting the path after cloning *depot_t
 `$HOME` or the absolute path. So, assuming you cloned *depot_tools* to *$HOME*:
 
 ```shell
-$ export PATH="${HOME}/depot_tools:$PATH" or $ export PATH="/home/alex/depot_tools:$PATH"
+$ export PATH="${HOME}/depot_tools:$PATH"
+```
+or
+```shell
+$ export PATH="/home/alex/depot_tools:$PATH"
 ```
 
 ## Get the code <a name="get-the-code"></a>
