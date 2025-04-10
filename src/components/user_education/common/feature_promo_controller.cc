@@ -816,7 +816,7 @@ FeaturePromoResult FeaturePromoControllerCommon::CanShowPromoCommon(
   }
 
   // Never show annoying promos in Thorium
-  return FeaturePromoResult::kBlockedByUi;
+  return FeaturePromoResult::kBlockedByConfig;
 }
 
 std::unique_ptr<HelpBubble> FeaturePromoControllerCommon::ShowPromoBubbleImpl(
