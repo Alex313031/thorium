@@ -42,7 +42,16 @@ Make UA and hints report chrome, and set hints
 
 fix thorium and shell portable --temp profile
 
-Fix multiple profiles lag
-Fix download shelf height
 Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, versus vanilla Google Chrome, all at the same revision.
 
+Fix NTP blank with other search engines than Google
+Fix multiple profiles lag if exists
+Fix download shelf height better and prevent separators from disappearing on resize
+Fix unmaximized drag height for all platforms, possibly unify at 6,7,8 pixels
+Add restart thorium, report issue, and whats new menu items from Primo and new function
+Fix system extension integration like with dad uninstall issue
+Fix button sizing and jumping in toolbar on non-pixel aligned displays
+Fix omnibox dropdown alignment and search icon alignment again
+Add vector icon colors for top bar from Primo
+Fix omnibox dropdown highlight row right side rounding
+Fix side panel metrics and grab handle icon alignment

@@ -833,7 +833,7 @@ index 3ae6b02a62d64..63ef3fc6483fb 100644
  // =============================================================================
  
  const gfx::VectorIcon& GetSharingHubVectorIcon() {
-+  const bool thorium_2024 = features::IsThorium2024();
++ const bool thorium_2024 = features::IsThorium2024();
  #if BUILDFLAG(IS_MAC)
    return omnibox::kShareMacChromeRefreshIcon;
  #elif BUILDFLAG(IS_WIN)
