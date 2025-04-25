@@ -47,7 +47,7 @@ Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, v
 Fix NTP blank with other search engines than Google
 Fix multiple profiles lag if exists
 Fix download shelf height better and prevent separators from disappearing on resize
-Fix unmaximized drag height for all platforms, possibly unify at 6,7,8 pixels
+Fix unmaximized drag height for all platforms, possibly unify at 6,7,8 pixels, also GetDragHandleExtension
 Add restart thorium, report issue, and whats new menu items from Primo and new function
 Fix system extension integration like with dad uninstall issue
 Fix button sizing and jumping in toolbar on non-pixel aligned displays
@@ -55,3 +55,8 @@ Fix omnibox dropdown alignment and search icon alignment again
 Add vector icon colors for top bar from Primo
 Fix omnibox dropdown highlight row right side rounding
 Fix side panel metrics and grab handle icon alignment
+Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc
+
+add thorium 2024 if else:
+-  return gfx::Rect(x, NonClientTopHeight(false), std::max(0, available_width),
++  return gfx::Rect(x, GetTabStripInsetsTop(false), std::max(0, available_width),
