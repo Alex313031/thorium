@@ -53,6 +53,11 @@ Fix system extension integration like with dad uninstall issue
 Fix button sizing and jumping in toolbar on non-pixel aligned displays
 Fix omnibox dropdown alignment and search icon alignment again
 Add vector icon colors for top bar from Primo
+Replace old colour coded icons with the new ones from the chromium project in thorium/tree/main/src/ui/webui/resources/images
+New feature that firefox has that allows you to customize the toolbar fully
+Thorium is often taken advantage of using grabber software (any software that tries to grab including and not limited to: browser cookies, history) add master keys and regularly lock the browser if any unauthorized program attempts to access cookies and the things mentioned earlier.
+
+Fix Tab group suggestions not available when you try to organise similar tabs by right clicking on a tab > "Organise similar tabs"
 Fix omnibox dropdown highlight row right side rounding
 Fix side panel metrics and grab handle icon alignment
 Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc
