@@ -60,3 +60,10 @@ Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO
 add thorium 2024 if else:
 -  return gfx::Rect(x, NonClientTopHeight(false), std::max(0, available_width),
 +  return gfx::Rect(x, GetTabStripInsetsTop(false), std::max(0, available_width),
+
+Fix spacing
++    const gfx::Rect new_tab_button_new_bounds =
+         gfx::Rect(new_tab_button_new_position, new_tab_button_size);
+
+remove
++    static const int kCornerRadius = corner_radius;
