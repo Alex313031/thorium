@@ -15,10 +15,10 @@ install -Dm 755 out/ReleaseFree/libffmpeg.so /app/chromium/libffmpeg.so
 install -Dm 755 out/Release/libffmpeg.so /app/chromium/nonfree-codecs/lib/libffmpeg.so
 
 for size in 24 48 64 128 256; do
-    install -Dvm 644 chrome/app/theme/chromium/linux/product_logo_$size.png /app/share/icons/hicolor/${size}x${size}/apps/org.chromium.Chromium.png;
+    install -Dvm 644 chrome/app/theme/chromium/linux/product_logo_$size.png /app/share/icons/hicolor/${size}x${size}/apps/rocks.thorium.Thorium.png;
 done
 install -Dvm 644 cobalt.ini -t /app/etc
-install -Dvm 644 org.chromium.Chromium.desktop -t /app/share/applications
-install -Dvm 644 org.chromium.Chromium.metainfo.xml -t /app/share/metainfo
+install -Dvm 644 rocks.thorium.Thorium.desktop -t /app/share/applications
+install -Dvm 644 rocks.thorium.Thorium.metainfo.xml -t /app/share/metainfo
 install -Dvm 755 chromium.sh /app/bin/chromium
 install -Dvm 755 unlink_profiles.py -t /app/bin
