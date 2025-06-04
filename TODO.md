@@ -67,3 +67,5 @@ Fix spacing
 
 remove
 +    static const int kCornerRadius = corner_radius;
+
+logging_installer.cc > chromium_installer.log > thorium_installer.log

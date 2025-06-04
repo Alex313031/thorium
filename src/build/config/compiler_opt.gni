@@ -114,7 +114,7 @@ if (is_debug) {
 
 # Make sure we are a x86 arch
 if (use_sse2 || use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use_avx512) {
-  assert(current_cpu != "arm" && current_cpu != "arm64", "x86 SIMD intrinsic optimizations cannot be used with ARM targets.")
+  assert(target_cpu == "x86" || target_cpu == "x64", "x86 SIMD intrinsic optimizations cannot be used with non-x86 targets.")
 }
 
 # FMA doesn't work on 32 bit architectures
