@@ -23,3 +23,12 @@ thorium_mini_installer_AVX.exe
 thorium_mini_installer_AVX2.exe
 thorium_mini_installer_ARM64.exe
 Thorium_squashfs-root
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Hangout services private keys
+infra/hangout_services/bin/*.pem
+infra/hangout_services/bin/*.key
