@@ -109,11 +109,11 @@ void RegisterBrowserUserPrefs(user_prefs::PrefRegistrySyncable* registry) {
                                 false);
 #endif
   registry->RegisterStringPref(prefs::kWebRTCIPHandlingPolicy,
-                               blink::kWebRTCIPHandlingDefault);
+                               blink::kWebRTCIPHandlingDisableNonProxiedUdp);
   registry->RegisterStringPref(prefs::kWebRTCUDPPortRange, std::string());
   registry->RegisterBooleanPref(prefs::kWebRtcEventLogCollectionAllowed, false);
   registry->RegisterListPref(prefs::kWebRtcLocalIpsAllowedUrls);
-  registry->RegisterBooleanPref(prefs::kWebRtcTextLogCollectionAllowed, true);
+  registry->RegisterBooleanPref(prefs::kWebRtcTextLogCollectionAllowed, false);
 
   // We need to register the type of these preferences in order to query
   // them even though they're only typically controlled via policy.
