@@ -860,7 +860,7 @@ index 74a00df155806..c8e4a81911d80 100644
   public:
    // On hover, expand status bubble to fit long URL after this delay.
 -  static const int kExpandHoverDelayMS = 1600;
-+  static const int kExpandHoverDelayMS = 1;
++  static constexpr int kExpandHoverDelayMS = 1;
  
    virtual ~StatusBubble() {}
  
@@ -1813,7 +1813,7 @@ index 2caa04674d405..85c6d434c537b 100644
 +    }
 +
 +    // Mac seems to reserve 1 DIP of the top inset as a resize handle.
-+    const int kTabstripTopInset = 8;
++    constexpr int kTabstripTopInset = 8;
 +    int top_inset = kTabstripTopInset;
 +    if (EverHasVisibleBackgroundTabShapes()) {
 +      top_inset =
@@ -4783,7 +4783,7 @@ index 75fc666dfbeb3..ee108f6a31c59 100644
  namespace views {
  
 -const int kDefaultMenuShowDelay = 400;
-+const int kDefaultMenuShowDelay = 1;
++constexpr int kDefaultMenuShowDelay = 1;
  
  }  // namespace views
 diff --git a/ui/views/metrics_aura.cc b/ui/views/metrics_aura.cc
@@ -4800,7 +4800,7 @@ index c8a9260b6c6e6..129b06e148063 100644
 -               ? static_cast<int>(show_delay)
 -               : kDefaultMenuShowDelay;
 -  }();
-+  static int delay = kDefaultMenuShowDelay;
++  static constexpr int delay = kDefaultMenuShowDelay;
    return delay;
  #else
    return 0;

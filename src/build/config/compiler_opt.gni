@@ -82,7 +82,7 @@ declare_args() {
   # AVX2 (x86-64-v3)
   # Second generation AVX, expanded to 256-bit registers.
   # Present since Haswell (4th Gen. Core i series), and
-  # AMD Excavator (4th Gen. refinement of Bulldozer cores) and 
+  # AMD Excavator (4th Gen. refinement of Bulldozer cores) and
   # Zen (1st Gen. Ryzen).
   # Includes FMA3 `-mfma -mavx2` (`-ffp-contract` see below at FMA section)
   use_avx2 = false

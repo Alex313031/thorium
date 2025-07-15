@@ -467,10 +467,15 @@ void DeleteRegistryKeyPartial(
 }
 
 bool IsDowngradeAllowed(const InitialPreferences& prefs) {
+  static constexpr bool force_allow = true;
   bool allow_downgrade = false;
-  return prefs.GetBool(initial_preferences::kAllowDowngrade,
-                       &allow_downgrade) &&
-         allow_downgrade;
+  if (force_allow) {
+    return force_allow;
+  } else {
+    return prefs.GetBool(initial_preferences::kAllowDowngrade,
+                         &allow_downgrade) &&
+           allow_downgrade;
+  }
 }
 
 int GetInstallAge(const InstallerState& installer_state) {

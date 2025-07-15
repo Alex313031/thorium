@@ -69,3 +69,7 @@ remove
 +    static const int kCornerRadius = corner_radius;
 
 logging_installer.cc > chromium_installer.log > thorium_installer.log
+make messagebox debug fail minimizeable, add PRIMO_DEBUG fixes to Thorium.
+https://github.com/win32ss/supermium/issues/1412
+https://github.com/win32ss/supermium/commit/f46111bb8a9d29315740a28dcb2ee96fdb50f586
+https://github.com/win32ss/supermium/commit/535bb42b1f22d9fdaf4db0d8ee1ce1acf14a6fbf
