@@ -70,6 +70,7 @@ remove
 
 logging_installer.cc > chromium_installer.log > thorium_installer.log
 make messagebox debug fail minimizeable, add PRIMO_DEBUG fixes to Thorium.
+https://github.com/primo-browser/primo/commit/946f3dfbed983efb7643fee26d31fd3c4205d9d9
 https://github.com/win32ss/supermium/issues/1412
 https://github.com/win32ss/supermium/commit/f46111bb8a9d29315740a28dcb2ee96fdb50f586
 https://github.com/win32ss/supermium/commit/535bb42b1f22d9fdaf4db0d8ee1ce1acf14a6fbf
