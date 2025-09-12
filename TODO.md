@@ -56,10 +56,12 @@ Add vector icon colors for top bar from Primo
 Fix omnibox dropdown highlight row right side rounding
 Fix side panel metrics and grab handle icon alignment
 Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc
-Add version to installer dialog and compare to make sure nothing missing from primo > https://github.com/primo-browser/primo/commit/674eec1b5f55705a111b9de4a344b2df93f3611a
-https://github.com/primo-browser/primo/commit/79d120a8aa93df406f062b1367cc6404f3924a27
-https://github.com/primo-browser/primo/commit/1769f7edff841ab70783d9fc9c96e5fd98f100b0
-https://github.com/primo-browser/primo/commit/8cf302bdc10a78085cbd38cb55660de659a129d6
+Add version to installer dialog and compare to make sure nothing missing from primo > https://github.com/primo-browser/primo/commit/674eec1b5f55705a111b9de4a344b2df93f3611a  
+https://github.com/primo-browser/primo/commit/79d120a8aa93df406f062b1367cc6404f3924a27  
+https://github.com/primo-browser/primo/commit/1769f7edff841ab70783d9fc9c96e5fd98f100b0  
+https://github.com/primo-browser/primo/commit/8cf302bdc10a78085cbd38cb55660de659a129d6  
+MV2: https://github.com/primo-browser/primo/commit/5aa8d52a29f3b1162462a389444fb98b90ec4a1e  
+     https://github.com/primo-browser/primo/commit/de205e3623e8d922c97b949e82e7937c1c7f5f8a
 
 add thorium 2024 if else:
 -  return gfx::Rect(x, NonClientTopHeight(false), std::max(0, available_width),
