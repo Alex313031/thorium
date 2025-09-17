@@ -62,6 +62,7 @@ https://github.com/primo-browser/primo/commit/1769f7edff841ab70783d9fc9c96e5fd98
 https://github.com/primo-browser/primo/commit/8cf302bdc10a78085cbd38cb55660de659a129d6  
 MV2: https://github.com/primo-browser/primo/commit/5aa8d52a29f3b1162462a389444fb98b90ec4a1e  
      https://github.com/primo-browser/primo/commit/de205e3623e8d922c97b949e82e7937c1c7f5f8a
+     https://github.com/primo-browser/primo/commit/e567420253e358977714769e5b83ea32f374e008
 
 add thorium 2024 if else:
 -  return gfx::Rect(x, NonClientTopHeight(false), std::max(0, available_width),
