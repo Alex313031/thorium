@@ -22,7 +22,6 @@ thor_ver: %(ChromeDir)s\
 #
 # Chrome version dir entries, sorted alphabetically.
 #
-# blink_test_plugin.dll: %(VersionDir)s\
 chrome.dll: %(VersionDir)s\
 chrome_100_percent.pak: %(VersionDir)s\
 chromedriver.exe: %(VersionDir)s\
@@ -38,6 +37,7 @@ icudtl.dat: %(VersionDir)s\
 libEGL.dll: %(VersionDir)s\
 libGLESv2.dll: %(VersionDir)s\
 notification_helper.exe: %(VersionDir)s\
+optimization_guide_internal.dll: %(VersionDir)s\
 resources.pak: %(VersionDir)s\
 shell_resources.pak: %(VersionDir)s\
 thorium_shell.exe: %(VersionDir)s\
@@ -103,6 +103,12 @@ PrivacySandboxAttestationsPreloaded\privacy-sandbox-attestations.dat: %(VersionD
 MEIPreload\manifest.json: %(VersionDir)s\MEIPreload\
 MEIPreload\preloaded_data.pb: %(VersionDir)s\MEIPreload\
 
+#
+# IWA Key Distribution
+#
+IwaKeyDistribution\iwa-key-distribution.pb: %(VersionDir)s\IwaKeyDistribution\
+IwaKeyDistribution\manifest.json: %(VersionDir)s\IwaKeyDistribution\
+
 [HIDPI]
 chrome_200_percent.pak: %(VersionDir)s\
 thorium.ico: %(VersionDir)s\
@@ -115,10 +121,9 @@ ffmpeg.dll: %(VersionDir)s\
 [TOUCH]
 
 [GOOGLE_CHROME]
-# The elevation service is only installed for Google Chrome builds.
+elevated_tracing_service.exe: %(VersionDir)s\
 elevation_service.exe: %(VersionDir)s\
 os_update_handler.exe: %(VersionDir)s\
-optimization_guide_internal.dll: %(VersionDir)s\
 
 #
 # Sub directories living in the version dir

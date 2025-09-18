@@ -64,6 +64,8 @@ if (current_cpu == "x86") {
   ffmpeg_arch = "ia32"
 } else if (current_cpu == "arm" && arm_version >= 7 && arm_use_neon) {
   ffmpeg_arch = "arm-neon"
+} else if (current_cpu == "arm64e") {
+  ffmpeg_arch = "arm64"
 } else {
   ffmpeg_arch = current_cpu
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2025 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -18,6 +18,7 @@ set -u
 # have any type of "significant/visible changes" log that we could use for this?
 gen_changelog() {
   rm -f "${DEB_CHANGELOG}"
+  DATE_RFC5322="$(date --rfc-email)"
   process_template "${SCRIPTDIR}/changelog.template" "${DEB_CHANGELOG}"
   debchange -a --nomultimaint -m --changelog "${DEB_CHANGELOG}" \
     "Release Notes: ${RELEASENOTES}"
@@ -60,6 +61,7 @@ stage_install_debian() {
   # Make it possible to distinguish between menu entries
   # for different channels.
   local MENUNAME="${MENUNAME}"
+  local RDN_DESKTOP="${RDN}"
 
   prep_staging_debian
   SHLIB_PERMS=644
@@ -259,7 +261,7 @@ if [ "$BRANDING" = "google_chrome" ]; then
 else
   source "${OUTPUTDIR}/installer/common/chromium-browser.info"
 fi
-eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/export \1='\2'/" \
+eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/\1='\2'/" \
   "${OUTPUTDIR}/installer/theme/BRANDING")
 
 verify_channel
@@ -282,7 +284,7 @@ cd "${OUTPUTDIR}"
 # set it to an empty string)
 # Allowed configs include optional HTTPS support and explicit multiarch
 # platforms.
-REPOCONFIGREGEX="deb (\\\\[arch=[^]]*\\\\b${ARCHITECTURE}\\\\b[^]]*\\\\]"
+REPOCONFIGREGEX="deb (\\[arch=[^]]*\\b${ARCHITECTURE}\\b[^]]*\\]"
 # REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
 stage_install_debian
 

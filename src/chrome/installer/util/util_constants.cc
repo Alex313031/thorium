@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -185,15 +185,6 @@ const char kUpdateSetupExe[] = "update-setup-exe";
 const char kVerboseLogging[] = "verbose-logging";
 
 }  // namespace switches
-
-namespace env_vars {
-
-// The presence of this environment variable with a value of 1 implies that
-// setup.exe should run as a system installation regardless of what is on the
-// command line.
-const char kGoogleUpdateIsMachineEnvVar[] = "GoogleUpdateIsMachine";
-
-}  // namespace env_vars
 
 // The Active Setup executable will be an identical copy of setup.exe; this is
 // necessary because Windows' installer detection heuristics (which include

@@ -19,9 +19,7 @@ void GoogleApiKeysInfoBarDelegate::Create(
     infobars::ContentInfoBarManager* infobar_manager) {
 }
 
-GoogleApiKeysInfoBarDelegate::GoogleApiKeysInfoBarDelegate()
-    : ConfirmInfoBarDelegate() {
-}
+GoogleApiKeysInfoBarDelegate::GoogleApiKeysInfoBarDelegate() = default;
 
 infobars::InfoBarDelegate::InfoBarIdentifier
 GoogleApiKeysInfoBarDelegate::GetIdentifier() const {

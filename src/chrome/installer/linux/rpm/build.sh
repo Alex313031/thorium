@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2025 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -77,6 +77,7 @@ verify_package() {
     echo
     echo "NOTICE: bad rpm dependencies!"
     echo
+    echo $BAD_DIFF
   fi
 }
 
@@ -213,10 +214,15 @@ if [ "$BRANDING" = "google_chrome" ]; then
 else
   source "${OUTPUTDIR}/installer/common/chromium-browser.info"
 fi
+if [ "$CHANNEL" != "stable" ]; then
+  RDN_DESKTOP="${RDN}.${CHANNEL}"
+else
+  RDN_DESKTOP="${RDN}"
+fi
 eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/export \1='\2'/" \
   "${OUTPUTDIR}/installer/theme/BRANDING")
 
-export USR_BIN_SYMLINK_NAME="thorium-browser"
+USR_BIN_SYMLINK_NAME="thorium-browser"
 
 stage_install_rpm
 do_package

@@ -106,6 +106,7 @@ rm -rf "$RPM_BUILD_ROOT"
 /usr/share/applications/thorium-shell.desktop
 /usr/share/appdata/@@PACKAGE@@.appdata.xml
 /usr/share/applications/@@PACKAGE@@.desktop
+/usr/share/applications/@@RDN_DESKTOP@@.desktop
 /usr/share/gnome-control-center/default-apps/@@PACKAGE@@.xml
 %docdir /usr/share/man/man1
 # These two files will be the same on non-stable channels.
