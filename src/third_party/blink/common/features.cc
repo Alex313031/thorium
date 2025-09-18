@@ -2072,10 +2072,10 @@ BASE_FEATURE(kUseAncestorRenderFrameForWorker,
              "UseAncestorRenderFrameForWorker",
              base::FEATURE_ENABLED_BY_DEFAULT);
 
-// TODO: Alex313031. Maybe re-disable?
+// TODO: Alex313031. Maybe re-enable?
 BASE_FEATURE(kPrecompileInlineScripts,
              "PrecompileInlineScripts",
-             base::FEATURE_ENABLED_BY_DEFAULT);
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Whether we should composite a PLSA (paint layer scrollable area) even if it
 // means losing lcd text.
