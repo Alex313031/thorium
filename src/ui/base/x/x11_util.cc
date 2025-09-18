@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -35,7 +35,6 @@
 #include "base/task/single_thread_task_runner.h"
 #include "base/trace_event/trace_event.h"
 #include "build/build_config.h"
-#include "build/chromeos_buildflags.h"
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "third_party/skia/include/core/SkImageInfo.h"
 #include "ui/base/cursor/mojom/cursor_type.mojom-shared.h"
@@ -444,7 +443,7 @@ WindowManagerName GuessWindowManager() {
   if (name == "i3") {
     return WM_I3;
   }
-  if (base::StartsWith(name, "IceWM", base::CompareCase::SENSITIVE)) {
+  if (name.starts_with("IceWM")) {
     return WM_ICE_WM;
   }
   if (name == "ion3") {
