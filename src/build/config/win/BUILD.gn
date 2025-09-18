@@ -84,13 +84,6 @@ config("compiler") {
   cflags_c = [ "/TC" ]
   cflags_cc = [ "/TP" ]
 
-  if (is_debug) {
-    cflags += [
-      # Work around crbug.com/526851, bug in VS 2015 RTM compiler.
-      "/Zc:sizedDealloc-",
-    ]
-  }
-
   if (is_clang) {
     # Required to make the 19041 SDK compatible with clang-cl.
     # See https://crbug.com/1089996 issue #2 for details.
@@ -128,21 +121,30 @@ config("compiler") {
     # Chrome currently requires SSE3. Clang supports targeting any Intel
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
-    if (current_cpu == "x86" || current_cpu == "x64") {
+    if (current_cpu == "x86") {
       cflags += [
         "-mmmx",
+        "-msse",
         "-msse2",
       ]
-      if (is_official_build) {
-        cflags += [
-          "/clang:-O3",
-          "-Xclang", "-O3",
-        ]
-      }
       if (use_sse3) {
         cflags += [
           "-msse3",
           "/clang:-msse3",
+        ]
+      }
+    } else if (current_cpu == "x64") {
+      cflags += [
+        "-msse3",
+        "/clang:-msse3",
+      ]
+    }
+    
+    if (current_cpu == "x86" || current_cpu == "x64") {
+      if (is_official_build) {
+        cflags += [
+          "/clang:-O3",
+          "-Xclang", "-O3",
         ]
       }
       if (use_sse41) {
@@ -219,8 +221,7 @@ config("compiler") {
     }
   }
 
-  # Disabled with cc_wrapper because of https://github.com/mozilla/sccache/issues/264
-  if (use_lld && !use_thin_lto && cc_wrapper == "") {
+  if (use_lld && !use_thin_lto) {
     # /Brepro lets the compiler not write the mtime field in the .obj output.
     # link.exe /incremental relies on this field to work correctly, but lld
     # never looks at this timestamp, so it's safe to pass this flag with
@@ -243,7 +244,7 @@ config("compiler") {
     # Don't look for libpaths in %LIB%, similar to /X in cflags above.
     ldflags += [ "/lldignoreenv" ]
     if (is_official_build) {
-      ldflags += [ "/opt:lldlto=3", ]
+      ldflags += [ "/OPT:lldlto=3", ]
     }
   }
 
@@ -271,7 +272,6 @@ config("compiler") {
       "/OPT:ICF",
       "/INCREMENTAL:NO",
       "/FIXED:NO",
-      "/OPT:lldlto=3",
     ]
     if (use_avx2) {
       ldflags += [ "-mllvm:-march=haswell", ]
@@ -382,12 +382,13 @@ config("runtime_library") {
 # manually override this config for their compiles.
 config("winver") {
   defines = [
-    "NTDDI_VERSION=NTDDI_WIN10_NI",
+    "NTDDI_VERSION=0x0A00000B",
 
     # We can't say `=_WIN32_WINNT_WIN10` here because some files do
     # `#if WINVER < 0x0600` without including windows.h before,
     # and then _WIN32_WINNT_WIN10 isn't yet known to be 0x0A00.
     "_WIN32_WINNT=0x0A00",
+    "_WIN64_WINNT=0x0A00",
     "WINVER=0x0A00",
   ]
 }
@@ -520,6 +521,7 @@ config("delayloads") {
     "/DELAYLOAD:hid.dll",
     "/DELAYLOAD:imagehlp.dll",
     "/DELAYLOAD:imm32.dll",
+    "/DELAYLOAD:mmdevapi.dll",
     "/DELAYLOAD:msi.dll",
     "/DELAYLOAD:netapi32.dll",
     "/DELAYLOAD:ncrypt.dll",
@@ -565,6 +567,29 @@ config("delayloads_not_for_child_dll") {
     "/DELAYLOAD:wintrust.dll",
     "/DELAYLOAD:ws2_32.dll",
   ]
+}
+
+# ACLs are placed on the filesystem in order to allow chrome to launch
+# sandboxed processes in an app container when run from the out directory.
+group("maybe_set_appcontainer_acls") {
+  # Exclude setting ACLs when build is not happening on chromium, or with a different toolchain.
+  if (build_with_chromium && current_cpu == target_cpu && host_os == "win") {
+    deps = [ ":set_appcontainer_acls" ]
+  }
+}
+
+if (build_with_chromium && current_cpu == target_cpu && host_os == "win") {
+  action("set_appcontainer_acls") {
+    script = "//build/win/set_appcontainer_acls.py"
+    stamp_file = "$target_out_dir/acls.stamp"
+    inputs = [ script ]
+    outputs = [ stamp_file ]
+
+    args = [
+      "--stamp=" + rebase_path(stamp_file, root_out_dir),
+      "--dir=" + rebase_path(root_out_dir, root_out_dir),
+    ]
+  }
 }
 
 # CRT --------------------------------------------------------------------------

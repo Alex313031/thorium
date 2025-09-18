@@ -28,25 +28,40 @@ config("compiler") {
   }
   common_mac_flags += [ "--target=$clang_arch-apple-macos" ]
 
+  if (is_official_build) {
+    common_mac_cflags = [ "-O3", ]
+    common_mac_ldflags = [ "-Wl,-O3", ]
+    import_instr_limit = 100
+  } else {
+    import_instr_limit = 30
+  }
+
   # This is here so that all files get recompiled after an Xcode update.
   # (defines are passed via the command line, and build system rebuild things
   # when their commandline changes). Nothing should ever read this define.
   defines = [ "CR_XCODE_VERSION=$xcode_version" ]
 
-  asmflags = [ "-O3", ] + common_mac_flags
-  cflags = [ "-O3", ] + common_mac_flags
+  asmflags = common_mac_flags
+  cflags = common_mac_flags + common_mac_cflags
 
-  ldflags = [ "-Wl,-O3", ] + common_mac_flags
+  ldflags = common_mac_flags + common_mac_ldflags
   
   if (current_cpu == "arm64") {
     # Alex313031 TODO: Possibly use -mcpu here?
-    cflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
-    ldflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1" ]
+    cflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1", ]
+    ldflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1", ]
   }
 
-  if (current_cpu == "x64") {
-    cflags += [ "-O3", "-march=x86-64-v3", "-ffp-contract=fast", ]
-    ldflags += [ "-Wl,-O3", "-Wl,-mllvm,-march=x86-64-v3", "-Wl,-mllvm,-fp-contract=fast", "-Wl,-mllvm,-import-instr-limit=100", ]
+  if (current_cpu == "x64" || use_avx2) {
+    cflags += [ "-march=x86-64-v3", ]
+    ldflags += [ "-Wl,-mllvm,-march=x86-64-v3", ]
+  }
+
+  if (is_official_build) {
+    cflags += [ "-ffp-contract=fast", ]
+    ldflags += [
+      "-Wl,-mllvm,-fp-contract=fast",
+      "-Wl,-mllvm,-import-instr-limit=$import_instr_limit",
   }
 
   if (save_unstripped_output) {

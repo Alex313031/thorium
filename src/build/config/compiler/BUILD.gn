@@ -835,7 +835,11 @@ config("compiler") {
     # [0]: https://pinpoint-dot-chromeperf.appspot.com/job/16984a18be0000
     # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/11984a18be0000
     # [2]: https://ci.chromium.org/ui/p/chromium/builders/try/android-binary-size/1848442
-    import_instr_limit = 100
+    if (is_official_build) {
+      import_instr_limit = 100
+    } else {
+      import_instr_limit = 30
+    }
 
     if (is_win) {
       ldflags += [
