@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,8 +14,8 @@
 #include "base/notreached.h"
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
-#include "build/chromeos_buildflags.h"
 #include "chrome/app/chrome_command_ids.h"
+#include "chrome/browser/ui/tabs/features.h"
 #include "components/lens/buildflags.h"
 #include "components/lens/lens_features.h"
 #include "printing/buildflags/buildflags.h"
@@ -23,10 +23,10 @@
 #include "ui/base/accelerators/accelerator.h"
 #include "ui/base/ui_base_features.h"
 #include "ui/events/event_constants.h"
+#include "ui/events/keycodes/keyboard_codes.h"
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-#include "chrome/browser/ash/crosapi/browser_util.h"
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+// Android chrome shortcuts are implemented in KeyboardShortcuts.java.
+static_assert(!BUILDFLAG(IS_ANDROID));
 
 namespace {
 
@@ -148,13 +148,13 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_F6, ui::EF_NONE, IDC_FOCUS_NEXT_PANE},
     {ui::VKEY_F6, ui::EF_SHIFT_DOWN, IDC_FOCUS_PREVIOUS_PANE},
     {ui::VKEY_F6, ui::EF_CONTROL_DOWN, IDC_FOCUS_WEB_CONTENTS_PANE},
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
     // On Chrome OS, Control + Search + the seventh key from escape (most
     // commonly Brightness Up) toggles caret browsing.
     // Note that VKEY_F7 is not a typo; Search + the seventh function key maps
     // to F7 for accelerators.
     {ui::VKEY_F7, ui::EF_CONTROL_DOWN, IDC_CARET_BROWSING_TOGGLE},
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+#endif  // BUILDFLAG(IS_CHROMEOS)
     {ui::VKEY_F10, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
     {ui::VKEY_F11, ui::EF_NONE, IDC_FULLSCREEN},
     {ui::VKEY_M, ui::EF_SHIFT_DOWN | ui::EF_PLATFORM_ACCELERATOR,
@@ -201,10 +201,10 @@ const AcceleratorMapping kAcceleratorMap[] = {
     {ui::VKEY_BROWSER_FAVORITES, ui::EF_NONE, IDC_SHOW_BOOKMARK_MANAGER},
     {ui::VKEY_BROWSER_STOP, ui::EF_NONE, IDC_STOP},
     // On Chrome OS, Search + Esc is used to call out task manager.
-    {ui::VKEY_ESCAPE, ui::EF_COMMAND_DOWN, IDC_TASK_MANAGER},
+    {ui::VKEY_ESCAPE, ui::EF_COMMAND_DOWN, IDC_TASK_MANAGER_SHORTCUT},
     {ui::VKEY_Z, ui::EF_COMMAND_DOWN, IDC_TOGGLE_MULTITASK_MENU},
 #else   // BUILDFLAG(IS_CHROMEOS)
-    {ui::VKEY_ESCAPE, ui::EF_SHIFT_DOWN, IDC_TASK_MANAGER},
+    {ui::VKEY_ESCAPE, ui::EF_SHIFT_DOWN, IDC_TASK_MANAGER_SHORTCUT},
     {ui::VKEY_LMENU, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
     {ui::VKEY_MENU, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
     {ui::VKEY_RMENU, ui::EF_NONE, IDC_FOCUS_MENU_BAR},
@@ -257,6 +257,17 @@ const AcceleratorMapping kAcceleratorMap[] = {
 #endif  // !BUILDFLAG(IS_MAC)
 };
 
+#if !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_CHROMEOS)
+const AcceleratorMapping kTabGroupAcceleratorMap[] = {
+    // Tab group commands.
+    {ui::VKEY_C, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_ADD_NEW_TAB_TO_GROUP},
+    {ui::VKEY_P, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_CREATE_NEW_TAB_GROUP},
+    {ui::VKEY_X, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_FOCUS_NEXT_TAB_GROUP},
+    {ui::VKEY_Z, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_FOCUS_PREV_TAB_GROUP},
+    {ui::VKEY_W, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_CLOSE_TAB_GROUP},
+};
+#endif  // !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_CHROMEOS)
+
 const AcceleratorMapping kDevToolsAcceleratorMap[] = {
     {ui::VKEY_F12, ui::EF_NONE, IDC_DEV_TOOLS_TOGGLE},
 #if !BUILDFLAG(IS_MAC)
@@ -268,16 +279,6 @@ const AcceleratorMapping kDevToolsAcceleratorMap[] = {
     {ui::VKEY_U, ui::EF_CONTROL_DOWN, IDC_VIEW_SOURCE},
 #endif  // !BUILDFLAG(IS_MAC)
 };
-
-#if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
-// Accelerators to enable if lens::features::kEnableRegionSearchKeyboardShortcut
-// is true.
-constexpr AcceleratorMapping kRegionSearchAcceleratorMap[] = {
-    // TODO(nguyenbryan): This is a temporary hotkey; update when finalized.
-    {ui::VKEY_E, ui::EF_SHIFT_DOWN | ui::EF_PLATFORM_ACCELERATOR,
-     IDC_CONTENT_CONTEXT_LENS_REGION_SEARCH},
-};
-#endif  // BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
 
 constexpr int kDebugModifier =
     ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN | ui::EF_SHIFT_DOWN;
@@ -309,32 +310,36 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
     accelerators->insert(accelerators->begin(), std::begin(kAcceleratorMap),
                          std::end(kAcceleratorMap));
 
-    bool enable_devtools = true;
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-    // In Ash, DevTools is disabled by default if lacros is the only browser, in
-    // order not to confuse users by opening Ash browser windows.
-    enable_devtools = crosapi::browser_util::IsAshDevToolEnabled();
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-    if (enable_devtools) {
-      accelerators->insert(accelerators->begin(),
-                           std::begin(kDevToolsAcceleratorMap),
-                           std::end(kDevToolsAcceleratorMap));
-    }
+    accelerators->insert(accelerators->begin(),
+                         std::begin(kDevToolsAcceleratorMap),
+                         std::end(kDevToolsAcceleratorMap));
 
-#if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
-    if (base::FeatureList::IsEnabled(
-            lens::features::kEnableRegionSearchKeyboardShortcut)) {
-      accelerators->insert(accelerators->begin(),
-                           std::begin(kRegionSearchAcceleratorMap),
-                           std::end(kRegionSearchAcceleratorMap));
+    // See https://devblogs.microsoft.com/oldnewthing/20040329-00/?p=40003
+    // Doing this check here and not at the bottom since kUIDebugAcceleratorMap
+    // contains Ctrl+Alt keys but we don't enable those for the public.
+/* #if DCHECK_IS_ON()
+    constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
+    for (auto& mapping : *accelerators) {
+      DCHECK((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
+          << "Accelerators with Ctrl+Alt are reserved by Windows.";
     }
-#endif  // BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
+#endif */
 
     if (base::FeatureList::IsEnabled(features::kUIDebugTools)) {
       accelerators->insert(accelerators->begin(),
                            std::begin(kUIDebugAcceleratorMap),
                            std::end(kUIDebugAcceleratorMap));
     }
+
+    // Prevent conflicts with global_keyboard_shortcuts_mac.mm and chromeos
+    // accelerators.
+#if !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_CHROMEOS)
+    if (tabs::AreTabGroupShortcutsEnabled()) {
+      accelerators->insert(accelerators->end(),
+                           std::begin(kTabGroupAcceleratorMap),
+                           std::end(kTabGroupAcceleratorMap));
+    }
+#endif  // !BUILDFLAG(IS_MAC) && !BUILDFLAG(IS_CHROMEOS)
   }
 
   return *accelerators;

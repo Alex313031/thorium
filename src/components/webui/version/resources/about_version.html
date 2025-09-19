@@ -3,13 +3,14 @@
 <!--
 about:version template page
 -->
-<!-- Copyright (c) 2024 Alex313031 -->
+<!-- Copyright (c) 2025 Alex313031 -->
 
 <html id="t" dir="$i18n{textdirection}" lang="$i18n{language}">
   <head>
     <meta charset="utf-8">
     <meta name="color-scheme" content="light dark">
     <title>$i18n{title}</title>
+    <base href="chrome://version">
 <if expr="not is_android and not is_ios">
     <link rel="icon" type="image/png" sizes="32x32"
         href="chrome://theme/current-channel-logo">
@@ -22,25 +23,11 @@ about:version template page
 <if expr="is_android or is_ios">
     <link rel="stylesheet" href="about_version_mobile.css">
 </if>
-<if expr="is_chromeos">
-    <link rel="stylesheet" href="chrome://resources/css/os_header.css">
-</if>
 
     <script type ="module" src="about_version.js"></script>
   </head>
 
   <body>
-<if expr="is_chromeos">
-    <div class="os-link-container-container" id="os-link-container" hidden>
-      <div class="os-link-container">
-        <span class="os-link-icon"></span>
-        <span aria-hidden="true" id="os-link-desc">$i18n{os-version-text1}</span>
-        $i18nRaw{os-version-link}
-        <span aria-hidden="true">$i18n{os-version-text2}</span>
-      </div>
-    </div>
-</if>
-
     <div id="outer">
       <div id="logo">
 <if expr="not is_android and not is_ios">
@@ -91,7 +78,7 @@ about:version template page
         <tr><td class="label">$i18n{application_label}</td>
           <td class="version" id="version">
             <span id="copy-content">
-              <span>$i18n{version}</span>
+              <span>$i18n{version}$i18n{version_suffix}</span>
               (<span>$i18n{official}</span>)
               <span>$i18n{version_modifier}</span>
               <span>$i18n{version_processor_variation}</span>
@@ -110,7 +97,7 @@ about:version template page
             <span>$i18n{cl}</span>
           </td>
         </tr>
-<if expr="not chromeos_ash">
+<if expr="not is_chromeos">
         <tr>
           <td class="label">$i18n{os_name}</td>
           <td class="version" id="os_type">
@@ -119,15 +106,10 @@ about:version template page
 <if expr="is_android">
               <span>$i18n{os_version}</span>
 </if>
-<if expr="chromeos_lacros or is_win or is_macosx">
+<if expr="is_win or is_macosx">
               <span id="os_version"></span>
 </if>
             </span>
-<if expr="chromeos_lacros">
-            <button id="copy-os-content-to-clipboard" aria-label="$i18n{copy_label}">
-              <div id="copy-to-clipboard-icon"></div>
-            </button>
-</if>
           </td>
         </tr>
 </if>
@@ -140,16 +122,18 @@ about:version template page
           <td class="label">APK targetSdkVersion</td>
           <td class="version">$i18n{target_sdk_version}</td>
         </tr>
-         <tr>
-          <td class="label">isAtLeastU/targetsAtLeastU</td>
-          <td class="version">$i18n{targets_u}</td>
-        </tr>
         <tr>
           <td class="label">$i18n{gms_name}</td>
           <td class="version" id="gms_version">
             <span>$i18n{gms_version}</span>
           </td>
         </tr>
+<if expr="is_desktop_android">
+        <tr>
+          <td class="label">Desktop Android</td>
+          <td class="version">true</td>
+        </tr>
+</if>
 </if>
 <if expr="is_chromeos">
         <tr>
@@ -208,13 +192,19 @@ about:version template page
           <td class="label">$i18n{variations_seed_name}</td>
           <td class="version" id="variations-seed">$i18n{variations_seed}</td>
         </tr>
+        <tr id="variations-cmd-section">
+          <td class="label">$i18n{variations_cmd_name}</td>
+          <td class="version-wide" id="variations-cmd"></td>
+          <td>
+            <button id="copy-variations-to-clipboard"
+                aria-label="$i18n{copy_variations_label}">
+              <div id="copy-to-clipboard-icon"></div>
+            </button>
+          </td>
+        </tr>
         <tr id="variations-section">
           <td class="label">$i18n{variations_name}</td>
           <td class="version" id="variations-list"></td>
-        </tr>
-        <tr id="variations-cmd-section" hidden>
-          <td class="label">$i18n{variations_cmd_name}</td>
-          <td class="version-wide" id="variations-cmd"></td>
         </tr>
         <tr id="sanitizer-section" hidden>
           <td class="label">Sanitizer</td>

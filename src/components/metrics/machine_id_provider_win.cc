@@ -19,8 +19,12 @@
 
 namespace metrics {
 
+MachineIdProvider::MachineIdProvider() = default;
+
+MachineIdProvider::~MachineIdProvider() = default;
+
 // static
-bool MachineIdProvider::HasId() {
+bool MachineIdProvider::HasId() const {
   static const bool disable_machine_id =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
   if (disable_machine_id) {
@@ -32,7 +36,7 @@ bool MachineIdProvider::HasId() {
 // On windows, the machine id is based on the serial number of the drive Chrome
 // is running from.
 // static
-std::string MachineIdProvider::GetMachineId() {
+std::string MachineIdProvider::GetMachineId() const {
   static const bool disable_machine_id =
       base::CommandLine::ForCurrentProcess()->HasSwitch("disable-machine-id");
   if (disable_machine_id) {
@@ -46,17 +50,11 @@ std::string MachineIdProvider::GetMachineId() {
   // This is fine as we do not support migrating Chrome installs to new drives.
   base::FilePath executable_path;
 
-  if (!base::PathService::Get(base::FILE_EXE, &executable_path)) {
-    NOTREACHED_IN_MIGRATION();
-    return std::string();
-  }
+  CHECK(base::PathService::Get(base::FILE_EXE, &executable_path));
 
   std::vector<base::FilePath::StringType> path_components =
       executable_path.GetComponents();
-  if (path_components.empty()) {
-    NOTREACHED_IN_MIGRATION();
-    return std::string();
-  }
+  CHECK(!path_components.empty());
   base::FilePath::StringType drive_name = L"\\\\.\\" + path_components[0];
 
   base::win::ScopedHandle drive_handle(

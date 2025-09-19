@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors, win32ss, and Alex313031
+// Copyright 2025 The Chromium Authors, win32ss (Shane Fournier), and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -39,8 +39,7 @@ void TrackedSplitPreference::OnNewValue(
     const base::Value* value,
     PrefHashStoreTransaction* transaction) const {
   if (value && !value->is_dict()) {
-    NOTREACHED_IN_MIGRATION();
-    return;
+    NOTREACHED();
   }
 
   transaction->StoreSplitHash(pref_path_, value ? &value->GetDict() : nullptr);

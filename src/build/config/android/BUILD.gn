@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2025 The Chromium Authors and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -21,7 +21,6 @@ config("compiler") {
   cflags = [
     "-ffunction-sections",
     "-fno-short-enums",
-    "-O3",
   ]
   defines = [
     "ANDROID",
@@ -54,13 +53,12 @@ config("compiler") {
     # by shrinking the alignment gap between segments. This also causes all
     # segments to be mapped adjacently, which breakpad relies on.
     "-Wl,-z,max-page-size=$_max_page_size",
-    "-Wl,-O3",
   ]
 
   if (current_cpu == "arm64") {
     if (arm_control_flow_integrity == "standard") {
       cflags += [ "-mbranch-protection=standard" ]
-      rustflags = [ "-Zbranch-protection=bti" ]
+      rustflags = [ "-Zbranch-protection=pac-ret,bti" ]
     } else if (arm_control_flow_integrity == "pac") {
       cflags += [ "-mbranch-protection=pac-ret" ]
       rustflags = [ "-Zbranch-protection=pac-ret" ]
@@ -74,16 +72,13 @@ config("compiler") {
     cflags += [ "-mtls-dialect=trad" ]
   }
 
-  # $compile_api_level corresponds to the API level used for the sysroot path
-  # calculation in //build/config/android/config.gni
-  if (android_64bit_target_cpu) {
-    compile_api_level = android64_ndk_api_level
-  } else {
-    compile_api_level = android32_ndk_api_level
-  }
+  cflags += [ "--target=$android_abi_target$android_ndk_api_level" ]
+  ldflags += [ "--target=$android_abi_target$android_ndk_api_level" ]
 
-  cflags += [ "--target=$android_abi_target$compile_api_level" ]
-  ldflags += [ "--target=$android_abi_target$compile_api_level" ]
+  if (is_official_build) {
+    cflags += [ "-O3", ]
+    ldflags += [ "-Wl,-O3", ]
+  }
 
   if (current_cpu == "arm64") {
     cflags += [ "-march=armv8-a+simd" ]
@@ -113,15 +108,17 @@ config("runtime_library") {
 }
 
 config("hide_all_but_jni_onload") {
-  ldflags = [ "-Wl,--version-script=" + rebase_path(
-                  "//build/android/android_only_explicit_jni_exports.lst",
-                  root_build_dir) ]
+  _version_script = "//build/android/android_only_explicit_jni_exports.lst"
+  inputs = [ _version_script ]
+  ldflags =
+      [ "-Wl,--version-script=" + rebase_path(_version_script, root_build_dir) ]
 }
 
 config("hide_all_but_jni") {
-  ldflags = [ "-Wl,--version-script=" +
-              rebase_path("//build/android/android_only_jni_exports.lst",
-                          root_build_dir) ]
+  _version_script = "//build/android/android_only_jni_exports.lst"
+  inputs = [ _version_script ]
+  ldflags =
+      [ "-Wl,--version-script=" + rebase_path(_version_script, root_build_dir) ]
 }
 
 config("lld_pack_relocations") {

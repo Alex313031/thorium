@@ -1,12 +1,13 @@
-// Copyright 2024 The Chromium Authors, Alex313031, qcasey and icepie
+// Copyright 2025 The Chromium Authors, Alex313031, qcasey and icepie
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "ui/gtk/native_theme_gtk.h"
 
+#include <algorithm>
+
 #include "base/command_line.h"
 #include "base/no_destructor.h"
-#include "base/ranges/algorithm.h"
 #include "base/strings/strcat.h"
 #include "cc/paint/paint_canvas.h"
 #include "third_party/skia/include/core/SkBitmap.h"
@@ -101,7 +102,7 @@ NativeThemeGtk::NativeThemeGtk()
 }
 
 NativeThemeGtk::~NativeThemeGtk() {
-  NOTREACHED_IN_MIGRATION();
+  NOTREACHED();
 }
 
 void NativeThemeGtk::SetThemeCssOverride(ScopedCssProvider provider) {
@@ -167,7 +168,7 @@ void NativeThemeGtk::OnThemeChanged(GtkSettings* settings,
   // HighContrast (GNOME) and ContrastHighInverse (MATE).  So infer the contrast
   // based on if the theme name contains both "high" and "contrast",
   // case-insensitive.
-  base::ranges::transform(theme_name, theme_name.begin(), ::tolower);
+  std::ranges::transform(theme_name, theme_name.begin(), ::tolower);
   bool high_contrast = theme_name.find("high") != std::string::npos &&
                        theme_name.find("contrast") != std::string::npos;
   SetPreferredContrast(

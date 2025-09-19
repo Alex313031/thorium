@@ -1,4 +1,4 @@
-/* Copyright 2024 The Chromium Authors and Alex313031
+/* Copyright 2025 The Chromium Authors and Alex313031
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file. */
 
@@ -60,7 +60,7 @@ body {
   float: right;
   margin-inline-start: 40px;
   text-align: end;
-  width: 256px;
+  width: 248px;
 }
 
 #company {
@@ -92,7 +92,7 @@ body {
 }
 
 #copy-to-clipboard,
-#copy-os-content-to-clipboard {
+#copy-variations-to-clipboard {
   background-color: var(--background-color);
   border: none;
   border-radius: 2px;
@@ -119,12 +119,12 @@ body {
 }
 
 #copy-to-clipboard:hover,
-#copy-os-content-to-clipboard:hover {
+#copy-variations-to-clipboard:hover {
   background-color: var(--hover-background-color);
 }
 
 #copy-to-clipboard:active,
-#copy-os-content-to-clipboard:active {
+#copy-variations-to-clipboard:active {
   background-color: var(--active-background-color);
 }
 

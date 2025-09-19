@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031.
+// Copyright 2025 The Chromium Authors and Alex313031.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -16,6 +16,7 @@
 #include "base/memory/singleton.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/metrics/histogram_macros.h"
+#include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
 #include "base/strings/sys_string_conversions.h"
 #include "base/strings/utf_string_conversions.h"
@@ -70,7 +71,11 @@ bool EncryptStringWithDPAPI(const std::string& plaintext,
     result = ::CryptProtectData(
         /*pDataIn=*/&input,
         /*szDataDescr=*/
-        base::SysUTF8ToWide(version_info::GetProductName()).c_str(),
+        base::SysUTF8ToWide(
+            base::StrCat(
+                {version_info::GetProductName(),
+                 version_info::IsOfficialBuild() ? "" : " (Developer Build)"}))
+            .c_str(),
         /*pOptionalEntropy=*/nullptr,
         /*pvReserved=*/nullptr,
         /*pPromptStruct=*/nullptr, /*dwFlags=*/CRYPTPROTECT_AUDIT,
