@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,6 +14,7 @@
 #include "base/check_op.h"
 #include "base/command_line.h"
 #include "base/containers/adapters.h"
+#include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "base/metrics/user_metrics.h"
@@ -51,6 +52,7 @@
 #include "ui/base/dragdrop/os_exchange_data.h"
 #include "ui/base/hit_test.h"
 #include "ui/base/metadata/metadata_impl_macros.h"
+#include "ui/base/ui_base_features.h"
 #include "ui/color/color_provider.h"
 #include "ui/compositor/layer_tree_owner.h"
 #include "ui/compositor/paint_recorder.h"
@@ -244,8 +246,8 @@ bool BrowserRootView::CanDrop(const ui::OSExchangeData& data) {
   // TODO(crbug.com/40828528): This is a smoking gun code smell;
   // TabStripRegionView and Toolbar have different affordances, so they should
   // separately override the drag&drop methods.
-  if (data.HasCustomFormat(
-          ui::ClipboardFormatType::GetType(ui::kMimeTypeWindowDrag))) {
+  if (data.HasCustomFormat(ui::ClipboardFormatType::CustomPlatformType(
+          ui::kMimeTypeWindowDrag))) {
     return false;
   }
 
@@ -449,14 +451,25 @@ void BrowserRootView::PaintChildren(const views::PaintInfo& paint_info) {
     if (active_tab_index.has_value()) {
       Tab* active_tab = tabstrip()->tab_at(active_tab_index.value());
       if (active_tab && active_tab->GetVisible()) {
-        gfx::RectF bounds(active_tab->GetMirroredBounds());
-        // The root of the views tree that hosts tabstrip is BrowserRootView.
-        // Except in Mac Immersive Fullscreen where the tabstrip is hosted in
-        // `overlay_widget` or `tab_overlay_widget`, each have their own root
-        // view.
-        ConvertRectToTarget(tabstrip(), tabstrip()->GetWidget()->GetRootView(),
-                            &bounds);
-        canvas->ClipRect(bounds, SkClipOp::kDifference);
+        auto clip_rect_for_tab = [canvas, this](Tab* tab) {
+          gfx::RectF bounds(tab->GetMirroredBounds());
+          // The root of the views tree that hosts tabstrip is BrowserRootView.
+          // Except in Mac Immersive Fullscreen where the tabstrip is hosted in
+          // `overlay_widget` or `tab_overlay_widget`, each have their own root
+          // view.
+          ConvertRectToTarget(tabstrip(),
+                              tabstrip()->GetWidget()->GetRootView(), &bounds);
+          canvas->ClipRect(bounds, SkClipOp::kDifference);
+        };
+
+        if (active_tab->split()) {
+          for (Tab* split_tab :
+               active_tab->controller()->GetTabsInSplit(active_tab)) {
+            clip_rect_for_tab(split_tab);
+          }
+        } else {
+          clip_rect_for_tab(active_tab);
+        }
       }
     }
     canvas->UndoDeviceScaleFactor();
@@ -559,6 +572,17 @@ std::optional<GURL> BrowserRootView::GetPasteAndGoURL(
     return std::nullopt;
   }
 
+  // `OSExchangeData` already tries to do best-effort conversion of strings
+  // to URLs, but the browser also does this coercion using slightly different
+  // logic. To avoid this coercion from bypassing URL filtering, only allow this
+  // coercion from http or https URLs if the drag data is renderer tainted.
+  if (base::FeatureList::IsEnabled(
+          features::kDragDropOnlySynthesizeHttpOrHttpsUrlsFromText) &&
+      data.IsRendererTainted() &&
+      !match.destination_url.SchemeIsHTTPOrHTTPS()) {
+    return std::nullopt;
+  }
+
   return match.destination_url;
 }
 
@@ -609,11 +633,12 @@ void BrowserRootView::NavigateToDroppedUrls(
     params.tabstrip_index = insertion_index;
     base::RecordAction(base::UserMetricsAction("Tab_DropURLOnTab"));
     params.disposition = WindowOpenDisposition::CURRENT_TAB;
+    params.initiator_origin = event.data().GetRendererTaintedOrigin();
     params.source_contents = model->GetWebContentsAt(insertion_index);
     params.window_action = NavigateParams::SHOW_WINDOW;
     Navigate(&params);
 
-    urls = urls.subspan(1);
+    urls = urls.subspan<1>();
     ++insertion_index;  // Additional URLs inserted to the right.
   }
 
@@ -628,6 +653,7 @@ void BrowserRootView::NavigateToDroppedUrls(
         insertion_index < model->count()) {
       params.group = model->GetTabGroupForTab(insertion_index);
     }
+    params.initiator_origin = event.data().GetRendererTaintedOrigin();
     params.window_action = NavigateParams::SHOW_WINDOW;
     Navigate(&params);
   }

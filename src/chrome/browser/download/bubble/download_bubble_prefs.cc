@@ -1,26 +1,28 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 #include "chrome/browser/download/bubble/download_bubble_prefs.h"
 
 #include "base/feature_list.h"
-#include "build/chromeos_buildflags.h"
 #include "chrome/browser/download/download_core_service.h"
 #include "chrome/browser/download/download_core_service_factory.h"
-#include "chrome/browser/enterprise/connectors/connectors_service.h"
 #include "chrome/common/pref_names.h"
+#include "components/enterprise/buildflags/buildflags.h"
 #include "components/prefs/pref_service.h"
 #include "components/safe_browsing/core/common/features.h"
 #include "ui/base/ui_base_features.h"
+
+#if BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
+#include "chrome/browser/enterprise/connectors/connectors_service.h"
+#endif
 
 namespace download {
 
 bool IsDownloadBubbleEnabled() {
 // Download bubble won't replace the old download notification in
 // Ash. See https://crbug.com/1323505.
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
   return false;
 #else
   if (features::DownloadShelf()) {
@@ -28,7 +30,7 @@ bool IsDownloadBubbleEnabled() {
   } else {
     return true;
   }
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+#endif  // BUILDFLAG(IS_CHROMEOS)
 }
 
 bool ShouldShowDownloadBubble(Profile* profile) {
@@ -40,6 +42,7 @@ bool ShouldShowDownloadBubble(Profile* profile) {
 }
 
 bool DoesDownloadConnectorBlock(Profile* profile, const GURL& url) {
+#if BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
   auto* connector_service =
       enterprise_connectors::ConnectorsServiceFactory::GetForBrowserContext(
           profile);
@@ -56,6 +59,9 @@ bool DoesDownloadConnectorBlock(Profile* profile, const GURL& url) {
 
   return settings->block_until_verdict ==
          enterprise_connectors::BlockUntilVerdict::kBlock;
+#else
+  return false;
+#endif  // BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
 }
 
 bool IsDownloadBubblePartialViewControlledByPref() {

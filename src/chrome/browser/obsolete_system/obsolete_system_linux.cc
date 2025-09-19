@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -19,6 +19,7 @@ const char* const kObsoleteDistros[] = {
     // clang-format off
     "Debian 8",
     "Debian 9",
+    "Debian 10",
     "Fedora 30",
     "Fedora 31",
     "Fedora 32",
@@ -30,6 +31,7 @@ const char* const kObsoleteDistros[] = {
     "Fedora 38",
     "Ubuntu 14.04",
     "Ubuntu 16.04",
+    //"Ubuntu 18.04",
     "openSUSE Leap 15.0",
     "openSUSE Leap 15.1",
     "openSUSE Leap 15.2",

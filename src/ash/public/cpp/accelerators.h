@@ -1,32 +1,49 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "ash/public/cpp/accelerators.h"
+#ifndef ASH_PUBLIC_CPP_ACCELERATORS_H_
+#define ASH_PUBLIC_CPP_ACCELERATORS_H_
 
-#include "base/feature_list.h"
-#include "base/functional/callback.h"
-#include "base/no_destructor.h"
-#include "media/base/media_switches.h"
+#include <stddef.h>
+
+#include <array>
+
+#include "ash/public/cpp/accelerator_actions.h"
+#include "ash/public/cpp/ash_public_export.h"
+#include "base/functional/callback_forward.h"
+#include "base/observer_list.h"
 #include "ui/events/event_constants.h"
+#include "ui/events/keycodes/keyboard_codes.h"
+#include "ui/events/keycodes/keyboard_codes_posix.h"
 
-namespace ash {
-
-namespace {
-
-AcceleratorController* g_instance = nullptr;
-
-base::RepeatingClosure* GetVolumeAdjustmentCallback() {
-  static base::NoDestructor<base::RepeatingClosure> callback;
-  return callback.get();
+namespace ui {
+class Accelerator;
 }
 
-}  // namespace
+namespace ash {
+class AcceleratorHistory;
 
-//  If you plan on adding a new accelerator and want it displayed in the
-//  Shortcuts app, please follow the instructions at:
+// See documentation in ash/accelerators/accelerator_table.h.
+
+struct AcceleratorData {
+  bool trigger_on_press;
+  ui::KeyboardCode keycode;
+  int modifiers;
+  AcceleratorAction action;
+  bool accelerator_locked = false;
+};
+
+// A mask of all the modifiers used for debug accelerators.
+ASH_PUBLIC_EXPORT constexpr int kDebugModifier =
+    ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN | ui::EF_SHIFT_DOWN;
+
+// Accelerators handled by AcceleratorController.
+// If you plan on adding a new accelerator and want it displayed in the
+// Shortcuts app, please follow the instructions at:
 // `ash/webui/shortcut_customization_ui/backend/accelerator_layout_table.h`.
-const AcceleratorData kAcceleratorData[] = {
+ASH_PUBLIC_EXPORT inline constexpr auto kAcceleratorData = std::to_array<
+    AcceleratorData>({
     {true, ui::VKEY_SPACE, ui::EF_CONTROL_DOWN,
      AcceleratorAction::kSwitchToLastUsedIme},
     {false, ui::VKEY_SPACE, ui::EF_CONTROL_DOWN,
@@ -262,7 +279,7 @@ const AcceleratorData kAcceleratorData[] = {
     {true, ui::VKEY_M, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
      AcceleratorAction::kToggleFullscreenMagnifier},
 
-    {true, ui::VKEY_M, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+    {true, ui::VKEY_4, ui::EF_COMMAND_DOWN | ui::EF_ALT_DOWN,
      AcceleratorAction::kToggleMouseKeys},
 
     // Media Player shortcuts.
@@ -280,8 +297,9 @@ const AcceleratorData kAcceleratorData[] = {
     {true, ui::VKEY_OEM_103, ui::EF_NONE, AcceleratorAction::kMediaRewind},
     {true, ui::VKEY_OEM_104, ui::EF_NONE, AcceleratorAction::kMediaFastForward},
 
-    // Assistant shortcuts.
-    {true, ui::VKEY_A, ui::EF_COMMAND_DOWN, AcceleratorAction::kStartAssistant},
+    // Assistant shortcut. Assistant has two shortcuts, a dedicated Assistant
+    // key and Search+A. Search+A is defined below as
+    // `kAssistantSearchPlusAAcceleratorData`.
     {true, ui::VKEY_ASSISTANT, ui::EF_NONE, AcceleratorAction::kStartAssistant},
 
     // IME mode change key.
@@ -313,6 +331,10 @@ const AcceleratorData kAcceleratorData[] = {
 
     // TODO(yusukes): Handle VKEY_MEDIA_STOP, and VKEY_MEDIA_LAUNCH_MAIL.
 
+    // PIP-resize shortcut.
+    {true, ui::VKEY_X, ui::EF_COMMAND_DOWN,
+     AcceleratorAction::kResizePipWindow},
+
     // ARC-specific shortcut.
     {true, ui::VKEY_C, ui::EF_COMMAND_DOWN | ui::EF_ALT_DOWN,
      AcceleratorAction::kToggleResizeLockMenu},
@@ -324,187 +346,216 @@ const AcceleratorData kAcceleratorData[] = {
     // Accessibility key.
     {true, ui::VKEY_ACCESSIBILITY, ui::EF_NONE,
      AcceleratorAction::kAccessibilityAction},
-};
 
-const size_t kAcceleratorDataLength = std::size(kAcceleratorData);
+    // Quick Insert.
+    {false, ui::VKEY_QUICK_INSERT, ui::EF_NONE,
+     AcceleratorAction::kTogglePicker, true},
+    {true, ui::VKEY_F, ui::EF_COMMAND_DOWN, AcceleratorAction::kTogglePicker},
 
-const AcceleratorData kDisableWithNewMappingAcceleratorData[] = {
-    // Desk creation and removal:
-    // Due to https://crbug.com/976487, Search + "=" is always automatically
-    // rewritten to F12, and so is Search + "-" to F11. So we had to implement
-    // the following two shortcuts as Shift + F11/F12 until we resolve the above
-    // issue, accepting the fact that these two shortcuts might sometimes be
-    // consumed by apps and pages (since they're not search-based).
-    // TODO(afakhry): Change the following to Search+Shift+"+"/"-" once
-    // https://crbug.com/976487 is fixed.
-    {true, ui::VKEY_F12, ui::EF_SHIFT_DOWN, AcceleratorAction::kDesksNewDesk},
-    {true, ui::VKEY_F11, ui::EF_SHIFT_DOWN,
-     AcceleratorAction::kDesksRemoveCurrentDesk},
-};
-
-const size_t kDisableWithNewMappingAcceleratorDataLength =
-    std::size(kDisableWithNewMappingAcceleratorData);
-
-const AcceleratorData kEnableWithPositionalAcceleratorsData[] = {
-    // These are the desk shortcuts as advertised, but previously
-    // they were implicitly implemented in terms of F11 and F12
-    // due to event rewrites. Since the F-Key rewrites are deprecated
-    // these can be implemented based on the keys they actually are.
-    //
-    // TODO(crbug.com/1179893): Merge these to the main table once
-    // IsImprovedKeyboardShortcutsEnabled() is permanently enabled.
-    {true, ui::VKEY_OEM_PLUS, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-     AcceleratorAction::kDesksNewDesk},
-    {true, ui::VKEY_OEM_MINUS, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-     AcceleratorAction::kDesksRemoveCurrentDesk},
-};
-
-const size_t kEnableWithPositionalAcceleratorsDataLength =
-    std::size(kEnableWithPositionalAcceleratorsData);
-
-const AcceleratorData
-    kEnabledWithImprovedDesksKeyboardShortcutsAcceleratorData[] = {
-        // Indexed-desk activation:
-        {true, ui::VKEY_1, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate0},
-        {true, ui::VKEY_2, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate1},
-        {true, ui::VKEY_3, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate2},
-        {true, ui::VKEY_4, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate3},
-        {true, ui::VKEY_5, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate4},
-        {true, ui::VKEY_6, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate5},
-        {true, ui::VKEY_7, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate6},
-        {true, ui::VKEY_8, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksActivate7},
-        // Toggle assign to all desks:
-        {true, ui::VKEY_A, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
-         AcceleratorAction::kDesksToggleAssignToAllDesks},
-};
-
-const size_t kEnabledWithImprovedDesksKeyboardShortcutsAcceleratorDataLength =
-    std::size(kEnabledWithImprovedDesksKeyboardShortcutsAcceleratorData);
-
-const AcceleratorData kEnableWithSameAppWindowCycleAcceleratorData[] = {
-    {true, ui::VKEY_OEM_3, ui::EF_ALT_DOWN,
-     AcceleratorAction::kCycleSameAppWindowsForward},
-    {true, ui::VKEY_OEM_3, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN,
-     AcceleratorAction::kCycleSameAppWindowsBackward},
-};
-
-const size_t kEnableWithSameAppWindowCycleAcceleratorDataLength =
-    std::size(kEnableWithSameAppWindowCycleAcceleratorData);
-
-const AcceleratorData kToggleGameDashboardAcceleratorData[] = {
+    // Game Dashboard shortcut.
     {true, ui::VKEY_G, ui::EF_COMMAND_DOWN,
      AcceleratorAction::kToggleGameDashboard},
+
+    // Sunfish-session.
+    {true, ui::VKEY_SPACE, ui::EF_COMMAND_DOWN,
+     AcceleratorAction::kStartSunfishSession},
+});
+
+ASH_PUBLIC_EXPORT inline constexpr AcceleratorData
+    kAssistantSearchPlusAAcceleratorData[] = {
+        {true, ui::VKEY_A, ui::EF_COMMAND_DOWN,
+         AcceleratorAction::kStartAssistant}};
+
+// Accelerators that are enabled/disabled with new accelerator mapping.
+// crbug.com/1067269
+ASH_PUBLIC_EXPORT inline constexpr auto kDisableWithNewMappingAcceleratorData =
+    std::to_array<AcceleratorData>({
+        // Desk creation and removal:
+        // Due to https://crbug.com/976487, Search + "=" is always automatically
+        // rewritten to F12, and so is Search + "-" to F11. So we had to
+        // implement
+        // the following two shortcuts as Shift + F11/F12 until we resolve the
+        // above
+        // issue, accepting the fact that these two shortcuts might sometimes be
+        // consumed by apps and pages (since they're not search-based).
+        // TODO(afakhry): Change the following to Search+Shift+"+"/"-" once
+        // https://crbug.com/976487 is fixed.
+        {true, ui::VKEY_F12, ui::EF_SHIFT_DOWN,
+         AcceleratorAction::kDesksNewDesk},
+        {true, ui::VKEY_F11, ui::EF_SHIFT_DOWN,
+         AcceleratorAction::kDesksRemoveCurrentDesk},
+    });
+
+// Accelerators that are enabled with positional shortcut mapping.
+ASH_PUBLIC_EXPORT inline constexpr auto kEnableWithPositionalAcceleratorsData =
+    std::to_array<AcceleratorData>({
+        // These are the desk shortcuts as advertised, but previously
+        // they were implicitly implemented in terms of F11 and F12
+        // due to event rewrites. Since the F-Key rewrites are deprecated
+        // these can be implemented based on the keys they actually are.
+        //
+        // TODO(crbug.com/1179893): Merge these to the main table once
+        // IsImprovedKeyboardShortcutsEnabled() is permanently enabled.
+        {true, ui::VKEY_OEM_PLUS, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+         AcceleratorAction::kDesksNewDesk},
+        {true, ui::VKEY_OEM_MINUS, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+         AcceleratorAction::kDesksRemoveCurrentDesk},
+    });
+
+// Accelerators that are enabled with improved desks keyboards shortcuts.
+ASH_PUBLIC_EXPORT inline constexpr auto
+    kEnabledWithImprovedDesksKeyboardShortcutsAcceleratorData =
+        std::to_array<AcceleratorData>({
+            // Indexed-desk activation:
+            {true, ui::VKEY_1, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate0},
+            {true, ui::VKEY_2, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate1},
+            {true, ui::VKEY_3, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate2},
+            {true, ui::VKEY_4, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate3},
+            {true, ui::VKEY_5, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate4},
+            {true, ui::VKEY_6, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate5},
+            {true, ui::VKEY_7, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate6},
+            {true, ui::VKEY_8, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksActivate7},
+            // Toggle assign to all desks:
+            {true, ui::VKEY_A, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+             AcceleratorAction::kDesksToggleAssignToAllDesks},
+        });
+
+// Accelerators that are enabled with same app window cycling experiment.
+ASH_PUBLIC_EXPORT inline constexpr auto
+    kEnableWithSameAppWindowCycleAcceleratorData =
+        std::to_array<AcceleratorData>({
+            {true, ui::VKEY_OEM_3, ui::EF_ALT_DOWN,
+             AcceleratorAction::kCycleSameAppWindowsForward},
+            {true, ui::VKEY_OEM_3, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN,
+             AcceleratorAction::kCycleSameAppWindowsBackward},
+        });
+
+ASH_PUBLIC_EXPORT inline constexpr auto kTilingWindowResizeAcceleratorData =
+    std::to_array<AcceleratorData>({
+        {true, ui::VKEY_OEM_COMMA, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
+         AcceleratorAction::kTilingWindowResizeLeft},
+        {true, ui::VKEY_OEM_PERIOD, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
+         AcceleratorAction::kTilingWindowResizeRight},
+        {true, ui::VKEY_OEM_1, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
+         AcceleratorAction::kTilingWindowResizeUp},
+        {true, ui::VKEY_OEM_2, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
+         AcceleratorAction::kTilingWindowResizeDown},
+    });
+
+ASH_PUBLIC_EXPORT inline constexpr AcceleratorData kGeminiAcceleratorData[] = {
+    {true, ui::VKEY_F23, ui::EF_COMMAND_DOWN | ui::EF_SHIFT_DOWN,
+     AcceleratorAction::kToggleGeminiApp, /*accelerator_locked=*/true},
+};
+ASH_PUBLIC_EXPORT inline constexpr size_t kGeminiAcceleratorDataLength =
+    std::size(kGeminiAcceleratorData);
+
+ASH_PUBLIC_EXPORT inline constexpr AcceleratorData
+    kToggleDoNotDisturbAcceleratorData[] = {
+        {true, ui::VKEY_DO_NOT_DISTURB, ui::EF_NONE,
+         AcceleratorAction::kToggleDoNotDisturb},
+};
+ASH_PUBLIC_EXPORT inline constexpr size_t
+    kToggleDoNotDisturbAcceleratorDataLength =
+        std::size(kToggleDoNotDisturbAcceleratorData);
+
+ASH_PUBLIC_EXPORT inline constexpr AcceleratorData
+    kToggleCameraAllowedAcceleratorData[] = {
+        {true, ui::VKEY_CAMERA_ACCESS_TOGGLE, ui::EF_NONE,
+         AcceleratorAction::kToggleCameraAllowed},
+};
+ASH_PUBLIC_EXPORT inline constexpr size_t
+    kToggleCameraAllowedAcceleratorDataLength =
+        std::size(kToggleCameraAllowedAcceleratorData);
+
+// The public-facing interface for accelerator handling, which is Ash's duty to
+// implement.
+class ASH_PUBLIC_EXPORT AcceleratorController {
+ public:
+  class Observer : public base::CheckedObserver {
+   public:
+    // Invoked when `action` is performed.
+    virtual void OnActionPerformed(AcceleratorAction action) = 0;
+    // Invoked when `controller` is destroyed.
+    virtual void OnAcceleratorControllerWillBeDestroyed(
+        AcceleratorController* controller) {}
+  };
+
+  // Returns the singleton instance.
+  static AcceleratorController* Get();
+
+  // Called by Chrome to set the closure that should be run when the volume has
+  // been adjusted (playing an audible tone when spoken feedback is enabled).
+  static void SetVolumeAdjustmentSoundCallback(
+      const base::RepeatingClosure& closure);
+
+  // Called by Ash to run the closure from SetVolumeAdjustmentSoundCallback.
+  static void PlayVolumeAdjustmentSound();
+
+  // Returns true if |key_code| is a key usually handled directly by the shell.
+  static bool IsSystemKey(ui::KeyboardCode key_code);
+
+  // Activates the target associated with the specified accelerator.
+  // First, AcceleratorPressed handler of the most recently registered target
+  // is called, and if that handler processes the event (i.e. returns true),
+  // this method immediately returns. If not, we do the same thing on the next
+  // target, and so on.
+  // Returns true if an accelerator was activated.
+  virtual bool Process(const ui::Accelerator& accelerator) = 0;
+
+  // Returns true if the |accelerator| is deprecated. Deprecated accelerators
+  // can be consumed by web contents if needed.
+  virtual bool IsDeprecated(const ui::Accelerator& accelerator) const = 0;
+
+  // Performs the specified action if it is enabled. Returns whether the action
+  // was performed successfully.
+  virtual bool PerformActionIfEnabled(AcceleratorAction action,
+                                      const ui::Accelerator& accelerator) = 0;
+
+  // Called by Chrome when a menu item accelerator has been triggered. Returns
+  // true if the menu should close.
+  virtual bool OnMenuAccelerator(const ui::Accelerator& accelerator) = 0;
+
+  // Returns true if the |accelerator| is registered.
+  virtual bool IsRegistered(const ui::Accelerator& accelerator) const = 0;
+
+  // Returns the accelerator histotry.
+  virtual AcceleratorHistory* GetAcceleratorHistory() = 0;
+
+  // Returns true if the provided accelerator matches the provided accelerator
+  // action.
+  virtual bool DoesAcceleratorMatchAction(const ui::Accelerator& accelerator,
+                                          const AcceleratorAction action) = 0;
+
+  virtual void ApplyAcceleratorForTesting(
+      const ui::Accelerator& accelerator) = 0;
+
+  void AddObserver(Observer* observer);
+  void RemoveObserver(Observer* observer);
+
+ protected:
+  AcceleratorController();
+  virtual ~AcceleratorController();
+  void NotifyActionPerformed(AcceleratorAction action);
+
+  base::ObserverList<Observer, /*check_empty=*/true> observers_;
 };
 
-const size_t kToggleGameDashboardAcceleratorDataLength =
-    std::size(kToggleGameDashboardAcceleratorData);
-
-const AcceleratorData kTogglePickerAcceleratorData[] = {
-    {false, ui::VKEY_RIGHT_ALT, ui::EF_NONE, AcceleratorAction::kTogglePicker,
-     true},
-    {true, ui::VKEY_F, ui::EF_COMMAND_DOWN, AcceleratorAction::kTogglePicker},
+// The public facing interface for AcceleratorHistory, which is implemented in
+// ash.
+class ASH_PUBLIC_EXPORT AcceleratorHistory {
+ public:
+  // Stores |accelerator| if it's different than the currently stored one.
+  virtual void StoreCurrentAccelerator(const ui::Accelerator& accelerator) = 0;
 };
-
-const size_t kTogglePickerAcceleratorDataLength =
-    std::size(kTogglePickerAcceleratorData);
-
-const AcceleratorData kTilingWindowResizeAcceleratorData[] = {
-    {true, ui::VKEY_OEM_COMMA, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
-     AcceleratorAction::kTilingWindowResizeLeft},
-    {true, ui::VKEY_OEM_PERIOD, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
-     AcceleratorAction::kTilingWindowResizeRight},
-    {true, ui::VKEY_OEM_1, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
-     AcceleratorAction::kTilingWindowResizeUp},
-    {true, ui::VKEY_OEM_2, ui::EF_COMMAND_DOWN | ui::EF_CONTROL_DOWN,
-     AcceleratorAction::kTilingWindowResizeDown},
-};
-
-const size_t kTilingWindowResizeAcceleratorDataLength =
-    std::size(kTilingWindowResizeAcceleratorData);
-
-// static
-AcceleratorController* AcceleratorController::Get() {
-  return g_instance;
-}
-
-// static
-void AcceleratorController::SetVolumeAdjustmentSoundCallback(
-    const base::RepeatingClosure& closure) {
-  DCHECK(GetVolumeAdjustmentCallback()->is_null() || closure.is_null());
-  *GetVolumeAdjustmentCallback() = std::move(closure);
-}
-
-// static
-void AcceleratorController::PlayVolumeAdjustmentSound() {
-  if (*GetVolumeAdjustmentCallback())
-    GetVolumeAdjustmentCallback()->Run();
-}
-
-// static
-bool AcceleratorController::IsSystemKey(ui::KeyboardCode key_code) {
-  switch (key_code) {
-    case ui::VKEY_ASSISTANT:
-    case ui::VKEY_ZOOM:               // Fullscreen button.
-    case ui::VKEY_MEDIA_LAUNCH_APP1:  // Overview button.
-    case ui::VKEY_BRIGHTNESS_DOWN:
-    case ui::VKEY_BRIGHTNESS_UP:
-    case ui::VKEY_KBD_BRIGHTNESS_DOWN:
-    case ui::VKEY_KBD_BRIGHTNESS_UP:
-    case ui::VKEY_VOLUME_MUTE:
-    case ui::VKEY_VOLUME_DOWN:
-    case ui::VKEY_VOLUME_UP:
-    case ui::VKEY_POWER:
-    case ui::VKEY_SLEEP:
-    case ui::VKEY_F13:  // Lock button on some chromebooks emits F13.
-    case ui::VKEY_PRIVACY_SCREEN_TOGGLE:
-    case ui::VKEY_SETTINGS:
-      return true;
-    case ui::VKEY_MEDIA_NEXT_TRACK:
-    case ui::VKEY_MEDIA_PAUSE:
-    case ui::VKEY_MEDIA_PLAY:
-    case ui::VKEY_MEDIA_PLAY_PAUSE:
-    case ui::VKEY_MEDIA_PREV_TRACK:
-    case ui::VKEY_MEDIA_STOP:
-    case ui::VKEY_OEM_103:  // KEYCODE_MEDIA_REWIND
-    case ui::VKEY_OEM_104:  // KEYCODE_MEDIA_FAST_FORWARD
-      return base::FeatureList::IsEnabled(media::kHardwareMediaKeyHandling);
-    default:
-      return false;
-  }
-}
-
-void AcceleratorController::AddObserver(Observer* observer) {
-  observers_.AddObserver(observer);
-}
-
-void AcceleratorController::RemoveObserver(Observer* observer) {
-  observers_.RemoveObserver(observer);
-}
-
-AcceleratorController::AcceleratorController() {
-  DCHECK_EQ(nullptr, g_instance);
-  g_instance = this;
-}
-
-AcceleratorController::~AcceleratorController() {
-  for (auto& obs : observers_)
-    obs.OnAcceleratorControllerWillBeDestroyed(this);
-
-  DCHECK_EQ(this, g_instance);
-  g_instance = nullptr;
-}
-
-void AcceleratorController::NotifyActionPerformed(AcceleratorAction action) {
-  for (Observer& observer : observers_)
-    observer.OnActionPerformed(action);
-}
 
 }  // namespace ash
+
+#endif  // ASH_PUBLIC_CPP_ACCELERATORS_H_
