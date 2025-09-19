@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors and Alex313031
+// Copyright 2025 The Chromium Authors and Alex313031
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -36,8 +36,6 @@
 #include "ui/views/widget/widget.h"
 
 // HomePageUndoBubble ---------------------------------------------------------
-
-namespace {
 
 class HomePageUndoBubble : public views::BubbleDialogDelegateView {
   METADATA_HEADER(HomePageUndoBubble, views::BubbleDialogDelegateView)
@@ -109,8 +107,6 @@ void HomePageUndoBubble::UndoClicked() {
 BEGIN_METADATA(HomePageUndoBubble)
 END_METADATA
 
-}  // namespace
-
 // HomePageUndoBubbleCoordinator ----------------------------------------------
 
 HomePageUndoBubbleCoordinator::HomePageUndoBubbleCoordinator(
@@ -122,8 +118,9 @@ HomePageUndoBubbleCoordinator::~HomePageUndoBubbleCoordinator() = default;
 
 void HomePageUndoBubbleCoordinator::Show(const GURL& undo_url,
                                          bool undo_value_is_ntp) {
-  if (tracker_.view())
+  if (tracker_.view()) {
     tracker_.view()->GetWidget()->Close();
+  }
 
   auto undo_bubble = std::make_unique<HomePageUndoBubble>(
       anchor_view_, prefs_, undo_url, undo_value_is_ntp);

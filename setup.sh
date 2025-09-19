@@ -60,9 +60,10 @@ mkdir -v -p ${CR_SRC_DIR}/out/thorium/ &&
 
 printf "\n" &&
 printf "${YEL}Copying Thorium source files over the Chromium tree...${c0}\n" &&
-
 # Copy libjxl src
 cd ~/thorium &&
+printf "\n" &&
+printf "${YEL}Copying thorium-libjxl source for JPEG-XL Support...${c0}\n" &&
 cp -r -v thorium-libjxl/src/. ${CR_SRC_DIR}/ &&
 
 # Copy Thorium sources

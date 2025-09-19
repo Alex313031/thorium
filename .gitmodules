@@ -1,6 +1,7 @@
 [submodule "thorium-libjxl"]
 	path = thorium-libjxl
 	url = https://github.com/Alex313031/thorium-libjxl.git
+	branch = main
 [submodule "infra/upgrader"]
 	path = infra/upgrader
 	url = https://github.com/hezhizheng/thorium-win-upgrade
