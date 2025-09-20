@@ -1316,7 +1316,7 @@ config("compiler_cpu_abi") {
         ldflags += [ "-m64" ]
       }
       cflags += [ "-msse3" ]
-      if (use_sse41 || is_chromeos || is_chromeos_lacros) {
+      if (use_sse41 || is_chromeos) {
         cflags += [
           "-mssse3",
           "-msse4.1",
