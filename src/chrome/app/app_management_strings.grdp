@@ -97,7 +97,7 @@
     Other apps are set to open the same links as <ph name="APP_NAME">$1<ex>Gmail</ex></ph>. This will disable <ph name="APP_NAME_2">$2<ex>EmailReader</ex></ph>, <ph name="APP_NAME_3">$3<ex>PDFViewer</ex></ph>, <ph name="APP_NAME_4">$4<ex>Photos</ex></ph> and 1 other app from opening supported links.
   </message>
   <message name="IDS_APP_MANAGEMENT_INTENT_OVERLAP_DIALOG_TEXT_5_OR_MORE_APPS" desc="Text to explain to the user that 5 or more preferred apps will be replaced, and the text states the first 3 apps that will be replaced.">
-    Other apps are set to open the same links as <ph name="APP_NAME">$1<ex>Gmail</ex></ph>. This will disable <ph name="APP_NAME_2">$2<ex>EmailReader</ex></ph>, <ph name="APP_NAME_3">$3<ex>PDFViewer</ex></ph>, <ph name="APP_NAME_4">$4<ex>Photos</ex></ph> and <ph name="NUMBER_OF_OTHER_APPS">$5<ex>2</ex></ph> other apps from opening supported links.
+    Other apps are set to open the same links as <ph name="APP_NAME">$1<ex>Gmail</ex></ph>. This will disable <ph name="APP_NAME_2">$2<ex>EmailReader</ex></ph>, <ph name="APP_NAME_3">$3<ex>PDFViewer</ex></ph>, <ph name="APP_NAME_4">$4<ex>Photos</ex></ph> and <ph name="NUMBER_OF_OTHER_APPS">$5<ex>2</ex></ph> other apps from opening supported links.
   </message>
   <message name="IDS_APP_MANAGEMENT_INTENT_OVERLAP_WARNING_TEXT_1_APP" desc="Text to explain to the user that an overlapping app will still open some supported links, and the text states which app will open links.">
     Some supported links will still open in <ph name="APP_NAME">$1<ex>Gmail</ex></ph>.
@@ -200,6 +200,15 @@
   </message>
   <message name="IDS_APP_MANAGEMENT_PERMISSION_ALLOWED_BUT_MICROPHONE_HW_SWITCH_ACTIVE_TEXT_WITH_DETAILS" desc="Label explaining that access to microphone is allowed for an app but microphone is blocked by hardware switch with details.">
     Allowed – <ph name="PERMISSION_DETAILS">$1<ex>While in use</ex></ph>. Turn on microphone using physical switch.
+  </message>
+  <message name="IDS_APP_MANAGEMENT_APP_VERSION_TITLE" desc="Text for application version section">
+    Version
+  </message>
+  <message name="IDS_APP_MANAGEMENT_APP_SIZE_TITLE" desc="Text for application size section">
+    Size
+  </message>
+  <message name="IDS_APP_MANAGEMENT_APP_DATA_SIZE_TITLE" desc="Text for application data section">
+    Data stored in app
   </message>
 
   <!-- File Handling -->

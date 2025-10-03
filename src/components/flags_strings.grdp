@@ -10,7 +10,7 @@
     Search flags
   </message>
   <message name="IDS_FLAGS_UI_TITLE" translateable="false" desc="The page title for the about:flags page.">
-    Thorium Flags
+    Experiments
   </message>
   <message name="IDS_FLAGS_UI_PAGE_RESET" desc="Label for button that resets the flags to their default value.">
     Reset all
@@ -48,26 +48,6 @@
   <if expr="chromeos_ash">
     <message name="IDS_FLAGS_UI_RELAUNCH" desc="Label for button that restarts ThoriumOS.">
       Restart
-    </message>
-    <message name="IDS_FLAGS_UI_OS_FLAGS_TEXT1" desc="Begin label text which directs a user to a second dialog in ThoriumOS showing OS specific flags - enclosing url link.">
-      Looking for browser flags? Visit
-    </message>
-    <message name="IDS_FLAGS_UI_OS_FLAGS_TEXT2" desc="End label text which directs a user to a second dialog in ThoriumOS showing OS specific flags - enclosing url link.">
-      .
-    </message>
-    <message name="IDS_FLAGS_UI_OS_FLAGS_LINK" translateable="false" desc="Label for button that will call a new window which allows to change ThoriumOS system flags.">
-      chrome://flags
-    </message>
-  </if>
-  <if expr="chromeos_lacros">
-    <message name="IDS_FLAGS_UI_OS_FLAGS_TEXT1" desc="Begin label text which directs a user to a second dialog in ThoriumOS showing OS specific flags - enclosing url link.">
-      Looking for the ThoriumOS flags? Visit
-    </message>
-    <message name="IDS_FLAGS_UI_OS_FLAGS_TEXT2" desc="End label text which directs a user to a second dialog in ThoriumOS showing OS specific flags - enclosing url link.">
-      .
-    </message>
-    <message name="IDS_FLAGS_UI_OS_FLAGS_LINK" translateable="false" desc="Label for button that will call a new window which allows to change ThoriumOS system flags.">
-      os://flags
     </message>
   </if>
   <if expr="not chromeos_ash">

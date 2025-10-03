@@ -123,10 +123,10 @@
     The server's certificate appears to be a forgery.
   </message>
 
-  <message name="IDS_CERT_ERROR_CERTIFICATE_TRANSPARENCY_REQUIRED_DETAILS" desc="Details of the error page for a site or certificate that requires compliance with the Chromium Certificate Transparency Policy">
+  <message name="IDS_CERT_ERROR_CERTIFICATE_TRANSPARENCY_REQUIRED_DETAILS" desc="Details of the error page for a site or certificate that requires compliance with the Thorium Certificate Transparency Policy">
     The server presented a certificate that was not publicly disclosed using the Certificate Transparency policy. This is a requirement for some certificates, to ensure that they are trustworthy and protect against attackers.
   </message>
-  <message name="IDS_CERT_ERROR_CERTIFICATE_TRANSPARENCY_REQUIRED_DESCRIPTION" desc="Description of the error page for a site or certificate that requires compliance with the Chromium Certificate Transparency Policy">
+  <message name="IDS_CERT_ERROR_CERTIFICATE_TRANSPARENCY_REQUIRED_DESCRIPTION" desc="Description of the error page for a site or certificate that requires compliance with the Thorium Certificate Transparency Policy">
     The server's certificate was not disclosed via Certificate Transparency.
   </message>
 
@@ -140,7 +140,7 @@
   <if expr="_google_chrome">
     <if expr="is_ios">
       <message name="IDS_CERT_ERROR_AUTHORITY_INVALID_DETAILS" desc="Details for an X509 certificate with an invalid authority">
-        This server could not prove that it is <ph name="DOMAIN">&lt;strong&gt;$1<ex>paypal.com</ex>&lt;/strong&gt;</ph>; its security certificate is not trusted by Chrome. This may be caused by a misconfiguration or an attacker intercepting your connection.
+        This server could not prove that it is <ph name="DOMAIN">&lt;strong&gt;$1<ex>paypal.com</ex>&lt;/strong&gt;</ph>; its security certificate is not trusted by Thorium. This may be caused by a misconfiguration or an attacker intercepting your connection.
       </message>
     </if>
     <if expr="is_android">
