@@ -67,7 +67,7 @@ cd $HOME &&
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git &&
 cd depot_tools &&
 # Newer than DEPOT_TOOLS_REVISION file in thorium-libjxl due to checkout_riscv64 breakage
-git checkout -f 68f0a29a64d354aefcdb1f9eb2a636b21fe96d91 &&
+#git checkout -f 68f0a29a64d354aefcdb1f9eb2a636b21fe96d91 &&
 cd .. &&
 
 source ~/.bashrc &&
