@@ -111,8 +111,6 @@ rtc_use_h264 &#35;&#35; Enable WebRTC (Real-Time Communication) to use H.264 for
 
 rtc_use_lto &#35;&#35; Set whether WebRTC uses thinLTO for optimization. Enabled in Thorium for performance.
 
-rtc_include_ilbc &#35;&#35; Set whether to enable Google's Internet Low Bitrate Codec in WebRTC. Enabled in Thorium for performance and useability.
-
 rtc_build_with_neon &#35;&#35; Set whether to use ARM NEON SIMD instructions when building RTC code. Only applicable for ARM/ARM64. Enabled in Thorium for performance.
 
 rtc_build_examples &#35;&#35; Set whether to build example RTC data. Useful for debugging. Disabled in Thorium for size.

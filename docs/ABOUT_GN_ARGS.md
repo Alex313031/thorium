@@ -132,8 +132,6 @@ __enable_hangout_services_extension__ &#35; Enables building the Hangouts compon
 
 __rtc_use_h264__ &#35; Enable WebRTC (Real-Time Communication) to use H.264 for transmission/demuxing. Must be used with proprietary_codecs = true and ffmpeg_branding set to "Chrome" or "Chromeos". Enabled in Thorium for useability.
 
-__rtc_include_ilbc__ &#35; Set whether to enable Google's Internet Low Bitrate Codec in WebRTC. Enabled in Thorium for performance and useability.
-
 __rtc_build_with_neon__ &#35; Set whether to use ARM NEON SIMD instructions when building RTC code. Only applicable for ARM/ARM64. Enabled in Thorium for performance.
 
 __rtc_build_examples__ &#35; Set whether to build example RTC data. Useful for debugging. Disabled in Thorium for size.
@@ -159,8 +157,6 @@ __enable_platform_dts_audio__ &#35; Enable experimental MPEG H audio. Enabled in
 __enable_mse_mpeg2ts_stream_parser__ &#35; Enable experimental MPEG-TS media stream parsing/demuxing. Doesn't seem to work on non CrOS platforms. Enabled anyway in Thorium for all platforms for useability.
 
 __enable_rust__ &#35; Whether to enable the Rust toolchain during compilation. Set to true for all platforms except MacOS.
-
-__enable_all_rust_features__ &#35; Whether to enable all Rust features during compilation. Set to false for all platforms except Linux.
 
 ## __Optimizations__
 
