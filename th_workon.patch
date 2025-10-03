@@ -1,0 +1,1222 @@
+diff --git a/other/thorium-2024-ui.patch b/other/thorium-2024-ui.patch
+index 65ce91e4..4b42b3cf 100644
+--- a/other/thorium-2024-ui.patch
++++ b/other/thorium-2024-ui.patch
+@@ -2,15 +2,15 @@ diff --git a/base/BUILD.gn b/base/BUILD.gn
+ index 9247e9b3f4c92..eacd7f76564df 100644
+ --- a/base/BUILD.gn
+ +++ b/base/BUILD.gn
+-@@ -1085,6 +1085,7 @@ component("base") {
++@@ -1091,6 +1091,7 @@ component("base") {
++     "//base/third_party/icu",
+      "//build:chromecast_buildflags",
+-     "//build:chromeos_buildflags",
+      "//third_party/abseil-cpp:absl",
+ +    "//ui/base:buildflags",
+    ]
+  
+-   if (build_rust_base_conversions) {
+-@@ -2532,6 +2533,7 @@ buildflag_header("debugging_buildflags") {
++   if (!is_nacl) {
++@@ -2701,6 +2702,7 @@ buildflag_header("debugging_buildflags") {
+      "ENABLE_ALLOCATION_STACK_TRACE_RECORDER=$build_allocation_stack_trace_recorder",
+      "ENABLE_ALLOCATION_TRACE_RECORDER_FULL_REPORTING=$build_allocation_trace_recorder_full_reporting",
+      "PRINT_UNSYMBOLIZED_STACK_TRACES=$print_unsymbolized_stack_traces",
+@@ -37,7 +37,7 @@ index bd63d5a88e34e..1bed253cb50ee 100644
+ +#endif // !BUILDFLAG(THORIUM_DEBUG)
+  }
+  
+- CheckError::CheckError(LogMessage* log_message) : log_message_(log_message) {}
++ // Note: This function ends up in crash stack traces. If its full name changes,
+ diff --git a/base/debug/debug.gni b/base/debug/debug.gni
+ index 1d236d210a16f..b5059c81559ec 100644
+ --- a/base/debug/debug.gni
+@@ -60,7 +60,7 @@ diff --git a/base/files/file_util_win.cc b/base/files/file_util_win.cc
+ index 7cda11126e61e..fe82b35a1a5d1 100644
+ --- a/base/files/file_util_win.cc
+ +++ b/base/files/file_util_win.cc
+-@@ -883,8 +883,9 @@ bool IsLink(const FilePath& file_path) {
++@@ -941,8 +941,9 @@ bool IsLink(const FilePath& file_path) {
+  }
+  
+  bool GetFileInfo(const FilePath& file_path, File::Info* results) {
+@@ -72,42 +72,34 @@ index 7cda11126e61e..fe82b35a1a5d1 100644
+    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
+                             &attr)) {
+ diff --git a/base/logging.cc b/base/logging.cc
+-index 0d93ca4713624..3815fe60b4776 100644
++index b8eee13c99..1faa62547c 100644
+ --- a/base/logging.cc
+ +++ b/base/logging.cc
+-@@ -8,6 +8,7 @@
+- #endif
+- 
+- #include "base/logging.h"
++@@ -30,6 +30,7 @@
++ #include "base/debug/debugger.h"
++ #include "base/debug/stack_trace.h"
++ #include "base/debug/task_trace.h"
+ +#include "base/environment.h"
+- 
+- #ifdef BASE_CHECK_H_
+- #error "logging.h should not include check.h"
+-@@ -62,6 +63,7 @@
+- #include "build/chromeos_buildflags.h"
+- #include "third_party/abseil-cpp/absl/base/internal/raw_logging.h"
+- #include "third_party/abseil-cpp/absl/cleanup/cleanup.h"
+-+#include "ui/base/ui_base_features.h"
+- 
+- #if !BUILDFLAG(IS_NACL)
+- #include "base/auto_reset.h"
+-@@ -457,6 +459,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
+-   }
++ #include "base/functional/callback.h"
++ #include "base/immediate_crash.h"
++ #include "base/no_destructor.h"
++@@ -441,6 +442,7 @@ void WriteToFd(int fd, const char* data, size_t length) {
+  }
+  
+-+#if !BUILDFLAG(THORIUM_DEBUG)
+  void SetLogFatalCrashKey(LogMessage* log_message) {
+++#if !BUILDFLAG(THORIUM_DEBUG)
+  #if !BUILDFLAG(IS_NACL)
+    // In case of an out-of-memory condition, this code could be reentered when
+-@@ -477,6 +480,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
++   // constructing and storing the key. Using a static is not thread-safe, but if
++@@ -460,6 +462,7 @@ void SetLogFatalCrashKey(LogMessage* log_message) {
++   base::debug::SetCrashKeyString(crash_key, log_message->BuildCrashString());
+  
+  #endif  // !BUILDFLAG(IS_NACL)
+- }
+ +#endif // !BUILDFLAG(THORIUM_DEBUG)
++ }
+  
+  std::string BuildCrashString(const char* file,
+-                              int line,
+-@@ -585,9 +589,24 @@ int GetMinLogLevel() {
++@@ -577,10 +580,24 @@ int GetMinLogLevel() {
+    return g_min_log_level;
+  }
+  
+@@ -115,7 +107,7 @@ index 0d93ca4713624..3815fe60b4776 100644
+ +  const char* const env = getenv("THORIUM_DEBUG");
+ +  const std::string_view env_str =
+ +      env ? std::string_view(env) : std::string_view();
+-+  if (env_str == "1" || env_str == "true") {
+++  if (env_str == "1" || env_str == "true" || env_str == "TRUE") {
+ +    return true;
+ +  } else {
+ +    return false;
+@@ -123,44 +115,39 @@ index 0d93ca4713624..3815fe60b4776 100644
+ +}
+ +
+  bool ShouldCreateLogMessage(int severity) {
+--  if (severity < g_min_log_level)
+-+  if (severity < g_min_log_level) {
++   if (severity < g_min_log_level) {
+      return false;
+-+  }
++   }
+ +  if (IsVerbose()) {
+ +    return true;
+ +  }
+  
+    // Return true here unless we know ~LogMessage won't do anything.
+    return g_logging_destination != LOG_NONE || g_log_message_handler ||
+-@@ -599,8 +618,12 @@ bool ShouldCreateLogMessage(int severity) {
++@@ -592,7 +609,7 @@ bool ShouldCreateLogMessage(int severity) {
+  // set, or only LOG_TO_FILE is set, since that is useful for local development
+  // and debugging.
+  bool ShouldLogToStderr(int severity) {
+--  if (g_logging_destination & LOG_TO_STDERR)
+-+  if (g_logging_destination & LOG_TO_STDERR) {
+-+    return true;
+-+  }
+-+  if (IsVerbose()) {
++-  if (g_logging_destination & LOG_TO_STDERR) {
+++  if (g_logging_destination & LOG_TO_STDERR || IsVerbose()) {
+      return true;
+-+  }
++   }
+  
+- #if BUILDFLAG(IS_FUCHSIA)
+-   // Fuchsia will persist data logged to stdio by a component, so do not emit
+-@@ -731,9 +754,11 @@ void LogMessage::Flush() {
++@@ -724,9 +741,11 @@ void LogMessage::Flush() {
+    // Don't let actions from this method affect the system error after returning.
+    base::ScopedClearLastError scoped_clear_last_error;
+  
+ +#if !BUILDFLAG(THORIUM_DEBUG)
+    size_t stack_start = stream_.str().length();
+-+#endif // !BUILDFLAG(THORIUM_DEBUG)
+- #if !defined(OFFICIAL_BUILD) && !BUILDFLAG(IS_NACL) && !defined(__UCLIBC__) && \
++-#if !defined(OFFICIAL_BUILD) && !BUILDFLAG(IS_NACL) && !defined(__UCLIBC__) && \
+ -    !BUILDFLAG(IS_AIX)
+-+    !BUILDFLAG(IS_AIX) || BUILDFLAG(THORIUM_DEBUG)
+++#endif // !BUILDFLAG(THORIUM_DEBUG)
+++#if (!defined(OFFICIAL_BUILD) || BUILDFLAG(THORIUM_DEBUG)) && !BUILDFLAG(IS_NACL) && \
+++    !defined(__UCLIBC__) && !BUILDFLAG(IS_AIX)
+    // Include a stack trace on a fatal, unless a debugger is attached.
+    if (severity_ == LOGGING_FATAL && !base::debug::BeingDebugged()) {
+      base::debug::StackTrace stack_trace;
+-@@ -766,6 +791,7 @@ void LogMessage::Flush() {
++@@ -760,6 +779,7 @@ void LogMessage::Flush() {
+    std::string str_newline(stream_.str());
+    TraceLogMessage(file_, line_, str_newline.substr(message_start_));
+  
+@@ -168,28 +155,14 @@ index 0d93ca4713624..3815fe60b4776 100644
+    // FATAL messages should always run the assert handler and crash, even if a
+    // message handler marks them as otherwise handled.
+    absl::Cleanup handle_fatal_message = [&] {
+-@@ -776,6 +802,7 @@ void LogMessage::Flush() {
+- 
+-   if (severity_ == LOGGING_FATAL)
++@@ -771,6 +791,7 @@ void LogMessage::Flush() {
++   if (severity_ == LOGGING_FATAL) {
+      SetLogFatalCrashKey(this);
++   }
+ +#endif // !BUILDFLAG(THORIUM_DEBUG)
+  
+    // Give any log message handler first dibs on the message.
+    if (g_log_message_handler &&
+-diff --git a/base/logging.h b/base/logging.h
+-index fe2ce670da340..82bbda21a16e5 100644
+---- a/base/logging.h
+-+++ b/base/logging.h
+-@@ -301,6 +301,9 @@ BASE_EXPORT void SetMinLogLevel(int level);
+- // Gets the current log level.
+- BASE_EXPORT int GetMinLogLevel();
+- 
+-+// Whether to always log in verbose mode
+-+BASE_EXPORT bool IsVerbose();
+-+
+- // Used by LOG_IS_ON to lazy-evaluate stream arguments.
+- BASE_EXPORT bool ShouldCreateLogMessage(int severity);
+- 
+ diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
+ index b103bbe61303d..469611cb36e7a 100644
+ --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
+@@ -207,7 +180,7 @@ diff --git a/chrome/browser/resources/downloads/item.css b/chrome/browser/resour
+ index f5c2357c5c986..86f18f7c77f8a 100644
+ --- a/chrome/browser/resources/downloads/item.css
+ +++ b/chrome/browser/resources/downloads/item.css
+-@@ -322,7 +322,7 @@ cr-button {
++@@ -333,7 +333,7 @@ cr-button {
+    --cr-icon-button-icon-size: 20px;
+    --cr-icon-button-margin-end: 0;
+    --cr-icon-button-margin-start: 0;
+@@ -220,7 +193,7 @@ diff --git a/chrome/browser/resources/downloads/item.html.ts b/chrome/browser/re
+ index 1e0f2c895d708..64347e17d7e42 100644
+ --- a/chrome/browser/resources/downloads/item.html.ts
+ +++ b/chrome/browser/resources/downloads/item.html.ts
+-@@ -47,7 +47,7 @@ export function getHtml(this: DownloadsItemElement) {
++@@ -49,7 +49,7 @@ export function getHtml(this: DownloadsItemElement) {
+              ?hidden="${!this.shouldShowReferrerUrl_()}">
+            <!-- Text populated dynamically -->
+          </div>
+@@ -229,7 +202,7 @@ index 1e0f2c895d708..64347e17d7e42 100644
+            @click="${this.onUrlClick_}" focus-row-control
+            focus-type="url">${this.getDisplayUrlStr_()}</a>
+        </div>
+-@@ -94,7 +94,6 @@ export function getHtml(this: DownloadsItemElement) {
++@@ -96,7 +96,6 @@ export function getHtml(this: DownloadsItemElement) {
+              focus-row-control focus-type="copyDownloadLink">
+          </cr-icon-button>
+          <cr-icon-button id="more-actions" iron-icon="cr:more-vert"
+@@ -256,7 +229,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
+ index bc6e4008f2c5a..9b6dffa76b9dc 100644
+ --- a/chrome/browser/ui/BUILD.gn
+ +++ b/chrome/browser/ui/BUILD.gn
+-@@ -182,6 +182,7 @@ static_library("ui") {
++@@ -107,6 +107,7 @@ static_library("ui") {
+      "tab_modal_confirm_dialog.h",
+      "tab_ui_helper.cc",
+      "tab_ui_helper.h",
+@@ -264,7 +237,7 @@ index bc6e4008f2c5a..9b6dffa76b9dc 100644
+      "toolbar/chrome_labs/chrome_labs_model.cc",
+      "toolbar/chrome_labs/chrome_labs_model.h",
+      "toolbar/chrome_labs/chrome_labs_prefs.cc",
+-@@ -4430,6 +4431,8 @@ static_library("ui") {
++@@ -4072,6 +4073,8 @@ static_library("ui") {
+        "views/frame/top_container_view.cc",
+        "views/frame/top_container_view.h",
+        "views/frame/top_controls_slide_controller.h",
+@@ -274,7 +247,7 @@ index bc6e4008f2c5a..9b6dffa76b9dc 100644
+        "views/frame/web_contents_close_handler.h",
+        "views/frame/web_contents_close_handler_delegate.h",
+ diff --git a/chrome/browser/ui/bookmarks/bookmark_utils.cc b/chrome/browser/ui/bookmarks/bookmark_utils.cc
+-index e7858be996ca8..c8dd78eab4df0 100644
++index 6df5654f9d..aab33d1d81 100644
+ --- a/chrome/browser/ui/bookmarks/bookmark_utils.cc
+ +++ b/chrome/browser/ui/bookmarks/bookmark_utils.cc
+ @@ -7,6 +7,7 @@
+@@ -285,7 +258,7 @@ index e7858be996ca8..c8dd78eab4df0 100644
+  #include "base/feature_list.h"
+  #include "base/functional/bind.h"
+  #include "base/memory/raw_ptr.h"
+-@@ -292,9 +293,13 @@ gfx::ImageSkia GetBookmarkFolderImageFromVectorIcon(
++@@ -326,9 +327,13 @@ gfx::ImageSkia GetBookmarkFolderImageFromVectorIcon(
+    const gfx::VectorIcon* id;
+    gfx::ImageSkia folder;
+    if (icon_type == BookmarkFolderIconType::kNormal) {
+@@ -299,10 +272,10 @@ index e7858be996ca8..c8dd78eab4df0 100644
+ +         ? &vector_icons::kFolderManagedIcon
+ +         : &vector_icons::kFolderManagedRefreshIcon;
+    }
+-   const ui::ThemedVectorIcon icon =
+-       absl::holds_alternative<SkColor>(color)
+-@@ -318,8 +323,45 @@ ui::ImageModel GetBookmarkFolderIcon(
+-                             absl::variant<ui::ColorId, SkColor> color,
++ 
++   const ui::ThemedVectorIcon icon(id, color);
++@@ -350,8 +355,45 @@ ui::ImageModel GetBookmarkFolderIcon(BookmarkFolderIconType icon_type,
++                             ui::ColorVariant color,
+                              const ui::ColorProvider* color_provider) {
+      gfx::ImageSkia folder;
+ -    folder =
+@@ -353,7 +326,7 @@ diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/brow
+ index 64948595a4bc6..a568c893736ca 100644
+ --- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+ +++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
+-@@ -47,7 +47,7 @@ using bookmarks::BookmarkNode;
++@@ -48,7 +48,7 @@ using bookmarks::BookmarkNode;
+  
+  namespace chrome {
+  
+@@ -363,22 +336,22 @@ index 64948595a4bc6..a568c893736ca 100644
+  static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
+  
+ diff --git a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
+-index 71f9d6ad07da0..246532a09797a 100644
++index cdaceec5e1..c4320d3550 100644
+ --- a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
+ +++ b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
+-@@ -133,10 +133,6 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
++@@ -149,7 +149,9 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
+    // TODO(pbos): Look at returning -1 here if there's no default index. Right
+    // now a lot of code in Combobox assumes an index within `items_` bounds.
+-   auto it = base::ranges::find(items_, Item(parent_node_, Item::TYPE_NODE));
++   auto it = std::ranges::find(items_, Item(parent_node_, Item::TYPE_NODE));
+ -  if (it == items_.end()) {
+--    it = base::ranges::find(items_,
+--                            Item(parent_node_, Item::TYPE_ALL_BOOKMARKS_NODE));
+--  }
+-   return it == items_.end() ? 0 : static_cast<int>(it - items_.begin());
+- }
+- 
+++  // Default to Bookmarks Bar in Thorium, not "All Bookmarks"
+++  static constexpr bool default_bookmarks_bar = true;
+++  if (it == items_.end() && !default_bookmarks_bar) {
++     it = std::ranges::find(items_,
++                            Item(parent_node_, Item::TYPE_ALL_BOOKMARKS_NODE));
++   }
+ diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
+-index d65691f1aa1a5..da4fff1f928f7 100644
++index 98fe0ca8e4..d48d63567b 100644
+ --- a/chrome/browser/ui/browser_actions.cc
+ +++ b/chrome/browser/ui/browser_actions.cc
+ @@ -9,6 +9,7 @@
+@@ -386,34 +359,36 @@ index d65691f1aa1a5..da4fff1f928f7 100644
+  
+  #include "base/check_op.h"
+ +#include "base/command_line.h"
++ #include "base/functional/bind.h"
+  #include "chrome/app/vector_icons/vector_icons.h"
+  #include "chrome/browser/devtools/devtools_window.h"
+- #include "chrome/browser/profiles/profile.h"
+-@@ -410,6 +411,8 @@ void BrowserActions::InitializeBrowserActions() {
+-     if (IsChromeLabsEnabled()) {
+-       // TODO(b/354758327): Update `ShouldShowChromeLabsUI()` to not require
+-       // `model` as a parameter, then use to set visibility of action item.
+-+      static const bool disable_thorium_icons =
+-+          base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
+-       root_action_item_->AddChild(
+-           ChromeMenuAction(base::BindRepeating(
+-                                [](Browser* browser, actions::ActionItem* item,
+-@@ -418,7 +421,9 @@ void BrowserActions::InitializeBrowserActions() {
+-                                },
+-                                base::Unretained(browser)),
+-                            kActionShowChromeLabs, IDS_CHROMELABS,
+--                           IDS_CHROMELABS, kScienceIcon)
+-+                           IDS_CHROMELABS, disable_thorium_icons
+-+                                           ? kScienceIcon
+-+                                           : kScienceThoriumIcon)
+-               .SetVisible(false)
+-               .Build());
+-     }
++@@ -557,6 +558,8 @@ void BrowserActions::InitializeBrowserActions() {
++       !web_app::AppBrowserController::IsWebApp(browser)) {
++     // TODO(354758327): Update `ShouldShowChromeLabsUI()` to not require
++     // `model` as a parameter, then use to set visibility of action item.
+++    static const bool disable_thorium_icons =
+++        base::CommandLine::ForCurrentProcess()->HasSwitch("disable-thorium-icons");
++     root_action_item_->AddChild(
++         ChromeMenuAction(base::BindRepeating(
++                              [](Browser* browser, actions::ActionItem* item,
++@@ -564,8 +567,10 @@ void BrowserActions::InitializeBrowserActions() {
++                                browser->window()->ShowChromeLabs();
++                              },
++                              base::Unretained(browser)),
++-                         kActionShowChromeLabs, IDS_CHROMELABS, IDS_CHROMELABS,
++-                         kScienceIcon)
+++                         kActionShowChromeLabs, IDS_CHROMELABS
+++                         IDS_CHROMELABS, disable_thorium_icons
+++                                         ? kScienceIcon
+++                                         : kScienceThoriumIcon)
++             .SetVisible(false)
++             .Build());
++   }
+ diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
+ index 86af74569f013..1f9cc1696eda4 100644
+ --- a/chrome/browser/ui/browser_command_controller.cc
+ +++ b/chrome/browser/ui/browser_command_controller.cc
+-@@ -1423,7 +1423,8 @@ void BrowserCommandController::InitCommandState() {
++@@ -1556,7 +1556,8 @@ void BrowserCommandController::InitCommandState() {
+    command_updater_.UpdateCommandEnabled(IDC_WINDOW_CLOSE_OTHER_TABS,
+                                          normal_window);
+  
+@@ -427,7 +402,7 @@ diff --git a/chrome/browser/ui/color/chrome_color_mixer.cc b/chrome/browser/ui/c
+ index 589c77c52175b..28e662fdd8e2f 100644
+ --- a/chrome/browser/ui/color/chrome_color_mixer.cc
+ +++ b/chrome/browser/ui/color/chrome_color_mixer.cc
+-@@ -141,8 +141,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
++@@ -140,8 +140,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
+        gfx::kGoogleGrey500, kColorBookmarkBarBackground, 6.0f);
+    mixer[kColorBookmarkFolderIcon] = {ui::kColorIcon};
+    mixer[kColorBookmarkBarSeparator] = {kColorToolbarSeparator};
+@@ -437,7 +412,7 @@ index 589c77c52175b..28e662fdd8e2f 100644
+    mixer[kColorBookmarkDragImageBackground] = {ui::kColorAccent};
+    mixer[kColorBookmarkDragImageCountBackground] = {ui::kColorAlertHighSeverity};
+    mixer[kColorBookmarkDragImageCountForeground] =
+-@@ -748,8 +747,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
++@@ -790,8 +789,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
+        ui::SetAlpha(kColorToolbarInkDrop, std::ceil(0.06f * 255.0f));
+    mixer[kColorAppMenuChipInkDropHover] = {kColorToolbarInkDropHover};
+    mixer[kColorAppMenuChipInkDropRipple] = {kColorToolbarInkDropRipple};
+@@ -542,7 +517,7 @@ index e4ccd7fab5421..0eadd6bdd8def 100644
+  // that need to be accessible outside of /browser/ui/views.
+  class WindowFrameUtil {
+ diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
+-index 87c4ee64068a6..d900607d59819 100644
++index 6b68ec265a..7f3d9784ca 100644
+ --- a/chrome/browser/ui/layout_constants.cc
+ +++ b/chrome/browser/ui/layout_constants.cc
+ @@ -7,6 +7,7 @@
+@@ -552,64 +527,67 @@ index 87c4ee64068a6..d900607d59819 100644
+ +#include "chrome/browser/ui/thorium_2024.h"
+  #include "chrome/browser/ui/tabs/features.h"
+  #include "chrome/browser/ui/ui_features.h"
+- #include "components/omnibox/common/omnibox_features.h"
+-@@ -20,24 +21,31 @@
++ #include "chrome/common/chrome_features.h"
++@@ -21,24 +22,31 @@
+  
+  int GetLayoutConstant(LayoutConstant constant) {
+    const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
+ +  static const bool classic_omnibox =
+ +      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
+++  static const bool thorium_2024 = features::IsThorium2024();
+    switch (constant) {
+      case APP_MENU_PROFILE_ROW_AVATAR_ICON_SIZE:
+ -      return 24;
+-+      return features::IsThorium2024() ? 16 : 24;
+++      return thorium_2024 ? 16 : 24;
+      case APP_MENU_MAXIMUM_CHARACTER_LENGTH:
+ -      return 30;
+-+      return features::IsThorium2024() ? 28 : 30;
+++      return thorium_2024 ? 28 : 30;
+      case BOOKMARK_BAR_HEIGHT: {
+        // The fixed margin ensures the bookmark buttons appear centered relative
+        // to the white space above and below.
+ -      const int bookmark_bar_attached_vertical_margin = 6;
+-+      const int bookmark_bar_attached_vertical_margin = features::IsThorium2024() ? 3 : 6;
+++      const int bookmark_bar_attached_vertical_margin = thorium_2024 ? 3 : 6;
+        return GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT) +
+               bookmark_bar_attached_vertical_margin;
+      }
+--    case BOOKMARK_BAR_BUTTON_HEIGHT:
++     case BOOKMARK_BAR_BUTTON_HEIGHT:
+ -      return touch_ui ? 36 : 28;
+-+    case BOOKMARK_BAR_BUTTON_HEIGHT: {
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? 34 : 26;
+ +      } else {
+ +        return touch_ui ? 36 : 28;
+ +      }
+-+    }
+      case BOOKMARK_BAR_BUTTON_PADDING:
+ -      return GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
+-+      return features::IsThorium2024() ? 2 : GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
+++      return thorium_2024 ? 2 : GetLayoutConstant(TOOLBAR_ELEMENT_PADDING);
+      case BOOKMARK_BAR_BUTTON_IMAGE_LABEL_PADDING:
+ -      return 6;
+-+      return features::IsThorium2024() ? 6 : 6;
+++      return thorium_2024 ? 6 : 6;
+      case WEB_APP_MENU_BUTTON_SIZE:
+        return 24;
+      case WEB_APP_PAGE_ACTION_ICON_SIZE:
+-@@ -51,7 +59,7 @@ int GetLayoutConstant(LayoutConstant constant) {
++@@ -52,7 +60,11 @@ int GetLayoutConstant(LayoutConstant constant) {
+      case LOCATION_BAR_CHILD_INTERIOR_PADDING:
+        return 3;
+      case LOCATION_BAR_CHILD_CORNER_RADIUS:
+ -      return 12;
+-+      return classic_omnibox ? 4 : 12;
+++      if (classic_omnibox) {
+++        return 4;
+++      } else {
+++        return thorium_2024 ? 8 : 12;
+++      }
+      case LOCATION_BAR_CHIP_ICON_SIZE:
+        return 16;
+      case LOCATION_BAR_CHIP_PADDING:
+-@@ -59,41 +67,69 @@ int GetLayoutConstant(LayoutConstant constant) {
++@@ -60,26 +72,46 @@ int GetLayoutConstant(LayoutConstant constant) {
+      case LOCATION_BAR_ELEMENT_PADDING:
+        return touch_ui ? 3 : 2;
+      case LOCATION_BAR_PAGE_INFO_ICON_VERTICAL_PADDING:
+ -      return touch_ui ? 3 : 5;
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 3 : 4;
+++      if (touch_ui) {
+++        return 3;
+ +      } else {
+-+        return touch_ui ? 3 : 5;
+++        return thorium_2024 ? 4 : 5;
+ +      }
+      case LOCATION_BAR_LEADING_DECORATION_EDGE_PADDING:
+        // TODO(manukh): See comment in `LocationBarView::Layout()`. We have too
+@@ -618,28 +596,28 @@ index 87c4ee64068a6..d900607d59819 100644
+        //   elsewhere, it's consolidated in `Layout()` and will be moved back
+        //   here once we decide on a permutation.
+ -      NOTREACHED();
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 3 : 4;
+++      if (touch_ui) {
+++        return 3;
+ +      } else {
+-+        return touch_ui ? 3 : 5;
+++        return thorium_2024 ? 4 : 5;
+ +      }
+      case LOCATION_BAR_TRAILING_DECORATION_EDGE_PADDING:
+ -      return touch_ui ? 3 : 12;
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 3 : 6;
+++      if (touch_ui) {
+++        return 3;
+ +      } else {
+-+        return touch_ui ? 3 : 12;
+++        return thorium_2024 ? 6 : 12;
+ +      }
+      case LOCATION_BAR_TRAILING_DECORATION_INNER_PADDING:
+ -      return touch_ui ? 3 : 8;
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 3 : 6;
+++      if (touch_ui) {
+++        return 3;
+ +      } else {
+-+        return touch_ui ? 3 : 8;
+++        return thorium_2024 ? 6 : 8;
+ +      }
+      case LOCATION_BAR_HEIGHT:
+ -      return touch_ui ? 36 : 34;
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? 34 : 30;
+ +      } else {
+ +        return touch_ui ? 36 : 34;
+@@ -650,18 +628,23 @@ index 87c4ee64068a6..d900607d59819 100644
+        return GetLayoutConstant(LOCATION_BAR_ICON_SIZE);
+      case LOCATION_BAR_TRAILING_ICON_SIZE:
+ -      return 20;
+-+      return features::IsThorium2024() ? 20 : 20;
+-     case TAB_AFTER_TITLE_PADDING:
+-       return touch_ui ? 8 : 4;
+-     case TAB_ALERT_INDICATOR_CAPTURE_ICON_WIDTH:
+++      return thorium_2024 ? 20 : 20;
++     case NEW_TAB_BUTTON_LEADING_MARGIN:
++       return features::IsTabSearchMoving() &&
++                      !features::HasTabstripComboButtonWithBackground() &&
++@@ -94,15 +126,27 @@ int GetLayoutConstant(LayoutConstant constant) {
+        return 16;
+      case TAB_ALERT_INDICATOR_ICON_WIDTH:
+        return touch_ui ? 12 : 16;
+ +    case TAB_BUTTON_OFFSET:
+-+      return features::IsThorium2024() ? -1 : 0;
+++      return thorium_2024 ? -1 : 0;
+      case TAB_CLOSE_BUTTON_SIZE:
+ -      return touch_ui ? 24 : 16;
+-+      return touch_ui ? 24 : 18;
+++      if (touch_ui) {
+++        return 24;
+++      } else {
+++        return thorium_2024 ? 18 : 16;
+++      }
+      case TAB_HEIGHT:
+        return 34 + GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP);
+      case TAB_STRIP_HEIGHT:
+@@ -669,22 +652,22 @@ index 87c4ee64068a6..d900607d59819 100644
+               GetLayoutConstant(TAB_STRIP_PADDING);
+      case TAB_STRIP_PADDING:
+ -      return 6;
+-+      return features::IsThorium2024() ? 0 : 6;
+++      return thorium_2024 ? 0 : 6;
+ +    case TAB_MARGIN:
+-+      return features::IsThorium2024() ? 6 : 6;
+++      return thorium_2024 ? 6 : 6;
+ +    case TAB_INACTIVE_PADDING:
+-+      return features::IsThorium2024() ? 3 : 6;
+++      return thorium_2024 ? 3 : 6;
+ +    case TAB_SEARCH_PADDING:
+-+      return features::IsThorium2024() ? 3 : 6;
+++      return thorium_2024 ? 3 : 6;
+      case TAB_SEPARATOR_HEIGHT:
+        return touch_ui ? 24 : 20;
+      case TAB_PRE_TITLE_PADDING:
+-@@ -108,27 +144,43 @@ int GetLayoutConstant(LayoutConstant constant) {
++@@ -117,27 +161,43 @@ int GetLayoutConstant(LayoutConstant constant) {
+        }
+        return 1;
+      case TOOLBAR_BUTTON_HEIGHT:
+ -      return touch_ui ? 48 : 34;
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? 46 : 30;
+ +      } else {
+ +        return touch_ui ? 48 : 34;
+@@ -694,54 +677,60 @@ index 87c4ee64068a6..d900607d59819 100644
+ +      return 1.0f;
+      case TOOLBAR_DIVIDER_HEIGHT:
+ -      return touch_ui ? 20 : 16;
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 20 : 18;
+++      if (touch_ui) {
+++        return 20;
+ +      } else {
+-+        return touch_ui ? 20 : 16;
+++        return thorium_2024 ? 18 : 16;
+ +      }
+      case TOOLBAR_DIVIDER_SPACING:
+ -      return 9;
+-+      return features::IsThorium2024() ? 7 : 9;
+++      return thorium_2024 ? 7 : 9;
+      case TOOLBAR_DIVIDER_WIDTH:
+        return 2;
+      case TOOLBAR_ELEMENT_PADDING:
+        return touch_ui ? 0 : 4;
+      case TOOLBAR_ICON_DEFAULT_MARGIN:
+ -      return touch_ui ? 0 : 2;
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? 2 : 2;
+ +      } else {
+ +        return touch_ui ? 0 : 2;
+ +      }
+      case TOOLBAR_STANDARD_SPACING:
+ -      return touch_ui ? 12 : 9;
+-+      if (features::IsThorium2024()) {
+-+        return touch_ui ? 12 : 7;
+++      if (touch_ui) {
+++        return 12;
+ +      } else {
+-+       return touch_ui ? 12 : 9;
+++        return thorium_2024 ? 7 : 9;
+ +      }
+      case PAGE_INFO_ICON_SIZE:
+ -      return 20;
+-+      return features::IsThorium2024() ? 18 : 20;
+++      return thorium_2024 ? 18 : 20;
+      case DOWNLOAD_ICON_SIZE:
+ -      return 20;
+-+      return features::IsThorium2024() ? 18 : 20;
+++      return thorium_2024 ? 18 : 20;
+      case TOOLBAR_CORNER_RADIUS:
+ -      return 8;
+ +      return 0;
+      default:
+        break;
+    }
+-@@ -143,10 +195,14 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
++@@ -146,15 +206,20 @@ int GetLayoutConstant(LayoutConstant constant) {
++ 
++ gfx::Insets GetLayoutInsets(LayoutInset inset) {
++   const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
+++  static const bool thorium_2024 = features::IsThorium2024();
++   switch (inset) {
++     case DOWNLOAD_ICON:
+        return gfx::Insets(4);
+  
+      case DOWNLOAD_ROW:
+ -      return gfx::Insets::VH(8, 20);
+-+      return gfx::Insets::VH(8, features::IsThorium2024() ? 18 : 20);
+++      return gfx::Insets::VH(8, thorium_2024 ? 18 : 20);
+  
+      case LOCATION_BAR_ICON_INTERIOR_PADDING:
+ -      return gfx::Insets::VH(2, 2);
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 4);
+ +      } else {
+ +        return touch_ui ? gfx::Insets::VH(2, 4) : gfx::Insets::VH(2, 2);
+@@ -749,17 +738,17 @@ index 87c4ee64068a6..d900607d59819 100644
+  
+      case LOCATION_BAR_PAGE_INFO_ICON_PADDING:
+        return touch_ui ? gfx::Insets::VH(5, 10) : gfx::Insets::VH(4, 4);
+-@@ -161,27 +217,36 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
++@@ -169,27 +234,36 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
+      }
+  
+      case TOOLBAR_BUTTON:
+ -      return gfx::Insets(touch_ui ? 12 : 7);
+ +      return gfx::Insets(touch_ui ? 12
+-+                                  : (features::IsThorium2024() ? 6 : 7));
+++                                  : (thorium_2024 ? 6 : 7));
+  
+      case BROWSER_APP_MENU_CHIP_PADDING:
+ -      if (touch_ui) {
+-+      if (touch_ui || features::IsThorium2024()) {
+++      if (touch_ui || thorium_2024) {
+          return GetLayoutInsets(TOOLBAR_BUTTON);
+        } else {
+          return gfx::Insets::TLBR(7, 4, 7, 6);
+@@ -767,7 +756,7 @@ index 87c4ee64068a6..d900607d59819 100644
+  
+      case AVATAR_CHIP_PADDING:
+ -      if (touch_ui) {
+-+      if (touch_ui || features::IsThorium2024()) {
+++      if (touch_ui || thorium_2024) {
+          return GetLayoutInsets(TOOLBAR_BUTTON);
+        } else {
+          return gfx::Insets::TLBR(7, 10, 7, 4);
+@@ -775,7 +764,7 @@ index 87c4ee64068a6..d900607d59819 100644
+  
+      case TOOLBAR_INTERIOR_MARGIN:
+ -      return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
+-+      if (features::IsThorium2024()) {
+++      if (thorium_2024) {
+ +        return touch_ui ? gfx::Insets() : gfx::Insets::VH(3, 6);
+ +      } else {
+ +        return touch_ui ? gfx::Insets() : gfx::Insets::VH(6, 5);
+@@ -789,13 +778,13 @@ index 87c4ee64068a6..d900607d59819 100644
+ +        return gfx::Insets::VH(4, 0);
+ +      }
+    }
+-   NOTREACHED_IN_MIGRATION();
+-   return gfx::Insets();
++   NOTREACHED();
++ }
+ diff --git a/chrome/browser/ui/layout_constants.h b/chrome/browser/ui/layout_constants.h
+ index a35795ee8cc11..60577ba01a5fd 100644
+ --- a/chrome/browser/ui/layout_constants.h
+ +++ b/chrome/browser/ui/layout_constants.h
+-@@ -123,9 +123,21 @@ enum LayoutConstant {
++@@ -130,9 +130,21 @@ enum LayoutConstant {
+    // detached tab, and on all sides of the controls padding.
+    TAB_STRIP_PADDING,
+  
+@@ -821,15 +810,15 @@ diff --git a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc b/chrome
+ index 3ae6b02a62d64..63ef3fc6483fb 100644
+ --- a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
+ +++ b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
+-@@ -12,6 +12,7 @@
+- #include "build/chromeos_buildflags.h"
++@@ -11,6 +11,7 @@
++ #include "build/build_config.h"
+  #include "chrome/browser/shell_integration.h"
+  #include "chrome/common/chrome_features.h"
+ +#include "chrome/common/thorium_2024.h"
+  #include "chrome/common/webui_url_constants.h"
+  #include "components/omnibox/browser/actions/omnibox_pedal.h"
+  #include "components/omnibox/browser/autocomplete_input.h"
+-@@ -1972,14 +1973,18 @@ class OmniboxPedalSetChromeAsDefaultBrowser : public OmniboxPedal {
++@@ -1981,14 +1982,18 @@ class OmniboxPedalSetChromeAsDefaultBrowser : public OmniboxPedal {
+  // =============================================================================
+  
+  const gfx::VectorIcon& GetSharingHubVectorIcon() {
+@@ -855,20 +844,20 @@ diff --git a/chrome/browser/ui/status_bubble.h b/chrome/browser/ui/status_bubble
+ index 74a00df155806..c8e4a81911d80 100644
+ --- a/chrome/browser/ui/status_bubble.h
+ +++ b/chrome/browser/ui/status_bubble.h
+-@@ -18,7 +18,7 @@ class GURL;
++@@ -17,7 +17,7 @@ class GURL;
+  class StatusBubble {
+   public:
+    // On hover, expand status bubble to fit long URL after this delay.
+ -  static const int kExpandHoverDelayMS = 1600;
+ +  static constexpr int kExpandHoverDelayMS = 1;
+  
+-   virtual ~StatusBubble() {}
++   virtual ~StatusBubble() = default;
+  
+ diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
+ index fba81d1815359..88415257b897c 100644
+ --- a/chrome/browser/ui/tabs/tab_menu_model.cc
+ +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
+-@@ -105,6 +105,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
++@@ -112,6 +112,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
+    AddItemWithStringId(TabStripModel::CommandNewTabToRight,
+                        base::i18n::IsRTL() ? IDS_TAB_CXMENU_NEWTABTOLEFT
+                                            : IDS_TAB_CXMENU_NEWTABTORIGHT);
+@@ -880,22 +869,23 @@ index fba81d1815359..88415257b897c 100644
+      AddItem(
+          TabStripModel::CommandAddToReadLater,
+ diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
+-index 91513d4488166..4fa0ac198e9c6 100644
++index 922d2ff309..d326cbdd40 100644
+ --- a/chrome/browser/ui/tabs/tab_strip_model.cc
+ +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
+-@@ -1298,6 +1298,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+-     ContextMenuCommand command_id) const {
+-   DCHECK(command_id > CommandFirst && command_id < CommandLast);
++@@ -2214,6 +2214,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
++   }
++ 
+    switch (command_id) {
+ +    case CommandNewTabToLeft:
+      case CommandNewTabToRight:
+      case CommandCloseTab:
+        return true;
+-@@ -1399,6 +1400,16 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+-   if (!ContainsIndex(context_index))
++@@ -2327,7 +2328,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
++   if (!ContainsIndex(context_index)) {
+      return;
+-   switch (command_id) {
++   }
+ +
++   switch (command_id) {
+ +    case CommandNewTabToLeft: {
+ +      base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
+ +      UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
+@@ -912,7 +902,7 @@ diff --git a/chrome/browser/ui/tabs/tab_strip_model.h b/chrome/browser/ui/tabs/t
+ index 4d900c4a7f58c..8daa4634abeaf 100644
+ --- a/chrome/browser/ui/tabs/tab_strip_model.h
+ +++ b/chrome/browser/ui/tabs/tab_strip_model.h
+-@@ -545,6 +545,7 @@ class TabStripModel : public TabGroupController {
++@@ -686,6 +686,7 @@ class TabStripModel : public TabGroupController {
+    // for entries in the 'Add to existing group' submenu.
+    enum ContextMenuCommand {
+      CommandFirst,
+@@ -921,10 +911,10 @@ index 4d900c4a7f58c..8daa4634abeaf 100644
+      CommandReload,
+      CommandDuplicate,
+ diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
+-index d48223986946d..9e5df278ea2b6 100644
++index 30b23405ff..0743db8041 100644
+ --- a/chrome/browser/ui/tabs/tab_style.cc
+ +++ b/chrome/browser/ui/tabs/tab_style.cc
+-@@ -11,6 +11,7 @@
++@@ -8,6 +8,7 @@
+  
+  #include "chrome/browser/ui/layout_constants.h"
+  #include "chrome/browser/ui/tabs/features.h"
+@@ -932,7 +922,7 @@ index d48223986946d..9e5df278ea2b6 100644
+  #include "chrome/browser/ui/ui_features.h"
+  #include "ui/base/ui_base_features.h"
+  #include "ui/color/color_provider.h"
+-@@ -21,13 +22,18 @@ namespace {
++@@ -18,18 +19,20 @@ namespace {
+  
+  // Thickness in DIPs of the separator painted on the left and right edges of
+  // the tab.
+@@ -950,12 +940,16 @@ index d48223986946d..9e5df278ea2b6 100644
+ +constexpr int kThoriumTabHorizontalPadding = 6;
+  constexpr int kChromeRefreshTabHorizontalPadding = 8;
+  
+- class ChromeRefresh2023TabStyle : public TabStyle {
+-@@ -59,8 +65,28 @@ class ChromeRefresh2023TabStyle : public TabStyle {
++-// The standard tab width is 232 DIP, excluding separators and overlap.
++-constexpr int kTabWidth = 232;
++-
++ }  // namespace
++ 
+  TabStyle::~TabStyle() = default;
++@@ -39,6 +42,27 @@ int TabStyle::GetStandardHeight() const {
++ }
+  
+- int ChromeRefresh2023TabStyle::GetStandardWidth() const {
+-+
++ int TabStyle::GetStandardWidth(const bool is_split) const {
+ +  const std::string custom_tab_width = base::CommandLine::ForCurrentProcess()->
+ +                                       GetSwitchValueASCII("custom-tab-width");
+ +  int kTabWidthValue;
+@@ -972,45 +966,46 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  } else if (custom_tab_width == "400") {
+ +    kTabWidthValue = 400;
+ +  } else {
+-+    kTabWidthValue = 240;
+++    // The standard tab width is 232 DIP, excluding separators and overlap.
+++    kTabWidthValue = 232;
+ +  }
+ +
+-   // The standard tab width is 240 DIP including both separators.
+--  constexpr int kTabWidth = 240;
+ +  const int kTabWidth = kTabWidthValue;
+-   // The overlap includes one separator, so subtract it here.
+-   return kTabWidth + GetTabOverlap() - GetSeparatorSize().width();
+- }
+-@@ -107,19 +133,42 @@ int ChromeRefresh2023TabStyle::GetMinimumInactiveWidth() const {
++   if (is_split) {
++     // Split tabs appear as half width with one bottom extension. They also must
++     // include half the tab overlap as the tabs fill the space between them.
++@@ -104,19 +128,44 @@ int TabStyle::GetMinimumInactiveWidth() const {
+  }
+  
+- int ChromeRefresh2023TabStyle::GetTopCornerRadius() const {
++ int TabStyle::GetTopCornerRadius() const {
+ -  return 10;
+ +  static const bool rectangular_tabs =
+ +      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
+-+  if (features::IsThorium2024() && !rectangular_tabs) {
+++  static const bool thorium_2024 = features::IsThorium2024();
+++  if (thorium_2024 && !rectangular_tabs) {
+ +    return 8;
+-+  } else if ((rectangular_tabs && features::IsThorium2024()) || (rectangular_tabs && !features::IsThorium2024())) {
+++  } else if ((rectangular_tabs && thorium_2024) || (rectangular_tabs && !thorium_2024)) {
+ +    return 4;
+ +  } else {
+ +    return 10;
+ +  }
+  }
+  
+- int ChromeRefresh2023TabStyle::GetBottomCornerRadius() const {
++ int TabStyle::GetBottomCornerRadius() const {
+ -  return 12;
+ +  static const bool rectangular_tabs =
+ +      base::CommandLine::ForCurrentProcess()->HasSwitch("rectangular-tabs");
+-+  if (features::IsThorium2024() && !rectangular_tabs) {
+++  static const bool thorium_2024 = features::IsThorium2024();
+++  if (thorium_2024 && !rectangular_tabs) {
+ +    return 8;
+-+  } else if ((rectangular_tabs && features::IsThorium2024()) || (rectangular_tabs && !features::IsThorium2024())) {
+++  } else if ((rectangular_tabs && thorium_2024) || (rectangular_tabs && !thorium_2024)) {
+ +    return 4;
+ +  } else {
+ +    return 12;
+ +  }
+  }
+  
+- int ChromeRefresh2023TabStyle::GetTabOverlap() const {
++ int TabStyle::GetTabOverlap() const {
+    // The overlap removes the width and the margins of the separator.
+ -  const float total_separator_width = GetSeparatorMargins().left() +
+ -                                      GetSeparatorSize().width() +
+@@ -1029,11 +1024,11 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
+-@@ -129,23 +178,43 @@ gfx::Size ChromeRefresh2023TabStyle::GetPreviewImageSize() const {
++ gfx::Size TabStyle::GetPreviewImageSize() const {
++@@ -126,23 +175,43 @@ gfx::Size TabStyle::GetPreviewImageSize() const {
+  }
+  
+- gfx::Size ChromeRefresh2023TabStyle::GetSeparatorSize() const {
++ gfx::Size TabStyle::GetSeparatorSize() const {
+ -  return gfx::Size(kChromeRefreshSeparatorThickness,
+ -                   kChromeRefreshSeparatorHeight);
+ +  if (features::IsThorium2024()) {
+@@ -1045,7 +1040,7 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- gfx::Insets ChromeRefresh2023TabStyle::GetSeparatorMargins() const {
++ gfx::Insets TabStyle::GetSeparatorMargins() const {
+ -  return gfx::Insets::TLBR(GetLayoutConstant(TAB_STRIP_PADDING),
+ -                           kChromeRefreshSeparatorHorizontalMargin,
+ -                           GetLayoutConstant(TAB_STRIP_PADDING),
+@@ -1063,7 +1058,7 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- int ChromeRefresh2023TabStyle::GetSeparatorCornerRadius() const {
++ int TabStyle::GetSeparatorCornerRadius() const {
+ -  return GetSeparatorSize().width() / 2;
+ +  if (features::IsThorium2024()) {
+ +    return 0;
+@@ -1072,7 +1067,7 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- int ChromeRefresh2023TabStyle::GetDragHandleExtension(int height) const {
++ int TabStyle::GetDragHandleExtension(int height) const {
+ -  return 6;
+ +  if (features::IsThorium2024()) {
+ +    return (height - GetSeparatorSize().height()) / 2 - 1;
+@@ -1081,11 +1076,11 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
+-@@ -182,11 +251,19 @@ SkColor ChromeRefresh2023TabStyle::GetTabBackgroundColor(
++ SkColor TabStyle::GetTabBackgroundColor(
++@@ -179,11 +248,19 @@ SkColor TabStyle::GetTabBackgroundColor(
+  }
+  
+- gfx::Insets ChromeRefresh2023TabStyle::GetContentsInsets() const {
++ gfx::Insets TabStyle::GetContentsInsets() const {
+ -  return gfx::Insets::TLBR(
+ -      kChromeRefreshTabVerticalPadding + GetLayoutConstant(TAB_STRIP_PADDING),
+ -      GetBottomCornerRadius() + kChromeRefreshTabHorizontalPadding,
+@@ -1106,7 +1101,7 @@ index d48223986946d..9e5df278ea2b6 100644
+ +  }
+  }
+  
+- float ChromeRefresh2023TabStyle::GetSelectedTabOpacity() const {
++ float TabStyle::GetSelectedTabOpacity() const {
+ diff --git a/chrome/browser/ui/thorium_2024.h b/chrome/browser/ui/thorium_2024.h
+ new file mode 100644
+ index 0000000000000..de40b42fcc722
+@@ -1128,13 +1123,18 @@ index 0000000000000..de40b42fcc722
+ +
+ +#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
+ diff --git a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
+-index 6a91493f7c2bc..fdeb2a4a0916e 100644
++index 212eb46b54..60f5e321ca 100644
+ --- a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
+ +++ b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
+-@@ -49,6 +49,38 @@ const std::vector<LabInfo>& GetData() {
+-         l10n_util::GetStringUTF16(IDS_TABS_SHRINK_TO_LARGE_WIDTH),
+-         l10n_util::GetStringUTF16(IDS_TABS_DO_NOT_SHRINK)};
++@@ -38,8 +38,43 @@ const std::vector<LabInfo>& GetData() {
++     return GetTestData().value();
++   }
+  
++-  static const base::NoDestructor<std::vector<LabInfo>> lab_info_(
++-      []() { return std::vector<LabInfo>(); }());
+++  static const base::NoDestructor<std::vector<LabInfo>> lab_info_([]() {
+++    std::vector<LabInfo> lab_info;
+++
+ +    const char kThorium2024FlagId[] = "thorium-2024";
+ +    const std::u16string kThorium2024FlagName = u"Enable Thorium 2024 UI";
+ +    const std::u16string kThorium2024FlagDescription = u"Enable an experimental UI, which restores many parts of the pre-Chrome Refresh 2023 UI.";
+@@ -1167,9 +1167,11 @@ index 6a91493f7c2bc..fdeb2a4a0916e 100644
+ +        "chrome-labs-middle-click-autoscroll", version_info::Channel::BETA);
+ +#endif
+ +
+-     lab_info.emplace_back(
+-         flag_descriptions::kScrollableTabStripFlagId,
+-         l10n_util::GetStringUTF16(IDS_TAB_SCROLLING_EXPERIMENT_NAME),
+++    return lab_info;
+++  }());
++ 
++   return *lab_info_;
++ }
+ diff --git a/chrome/browser/ui/view_ids.h b/chrome/browser/ui/view_ids.h
+ index fb9afeed5a60e..7b47ee8281b99 100644
+ --- a/chrome/browser/ui/view_ids.h
+@@ -1194,15 +1196,15 @@ diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/bro
+ index 9cecb25b41d3b..a0662f288a022 100644
+ --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+ +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+-@@ -56,6 +56,7 @@
++@@ -58,6 +58,7 @@
++ #include "chrome/browser/ui/layout_constants.h"
+  #include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_utils.h"
+- #include "chrome/browser/ui/tabs/saved_tab_groups/tab_group_sync_service_proxy.h"
+  #include "chrome/browser/ui/tabs/tab_strip_model.h"
+ +#include "chrome/browser/ui/thorium_2024.h"
+  #include "chrome/browser/ui/ui_features.h"
+  #include "chrome/browser/ui/view_ids.h"
+  #include "chrome/browser/ui/views/bookmarks/bookmark_bar_view_observer.h"
+-@@ -339,8 +340,8 @@ class BookmarkBarView::ButtonSeparatorView : public views::Separator {
++@@ -350,8 +351,8 @@ class BookmarkBarView::ButtonSeparatorView : public views::Separator {
+  
+   public:
+    ButtonSeparatorView() {
+@@ -1213,7 +1215,7 @@ index 9cecb25b41d3b..a0662f288a022 100644
+      separator_thickness_ = kBookmarkBarSeparatorThickness;
+      const gfx::Insets border_insets =
+          gfx::Insets::TLBR(0, leading_padding, 0, trailing_padding);
+-@@ -571,8 +572,15 @@ void BookmarkBarView::GetAnchorPositionForButton(
++@@ -578,8 +579,15 @@ void BookmarkBarView::GetAnchorPositionForButton(
+  }
+  
+  int BookmarkBarView::GetLeadingMargin() const {
+@@ -1231,7 +1233,7 @@ index 9cecb25b41d3b..a0662f288a022 100644
+  
+    if (saved_tab_groups_separator_view_ &&
+        saved_tab_groups_separator_view_->GetVisible()) {
+-@@ -702,7 +710,7 @@ void BookmarkBarView::Layout(PassKey) {
++@@ -697,7 +705,7 @@ void BookmarkBarView::Layout(PassKey) {
+    }
+  
+    int x = GetLeadingMargin();
+@@ -1240,7 +1242,7 @@ index 9cecb25b41d3b..a0662f288a022 100644
+    int width = View::width() - x - kBookmarkBarTrailingMargin;
+  
+    const int button_height = GetLayoutConstant(BOOKMARK_BAR_BUTTON_HEIGHT);
+-@@ -902,6 +910,9 @@ void BookmarkBarView::Layout(PassKey) {
++@@ -892,6 +900,9 @@ void BookmarkBarView::Layout(PassKey) {
+    x = max_x + bookmark_bar_button_padding;
+  
+    // The overflow button.
+@@ -1293,7 +1295,7 @@ index 9b189df8d8ffd..83bee2c7bac9a 100644
+        // Hover button in page info requires double the height compared to the
+        // label button because it behaves like a menu control.
+        return gfx::Insets::VH(insets.height(), horizontal_padding);
+-@@ -103,7 +110,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
++@@ -108,7 +115,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
+      case DISTANCE_EXTENSIONS_MENU_WIDTH:
+        return kMediumDialogWidth;
+      case DISTANCE_EXTENSIONS_MENU_BUTTON_ICON_SIZE:
+@@ -1302,7 +1304,7 @@ index 9b189df8d8ffd..83bee2c7bac9a 100644
+      case DISTANCE_EXTENSIONS_MENU_BUTTON_ICON_SMALL_SIZE:
+        return 16;
+      case DISTANCE_EXTENSIONS_MENU_EXTENSION_ICON_SIZE:
+-@@ -141,7 +148,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
++@@ -144,7 +151,7 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
+      case DISTANCE_BETWEEN_PRIMARY_AND_SECONDARY_LABELS_HORIZONTAL:
+        return 24;
+      case DISTANCE_OMNIBOX_CELL_VERTICAL_PADDING:
+@@ -1311,7 +1313,7 @@ index 9b189df8d8ffd..83bee2c7bac9a 100644
+      case DISTANCE_OMNIBOX_TWO_LINE_CELL_VERTICAL_PADDING:
+        return 4;
+      case DISTANCE_SIDE_PANEL_HEADER_VECTOR_ICON_SIZE:
+-@@ -151,17 +158,19 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
++@@ -154,17 +161,19 @@ int ChromeLayoutProvider::GetDistanceMetric(int metric) const {
+      case DISTANCE_SIDE_PANEL_HEADER_INTERIOR_MARGIN_HORIZONTAL:
+        return 4;
+      case DISTANCE_HORIZONTAL_SEPARATOR_PADDING_PAGE_INFO_VIEW:
+@@ -1334,14 +1336,14 @@ index 9b189df8d8ffd..83bee2c7bac9a 100644
+      case DISTANCE_RICH_HOVER_BUTTON_ICON_HORIZONTAL:
+ -      return 8;
+ +      return features::IsThorium2024() ? 12 : 8;
+-     case DISTANCE_TOAST_BUBBLE_BETWEEN_CHILD_SPACING:
++     case DISTANCE_TASK_MANAGER_SEARCH_BAR_ICON_AND_BUTTON_HORIZONTAL_SPACING:
+        return 4;
+-     case DISTANCE_TOAST_BUBBLE_BETWEEN_LABEL_ACTION_BUTTON_SPACING:
++     case DISTANCE_TASK_MANAGER_SEARCH_ICON_SIZE:
+ diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
+ index 147193abed0f0..3a4acb12b6d5f 100644
+ --- a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
+ +++ b/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
+-@@ -21,6 +21,7 @@
++@@ -20,6 +20,7 @@
+  #include "components/vector_icons/vector_icons.h"
+  #include "ui/base/l10n/l10n_util.h"
+  #include "ui/base/metadata/metadata_impl_macros.h"
+@@ -1349,7 +1351,7 @@ index 147193abed0f0..3a4acb12b6d5f 100644
+  #include "ui/color/color_provider.h"
+  #include "ui/views/background.h"
+  #include "ui/views/border.h"
+-@@ -129,8 +130,9 @@ void DownloadBubblePrimaryView::MaybeAddOtrInfoRow(Browser* browser) {
++@@ -119,8 +120,9 @@ void DownloadBubblePrimaryView::MaybeAddOtrInfoRow(Browser* browser) {
+  }
+  
+  int DownloadBubblePrimaryView::DefaultPreferredWidth() const {
+@@ -1365,15 +1367,15 @@ diff --git a/chrome/browser/ui/views/download/download_item_view.cc b/chrome/bro
+ index 31a271a03e5e6..ad03a301e1177 100644
+ --- a/chrome/browser/ui/views/download/download_item_view.cc
+ +++ b/chrome/browser/ui/views/download/download_item_view.cc
+-@@ -67,6 +67,7 @@
++@@ -65,6 +65,7 @@
++ #include "ui/base/mojom/menu_source_type.mojom-forward.h"
+  #include "ui/base/text/bytes_formatting.h"
+  #include "ui/base/themed_vector_icon.h"
+- #include "ui/base/ui_base_types.h"
+ +#include "ui/base/ui_base_features.h"
+  #include "ui/color/color_id.h"
+  #include "ui/color/color_provider.h"
+  #include "ui/compositor/layer.h"
+-@@ -113,7 +114,7 @@ namespace {
++@@ -116,7 +117,7 @@ namespace {
+  constexpr int kTextWidth = 140;
+  
+  // Padding before the icon and at end of the item.
+@@ -1382,7 +1384,7 @@ index 31a271a03e5e6..ad03a301e1177 100644
+  constexpr int kEndPadding = 6;
+  
+  // Horizontal padding between progress indicator and filename/status text.
+-@@ -585,6 +586,9 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
++@@ -602,6 +603,9 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
+      }
+    }
+  
+@@ -1392,7 +1394,7 @@ index 31a271a03e5e6..ad03a301e1177 100644
+    // The normal height of the item which may be exceeded if text is large.
+    constexpr int kDefaultDownloadItemHeight = 48;
+    return gfx::Size(width, std::max(kDefaultDownloadItemHeight,
+-@@ -593,13 +597,6 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
++@@ -610,13 +614,6 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
+  
+  void DownloadItemView::OnPaintBackground(gfx::Canvas* canvas) {
+    View::OnPaintBackground(canvas);
+@@ -1406,7 +1408,7 @@ index 31a271a03e5e6..ad03a301e1177 100644
+  }
+  
+  void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+-@@ -675,6 +672,14 @@ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
++@@ -694,6 +691,14 @@ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+      canvas->DrawImageInt(icon, bounds.x(), bounds.y());
+    }
+  
+@@ -1422,30 +1424,30 @@ index 31a271a03e5e6..ad03a301e1177 100644
+  }
+  
+ diff --git a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
+-index 92157b05edc4f..53793a7062b31 100644
++index 1807e4c267..72dff16f3b 100644
+ --- a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
+ +++ b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
+-@@ -28,6 +28,7 @@
+- #include "extensions/common/extension_features.h"
+- #include "ui/accessibility/ax_enums.mojom-shared.h"
+- #include "ui/base/l10n/l10n_util.h"
+-+#include "ui/base/ui_base_features.h"
++@@ -31,6 +31,7 @@
+  #include "ui/base/metadata/metadata_impl_macros.h"
+  #include "ui/base/models/image_model.h"
++ #include "ui/base/mojom/menu_source_type.mojom.h"
+++#include "ui/base/ui_base_features.h"
+  #include "ui/color/color_id.h"
+-@@ -189,7 +190,10 @@ views::Builder<HoverButton> GetSitePermissionsButtonBuilder(
++ #include "ui/gfx/paint_vector_icon.h"
++ #include "ui/gfx/vector_icon_types.h"
++@@ -192,7 +193,10 @@ views::Builder<HoverButton> GetSitePermissionsButtonBuilder(
+      // Add right-aligned arrow icon for non-enterprise extensions when the
+      // button is not disabled.
+      auto arrow_icon = ui::ImageModel::FromVectorIcon(
+--        vector_icons::kSubmenuArrowChromeRefreshIcon, ui::kColorIcon,
++-        vector_icons::kSubmenuArrowChromeRefreshIcon, kColorExtensionMenuIcon,
+ +        features::IsThorium2024()
+ +            ? vector_icons::kSubmenuArrowIcon
+ +            : vector_icons::kSubmenuArrowChromeRefreshIcon,
+-+        ui::kColorIcon,
+++        kColorExtensionMenuIcon,
+          small_icon_size);
+  
+      button_builder.SetHorizontalAlignment(gfx::ALIGN_RIGHT)
+-@@ -247,12 +251,12 @@ ExtensionMenuItemView::ExtensionMenuItemView(
++@@ -253,12 +257,12 @@ ExtensionMenuItemView::ExtensionMenuItemView(
+                        controller_->GetActionName()))
+                    .SetImageModel(views::Button::STATE_NORMAL,
+                                   ui::ImageModel::FromVectorIcon(
+@@ -1460,7 +1462,7 @@ index 92157b05edc4f..53793a7062b31 100644
+                            kColorExtensionMenuIconDisabled, icon_size)));
+  
+    if (allow_pinning) {
+-@@ -480,7 +484,7 @@ void ExtensionMenuItemView::UpdateContextMenuButton(bool is_action_pinned) {
++@@ -495,7 +499,7 @@ void ExtensionMenuItemView::UpdateContextMenuButton(bool is_action_pinned) {
+    const int icon_size = ChromeLayoutProvider::Get()->GetDistanceMetric(
+        DISTANCE_EXTENSIONS_MENU_BUTTON_ICON_SIZE);
+    auto three_dot_icon = ui::ImageModel::FromVectorIcon(
+@@ -1473,7 +1475,7 @@ diff --git a/chrome/browser/ui/views/frame/browser_caption_button_container_win.
+ index b4ed00fe214a9..cbd69f5565a61 100644
+ --- a/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
+ +++ b/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
+-@@ -10,6 +10,8 @@
++@@ -12,6 +12,8 @@
+  #include "chrome/browser/ui/views/frame/browser_frame_view_win.h"
+  #include "chrome/browser/ui/views/frame/browser_view.h"
+  #include "chrome/browser/ui/views/frame/windows_caption_button.h"
+@@ -1482,7 +1484,7 @@ index b4ed00fe214a9..cbd69f5565a61 100644
+  #include "chrome/browser/win/titlebar_config.h"
+  #include "chrome/grit/generated_resources.h"
+  #include "ui/base/l10n/l10n_util.h"
+-@@ -66,6 +68,14 @@ BrowserCaptionButtonContainer::BrowserCaptionButtonContainer(
++@@ -69,6 +71,14 @@ BrowserCaptionButtonContainer::BrowserCaptionButtonContainer(
+            frame_view_,
+            VIEW_ID_CLOSE_BUTTON,
+            IDS_APP_ACCNAME_CLOSE))) {
