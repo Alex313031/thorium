@@ -118,7 +118,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 new file mode 100644
 --- /dev/null
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,56 @@
 +package org.chromium.chrome.browser.privacy.settings;
 +
 +import android.os.Bundle;
@@ -129,6 +129,7 @@ new file mode 100644
 +import org.chromium.chrome.R;
 +import org.chromium.chrome.browser.preferences.Pref;
 +import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
++import org.chromium.components.browser_ui.settings.SettingsFragment;
 +import org.chromium.components.browser_ui.settings.ChromeSwitchPreference;
 +import org.chromium.components.browser_ui.settings.SettingsUtils;
 +import org.chromium.components.prefs.PrefService;
@@ -138,6 +139,11 @@ new file mode 100644
 +    private static final String PREF_SWITCH = "gpc_switch";
 +
 +    private final ObservableSupplierImpl<String> mPageTitle = new ObservableSupplierImpl<>();
++
++    @Override
++    public @SettingsFragment.AnimationType int getAnimationType() {
++        return SettingsFragment.AnimationType.PROPERTY;
++    }
 +
 +    @Override
 +    public void onActivityCreated(Bundle savedInstanceState) {
@@ -375,8 +381,8 @@ new file mode 100644
 +    };
 +  }
 +
-+  prefs: {enable_gpc: chrome.settingsPrivate.PrefObject};
-+  private showDialog_: boolean;
++  declare prefs: {enable_gpc: chrome.settingsPrivate.PrefObject};
++  declare private showDialog_: boolean;
 +
 +  private onDomChange_() {
 +    if (this.showDialog_) {
@@ -834,7 +840,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
      },
 +    {
 +      name: "GlobalPrivacyControl",
-+      base_feature_status: "enabled",
++      base_feature_status: "disabled",
 +      public: true,
 +    },
      // Killswitch M135.
