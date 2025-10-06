@@ -81,3 +81,22 @@ https://github.com/primo-browser/primo/commit/946f3dfbed983efb7643fee26d31fd3c42
 https://github.com/win32ss/supermium/issues/1412
 https://github.com/win32ss/supermium/commit/f46111bb8a9d29315740a28dcb2ee96fdb50f586
 https://github.com/win32ss/supermium/commit/535bb42b1f22d9fdaf4db0d8ee1ce1acf14a6fbf
+
+Notes:
+top_border_thickness
+kTopResizeFrameArea
+kNonClientRestoredExtraThickness
+//maybe remove
+Th24XOffset
+GetLayoutConstant(TAB_BUTTON_OFFSET)
+LOCATION_BAR_CHILD_CORNER_RADIUS:
+Th24StrokeOffset
+text_overriding_permission_chip_indent
+UpdateThumb
+
+// Other notes
+investigate transparent tabs flags.setAlphaf(0.7f)
+search tab_strip_region_views for layout_constants added
+investigate new metrics in layout_provider and layout_constants
+
+kBetweenIconSpacing might cause crash

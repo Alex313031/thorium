@@ -25,7 +25,7 @@ bool IsDownloadBubbleEnabled() {
 #if BUILDFLAG(IS_CHROMEOS)
   return false;
 #else
-  if (features::DownloadShelf()) {
+  if (features::UseDownloadShelf()) {
     return false;
   } else {
     return true;
