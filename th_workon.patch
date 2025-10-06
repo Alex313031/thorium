@@ -267,7 +267,7 @@ index 65ce91e4..4b42b3cf 100644
 -       absl::holds_alternative<SkColor>(color)
 -@@ -318,8 +323,45 @@ ui::ImageModel GetBookmarkFolderIcon(
 -                             absl::variant<ui::ColorId, SkColor> color,
-+ 
++
 +   const ui::ThemedVectorIcon icon(id, color);
 +@@ -350,8 +355,45 @@ ui::ImageModel GetBookmarkFolderIcon(BookmarkFolderIconType icon_type,
 +                             ui::ColorVariant color,
@@ -639,7 +639,7 @@ index 65ce91e4..4b42b3cf 100644
     }
 -@@ -143,10 +195,14 @@ gfx::Insets GetLayoutInsets(LayoutInset inset) {
 +@@ -146,15 +206,20 @@ int GetLayoutConstant(LayoutConstant constant) {
-+ 
++
 + gfx::Insets GetLayoutInsets(LayoutInset inset) {
 +   const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
 ++  static const bool thorium_2024 = features::IsThorium2024();
@@ -771,7 +771,7 @@ index 65ce91e4..4b42b3cf 100644
 -   DCHECK(command_id > CommandFirst && command_id < CommandLast);
 +@@ -2214,6 +2214,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
 +   }
-+ 
++
     switch (command_id) {
  +    case CommandNewTabToLeft:
       case CommandNewTabToRight:
@@ -830,7 +830,7 @@ index 65ce91e4..4b42b3cf 100644
 +-constexpr int kTabWidth = 232;
 +-
 + }  // namespace
-+ 
++
   TabStyle::~TabStyle() = default;
 +@@ -39,6 +42,27 @@ int TabStyle::GetStandardHeight() const {
 + }
@@ -1000,7 +1000,7 @@ index 65ce91e4..4b42b3cf 100644
 -         l10n_util::GetStringUTF16(IDS_TAB_SCROLLING_EXPERIMENT_NAME),
 ++    return lab_info;
 ++  }());
-+ 
++
 +   return *lab_info_;
 + }
  diff --git a/chrome/browser/ui/view_ids.h b/chrome/browser/ui/view_ids.h
