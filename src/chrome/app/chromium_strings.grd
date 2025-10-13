@@ -458,7 +458,7 @@ If you update this file, be sure also to update google_chrome_strings.grd. -->
             The Thorium Authors
           </message>
           <message name="IDS_ABOUT_VERSION_COPYRIGHT" desc="Copyright information on the about pages">
-            Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> The Thorium Authors. All rights reserved.
+            Copyright <ph name="YEAR">{0,date,y}<ex>2016</ex></ph> Alex313031. All rights reserved.
           </message>
         </else>
       </if>
