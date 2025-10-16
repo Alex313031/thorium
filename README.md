@@ -1,4 +1,8 @@
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version%3A) &nbsp;![GitHub](https://img.shields.io/github/license/alex313031/thorium?color=green&label=License%3A) &nbsp;![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alex313031/thorium?color=blueviolet&label=Commit%20Activity%3A) &nbsp;![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/ChromiumBrowser?style=social)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alex313031/thorium?label=Version%3A)](https://github.com/Alex313031/thorium/releases)
+[![GitHub](https://img.shields.io/github/license/alex313031/thorium?color=green&label=License%3A)](https://github.com/Alex313031/thorium/blob/main/LICENSE.md)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alex313031/thorium?color=blueviolet&label=Commit%20Activity%3A)](https://github.com/Alex313031/thorium/commits/main/)
+[![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/ChromiumBrowser?style=social)](https://www.reddit.com/r/ChromiumBrowser/)
+
 # Thorium
 
 <img src="https://github.com/Alex313031/thorium/blob/main/logos/NEW/thorium_ver_2048_grey_old.png">
