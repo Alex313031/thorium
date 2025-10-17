@@ -99,7 +99,7 @@ Format: Condition ## Explanation ##
 
 --allow-silent-push ##	Allows Web Push notifications that do not show a notification. ##
 
---allow-sync-xhr-in-page-dimissal ##	Allow a page to send synchronus XHR during its unloading. TODO(https://crbug.com/1003101): Remove this in Chrome 88. ##
+--allow-sync-xhr-in-page-dimissal ##	Allow a page to send synchronous XHR during its unloading. TODO(https://crbug.com/1003101): Remove this in Chrome 88. ##
 
 --allow-third-party-modules[1] ##	Allows third party modules to inject by disabling the BINARY\_SIGNATURE mitigation policy on Win10+. Also has other effects in ELF. ##
 
@@ -615,7 +615,7 @@ Format: Condition ## Explanation ##
 
 --disable-canvas-aa ##	Disable antialiasing on 2d canvas. ##
 
---disable-checker-imaging ##	Disabled defering all image decodes to the image decode service, ignoring DecodingMode preferences specified on PaintImage. ##
+--disable-checker-imaging ##	Disabled deferring all image decodes to the image decode service, ignoring DecodingMode preferences specified on PaintImage. ##
 
 --disable-checking-optimization-guide-user-permissions ##	No description ##
 
@@ -1245,7 +1245,7 @@ Format: Condition ## Explanation ##
 
 --enable-potentially-annoying-security-features ##	Enables a number of potentially annoying security features (strict mixed content mode, powerful feature restrictions, etc.) ##
 
---enable-precise-memory-info ##	Make the values returned to window.performance.memory more granular and more up to date in shared worker. Without this flag, the memory information is still available, but it is bucketized and updated less frequently. This flag also applys to workers. ##
+--enable-precise-memory-info ##	Make the values returned to window.performance.memory more granular and more up to date in shared worker. Without this flag, the memory information is still available, but it is bucketized and updated less frequently. This flag also applies to workers. ##
 
 --enable-prefer-compositing-to-lcd-text ##	Enable the creation of compositing layers when it would prevent LCD text. ##
 
@@ -1321,7 +1321,7 @@ Format: Condition ## Explanation ##
 
 --enable-unsafe-webgpu ##	No description ##
 
---enable-use-zoom-for-dsf ##	Enable the mode that uses zooming to implment device scale factor behavior. ##
+--enable-use-zoom-for-dsf ##	Enable the mode that uses zooming to implement device scale factor behavior. ##
 
 --enable-user-metrics[6] ##	Enable user metrics from within the installer. ##
 
@@ -1833,7 +1833,7 @@ Format: Condition ## Explanation ##
 
 --max-active-webgl-contexts ##	Allows user to override maximum number of active WebGL contexts per renderer process. ##
 
---max-decoded-image-size-mb ##	Sets the maximium decoded image size limitation. ##
+--max-decoded-image-size-mb ##	Sets the maximum decoded image size limitation. ##
 
 --max-file-size ##	Limit the size of files the scanning engine is allowed to open. ##
 
@@ -1947,7 +1947,7 @@ Format: Condition ## Explanation ##
 
 --no-experiments ##	Disables all experiments set on about:flags. Does not disable about:flags itself. Useful if an experiment makes chrome crash at startup: One can start chrome with --no-experiments, disable the problematic lab at about:flags and then restart chrome without this switch again. ##
 
---no-first-run ##	Skip First Run tasks, whether or not it's actually the First Run. Overridden by kForceFirstRun. This does not drop the First Run sentinel and thus doesn't prevent first run from occuring the next time chrome is launched without this flag. ##
+--no-first-run ##	Skip First Run tasks, whether or not it's actually the First Run. Overridden by kForceFirstRun. This does not drop the First Run sentinel and thus doesn't prevent first run from occurring the next time chrome is launched without this flag. ##
 
 --no-initial-navigation ##	Stops new Shell objects from navigating to a default url. ##
 
@@ -2231,7 +2231,7 @@ Format: Condition ## Explanation ##
 
 --remote-debugging-socket-name[7] ##	Enables remote debug over HTTP on the specified socket name. ##
 
---remote-debugging-targets ##	Porvides a list of addresses to discover DevTools remote debugging targets. The format is <host>:<port>,...,<host>:port. ##
+--remote-debugging-targets ##	Provides a list of addresses to discover DevTools remote debugging targets. The format is <host>:<port>,...,<host>:port. ##
 
 --remove-scan-only-uws ##	Allow the engine to remove UwS that isn't marked cleanable. For testing only. ##
 
@@ -2409,7 +2409,7 @@ Format: Condition ## Explanation ##
 
 --skia-font-cache-limit-mb ##	Specifies the max number of bytes that should be used by the skia font cache. If the cache needs to allocate more, skia will purge previous entries. ##
 
---skia-resource-cache-limit-mb ##	Specifies the max number of bytes that should be used by the skia resource cache. The previous entries are purged from the cache when the memory useage exceeds this limit. ##
+--skia-resource-cache-limit-mb ##	Specifies the max number of bytes that should be used by the skia resource cache. The previous entries are purged from the cache when the memory usage exceeds this limit. ##
 
 --slow-down-compositing-scale-factor ##	Re-draw everything multiple times to simulate a much slower machine. Give a slow down factor to cause renderer to take that many times longer to complete, such as --slow-down-compositing-scale-factor=2. ##
 
@@ -2447,7 +2447,7 @@ Format: Condition ## Explanation ##
 
 --storage-pressure-notification-interval ##	Interval, in minutes, used for storage pressure notification throttling. Useful for developers testing applications that might use non-trivial amounts of disk space. ##
 
---structured-metrics-disabled ##	Disable structured metrics logging of cros actions. ##
+--structured-metrics-disabled ##	Disable structured metrics logging of CrOS actions. ##
 
 --stub ##	No description ##
 
@@ -2725,7 +2725,7 @@ Format: Condition ## Explanation ##
 
 --video\_capture ##	No description ##
 
---virtual-time-budget ##	If set the system waits the specified number of virtual milliseconds before deeming the page to be ready. For determinism virtual time does not advance while there are pending network fetches (i.e no timers will fire). Once all network fetches have completed, timers fire and if the system runs out of virtual time is fastforwarded so the next timer fires immediatley, until the specified virtual time budget is exhausted. ##
+--virtual-time-budget ##	If set the system waits the specified number of virtual milliseconds before deeming the page to be ready. For determinism virtual time does not advance while there are pending network fetches (i.e no timers will fire). Once all network fetches have completed, timers fire and if the system runs out of virtual time is fastforwarded so the next timer fires immediately, until the specified virtual time budget is exhausted. ##
 
 --vmodule ##	Gives the per-module maximal V-logging levels to override the value given by --v. E.g. "my\_module=2,foo\*=3" would change the logging level for all code in source files "my\_module.\*" and "foo\*.\*" ("-inl" suffixes are also disregarded for this matching). Any pattern containing a forward or backward slash will be tested against the whole pathname and not just the module. E.g., "\*/foo/bar/\*=2" would change the logging level for all code in source files under a "foo/bar" directory. ##
 

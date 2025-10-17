@@ -1,4 +1,4 @@
-# These are instruction for building Thorium for Windows, natively on Windows. Preliminary file for @gz83, to be eventually migrated to a Wiki with building instructions for all paltforms.
+# These are instruction for building Thorium for Windows, natively on Windows. Preliminary file for @gz83, to be eventually migrated to a Wiki with building instructions for all platforms.
 ## Copyright (c) 2024 Alex313031
 
 ## Preparatory setup

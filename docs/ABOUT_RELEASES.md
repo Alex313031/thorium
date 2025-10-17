@@ -14,7 +14,7 @@ The first was called MMX (Multi-Media EXtensions). Then came SSE, SSE2, SSE3, SS
 
 More info on SIMD and how the optimizations work in Thorium can be found on the site > https://thorium.rocks/optimizations
 
-However, they have to be built in (compiled in) to a program, and they are backwards, but not forwards compatible. Furthurmore, your CPU *must* support a given SIMD 
+However, they have to be built in (compiled in) to a program, and they are backwards, but not forwards compatible. Furthermore, your CPU *must* support a given SIMD 
 level or else the browser will crash.
 
 For example, a CPU that is capable of AVX is capable of all the SSE instructions, and so could run either an SSE3 or AVX release, but would get better 
