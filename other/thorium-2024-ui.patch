@@ -886,7 +886,7 @@ diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/
 index 922d2ff309..d326cbdd40 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -2214,6 +2214,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+@@ -2215,6 +2215,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
    }
 
    switch (command_id) {
@@ -894,7 +894,7 @@ index 922d2ff309..d326cbdd40 100644
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -2327,7 +2328,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+@@ -2328,7 +2329,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    if (!ContainsIndex(context_index)) {
      return;
    }

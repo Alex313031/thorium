@@ -508,7 +508,7 @@ diff --git a/components/privacy_sandbox/tracking_protection_prefs.cc b/component
 +++ b/components/privacy_sandbox/tracking_protection_prefs.cc
 @@ -20,6 +20,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
    registry->RegisterBooleanPref(
-       prefs::kIpProtectionEnabled, false,
+       prefs::kIpProtectionEnabled, true,
        user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
 +  registry->RegisterBooleanPref(prefs::kEnableGPC, true);
  
