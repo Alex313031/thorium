@@ -122,8 +122,8 @@ if (use_fma) {
   assert(current_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
 }
 
-if ((use_avx || use_avx2 || use_avx512 || use_fma) && is_debug || symbol_level == "2") {
-  print("WARNING: Using AVX with debug builds is known to cause undefined symbol: FallbackCrcMemcpyEngine linker errors.")
+if ((use_avx || use_avx2 || use_avx512 || use_fma) && symbol_level == "2") {
+  print("WARNING: Using AVX with symbol_level = 2 is known to cause undefined symbol: FallbackCrcMemcpyEngine linker errors.")
 }
 
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
