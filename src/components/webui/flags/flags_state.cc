@@ -696,9 +696,11 @@ void FlagsState::GetFlagFeatureEntries(
     std::string desc = entry.visible_description;
     if (skip_feature_entry.Run(entry)) {
       // Alex313031: Comment the next three lines for component builds.
+#if !defined(_DEBUG)
       if (flags::IsFlagExpired(flags_storage, entry.internal_name))
         desc.insert(0, " NOTE: THIS FLAG IS EXPIRED AND MAY STOP FUNCTIONING OR BE REMOVED SOON! ");
       else
+#endif
         continue;
     }
 
@@ -1115,7 +1117,9 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
     }
     if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry)) {
       // Alex313031: Comment this line for component builds.
+#if !defined(_DEBUG)
       if (!flags::IsFlagExpired(storage, entry.internal_name))
+#endif
         continue;
     }
     return true;

@@ -1958,7 +1958,7 @@ bool ChromeDownloadManagerDelegate::ShouldBlockFile(
   static const bool allow_insecure_downloads_ =
     base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
   // Chrome-initiated background downloads should not be blocked.
-  if (item && !item->RequireSafetyChecks() || allow_insecure_downloads_) {
+  if ((item && !item->RequireSafetyChecks()) || allow_insecure_downloads_) {
     return false;
   }
 

@@ -19,8 +19,8 @@ export function getHtml(this: ChromeUrlsAppElement) {
         html`<li><a href="${info.url.url}">${info.url.url}</a></li>` :
         html`<li>${info.url.url}</li>`
       }`
-      html`<li><a href='chrome://theme/IDR_PRODUCT_ROBOT'>chrome://robot</a></li>\n`
     }`)}
+    <li><a href='chrome://theme/IDR_PRODUCT_ROBOT'>chrome://robot</a></li>
 </ul>
 ${this.internalUrlInfos_.length ? html`
   <h2 id="internal-debugging-pages">Internal Debugging Page URLs</h2>

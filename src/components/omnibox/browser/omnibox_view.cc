@@ -109,14 +109,9 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
                                      ->GetTemplateURLService()
                                      ->GetTemplateURLForKeyword(match.keyword)
                                : nullptr;
-    // For search queries, display match's search engine's favicon. If the
-    // search engine is google, return the icon instead of favicon for
-    // search queries with the chrome refresh feature.
-    if (turl && search::TemplateURLIsGoogle(turl, controller_->client()
-                                                      ->GetTemplateURLService()
-                                                      ->search_terms_data())) {
-      return icon;
-    } else if (turl && turl->CreatedByEnterpriseSearchAggregatorPolicy()) {
+    // For search queries, display match's search engine's favicon. Return the
+    // favicon for search queries with the chrome refresh feature.
+    if (turl && turl->CreatedByEnterpriseSearchAggregatorPolicy()) {
       // If the search engine is enterprise search aggregator, return the icon
       // from the bitmap instead of favicon.
       const SkBitmap* bitmap = model()->GetIconBitmap(turl->favicon_url());

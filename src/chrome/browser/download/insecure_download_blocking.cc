@@ -338,8 +338,6 @@ struct InsecureDownloadData {
     // similar to MIX-DL above, it intentionally blocks more user-initiated
     // downloads. For example, downloads are blocked even if they're initiated
     // from the omnibox.
-    static const bool allow_insecure_downloads_ =
-      base::CommandLine::ForCurrentProcess()->HasSwitch("allow-insecure-downloads");
     if (download_source == DownloadSource::RETRY ||
         (transition_type & ui::PAGE_TRANSITION_RELOAD) ||
         (transition_type & ui::PAGE_TRANSITION_FROM_API) ||

@@ -106,11 +106,7 @@ void ShowDefaultBrowserPrompt(Profile* profile,
     // taken care of in BrowserProcessImpl.
     return;
   }
-
-  scoped_refptr<shell_integration::DefaultBrowserWorker>(
-      new shell_integration::DefaultBrowserWorker())
-      ->StartCheckIsDefault(base::BindOnce(&OnCheckIsDefaultBrowserFinished,
-                                           profile, std::move(done_callback)));
+  return;
 }
 
 void ShowPromptForTesting() {

@@ -129,7 +129,7 @@ static void ReleaseVideoBufferImpl(void* opaque, uint8_t* data) {
 bool FFmpegVideoDecoder::IsCodecSupported(VideoCodec codec) {
   // We only build support for H.264 / H.265.
   return (codec == VideoCodec::kH264 || codec == VideoCodec::kHEVC) &&
-         IsBuiltInVideoCodec(codec);
+         IsDecoderBuiltInVideoCodec(codec);
 }
 
 FFmpegVideoDecoder::FFmpegVideoDecoder(MediaLog* media_log)

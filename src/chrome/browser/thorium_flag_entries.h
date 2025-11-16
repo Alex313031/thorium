@@ -185,7 +185,7 @@
      "GL Vaapi Video Decode",
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
-     kOsLinux, FEATURE_VALUE_TYPE(media::kVaapiVideoDecodeLinuxGL)},
+     kOsLinux, FEATURE_VALUE_TYPE(media::kAcceleratedVideoDecodeLinuxGL)},
     {"gtk-version",
      "GTK Version Override",
      "Choose whether to use the GTK3 or GTK4 backend. It should be set to match the default GTK used by the system, "
@@ -236,7 +236,7 @@
     {"show-fps-counter",
      "Show FPS Counter",
      "Draws a heads-up-display showing Frames Per Second as well as GPU memory usage.",
-     kOsAll, SINGLE_VALUE_TYPE(cc::switches::kShowFPSCounter)},
+     kOsAll, SINGLE_VALUE_TYPE(switches::kShowFPSCounter)},
     {"disable-webgl2",
      "Disable WebGL 2",
      "Disable WebGL 2. Useful for certain GPU/OS combinations.",
