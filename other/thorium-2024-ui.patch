@@ -365,7 +365,7 @@ index cdaceec5e1..c4320d3550 100644
                             Item(parent_node_, Item::TYPE_ALL_BOOKMARKS_NODE));
    }
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index 98fe0ca8e4..d48d63567b 100644
+index 98fe0ca8e4ad5..4f6cd4bfddf87 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
 @@ -9,6 +9,7 @@
@@ -391,7 +391,7 @@ index 98fe0ca8e4..d48d63567b 100644
                               base::Unretained(browser)),
 -                         kActionShowChromeLabs, IDS_CHROMELABS, IDS_CHROMELABS,
 -                         kScienceIcon)
-+                         kActionShowChromeLabs, IDS_CHROMELABS
++                         kActionShowChromeLabs, IDS_CHROMELABS,
 +                         IDS_CHROMELABS, disable_thorium_icons
 +                                         ? kScienceIcon
 +                                         : kScienceThoriumIcon)
@@ -2007,9 +2007,15 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index cd93e66f918eb..5b4424a19c85d 100644
+index cd93e66f918eb..8f9acd4173c82 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2019 The Chromium Authors
++// Copyright 2025 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
 @@ -19,6 +19,7 @@
  #include "chrome/browser/ui/ui_features.h"
  #include "chrome/browser/ui/views/chrome_layout_provider.h"
@@ -2053,18 +2059,19 @@ index cd93e66f918eb..5b4424a19c85d 100644
      }
    }
  
-@@ -241,7 +244,9 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+@@ -241,7 +244,10 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
  
    SetProperty(views::kElementIdentifierKey, kTabStripRegionElementId);
  
 -  if (browser && tab_search_container && !render_tab_search_before_tab_strip_) {
-+  if (browser && tab_search_container &&
-+      !WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(browser) &&
++  const Browser* native_browser_view = tab_strip_->GetBrowser();
++  if ((browser || native_browser_view) && tab_search_container &&
++      !WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(native_browser_view) &&
 +      !render_tab_search_before_tab_strip_) {
      if (product_specifications_button) {
        product_specifications_button_ =
            AddChildView(std::move(product_specifications_button));
-@@ -249,7 +254,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+@@ -249,7 +255,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
      tab_search_container_ = AddChildView(std::move(tab_search_container));
      tab_search_container_->SetProperty(
          views::kMarginsKey,
@@ -2073,7 +2080,7 @@ index cd93e66f918eb..5b4424a19c85d 100644
    }
    if (tab_strip_action_container) {
      tab_strip_action_container_ =
-@@ -463,20 +468,42 @@ void TabStripRegionView::Layout(PassKey) {
+@@ -463,20 +469,42 @@ void TabStripRegionView::Layout(PassKey) {
      // The button needs to be layered on top of the tabstrip to achieve
      // negative margins.
      gfx::Size button_size = button_to_paint_to_layer->GetPreferredSize();
@@ -2119,7 +2126,7 @@ index cd93e66f918eb..5b4424a19c85d 100644
    }
  }
  
-@@ -538,9 +565,10 @@ views::View* TabStripRegionView::GetDefaultFocusableChild() {
+@@ -538,9 +566,10 @@ views::View* TabStripRegionView::GetDefaultFocusableChild() {
  }
  
  void TabStripRegionView::UpdateButtonBorders() {
@@ -2131,7 +2138,7 @@ index cd93e66f918eb..5b4424a19c85d 100644
    const int top_inset = extra_vertical_space / 2;
    const int bottom_inset = extra_vertical_space - top_inset +
                             GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP);
-@@ -606,7 +634,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -606,7 +635,7 @@ void TabStripRegionView::UpdateTabStripMargin() {
  
      tab_strip_right_margin =
          button_to_paint_to_layer->GetPreferredSize().width() +
@@ -2140,7 +2147,7 @@ index cd93e66f918eb..5b4424a19c85d 100644
    }
  
    // If the tab search button is before the tab strip, it also overlaps the
-@@ -632,8 +660,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
+@@ -632,8 +661,8 @@ void TabStripRegionView::UpdateTabStripMargin() {
      // should have 6 px of padding between it and the tab_search button (not
      // including the corner radius).
      tab_strip_left_margin = tab_strip_left_margin.value() +
@@ -2151,7 +2158,7 @@ index cd93e66f918eb..5b4424a19c85d 100644
                              TabStyle::Get()->GetBottomCornerRadius();
    } else if (features::IsTabSearchMoving() &&
               !features::HasTabSearchToolbarButton() &&
-@@ -657,7 +685,7 @@ void TabStripRegionView::AdjustViewBoundsRect(View* view, int offset) {
+@@ -657,7 +686,7 @@ void TabStripRegionView::AdjustViewBoundsRect(View* view, int offset) {
    const gfx::Size view_size = view->GetPreferredSize();
    const int x =
        tab_strip_container_->x() + TabStyle::Get()->GetBottomCornerRadius() -
@@ -2278,23 +2285,22 @@ index d8000f801d188..7f69dd091d42a 100644
        NOTREACHED();
    }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index eca41f6f37b37..a0252c0eae77e 100644
+index 55e2295c97efc..0535326c84d27 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-@@ -183,10 +183,10 @@ int IncrementalMinimumWidth(const views::View* view) {
- }
+@@ -184,9 +184,11 @@ int IncrementalMinimumWidth(const views::View* view) {
  
  // The padding between the intent chip and the other trailing decorations.
--constexpr int kIntentChipIntraItemPadding = 12;
-+const int kIntentChipIntraItemPadding = features::IsThorium2024() ? 6 : 12;
+ constexpr int kIntentChipIntraItemPadding = 12;
++constexpr int kThoriumIntentChipIntraItemPadding = 6; // Th24 value
  
  // The padding between the content setting icons and other trailing decorations.
--constexpr int kContentSettingIntraItemPadding = 8;
-+const int kContentSettingIntraItemPadding = features::IsThorium2024() ? 4 : 8;
+ constexpr int kContentSettingIntraItemPadding = 8;
++constexpr int kThoriumContentSettingIntraItemPadding = 4; // Th24 value
  
  }  // namespace
  
-@@ -209,18 +209,24 @@ LocationBarView::LocationBarView(Browser* browser,
+@@ -209,18 +211,24 @@ LocationBarView::LocationBarView(Browser* browser,
        is_popup_mode_(is_popup_mode) {
    set_suppress_default_focus_handling();
    if (!is_popup_mode_) {
@@ -2331,7 +2337,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  
  #if BUILDFLAG(OS_LEVEL_GEOLOCATION_PERMISSION_SUPPORTED)
      if (features::IsOsLevelGeolocationPermissionSupportEnabled()) {
-@@ -269,10 +275,16 @@ void LocationBarView::Init() {
+@@ -269,10 +277,16 @@ void LocationBarView::Init() {
    const gfx::FontList& font_list = typography_provider.GetFont(
        CONTEXT_OMNIBOX_PRIMARY, views::style::STYLE_PRIMARY);
  
@@ -2352,7 +2358,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  
    auto location_icon_view =
        std::make_unique<LocationIconView>(omnibox_chip_font_list, this, this);
-@@ -382,7 +382,7 @@ void LocationBarView::Init() {
+@@ -370,7 +384,7 @@ void LocationBarView::Init() {
      }
    }
  
@@ -2361,7 +2367,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
    const page_actions::PageActionViewParams page_action_params{
        .icon_size = GetLayoutConstant(LOCATION_BAR_TRAILING_ICON_SIZE),
        .icon_insets = GetLayoutInsets(LOCATION_BAR_PAGE_ACTION_ICON_PADDING),
-@@ -463,6 +463,12 @@ void LocationBarView::Init() {
+@@ -451,6 +465,12 @@ void LocationBarView::Init() {
      params.types_enabled.push_back(PageActionIconType::kCollaborationMessaging);
    }
  
@@ -2374,7 +2380,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
    if (browser_ && !is_popup_mode_) {
      params.types_enabled.push_back(PageActionIconType::kBookmarkStar);
    }
-@@ -501,8 +507,14 @@ bool LocationBarView::IsInitialized() const {
+@@ -489,8 +509,14 @@ bool LocationBarView::IsInitialized() const {
  }
  
  int LocationBarView::GetBorderRadius() const {
@@ -2391,7 +2397,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  }
  
  std::unique_ptr<views::Background> LocationBarView::CreateRoundRectBackground(
-@@ -702,9 +714,9 @@ void LocationBarView::Layout(PassKey) {
+@@ -690,9 +716,9 @@ void LocationBarView::Layout(PassKey) {
    // TODO(manukh): Move constants to layout_constants.cc.
    // The padding between the left edges of the location bar and the LHS icon,
    // e.g. the page info icon, the google G icon, the selected suggestion icon.
@@ -2403,7 +2409,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  
    // Apply indentation to align the omnibox input icon and the text with those
    // of the suggestions in the popup. However, there are two exceptions where
-@@ -723,22 +735,22 @@ void LocationBarView::Layout(PassKey) {
+@@ -711,22 +737,22 @@ void LocationBarView::Layout(PassKey) {
                               !location_icon_view_->ShouldShowLabel() &&
                               !ShouldShowKeywordBubble();
    if (should_indent) {
@@ -2430,7 +2436,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
    }
  
    LocationBarLayout leading_decorations(LocationBarLayout::Position::kLeftEdge,
-@@ -769,7 +781,9 @@ void LocationBarView::Layout(PassKey) {
+@@ -757,7 +783,9 @@ void LocationBarView::Layout(PassKey) {
                  !ShouldShowKeywordBubble()
            : chip_controller_->chip()->GetVisible() &&
                  !ShouldShowKeywordBubble();
@@ -2440,14 +2446,33 @@ index eca41f6f37b37..a0252c0eae77e 100644
      if (base::FeatureList::IsEnabled(
              content_settings::features::kLeftHandSideActivityIndicators)) {
        leading_decorations.AddDecoration(vertical_padding, location_height,
-@@ -1071,12 +1085,18 @@ SkColor LocationBarView::GetIconLabelBubbleSurroundingForegroundColor() const {
+@@ -848,12 +876,16 @@ void LocationBarView::Layout(PassKey) {
+   add_trailing_decoration(page_action_container_,
+                           /*intra_item_padding=*/0);
+   for (ContentSettingImageView* view : base::Reversed(content_setting_views_)) {
+-    int intra_item_padding = kContentSettingIntraItemPadding;
++    int intra_item_padding = features::IsThorium2024()
++                                 ? kThoriumContentSettingIntraItemPadding
++                                 : kContentSettingIntraItemPadding;
+     add_trailing_decoration(view, intra_item_padding);
+   }
+ 
+   if (intent_chip_) {
+-    int intra_item_padding = kIntentChipIntraItemPadding;
++    int intra_item_padding = features::IsThorium2024()
++                                 ? kThoriumIntentChipIntraItemPadding
++                                 : kIntentChipIntraItemPadding;
+     add_trailing_decoration(intent_chip_, intra_item_padding);
+   }
+ 
+@@ -1059,12 +1091,18 @@ SkColor LocationBarView::GetIconLabelBubbleSurroundingForegroundColor() const {
    // will inherit the selected "surrounding foreground color".
    const auto color_id = ShouldShowKeywordBubble()
                              ? kColorOmniboxKeywordSeparator
 -                            : kColorOmniboxActionIcon;
 +                            : (features::IsThorium2024()
 +                               ? kColorOmniboxText
-+                               : kColorPageActionIcon);
++                               : kColorOmniboxActionIcon);
    return GetColorProvider()->GetColor(color_id);
  }
  
@@ -2461,7 +2486,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  }
  
  SkColor LocationBarView::GetIconLabelBubbleBackgroundColor() const {
-@@ -1157,7 +1177,7 @@ bool LocationBarView::IsVirtualKeyboardVisible(views::Widget* widget) {
+@@ -1145,7 +1183,7 @@ bool LocationBarView::IsVirtualKeyboardVisible(views::Widget* widget) {
  // static
  int LocationBarView::GetAvailableTextHeight() {
    return std::max(0, GetLayoutConstant(LOCATION_BAR_HEIGHT) -
@@ -2470,7 +2495,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
  }
  
  // static
-@@ -1204,6 +1224,7 @@ gfx::Rect LocationBarView::GetLocalBoundsWithoutEndcaps() const {
+@@ -1192,6 +1230,7 @@ gfx::Rect LocationBarView::GetLocalBoundsWithoutEndcaps() const {
  void LocationBarView::RefreshBackground() {
    const double opacity = hover_animation_.GetCurrentValue();
    const bool is_caret_visible = omnibox_view_->model()->is_caret_visible();
@@ -2478,7 +2503,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
    const bool input_in_progress =
        omnibox_view_->model()->user_input_in_progress();
    const bool high_contrast = GetNativeTheme()->UserHasContrastPreference();
-@@ -1219,7 +1240,7 @@ void LocationBarView::RefreshBackground() {
+@@ -1207,7 +1246,7 @@ void LocationBarView::RefreshBackground() {
      // focused.
      background_color_ =
          color_provider->GetColor(kColorOmniboxResultsBackground);
@@ -2487,7 +2512,7 @@ index eca41f6f37b37..a0252c0eae77e 100644
      // Under CR23 guidelines, if the Omnibox is unfocused, but still contains
      // in-progress user input, the background color matches the popup (unless
      // high-contrast mode is enabled).
-@@ -1229,6 +1250,20 @@ void LocationBarView::RefreshBackground() {
+@@ -1217,6 +1256,20 @@ void LocationBarView::RefreshBackground() {
    }
  
    SkColor border_color = SK_ColorTRANSPARENT;
@@ -3066,10 +3091,18 @@ index ac335a68f3fd0..8eef7a2f256c8 100644
  }  // namespace
  
 diff --git a/chrome/browser/ui/views/tabs/tab_search_button.cc b/chrome/browser/ui/views/tabs/tab_search_button.cc
-index de0e8090f837a..aa7171570c21d 100644
+index de0e8090f837a..0d6e4ee309e9f 100644
 --- a/chrome/browser/ui/views/tabs/tab_search_button.cc
 +++ b/chrome/browser/ui/views/tabs/tab_search_button.cc
-@@ -23,6 +23,7 @@
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/browser/ui/views/tabs/tab_search_button.h"
+ 
++#include "base/command_line.h"
+ #include "chrome/app/vector_icons/vector_icons.h"
+ #include "chrome/browser/ui/browser_element_identifiers.h"
+ #include "chrome/browser/ui/ui_features.h"
+@@ -23,6 +24,7 @@
  #include "ui/views/view_class_properties.h"
  
  namespace {
@@ -3077,7 +3110,7 @@ index de0e8090f837a..aa7171570c21d 100644
  constexpr int kCRTabSearchCornerRadius = 10;
  constexpr int kCRTabSearchFlatCornerRadius = 4;
  constexpr int kComboButtonFlatCornerRadius = 0;
-@@ -36,7 +37,9 @@ TabSearchButton::TabSearchButton(
+@@ -36,7 +38,9 @@ TabSearchButton::TabSearchButton(
      TabStrip* tab_strip)
      : TabStripControlButton(tab_strip_controller,
                              PressedCallback(),
@@ -3088,7 +3121,7 @@ index de0e8090f837a..aa7171570c21d 100644
                              fixed_flat_edge,
                              animated_flat_edge) {
    SetProperty(views::kElementIdentifierKey, kTabSearchButtonElementId);
-@@ -47,12 +50,14 @@ TabSearchButton::TabSearchButton(
+@@ -47,12 +51,14 @@ TabSearchButton::TabSearchButton(
  
    if (!features::IsTabSearchMoving() ||
        features::HasTabstripComboButtonWithBackground()) {
@@ -3109,7 +3142,7 @@ index de0e8090f837a..aa7171570c21d 100644
  
      UpdateColors();
    }
-@@ -70,7 +75,15 @@ void TabSearchButton::NotifyClick(const ui::Event& event) {
+@@ -70,7 +76,15 @@ void TabSearchButton::NotifyClick(const ui::Event& event) {
  }
  
  int TabSearchButton::GetCornerRadius() const {
@@ -3931,10 +3964,10 @@ index 9e5567aec56dc..0e3978ff8da39 100644
    // --no-sandbox in official builds because that would bypass the bad_flgs
    // prompt.
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index 19f4980fc240e..671bb9a3d6d8a 100644
+index 19f4980fc240e..bbbb2c7248f45 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -448,6 +448,40 @@ bool IsVariableRefreshRateAlwaysOn() {
+@@ -448,6 +448,38 @@ bool IsVariableRefreshRateAlwaysOn() {
    return base::FeatureList::IsEnabled(kEnableVariableRefreshRateAlwaysOn);
  }
  
@@ -3950,9 +3983,7 @@ index 19f4980fc240e..671bb9a3d6d8a 100644
 +
 +BASE_FEATURE(kDownloadShelf,
 +             "DownloadShelf",
-+                 IsThorium2024()
-+                 ? base::FEATURE_ENABLED_BY_DEFAULT
-+                 : base::FEATURE_DISABLED_BY_DEFAULT);
++             base::FEATURE_DISABLED_BY_DEFAULT);
 +
 +bool UseDownloadShelf() {
 +  return base::FeatureList::IsEnabled(kDownloadShelf);
@@ -4024,7 +4055,7 @@ index d21456ab73faa..de14c868fcc26 100644
        return SystemTheme::kDefault;
    }
 diff --git a/ui/views/controls/button/toggle_button.cc b/ui/views/controls/button/toggle_button.cc
-index 45f1aec037fa4..95e2e11fe0a07 100644
+index 45f1aec037fa4..689a67d372858 100644
 --- a/ui/views/controls/button/toggle_button.cc
 +++ b/ui/views/controls/button/toggle_button.cc
 @@ -13,6 +13,7 @@
@@ -4035,10 +4066,11 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  #include "third_party/skia/include/core/SkColor.h"
  #include "third_party/skia/include/core/SkRect.h"
  #include "ui/accessibility/ax_enums.mojom.h"
-@@ -46,6 +47,14 @@ namespace {
+@@ -45,7 +46,14 @@ namespace views {
+ namespace {
  
  // Constants are measured in dip.
- constexpr gfx::Size kTrackSize = gfx::Size(26, 16);
+-constexpr gfx::Size kTrackSize = gfx::Size(26, 16);
 +constexpr gfx::Size kTrackSize = gfx::Size(28, 16);
 +constexpr gfx::Size kTh24TrackSize = gfx::Size(30, 12);
 +
@@ -4050,7 +4082,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  constexpr int kThumbInset = -4;
  constexpr int kThumbInsetSelected = -2;
  constexpr int kThumbPressedOutset = 1;
-@@ -53,11 +62,15 @@ constexpr int kHoverDiameter = 20;
+@@ -53,11 +61,15 @@ constexpr int kHoverDiameter = 20;
  constexpr float kBorderStrokeWidth = 1.0f;
  
  const gfx::Size GetTrackSize() {
@@ -4068,7 +4100,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  }
  
  }  // namespace
-@@ -145,7 +158,7 @@ class ToggleButton::ThumbView : public View {
+@@ -145,7 +157,7 @@ class ToggleButton::ThumbView : public View {
          GetThumbColor(/*is_on=*/false).ResolveToSkColor(color_provider);
      SkColor thumb_color =
          color_utils::AlphaBlend(thumb_on_color, thumb_off_color, color_ratio_);
@@ -4077,7 +4109,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
        // This will blend and additional color into the "on" state thumb color
        // while the view is hovered. This will also take into account both the
        // off->on color animating along with the hover animation. Those
-@@ -184,7 +197,7 @@ class ToggleButton::ThumbView : public View {
+@@ -184,7 +196,7 @@ class ToggleButton::ThumbView : public View {
  };
  
  ToggleButton::ToggleButton(PressedCallback callback)
@@ -4086,7 +4118,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  
  ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
      : Button(std::move(callback)) {
-@@ -201,14 +214,17 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+@@ -201,14 +213,17 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
    // InkDrop event triggering is handled in NotifyClick().
    SetHasInkDropActionOnClick(false);
    InkDrop::UseInkDropForSquareRipple(InkDrop::Get(this),
@@ -4106,7 +4138,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
          const SkColor pressed_color = host->GetPressedColor();
          const float pressed_alpha = SkColorGetA(pressed_color);
          std::unique_ptr<SquareInkDropRipple> ripple =
-@@ -227,20 +243,22 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
+@@ -227,20 +242,22 @@ ToggleButton::ToggleButton(PressedCallback callback, bool has_thumb_shadow)
          return host->GetTrackColor(host->GetIsOn() || host->HasFocus());
        },
        this));
@@ -4143,7 +4175,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  
    // Even though ToggleButton doesn't paint anything, declare us as flipped in
    // RTL mode so that FocusRing correctly flips as well.
-@@ -332,6 +350,10 @@ bool ToggleButton::GetAcceptsEvents() const {
+@@ -332,6 +349,10 @@ bool ToggleButton::GetAcceptsEvents() const {
    return accepts_events_;
  }
  
@@ -4154,7 +4186,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  void ToggleButton::AddLayerToRegion(ui::Layer* layer,
                                      views::LayerRegion region) {
    // Ink-drop layers should go above/below the ThumbView.
-@@ -345,6 +367,9 @@ void ToggleButton::RemoveLayerFromRegions(ui::Layer* layer) {
+@@ -345,6 +366,9 @@ void ToggleButton::RemoveLayerFromRegions(ui::Layer* layer) {
  gfx::Size ToggleButton::CalculatePreferredSize(
      const SizeBounds& /*available_size*/) const {
    gfx::Rect rect(GetTrackSize());
@@ -4164,7 +4196,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
    rect.Inset(-GetInsets());
    return rect.size();
  }
-@@ -364,7 +389,7 @@ gfx::Rect ToggleButton::GetThumbBounds() const {
+@@ -364,7 +388,7 @@ gfx::Rect ToggleButton::GetThumbBounds() const {
    // The thumb is a circle, so the width should match the height.
    thumb_bounds.set_width(thumb_bounds.height());
    thumb_bounds.Inset(thumb_view_->GetShadowOutsets());
@@ -4173,7 +4205,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
      thumb_bounds.Outset(kThumbPressedOutset);
    }
    return thumb_bounds;
-@@ -379,7 +404,7 @@ void ToggleButton::UpdateThumb() {
+@@ -379,7 +403,7 @@ void ToggleButton::UpdateThumb() {
                        static_cast<float>(slide_animation_.GetCurrentValue()),
                        static_cast<float>(hover_animation_.GetCurrentValue()),
                        GetIsOn(), IsMouseHovered());
@@ -4182,7 +4214,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
      InkDrop::Get(this)->GetInkDrop()->SetHovered(
          !slide_animation_.is_animating());
    }
-@@ -424,8 +449,10 @@ void ToggleButton::OnThemeChanged() {
+@@ -424,8 +448,10 @@ void ToggleButton::OnThemeChanged() {
  void ToggleButton::NotifyClick(const ui::Event& event) {
    AnimateIsOn(!GetIsOn());
  
@@ -4195,7 +4227,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  
    Button::NotifyClick(event);
  }
-@@ -438,14 +465,18 @@ void ToggleButton::StateChanged(ButtonState old_state) {
+@@ -438,14 +464,18 @@ void ToggleButton::StateChanged(ButtonState old_state) {
    thumb_view_->SetEnabled(enabled);
  
    // Update thumb bounds.
@@ -4221,7 +4253,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
      UpdateThumb();
    }
  }
-@@ -458,13 +489,43 @@ void ToggleButton::UpdateAccessibleCheckedState() {
+@@ -458,13 +488,43 @@ void ToggleButton::UpdateAccessibleCheckedState() {
  
  SkPath ToggleButton::GetFocusRingPath() const {
    SkPath path;
@@ -4269,7 +4301,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
  void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
    // Paint the toggle track. To look sharp even at fractional scale factors,
    // round up to pixel boundaries.
-@@ -481,7 +542,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+@@ -481,7 +541,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
    track_flags.setColor(color_utils::AlphaBlend(
        GetTrackColor(true), GetTrackColor(false), color_ratio));
    canvas->DrawRoundRect(track_rect, radius, track_flags);
@@ -4278,7 +4310,7 @@ index 45f1aec037fa4..95e2e11fe0a07 100644
      track_rect.Inset(kBorderStrokeWidth * dsf / 2.0f);
      track_flags.setColor(
          GetColorProvider()->GetColor(ui::kColorToggleButtonShadow));
-@@ -493,7 +554,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
+@@ -493,7 +553,7 @@ void ToggleButton::PaintButtonContents(gfx::Canvas* canvas) {
  }
  
  void ToggleButton::AnimationEnded(const gfx::Animation* animation) {
