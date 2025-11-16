@@ -277,6 +277,9 @@ are declared in tools/grit/grit_args.gni.
   <release seq="1">
     <!-- IMPORTANT: .grdp files must be in the same directory as this file -->
     <messages fallback_to_english="true">
+      <!-- Thorium Browser specific strings -->
+      <part file="thorium_strings.grdp" />
+
       <!-- Access Code Cast specific strings -->
       <part file="access_code_cast_strings.grdp" />
 

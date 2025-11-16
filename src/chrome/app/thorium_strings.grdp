@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <grit-part>
-  <message name="IDS_RESTORE_TAB_BUTTON_NAME" desc="">
+  <message name="IDS_RESTORE_TAB_BUTTON_NAME" desc="Accessible title for the restore tab button.">
     Restore Tab Button
   </message>
-  <message name="IDS_RESTORE_TAB_BUTTON_TOOLTIP" desc="">
+  <message name="IDS_RESTORE_TAB_BUTTON_TOOLTIP" desc="Tooltip when hovering over the restore tab button.">
     Restore Tab
   </message>
-  <message name="IDS_ALTERNATE_HOME_PAGE" desc="">
+  <message name="IDS_ALTERNATE_HOME_PAGE" desc="When using the alternate home page flag">
     Open alternate home page
   </message>
 
