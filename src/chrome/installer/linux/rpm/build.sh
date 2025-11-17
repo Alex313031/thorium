@@ -222,6 +222,10 @@ fi
 eval $(sed -e "s/^\([^=]\+\)=\(.*\)$/export \1='\2'/" \
   "${OUTPUTDIR}/installer/theme/BRANDING")
 
+# Unset repoconfig for Thorium
+REPOCONFIG=
+REPOCONFIGREGEX=
+
 USR_BIN_SYMLINK_NAME="thorium-browser"
 
 stage_install_rpm

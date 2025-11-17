@@ -284,8 +284,13 @@ cd "${OUTPUTDIR}"
 # set it to an empty string)
 # Allowed configs include optional HTTPS support and explicit multiarch
 # platforms.
+
+# Unset repoconfig for Thorium
+#BASEREPOCONFIG="dl.google.com/linux/chrome/deb/ stable main"
+REPOCONFIG=""
 REPOCONFIGREGEX="deb (\\[arch=[^]]*\\b${ARCHITECTURE}\\b[^]]*\\]"
-# REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
+#REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
+
 stage_install_debian
 
 do_package
