@@ -287,7 +287,7 @@ cd "${OUTPUTDIR}"
 
 # Unset repoconfig for Thorium
 #BASEREPOCONFIG="dl.google.com/linux/chrome/deb/ stable main"
-REPOCONFIG=""
+REPOCONFIG=
 REPOCONFIGREGEX="deb (\\[arch=[^]]*\\b${ARCHITECTURE}\\b[^]]*\\]"
 #REPOCONFIGREGEX+="[[:space:]]*) https?://${BASEREPOCONFIG}"
 
