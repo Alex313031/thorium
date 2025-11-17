@@ -1123,7 +1123,7 @@
         "&duckduckgo",
         "&brave",
         "&ecosia",
-        "&ask",
+        //"&ask",
         "&yandex_com"
       ]
     },
@@ -1183,7 +1183,8 @@
     // See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#ZZ
     "ZZ": {
       // Default
-      "search_engines": ["&google", "&bing", "&yahoo", "&duckduckgo", "&brave", "&ecosia", "&ask" ]
+      //"search_engines": ["&google", "&bing", "&yahoo", "&duckduckgo", "&brave", "&ecosia", "&ask" ]
+      "search_engines": ["&google", "&bing", "&yahoo", "&duckduckgo", "&brave", "&ecosia" ]
     }
   },
 
