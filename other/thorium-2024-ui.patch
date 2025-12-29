@@ -177,6 +177,19 @@ index fe2ce670da340..82bbda21a16e5 100644
  // Used by LOG_IS_ON to lazy-evaluate stream arguments.
  BASE_EXPORT bool ShouldCreateLogMessage(int severity);
  
+diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_browser_main.cc
+index ee9e6e9208043..524a7acf681d7 100644
+--- a/chrome/browser/chrome_browser_main.cc
++++ b/chrome/browser/chrome_browser_main.cc
+@@ -1003,6 +1003,8 @@ int ChromeBrowserMainParts::PreCreateThreadsImpl() {
+   if (first_run::IsChromeFirstRun()) {
+     if (!base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kApp) &&
+         !base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kAppId)) {
++      // Open Welcome page. Previously used initial_preferences file
++      browser_creator_->AddFirstRunTabs({GURL("https://thorium.rocks/welcome/")});
+       browser_creator_->AddFirstRunTabs(master_prefs_->new_tabs);
+     }
+ 
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
 index b103bbe61303d..469611cb36e7a 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
