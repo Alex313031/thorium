@@ -253,7 +253,7 @@ index f355f92ac2f37..e0b69081164fd 100644
    "incognito": "split",
    "permissions": [
 diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
-index bc6e4008f2c5a..9b6dffa76b9dc 100644
+index 8392975cdde4e..04dd53a9819ad 100644
 --- a/chrome/browser/ui/BUILD.gn
 +++ b/chrome/browser/ui/BUILD.gn
 @@ -107,6 +107,7 @@ static_library("ui") {
@@ -264,12 +264,21 @@ index bc6e4008f2c5a..9b6dffa76b9dc 100644
      "toolbar/chrome_labs/chrome_labs_model.cc",
      "toolbar/chrome_labs/chrome_labs_model.h",
      "toolbar/chrome_labs/chrome_labs_prefs.cc",
-@@ -4072,6 +4073,8 @@ static_library("ui") {
+@@ -3475,6 +3476,8 @@ static_library("ui") {
+       "views/frame/windows_caption_button.h",
+       "views/frame/windows_icon_painter.cc",
+       "views/frame/windows_icon_painter.h",
++      #"views/frame/windows_tab_search_caption_button.cc",
++      #"views/frame/windows_tab_search_caption_button.h",
+       "views/network_profile_bubble_view.cc",
+       "views/status_icons/status_icon_win.cc",
+       "views/status_icons/status_icon_win.h",
+@@ -4072,6 +4075,8 @@ static_library("ui") {
        "views/frame/top_container_view.cc",
        "views/frame/top_container_view.h",
        "views/frame/top_controls_slide_controller.h",
-+      "views/frame/window_caption_util.cc",
-+      "views/frame/window_caption_util.h",
++      #"views/frame/window_caption_util.cc",
++      #"views/frame/window_caption_util.h",
        "views/frame/web_contents_close_handler.cc",
        "views/frame/web_contents_close_handler.h",
        "views/frame/web_contents_close_handler_delegate.h",
@@ -1499,96 +1508,114 @@ index 1807e4c267..72dff16f3b 100644
    // Show a pin button for the context menu normal state icon when the action is
    // pinned in the toolbar. All other states should look, and behave, the same.
 diff --git a/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc b/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
-index b4ed00fe214a9..cbd69f5565a61 100644
+index 0593b53bbfbb4..0f26600c30f22 100644
 --- a/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
 +++ b/chrome/browser/ui/views/frame/browser_caption_button_container_win.cc
 @@ -12,6 +12,8 @@
  #include "chrome/browser/ui/views/frame/browser_frame_view_win.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/windows_caption_button.h"
-+#include "chrome/browser/ui/views/frame/window_caption_util.h"
-+#include "chrome/browser/ui/views/frame/windows_tab_search_caption_button.h"
++//#include "chrome/browser/ui/views/frame/window_caption_util.h"
++//#include "chrome/browser/ui/views/frame/windows_tab_search_caption_button.h"
  #include "chrome/browser/win/titlebar_config.h"
  #include "chrome/grit/generated_resources.h"
  #include "ui/base/l10n/l10n_util.h"
-@@ -69,6 +71,14 @@ BrowserCaptionButtonContainer::BrowserCaptionButtonContainer(
+@@ -69,6 +71,18 @@ BrowserCaptionButtonContainer::BrowserCaptionButtonContainer(
            frame_view_,
            VIEW_ID_CLOSE_BUTTON,
            IDS_APP_ACCNAME_CLOSE))) {
-+  if (WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(
++  /* if (WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(
 +          frame_view_->browser_view()->browser())) {
++    tab_strip_ = frame_view_->browser_view()->tabstrip();
 +    tab_search_button_ =
 +        AddChildViewAt(std::make_unique<WindowsTabSearchCaptionButton>(
-+                           frame_view_, VIEW_ID_TAB_SEARCH_BUTTON,
++                           frame_view_,
++                           frame_view_->browser_view(),
++                           tab_strip_->GetAsWeakPtr(),
++                           VIEW_ID_TAB_SEARCH_BUTTON,
 +                           l10n_util::GetStringUTF16(IDS_ACCNAME_TAB_SEARCH)),
 +                       0);
-+  }
++  } */
    // Layout is horizontal, with buttons placed at the trailing end of the view.
    // This allows the container to expand to become a faux titlebar/drag handle.
    auto* const layout = SetLayoutManager(std::make_unique<views::FlexLayout>());
-@@ -94,6 +104,9 @@ int BrowserCaptionButtonContainer::NonClientHitTest(
+@@ -94,6 +108,9 @@ int BrowserCaptionButtonContainer::NonClientHitTest(
      const gfx::Point& point) const {
    DCHECK(HitTestPoint(point))
        << "should only be called with a point inside this view's bounds";
-+  if (tab_search_button_ && HitTestCaptionButton(tab_search_button_, point)) {
++  /* if (tab_search_button_ && HitTestCaptionButton(tab_search_button_, point)) {
 +    return HTCLIENT;
-+  }
++  } */
    // BrowserView covers the frame view when Window Controls Overlay is enabled.
    // The native window that encompasses Web Contents gets the mouse events meant
    // for the caption buttons, so returning HTClient allows these buttons to be
-@@ -135,6 +148,11 @@ void BrowserCaptionButtonContainer::OnWindowControlsOverlayEnabledChanged() {
+@@ -135,6 +152,11 @@ void BrowserCaptionButtonContainer::OnWindowControlsOverlayEnabledChanged() {
    UpdateButtonToolTipsForWindowControlsOverlay();
  }
  
-+TabSearchBubbleHost* BrowserCaptionButtonContainer::GetTabSearchBubbleHost() {
++/* TabSearchBubbleHost* BrowserCaptionButtonContainer::GetTabSearchBubbleHost() {
 +  return tab_search_button_ ? tab_search_button_->tab_search_bubble_host()
 +                            : nullptr;
-+}
++} */
 +
  void BrowserCaptionButtonContainer::OnThemeChanged() {
    if (frame_view_->browser_view()->IsWindowControlsOverlayEnabled()) {
      SetBackground(
-@@ -144,6 +162,9 @@ void BrowserCaptionButtonContainer::OnThemeChanged() {
+@@ -144,6 +166,9 @@ void BrowserCaptionButtonContainer::OnThemeChanged() {
  }
  
  void BrowserCaptionButtonContainer::ResetWindowControls() {
-+  if (tab_search_button_) {
++  /* if (tab_search_button_) {
 +    tab_search_button_->SetState(views::Button::STATE_NORMAL);
-+  }
++  } */
    minimize_button_->SetState(views::Button::STATE_NORMAL);
    maximize_button_->SetState(views::Button::STATE_NORMAL);
    restore_button_->SetState(views::Button::STATE_NORMAL);
 diff --git a/chrome/browser/ui/views/frame/browser_caption_button_container_win.h b/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
-index bda5b2b0ab02d..a8dac38d7b61b 100644
+index bda5b2b0ab02d..575c3639a2788 100644
 --- a/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
 +++ b/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
-@@ -15,7 +15,9 @@
+@@ -7,6 +7,7 @@
+ 
+ #include "base/memory/raw_ptr.h"
+ #include "base/scoped_observation.h"
++#include "chrome/browser/ui/views/frame/browser_view.h"
+ #include "ui/base/metadata/metadata_header_macros.h"
+ #include "ui/base/pointer/touch_ui_controller.h"
+ #include "ui/views/controls/button/button.h"
+@@ -15,7 +16,9 @@
  #include "ui/views/widget/widget_observer.h"
  
  class BrowserFrameViewWin;
-+class TabSearchBubbleHost;
++//class TabSearchBubbleHost;
  class WindowsCaptionButton;
-+class WindowsTabSearchCaptionButton;
++//class WindowsTabSearchCaptionButton;
  
  // Provides a container for Windows caption buttons that can be moved between
  // frame and browser window as needed. When extended horizontally, becomes a
-@@ -38,6 +40,8 @@ class BrowserCaptionButtonContainer : public views::View,
+@@ -38,6 +41,8 @@ class BrowserCaptionButtonContainer : public views::View,
  
    void OnWindowControlsOverlayEnabledChanged();
  
-+  TabSearchBubbleHost* GetTabSearchBubbleHost();
++  //TabSearchBubbleHost* GetTabSearchBubbleHost();
 +
   private:
    friend class BrowserFrameViewWin;
  
-@@ -64,6 +68,7 @@ class BrowserCaptionButtonContainer : public views::View,
+@@ -64,10 +69,13 @@ class BrowserCaptionButtonContainer : public views::View,
    void UpdateButtonToolTipsForWindowControlsOverlay();
  
    const raw_ptr<BrowserFrameViewWin> frame_view_;
-+  raw_ptr<WindowsTabSearchCaptionButton> tab_search_button_ = nullptr;
++  //raw_ptr<WindowsTabSearchCaptionButton> tab_search_button_ = nullptr;
    const raw_ptr<WindowsCaptionButton> minimize_button_;
    const raw_ptr<WindowsCaptionButton> maximize_button_;
    const raw_ptr<WindowsCaptionButton> restore_button_;
+   const raw_ptr<WindowsCaptionButton> close_button_;
++  // The TabStrip.
++  //raw_ptr<TabStrip> tab_strip_ = nullptr;
+ 
+   base::ScopedObservation<views::Widget, views::WidgetObserver>
+       widget_observation_{this};
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
 index 84930758ab743..8b762a0c37582 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
@@ -1601,16 +1628,16 @@ index 84930758ab743..8b762a0c37582 100644
 +  return (!features::IsThorium2024() && delegate_->IsTabStripVisible()) ? 0 : kExtraTopBorder;
  }
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_win.cc b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
-index 3830c3e0a7e64..7ae70a0061281 100644
+index 3830c3e0a7e64..108687b6d2b1f 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_win.cc
 +++ b/chrome/browser/ui/views/frame/browser_frame_view_win.cc
 @@ -259,6 +259,10 @@ void BrowserFrameViewWin::WindowControlsOverlayEnabledChanged() {
    caption_button_container_->OnWindowControlsOverlayEnabledChanged();
  }
  
-+TabSearchBubbleHost* BrowserFrameViewWin::GetTabSearchBubbleHost() {
++/* TabSearchBubbleHost* BrowserFrameViewWin::GetTabSearchBubbleHost() {
 +  return caption_button_container_->GetTabSearchBubbleHost();
-+}
++} */
 +
  void BrowserFrameViewWin::PaintAsActiveChanged() {
    BrowserNonClientFrameView::PaintAsActiveChanged();
@@ -1668,15 +1695,15 @@ index 3830c3e0a7e64..7ae70a0061281 100644
  
    const gfx::Size preferred_size =
        caption_button_container_->GetPreferredSize();
-+  int height = preferred_size.height();
++  int init_height = preferred_size.height();
 +  // We use the standard caption bar height when maximized in tablet mode, which
 +  // is smaller than our preferred button size.
 +  if (IsWebUITabStrip() && IsMaximized()) {
-+    height = std::min(height, TitlebarMaximizedVisualHeight());
++    init_height = std::min(init_height, TitlebarMaximizedVisualHeight());
 +  }
 +  if (!browser_view()->GetWebAppFrameToolbarPreferredSize().IsEmpty()) {
-+    height = IsMaximized() ? TitlebarMaximizedVisualHeight()
-+                           : TitlebarHeight(false) - WindowTopY();
++    init_height = IsMaximized() ? TitlebarMaximizedVisualHeight()
++                                : TitlebarHeight(false) - WindowTopY();
 +  }
  
    const int system_caption_buttons_width =
@@ -1685,7 +1712,7 @@ index 3830c3e0a7e64..7ae70a0061281 100644
            : width() - frame()->GetMinimizeButtonOffset();
  
 +  const int caption_height = features::IsThorium2024()
-+                                 ? std::min(GetFrameHeight(), height)
++                                 ? std::min(GetFrameHeight(), init_height)
 +                                 : GetFrameHeight();
 +
    const int height =
@@ -1697,14 +1724,14 @@ index 3830c3e0a7e64..7ae70a0061281 100644
    caption_button_container_->SetBounds(
        CaptionButtonsOnLeadingEdge()
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_win.h b/chrome/browser/ui/views/frame/browser_frame_view_win.h
-index 27caea181a279..d3210e6c02922 100644
+index 5752dd33775c7..ca120fbbc1207 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_win.h
 +++ b/chrome/browser/ui/views/frame/browser_frame_view_win.h
 @@ -17,6 +17,7 @@
  #include "ui/views/window/non_client_view.h"
  
  class BrowserView;
-+class TabSearchBubbleHost;
++//class TabSearchBubbleHost;
  class BrowserCaptionButtonContainer;
  
  class BrowserFrameViewWin : public BrowserNonClientFrameView,
@@ -1712,34 +1739,34 @@ index 27caea181a279..d3210e6c02922 100644
    void UpdateThrobber(bool running) override;
    gfx::Size GetMinimumSize() const override;
    void WindowControlsOverlayEnabledChanged() override;
-+  TabSearchBubbleHost* GetTabSearchBubbleHost() override;
++  //TabSearchBubbleHost* GetTabSearchBubbleHost() override;
  
    // views::NonClientFrameView:
    gfx::Rect GetBoundsForClientView() const override;
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view.cc b/chrome/browser/ui/views/frame/browser_non_client_frame_view.cc
-index a36cbc59ef417..3a9309bc39bdf 100644
+index a36cbc59ef417..081937b9f6651 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view.cc
 @@ -206,6 +206,10 @@ void BrowserNonClientFrameView::VisibilityChanged(views::View* starting_from,
    }
  }
  
-+TabSearchBubbleHost* BrowserNonClientFrameView::GetTabSearchBubbleHost() {
++/* TabSearchBubbleHost* BrowserNonClientFrameView::GetTabSearchBubbleHost() {
 +  return nullptr;
-+}
++} */
 +
  gfx::Insets BrowserNonClientFrameView::RestoredMirroredFrameBorderInsets()
      const {
    NOTREACHED();
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view.h b/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
-index 2238e76440194..df37021bf766f 100644
+index 2238e76440194..745eae8b112dd 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view.h
 @@ -13,6 +13,7 @@
  #include "ui/views/window/non_client_view.h"
  
  class BrowserView;
-+class TabSearchBubbleHost;
++//class TabSearchBubbleHost;
  
  // Type used for functions whose return values depend on the active state of
  // the frame.
@@ -1749,13 +1776,13 @@ index 2238e76440194..df37021bf766f 100644
  
 +  // Gets the TabSearchBubbleHost if present in the NonClientFrameView. Can
 +  // return null.
-+  virtual TabSearchBubbleHost* GetTabSearchBubbleHost();
++  //virtual TabSearchBubbleHost* GetTabSearchBubbleHost();
 +
    // Returns the insets from the edge of the native window to the client view in
    // DIPs. The value is left-to-right even on RTL locales. That is,
    // insets.left() will be on the left in screen coordinates.
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
-index 1477cb494e11f..b6225a49bafc5 100644
+index 1477cb494e11f..357ca43d6fcba 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.cc
 @@ -266,7 +266,11 @@ int BrowserNonClientFrameViewChromeOS::GetTopInset(bool restored) const {
@@ -1771,27 +1798,26 @@ index 1477cb494e11f..b6225a49bafc5 100644
    }
  
    Browser* browser = browser_view()->browser();
-@@ -336,6 +340,11 @@ SkColor BrowserNonClientFrameViewChromeOS::GetFrameColor(
+@@ -336,6 +340,10 @@ SkColor BrowserNonClientFrameViewChromeOS::GetFrameColor(
    return color.value_or(fallback_color);
  }
  
-+TabSearchBubbleHost*
-+BrowserNonClientFrameViewChromeOS::GetTabSearchBubbleHost() {
++/* TabSearchBubbleHost* BrowserNonClientFrameViewChromeOS::GetTabSearchBubbleHost() {
 +  return tab_search_bubble_host_;
-+}
++} */
 +
  void BrowserNonClientFrameViewChromeOS::UpdateMinimumSize() {
    gfx::Size current_min_size = GetMinimumSize();
    if (last_minimum_size_ == current_min_size) {
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
-index 73458b42a53e7..1a602a719da5a 100644
+index feeb74bf8c1fc..3ecedceae6742 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_chromeos.h
 @@ -69,6 +69,7 @@ class BrowserNonClientFrameViewChromeOS
    bool CanUserExitFullscreen() const override;
    SkColor GetCaptionColor(BrowserFrameActiveState active_state) const override;
    SkColor GetFrameColor(BrowserFrameActiveState active_state) const override;
-+  TabSearchBubbleHost* GetTabSearchBubbleHost() override;
++  //TabSearchBubbleHost* GetTabSearchBubbleHost() override;
    void UpdateMinimumSize() override;
  
    // views::NonClientFrameView:
@@ -1799,7 +1825,7 @@ index 73458b42a53e7..1a602a719da5a 100644
    raw_ptr<chromeos::FrameCaptionButtonContainerView> caption_button_container_ =
        nullptr;
  
-+  raw_ptr<TabSearchBubbleHost> tab_search_bubble_host_ = nullptr;
++  //raw_ptr<TabSearchBubbleHost> tab_search_bubble_host_ = nullptr;
 +
    // For popups, the window icon.
    raw_ptr<TabIconView> window_icon_ = nullptr;
@@ -1818,7 +1844,7 @@ index 263261b1c8204..93335609f27da 100644
    // slide down menu bar at the very top in full screen.
    int TopUIFullscreenYOffset() const;
 diff --git a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
-index 2caa04674d405..85c6d434c537b 100644
+index 09a8990a384f3..d6b02934cafc2 100644
 --- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
 +++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
 @@ -50,6 +50,8 @@ namespace {
@@ -1901,17 +1927,17 @@ index 2caa04674d405..85c6d434c537b 100644
    if (!browser_view()->GetTabStripVisible() ||
        !browser_view()->IsFullscreen() ||
 diff --git a/chrome/browser/ui/views/frame/browser_view.cc b/chrome/browser/ui/views/frame/browser_view.cc
-index 60e7ef5295163..db2901bde1a90 100644
+index 60e7ef5295163..04a54eed57b95 100644
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
 @@ -1374,6 +1374,10 @@ bool BrowserView::UsesImmersiveFullscreenTabbedMode() const {
  #endif
  
  TabSearchBubbleHost* BrowserView::GetTabSearchBubbleHost() {
-+  if (auto* tab_search_host =
++  /* if (auto* tab_search_host =
 +          frame_->GetFrameView()->GetTabSearchBubbleHost()) {
 +    return tab_search_host;
-+  }
++  } */
    return tab_search_bubble_host_.get();
  }
  
@@ -2020,7 +2046,7 @@ index 707226e0e8c70..5e1a2b4dd9921 100644
    void SetWindowControlsOverlayEnabled(bool enabled, views::View* host);
  
 diff --git a/chrome/browser/ui/views/frame/tab_strip_region_view.cc b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
-index cd93e66f918eb..8f9acd4173c82 100644
+index cd93e66f918eb..e904e44e5c134 100644
 --- a/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/tab_strip_region_view.cc
 @@ -1,4 +1,4 @@
@@ -2072,18 +2098,16 @@ index cd93e66f918eb..8f9acd4173c82 100644
      }
    }
  
-@@ -241,7 +244,10 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
+@@ -241,6 +244,9 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
  
    SetProperty(views::kElementIdentifierKey, kTabStripRegionElementId);
  
--  if (browser && tab_search_container && !render_tab_search_before_tab_strip_) {
-+  const Browser* native_browser_view = tab_strip_->GetBrowser();
-+  if ((browser || native_browser_view) && tab_search_container &&
-+      !WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(native_browser_view) &&
-+      !render_tab_search_before_tab_strip_) {
++  /* if (!WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(native_browser_view) &&
++      browser && tab_search_container && !render_tab_search_before_tab_strip_) { */
++
+   if (browser && tab_search_container && !render_tab_search_before_tab_strip_) {
      if (product_specifications_button) {
        product_specifications_button_ =
-           AddChildView(std::move(product_specifications_button));
 @@ -249,7 +255,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
      tab_search_container_ = AddChildView(std::move(tab_search_container));
      tab_search_container_->SetProperty(
@@ -2186,7 +2210,7 @@ index 0000000000000..04703d70ecf9b
 --- /dev/null
 +++ b/chrome/browser/ui/views/frame/window_caption_util.cc
 @@ -0,0 +1,26 @@
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2025 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -2240,24 +2264,25 @@ index 0000000000000..92e166d7ca93c
 +
 +#endif  // CHROME_BROWSER_UI_VIEWS_FRAME_WINDOW_CAPTION_UTIL_H_
 diff --git a/chrome/browser/ui/views/frame/windows_caption_button.cc b/chrome/browser/ui/views/frame/windows_caption_button.cc
-index d8000f801d188..7f69dd091d42a 100644
+index 680c892a8ab48..d23c4db6c95ef 100644
 --- a/chrome/browser/ui/views/frame/windows_caption_button.cc
 +++ b/chrome/browser/ui/views/frame/windows_caption_button.cc
 @@ -15,6 +15,7 @@
  #include "chrome/browser/ui/views/frame/browser_frame_view_win.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
  #include "chrome/browser/ui/views/frame/tab_strip_region_view.h"
-+#include "chrome/browser/ui/views/frame/window_caption_util.h"
++//#include "chrome/browser/ui/views/frame/window_caption_util.h"
  #include "chrome/grit/theme_resources.h"
  #include "ui/base/metadata/metadata_impl_macros.h"
  #include "ui/base/theme_provider.h"
-@@ -157,16 +158,22 @@ int WindowsCaptionButton::GetBetweenButtonSpacing() const {
+@@ -157,16 +158,23 @@ int WindowsCaptionButton::GetBetweenButtonSpacing() const {
  
  int WindowsCaptionButton::GetButtonDisplayOrderIndex() const {
    int button_display_order = 0;
-+  const bool tab_search_enabled =
++  /* const bool tab_search_enabled =
 +      WindowCaptionUtil::IsWindowsTabSearchCaptionButtonEnabled(
-+          frame_view_->browser_view()->browser());
++          frame_view_->browser_view()->browser()); */
++  constexpr bool tab_search_enabled = false;
    switch (button_type_) {
 -    case VIEW_ID_MINIMIZE_BUTTON:
 +    case VIEW_ID_TAB_SEARCH_BUTTON:
@@ -2277,7 +2302,7 @@ index d8000f801d188..7f69dd091d42a 100644
        break;
      default:
        NOTREACHED();
-@@ -174,7 +181,7 @@ int WindowsCaptionButton::GetButtonDisplayOrderIndex() const {
+@@ -174,7 +182,7 @@ int WindowsCaptionButton::GetButtonDisplayOrderIndex() const {
  
    // Reverse the ordering if we're in RTL mode
    if (base::i18n::IsRTL()) {
@@ -2286,7 +2311,7 @@ index d8000f801d188..7f69dd091d42a 100644
      button_display_order = max_index - button_display_order;
    }
  
-@@ -242,6 +249,10 @@ void WindowsCaptionButton::PaintSymbol(gfx::Canvas* canvas) {
+@@ -242,6 +250,10 @@ void WindowsCaptionButton::PaintSymbol(gfx::Canvas* canvas) {
        return;
      }
  
@@ -3103,6 +3128,19 @@ index ac335a68f3fd0..8eef7a2f256c8 100644
  constexpr gfx::Size kButtonSize = {28, 28};
  }  // namespace
  
+diff --git a/chrome/browser/ui/views/tab_search_bubble_host.h b/chrome/browser/ui/views/tab_search_bubble_host.h
+index 2b7480d8bc188..ca60ad77530ae 100644
+--- a/chrome/browser/ui/views/tab_search_bubble_host.h
++++ b/chrome/browser/ui/views/tab_search_bubble_host.h
+@@ -44,6 +44,8 @@ class TabSearchBubbleHost : public views::WidgetObserver,
+   TabSearchBubbleHost(views::Button* button,
+                       BrowserWindowInterface* browser_window_interface,
+                       base::WeakPtr<TabStrip> tab_strip);
++  // Legacy codepath for Th24 caption button
++  //TabSearchBubbleHost(views::Button* button, Profile* profile);
+   TabSearchBubbleHost(const TabSearchBubbleHost&) = delete;
+   TabSearchBubbleHost& operator=(const TabSearchBubbleHost&) = delete;
+   ~TabSearchBubbleHost() override;
 diff --git a/chrome/browser/ui/views/tabs/tab_search_button.cc b/chrome/browser/ui/views/tabs/tab_search_button.cc
 index de0e8090f837a..0d6e4ee309e9f 100644
 --- a/chrome/browser/ui/views/tabs/tab_search_button.cc
@@ -4898,11 +4936,11 @@ index 75fc666dfbeb3..ee108f6a31c59 100644
  namespace views {
  
 -const int kDefaultMenuShowDelay = 400;
-+constexpr int kDefaultMenuShowDelay = 1;
++const int kDefaultMenuShowDelay = 1;
  
  }  // namespace views
 diff --git a/ui/views/metrics_aura.cc b/ui/views/metrics_aura.cc
-index c8a9260b6c6e6..129b06e148063 100644
+index c8a9260b6c6e6..4c4830d455a0c 100644
 --- a/ui/views/metrics_aura.cc
 +++ b/ui/views/metrics_aura.cc
 @@ -23,12 +23,7 @@ int GetDoubleClickInterval() {
@@ -4915,7 +4953,7 @@ index c8a9260b6c6e6..129b06e148063 100644
 -               ? static_cast<int>(show_delay)
 -               : kDefaultMenuShowDelay;
 -  }();
-+  static constexpr int delay = kDefaultMenuShowDelay;
++  static const int delay = kDefaultMenuShowDelay;
    return delay;
  #else
    return 0;
