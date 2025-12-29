@@ -99,7 +99,7 @@ patchThor () {
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
 	cd ${CR_SRC_DIR}/third_party/ffmpeg &&
-	git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
+	#git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching policy templates...${c0}\n" &&
@@ -109,7 +109,7 @@ patchThor () {
 	printf "\n" &&
 	printf "${YEL}Patching FTP support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
-	git apply --reject ./ftp-support-thorium.patch &&
+	#git apply --reject ./ftp-support-thorium.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching in GPC support...${c0}\n" &&
@@ -121,7 +121,7 @@ patchThor () {
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./thorium-2024-ui.patch
 }
-[ -f ${CR_SRC_DIR}/third_party/ffmpeg/add-hevc-ffmpeg-decoder-parser.patch ] || patchThor;
+[ -f ${CR_SRC_DIR}/third_party/ffmpeg/fix-policy-templates.patch ] || patchThor;
 
 patchAC3 () {
 	cp -v other/ffmpeg_hevc_ac3.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
