@@ -71,6 +71,8 @@
 #define GOOGLE_CLIENT_ID_REMOTING_HOST DUMMY_API_TOKEN
 #endif
 
+check on untracked files like this one
+
 #if !defined(GOOGLE_CLIENT_SECRET_REMOTING_HOST)
 #define GOOGLE_CLIENT_SECRET_REMOTING_HOST DUMMY_API_TOKEN
 #endif
