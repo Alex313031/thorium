@@ -4,6 +4,10 @@
 *.h text
 *.cc text eol=lf
 *.cpp text eol=lf
+*.idl text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
 *.hpp text
 
 # Build system Files
