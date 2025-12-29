@@ -93,25 +93,42 @@ if (is_official_build) {
 
 # Thorium target that simply pulls in the chrome target as a dependency
 group("thorium") {
-  deps = [ "//chrome:chrome" ]
+  public_deps = [ "//chrome:chrome" ]
 
   if (is_win) {
-    deps += [ "//chrome:chrome_dll" ]
+    public_deps += [ "//chrome:chrome_dll" ]
   }
 
   if (is_linux || is_chromeos) {
-    deps += [ ":thorium_sandbox" ]
+    public_deps += [ ":thorium_sandbox" ]
   }
 }
 
 # Simply to rename the sandbox target
 group("thorium_sandbox") {
   if (is_linux || is_chromeos) {
-    deps = [ "//sandbox/linux:chrome_sandbox" ]
+    public_deps = [ "//sandbox/linux:chrome_sandbox" ]
   } else if (is_win) {
-    deps = [ "//sandbox/win:sandbox" ]
+    public_deps = [ "//sandbox/win:sandbox" ]
   } else {
-    deps = [ "//sandbox:sandbox" ]
+    public_deps = [ "//sandbox:sandbox" ]
+  }
+}
+
+# Target to build platform specific installers.
+group("thorium_installer") {
+  testonly = true
+  deps = [ ":thorium_all" ]
+  public_deps = [ "//chrome/installer/util:constants" ]
+  if (is_win) {
+    public_deps += [
+      "//chrome/installer/mini_installer:mini_installer",
+      "//chrome/installer/setup:setup"
+    ]
+  } else if (is_linux) {
+    public_deps += [ "//chrome/installer/linux:stable", ]
+  } else if (is_mac) {
+    public_deps += [ "//chrome/installer/mac:mac", ]
   }
 }
 
@@ -168,6 +185,7 @@ group("thorium_all") {
       deps = [ "//chrome/android:chrome_public_apk" ]
     }
   }
+  public_deps = deps
 }
 
 group("gn_all") {
