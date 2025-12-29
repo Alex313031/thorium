@@ -25,7 +25,7 @@ void QuietNotificationPermissionUiState::RegisterProfilePrefs(
   registry->RegisterTimePref(prefs::kQuietNotificationPermissionUiDisabledTime,
                              base::Time());
   registry->RegisterBooleanPref(prefs::kEnableNotificationCPSS,
-                                /*default_value=*/true);
+                                /*default_value=*/false);
   registry->RegisterBooleanPref(prefs::kEnableGeolocationCPSS,
                                 /*default_value=*/true);
   registry->RegisterBooleanPref(
