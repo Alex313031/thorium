@@ -17,7 +17,7 @@ import sys
 
 from gn_helpers import ToGNString
 
-# VS 2022 17.13.4 with 10.0.26100.3323 SDK with ARM64 libraries and UWP support.
+# VS 2022 17.14.20 with 10.1.26100.6901 SDK with ARM64 libraries and UWP support.
 # Also includes progwrp.lib and progwrp.dll for Windows XP.
 # See https://github.com/Alex313031/thorium-legacy/tree/main/patches/progwrp
 # See go/win-toolchain-reference for instructions about how to update the
@@ -61,7 +61,7 @@ from gn_helpers import ToGNString
 # * docs/windows_build_instructions.md
 #   Make sure any version numbers in the documentation match the code.
 #
-TOOLCHAIN_HASH = 'f2b86ac09b'
+TOOLCHAIN_HASH = 'b3d793284e'
 SDK_VERSION = '10.0.26100.0'
 
 # Visual Studio versions are listed in descending order of priority.
