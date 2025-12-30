@@ -1,0 +1,45 @@
+From: uazo <uazo@users.noreply.github.com>
+Date: Wed, 29 May 2024 13:43:50 +0000
+Subject: Enable Global Privacy Control
+
+License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+---
+ chrome/app/settings_strings.grdp              |  15 +++
+ .../tracking_protection_prefs.cc              |   1 +
+
+diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
+--- a/chrome/app/settings_strings.grdp
++++ b/chrome/app/settings_strings.grdp
+@@ -1827,6 +1827,21 @@
+   <message name="IDS_SETTINGS_ENABLE_DO_NOT_TRACK_DIALOG_LEARN_MORE_ACCESSIBILITY_LABEL" desc="The accessibility label for a link to learn more about Do Not Track">
+     Learn more about Do Not Track
+   </message>
++  <message name="IDS_SETTINGS_ENABLE_GPC" desc="">
++    Global Privacy Control "Sec-GPC"
++  </message>
++  <message name="IDS_SETTINGS_ENABLE_GPC_DIALOG_TITLE" desc="">
++    Global Privacy Control "Sec-GPC"
++  </message>
++  <message name="IDS_SETTINGS_ENABLE_GPC_DIALOG_TEXT" desc="">
++    Enables support for Global Privacy Control signals.
++
++Right to opt-out of sale or sharing: You may request that businesses stop selling or sharing your personal information (“opt-out”).
++
++Businesses cannot sell or share your personal information after they receive your opt-out request unless you later authorize them to do so again.
++
++Please note that it only applies to the states of California (under CCPA and CPRA) and Colorado (under CoPA).
++  </message>
+   <message name="IDS_SETTINGS_PERMISSIONS" desc="Name of the settings page which allows users to manage permissions and site content settings">
+     Permissions and content settings
+   </message>
+diff --git a/components/privacy_sandbox/tracking_protection_prefs.cc b/components/privacy_sandbox/tracking_protection_prefs.cc
+--- a/components/privacy_sandbox/tracking_protection_prefs.cc
++++ b/components/privacy_sandbox/tracking_protection_prefs.cc
+@@ -20,6 +20,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
+   registry->RegisterBooleanPref(
+       prefs::kIpProtectionEnabled, true,
+       user_prefs::PrefRegistrySyncable::SYNCABLE_PREF);
++  registry->RegisterBooleanPref(prefs::kEnableGPC, true);
+ 
+   // TODO(https://b/333527273): The following prefs should be deprecated.
+   // Still in use for Mode B.
