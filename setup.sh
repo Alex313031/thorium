@@ -107,7 +107,7 @@ patchThor () {
 	git apply --reject ./fix-policy-templates.patch &&
 
 	printf "\n" &&
-	printf "${YEL}Patching FTP support...${c0}\n" &&
+	#printf "${YEL}Patching FTP support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	#git apply --reject ./ftp-support-thorium.patch &&
 
@@ -121,7 +121,7 @@ patchThor () {
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./thorium-2024-ui.patch
 }
-[ -f ${CR_SRC_DIR}/third_party/ffmpeg/fix-policy-templates.patch ] || patchThor;
+[ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 
 patchAC3 () {
 	cp -v other/ffmpeg_hevc_ac3.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
