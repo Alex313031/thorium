@@ -108,9 +108,9 @@ patchThor () {
 	git apply --reject ./fix-policy-templates.patch &&
 
 	printf "\n" &&
-	#printf "${YEL}Patching FTP support...${c0}\n" &&
+	printf "${YEL}Patching FTP support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
-	#git apply --reject ./ftp-support-thorium.patch &&
+	git apply --reject ./ftp-support-thorium.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching in GPC support...${c0}\n" &&

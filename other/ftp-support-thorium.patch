@@ -1,5 +1,5 @@
 diff --git a/android_webview/browser/aw_browser_context.cc b/android_webview/browser/aw_browser_context.cc
-index 6167ef5ed42af..6af9e477c4c8a 100644
+index 2d4952cf4f7df..c94d13d5b0f77 100644
 --- a/android_webview/browser/aw_browser_context.cc
 +++ b/android_webview/browser/aw_browser_context.cc
 @@ -586,6 +586,9 @@ void AwBrowserContext::ConfigureNetworkContextParams(
@@ -13,7 +13,7 @@ index 6167ef5ed42af..6af9e477c4c8a 100644
    context_params->enable_zstd = true;
    context_params->stale_dns_enabled = enable_stale_dns_;
 diff --git a/chrome/app/app-Info.plist b/chrome/app/app-Info.plist
-index 5654e5c9d5858..08d00c2005d7b 100644
+index 9190c5ef6c092..93fdf52fdc8c3 100644
 --- a/chrome/app/app-Info.plist
 +++ b/chrome/app/app-Info.plist
 @@ -233,6 +233,14 @@
@@ -32,10 +32,10 @@ index 5654e5c9d5858..08d00c2005d7b 100644
  			<key>CFBundleURLName</key>
  			<string>Local file URL</string>
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
-index ceabbced0f67e..c298005d46bc3 100644
+index 5c3bf0094808b..5f55a471394d0 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -14358,6 +14358,9 @@ This can include information about installed software, files, your browser, and
+@@ -14358,6 +14358,9 @@ This can include information about installed software, files, your browser, the
        <message name="IDS_DIRECTORY_LISTING_DATE_MODIFIED" desc="When viewing a local directory, this is the text for the column above the last modified dates.">
          Date Modified
        </message>
@@ -46,7 +46,7 @@ index ceabbced0f67e..c298005d46bc3 100644
        <!-- Saving Page-->
        <message name="IDS_SAVE_PAGE_DESC_HTML_ONLY" desc="In the Save Page dialog, the description of saving only the HTML of a webpage.">
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index c9e74052c7afb..d271ccc0dca71 100644
+index b5c863ae84566..c5f1b2580b918 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
 @@ -8689,6 +8689,12 @@ const FeatureEntry kFeatureEntries[] = {
@@ -63,7 +63,7 @@ index c9e74052c7afb..d271ccc0dca71 100644
      {"crostini-container-install",
       flag_descriptions::kCrostiniContainerInstallName,
 diff --git a/chrome/browser/flag_descriptions.cc b/chrome/browser/flag_descriptions.cc
-index e2a95fa3aadaa..5b608e9272838 100644
+index dfa269d4b3f6d..fb4a89a182b69 100644
 --- a/chrome/browser/flag_descriptions.cc
 +++ b/chrome/browser/flag_descriptions.cc
 @@ -567,6 +567,13 @@ const char kEnableDrDcDescription[] =
@@ -81,10 +81,10 @@ index e2a95fa3aadaa..5b608e9272838 100644
  const char kEnableSnackbarInSettingsDescription[] =
      "Enables a snack bar that is shown to users after they save the "
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index 4ef2b219f1d74..69f9c4f7d9e1a 100644
+index f2f5fe4789cd6..163ff1ede8878 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
-@@ -277,6 +277,9 @@ extern const char
+@@ -277,6 +277,9 @@ extern const char kDbdRevampDesktopDescription[];
  extern const char kDisableFacilitatedPaymentsMerchantAllowlistName[];
  extern const char kDisableFacilitatedPaymentsMerchantAllowlistDescription[];
  
@@ -95,7 +95,7 @@ index 4ef2b219f1d74..69f9c4f7d9e1a 100644
  extern const char kHdrAgtmDescription[];
  
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
-index e50641649a959..0f0ef6bd2b0fd 100644
+index 9ae20dbb0ed2a..99529aac4eff7 100644
 --- a/chrome/browser/net/profile_network_context_service.cc
 +++ b/chrome/browser/net/profile_network_context_service.cc
 @@ -1409,6 +1409,15 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
@@ -115,7 +115,7 @@ index e50641649a959..0f0ef6bd2b0fd 100644
  
    network_context_params->enable_certificate_reporting = true;
 diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
-index 22a62ad698fdb..ec30208a38bf0 100644
+index ed7bd98745d49..a498bba5d49da 100644
 --- a/chrome/browser/net/system_network_context_manager.cc
 +++ b/chrome/browser/net/system_network_context_manager.cc
 @@ -1048,6 +1048,12 @@ SystemNetworkContextManager::CreateNetworkContextParams() {
@@ -132,7 +132,7 @@ index 22a62ad698fdb..ec30208a38bf0 100644
  
    return network_context_params;
 diff --git a/chrome/browser/profiles/profile_io_data.cc b/chrome/browser/profiles/profile_io_data.cc
-index 39f96f45bca3a..123e400761e0f 100644
+index 06d4f9d61b2a3..d3251c757fdac 100644
 --- a/chrome/browser/profiles/profile_io_data.cc
 +++ b/chrome/browser/profiles/profile_io_data.cc
 @@ -14,6 +14,7 @@
@@ -154,7 +154,7 @@ index 39f96f45bca3a..123e400761e0f 100644
  
    return kProtocolList.contains(scheme);
 diff --git a/chrome/browser/ui/login/login_tab_helper.cc b/chrome/browser/ui/login/login_tab_helper.cc
-index f6702ac512f8d..a54956a7ec00a 100644
+index 83a9cb4aefa65..c0d45feb527f2 100644
 --- a/chrome/browser/ui/login/login_tab_helper.cc
 +++ b/chrome/browser/ui/login/login_tab_helper.cc
 @@ -75,13 +75,16 @@ void LoginTabHelper::DidFinishNavigation(
@@ -195,7 +195,7 @@ index 88d43505881b5..92a452fc5f9e9 100644
      std::string str = webui::GetI18nTemplateHtml(
          ui::ResourceBundle::GetSharedInstance().LoadDataResourceString(
 diff --git a/chrome/installer/util/shell_util.cc b/chrome/installer/util/shell_util.cc
-index c087d1c02bca4..aa5d721c5ea93 100644
+index b5b269da941db..1ee7046ac4a06 100644
 --- a/chrome/installer/util/shell_util.cc
 +++ b/chrome/installer/util/shell_util.cc
 @@ -1,4 +1,4 @@
@@ -229,7 +229,7 @@ index 0000000000000..ce0c4c91818cd
 +</head>
 +</html>
 diff --git a/components/safe_browsing/content/browser/safe_browsing_network_context.cc b/components/safe_browsing/content/browser/safe_browsing_network_context.cc
-index 37852c47b90d4..8be654c440fc9 100644
+index c9c03f0d3e7e8..f7de38952a397 100644
 --- a/components/safe_browsing/content/browser/safe_browsing_network_context.cc
 +++ b/components/safe_browsing/content/browser/safe_browsing_network_context.cc
 @@ -129,6 +129,10 @@ class SafeBrowsingNetworkContext::SharedURLLoaderFactory
@@ -244,7 +244,7 @@ index 37852c47b90d4..8be654c440fc9 100644
  
      return network_context_params;
 diff --git a/content/browser/browser_url_handler_impl.cc b/content/browser/browser_url_handler_impl.cc
-index 3158ee1460b5b..8f62b65b2ee3e 100644
+index 765c759db3e21..5bec9aeb07a5f 100644
 --- a/content/browser/browser_url_handler_impl.cc
 +++ b/content/browser/browser_url_handler_impl.cc
 @@ -34,6 +34,7 @@ static bool HandleViewSource(GURL* url, BrowserContext* browser_context) {
@@ -256,10 +256,10 @@ index 3158ee1460b5b..8f62b65b2ee3e 100644
        url::kFileScheme,
        url::kFileSystemScheme,
 diff --git a/content/public/common/content_switches.cc b/content/public/common/content_switches.cc
-index 30f63bfc1750f..a38a1839d7207 100644
+index 322ef8bce8132..d9d9da4fa4541 100644
 --- a/content/public/common/content_switches.cc
 +++ b/content/public/common/content_switches.cc
-@@ -324,6 +324,9 @@ const char kEnableFakeNoAllocDirectCallForTesting[] =
+@@ -324,6 +324,9 @@ const char kEnableExperimentalWebPlatformFeatures[] =
  // status:"experimental", which are enabled when running web tests.
  const char kEnableBlinkTestFeatures[] = "enable-blink-test-features";
  
@@ -270,10 +270,10 @@ index 30f63bfc1750f..a38a1839d7207 100644
  const char kDisableOriginTrialControlledBlinkFeatures[] =
      "disable-origin-trial-controlled-blink-features";
 diff --git a/content/public/common/content_switches.h b/content/public/common/content_switches.h
-index b6f3b21a2b1ff..d01af10dcec28 100644
+index b5cfa09e62127..aaadbb7c09a8f 100644
 --- a/content/public/common/content_switches.h
 +++ b/content/public/common/content_switches.h
-@@ -104,6 +104,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
+@@ -104,6 +104,7 @@ CONTENT_EXPORT extern const char kEnableExperimentalCookieFeatures[];
  CONTENT_EXPORT extern const char kEnableExperimentalWebAssemblyFeatures[];
  CONTENT_EXPORT extern const char kEnableExperimentalWebPlatformFeatures[];
  CONTENT_EXPORT extern const char kEnableBlinkTestFeatures[];
@@ -282,7 +282,7 @@ index b6f3b21a2b1ff..d01af10dcec28 100644
  CONTENT_EXPORT extern const char kEnableIsolatedWebAppsInRenderer[];
  CONTENT_EXPORT extern const char kEnableLCDText[];
 diff --git a/content/public/renderer/render_frame.h b/content/public/renderer/render_frame.h
-index c7aa04a3f3edb..61b37176a24ab 100644
+index 1884ed8ca2f65..bfb8c1942a465 100644
 --- a/content/public/renderer/render_frame.h
 +++ b/content/public/renderer/render_frame.h
 @@ -179,6 +179,9 @@ class CONTENT_EXPORT RenderFrame :
@@ -296,7 +296,7 @@ index c7aa04a3f3edb..61b37176a24ab 100644
    virtual void SetSelectedText(const std::u16string& selection_text,
                                 size_t offset,
 diff --git a/content/renderer/render_frame_impl.cc b/content/renderer/render_frame_impl.cc
-index f362ee7c23241..d34f9fbe475b2 100644
+index d83b79b725d28..313112269f71d 100644
 --- a/content/renderer/render_frame_impl.cc
 +++ b/content/renderer/render_frame_impl.cc
 @@ -2508,6 +2508,10 @@ RenderFrameImpl::GetRemoteAssociatedInterfaces() {
@@ -311,7 +311,7 @@ index f362ee7c23241..d34f9fbe475b2 100644
                                        size_t offset,
                                        const gfx::Range& range) {
 diff --git a/content/renderer/render_frame_impl.h b/content/renderer/render_frame_impl.h
-index b32fbb5887cb2..626bbdd3b1e5d 100644
+index 6a9e696762cc0..18cf6bd82a00c 100644
 --- a/content/renderer/render_frame_impl.h
 +++ b/content/renderer/render_frame_impl.h
 @@ -408,6 +408,7 @@ class CONTENT_EXPORT RenderFrameImpl
@@ -323,7 +323,7 @@ index b32fbb5887cb2..626bbdd3b1e5d 100644
                         size_t offset,
                         const gfx::Range& range) override;
 diff --git a/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm b/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
-index 00516bebc6fa3..62b2eceb8e48a 100644
+index d4ae4f54554c0..c69d9d8b069b6 100644
 --- a/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
 +++ b/ios/chrome/browser/profile/model/off_the_record_profile_ios_io_data.mm
 @@ -26,6 +26,7 @@
@@ -334,7 +334,8 @@ index 00516bebc6fa3..62b2eceb8e48a 100644
  #import "net/http/http_cache.h"
  #import "net/http/http_network_session.h"
  #import "net/http/http_server_properties.h"
-index e229ec4c97bb6..dd33fcf48c550 100644
+diff --git a/net/BUILD.gn b/net/BUILD.gn
+index 3b66c31a7003f..e2570a9972e28 100644
 --- a/net/BUILD.gn
 +++ b/net/BUILD.gn
 @@ -95,6 +95,7 @@ buildflag_header("buildflags") {
@@ -457,7 +458,7 @@ index e229ec4c97bb6..dd33fcf48c550 100644
    sources = [ "base/unescape_url_component_fuzzer.cc" ]
    deps = [
 diff --git a/net/DEPS b/net/DEPS
-index 82956220ad000..d016bd9e7d052 100644
+index 789a7fc31a388..01352d4aa059e 100644
 --- a/net/DEPS
 +++ b/net/DEPS
 @@ -46,6 +46,14 @@ specific_include_rules = {
@@ -532,7 +533,7 @@ index a2421e94b4465..10539e9ee4a0a 100644
  
  <div id="parentDirLinkBox" style="display:none">
 diff --git a/net/base/net_error_list.h b/net/base/net_error_list.h
-index dff37088d6c11..31fa5e6ad19a2 100644
+index 495e1df4441a6..e0efd4a5b87e4 100644
 --- a/net/base/net_error_list.h
 +++ b/net/base/net_error_list.h
 @@ -18,7 +18,7 @@
@@ -590,7 +591,7 @@ index dff37088d6c11..31fa5e6ad19a2 100644
  // PKCS #12 import failed due to incorrect password.
  NET_ERROR(PKCS12_IMPORT_BAD_PASSWORD, -701)
 diff --git a/net/base/port_util.cc b/net/base/port_util.cc
-index a70f9e9b21a33..5f3d1364d8c62 100644
+index 02197cea24527..459da7f1cb28a 100644
 --- a/net/base/port_util.cc
 +++ b/net/base/port_util.cc
 @@ -172,6 +172,11 @@ bool IsPortAllowedForScheme(int port, std::string_view url_scheme) {
@@ -4906,7 +4907,7 @@ index 0000000000000..81388eef34514
 +42
 diff --git a/net/data/fuzzer_dictionaries/net_url_request_ftp_fuzzer.dict b/net/data/fuzzer_dictionaries/net_url_request_ftp_fuzzer.dict
 new file mode 100644
-index 0000000000000..eb4acff145d95
+index 0000000000000..1096cccad0e18
 --- /dev/null
 +++ b/net/data/fuzzer_dictionaries/net_url_request_ftp_fuzzer.dict
 @@ -0,0 +1,59 @@
@@ -4970,7 +4971,7 @@ index 0000000000000..eb4acff145d95
 +"550 Not a directory\x0D\x0A\\ "
 +"599 I'm sorry, Dave, I'm afraid I can't do that.\x0D\x0A\\ "
 diff --git a/net/docs/proxy.md b/net/docs/proxy.md
-index a0ea9f52d1779..589b499e2d4c4 100644
+index 645895e95a1ac..4442b4a4e6dc6 100644
 --- a/net/docs/proxy.md
 +++ b/net/docs/proxy.md
 @@ -109,6 +109,7 @@ about an HTTP proxy.
@@ -4982,7 +4983,7 @@ index a0ea9f52d1779..589b499e2d4c4 100644
  Communication to HTTP proxy servers is insecure, meaning proxied `http://`
  requests are sent in the clear. When proxying `https://` requests through an
 diff --git a/net/features.gni b/net/features.gni
-index 026a38c0baab1..1d7d13a7c409f 100644
+index a47cee2de3ee7..6ad1136308245 100644
 --- a/net/features.gni
 +++ b/net/features.gni
 @@ -14,6 +14,9 @@ declare_args() {
@@ -5022,7 +5023,7 @@ index 0000000000000..53e68eb7787a3
 +mmenke@chromium.org
 diff --git a/net/ftp/ftp_auth_cache.cc b/net/ftp/ftp_auth_cache.cc
 new file mode 100644
-index 0000000000000..359d5460db859
+index 0000000000000..293ddef910e7b
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.cc
 @@ -0,0 +1,62 @@
@@ -5090,7 +5091,7 @@ index 0000000000000..359d5460db859
 +}  // namespace net
 diff --git a/net/ftp/ftp_auth_cache.h b/net/ftp/ftp_auth_cache.h
 new file mode 100644
-index 0000000000000..e7f3057e153bf
+index 0000000000000..a9c9f539a4427
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache.h
 @@ -0,0 +1,63 @@
@@ -5159,7 +5160,7 @@ index 0000000000000..e7f3057e153bf
 +#endif  // NET_FTP_FTP_AUTH_CACHE_H_
 diff --git a/net/ftp/ftp_auth_cache_unittest.cc b/net/ftp/ftp_auth_cache_unittest.cc
 new file mode 100644
-index 0000000000000..9c5dea5303895
+index 0000000000000..46c9d172d6784
 --- /dev/null
 +++ b/net/ftp/ftp_auth_cache_unittest.cc
 @@ -0,0 +1,161 @@
@@ -5326,7 +5327,7 @@ index 0000000000000..9c5dea5303895
 +}  // namespace net
 diff --git a/net/ftp/ftp_ctrl_response_buffer.cc b/net/ftp/ftp_ctrl_response_buffer.cc
 new file mode 100644
-index 0000000000000..9bd4059d5fbe4
+index 0000000000000..cffead11a1493
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.cc
 @@ -0,0 +1,159 @@
@@ -5491,7 +5492,7 @@ index 0000000000000..9bd4059d5fbe4
 +}  // namespace net
 diff --git a/net/ftp/ftp_ctrl_response_buffer.h b/net/ftp/ftp_ctrl_response_buffer.h
 new file mode 100644
-index 0000000000000..149097185dafc
+index 0000000000000..f3546d9b7adb6
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer.h
 @@ -0,0 +1,101 @@
@@ -5598,7 +5599,7 @@ index 0000000000000..149097185dafc
 +#endif  // NET_FTP_FTP_CTRL_RESPONSE_BUFFER_H_
 diff --git a/net/ftp/ftp_ctrl_response_buffer_unittest.cc b/net/ftp/ftp_ctrl_response_buffer_unittest.cc
 new file mode 100644
-index 0000000000000..a133aa441d7fc
+index 0000000000000..b84d324c176d8
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_buffer_unittest.cc
 @@ -0,0 +1,184 @@
@@ -5788,7 +5789,7 @@ index 0000000000000..a133aa441d7fc
 +}  // namespace net
 diff --git a/net/ftp/ftp_ctrl_response_fuzzer.cc b/net/ftp/ftp_ctrl_response_fuzzer.cc
 new file mode 100644
-index 0000000000000..f3a9ee3c6dfbb
+index 0000000000000..def0c81403580
 --- /dev/null
 +++ b/net/ftp/ftp_ctrl_response_fuzzer.cc
 @@ -0,0 +1,21 @@
@@ -5815,7 +5816,7 @@ index 0000000000000..f3a9ee3c6dfbb
 +}
 diff --git a/net/ftp/ftp_directory_listing_fuzzer.cc b/net/ftp/ftp_directory_listing_fuzzer.cc
 new file mode 100644
-index 0000000000000..459379e3eef89
+index 0000000000000..e439ff790bbc7
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_fuzzer.cc
 @@ -0,0 +1,20 @@
@@ -5841,7 +5842,7 @@ index 0000000000000..459379e3eef89
 +}
 diff --git a/net/ftp/ftp_directory_listing_parser.cc b/net/ftp/ftp_directory_listing_parser.cc
 new file mode 100644
-index 0000000000000..57013a78c6e72
+index 0000000000000..14af28924c18c
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.cc
 @@ -0,0 +1,131 @@
@@ -5978,7 +5979,7 @@ index 0000000000000..57013a78c6e72
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser.h b/net/ftp/ftp_directory_listing_parser.h
 new file mode 100644
-index 0000000000000..f813bb04e5209
+index 0000000000000..9f852b78bfdf2
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser.h
 @@ -0,0 +1,46 @@
@@ -6030,7 +6031,7 @@ index 0000000000000..f813bb04e5209
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_ls.cc b/net/ftp/ftp_directory_listing_parser_ls.cc
 new file mode 100644
-index 0000000000000..5388146beff3c
+index 0000000000000..697332eeb62fe
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.cc
 @@ -0,0 +1,227 @@
@@ -6263,7 +6264,7 @@ index 0000000000000..5388146beff3c
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_ls.h b/net/ftp/ftp_directory_listing_parser_ls.h
 new file mode 100644
-index 0000000000000..42ec4fc6a3a27
+index 0000000000000..17285bd1ce2e7
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls.h
 @@ -0,0 +1,29 @@
@@ -6298,7 +6299,7 @@ index 0000000000000..42ec4fc6a3a27
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_LS_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_ls_unittest.cc b/net/ftp/ftp_directory_listing_parser_ls_unittest.cc
 new file mode 100644
-index 0000000000000..d64a564b413e0
+index 0000000000000..46fce53c6b1cd
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_ls_unittest.cc
 @@ -0,0 +1,222 @@
@@ -6526,7 +6527,7 @@ index 0000000000000..d64a564b413e0
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_unittest.cc b/net/ftp/ftp_directory_listing_parser_unittest.cc
 new file mode 100644
-index 0000000000000..de08f99478562
+index 0000000000000..950d453e67d88
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.cc
 @@ -0,0 +1,186 @@
@@ -6718,7 +6719,7 @@ index 0000000000000..de08f99478562
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_unittest.h b/net/ftp/ftp_directory_listing_parser_unittest.h
 new file mode 100644
-index 0000000000000..9dfc44acfd999
+index 0000000000000..b08922436fe61
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_unittest.h
 @@ -0,0 +1,81 @@
@@ -6805,7 +6806,7 @@ index 0000000000000..9dfc44acfd999
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_UNITTEST_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_vms.cc b/net/ftp/ftp_directory_listing_parser_vms.cc
 new file mode 100644
-index 0000000000000..7d0ca2a045f75
+index 0000000000000..45290c3c94d63
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.cc
 @@ -0,0 +1,313 @@
@@ -7124,7 +7125,7 @@ index 0000000000000..7d0ca2a045f75
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_vms.h b/net/ftp/ftp_directory_listing_parser_vms.h
 new file mode 100644
-index 0000000000000..e59a679303e23
+index 0000000000000..fe718e7e1115c
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms.h
 @@ -0,0 +1,24 @@
@@ -7154,7 +7155,7 @@ index 0000000000000..e59a679303e23
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_VMS_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_vms_unittest.cc b/net/ftp/ftp_directory_listing_parser_vms_unittest.cc
 new file mode 100644
-index 0000000000000..88deedd5e2d28
+index 0000000000000..b52718f397b18
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_vms_unittest.cc
 @@ -0,0 +1,197 @@
@@ -7357,7 +7358,7 @@ index 0000000000000..88deedd5e2d28
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_windows.cc b/net/ftp/ftp_directory_listing_parser_windows.cc
 new file mode 100644
-index 0000000000000..0d7906f5d68db
+index 0000000000000..a3fe3f1bf4195
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.cc
 @@ -0,0 +1,74 @@
@@ -7437,7 +7438,7 @@ index 0000000000000..0d7906f5d68db
 +}  // namespace net
 diff --git a/net/ftp/ftp_directory_listing_parser_windows.h b/net/ftp/ftp_directory_listing_parser_windows.h
 new file mode 100644
-index 0000000000000..39aefe2929328
+index 0000000000000..c0b28d1e802a9
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows.h
 @@ -0,0 +1,24 @@
@@ -7467,7 +7468,7 @@ index 0000000000000..39aefe2929328
 +#endif  // NET_FTP_FTP_DIRECTORY_LISTING_PARSER_WINDOWS_H_
 diff --git a/net/ftp/ftp_directory_listing_parser_windows_unittest.cc b/net/ftp/ftp_directory_listing_parser_windows_unittest.cc
 new file mode 100644
-index 0000000000000..08b01b88f6017
+index 0000000000000..f3ca74bc6096c
 --- /dev/null
 +++ b/net/ftp/ftp_directory_listing_parser_windows_unittest.cc
 @@ -0,0 +1,128 @@
@@ -7601,7 +7602,7 @@ index 0000000000000..08b01b88f6017
 +}  // namespace net
 diff --git a/net/ftp/ftp_network_layer.cc b/net/ftp/ftp_network_layer.cc
 new file mode 100644
-index 0000000000000..8a467f8896487
+index 0000000000000..1d93f939d253e
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.cc
 @@ -0,0 +1,34 @@
@@ -7641,7 +7642,7 @@ index 0000000000000..8a467f8896487
 +}  // namespace net
 diff --git a/net/ftp/ftp_network_layer.h b/net/ftp/ftp_network_layer.h
 new file mode 100644
-index 0000000000000..59c4d2b04bdf3
+index 0000000000000..0d420ad46c3ee
 --- /dev/null
 +++ b/net/ftp/ftp_network_layer.h
 @@ -0,0 +1,38 @@
@@ -7685,7 +7686,7 @@ index 0000000000000..59c4d2b04bdf3
 +#endif  // NET_FTP_FTP_NETWORK_LAYER_H_
 diff --git a/net/ftp/ftp_network_session.cc b/net/ftp/ftp_network_session.cc
 new file mode 100644
-index 0000000000000..9de9796b08bf3
+index 0000000000000..03ffe0a1fd809
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.cc
 @@ -0,0 +1,14 @@
@@ -7705,7 +7706,7 @@ index 0000000000000..9de9796b08bf3
 +}  // namespace net
 diff --git a/net/ftp/ftp_network_session.h b/net/ftp/ftp_network_session.h
 new file mode 100644
-index 0000000000000..0ef5b781eec4e
+index 0000000000000..d33c149e876ae
 --- /dev/null
 +++ b/net/ftp/ftp_network_session.h
 @@ -0,0 +1,29 @@
@@ -7740,7 +7741,7 @@ index 0000000000000..0ef5b781eec4e
 +#endif  // NET_FTP_FTP_NETWORK_SESSION_H_
 diff --git a/net/ftp/ftp_network_transaction.cc b/net/ftp/ftp_network_transaction.cc
 new file mode 100644
-index 0000000000000..85053f403f224
+index 0000000000000..68d01e8af5e38
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.cc
 @@ -0,0 +1,1298 @@
@@ -9044,7 +9045,7 @@ index 0000000000000..85053f403f224
 +}  // namespace net
 diff --git a/net/ftp/ftp_network_transaction.h b/net/ftp/ftp_network_transaction.h
 new file mode 100644
-index 0000000000000..c7cb8753f8acf
+index 0000000000000..d4ad2f542b8ab
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction.h
 @@ -0,0 +1,268 @@
@@ -9318,7 +9319,7 @@ index 0000000000000..c7cb8753f8acf
 +#endif  // NET_FTP_FTP_NETWORK_TRANSACTION_H_
 diff --git a/net/ftp/ftp_network_transaction_unittest.cc b/net/ftp/ftp_network_transaction_unittest.cc
 new file mode 100644
-index 0000000000000..fb2facdd3c653
+index 0000000000000..3b5f190a57114
 --- /dev/null
 +++ b/net/ftp/ftp_network_transaction_unittest.cc
 @@ -0,0 +1,1722 @@
@@ -11046,7 +11047,7 @@ index 0000000000000..fb2facdd3c653
 +}  // namespace net
 diff --git a/net/ftp/ftp_request_info.h b/net/ftp/ftp_request_info.h
 new file mode 100644
-index 0000000000000..be7702fd3d9c0
+index 0000000000000..dabb860f4891a
 --- /dev/null
 +++ b/net/ftp/ftp_request_info.h
 @@ -0,0 +1,20 @@
@@ -11072,7 +11073,7 @@ index 0000000000000..be7702fd3d9c0
 +#endif  // NET_FTP_FTP_REQUEST_INFO_H_
 diff --git a/net/ftp/ftp_response_info.cc b/net/ftp/ftp_response_info.cc
 new file mode 100644
-index 0000000000000..51b3c0e3aa367
+index 0000000000000..807e16084c41d
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.cc
 @@ -0,0 +1,17 @@
@@ -11095,7 +11096,7 @@ index 0000000000000..51b3c0e3aa367
 +}  // namespace net
 diff --git a/net/ftp/ftp_response_info.h b/net/ftp/ftp_response_info.h
 new file mode 100644
-index 0000000000000..576ef2501b465
+index 0000000000000..491121c92dacf
 --- /dev/null
 +++ b/net/ftp/ftp_response_info.h
 @@ -0,0 +1,46 @@
@@ -11147,7 +11148,7 @@ index 0000000000000..576ef2501b465
 +#endif  // NET_FTP_FTP_RESPONSE_INFO_H_
 diff --git a/net/ftp/ftp_server_type.h b/net/ftp/ftp_server_type.h
 new file mode 100644
-index 0000000000000..18b0595bd9500
+index 0000000000000..c12a7d4318fea
 --- /dev/null
 +++ b/net/ftp/ftp_server_type.h
 @@ -0,0 +1,27 @@
@@ -11180,7 +11181,7 @@ index 0000000000000..18b0595bd9500
 +#endif  // NET_FTP_FTP_SERVER_TYPE_H_
 diff --git a/net/ftp/ftp_transaction.h b/net/ftp/ftp_transaction.h
 new file mode 100644
-index 0000000000000..dcb67243f9dae
+index 0000000000000..139089e036002
 --- /dev/null
 +++ b/net/ftp/ftp_transaction.h
 @@ -0,0 +1,82 @@
@@ -11268,7 +11269,7 @@ index 0000000000000..dcb67243f9dae
 +#endif  // NET_FTP_FTP_TRANSACTION_H_
 diff --git a/net/ftp/ftp_transaction_factory.h b/net/ftp/ftp_transaction_factory.h
 new file mode 100644
-index 0000000000000..5f4270f25ca7d
+index 0000000000000..9c482681e62dd
 --- /dev/null
 +++ b/net/ftp/ftp_transaction_factory.h
 @@ -0,0 +1,31 @@
@@ -11305,7 +11306,7 @@ index 0000000000000..5f4270f25ca7d
 +#endif  // NET_FTP_FTP_TRANSACTION_FACTORY_H_
 diff --git a/net/ftp/ftp_util.cc b/net/ftp/ftp_util.cc
 new file mode 100644
-index 0000000000000..5d06d8d81d459
+index 0000000000000..1574047372ff7
 --- /dev/null
 +++ b/net/ftp/ftp_util.cc
 @@ -0,0 +1,378 @@
@@ -11689,7 +11690,7 @@ index 0000000000000..5d06d8d81d459
 +}  // namespace net
 diff --git a/net/ftp/ftp_util.h b/net/ftp/ftp_util.h
 new file mode 100644
-index 0000000000000..6647df1569862
+index 0000000000000..53d58d778a3a0
 --- /dev/null
 +++ b/net/ftp/ftp_util.h
 @@ -0,0 +1,57 @@
@@ -11752,7 +11753,7 @@ index 0000000000000..6647df1569862
 +#endif  // NET_FTP_FTP_UTIL_H_
 diff --git a/net/ftp/ftp_util_unittest.cc b/net/ftp/ftp_util_unittest.cc
 new file mode 100644
-index 0000000000000..ffeaaa541d7d8
+index 0000000000000..d0e70828cb926
 --- /dev/null
 +++ b/net/ftp/ftp_util_unittest.cc
 @@ -0,0 +1,268 @@
@@ -12025,7 +12026,7 @@ index 0000000000000..ffeaaa541d7d8
 +
 +}  // namespace net
 diff --git a/net/proxy_resolution/pac_file_fetcher_impl.cc b/net/proxy_resolution/pac_file_fetcher_impl.cc
-index 02ef9a79878bb..ee62937fdecbd 100644
+index 09dbb7e675656..902f87448a7e1 100644
 --- a/net/proxy_resolution/pac_file_fetcher_impl.cc
 +++ b/net/proxy_resolution/pac_file_fetcher_impl.cc
 @@ -324,8 +324,8 @@ PacFileFetcherImpl::PacFileFetcherImpl(URLRequestContext* url_request_context)
@@ -12041,7 +12042,7 @@ index 02ef9a79878bb..ee62937fdecbd 100644
    // Disallow any other URL scheme.
 diff --git a/net/url_request/ftp_protocol_handler.cc b/net/url_request/ftp_protocol_handler.cc
 new file mode 100644
-index 0000000000000..03783e50cfc0b
+index 0000000000000..e2496a795c8a8
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.cc
 @@ -0,0 +1,58 @@
@@ -12105,7 +12106,7 @@ index 0000000000000..03783e50cfc0b
 +}  // namespace net
 diff --git a/net/url_request/ftp_protocol_handler.h b/net/url_request/ftp_protocol_handler.h
 new file mode 100644
-index 0000000000000..3c7e0faebc2bb
+index 0000000000000..c3cb4d8600b9c
 --- /dev/null
 +++ b/net/url_request/ftp_protocol_handler.h
 @@ -0,0 +1,59 @@
@@ -12169,7 +12170,7 @@ index 0000000000000..3c7e0faebc2bb
 +
 +#endif  // NET_URL_REQUEST_FTP_PROTOCOL_HANDLER_H_
 diff --git a/net/url_request/url_request.h b/net/url_request/url_request.h
-index 859dcb00e8153..d0791fdace3c5 100644
+index 90e90f42a18d5..1394763384250 100644
 --- a/net/url_request/url_request.h
 +++ b/net/url_request/url_request.h
 @@ -776,7 +776,8 @@ class NET_EXPORT URLRequest : public base::SupportsUserData {
@@ -12183,7 +12184,7 @@ index 859dcb00e8153..d0791fdace3c5 100644
      return received_response_content_length_;
    }
 diff --git a/net/url_request/url_request_context.h b/net/url_request/url_request_context.h
-index 5618d02062989..e71e085486f2f 100644
+index 82547afe3d8d4..5b4373a7b177f 100644
 --- a/net/url_request/url_request_context.h
 +++ b/net/url_request/url_request_context.h
 @@ -54,6 +54,10 @@ class URLRequest;
@@ -12223,7 +12224,7 @@ index 5618d02062989..e71e085486f2f 100644
        url_requests_;
  
 diff --git a/net/url_request/url_request_context_builder.cc b/net/url_request/url_request_context_builder.cc
-index c4ba7328234bf..4f5bb37448ccd 100644
+index 4ac56ba26747c..ec7ca6bb2cdf0 100644
 --- a/net/url_request/url_request_context_builder.cc
 +++ b/net/url_request/url_request_context_builder.cc
 @@ -57,6 +57,12 @@
@@ -12264,7 +12265,7 @@ index c4ba7328234bf..4f5bb37448ccd 100644
  
    if (cookie_deprecation_label_.has_value()) {
 diff --git a/net/url_request/url_request_context_builder.h b/net/url_request/url_request_context_builder.h
-index 66fd979ebae17..996f83526a69c 100644
+index 7a9022b3d789c..172f448b6587c 100644
 --- a/net/url_request/url_request_context_builder.h
 +++ b/net/url_request/url_request_context_builder.h
 @@ -227,6 +227,11 @@ class NET_EXPORT URLRequestContextBuilder {
@@ -12293,7 +12294,7 @@ index 66fd979ebae17..996f83526a69c 100644
    bool suppress_setting_socket_performance_watcher_factory_for_testing_ = false;
 diff --git a/net/url_request/url_request_ftp_fuzzer.cc b/net/url_request/url_request_ftp_fuzzer.cc
 new file mode 100644
-index 0000000000000..e589091fb92e4
+index 0000000000000..40c57b35aa3f6
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_fuzzer.cc
 @@ -0,0 +1,92 @@
@@ -12391,7 +12392,7 @@ index 0000000000000..e589091fb92e4
 +}
 diff --git a/net/url_request/url_request_ftp_job.cc b/net/url_request/url_request_ftp_job.cc
 new file mode 100644
-index 0000000000000..1e8bacb3d9ac9
+index 0000000000000..5d0f6991a1249
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.cc
 @@ -0,0 +1,324 @@
@@ -12721,7 +12722,7 @@ index 0000000000000..1e8bacb3d9ac9
 +}  // namespace net
 diff --git a/net/url_request/url_request_ftp_job.h b/net/url_request/url_request_ftp_job.h
 new file mode 100644
-index 0000000000000..fda29bf6cb24c
+index 0000000000000..5b5d56be0909e
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job.h
 @@ -0,0 +1,102 @@
@@ -12829,7 +12830,7 @@ index 0000000000000..fda29bf6cb24c
 +#endif  // NET_URL_REQUEST_URL_REQUEST_FTP_JOB_H_
 diff --git a/net/url_request/url_request_ftp_job_unittest.cc b/net/url_request/url_request_ftp_job_unittest.cc
 new file mode 100644
-index 0000000000000..62e4719adc72d
+index 0000000000000..f6c7a4a4f5719
 --- /dev/null
 +++ b/net/url_request/url_request_ftp_job_unittest.cc
 @@ -0,0 +1,245 @@
@@ -13096,7 +13097,7 @@ index 68b4dae4b2e71..32c72a06c53bf 100644
   public:
    // URLRequest::is_for_websockets() must match `is_for_websockets`, or requests
 diff --git a/net/url_request/url_request_test_util.h b/net/url_request/url_request_test_util.h
-index 575a510b7e188..2ada1ead4c8f8 100644
+index 7d880380e0b6d..da8cb3d1423cc 100644
 --- a/net/url_request/url_request_test_util.h
 +++ b/net/url_request/url_request_test_util.h
 @@ -35,6 +35,7 @@
@@ -13108,7 +13109,7 @@ index 575a510b7e188..2ada1ead4c8f8 100644
  #include "net/http/http_cache.h"
  #include "net/http/http_network_layer.h"
 diff --git a/net/url_request/url_request_unittest.cc b/net/url_request/url_request_unittest.cc
-index 18b16b9d46f01..24c0efb4f2cef 100644
+index 00a50573133f2..969e8ee340597 100644
 --- a/net/url_request/url_request_unittest.cc
 +++ b/net/url_request/url_request_unittest.cc
 @@ -171,10 +171,15 @@
@@ -13577,7 +13578,7 @@ index 18b16b9d46f01..24c0efb4f2cef 100644
    auto context_builder = CreateTestURLRequestContextBuilder();
    auto host_resolver = std::make_unique<MockHostResolver>();
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index e9d152aa78..f2c1b42a28 100644
+index e9d152aa78f7c..f2c1b42a285a5 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
 @@ -172,6 +172,10 @@
@@ -13628,7 +13629,7 @@ index e9d152aa78..f2c1b42a28 100644
    bool reporting_enabled = base::FeatureList::IsEnabled(features::kReporting);
    if (reporting_enabled) {
 diff --git a/services/network/network_context_unittest.cc b/services/network/network_context_unittest.cc
-index 39c3616351..39deb735c8 100644
+index 39c361635101d..39deb735c87b6 100644
 --- a/services/network/network_context_unittest.cc
 +++ b/services/network/network_context_unittest.cc
 @@ -186,6 +186,10 @@
@@ -13691,7 +13692,7 @@ index 39c3616351..39deb735c8 100644
    std::unique_ptr<NetworkContext> network_context =
        CreateContextWithParams(CreateNetworkContextParamsForTesting());
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
-index 33c260ed8f..557e3912bb 100644
+index 33c260ed8f093..98d2f482a8b4c 100644
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
 @@ -167,6 +167,12 @@ BASE_FEATURE(kOpaqueResponseBlockingErrorsForAllFetches,
@@ -13708,7 +13709,7 @@ index 33c260ed8f..557e3912bb 100644
  BASE_FEATURE(kCorsNonWildcardRequestHeadersSupport,
               "CorsNonWildcardRequestHeadersSupport",
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
-index 1a9ec565a0..5316cb09cb 100644
+index 1a9ec565a0ad2..5316cb09cbb5a 100644
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
 @@ -190,6 +190,9 @@ BASE_DECLARE_FEATURE_PARAM(std::string, kDeprecateUnloadAllowlist);
@@ -13722,7 +13723,7 @@ index 1a9ec565a0..5316cb09cb 100644
  // redirects, following 4.4. HTTP-redirect fetch:
  // https://fetch.spec.whatwg.org/#http-redirect-fetch
 diff --git a/services/network/public/cpp/simple_url_loader.cc b/services/network/public/cpp/simple_url_loader.cc
-index 517777afcfeae..9b2469197b537 100644
+index 2871452c082ef..bf42ff880a78e 100644
 --- a/services/network/public/cpp/simple_url_loader.cc
 +++ b/services/network/public/cpp/simple_url_loader.cc
 @@ -1881,7 +1881,7 @@ void SimpleURLLoaderImpl::OnReceiveResponse(
@@ -13766,7 +13767,7 @@ index bb80e3ebd42f8..dbf99f662b65d 100644
  
  }  // namespace network
 diff --git a/services/network/public/mojom/network_context.mojom b/services/network/public/mojom/network_context.mojom
-index c774dfca15ae1..e972bac69d2e5 100644
+index 444379292d06d..e80dfb5230b98 100644
 --- a/services/network/public/mojom/network_context.mojom
 +++ b/services/network/public/mojom/network_context.mojom
 @@ -377,6 +377,10 @@ struct NetworkContextParams {
@@ -13802,7 +13803,7 @@ index c774dfca15ae1..e972bac69d2e5 100644
                      NetworkAnonymizationKey network_anonymization_key,
                      AuthCredentials credentials) => ();
 diff --git a/third_party/blink/public/web/web_document_loader.h b/third_party/blink/public/web/web_document_loader.h
-index f9d3219990dcf..d2b95cce4c380 100644
+index 33e23680b927d..52e2617a18c6b 100644
 --- a/third_party/blink/public/web/web_document_loader.h
 +++ b/third_party/blink/public/web/web_document_loader.h
 @@ -135,6 +135,9 @@ class BLINK_EXPORT WebDocumentLoader {
@@ -13816,7 +13817,7 @@ index f9d3219990dcf..d2b95cce4c380 100644
    virtual void SetCodeCacheHost(
        CrossVariantMojoRemote<mojom::CodeCacheHostInterfaceBase> code_cache_host,
 diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_party/blink/renderer/core/loader/document_loader.cc
-index b021464bc5..253bd14cad 100644
+index b021464bc5cec..253bd14caddf7 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.cc
 +++ b/third_party/blink/renderer/core/loader/document_loader.cc
 @@ -161,6 +161,7 @@
@@ -13876,7 +13877,7 @@ index b021464bc5..253bd14cad 100644
        !network::IsSuccessfulStatus(response_.HttpStatusCode())) {
      DCHECK(!IsA<HTMLObjectElement>(frame_->Owner()));
 diff --git a/third_party/blink/renderer/core/loader/document_loader.h b/third_party/blink/renderer/core/loader/document_loader.h
-index 4b0cc3793ecb9..337cd1eea6a70 100644
+index bcf51f743caa1..d283bd4ffe949 100644
 --- a/third_party/blink/renderer/core/loader/document_loader.h
 +++ b/third_party/blink/renderer/core/loader/document_loader.h
 @@ -364,6 +364,8 @@ class CORE_EXPORT DocumentLoader : public GarbageCollected<DocumentLoader>,
@@ -13898,7 +13899,7 @@ index 4b0cc3793ecb9..337cd1eea6a70 100644
    // |archive_| to be created. Nested documents will also inherit from the same
    // |archive_|, but won't have |loading_main_document_from_mhtml_archive_| set.
 diff --git a/third_party/blink/renderer/platform/loader/BUILD.gn b/third_party/blink/renderer/platform/loader/BUILD.gn
-index da5070066fd47..39fc54f713ec4 100644
+index 0f566bbe8e4b6..902bc419e13fa 100644
 --- a/third_party/blink/renderer/platform/loader/BUILD.gn
 +++ b/third_party/blink/renderer/platform/loader/BUILD.gn
 @@ -170,6 +170,8 @@ blink_platform_sources("loader") {
@@ -13920,10 +13921,10 @@ index da5070066fd47..39fc54f713ec4 100644
      "subresource_integrity_test.cc",
 diff --git a/third_party/blink/renderer/platform/loader/ftp_directory_listing.cc b/third_party/blink/renderer/platform/loader/ftp_directory_listing.cc
 new file mode 100644
-index 0000000000000..fbee10b1875a7
+index 0000000000000..91a37a204817c
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.cc
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,111 @@
 +// Copyright 2018 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -13933,6 +13934,7 @@ index 0000000000000..fbee10b1875a7
 +#include <string>
 +#include <vector>
 +
++#include "base/containers/span.h"
 +#include "base/i18n/encoding_detection.h"
 +#include "base/i18n/icu_string_conversions.h"
 +#include "base/strings/escape.h"
@@ -13989,13 +13991,13 @@ index 0000000000000..fbee10b1875a7
 +      base::UnescapeURLComponent(gurl.path(), unescape_rules);
 +  const std::string header =
 +      net::GetDirectoryListingHeader(ConvertPathToUTF16(unescaped_path));
-+  output->Append(header.c_str(), header.size());
++  output->Append(base::span<const char>(header.data(), header.size()));
 +
 +  // If this isn't top level directory (i.e. the path isn't "/",)
 +  // add a link to the parent directory.
 +  if (gurl.path().length() > 1) {
 +    const std::string link = net::GetParentDirectoryLink();
-+    output->Append(link.c_str(), link.size());
++    output->Append(base::span<const char>(link.data(), link.size()));
 +  }
 +
 +  std::string flatten;
@@ -14010,7 +14012,7 @@ index 0000000000000..fbee10b1875a7
 +#endif
 +  if (rv != net::OK) {
 +    const std::string script = "<script>onListingParsingError();</script>\n";
-+    output->Append(script.c_str(), script.size());
++    output->Append(base::span<const char>(script.data(), script.size()));
 +    return output;
 +  }
 +  for (const net::FtpDirectoryListingEntry& entry : entries) {
@@ -14026,7 +14028,8 @@ index 0000000000000..fbee10b1875a7
 +        entry.type == net::FtpDirectoryListingEntry::FILE ? entry.size : 0;
 +    std::string entry_string = net::GetDirectoryListingEntry(
 +        entry.name, entry.raw_name, is_directory, size, entry.last_modified);
-+    output->Append(entry_string.c_str(), entry_string.size());
++    output->Append(
++        base::span<const char>(entry_string.data(), entry_string.size()));
 +  }
 +
 +  return output;
@@ -14035,7 +14038,7 @@ index 0000000000000..fbee10b1875a7
 +}  // namespace blink
 diff --git a/third_party/blink/renderer/platform/loader/ftp_directory_listing.h b/third_party/blink/renderer/platform/loader/ftp_directory_listing.h
 new file mode 100644
-index 0000000000000..c5f9bda28b5c0
+index 0000000000000..61c13976aa552
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing.h
 @@ -0,0 +1,24 @@
@@ -14065,7 +14068,7 @@ index 0000000000000..c5f9bda28b5c0
 +#endif  // THIRD_PARTY_BLINK_RENDERER_PLATFORM_LOADER_FTP_DIRECTORY_LISTING_H_
 diff --git a/third_party/blink/renderer/platform/loader/ftp_directory_listing_test.cc b/third_party/blink/renderer/platform/loader/ftp_directory_listing_test.cc
 new file mode 100644
-index 0000000000000..9f52cba0c1222
+index 0000000000000..b238e4590c7a5
 --- /dev/null
 +++ b/third_party/blink/renderer/platform/loader/ftp_directory_listing_test.cc
 @@ -0,0 +1,114 @@
