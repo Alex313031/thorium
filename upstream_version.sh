@@ -85,7 +85,11 @@ printf "${YEL}Downloading PGO Profile for V8 (for when v8_enable_builtins_optimi
 printf "\n" &&
 tput sgr0 &&
 
-python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools --force download &&
+if [ -n "$MSYSTEM" ]; then
+  python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=/c/src/depot_tools --force download
+else
+  python3 v8/tools/builtins-pgo/download_profiles.py --depot-tools=$HOME/depot_tools --force download
+fi
 printf "\n" &&
 
 printf "${GRE}Done!\n"
