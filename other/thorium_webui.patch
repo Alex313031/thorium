@@ -1,0 +1,74 @@
+diff --git a/components/webui/about/resources/about_credits_reciprocal.tmpl b/components/webui/about/resources/about_credits_reciprocal.tmpl
+index 5096175e285c1..6d4a41ab2815f 100644
+--- a/components/webui/about/resources/about_credits_reciprocal.tmpl
++++ b/components/webui/about/resources/about_credits_reciprocal.tmpl
+@@ -1,4 +1,4 @@
+ <div class="open-sourced">
+-    {{opensource_project}} software is made available as source code
+-    <a href="{{opensource_link}}">here</a>.
++    {{thorium_project}} is based on {{opensource_project}} and is made available as source code
++    <a href="{{thorium_link}}">here</a>. Chromium source code is available <a href="{{opensource_link}}">here</a>.
+ </div>
+diff --git a/tools/licenses/licenses.py b/tools/licenses/licenses.py
+index b0807ee3d8ebc..e7e8cf0fa3296 100755
+--- a/tools/licenses/licenses.py
++++ b/tools/licenses/licenses.py
+@@ -1059,6 +1059,8 @@ def GenerateCredits(file_template_file,
+   reciprocal_template = codecs.open(reciprocal_template_file,
+                                     encoding='utf-8').read()
+   reciprocal_contents = EvaluateTemplate(reciprocal_template, {
++      'thorium_project': 'Thorium',
++      'thorium_link': 'https://github.com/Alex313031/thorium'
+       'opensource_project': 'Chromium',
+       'opensource_link': 'https://source.chromium.org/chromium'
+   },
+diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
+index 0a77a8c846880..725bc4ea35952 100644
+--- a/ui/webui/resources/BUILD.gn
++++ b/ui/webui/resources/BUILD.gn
+@@ -38,6 +38,7 @@ generate_grd("build_grd") {
+     "images:build_grdp",
+     "js:build_grdp",
+     "mojo:build_grdp",
++    "text:build_grdp",
+     "//third_party/lit/v3_0:build_grdp",
+   ]
+   grdp_files = [
+@@ -48,6 +49,7 @@ generate_grd("build_grd") {
+     "$target_gen_dir/images/resources.grdp",
+     "$target_gen_dir/js/resources.grdp",
+     "$target_gen_dir/mojo/resources.grdp",
++    "$target_gen_dir/text/resources.grdp",
+   ]
+ 
+   if ((!is_android && !is_ios) || is_desktop_android) {
+diff --git a/ui/webui/resources/text/BUILD.gn b/ui/webui/resources/text/BUILD.gn
+new file mode 100644
+index 0000000000000..02bd28132bc6b
+--- /dev/null
++++ b/ui/webui/resources/text/BUILD.gn
+@@ -0,0 +1,17 @@
++# Copyright 2020 The Chromium Authors
++# Use of this source code is governed by a BSD-style license that can be
++# found in the LICENSE file.
++
++import("//ui/webui/resources/tools/generate_grd.gni")
++
++generate_grd("build_grdp") {
++  grd_prefix = "webui_images"
++  out_grd = "$target_gen_dir/resources.grdp"
++  input_files_base_dir = rebase_path(".", "//")
++
++  if (is_chromeos) {
++    input_files += [ "thorium_version.txt" ]
++  }
++
++  resource_path_prefix = "text"
++}
+diff --git a/ui/webui/resources/text/thorium_version.txt b/ui/webui/resources/text/thorium_version.txt
+new file mode 100644
+index 0000000000000..efba1ea4cc003
+--- /dev/null
++++ b/ui/webui/resources/text/thorium_version.txt
+@@ -0,0 +1 @@
++placeholder grit thorium version text
