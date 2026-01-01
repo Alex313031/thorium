@@ -35,7 +35,7 @@ diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources
 index 5c3bf0094808b..5f55a471394d0 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -14358,6 +14358,9 @@ This can include information about installed software, files, your browser, the
+@@ -14361,6 +14361,9 @@ This can include information about installed software, files, your browser, the
        <message name="IDS_DIRECTORY_LISTING_DATE_MODIFIED" desc="When viewing a local directory, this is the text for the column above the last modified dates.">
          Date Modified
        </message>
@@ -49,7 +49,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 index b5c863ae84566..c5f1b2580b918 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8689,6 +8689,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8694,6 +8694,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           heavy_ad_intervention::features::kHeavyAdPrivacyMitigations)},
  

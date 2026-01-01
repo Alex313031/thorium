@@ -91,6 +91,7 @@ cp -r -v pak_src/binaries/pak-win/. ${CR_SRC_DIR}/out/thorium/ &&
 
 patchThor () {
 	cp -v other/add-hevc-ffmpeg-decoder-parser.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
+	cp -v other/change-libavcodec-header.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 	cp -v other/fix-policy-templates.patch ${CR_SRC_DIR}/ &&
 	cp -v other/ftp-support-thorium.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium-2024-ui.patch ${CR_SRC_DIR}/ &&
@@ -100,7 +101,8 @@ patchThor () {
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
 	cd ${CR_SRC_DIR}/third_party/ffmpeg &&
-	#git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
+	git apply --reject ./add-hevc-ffmpeg-decoder-parser.patch &&
+	git apply --reject ./change-libavcodec-header.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching policy templates...${c0}\n" &&

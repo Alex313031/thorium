@@ -1,0 +1,254 @@
+From 4fdafc8267ae9842f070bfba5ac94faaea14535e Mon Sep 17 00:00:00 2001
+From: Sta Zhu <zhusidayoyo@hotmail.com>
+Date: Sun, 11 May 2025 21:10:06 +0800
+Subject: [PATCH] Video: Update `libavcodec` header
+
+The recent ffmpeg changes doesn't match with chromium include
+configs, need to change the header manually to fix this.
+---
+ libavcodec/hevc/cabac.c         |  2 +-
+ libavcodec/hevc/dsp_template.c  | 10 +++++-----
+ libavcodec/hevc/filter.c        |  2 +-
+ libavcodec/hevc/hevcdec.c       | 26 +++++++++++++-------------
+ libavcodec/hevc/mvs.c           |  2 +-
+ libavcodec/hevc/parse.c         |  4 ++--
+ libavcodec/hevc/parser.c        |  6 +++---
+ libavcodec/hevc/pred_template.c |  2 +-
+ libavcodec/hevc/ps.c            |  6 +++---
+ libavcodec/hevc/ps_enc.c        |  4 ++--
+ libavcodec/hevc/refs.c          |  6 +++---
+ libavcodec/hevc/sei.c           |  4 ++--
+ 12 files changed, 37 insertions(+), 37 deletions(-)
+
+diff --git a/libavcodec/hevc/cabac.c b/libavcodec/hevc/cabac.c
+index 892dd1c215..362dda6beb 100644
+--- a/libavcodec/hevc/cabac.c
++++ b/libavcodec/hevc/cabac.c
+@@ -24,7 +24,7 @@
+ #include "libavutil/attributes.h"
+ #include "libavutil/common.h"
+ 
+-#include "cabac_functions.h"
++#include "libavcodec/cabac_functions.h"
+ #include "data.h"
+ #include "hevc.h"
+ #include "hevcdec.h"
+diff --git a/libavcodec/hevc/dsp_template.c b/libavcodec/hevc/dsp_template.c
+index a0f79c2673..b4f37237d7 100644
+--- a/libavcodec/hevc/dsp_template.c
++++ b/libavcodec/hevc/dsp_template.c
+@@ -20,13 +20,13 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-#include "get_bits.h"
++#include "libavcodec/get_bits.h"
+ #include "hevcdec.h"
+ 
+-#include "bit_depth_template.c"
++#include "libavcodec/bit_depth_template.c"
+ #include "dsp.h"
+-#include "h26x/h2656_sao_template.c"
+-#include "h26x/h2656_inter_template.c"
++#include "libavcodec/h26x/h2656_sao_template.c"
++#include "libavcodec/h26x/h2656_inter_template.c"
+ 
+ static void FUNC(put_pcm)(uint8_t *_dst, ptrdiff_t stride, int width, int height,
+                           GetBitContext *gb, int pcm_bit_depth)
+@@ -817,7 +817,7 @@ static void FUNC(put_hevc_epel_bi_w_hv)(uint8_t *_dst, ptrdiff_t _dststride,
+ #define TQ2 pix[2  * xstride + 3 * ystride]
+ #define TQ3 pix[3  * xstride + 3 * ystride]
+ 
+-#include "h26x/h2656_deblock_template.c"
++#include "libavcodec/h26x/h2656_deblock_template.c"
+ 
+ static void FUNC(hevc_loop_filter_luma)(uint8_t *_pix,
+                                         ptrdiff_t _xstride, ptrdiff_t _ystride,
+diff --git a/libavcodec/hevc/filter.c b/libavcodec/hevc/filter.c
+index 68ae0e9ef6..e897ad5d58 100644
+--- a/libavcodec/hevc/filter.c
++++ b/libavcodec/hevc/filter.c
+@@ -26,7 +26,7 @@
+ #include "libavutil/internal.h"
+ 
+ #include "hevcdec.h"
+-#include "progressframe.h"
++#include "libavcodec/progressframe.h"
+ 
+ #define LUMA 0
+ #define CB 1
+diff --git a/libavcodec/hevc/hevcdec.c b/libavcodec/hevc/hevcdec.c
+index 636c024b9a..cf63028fc4 100644
+--- a/libavcodec/hevc/hevcdec.c
++++ b/libavcodec/hevc/hevcdec.c
+@@ -38,23 +38,23 @@
+ #include "libavutil/stereo3d.h"
+ #include "libavutil/timecode.h"
+ 
+-#include "aom_film_grain.h"
+-#include "bswapdsp.h"
+-#include "cabac_functions.h"
+-#include "codec_internal.h"
+-#include "decode.h"
+-#include "golomb.h"
++#include "libavcodec/aom_film_grain.h"
++#include "libavcodec/bswapdsp.h"
++#include "libavcodec/cabac_functions.h"
++#include "libavcodec/codec_internal.h"
++#include "libavcodec/decode.h"
++#include "libavcodec/golomb.h"
+ #include "hevc.h"
+ #include "parse.h"
+ #include "hevcdec.h"
+-#include "hwaccel_internal.h"
+-#include "hwconfig.h"
+-#include "internal.h"
+-#include "profiles.h"
+-#include "progressframe.h"
++#include "libavcodec/hwaccel_internal.h"
++#include "libavcodec/hwconfig.h"
++#include "libavcodec/internal.h"
++#include "libavcodec/profiles.h"
++#include "libavcodec/progressframe.h"
+ #include "libavutil/refstruct.h"
+-#include "thread.h"
+-#include "threadprogress.h"
++#include "libavcodec/thread.h"
++#include "libavcodec/threadprogress.h"
+ 
+ static const uint8_t hevc_pel_weight[65] = { [2] = 0, [4] = 1, [6] = 2, [8] = 3, [12] = 4, [16] = 5, [24] = 6, [32] = 7, [48] = 8, [64] = 9 };
+ 
+diff --git a/libavcodec/hevc/mvs.c b/libavcodec/hevc/mvs.c
+index 55f115ad0c..61c9e4e086 100644
+--- a/libavcodec/hevc/mvs.c
++++ b/libavcodec/hevc/mvs.c
+@@ -23,7 +23,7 @@
+ 
+ #include "hevc.h"
+ #include "hevcdec.h"
+-#include "progressframe.h"
++#include "libavcodec/progressframe.h"
+ 
+ static const uint8_t l0_l1_cand_idx[12][2] = {
+     { 0, 1, },
+diff --git a/libavcodec/hevc/parse.c b/libavcodec/hevc/parse.c
+index 29f21a5966..2f519380fb 100644
+--- a/libavcodec/hevc/parse.c
++++ b/libavcodec/hevc/parse.c
+@@ -16,8 +16,8 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-#include "bytestream.h"
+-#include "h2645_parse.h"
++#include "libavcodec/bytestream.h"
++#include "libavcodec/h2645_parse.h"
+ #include "hevc.h"
+ #include "parse.h"
+ 
+diff --git a/libavcodec/hevc/parser.c b/libavcodec/hevc/parser.c
+index 16b40e2b10..e94b6905c9 100644
+--- a/libavcodec/hevc/parser.c
++++ b/libavcodec/hevc/parser.c
+@@ -23,13 +23,13 @@
+ #include "libavutil/common.h"
+ #include "libavutil/mem.h"
+ 
+-#include "golomb.h"
++#include "libavcodec/golomb.h"
+ #include "hevc.h"
+ #include "parse.h"
+ #include "ps.h"
+ #include "sei.h"
+-#include "h2645_parse.h"
+-#include "parser.h"
++#include "libavcodec/h2645_parse.h"
++#include "libavcodec/parser.h"
+ 
+ #define START_CODE 0x000001 ///< start_code_prefix_one_3bytes
+ 
+diff --git a/libavcodec/hevc/pred_template.c b/libavcodec/hevc/pred_template.c
+index b4c2fcf506..d873c1c5b6 100644
+--- a/libavcodec/hevc/pred_template.c
++++ b/libavcodec/hevc/pred_template.c
+@@ -22,7 +22,7 @@
+ 
+ #include "libavutil/pixdesc.h"
+ 
+-#include "bit_depth_template.c"
++#include "libavcodec/bit_depth_template.c"
+ #include "pred.h"
+ 
+ #define POS(x, y) src[(x) + stride * (y)]
+diff --git a/libavcodec/hevc/ps.c b/libavcodec/hevc/ps.c
+index 24f4218931..6713f42013 100644
+--- a/libavcodec/hevc/ps.c
++++ b/libavcodec/hevc/ps.c
+@@ -25,11 +25,11 @@
+ 
+ #include "libavutil/imgutils.h"
+ #include "libavutil/mem.h"
+-#include "golomb.h"
+-#include "h2645_vui.h"
++#include "libavcodec/golomb.h"
++#include "libavcodec/h2645_vui.h"
+ #include "data.h"
+ #include "ps.h"
+-#include "profiles.h"
++#include "libavcodec/profiles.h"
+ #include "libavutil/refstruct.h"
+ 
+ static const uint8_t default_scaling_list_intra[] = {
+diff --git a/libavcodec/hevc/ps_enc.c b/libavcodec/hevc/ps_enc.c
+index 7fbcb3ba4e..4e44f849ba 100644
+--- a/libavcodec/hevc/ps_enc.c
++++ b/libavcodec/hevc/ps_enc.c
+@@ -18,9 +18,9 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-#include "put_golomb.h"
++#include "libavcodec/put_golomb.h"
+ #include "ps.h"
+-#include "put_bits.h"
++#include "libavcodec/put_bits.h"
+ 
+ static void write_ptl_layer(PutBitContext *pb, PTLCommon *ptl)
+ {
+diff --git a/libavcodec/hevc/refs.c b/libavcodec/hevc/refs.c
+index ab2e075af0..404e45ecbb 100644
+--- a/libavcodec/hevc/refs.c
++++ b/libavcodec/hevc/refs.c
+@@ -25,11 +25,11 @@
+ #include "libavutil/mem.h"
+ #include "libavutil/stereo3d.h"
+ 
+-#include "decode.h"
++#include "libavcodec/decode.h"
+ #include "hevc.h"
+ #include "hevcdec.h"
+-#include "progressframe.h"
+-#include "thread.h"
++#include "libavcodec/progressframe.h"
++#include "libavcodec/thread.h"
+ #include "libavutil/refstruct.h"
+ 
+ void ff_hevc_unref_frame(HEVCFrame *frame, int flags)
+diff --git a/libavcodec/hevc/sei.c b/libavcodec/hevc/sei.c
+index b8e98cde89..0a54c442d5 100644
+--- a/libavcodec/hevc/sei.c
++++ b/libavcodec/hevc/sei.c
+@@ -22,8 +22,8 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-#include "bytestream.h"
+-#include "golomb.h"
++#include "libavcodec/bytestream.h"
++#include "libavcodec/golomb.h"
+ #include "ps.h"
+ #include "sei.h"
+ 
+-- 
+2.45.2.windows.1
+
