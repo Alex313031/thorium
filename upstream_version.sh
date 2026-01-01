@@ -64,7 +64,7 @@ if [ -n "$MSYSTEM" ]; then
   printf "${GRE}Not Downloading Linux sysroot on Windows\n"
 else
   build/linux/sysroot_scripts/install-sysroot.py --arch=amd64 &&
-  build/linux/sysroot_scripts/install-sysroot.py --arch=arm64 &&
+  build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
 fi
 
 printf "\n"
