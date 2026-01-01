@@ -11,8 +11,8 @@ static constexpr int PATCH_VERSION = @PATCH@;
 
 static const wchar_t* VersionString = L"@MAJOR@.@MINOR@.@BUILD@.@PATCH@";
 
-static const wchar_t* InstallTitle = L"PrimoBrowser @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
+static const wchar_t* InstallTitle = L"Thorium @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
 
-static const wchar_t* InstallTitleBeta = L"PrimoBeta @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
+static const wchar_t* InstallTitleBeta = L"Thorium Beta @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
 
 #endif // CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
