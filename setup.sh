@@ -374,6 +374,7 @@ printf "${GRE}Done!${c0}\n" &&
 #printf "alias ${YEL}pgomac-arm${c0} = ${CYA}python3 tools/update_pgo_profiles.py --target=mac-arm update --gs-url-base=chromium-optimization-profiles/pgo_profiles${c0}\n" &&
 #printf "\n" &&
 
+cd ~/thorium &&
 cat ./logos/thorium_ascii_art.txt &&
 
 printf "${YEL}Tip: See the ${CYA}aliases.txt${YEL} file for some handy bash aliases.${c0}\n" &&
