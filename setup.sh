@@ -98,6 +98,7 @@ patchThor () {
 	cp -v other/GPC.patch ${CR_SRC_DIR}/ &&
 	cp -v other/GPC-2.patch ${CR_SRC_DIR}/ &&
 	cp -v other/mini_installer.patch ${CR_SRC_DIR}/ &&
+	cp -v other/open_in_same_tab.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -130,16 +131,17 @@ patchThor () {
 	printf "${YEL}Patching mini_installer...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./mini_installer.patch
+  git apply --reject ./open_in_same_tab.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 
 patchAC3 () {
-	cp -v other/ffmpeg_hevc_ac3.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
+	#cp -v other/ffmpeg_hevc_ac3.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 
-	printf "\n" &&
-	printf "${YEL}Patching FFMPEG for AC3 & E-AC3...${c0}\n" &&
-	cd ${CR_SRC_DIR}/third_party/ffmpeg &&
-	git apply --reject ./ffmpeg_hevc_ac3.patch &&
+	#printf "\n" &&
+	#printf "${YEL}Patching FFMPEG for AC3 & E-AC3...${c0}\n" &&
+	#cd ${CR_SRC_DIR}/third_party/ffmpeg &&
+	#git apply --reject ./ffmpeg_hevc_ac3.patch &&
 	cd ~/thorium
 }
 
