@@ -5,7 +5,8 @@
 Compiler modifications include SSE4.2, AVX, AES, and CFLAGS, LTO flags, and import_instr_limit flags set to /03, 3, and 30, respectively. \
 NEW > Added some LLVM LOOP optimizations as -mllvm flags. See here > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-976883814
 
-Fixed AVX Windows Builds as per > https://github.com/RobRich999/Chromium_Clang/issues/26#issuecomment-1003605112
+FTP Support - Thorium is the only current browser that still supports [ftp:// sites](https://github.com/pegvin/w64devkit-extended/blob/13ea4c213e89db20ccd74a32763b31a85052cdb6/.github/workflows/build.yml).
+See [the patch](../patches/ftp-support-thorium.patch) I use. See https://www.vogons.org/viewtopic.php?t=66653 for fun FTP sites.
 
 .desktop files are created for Thorium itself and content-shell (named thorium-shell).
 
