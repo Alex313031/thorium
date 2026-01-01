@@ -1,0 +1,605 @@
+diff --git a/chrome/installer/mini_installer/BUILD.gn b/chrome/installer/mini_installer/BUILD.gn
+index 7e49b4e449981..289967448d541 100644
+--- a/chrome/installer/mini_installer/BUILD.gn
++++ b/chrome/installer/mini_installer/BUILD.gn
+@@ -1,7 +1,8 @@
+-# Copyright 2015 The Chromium Authors
++# Copyright 2024 The Chromium Authors and Alex313031
+ # Use of this source code is governed by a BSD-style license that can be
+ # found in the LICENSE file.
+ 
++import("//build/config/compiler_opt.gni")
+ import("//build/config/compiler/compiler.gni")
+ import("//build/config/features.gni")
+ import("//build/config/python.gni")
+@@ -36,7 +37,33 @@ declare_args() {
+ 
+ config("mini_installer_compiler_flags") {
+   # Disable buffer security checking.
+-  cflags = [ "/GS-" ]
++  cflags = [ "/GS-", "/clang:-O3", ]
++
++  if (!use_sse3 && use_sse2) {
++    cflags += [ "/arch:SSE2", ]
++  } else if (use_sse3) {
++    cflags += [ "/clang:-msse3", ]
++  } else if (use_sse41) {
++    cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
++  } else if (!use_avx && use_sse42) {
++    if (current_cpu == "x86") {
++      cflags += [ "/clang:-msse4.2", ]
++    } else {
++      cflags += [ "/arch:SSE42", ]
++    }
++  } else if (!use_avx2 && use_avx) {
++    cflags += [ "/arch:AVX", ]
++  } else if (!use_avx512 && use_avx2) {
++    cflags += [ "/arch:AVX2", ]
++  } else if (use_avx512) {
++    cflags += [ "/arch:AVX2", ]
++  } else {
++    print("No SIMD")
++  }
++
++  if (use_fma) {
++    cflags += [ "/fp:fast", ]
++  }
+ }
+ 
+ source_set("lib") {
+@@ -69,13 +96,24 @@ source_set("lib") {
+     "write_to_disk.h",
+   ]
+ 
+-  deps = [ "//build:branding_buildflags" ]
++  deps = [
++    ":mini_installer_version",
++    "//build:branding_buildflags"
++  ]
+ 
+   # Initialization may insert unexpected memset calls.
+   configs -= [ "//build/config/compiler:default_init_stack_vars" ]
+   configs += [ ":mini_installer_compiler_flags" ]
+ }
+ 
++process_version("mini_installer_version") {
++  process_only = true
++  visibility = [ ":*" ]
++  template_file = "mini_installer_version.h.template"
++  sources = [ "//chrome/VERSION" ]
++  output = "$target_gen_dir/mini_installer_version.h"
++}
++
+ process_version_rc_template("version") {
+   template_file = "mini_installer_exe_version.rc.version"
+   output = "$root_out_dir/mini_installer_exe_version.rc"
+@@ -145,7 +183,7 @@ action("mini_installer_archive") {
+   inputs = [
+     "$root_out_dir/chrome.dll",
+     "$root_out_dir/chrome_elf.dll",
+-    "$root_out_dir/chrome.exe",
++    "$root_out_dir/thorium.exe",
+     "$root_out_dir/locales/en-US.pak",
+     "$root_out_dir/setup.exe",
+     "//chrome/tools/build/win/makecab.py",
+@@ -179,12 +217,12 @@ action("mini_installer_archive") {
+     build_timestamp,
+ 
+     # Optional arguments to generate diff installer.
+-    #'--last_chrome_installer=C:/Temp/base',
++    #'--last_chrome_installer=C:/src/chromium/src/out/thorium',
+     #'--setup_exe_format=DIFF',
+     #'--diff_algorithm=ZUCCHINI',
+ 
+     # Optional argument for verbose archiving output.
+-    #"--verbose",
++    "--verbose",
+   ]
+ 
+   deps = [
+@@ -322,7 +360,64 @@ template("generate_mini_installer") {
+   }
+ }
+ 
+-generate_mini_installer("mini_installer") {
++group("mini_installer") {
++  deps = []
++  if (use_sse2 && !use_sse3) {
++    deps += [ ":thorium_WIN32_SSE2_mini_installer" ]
++  } else if (use_sse3 && !use_sse41 && !use_sse42) {
++    if (current_cpu == "x86") {
++      deps += [ ":thorium_WIN32_SSE3_mini_installer"  ]
++    } else if (current_cpu == "x64") {
++      deps += [ ":thorium_SSE3_mini_installer" ]
++    }
++  } else if (use_sse41 && !use_sse42) {
++    deps += [ ":thorium_SSE4_mini_installer" ]
++  } else if (use_sse42 && !use_avx) {
++    deps += [ ":thorium_SSE4.2_mini_installer" ]
++  } else if (use_avx && !use_avx2) {
++    deps += [ ":thorium_AVX_mini_installer" ]
++  } else if (use_avx2 && !use_avx512) {
++    deps += [":thorium_AVX2_mini_installer"  ]
++  } else if (use_avx512) {
++    deps += [ ":thorium_AVX512_mini_installer" ]
++  } else {
++    deps += [ ":thorium_mini_installer" ]
++  }
++}
++
++generate_mini_installer("thorium_WIN32_SSE2_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_WIN32_SSE3_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_SSE3_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_SSE4_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_SSE4.2_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_AVX_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_AVX2_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_AVX512_mini_installer") {
++  rc_file = packed_files_rc_file
++}
++
++generate_mini_installer("thorium_mini_installer") {
+   rc_file = packed_files_rc_file
+ }
+ 
+@@ -354,14 +449,14 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
+             root_out_dir)
+     inputs = [
+       "$root_out_dir/" + alternate_version_generator_rel_path,
+-      "$root_out_dir/mini_installer.exe",
++      "$root_out_dir/thorium_mini_installer.exe",
+     ]
+     outputs = [ "$root_out_dir/$target_name.exe" ]
+     args = [
+       "--alternate_version_generator",
+       alternate_version_generator_rel_path,
+       "--mini_installer",
+-      "mini_installer.exe",
++      "thorium_mini_installer.exe",
+       "--out",
+       "$target_name.exe",
+       "--path_7za",
+@@ -369,6 +464,7 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
+     ]
+     deps = [
+       ":mini_installer",
++      ":thorium_mini_installer",
+       alternate_version_generator_target,
+     ]
+   }
+diff --git a/chrome/installer/mini_installer/configuration.cc b/chrome/installer/mini_installer/configuration.cc
+index a5fdecc832180..126618188fefa 100644
+--- a/chrome/installer/mini_installer/configuration.cc
++++ b/chrome/installer/mini_installer/configuration.cc
+@@ -65,6 +65,7 @@ void Configuration::Clear() {
+   command_line_ = nullptr;
+   argument_count_ = 0;
+   is_system_level_ = false;
++  is_silent_install_ = false;
+   has_invalid_switch_ = false;
+   should_delete_extracted_files_ = true;
+   previous_version_ = nullptr;
+@@ -80,20 +81,23 @@ bool Configuration::ParseCommandLine(const wchar_t* command_line) {
+     return false;
+ 
+   for (int i = 1; i < argument_count_; ++i) {
+-    if (0 == ::lstrcmpi(args_[i], L"--system-level"))
++    if (0 == ::lstrcmpi(args_[i], L"--system-level")) {
+       is_system_level_ = true;
++    } else if (0 == ::lstrcmpi(args_[i], L"--silent")) {
++      is_silent_install_ = true;
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-    else if (0 == ::lstrcmpi(args_[i], L"--chrome-beta"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-beta")) {
+       chrome_app_guid_ = google_update::kBetaAppGuid;
+-    else if (0 == ::lstrcmpi(args_[i], L"--chrome-dev"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-dev")) {
+       chrome_app_guid_ = google_update::kDevAppGuid;
+-    else if (0 == ::lstrcmpi(args_[i], L"--chrome-sxs"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-sxs")) {
+       chrome_app_guid_ = google_update::kSxSAppGuid;
+ #endif
+-    else if (0 == ::lstrcmpi(args_[i], L"--cleanup"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--cleanup")) {
+       has_invalid_switch_ = true;
+-    else if (0 == ::lstrcmpi(args_[i], L"--chrome-frame"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-frame")) {
+       has_invalid_switch_ = true;
++    }
+   }
+ 
+   if (!is_system_level_)
+diff --git a/chrome/installer/mini_installer/configuration.h b/chrome/installer/mini_installer/configuration.h
+index b746f68cef51d..e4edba92db53f 100644
+--- a/chrome/installer/mini_installer/configuration.h
++++ b/chrome/installer/mini_installer/configuration.h
+@@ -38,6 +38,10 @@ class Configuration {
+   // GoogleUpdateIsMachine=1 is set in the process's environment.
+   bool is_system_level() const { return is_system_level_; }
+ 
++  // Returns true if --silent is on the command line
++  // Disables the Yes/No Dialog box on install
++  bool is_silent_install() const { return is_silent_install_; }
++
+   // Returns true if any invalid switch is found on the command line.
+   bool has_invalid_switch() const { return has_invalid_switch_; }
+ 
+@@ -60,6 +64,7 @@ class Configuration {
+   const wchar_t* command_line_;
+   int argument_count_;
+   bool is_system_level_;
++  bool is_silent_install_;
+   bool has_invalid_switch_;
+   bool should_delete_extracted_files_;
+   const wchar_t* previous_version_;
+diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
+index b24e4cbef109f..d0e960fab38bd 100644
+--- a/chrome/installer/mini_installer/mini_installer.cc
++++ b/chrome/installer/mini_installer/mini_installer.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2025 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -53,6 +53,7 @@
+ #include "chrome/installer/mini_installer/memory_range.h"
+ #include "chrome/installer/mini_installer/mini_file.h"
+ #include "chrome/installer/mini_installer/mini_installer_constants.h"
++#include "chrome/installer/mini_installer/mini_installer_version.h"
+ #include "chrome/installer/mini_installer/regkey.h"
+ #include "chrome/installer/mini_installer/write_to_disk.h"
+ 
+@@ -866,6 +867,19 @@ ProcessExitResult WMain(HMODULE module) {
+     return ProcessExitResult(INVALID_OPTION);
+   }
+ 
++  static constexpr bool force_disable_dialog = false;
++  if (!force_disable_dialog) {
++    if (!configuration.is_silent_install()) {
++      int user_response_code =
++          MessageBoxW(nullptr, L"Would you like to install Thorium?",
++                      InstallTitle,
++                      MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
++      if (user_response_code == IDNO || user_response_code == IDCANCEL) {
++        return ProcessExitResult(GENERIC_ERROR);
++      }
++    }
++  }
++
+   // First get a path where we can extract payload
+   PathString base_path;
+   if (!GetWorkDir(module, &base_path, &exit_code)) {
+diff --git a/chrome/installer/mini_installer/mini_installer_constants.cc b/chrome/installer/mini_installer/mini_installer_constants.cc
+index cbcd4cf1a3ef2..0ea333e90571d 100644
+--- a/chrome/installer/mini_installer/mini_installer_constants.cc
++++ b/chrome/installer/mini_installer/mini_installer_constants.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2014 The Chromium Authors
++// Copyright 2024 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -24,7 +24,7 @@ const wchar_t kCmdNewSetupExe[] = L"new-setup-exe";
+ const wchar_t kCmdPreviousVersion[] = L"previous-version";
+ 
+ // Temp directory prefix that this process creates.
+-const wchar_t kTempPrefix[] = L"CR_";
++const wchar_t kTempPrefix[] = L"TH_";
+ // ap value suffix to force subsequent updates to use the full rather than
+ // differential updater.
+ const wchar_t kFullInstallerSuffix[] = L"-full";
+@@ -80,12 +80,12 @@ const wchar_t kCleanupRegistryKey[] = L"Software\\Chrome for Testing";
+ #else
+ // The path to the key containing each app's Clients registry key.
+ // No trailing slash on this one because the app's GUID is not appended.
+-const wchar_t kClientsKeyBase[] = L"Software\\Chromium";
++const wchar_t kClientsKeyBase[] = L"Software\\Thorium";
+ // The path to the key containing each app's Client State registry key.
+ // No trailing slash on this one because the app's GUID is not appended.
+-const wchar_t kClientStateKeyBase[] = L"Software\\Chromium";
++const wchar_t kClientStateKeyBase[] = L"Software\\Thorium";
+ // The path to the key in which kCleanupRegistryValue is found.
+-const wchar_t kCleanupRegistryKey[] = L"Software\\Chromium";
++const wchar_t kCleanupRegistryKey[] = L"Software\\Thorium";
+ #endif
+ 
+ }  // namespace mini_installer
+diff --git a/chrome/installer/mini_installer/mini_installer_exe_main.cc b/chrome/installer/mini_installer/mini_installer_exe_main.cc
+index aff0370044046..536aa5a60b579 100644
+--- a/chrome/installer/mini_installer/mini_installer_exe_main.cc
++++ b/chrome/installer/mini_installer/mini_installer_exe_main.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2017 The Chromium Authors
++// Copyright 2025 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -59,10 +59,13 @@ void* memset(void* dest, int c, size_t count) {
+   return dest;
+ }
+ 
+-#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
++// SET BY ALEX313031 FOR ALL BUILDS BECAUSE IT CAUSES ERRORS
++// DURING CROSS-BUILDING IF UNSET.
++//#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
+ // The compiler generates calls to memcpy for ARM64 debug builds so we need to
+ // supply a memcpy implementation in that configuration.
+ // See comments above for why we do this incantation.
++
+ __attribute__((used))
+ void* memcpy(void* destination, const void* source, size_t count) {
+   auto* dst = reinterpret_cast<uint8_t*>(destination);
+@@ -71,5 +74,5 @@ void* memcpy(void* destination, const void* source, size_t count) {
+     *dst++ = *src++;
+   return destination;
+ }
+-#endif
++//#endif
+ }  // extern "C"
+diff --git a/chrome/installer/mini_installer/mini_installer_exe_version.rc.version b/chrome/installer/mini_installer/mini_installer_exe_version.rc.version
+index 2862d6b50a550..567c2bb2d6caa 100644
+--- a/chrome/installer/mini_installer/mini_installer_exe_version.rc.version
++++ b/chrome/installer/mini_installer/mini_installer_exe_version.rc.version
+@@ -27,7 +27,8 @@ BEGIN
+             VALUE "CompanyName", "@COMPANY_FULLNAME@"
+             VALUE "FileDescription", "@PRODUCT_INSTALLER_FULLNAME@"
+             VALUE "FileVersion", "@MAJOR@.@MINOR@.@BUILD@.@PATCH@"
+-            VALUE "InternalName", "mini_installer"
++            VALUE "InternalName", "thorium_mini_installer"
++            VALUE "OriginalFilename", "mini_installer.exe"
+             VALUE "LegalCopyright", "@COPYRIGHT@"
+             VALUE "ProductName", "@PRODUCT_INSTALLER_FULLNAME@"
+             VALUE "ProductVersion", "@MAJOR@.@MINOR@.@BUILD@.@PATCH@"
+@@ -35,6 +36,7 @@ BEGIN
+             VALUE "ProductShortName", "@PRODUCT_INSTALLER_SHORTNAME@"
+             VALUE "LastChange", "@LASTCHANGE@"
+             VALUE "Official Build", "@OFFICIAL_BUILD@"
++            VALUE "Comments", "https://github.com/Alex313031/Thorium"
+         END
+     END
+     BLOCK "VarFileInfo"
+diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
+index 011684089a29e..99eb9871c7e55 100644
+--- a/chrome/installer/setup/install_worker.cc
++++ b/chrome/installer/setup/install_worker.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2025 The Chromium Authors, Hibiki Tachibana, and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ //
+@@ -29,6 +29,8 @@
+ #include "base/functional/bind.h"
+ #include "base/functional/callback_helpers.h"
+ #include "base/logging.h"
++#include "base/process/kill.h"
++#include "base/process/process_iterator.h"
+ #include "base/strings/string_util.h"
+ #include "base/strings/utf_string_conversions.h"
+ #include "base/version.h"
+@@ -39,6 +41,7 @@
+ #include "base/win/win_util.h"
+ #include "base/win/windows_version.h"
+ #include "build/branding_buildflags.h"
++#include "content/public/common/result_codes.h"
+ #include "chrome/install_static/buildflags.h"
+ #include "chrome/install_static/install_details.h"
+ #include "chrome/install_static/install_modes.h"
+@@ -79,6 +82,10 @@ namespace installer {
+ 
+ namespace {
+ 
++// Thorium Application dir files
++const wchar_t kInitPref[] = L"initial_preferences";
++const wchar_t kThorVer[] = L"thor_ver";
++
+ void AddInstallerCopyTasks(const InstallParams& install_params,
+                            WorkItemList* install_list) {
+   DCHECK(install_list);
+@@ -218,6 +225,46 @@ void AddDeleteUninstallEntryForMSIWorkItems(
+   delete_reg_key->set_best_effort(true);
+ }
+ 
++// Filter for processes whose base name matches and whose path starts with a
++// specified prefix.
++class ProcessPathPrefixFilter : public base::ProcessFilter {
++ public:
++  explicit ProcessPathPrefixFilter(
++      base::FilePath::StringViewType process_path_prefix)
++      : process_path_prefix_(process_path_prefix) {}
++
++  // base::ProcessFilter:
++  bool Includes(const base::ProcessEntry& entry) const override {
++    // Test if |entry|'s file path starts with the prefix we're looking for.
++    base::Process process(::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,
++                                        FALSE, entry.th32ProcessID));
++    if (!process.IsValid())
++      return false;
++
++    DWORD path_len = MAX_PATH;
++    wchar_t path_string[MAX_PATH];
++    if (::QueryFullProcessImageName(process.Handle(), 0, path_string,
++                                    &path_len)) {
++      base::FilePath file_path(path_string);
++      return base::StartsWith(file_path.value(), process_path_prefix_,
++                              base::CompareCase::INSENSITIVE_ASCII);
++    }
++    PLOG(WARNING) << "QueryFullProcessImageName failed for PID "
++                  << entry.th32ProcessID;
++    return false;
++  }
++
++ private:
++  const base::FilePath::StringViewType process_path_prefix_;
++};
++
++// Gracefully closes previous Chrome process in |target_path|.
++void ClosePreviousChromeProcess(const base::FilePath& target_path) {
++  ProcessPathPrefixFilter target_path_filter(target_path.value());
++  base::CleanupProcesses(installer::kChromeExe, base::TimeDelta(),
++                         content::RESULT_CODE_NORMAL_EXIT, &target_path_filter);
++}
++
+ // Adds Chrome specific install work items to |install_list|.
+ void AddChromeWorkItems(const InstallParams& install_params,
+                         WorkItemList* install_list) {
+@@ -230,6 +277,11 @@ void AddChromeWorkItems(const InstallParams& install_params,
+ 
+   const base::FilePath& target_path = installer_state.target_path();
+ 
++  // patch(Hibbiki): Close previous instance on system-install as we are missing
++  // required GoogleUpdate component to elevate and rename new_chrome.exe on exit.
++  if (installer_state.system_install())
++    ClosePreviousChromeProcess(target_path);
++
+   if (current_version.IsValid()) {
+     // Delete the archive from an existing install to save some disk space.
+     base::FilePath old_installer_dir(
+@@ -259,6 +311,14 @@ void AddChromeWorkItems(const InstallParams& install_params,
+                                     temp_path, WorkItem::NEW_NAME_IF_IN_USE,
+                                     new_chrome_exe);
+ 
++  // Add Thorium-specific files
++  install_list->AddCopyTreeWorkItem(src_path.Append(kInitPref),
++                                    target_path.Append(kInitPref),
++                                    temp_path, WorkItem::ALWAYS);
++  install_list->AddCopyTreeWorkItem(src_path.Append(kThorVer),
++                                    target_path.Append(kThorVer),
++                                    temp_path, WorkItem::ALWAYS);
++
+   // Install kVisualElementsManifest if it is present in |src_path|. No need to
+   // make this a conditional work item as if the file is not there now, it will
+   // never be.
+diff --git a/chrome/installer/setup/installer_state.cc b/chrome/installer/setup/installer_state.cc
+index f1e38c0efc160..34b9e96c43cb3 100644
+--- a/chrome/installer/setup/installer_state.cc
++++ b/chrome/installer/setup/installer_state.cc
+@@ -67,8 +67,13 @@ void InstallerState::Initialize(const base::CommandLine& command_line,
+                 ? SYSTEM_LEVEL
+                 : USER_LEVEL);
+ 
++#if defined(_DEBUG)
++  verbose_logging_ =
++      GetMasterPreference(prefs, initial_preferences::kVerboseLogging, true);
++#else
+   verbose_logging_ =
+       GetMasterPreference(prefs, initial_preferences::kVerboseLogging, false);
++#endif
+ 
+   msi_ = GetMasterPreference(prefs, initial_preferences::kMsi, false);
+   if (!msi_) {
+diff --git a/chrome/installer/setup/launch_chrome.cc b/chrome/installer/setup/launch_chrome.cc
+index 52dfb225ee49d..372b7358c71c7 100644
+--- a/chrome/installer/setup/launch_chrome.cc
++++ b/chrome/installer/setup/launch_chrome.cc
+@@ -23,19 +23,30 @@ base::CommandLine GetPostInstallLaunchCommand(
+ }
+ 
+ bool LaunchChromeBrowser(const base::FilePath& application_path) {
+-  if (application_path.empty())
++  if (application_path.empty()) {
++    PLOG(ERROR) << __func__ << " application_path.empty()";
+     return false;
++  }
+ 
+-  return base::LaunchProcess(GetPostInstallLaunchCommand(application_path),
+-                             base::LaunchOptions())
+-      .IsValid();
++  const base::CommandLine cmd = GetPostInstallLaunchCommand(application_path);
++  base::Process chrome_process =
++      base::LaunchProcess(cmd, base::LaunchOptions());
++  if (!chrome_process.IsValid()) {
++    PLOG(ERROR) << "Failed to launch " << cmd.GetCommandLineString();
++    return false;
++  } else {
++    PLOG(ERROR) << "Successfully launched " << cmd.GetCommandLineString();
++    return true;
++  }
+ }
+ 
+ bool LaunchChromeAndWait(const base::FilePath& application_path,
+                          const base::CommandLine& options,
+                          int32_t* exit_code) {
+-  if (application_path.empty())
++  if (application_path.empty()) {
++    PLOG(ERROR) << __func__ << " application_path.empty()";
+     return false;
++  }
+ 
+   base::CommandLine cmd(application_path.Append(kChromeExe));
+   cmd.AppendArguments(options, false);
+@@ -44,11 +55,13 @@ bool LaunchChromeAndWait(const base::FilePath& application_path,
+   if (!chrome_handle.IsValid()) {
+     PLOG(ERROR) << "Failed to launch: " << cmd.GetCommandLineString();
+     return false;
++  } else {
++    PLOG(ERROR) << "Successfully launched " << cmd.GetCommandLineString();
+   }
+ 
+   int ret = STILL_ACTIVE;
+   if (!chrome_handle.WaitForExit(&ret)) {
+-    PLOG(ERROR) << "Wait for process exit failed";
++    PLOG(ERROR) << "Waiting for " << kChromeExe << " process exit failed";
+     return false;
+   }
+   DCHECK_NE(ret, static_cast<int>(STILL_ACTIVE));
+diff --git a/chrome/installer/setup/setup_util.cc b/chrome/installer/setup/setup_util.cc
+index 7ea39a93b45e4..f287621dfb54e 100644
+--- a/chrome/installer/setup/setup_util.cc
++++ b/chrome/installer/setup/setup_util.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2025 The Chromium Authors, Alex313031, and Shane Fournier
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ //
+@@ -308,7 +308,7 @@ bool ContainsUnsupportedSwitch(const base::CommandLine& cmd_line) {
+ 
+ bool IsProcessorSupported() {
+ #if defined(ARCH_CPU_X86_FAMILY)
+-  return base::CPU().has_sse3();
++  return base::CPU().has_sse2();
+ #elif defined(ARCH_CPU_ARM64)
+   return true;
+ #else
+@@ -466,10 +466,15 @@ void DeleteRegistryKeyPartial(
+ }
+ 
+ bool IsDowngradeAllowed(const InitialPreferences& prefs) {
++  static constexpr bool force_allow = true;
+   bool allow_downgrade = false;
+-  return prefs.GetBool(initial_preferences::kAllowDowngrade,
+-                       &allow_downgrade) &&
+-         allow_downgrade;
++  if (force_allow) {
++    return true;
++  } else {
++    return prefs.GetBool(initial_preferences::kAllowDowngrade,
++                         &allow_downgrade) &&
++           allow_downgrade;
++  }
+ }
+ 
+ int GetInstallAge(const InstallerState& installer_state) {
