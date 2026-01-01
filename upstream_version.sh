@@ -60,8 +60,12 @@ git clean -ffd &&
 # gclient runhooks &&
 
 # Install sysroots (i.e. for ARM64)
-build/linux/sysroot_scripts/install-sysroot.py --arch=amd64 &&
-build/linux/sysroot_scripts/install-sysroot.py --arch=arm64 &&
+if [ -n "$MSYSTEM" ]; then
+  printf "${GRE}Not Downloading Linux sysroot on Windows\n"
+else
+  build/linux/sysroot_scripts/install-sysroot.py --arch=amd64 &&
+  build/linux/sysroot_scripts/install-sysroot.py --arch=arm64 &&
+fi
 
 printf "\n"
 printf "${GRE}Chromium tree is checked out at tag: ${c0}$CR_VER\n"
