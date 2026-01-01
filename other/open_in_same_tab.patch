@@ -46,7 +46,7 @@ index 1a3cf66891..0145529f16 100644
            <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="In Title Case: The name of the Open Link in New Window command in the content area context menu">
              Open Link in New &amp;Window
 diff --git a/chrome/browser/renderer_context_menu/render_view_context_menu.cc b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-index eaaab56c72145..ff58720ddb83c 100644
+index eaaab56c72145..b5eaaaa84a28d 100644
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 @@ -534,13 +534,14 @@ const std::map<int, int>& GetIdcToUmaMap(UmaEnumIdLookupType type) {
@@ -91,17 +91,17 @@ index eaaab56c72145..ff58720ddb83c 100644
           id == IDC_CONTENT_CONTEXT_OPENLINKNEWWINDOW ||
           id == IDC_CONTENT_CONTEXT_OPENLINKOFFTHERECORD ||
           id == IDC_CONTENT_CONTEXT_OPENLINKSPLITVIEW ||
-@@ -1772,6 +1775,10 @@ void RenderViewContextMenu::AppendLinkItems() {
-     }
- 
-     if (show_open_in_new_tab) {
+@@ -1776,6 +1779,10 @@ void RenderViewContextMenu::AppendLinkItems() {
+           IDC_CONTENT_CONTEXT_OPENLINKNEWTAB,
+           in_app ? IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP
+                  : IDS_CONTENT_CONTEXT_OPENLINKNEWTAB);
 +      menu_model_.AddItemWithStringId(
 +          IDC_CONTENT_CONTEXT_OPENLINKSAMETAB,
 +          in_app ? IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP
 +                 : IDS_CONTENT_CONTEXT_OPENLINKSAMETAB);
-       menu_model_.AddItemWithStringId(
-           IDC_CONTENT_CONTEXT_OPENLINKNEWTAB,
-           in_app ? IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP
+     }
+ 
+     if (show_open_in_new_window) {
 @@ -2936,6 +2943,7 @@ bool RenderViewContextMenu::IsCommandIdEnabled(int id) const {
  
      case IDC_CONTENT_CONTEXT_OPENLINKBOOKMARKAPP:
