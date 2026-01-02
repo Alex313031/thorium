@@ -10,7 +10,7 @@ index 5096175e285c1..6d4a41ab2815f 100644
 +    <a href="{{thorium_link}}">here</a>. Chromium source code is available <a href="{{opensource_link}}">here</a>.
  </div>
 diff --git a/tools/licenses/licenses.py b/tools/licenses/licenses.py
-index b0807ee3d8ebc..e7e8cf0fa3296 100755
+index b0807ee3d8ebc..0630fc87cdee8 100755
 --- a/tools/licenses/licenses.py
 +++ b/tools/licenses/licenses.py
 @@ -1059,6 +1059,8 @@ def GenerateCredits(file_template_file,
@@ -18,7 +18,7 @@ index b0807ee3d8ebc..e7e8cf0fa3296 100755
                                      encoding='utf-8').read()
    reciprocal_contents = EvaluateTemplate(reciprocal_template, {
 +      'thorium_project': 'Thorium',
-+      'thorium_link': 'https://github.com/Alex313031/thorium'
++      'thorium_link': 'https://github.com/Alex313031/thorium',
        'opensource_project': 'Chromium',
        'opensource_link': 'https://source.chromium.org/chromium'
    },
@@ -44,10 +44,10 @@ index 0a77a8c846880..725bc4ea35952 100644
    if ((!is_android && !is_ios) || is_desktop_android) {
 diff --git a/ui/webui/resources/text/BUILD.gn b/ui/webui/resources/text/BUILD.gn
 new file mode 100644
-index 0000000000000..02bd28132bc6b
+index 0000000000000..70fa603fabbdb
 --- /dev/null
 +++ b/ui/webui/resources/text/BUILD.gn
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,16 @@
 +# Copyright 2020 The Chromium Authors
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -58,12 +58,11 @@ index 0000000000000..02bd28132bc6b
 +  grd_prefix = "webui_images"
 +  out_grd = "$target_gen_dir/resources.grdp"
 +  input_files_base_dir = rebase_path(".", "//")
-+
-+  if (is_chromeos) {
-+    input_files += [ "thorium_version.txt" ]
-+  }
-+
 +  resource_path_prefix = "text"
++
++  input_files = [
++    "thorium_version.txt"
++  ]
 +}
 diff --git a/ui/webui/resources/text/thorium_version.txt b/ui/webui/resources/text/thorium_version.txt
 new file mode 100644
