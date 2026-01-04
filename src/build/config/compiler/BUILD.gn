@@ -1138,10 +1138,10 @@ config("compiler") {
     rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx", ]
   }
   if (use_avx2 && !use_avx512) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
   }
   if (use_avx512) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f", "-Cllvm-args=-fp-contract=fast", ]
+    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi,+bmi2,+mavx512f", "-Cllvm-args=-fp-contract=fast", ]
   }
 
   if (!is_win || force_rustc_color_output) {
@@ -1347,6 +1347,7 @@ config("compiler_cpu_abi") {
           "-mavx2",
           "-mf16c",
           "-mlzcnt",
+          "-mbmi",
           "-mbmi2",
           "-mtune=haswell",
         ]
@@ -1391,6 +1392,7 @@ config("compiler_cpu_abi") {
           "-mavx2",
           "-mf16c",
           "-mlzcnt",
+          "-mbmi",
           "-mbmi2",
           "-Wl,-mllvm,-march=haswell",
         ]
@@ -2836,6 +2838,7 @@ if (is_win) {
       "/clang:-mavx2",
       "/clang:-mf16c",
       "/clang:-mlzcnt",
+      "/clang:-mbmi",
       "/clang:-mbmi2",
     ]
   }
@@ -2936,6 +2939,7 @@ if (is_win) {
       "-mavx2",
       "-mf16c",
       "-mlzcnt",
+      "-mbmi",
       "-mbmi2",
     ]
   }
@@ -2996,6 +3000,7 @@ if (is_win) {
       "-mavx2",
       "-mf16c",
       "-mlzcnt",
+      "-mbmi",
       "-mbmi2",
       "-Wl,-mllvm,-march=haswell",
     ]

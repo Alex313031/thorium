@@ -1674,6 +1674,8 @@ config("toolchain") {
           "/clang:-mfma",
           "/clang:-ffp-contract=fast",
           "/clang:-mavx2",
+          "/clang:-mbmi",
+          "/clang:-mbmi2",
         ]
       }
       if (use_fma) {
@@ -1683,7 +1685,6 @@ config("toolchain") {
         cflags += [
           "/clang:-mf16c",
           "/clang:-mlzcnt",
-          "/clang:-mbmi2",
           "/clang:-mavx512f",
           "/clang:-mavx512cd",
           "/clang:-mavx512vl",
@@ -1712,6 +1713,8 @@ config("toolchain") {
           "-mfma",
           "-ffp-contract=fast",
           "-mavx2",
+          "-mbmi",
+          "-mbmi2",
         ]
       }
       if (use_fma) {
@@ -1721,7 +1724,6 @@ config("toolchain") {
         cflags += [
           "-mf16c",
           "-mlzcnt",
-          "-mbmi2",
           "-mavx512f",
           "-mavx512cd",
           "-mavx512vl",
