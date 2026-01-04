@@ -55,7 +55,8 @@ Fix omnibox dropdown alignment and search icon alignment again
 Add vector icon colors for top bar from Primo
 Fix omnibox dropdown highlight row right side rounding
 Fix side panel metrics and grab handle icon alignment
-Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc
+Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc.
+Fix download shelf hovercards on filename too long
 MV2: https://github.com/primo-browser/primo/commit/5aa8d52a29f3b1162462a389444fb98b90ec4a1e  
      https://github.com/primo-browser/primo/commit/de205e3623e8d922c97b949e82e7937c1c7f5f8a
      https://github.com/primo-browser/primo/commit/e567420253e358977714769e5b83ea32f374e008
