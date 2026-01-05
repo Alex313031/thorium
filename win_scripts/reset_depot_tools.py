@@ -10,7 +10,6 @@ in fact it seems that the files we need to delete have been deleted.
 # TODO(gz83): Suppress false positives during operation?
 
 import os
-import shutil
 import subprocess
 import sys
 
@@ -42,20 +41,18 @@ def remove(item_path):
 
 
 def unlock_and_delete(path):
-    """Attempts to unlock and delete a directory using cmd commands."""
-    if sys.platform == "win32":
-        # Use the Windows command line tools to unlock the directory
-        try:
-            # Use the command 'del' to delete all files recursively
-            subprocess.run(f'del /S /Q "{path}\\*"', shell=True, check=True)
-            # Use the command 'rmdir' to delete the directory
-            subprocess.run(f'rmdir /S /Q "{path}"', shell=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to unlock and delete directory '{path}' via CMD: {e}")
-            raise PermissionError(f"Failed to unlock and delete directory '{path}' via CMD: {e}")
-    else:
-        # For other platforms, just use shutil.rmtree
-        shutil.rmtree(path)
+    """Attempts to unlock and delete a directory using Windows cmd commands."""
+    # Use the Windows command line tools to unlock the directory
+    try:
+        # Use the command 'del' to delete all files recursively
+        subprocess.run(f'del /S /Q "{path}\\*"', shell=True, check=True)
+        # Use the command 'rmdir' to delete the directory
+        subprocess.run(f'rmdir /S /Q "{path}"', shell=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to unlock and delete directory '{path}' via CMD: {e}")
+        raise PermissionError(
+            f"Failed to unlock and delete directory '{path}' via CMD: {e}"
+        )
 
 
 def display_help():
@@ -64,14 +61,18 @@ def display_help():
     print("from your disk, and then re-clone depot_tools.")
     print("\n")
 
-if '--help' in sys.argv:
+
+if "--help" in sys.argv:
     display_help()
     sys.exit(0)
 
 
-depot_tools_dir = os.getenv('DEPOT_TOOLS_DIR', r"C:\src\depot_tools")
-gsutil_dir = os.path.expandvars(os.getenv('GSUTIL_DIR', r'%USERPROFILE%\.gsutil'))
-vpython_root_dir = os.path.expandvars(os.getenv('VPYTHON_ROOT_DIR', r'%LOCALAPPDATA%\.vpython-root'))
+depot_tools_dir = os.getenv("DEPOT_TOOLS_DIR", r"C:\src\depot_tools")
+gsutil_dir = os.path.expandvars(
+    os.getenv("GSUTIL_DIR", r"%USERPROFILE%\.gsutil"))
+vpython_root_dir = os.path.expandvars(
+    os.getenv("VPYTHON_ROOT_DIR", r"%LOCALAPPDATA%\.vpython-root")
+)
 
 print("\nRemoving depot_tools, etc\n")
 
@@ -84,5 +85,6 @@ print("\nRe-clone depot_tools\n")
 os.chdir(os.path.dirname(depot_tools_dir))
 try_run(f"git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git")
 
-print(f"\nCompleted. You can now use the depot_tools installed at: {depot_tools_dir}\n")
+print(
+    f"\nCompleted. You can now use the depot_tools installed at: {depot_tools_dir}\n")
 print("\nYou can now run trunk.py\n")
