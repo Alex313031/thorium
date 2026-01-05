@@ -37,13 +37,14 @@ def safe_rmtree(path):
 def display_help():
     print(f"\nScript to Rebase/Sync the Chromium repo.\n")
 
-if '--help' in sys.argv:
+
+if "--help" in sys.argv:
     display_help()
     sys.exit(0)
 
 
 # Set chromium/src dir from Windows environment variable
-cr_src_dir = os.getenv('CR_DIR', r'C:/src/chromium/src')
+cr_src_dir = os.getenv("CR_DIR", r"C:/src/chromium/src")
 # Thorium-specific directory that need to be deleted
 pak_dir = os.path.normpath(os.path.join(cr_src_dir, "third_party", "pak"))
 
@@ -61,17 +62,17 @@ def main():
 
     # Commands to run
     commands = [
-        'cd v8 && git restore . && git clean -ffd',
-        'cd third_party/devtools-frontend/src && git restore . && git clean -ffd',
-        'cd third_party/ffmpeg && git restore . && git clean -ffd',
-        'git checkout -f origin/main',
-        'git clean -ffd',
-        'git clean -ffd',
-        'git rebase-update',
-        'git fetch --tags',
-        'gclient sync --with_branch_heads --with_tags -f -R -D',
-        'git clean -ffd',
-        'gclient runhooks'
+        "cd v8 && git restore . && git clean -ffd",
+        "cd third_party/devtools-frontend/src && git restore . && git clean -ffd",
+        "cd third_party/ffmpeg && git restore . && git clean -ffd",
+        "git checkout -f origin/main",
+        "git clean -ffd",
+        "git clean -ffd",
+        "git rebase-update",
+        "git fetch --tags",
+        "gclient sync --with_branch_heads --with_tags -f -R -D",
+        "git clean -ffd",
+        "gclient runhooks",
     ]
 
     # Run each command with error handling

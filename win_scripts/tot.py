@@ -30,37 +30,37 @@ def try_run(command):
 def display_help():
     print(f"\nScript to Rebase/Sync Chromium repo to Tip of Tree.\n")
 
-if '--help' in sys.argv:
+
+if "--help" in sys.argv:
     display_help()
     sys.exit(0)
 
 
 # Set chromium/src dir from Windows environment variable
-cr_src_dir = os.getenv('CR_DIR', r'C:/src/chromium/src')
+cr_src_dir = os.getenv("CR_DIR", r"C:/src/chromium/src")
 
 
 def main():
 
     print("\nScript to Rebase/Sync Chromium repo to Tip of Tree.\n")
     print(
-        f"Rebasing/Syncing to `origin/main` and running hooks in {cr_src_dir}\n"
-    )
+        f"Rebasing/Syncing to `origin/main` and running hooks in {cr_src_dir}\n")
 
     # Change directory to cr_src_dir and run commands
     os.chdir(cr_src_dir)
 
     # Commands to run
     commands = [
-        'cd v8 && git restore . && git clean -ffd',
-        'cd third_party/devtools-frontend/src && git restore . && git clean -ffd',
-        'cd third_party/ffmpeg && git restore . && git clean -ffd',
-        'git checkout -f origin/main',
-        'git clean -ffd',
-        'git rebase-update',
-        'git fetch --tags',
-        'gclient sync --with_branch_heads --with_tags -f -R -D',
-        'git clean -ffd',
-        'gclient runhooks'
+        "cd v8 && git restore . && git clean -ffd",
+        "cd third_party/devtools-frontend/src && git restore . && git clean -ffd",
+        "cd third_party/ffmpeg && git restore . && git clean -ffd",
+        "git checkout -f origin/main",
+        "git clean -ffd",
+        "git rebase-update",
+        "git fetch --tags",
+        "gclient sync --with_branch_heads --with_tags -f -R -D",
+        "git clean -ffd",
+        "gclient runhooks",
     ]
 
     # Run each command with error handling
