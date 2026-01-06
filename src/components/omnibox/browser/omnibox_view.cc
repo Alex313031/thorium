@@ -130,9 +130,6 @@ ui::ImageModel OmniboxView::GetIcon(int dip_size,
     if (!match.keyword.empty()) {
       favicon = controller_->client()->GetFaviconForKeywordSearchProvider(
           turl, std::move(on_icon_fetched));
-    } else {
-      favicon = controller_->client()->GetFaviconForDefaultSearchProvider(
-          std::move(on_icon_fetched));
     }
   } else if (match.type != AutocompleteMatchType::HISTORY_CLUSTER) {
     // The starter pack suggestions are a unique case. These suggestions
