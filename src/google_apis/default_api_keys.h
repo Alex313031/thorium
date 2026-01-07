@@ -18,11 +18,11 @@ struct DefaultApiKeys {
   static constexpr char kUnsetApiToken[] = "dummytoken";
 
   // Real keys
-  static constexpr char kThorApiKey[] = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw";
+  static constexpr char kThorApiKey[] = "AIzaSyCbsbvGCe7C9mCtdaTycZB2eUFuzsYKG_E";
   static constexpr char kThorClientId[] = "77185425430.apps.googleusercontent.com";
   static constexpr char kThorClientSecret[] = "OTJgUOQcT7lO7GsGZq2G4IlT";
   // Remoting
-  static constexpr char kThorApiKeyRemoting[] = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"; // Same as kThorApiKey
+  static constexpr char kThorApiKeyRemoting[] = "AIzaSyCbsbvGCe7C9mCtdaTycZB2eUFuzsYKG_E"; // Same as kThorApiKey
   static constexpr char kThorClientIdRemoting[] = "440925447803-avn2sj1kc099s0r7v62je5s339mu0am1.apps.googleusercontent.com";
   static constexpr char kThorClientSecretRemoting[] = "Bgur6DFiOMM1h8x-AQpuTQlK";
   // SODA
