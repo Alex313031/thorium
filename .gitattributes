@@ -11,7 +11,7 @@
 *.hpp text
 
 # Build system Files
-*.py text
+*.py text eol=lf
 *.gn text
 *.gni text
 *.mak text eol=lf
