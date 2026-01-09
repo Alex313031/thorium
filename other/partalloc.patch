@@ -1,3 +1,6 @@
+Chromium Devs should have added this to M138
+---
+
 diff --git a/base/allocator/partition_allocator/src/partition_alloc/partition_root.h b/base/allocator/partition_allocator/src/partition_alloc/partition_root.h
 index 6dc8bb96392fb..63c3cb57ab1a9 100644
 --- a/base/allocator/partition_allocator/src/partition_alloc/partition_root.h
