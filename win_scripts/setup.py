@@ -142,6 +142,11 @@ patches = [
     "other/mini_installer.patch",
     "other/open_in_same_tab.patch",
     "other/thorium_webui.patch",
+    "other/partalloc.patch",
+    "other/skia_scale.patch",
+    "other/fix_getupdatesprocessor_crash.patch",
+    "other/fix_dangling_pointer_tooltip.patch",
+    "other/fix_disable_aero_crash.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -201,16 +206,22 @@ os.chdir(cr_src_dir)
 try_run(f"git apply --reject mini_installer.patch")
 
 
-print("\nPatching for open_in_same_tab\n")
+print("\nApplying other Misc. patches...\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject open_in_same_tab.patch")
+try_run(f"git apply --reject thorium_webui.patch")
 
 
-print("\nPatching for thorium_webui\n")
+print("\nApplying performance and crash fixes patches...\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
-try_run(f"git apply --reject thorium_webui.patch")
+try_run(f"git apply --reject partalloc.patch")
+try_run(f"git apply --reject skia_scale.patch")
+try_run(f"git apply --reject fix_getupdatesprocessor_crash.patch")
+try_run(f"git apply --reject fix_dangling_pointer_tooltip.patch")
+try_run(f"git apply --reject fix_disable_aero_crash.patch")
+
 
 print("\nCopying other files to out/thorium\n")
 # Copying additional files
