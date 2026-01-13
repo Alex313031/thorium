@@ -1,0 +1,31 @@
+From f9fce2f1f8abbb0bc72750be3756f4f8c96b4ed3 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <hocheung@chromium.org>
+Date: Mon, 12 Jan 2026 22:12:16 +0800
+Subject: [PATCH] [win] Fix crash when changing color scheme with disable-aero
+ flag enabled
+
+PerformDwmTransition() requires system-drawn frames but was being called
+unconditionally in FrameTypeChanged(). Add IsFrameSystemDrawn() guard to
+prevent crash when frame mode is CUSTOM_DRAWN.
+
+Change-Id: I835656945ac22a46ddc227f07cbf058b90f2cb56
+---
+ ui/views/win/hwnd_message_handler.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui/views/win/hwnd_message_handler.cc b/ui/views/win/hwnd_message_handler.cc
+index 1a8943c86cb1b..1f70a23bfa8a1 100644
+--- a/ui/views/win/hwnd_message_handler.cc
++++ b/ui/views/win/hwnd_message_handler.cc
+@@ -930,7 +930,7 @@ void HWNDMessageHandler::FrameTypeChanged() {
+   if (!custom_window_region_.is_valid() && IsFrameSystemDrawn()) {
+     dwm_transition_desired_ = true;
+   }
+-  if (!dwm_transition_desired_ || !IsFullscreen()) {
++  if ((!dwm_transition_desired_ || !IsFullscreen()) && IsFrameSystemDrawn()) {
+     PerformDwmTransition();
+   }
+ }
+-- 
+2.51.0
+

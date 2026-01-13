@@ -102,6 +102,9 @@ patchThor () {
 	cp -v other/thorium_webui.patch ${CR_SRC_DIR}/ &&
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
 	cp -v other/skia_scale.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_getupdatesprocessor_crash.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_dangling_pointer_tooltip.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_disable_aero_crash.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -145,7 +148,11 @@ patchThor () {
 	git apply --reject ./thorium_webui.patch &&
 	printf "${YEL}partalloc and Skia fixes...${c0}\n" &&
 	git apply --reject ./partalloc.patch &&
-	git apply --reject ./skia_scale.patch
+	git apply --reject ./skia_scale.patch &&
+	printf "${YEL}some crashes fixes...${c0}\n" &&
+	git apply --reject ./fix_getupdatesprocessor_crash.patch &&
+	git apply --reject ./fix_dangling_pointer_tooltip.patch &&
+	git apply --reject ./fix_disable_aero_crash.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 

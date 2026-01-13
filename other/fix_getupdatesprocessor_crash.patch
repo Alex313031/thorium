@@ -1,0 +1,91 @@
+From 750190caa7c309af0d630b3a58d4c47c44680cb1 Mon Sep 17 00:00:00 2001
+From: Marc Treib <treib@chromium.org>
+Date: Thu, 23 Oct 2025 08:46:31 -0700
+Subject: [PATCH] Sync GetUpdatesProcessor: Remove two invalid NOTREACHED()s
+
+Two NOTREACHED()s in this class (or its helper functions) relied on data
+from the server, which means they weren't actually valid.
+
+This CL replaces them by appropriate logs and runtime errors, and also
+adds a histogram to track for which data types this happens.
+
+Bug: 451606786
+Change-Id: I318a12dfdfbf48cb87d64f2428898c00e244cb02
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7077902
+Reviewed-by: Rushan Suleymanov <rushans@google.com>
+Commit-Queue: Marc Treib <treib@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1534371}
+---
+ .../sync/engine/get_updates_processor.cc       | 18 ++++++++++++++++--
+ .../histograms/metadata/sync/histograms.xml    | 11 +++++++++++
+ 2 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/components/sync/engine/get_updates_processor.cc b/components/sync/engine/get_updates_processor.cc
+index da73fa5027da6..e1a1459533b48 100644
+--- a/components/sync/engine/get_updates_processor.cc
++++ b/components/sync/engine/get_updates_processor.cc
+@@ -12,6 +12,7 @@
+ #include <vector>
+ 
+ #include "base/logging.h"
++#include "base/metrics/histogram_functions.h"
+ #include "base/trace_event/trace_event.h"
+ #include "components/sync/base/data_type.h"
+ #include "components/sync/engine/cycle/status_controller.h"
+@@ -91,7 +92,9 @@ void PartitionUpdatesByType(const sync_pb::GetUpdatesResponse& gu_response,
+   for (const sync_pb::SyncEntity& update : gu_response.entries()) {
+     DataType type = GetDataTypeFromSpecifics(update.specifics());
+     if (!IsRealDataType(type)) {
+-      NOTREACHED() << "Received update with invalid type.";
++      DLOG(WARNING)
++          << "Received update for invalid or unspecified type, ignoring.";
++      continue;
+     }
+ 
+     auto it = updates_by_type->find(type);
+@@ -319,8 +322,19 @@ SyncerError GetUpdatesProcessor::ProcessResponse(
+   TypeToIndexMap progress_index_by_type;
+   PartitionProgressMarkersByType(gu_response, gu_types,
+                                  &progress_index_by_type);
++  // Verify that the response actually contained a progress marker for each
++  // requested data type. Note that `PartitionProgressMarkersByType()` will drop
++  // progress markers for types that weren't requested, so just comparing the
++  // counts is enough.
+   if (gu_types.size() != progress_index_by_type.size()) {
+-    NOTREACHED() << "Missing progress markers in GetUpdates response.";
++    for (DataType type : gu_types) {
++      if (progress_index_by_type.count(type) == 0) {
++        base::UmaHistogramEnumeration(
++            "Sync.MissingProgressMarkerInGetUpdatesResponse",
++            DataTypeHistogramValue(type));
++      }
++    }
++    return SyncerError::ProtocolViolationError();
+   }
+ 
+   TypeToIndexMap context_by_type;
+diff --git a/tools/metrics/histograms/metadata/sync/histograms.xml b/tools/metrics/histograms/metadata/sync/histograms.xml
+index e0a3a8e4740d3..08a4edf848708 100644
+--- a/tools/metrics/histograms/metadata/sync/histograms.xml
++++ b/tools/metrics/histograms/metadata/sync/histograms.xml
+@@ -1552,6 +1552,17 @@ chromium-metrics-reviews@google.com.
+   </summary>
+ </histogram>
+ 
++<histogram name="Sync.MissingProgressMarkerInGetUpdatesResponse"
++    enum="SyncDataTypes" expires_after="2026-10-01">
++  <owner>rushans@google.com</owner>
++  <owner>treib@chromium.org</owner>
++  <owner>src/components/sync/OWNERS</owner>
++  <summary>
++    Logged when the GetUpdates response didn't contain a progress marker for an
++    expected/requested data type. Recorded once per missing data type.
++  </summary>
++</histogram>
++
+ <histogram name="Sync.ModelLoadManager.LoadModelsElapsedTime" units="ms"
+     expires_after="2025-09-23">
+   <owner>ankushkush@google.com</owner>
+-- 
+2.51.0
+
