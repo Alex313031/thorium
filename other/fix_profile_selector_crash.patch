@@ -1,0 +1,145 @@
+From 44a5930b5a5c738c59a4f2702f89717ba78761cf Mon Sep 17 00:00:00 2001
+From: Ryan Sultanem <rsult@google.com>
+Date: Tue, 19 Aug 2025 01:35:23 -0700
+Subject: [PATCH] [VectorIcons] Move kFilterIcon from ash/ to components/
+
+Bypass-Check-License: Moved file.
+Bug: 351124189
+Change-Id: I595e3695390d7a8d016e2264f0b9d4b937f0be84
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6794468
+Reviewed-by: Mitsuru Oshima <oshima@chromium.org>
+Commit-Queue: Ryan Sultanem <rsult@google.com>
+Reviewed-by: Evan Stade <evanstade@microsoft.com>
+Cr-Commit-Position: refs/heads/main@{#1503209}
+
+[ProfileMenu] Add an icon to Manage Your Google account for Chromium
+
+Fixed: 351124189
+Change-Id: Ie43d9e78ffeacc4115f53b7d767e67a46fa57c87
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6794469
+Reviewed-by: David Roger <droger@chromium.org>
+Commit-Queue: Ryan Sultanem <rsult@google.com>
+Cr-Commit-Position: refs/heads/main@{#1503216}
+---
+ ash/app_list/views/search_box_view.cc               |  3 ++-
+ ash/resources/vector_icons/BUILD.gn                 |  1 -
+ .../browser/ui/views/profiles/profile_menu_view.cc  | 12 ++++--------
+ .../ui/views/profiles/profile_menu_view_base.h      | 13 ++++++-------
+ components/vector_icons/BUILD.gn                    |  1 +
+ .../vector_icons/filter.icon                        |  0
+ 6 files changed, 13 insertions(+), 17 deletions(-)
+ rename {ash/resources => components}/vector_icons/filter.icon (100%)
+
+diff --git a/ash/app_list/views/search_box_view.cc b/ash/app_list/views/search_box_view.cc
+index 346150dcfee6a..b3c9e71e5518e 100644
+--- a/ash/app_list/views/search_box_view.cc
++++ b/ash/app_list/views/search_box_view.cc
+@@ -838,7 +838,8 @@ void SearchBoxView::OnThemeChanged() {
+   if (filter_button()) {
+     filter_button()->SetImageModel(
+         views::ImageButton::STATE_NORMAL,
+-        ui::ImageModel::FromVectorIcon(kFilterIcon, button_icon_color,
++        ui::ImageModel::FromVectorIcon(vector_icons::kFilterIcon,
++                                       button_icon_color,
+                                        GetSearchBoxIconSize()));
+   }
+   auto* focus_ring = views::FocusRing::Get(assistant_button());
+diff --git a/ash/resources/vector_icons/BUILD.gn b/ash/resources/vector_icons/BUILD.gn
+index 5eef69bfaee26..25f7caec03c23 100644
+--- a/ash/resources/vector_icons/BUILD.gn
++++ b/ash/resources/vector_icons/BUILD.gn
+@@ -141,7 +141,6 @@ aggregate_vector_icons("ash_vector_icons") {
+     "facegaze.icon",
+     "feedback.icon",
+     "files_app.icon",
+-    "filter.icon",
+     "five_files.icon",
+     "focus_mode_lamp.icon",
+     "focus_sounds.icon",
+diff --git a/chrome/browser/ui/views/profiles/profile_menu_view.cc b/chrome/browser/ui/views/profiles/profile_menu_view.cc
+index c47f678a896fa..c3807c774d803 100644
+--- a/chrome/browser/ui/views/profiles/profile_menu_view.cc
++++ b/chrome/browser/ui/views/profiles/profile_menu_view.cc
+@@ -878,27 +878,22 @@ void ProfileMenuView::MaybeBuildManageGoogleAccountButton() {
+   CHECK(!profile->IsGuestSession());
+   signin::IdentityManager* identity_manager =
+       IdentityManagerFactory::GetForProfile(profile);
+-
+   if (!identity_manager) {
+     return;
+   }
+ 
+-  bool show_button = true;
+   switch (signin_util::GetSignedInState(identity_manager)) {
+     case signin_util::SignedInState::kSignInPending:
+     case signin_util::SignedInState::kSyncPaused:
+     case signin_util::SignedInState::kSignedOut:
+     case signin_util::SignedInState::kWebOnlySignedIn:
+-      show_button = false;
+-      break;
++      // Do not show the button.
++      return;
+     case signin_util::SignedInState::kSignedIn:
+     case signin_util::SignedInState::kSyncing:
+       // Show the button.
+       break;
+   }
+-  if (!show_button) {
+-    return;
+-  }
+ 
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   // The Google G icon needs to be shrunk, so it won't look too big compared
+@@ -913,7 +908,8 @@ void ProfileMenuView::MaybeBuildManageGoogleAccountButton() {
+   AddFeatureButton(
+       l10n_util::GetStringUTF16(IDS_SETTINGS_MANAGE_GOOGLE_ACCOUNT),
+       base::BindRepeating(&ProfileMenuView::OnManageGoogleAccountButtonClicked,
+-                          base::Unretained(this)));
++                          base::Unretained(this)),
++      vector_icons::kFilterIcon);
+ #endif
+ }
+ 
+diff --git a/chrome/browser/ui/views/profiles/profile_menu_view_base.h b/chrome/browser/ui/views/profiles/profile_menu_view_base.h
+index c35a62385d29d..84dae4e467e5e 100644
+--- a/chrome/browser/ui/views/profiles/profile_menu_view_base.h
++++ b/chrome/browser/ui/views/profiles/profile_menu_view_base.h
+@@ -159,13 +159,12 @@ class ProfileMenuViewBase : public content::WebContentsDelegate,
+   // See `IdentitySectionParams` for documentation of the parameters.
+   void SetProfileIdentityWithCallToAction(IdentitySectionParams params);
+ 
+-  void AddFeatureButton(
+-      const std::u16string& text,
+-      base::RepeatingClosure action,
+-      const gfx::VectorIcon& icon = gfx::VectorIcon::EmptyIcon(),
+-      float icon_to_image_ratio = 1.0f,
+-      std::optional<ui::ColorId> background_color = std::nullopt,
+-      bool add_vertical_margin = false);
++  void AddFeatureButton(const std::u16string& text,
++                        base::RepeatingClosure action,
++                        const gfx::VectorIcon& icon,
++                        float icon_to_image_ratio = 1.0f,
++                        std::optional<ui::ColorId> background_color = std::nullopt,
++                        bool add_vertical_margin = true);
+   void SetProfileManagementHeading(const std::u16string& heading);
+   void AddAvailableProfile(const ui::ImageModel& image_model,
+                            const std::u16string& name,
+diff --git a/components/vector_icons/BUILD.gn b/components/vector_icons/BUILD.gn
+index 0d5e7f372eec3..3009e078de801 100644
+--- a/components/vector_icons/BUILD.gn
++++ b/components/vector_icons/BUILD.gn
+@@ -99,6 +99,7 @@ if (current_toolchain == default_toolchain) {
+       "file_download.icon",
+       "file_download_chrome_refresh.icon",
+       "file_download_off_chrome_refresh.icon",
++      "filter.icon",
+       "fingerprint.icon",
+       "fingerprint_off.icon",
+       "folder.icon",
+diff --git a/ash/resources/vector_icons/filter.icon b/components/vector_icons/filter.icon
+similarity index 100%
+rename from ash/resources/vector_icons/filter.icon
+rename to components/vector_icons/filter.icon
+-- 
+2.51.0
+
