@@ -101,7 +101,7 @@ patchThor () {
 	cp -v other/open_in_same_tab.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium_webui.patch ${CR_SRC_DIR}/ &&
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
-	cp -v other/skia_scale.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_profile_selector_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_getupdatesprocessor_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_dangling_pointer_tooltip.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_disable_aero_crash.patch ${CR_SRC_DIR}/ &&
@@ -146,10 +146,10 @@ patchThor () {
 	git apply --reject ./open_in_same_tab.patch &&
 	printf "${YEL}Thorium WebUI patch...${c0}\n" &&
 	git apply --reject ./thorium_webui.patch &&
-	printf "${YEL}partalloc and Skia fixes...${c0}\n" &&
+	printf "${YEL}partalloc fix...${c0}\n" &&
 	git apply --reject ./partalloc.patch &&
-	git apply --reject ./skia_scale.patch &&
 	printf "${YEL}some crashes fixes...${c0}\n" &&
+	git apply --reject ./fix_profile_selector_crash.patch &&
 	git apply --reject ./fix_getupdatesprocessor_crash.patch &&
 	git apply --reject ./fix_dangling_pointer_tooltip.patch &&
 	git apply --reject ./fix_disable_aero_crash.patch

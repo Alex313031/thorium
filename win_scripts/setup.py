@@ -143,7 +143,7 @@ patches = [
     "other/open_in_same_tab.patch",
     "other/thorium_webui.patch",
     "other/partalloc.patch",
-    "other/skia_scale.patch",
+    "other/fix_profile_selector_crash.patch",
     "other/fix_getupdatesprocessor_crash.patch",
     "other/fix_dangling_pointer_tooltip.patch",
     "other/fix_disable_aero_crash.patch",
@@ -217,7 +217,7 @@ print("\nApplying performance and crash fixes patches...\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject partalloc.patch")
-try_run(f"git apply --reject skia_scale.patch")
+try_run(f"git apply --reject fix_profile_selector_crash.patch")
 try_run(f"git apply --reject fix_getupdatesprocessor_crash.patch")
 try_run(f"git apply --reject fix_dangling_pointer_tooltip.patch")
 try_run(f"git apply --reject fix_disable_aero_crash.patch")
