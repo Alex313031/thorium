@@ -1,10 +1,10 @@
 diff --git a/chrome/installer/mini_installer/BUILD.gn b/chrome/installer/mini_installer/BUILD.gn
-index 7e49b4e449981..289967448d541 100644
+index 7e49b4e449981..4a59d3e73940d 100644
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
 @@ -1,7 +1,8 @@
 -# Copyright 2015 The Chromium Authors
-+# Copyright 2024 The Chromium Authors and Alex313031
++# Copyright 2026 The Chromium Authors and Alex313031
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
@@ -97,7 +97,38 @@ index 7e49b4e449981..289967448d541 100644
    ]
  
    deps = [
-@@ -322,7 +360,64 @@ template("generate_mini_installer") {
+@@ -266,6 +304,11 @@ copy("copy_signing") {
+   outputs = [ "$root_out_dir/signing/mini_installer/{{source_file_part}}" ]
+ }
+ 
++declare_args() {
++  # Wether to disable linking in CRT for mini_installer
++  no_mini_installer_crt = false
++}
++
+ # Generates a mini_installer executable containing the resources provided in the
+ # caller's `rc_file`.
+ template("generate_mini_installer") {
+@@ -290,7 +333,7 @@ template("generate_mini_installer") {
+       "/NXCOMPAT",
+     ]
+ 
+-    libs = [ "setupapi.lib" ]
++    libs = [ "setupapi.lib", ]
+ 
+     deps = [
+       ":copy_signing",
+@@ -315,14 +358,73 @@ template("generate_mini_installer") {
+     # But in asan and clang profiling builds we need to link against a runtime
+     # library, which in turn depends on the standard library and relies on it
+     # to run initializers.
+-    if (!is_asan && !use_clang_profiling) {
++    if (!is_asan && !use_clang_profiling || no_mini_installer_crt) {
+       no_default_deps = true
+       ldflags += [ "/ENTRY:MainEntryPoint" ]
++    } else {
++      libs += [ "kernel32.lib", "user32.lib", "comctl32.lib", "shell32.lib", ]
+     }
    }
  }
  
@@ -163,7 +194,7 @@ index 7e49b4e449981..289967448d541 100644
    rc_file = packed_files_rc_file
  }
  
-@@ -354,14 +449,14 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
+@@ -354,14 +456,14 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
              root_out_dir)
      inputs = [
        "$root_out_dir/" + alternate_version_generator_rel_path,
@@ -180,7 +211,7 @@ index 7e49b4e449981..289967448d541 100644
        "--out",
        "$target_name.exe",
        "--path_7za",
-@@ -369,6 +464,7 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
+@@ -369,6 +471,7 @@ if (!(is_component_build && is_debug && target_cpu == "x86") &&
      ]
      deps = [
        ":mini_installer",
@@ -189,18 +220,19 @@ index 7e49b4e449981..289967448d541 100644
      ]
    }
 diff --git a/chrome/installer/mini_installer/configuration.cc b/chrome/installer/mini_installer/configuration.cc
-index a5fdecc832180..126618188fefa 100644
+index a5fdecc832180..f55755e460dac 100644
 --- a/chrome/installer/mini_installer/configuration.cc
 +++ b/chrome/installer/mini_installer/configuration.cc
-@@ -65,6 +65,7 @@ void Configuration::Clear() {
+@@ -65,6 +65,8 @@ void Configuration::Clear() {
    command_line_ = nullptr;
    argument_count_ = 0;
    is_system_level_ = false;
 +  is_silent_install_ = false;
++  enable_logging_ = false;
    has_invalid_switch_ = false;
    should_delete_extracted_files_ = true;
    previous_version_ = nullptr;
-@@ -80,20 +81,23 @@ bool Configuration::ParseCommandLine(const wchar_t* command_line) {
+@@ -80,20 +82,27 @@ bool Configuration::ParseCommandLine(const wchar_t* command_line) {
      return false;
  
    for (int i = 1; i < argument_count_; ++i) {
@@ -209,6 +241,8 @@ index a5fdecc832180..126618188fefa 100644
        is_system_level_ = true;
 +    } else if (0 == ::lstrcmpi(args_[i], L"--silent")) {
 +      is_silent_install_ = true;
++    } else if (0 == ::lstrcmpi(args_[i], L"--debug")) {
++      enable_logging_ = true;
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 -    else if (0 == ::lstrcmpi(args_[i], L"--chrome-beta"))
 +    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-beta")) {
@@ -221,9 +255,12 @@ index a5fdecc832180..126618188fefa 100644
        chrome_app_guid_ = google_update::kSxSAppGuid;
  #endif
 -    else if (0 == ::lstrcmpi(args_[i], L"--cleanup"))
-+    } else if (0 == ::lstrcmpi(args_[i], L"--cleanup")) {
-       has_invalid_switch_ = true;
+-      has_invalid_switch_ = true;
 -    else if (0 == ::lstrcmpi(args_[i], L"--chrome-frame"))
++    } else if (0 == ::lstrcmpi(args_[i], L"--no-cleanup")) {
++      should_delete_extracted_files_ = false;
++    } else if (0 == ::lstrcmpi(args_[i], L"--cleanup")) {
++      should_delete_extracted_files_ = true;
 +    } else if (0 == ::lstrcmpi(args_[i], L"--chrome-frame")) {
        has_invalid_switch_ = true;
 +    }
@@ -231,10 +268,10 @@ index a5fdecc832180..126618188fefa 100644
  
    if (!is_system_level_)
 diff --git a/chrome/installer/mini_installer/configuration.h b/chrome/installer/mini_installer/configuration.h
-index b746f68cef51d..e4edba92db53f 100644
+index b746f68cef51d..5b63aac683d12 100644
 --- a/chrome/installer/mini_installer/configuration.h
 +++ b/chrome/installer/mini_installer/configuration.h
-@@ -38,6 +38,10 @@ class Configuration {
+@@ -38,9 +38,16 @@ class Configuration {
    // GoogleUpdateIsMachine=1 is set in the process's environment.
    bool is_system_level() const { return is_system_level_; }
  
@@ -245,25 +282,49 @@ index b746f68cef51d..e4edba92db53f 100644
    // Returns true if any invalid switch is found on the command line.
    bool has_invalid_switch() const { return has_invalid_switch_; }
  
-@@ -60,6 +64,7 @@ class Configuration {
++  // Whether to enable console logging in mini_installer (separate from base:logging in setup.exe)
++  bool enable_logging() const { return enable_logging_; }
++
+   // Returns the previous version contained in the image's resource.
+   const wchar_t* previous_version() const { return previous_version_; }
+ 
+@@ -60,6 +67,8 @@ class Configuration {
    const wchar_t* command_line_;
    int argument_count_;
    bool is_system_level_;
 +  bool is_silent_install_;
++  bool enable_logging_;
    bool has_invalid_switch_;
    bool should_delete_extracted_files_;
    const wchar_t* previous_version_;
 diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
-index b24e4cbef109f..d0e960fab38bd 100644
+index b24e4cbef109f..ae202dbf6da4a 100644
 --- a/chrome/installer/mini_installer/mini_installer.cc
 +++ b/chrome/installer/mini_installer/mini_installer.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2012 The Chromium Authors
-+// Copyright 2025 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -53,6 +53,7 @@
+@@ -27,6 +27,7 @@
+ #include "chrome/installer/mini_installer/mini_installer.h"
+ 
+ #include <windows.h>
++#include <commctrl.h>
+ 
+ // #define needed to link in RtlGenRandom(), a.k.a. SystemFunction036.  See the
+ // "Community Additions" comment on MSDN here:
+@@ -44,6 +45,8 @@
+ #include <algorithm>
+ #include <initializer_list>
+ 
++#include <iostream>
++
+ #include "build/branding_buildflags.h"
+ #include "chrome/installer/mini_installer/appid.h"
+ #include "chrome/installer/mini_installer/configuration.h"
+@@ -53,11 +56,23 @@
  #include "chrome/installer/mini_installer/memory_range.h"
  #include "chrome/installer/mini_installer/mini_file.h"
  #include "chrome/installer/mini_installer/mini_installer_constants.h"
@@ -271,33 +332,260 @@ index b24e4cbef109f..d0e960fab38bd 100644
  #include "chrome/installer/mini_installer/regkey.h"
  #include "chrome/installer/mini_installer/write_to_disk.h"
  
-@@ -866,6 +867,19 @@ ProcessExitResult WMain(HMODULE module) {
+ namespace mini_installer {
+ 
++HINSTANCE g_hInst;
++HMODULE hModule;
++HWND g_hWnd;
++
++unsigned int current_width;
++unsigned int current_height;
++
++bool should_install_ = false;
++
++static Configuration conf;
++
+ // Deletes |path|, updating |max_delete_attempts| if more attempts were taken
+ // than indicated in |max_delete_attempts|.
+ void DeleteWithRetryAndMetrics(const wchar_t* path, int& max_delete_attempts) {
+@@ -851,21 +866,152 @@ bool GetWorkDir(HMODULE module,
+          CreateWorkDir(base_path.get(), work_dir, exit_code);
+ }
+ 
+-ProcessExitResult WMain(HMODULE module) {
+-  ProcessExitResult exit_code = ProcessExitResult(SUCCESS_EXIT_CODE);
++void SetShouldInstall() {
++  should_install_ = true;
++}
++
++bool GetShouldInstall() {
++  const bool retval = should_install_;
++  return retval;
++}
++
++DWORD WINAPI InstallThreadProc(LPVOID lpParam) {
++  HWND hwnd = g_hWnd;
++  bool success = false;
++  // Run the installation
++  if (GetShouldInstall()) {
++    std::wcout << kInstallingMessage << std::endl;
++    ProcessExitResult install_code = WMainImpl(true, hModule, conf);
++    if (install_code.IsSuccess()) {
++      success = true;
++    } else {
++      success = false;
++    }
++  }
++
++  // Stop the marquee after installation
++  SendMessageW(hwnd, TDM_SET_MARQUEE_PROGRESS_BAR, FALSE, 0);
++  SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, FALSE, 0);
++
++  // Update the dialog to show completion
++  if (success) {
++    SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingComplete);
++  } else {
++    SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingFailed);
++  }
++
++  // Re-enable Cancel button to allow user to close
++  SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDCANCEL, TRUE);
++  if (success) {
++    return 0;
++  } else {
++    return 1;
++  }
++}
++
++HRESULT CALLBACK TaskDialogCallbackProc(HWND hwnd, UINT uNotification, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData) {
++  g_hWnd = hwnd;
++  switch (uNotification) {
++    case TDN_CREATED:
++      // Set the progress bar to marquee mode but don't start animation yet
++      SendMessageW(hwnd, TDM_SET_MARQUEE_PROGRESS_BAR, TRUE, 0);
++      // Keep marquee stopped initially
++      SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, FALSE, 0);
++      break;
++    case TDN_BUTTON_CLICKED: {
++      if (wParam == IDYES) {
++        // Start the marquee animation (speed in milliseconds)
++        SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, TRUE, 30);
++        SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingMessage);
++        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDYES, FALSE);
++        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDNO, FALSE);
++        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDCANCEL, FALSE);
++        SetShouldInstall();
++        // Run the installation on a separate thread
++        CreateThread(nullptr, 0, InstallThreadProc, hwnd, 0, nullptr);
++        return S_FALSE;
++      } else if (wParam == IDNO || wParam == IDCANCEL) {
++        break;
++      }
++    } break;
++  }
++
++  return S_OK;
++}
++
++bool InitWndInstance(HINSTANCE hInstance, int nCmdShow) {
++  bool success = false;
++  const bool is_beta = false; // TODO. Add beta checker
++  // Configure the task dialog
++  TASKDIALOGCONFIG config = { 0 };
++  config.cbSize = sizeof(config);
++  config.dwFlags = TDF_SHOW_MARQUEE_PROGRESS_BAR | TDF_USE_HICON_MAIN | TDF_CAN_BE_MINIMIZED | TDF_SIZE_TO_CONTENT;
++  config.dwCommonButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON | TDCBF_CANCEL_BUTTON;
++  config.nDefaultButton = IDNO;
++  config.hMainIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MINI_INSTALLER));
++  config.pszWindowTitle = is_beta ? kInstallBetaTitle : kInstallTitle;
++  // config.pszMainInstruction = nullptr;
++  config.pszContent = is_beta ? kInstallBetaMessage : kInstallMessage;
++  //config.pButtons = buttons;
++  //config.cButtons = ARRAYSIZE(buttons);
++  config.pfCallback = TaskDialogCallbackProc;
++  config.cxWidth = 0;
++
++  // Create the main window
++  TaskDialogIndirect(&config, NULL, NULL, NULL);
++
++  return success;
++}
++
++ProcessExitResult WMain(HINSTANCE hInstance, LPWSTR pCmdLine, int nCmdShow) {
++  g_hInst = hInstance;
++  hModule = (HMODULE)g_hInst;
+ 
+   // Parse configuration from the command line and resources.
+-  Configuration configuration;
+-  if (!configuration.Initialize(module)) {
++  if (!conf.Initialize(hModule)) {
+     return ProcessExitResult(GENERIC_INITIALIZATION_FAILURE, ::GetLastError());
+   }
+ 
+   // Exit early if an invalid switch (e.g., "--chrome-frame") was found on the
+   // command line.
+-  if (configuration.has_invalid_switch()) {
++  if (conf.has_invalid_switch()) {
      return ProcessExitResult(INVALID_OPTION);
    }
  
++  if (conf.enable_logging()) {
++    if (!AllocConsole()) {
++      return ProcessExitResult(GENERIC_INITIALIZATION_FAILURE, ::GetLastError());
++    }
++    // File handler pointer to a dummy file, possibly an actual logfile
++    FILE* fNonExistFile = fDummyFile;
++    freopen_s(&fNonExistFile, "CONOUT$", "w", stdout); // Standard error
++    freopen_s(&fNonExistFile, "CONOUT$", "w", stderr); // Standard out
++  }
++
 +  static constexpr bool force_disable_dialog = false;
-+  if (!force_disable_dialog) {
-+    if (!configuration.is_silent_install()) {
-+      int user_response_code =
-+          MessageBoxW(nullptr, L"Would you like to install Thorium?",
-+                      InstallTitle,
-+                      MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
-+      if (user_response_code == IDNO || user_response_code == IDCANCEL) {
-+        return ProcessExitResult(GENERIC_ERROR);
-+      }
++  if (force_disable_dialog) {
++    return WMainImpl(true, hModule, conf);
++  } else {
++    if (conf.is_silent_install()) {
++      std::wcout << L"Running silent install" << std::endl;
++      return WMainImpl(true, hModule, conf);
++    } else {
++        ProcessExitResult wnd_status = ProcessExitResult(SUCCESS_EXIT_CODE);
++        if (!InitWndInstance(hInstance, nCmdShow)) {
++          // Replace with GetError
++          wnd_status = ProcessExitResult(GENERIC_ERROR);
++        }
++        if (!GetShouldInstall()) {
++          std::wcerr << L"Not installing, user declined" << std::endl;
++        }
++        return wnd_status;
 +    }
 +  }
++}
++
++ProcessExitResult WMainImpl(const bool should_install, HMODULE module, const Configuration& configuration) {
++  ProcessExitResult exit_code = ProcessExitResult(SUCCESS_EXIT_CODE);
 +
    // First get a path where we can extract payload
    PathString base_path;
    if (!GetWorkDir(module, &base_path, &exit_code)) {
+@@ -940,4 +1086,12 @@ ProcessExitResult WMain(HMODULE module) {
+   return exit_code;
+ }
+ 
++int HandleExit(ProcessExitResult result) {
++  if (conf.enable_logging()) {
++    system("pause");
++  }
++  ::ExitProcess(result.exit_code);
++  return result.exit_code;
++}
++
+ }  // namespace mini_installer
+diff --git a/chrome/installer/mini_installer/mini_installer.h b/chrome/installer/mini_installer/mini_installer.h
+index 2b2d38313e429..bef89cdb2637a 100644
+--- a/chrome/installer/mini_installer/mini_installer.h
++++ b/chrome/installer/mini_installer/mini_installer.h
+@@ -6,13 +6,30 @@
+ #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_H_
+ 
+ #include <windows.h>
++#include <commctrl.h>
++#include <tchar.h>
++
++#include <string> // Test for libstdc++
+ 
+ #include "chrome/installer/mini_installer/exit_code.h"
++#include "chrome/installer/mini_installer/mini_installer_constants.h"
++#include "chrome/installer/mini_installer/mini_installer_resource.h"
+ #include "chrome/installer/mini_installer/mini_string.h"
+ #include "chrome/installer/mini_installer/path_string.h"
+ 
++static FILE* fDummyFile;
++
+ namespace mini_installer {
+ 
++extern HINSTANCE g_hInst;
++extern HMODULE hModule;
++extern HWND g_hWnd;
++
++extern unsigned int current_width;
++extern unsigned int current_height;
++
++extern bool should_install_;
++
+ class Configuration;
+ 
+ // A container of a process exit code (eventually passed to ExitProcess) and
+@@ -78,11 +95,23 @@ ProcessExitResult UnpackBinaryResources(HMODULE module,
+                                         ResourceTypeString& archive_type,
+                                         int& max_delete_attempts);
+ 
++void SetShouldInstall();
++
++bool GetShouldInstall();
++
++HRESULT CALLBACK TaskDialogCallbackProc(HWND hwnd, UINT uNotification, WPARAM wParam, LPARAM lParam, LONG_PTR lpRefData);
++
++bool InitWndInstance(HINSTANCE hInstance, int nCmdShow);
++
+ // Main function for Chrome's mini_installer. First gets a working dir, unpacks
+ // the resources, and finally executes setup.exe to do the install/update. Also
+ // handles invoking a previous version's setup.exe to patch itself in the case
+ // of differential updates.
+-ProcessExitResult WMain(HMODULE module);
++ProcessExitResult WMain(HINSTANCE hInstance, LPWSTR pCmdLine, int nCmdShow);
++
++ProcessExitResult WMainImpl(const bool should_install, HMODULE module, const Configuration& configuration);
++
++int HandleExit(ProcessExitResult result);
+ 
+ }  // namespace mini_installer
+ 
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.cc b/chrome/installer/mini_installer/mini_installer_constants.cc
 index cbcd4cf1a3ef2..0ea333e90571d 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.cc
 +++ b/chrome/installer/mini_installer/mini_installer_constants.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2014 The Chromium Authors
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
@@ -326,37 +614,91 @@ index cbcd4cf1a3ef2..0ea333e90571d 100644
  #endif
  
  }  // namespace mini_installer
+diff --git a/chrome/installer/mini_installer/mini_installer_constants.h b/chrome/installer/mini_installer/mini_installer_constants.h
+index 23de845654342..c6404b4dfd22c 100644
+--- a/chrome/installer/mini_installer/mini_installer_constants.h
++++ b/chrome/installer/mini_installer/mini_installer_constants.h
+@@ -5,6 +5,15 @@
+ #ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
+ #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
+ 
++#include "chrome/installer/mini_installer/mini_installer_version.h"
++
++static const wchar_t* kInstallMessage = L"Would you like to install Thorium?";
++static const wchar_t* kInstallBetaMessage = L"Would you like to install Thorium Beta?";
++static const wchar_t* kInstallingMessage = L"Installing...";
++static const wchar_t* kInstallingComplete = L"Installation Complete. \nYou may now close this window.";
++static const wchar_t* kInstallingFailed = L"Installation failed!";
++static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
++
+ namespace mini_installer {
+ 
+ // Various filenames and prefixes.
 diff --git a/chrome/installer/mini_installer/mini_installer_exe_main.cc b/chrome/installer/mini_installer/mini_installer_exe_main.cc
-index aff0370044046..536aa5a60b579 100644
+index aff0370044046..12ef123ac30a5 100644
 --- a/chrome/installer/mini_installer/mini_installer_exe_main.cc
 +++ b/chrome/installer/mini_installer/mini_installer_exe_main.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2017 The Chromium Authors
-+// Copyright 2025 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -59,10 +59,13 @@ void* memset(void* dest, int c, size_t count) {
+@@ -16,23 +16,22 @@
+ // http://blogs.msdn.com/oldnewthing/archive/2004/10/25/247180.aspx
+ extern "C" IMAGE_DOS_HEADER __ImageBase;
+ 
+-extern "C" int __stdcall MainEntryPoint() {
+-  mini_installer::ProcessExitResult result =
+-      mini_installer::WMain(reinterpret_cast<HMODULE>(&__ImageBase));
+-  ::ExitProcess(result.exit_code);
+-}
++extern "C" int WINAPI wWinMain(HINSTANCE hInstance,
++                               HINSTANCE hPrevInstance,
++                               LPWSTR pCmdLine,
++                               int nCmdShow) {
++  UNREFERENCED_PARAMETER(hPrevInstance);
++
++  // Initialize common controls
++  INITCOMMONCONTROLSEX icex;
++  icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
++  icex.dwICC = ICC_STANDARD_CLASSES | ICC_WIN95_CLASSES | ICC_PROGRESS_CLASS;
++  InitCommonControlsEx(&icex);
+ 
+-#if defined(ADDRESS_SANITIZER) || BUILDFLAG(CLANG_PROFILING)
+-// Executables instrumented with ASAN need CRT functions. We do not use
+-// the /ENTRY switch for ASAN instrumented executable and a "main" function
+-// is required.
+-extern "C" int WINAPI wWinMain(HINSTANCE /* instance */,
+-                               HINSTANCE /* previous_instance */,
+-                               LPWSTR /* command_line */,
+-                               int /* command_show */) {
+-  return MainEntryPoint();
++  mini_installer::ProcessExitResult result =
++      mini_installer::WMain(hInstance, pCmdLine, nCmdShow);
++  return mini_installer::HandleExit(result);
+ }
+-#endif
+ 
+ // We don't link with the CRT (this is enforced through use of the /ENTRY linker
+ // flag) so we have to implement CRT functions that the compiler generates calls
+@@ -59,17 +58,4 @@ void* memset(void* dest, int c, size_t count) {
    return dest;
  }
  
 -#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
-+// SET BY ALEX313031 FOR ALL BUILDS BECAUSE IT CAUSES ERRORS
-+// DURING CROSS-BUILDING IF UNSET.
-+//#if defined(_DEBUG) && defined(ARCH_CPU_ARM64)
- // The compiler generates calls to memcpy for ARM64 debug builds so we need to
- // supply a memcpy implementation in that configuration.
- // See comments above for why we do this incantation.
-+
- __attribute__((used))
- void* memcpy(void* destination, const void* source, size_t count) {
-   auto* dst = reinterpret_cast<uint8_t*>(destination);
-@@ -71,5 +74,5 @@ void* memcpy(void* destination, const void* source, size_t count) {
-     *dst++ = *src++;
-   return destination;
- }
+-// The compiler generates calls to memcpy for ARM64 debug builds so we need to
+-// supply a memcpy implementation in that configuration.
+-// See comments above for why we do this incantation.
+-__attribute__((used))
+-void* memcpy(void* destination, const void* source, size_t count) {
+-  auto* dst = reinterpret_cast<uint8_t*>(destination);
+-  auto* src = reinterpret_cast<const uint8_t*>(source);
+-  while (count--)
+-    *dst++ = *src++;
+-  return destination;
+-}
 -#endif
-+//#endif
  }  // extern "C"
 diff --git a/chrome/installer/mini_installer/mini_installer_exe_version.rc.version b/chrome/installer/mini_installer/mini_installer_exe_version.rc.version
 index 2862d6b50a550..567c2bb2d6caa 100644
@@ -380,13 +722,33 @@ index 2862d6b50a550..567c2bb2d6caa 100644
          END
      END
      BLOCK "VarFileInfo"
+diff --git a/chrome/installer/mini_installer/mini_installer_resource.h b/chrome/installer/mini_installer/mini_installer_resource.h
+index 9155eba56943f..c5a6f1d538452 100644
+--- a/chrome/installer/mini_installer/mini_installer_resource.h
++++ b/chrome/installer/mini_installer/mini_installer_resource.h
+@@ -10,6 +10,15 @@
+ // Used by mini_installer.rc
+ //
+ #define IDI_MINI_INSTALLER 107
++
++#define IDM_ABOUT          201
++#define IDM_HELP           202
++#define IDM_EXIT           203
++
++#define IDC_YES_BUTTON     301
++#define IDC_NO_BUTTON      302
++#define IDC_CANCEL_BUTTON  303
++
+ #define IDC_STATIC -1
+ 
+ // The identifier of the RCDATA resource holding the version of Chrome on which
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
 index 011684089a29e..99eb9871c7e55 100644
 --- a/chrome/installer/setup/install_worker.cc
 +++ b/chrome/installer/setup/install_worker.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2012 The Chromium Authors
-+// Copyright 2025 The Chromium Authors, Hibiki Tachibana, and Alex313031
++// Copyright 2026 The Chromium Authors, Hibiki Tachibana, and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  //
@@ -571,7 +933,7 @@ index 7ea39a93b45e4..f287621dfb54e 100644
 +++ b/chrome/installer/setup/setup_util.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2012 The Chromium Authors
-+// Copyright 2025 The Chromium Authors, Alex313031, and Shane Fournier
++// Copyright 2026 The Chromium Authors, Alex313031, and Shane Fournier
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  //
@@ -603,3 +965,56 @@ index 7ea39a93b45e4..f287621dfb54e 100644
  }
  
  int GetInstallAge(const InstallerState& installer_state) {
+diff --git a/chrome/installer/util/logging_installer.cc b/chrome/installer/util/logging_installer.cc
+index 8b606fa040a8f..c64160e8a5279 100644
+--- a/chrome/installer/util/logging_installer.cc
++++ b/chrome/installer/util/logging_installer.cc
+@@ -99,7 +99,7 @@ void InitInstallerLogging(const installer::InitialPreferences& prefs) {
+   TruncateLogFileIfNeeded(log_file_path);
+ 
+   logging::LoggingSettings settings;
+-  settings.logging_dest = logging::LOG_TO_FILE;
++  settings.logging_dest = logging::LOG_TO_FILE | logging::LOG_TO_STDERR;
+   settings.log_file_path = log_file_path.value().c_str();
+   logging::InitLogging(settings);
+ 
+@@ -130,15 +130,12 @@ base::FilePath GetLogFilePath(const installer::InitialPreferences& prefs) {
+ #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+       FILE_PATH_LITERAL("chrome_installer.log");
+ #else  // BUILDFLAG(CHROMIUM_BRANDING)
+-      FILE_PATH_LITERAL("chromium_installer.log");
++      FILE_PATH_LITERAL("thorium_installer.log");
+ #endif
+ 
+   // Fallback to current directory if getting the secure or temp directory
+   // fails.
+   base::FilePath tmp_path;
+-  std::ignore = ::IsUserAnAdmin()
+-                    ? base::PathService::Get(base::DIR_SYSTEM_TEMP, &tmp_path)
+-                    : base::PathService::Get(base::DIR_TEMP, &tmp_path);
+   return tmp_path.Append(kLogFilename);
+ }
+ 
+diff --git a/chrome/installer/util/shell_util.cc b/chrome/installer/util/shell_util.cc
+index b5b269da941db..1ee7046ac4a06 100644
+--- a/chrome/installer/util/shell_util.cc
++++ b/chrome/installer/util/shell_util.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2026 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ //
+@@ -1549,10 +1549,10 @@ const wchar_t* ShellUtil::kDefaultFileAssociations[] = {
+ const wchar_t* ShellUtil::kPotentialFileAssociations[] = {
+     L".htm", L".html", L".mhtml", L".pdf",  L".shtml",
+     L".svg", L".xht",  L".xhtml", L".webp", nullptr};
+-const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"http", L"https",
++const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"ftp", L"http", L"https",
+                                                             nullptr};
+ const wchar_t* ShellUtil::kPotentialProtocolAssociations[] = {
+-    L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
++    L"ftp", L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
+     L"sms",  L"smsto", L"snews", L"tel",    L"urn", L"webcal", nullptr};
+ const wchar_t* ShellUtil::kRegUrlProtocol = L"URL Protocol";
+ const wchar_t* ShellUtil::kRegApplication = L"\\Application";
