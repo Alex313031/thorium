@@ -65,10 +65,12 @@ git rebase-update &&
 
 git fetch --tags &&
 
-gclient sync --with_branch_heads --with_tags -f -R -D &&
+printf "${GRE}gclient sync${c0}\n"  &&
+gclient sync --with_branch_heads --with_tags --force --reset --nohooks --delete_unversioned_trees &&
 
 git clean -ffd &&
 
+printf "${GRE}gclient runhooks${c0}\n" &&
 gclient runhooks &&
 
 printf "\n" &&

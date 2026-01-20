@@ -65,11 +65,13 @@ cd ${CR_SRC_DIR} &&
 git clean -ffd &&
 git clean -ffd &&
 
-gclient sync --with_branch_heads --with_tags -f -R -D &&
+printf "${GRE}gclient sync${c0}\n"  &&
+gclient sync --with_branch_heads --with_tags --force --reset --nohooks --delete_unversioned_trees &&
 
 git clean -ffd &&
 
-# gclient runhooks &&
+printf "${GRE}gclient runhooks${c0}\n" &&
+gclient runhooks &&
 
 # Install sysroots (i.e. for ARM64)
 if [ -n "$MSYSTEM" ]; then
