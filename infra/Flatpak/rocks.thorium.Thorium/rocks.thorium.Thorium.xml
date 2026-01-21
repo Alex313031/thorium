@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017 The Chromium Authors -->
+<component type="desktop">
+  <id>rocks.thorium.Thorium</id>
+  <launchable type="desktop-id">rocks.thorium.Thorium.desktop</launchable>
+  <name>Thorium Web Browser</name>
+  <developer_name>Alexander Frick</developer_name>
+  <summary>Fork Chromium browser with optimizations</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-3-Clause and LGPL-2.1+ and Apache-2.0 and IJG and MIT and GPL-2.0+ and ISC and OpenSSL and (MPL-1.1 or GPL-2.0 or LGPL-2.0)</project_license>
+  <url type="homepage">https://thorium.rocks/</url>
+  <url type="bugtracker">https://github.com/Alex313031/Thorium/issues</url>
+  <description>
+    <p>
+      Chromium fork for linux, includes Widevine, All Codecs, Chrome Plugins, as well as thinLTO, CFlag, LDFlag, LLVM Loop, and PGO compiler optimizations
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://www.gstatic.com/chrome/appstream/chrome-2.png</image>
+      <caption/>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="114.0.5735.133" date="2023-06-13"/>
+    <release version="114.0.5735.106" date="2023-06-05"/>
+    <release version="114.0.5735.90" date="2023-05-31"/>
+    <release version="113.0.5672.126" date="2023-05-16"/>
+    <release version="113.0.5672.92" date="2023-05-09"/>
+    <release version="113.0.5672.63" date="2023-04-26"/>
+    <release version="112.0.5615.165" date="2023-04-19"/>
+    <release version="112.0.5615.121" date="2023-04-14"/>
+    <release version="112.0.5615.49" date="2023-03-30"/>
+    <release version="111.0.5563.146" date="2023-03-27"/>
+    <release version="111.0.5563.110" date="2023-03-22"/>
+    <release version="111.0.5563.64" date="2023-03-07"/>
+    <release version="110.0.5481.177" date="2023-02-22"/>
+    <release version="110.0.5481.100" date="2023-02-16"/>
+    <release version="110.0.5481.77" date="2023-02-01"/>
+    <release version="109.0.5414.119" date="2023-01-24"/>
+    <release version="109.0.5414.74" date="2023-01-04"/>
+    <release version="108.0.5359.124" date="2022-12-14"/>
+    <release version="108.0.5359.98" date="2022-12-07"/>
+    <release version="108.0.5359.94" date="2022-12-02"/>
+    <release version="108.0.5359.71" date="2022-11-29"/>
+    <release version="107.0.5304.121" date="2022-11-24"/>
+    <release version="107.0.5304.110" date="2022-11-09"/>
+    <release version="107.0.5304.87" date="2022-10-27"/>
+    <release version="107.0.5304.68" date="2022-10-25"/>
+    <release version="106.0.5249.119" date="2022-10-12"/>
+    <release version="106.0.5249.91" date="2022-09-30"/>
+    <release version="106.0.5249.61" date="2022-09-26"/>
+    <release version="105.0.5195.125" date="2022-09-13"/>
+    <release version="105.0.5195.102" date="2022-09-02"/>
+    <release version="105.0.5195.52" date="2022-08-24"/>
+    <release version="104.0.5112.101" date="2022-08-16"/>
+    <release version="104.0.5112.79" date="2022-08-01"/>
+    <release version="103.0.5060.134" date="2022-07-19"/>
+    <release version="103.0.5060.114" date="2022-07-09"/>
+    <release version="103.0.5060.53" date="2022-06-16"/>
+    <release version="102.0.5005.115" date="2022-06-10"/>
+    <release version="102.0.5005.61" date="2022-05-19"/>
+    <release version="101.0.4951.64" date="2022-05-11"/>
+    <release version="101.0.4951.54" date="2022-05-03"/>
+    <release version="101.0.4951.41" date="2022-04-20"/>
+    <release version="100.0.4896.127" date="2022-04-15"/>
+    <release version="100.0.4896.88" date="2022-04-12"/>
+    <release version="100.0.4896.75" date="2022-04-05"/>
+    <release version="100.0.4896.60" date="2022-03-29"/>
+    <release version="99.0.4844.84" date="2022-03-26"/>
+    <release version="99.0.4844.82" date="2022-03-20"/>
+    <release version="99.0.4844.74" date="2022-03-16"/>
+    <release version="98.0.4758.102" date="2022-02-15"/>
+    <release version="98.0.4758.80" date="2022-02-01"/>
+    <release version="97.0.4692.99" date="2022-01-20"/>
+    <release version="97.0.4692.71" date="2021-12-31"/>
+    <release version="96.0.4664.110" date="2021-12-14"/>
+    <release version="96.0.4664.93" date="2021-12-07"/>
+    <release version="96.0.4664.45" date="2021-11-12"/>
+    <release version="95.0.4638.69" date="2021-10-29"/>
+    <release version="95.0.4638.54" date="2021-10-18"/>
+    <release version="94.0.4606.81" date="2021-10-08"/>
+    <release version="94.0.4606.71" date="2021-10-01"/>
+    <release version="94.0.4606.61" date="2021-09-24"/>
+    <release version="94.0.4606.54" date="2021-09-20"/>
+    <release version="93.0.4577.82" date="2021-09-14"/>
+    <release version="93.0.4577.63" date="2021-09-01"/>
+    <release version="92.0.4515.159" date="2021-08-17"/>
+    <release version="92.0.4515.131" date="2021-08-03"/>
+    <release version="92.0.4515.107" date="2021-07-19"/>
+    <release version="91.0.4472.164" date="2021-07-15"/>
+    <release version="91.0.4472.114" date="2021-06-18"/>
+    <release version="91.0.4472.106" date="2021-06-15"/>
+    <release version="91.0.4472.101" date="2021-06-09"/>
+    <release version="91.0.4472.77" date="2021-05-24"/>
+    <release version="90.0.4430.212" date="2021-05-10"/>
+    <release version="90.0.4430.93" date="2021-04-27"/>
+    <release version="90.0.4430.85" date="2021-04-20"/>
+    <release version="90.0.4430.72" date="2021-04-14"><url>https://chromereleases.googleblog.com/2021/04/stable-channel-update-for-desktop_14.html</url></release>
+    <release version="89.0.4389.128" date="2021-04-14"/>
+    <release version="89.0.4389.114" date="2021-03-30"/>
+    <release version="89.0.4389.90" date="2021-03-13"/>
+    <release version="89.0.4389.82" date="2021-03-05"/>
+    <release version="89.0.4389.72" date="2021-03-02"/>
+    <release version="88.0.4324.182" date="2021-02-16"/>
+    <release version="88.0.4324.150" date="2021-02-05"/>
+    <release version="88.0.4324.146" date="2021-02-02"/>
+    <release version="88.0.4324.96" date="2020-01-19"/>
+    <release version="87.0.4280.141" date="2021-01-07"/>
+    <release version="87.0.4280.88-1" date="2020-12-17"/>
+    <release version="87.0.4280.88" date="2020-12-04"/>
+    <release version="87.0.4280.66" date="2020-11-18"/>
+    <release version="86.0.4240.198" date="2020-11-12"/>
+    <release version="86.0.4240.183" date="2020-11-02"/>
+    <release version="86.0.4240.111" date="2020-11-01"/>
+    <release version="86.0.4240.75" date="2020-10-15"/>
+    <release version="85.0.4183.121" date="2020-09-29"/>
+  </releases>
+  <content_rating type="oars-1.1"/>
+  <update_contact>alex313031_at_gmail.com</update_contact>
+</component>
