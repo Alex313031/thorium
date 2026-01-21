@@ -54,7 +54,7 @@ thor_src_dir = os.path.expandvars(
 
 
 # Set thor_ver
-thor_ver = "138.0.7204.300"
+thor_ver = "138.0.7204.301"
 
 
 print(f"\nCurrent Thorium version is: {thor_ver}\n")
@@ -86,8 +86,9 @@ copy(
 commands = [
     "git clean -ffd",
     "git clean -ffd",
-    "gclient sync --with_branch_heads --with_tags -f -R -D",
+    "gclient sync --with_branch_heads --with_tags --force --reset --nohooks --delete_unversioned_trees",
     "git clean -ffd",
+    "gclient runhooks",
 ]
 
 # Run each command with error handling
