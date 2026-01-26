@@ -1,0 +1,496 @@
+From 6feade511cae23cfc8b5893c1a34252d17579098 Mon Sep 17 00:00:00 2001
+From: Ho Cheung <hocheung@chromium.org>
+Date: Tue, 11 Nov 2025 15:55:56 -0800
+Subject: [PATCH] [bookmark] Fix dangling pointer in file dialog listener
+ callbacks
+
+Added weak pointer factory to SelectFileDialogLinuxPortal to prevent
+DBus thread callbacks from accessing destroyed listeners. Updated
+callback bindings to use weak pointers instead of raw 'this'.
+
+Fixed BookmarkManagerPrivateIOFunction to call ListenerDestroyed()
+before resetting the dialog via new CleanupFileDialog() helper.
+
+Add some unit tests to verify the relevant behavior.
+
+Bug: 443016350
+Change-Id: I6ad3838374a1087c044f2a580f0b9f2cbf939028
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/7139766
+Reviewed-by: Avi Drissman <avi@chromium.org>
+Commit-Queue: Ho Cheung <hocheung@chromium.org>
+Reviewed-by: Thomas Anderson <thomasanderson@chromium.org>
+Reviewed-by: John Lee <johntlee@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1543406}
+---
+ .../bookmark_manager_private_api.cc           |  17 +-
+ .../bookmark_manager_private_api.h            |   2 +
+ .../bookmark_manager_private_api_unittest.cc  |  95 ++++++++++
+ ui/shell_dialogs/BUILD.gn                     |   8 +
+ .../select_file_dialog_linux_portal.cc        |  15 +-
+ .../select_file_dialog_linux_portal.h         |  10 +-
+ ...elect_file_dialog_linux_portal_unittest.cc | 172 ++++++++++++++++++
+ 7 files changed, 308 insertions(+), 11 deletions(-)
+ create mode 100644 ui/shell_dialogs/select_file_dialog_linux_portal_unittest.cc
+
+diff --git a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc
+index 838f2949acbaf..8c5da8448c9c1 100644
+--- a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc
++++ b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc
+@@ -801,6 +801,10 @@ BookmarkManagerPrivateIOFunction::~BookmarkManagerPrivateIOFunction() {
+     select_file_dialog_->ListenerDestroyed();
+ }
+ 
++void BookmarkManagerPrivateIOFunction::FileSelectionCanceled() {
++  CleanupFileDialog();
++}
++
+ void BookmarkManagerPrivateIOFunction::ShowSelectFileDialog(
+     ui::SelectFileDialog::Type type,
+     const base::FilePath& default_path) {
+@@ -835,9 +839,12 @@ void BookmarkManagerPrivateIOFunction::ShowSelectFileDialog(
+                                   base::FilePath::StringType(), owning_window);
+ }
+ 
+-void BookmarkManagerPrivateIOFunction::FileSelectionCanceled() {
++void BookmarkManagerPrivateIOFunction::CleanupFileDialog() {
++  if (select_file_dialog_) {
++    select_file_dialog_->ListenerDestroyed();
++  }
+   select_file_dialog_.reset();
+-  Release();  // Balanced in BookmarkManagerPrivateIOFunction::SelectFile()
++  Release();  // Balanced in ShowSelectFileDialog().
+ }
+ 
+ ExtensionFunction::ResponseValue
+@@ -867,8 +874,7 @@ void BookmarkManagerPrivateImportFunction::FileSelected(
+ 
+   importer::LogImporterUseToMetrics("BookmarksAPI",
+                                     user_data_importer::TYPE_BOOKMARKS_FILE);
+-  select_file_dialog_.reset();
+-  Release();  // Balanced in BookmarkManagerPrivateIOFunction::SelectFile()
++  CleanupFileDialog();
+ }
+ 
+ ExtensionFunction::ResponseValue
+@@ -896,8 +902,7 @@ void BookmarkManagerPrivateExportFunction::FileSelected(
+     int index) {
+   bookmark_html_writer::WriteBookmarks(GetProfile(), file.path(),
+                                        base::DoNothing());
+-  select_file_dialog_.reset();
+-  Release();  // Balanced in BookmarkManagerPrivateIOFunction::SelectFile()
++  CleanupFileDialog();
+ }
+ 
+ WEB_CONTENTS_USER_DATA_KEY_IMPL(BookmarkManagerPrivateDragEventRouter);
+diff --git a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h
+index 5706bbc354782..6c3870ed9ab05 100644
+--- a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h
++++ b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.h
+@@ -361,6 +361,8 @@ class BookmarkManagerPrivateIOFunction : public BookmarksFunction,
+  protected:
+   ~BookmarkManagerPrivateIOFunction() override;
+ 
++  void CleanupFileDialog();
++
+   scoped_refptr<ui::SelectFileDialog> select_file_dialog_;
+ };
+ 
+diff --git a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api_unittest.cc b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api_unittest.cc
+index 73323979980c2..a6f4de02772f1 100644
+--- a/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api_unittest.cc
++++ b/chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api_unittest.cc
+@@ -18,6 +18,7 @@
+ #include "components/bookmarks/test/bookmark_test_helpers.h"
+ #include "components/policy/core/common/policy_pref_names.h"
+ #include "extensions/browser/api_test_utils.h"
++#include "ui/shell_dialogs/select_file_policy.h"
+ 
+ namespace extensions {
+ 
+@@ -182,4 +183,98 @@ TEST_F(BookmarkManagerPrivateApiUnitTest,
+                                                       args, profile()));
+ }
+ 
++// Mock SelectFileDialog to track ListenerDestroyed calls.
++class MockSelectFileDialog : public ui::SelectFileDialog {
++ public:
++  explicit MockSelectFileDialog(Listener* listener)
++      : ui::SelectFileDialog(listener,
++                             std::unique_ptr<ui::SelectFilePolicy>()) {}
++
++  void ListenerDestroyed() override {
++    listener_destroyed_called_ = true;
++    listener_ = nullptr;
++  }
++
++  bool listener_destroyed_called() const { return listener_destroyed_called_; }
++
++ private:
++  ~MockSelectFileDialog() override = default;
++
++  bool IsRunning(gfx::NativeWindow parent_window) const override {
++    return false;
++  }
++  void SelectFileImpl(Type type,
++                      const std::u16string& title,
++                      const base::FilePath& default_path,
++                      const FileTypeInfo* file_types,
++                      int file_type_index,
++                      const base::FilePath::StringType& default_extension,
++                      gfx::NativeWindow owning_window,
++                      const GURL* caller) override {}
++  bool HasMultipleFileTypeChoicesImpl() override { return false; }
++
++  bool listener_destroyed_called_ = false;
++};
++
++// Testable wrapper that exposes protected members for testing.
++class TestableImportFunction : public BookmarkManagerPrivateImportFunction {
++ public:
++  using BookmarkManagerPrivateImportFunction::CleanupFileDialog;
++  using BookmarkManagerPrivateImportFunction::select_file_dialog_;
++
++ protected:
++  ~TestableImportFunction() override = default;
++};
++
++// Test fixture specifically for IOFunction tests.
++class BookmarkManagerPrivateIOFunctionTest : public ExtensionServiceTestBase {
++ public:
++  void SetUp() override {
++    ExtensionServiceTestBase::SetUp();
++    ExtensionServiceInitParams params;
++    params.enable_bookmark_model = true;
++    InitializeExtensionService(std::move(params));
++  }
++
++  // Helper to set up function with mock dialog for testing cleanup behavior.
++  void SetupFunctionWithMockDialog(
++      scoped_refptr<TestableImportFunction>* function,
++      scoped_refptr<MockSelectFileDialog>* dialog) {
++    *function = base::MakeRefCounted<TestableImportFunction>();
++    *dialog = base::MakeRefCounted<MockSelectFileDialog>(function->get());
++    (*function)->AddRef();  // Balance Release() in CleanupFileDialog.
++    (*function)->select_file_dialog_ = *dialog;
++  }
++};
++
++// Tests that CleanupFileDialog calls ListenerDestroyed before resetting dialog.
++TEST_F(BookmarkManagerPrivateIOFunctionTest,
++       CleanupFileDialogCallsListenerDestroyed) {
++  scoped_refptr<TestableImportFunction> function;
++  scoped_refptr<MockSelectFileDialog> dialog;
++  SetupFunctionWithMockDialog(&function, &dialog);
++
++  EXPECT_FALSE(dialog->listener_destroyed_called());
++
++  function->CleanupFileDialog();
++
++  EXPECT_TRUE(dialog->listener_destroyed_called());
++  EXPECT_FALSE(function->select_file_dialog_);
++}
++
++// Tests that FileSelectionCanceled calls ListenerDestroyed before cleanup.
++TEST_F(BookmarkManagerPrivateIOFunctionTest,
++       FileSelectionCanceledCallsListenerDestroyed) {
++  scoped_refptr<TestableImportFunction> function;
++  scoped_refptr<MockSelectFileDialog> dialog;
++  SetupFunctionWithMockDialog(&function, &dialog);
++
++  EXPECT_FALSE(dialog->listener_destroyed_called());
++
++  function->FileSelectionCanceled();
++
++  EXPECT_TRUE(dialog->listener_destroyed_called());
++  EXPECT_FALSE(function->select_file_dialog_);
++}
++
+ }  // namespace extensions
+diff --git a/ui/shell_dialogs/BUILD.gn b/ui/shell_dialogs/BUILD.gn
+index a6d3edf8da46f..3ee7b33dc14a4 100644
+--- a/ui/shell_dialogs/BUILD.gn
++++ b/ui/shell_dialogs/BUILD.gn
+@@ -174,6 +174,14 @@ test("shell_dialogs_unittests") {
+     "//ui/strings",
+   ]
+ 
++  if (is_linux && !is_castos && use_dbus) {
++    sources += [ "select_file_dialog_linux_portal_unittest.cc" ]
++    deps += [
++      "//components/dbus",
++      "//dbus",
++    ]
++  }
++
+   if (is_mac) {
+     deps += [ "//components/remote_cocoa/app_shim" ]
+   }
+diff --git a/ui/shell_dialogs/select_file_dialog_linux_portal.cc b/ui/shell_dialogs/select_file_dialog_linux_portal.cc
+index 8dafba0690d9c..dba4c5fecb4b2 100644
+--- a/ui/shell_dialogs/select_file_dialog_linux_portal.cc
++++ b/ui/shell_dialogs/select_file_dialog_linux_portal.cc
+@@ -181,6 +181,11 @@ bool SelectFileDialogLinuxPortal::IsPortalAvailable() {
+   return g_service_availability == ServiceAvailability::kAvailable;
+ }
+ 
++void SelectFileDialogLinuxPortal::ListenerDestroyed() {
++  weak_factory_.InvalidateWeakPtrs();
++  SelectFileDialogLinux::ListenerDestroyed();
++}
++
+ bool SelectFileDialogLinuxPortal::IsRunning(
+     gfx::NativeWindow parent_window) const {
+   return parent_window && host_ && host_.get() == parent_window->GetHost();
+@@ -472,7 +477,7 @@ void SelectFileDialogLinuxPortal::MakeFileChooserRequest(
+   invoker_task_runner_->PostTask(
+       FROM_HERE,
+       base::BindOnce(&SelectFileDialogLinuxPortal::DialogCreatedOnInvoker,
+-                     this));
++                     weak_factory_.GetWeakPtr()));
+ }
+ 
+ void SelectFileDialogLinuxPortal::OnFileChooserResponse(
+@@ -520,15 +525,17 @@ void SelectFileDialogLinuxPortal::CompleteOpen(
+   dbus_thread_linux::GetSharedSessionBus()->AssertOnOriginThread();
+   invoker_task_runner_->PostTask(
+       FROM_HERE,
+-      base::BindOnce(&SelectFileDialogLinuxPortal::CompleteOpenOnInvoker, this,
+-                     std::move(paths), std::move(current_filter)));
++      base::BindOnce(&SelectFileDialogLinuxPortal::CompleteOpenOnInvoker,
++                     weak_factory_.GetWeakPtr(), std::move(paths),
++                     std::move(current_filter)));
+ }
+ 
+ void SelectFileDialogLinuxPortal::CancelOpen() {
+   dbus_thread_linux::GetSharedSessionBus()->AssertOnOriginThread();
+   invoker_task_runner_->PostTask(
+       FROM_HERE,
+-      base::BindOnce(&SelectFileDialogLinuxPortal::CancelOpenOnInvoker, this));
++      base::BindOnce(&SelectFileDialogLinuxPortal::CancelOpenOnInvoker,
++                     weak_factory_.GetWeakPtr()));
+ }
+ 
+ void SelectFileDialogLinuxPortal::DialogCreatedOnInvoker() {
+diff --git a/ui/shell_dialogs/select_file_dialog_linux_portal.h b/ui/shell_dialogs/select_file_dialog_linux_portal.h
+index 651684b1840ea..b43fa066ac6cd 100644
+--- a/ui/shell_dialogs/select_file_dialog_linux_portal.h
++++ b/ui/shell_dialogs/select_file_dialog_linux_portal.h
+@@ -26,7 +26,8 @@ using OnSelectFileCanceledCallback = base::OnceCallback<void()>;
+ 
+ // Implementation of SelectFileDialog that has the XDG file chooser portal show
+ // a platform-dependent file selection dialog. This acts as a modal dialog.
+-class SelectFileDialogLinuxPortal : public SelectFileDialogLinux {
++class SHELL_DIALOGS_EXPORT SelectFileDialogLinuxPortal
++    : public SelectFileDialogLinux {
+  public:
+   SelectFileDialogLinuxPortal(Listener* listener,
+                               std::unique_ptr<ui::SelectFilePolicy> policy);
+@@ -49,6 +50,7 @@ class SelectFileDialogLinuxPortal : public SelectFileDialogLinux {
+   ~SelectFileDialogLinuxPortal() override;
+ 
+   // BaseShellDialog:
++  void ListenerDestroyed() override;
+   bool IsRunning(gfx::NativeWindow parent_window) const override;
+ 
+   // SelectFileDialog:
+@@ -62,6 +64,10 @@ class SelectFileDialogLinuxPortal : public SelectFileDialogLinux {
+                       const GURL* caller) override;
+   bool HasMultipleFileTypeChoicesImpl() override;
+ 
++  base::WeakPtr<SelectFileDialogLinuxPortal> GetWeakPtrForTesting() {
++    return weak_factory_.GetWeakPtr();
++  }
++
+  private:
+   // Glob-style patterns are indicated by 0, MIME types by 1. Patterns are
+   // case-sensitive.
+@@ -161,6 +167,8 @@ class SelectFileDialogLinuxPortal : public SelectFileDialogLinux {
+   // to make the dialog modal.  This closure should be run when the dialog is
+   // closed to reenable event handling.
+   base::OnceClosure reenable_window_event_handling_;
++
++  base::WeakPtrFactory<SelectFileDialogLinuxPortal> weak_factory_{this};
+ };
+ 
+ }  // namespace ui
+diff --git a/ui/shell_dialogs/select_file_dialog_linux_portal_unittest.cc b/ui/shell_dialogs/select_file_dialog_linux_portal_unittest.cc
+new file mode 100644
+index 0000000000000..051da439d245d
+--- /dev/null
++++ b/ui/shell_dialogs/select_file_dialog_linux_portal_unittest.cc
+@@ -0,0 +1,172 @@
++// Copyright 2025 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "ui/shell_dialogs/select_file_dialog_linux_portal.h"
++
++#include "base/functional/callback.h"
++#include "base/memory/scoped_refptr.h"
++#include "base/run_loop.h"
++#include "base/test/task_environment.h"
++#include "base/threading/thread.h"
++#include "testing/gtest/include/gtest/gtest.h"
++#include "ui/shell_dialogs/select_file_policy.h"
++
++namespace ui {
++
++namespace {
++
++// Mock listener for testing. Methods are not called in these tests.
++class MockSelectFileDialogListener : public SelectFileDialog::Listener {
++ public:
++  MockSelectFileDialogListener() = default;
++  ~MockSelectFileDialogListener() override = default;
++
++  // SelectFileDialog::Listener:
++  void FileSelected(const ui::SelectedFileInfo& file, int index) override {}
++  void MultiFilesSelected(
++      const std::vector<ui::SelectedFileInfo>& files) override {}
++  void FileSelectionCanceled() override {}
++};
++
++}  // namespace
++
++class SelectFileDialogLinuxPortalTest : public testing::Test {
++ public:
++  SelectFileDialogLinuxPortalTest() = default;
++  ~SelectFileDialogLinuxPortalTest() override = default;
++
++  void SetUp() override {
++    listener_ = std::make_unique<MockSelectFileDialogListener>();
++  }
++
++  // Simulates posting a callback from a background thread (e.g., DBus thread)
++  // back to the UI thread with a weak pointer, then incrementing count if
++  // valid.
++  void SimulateBackgroundThreadCallback(
++      base::Thread& thread,
++      scoped_refptr<base::SequencedTaskRunner> ui_runner,
++      base::WeakPtr<SelectFileDialogLinuxPortal> weak_ptr,
++      int* count) {
++    thread.task_runner()->PostTask(
++        FROM_HERE,
++        base::BindOnce(&PostCallbackToUIThread, ui_runner, weak_ptr, count));
++  }
++
++ protected:
++  base::test::TaskEnvironment task_environment_{
++      base::test::TaskEnvironment::MainThreadType::UI,
++      base::test::TaskEnvironment::ThreadPoolExecutionMode::ASYNC};
++  std::unique_ptr<MockSelectFileDialogListener> listener_;
++
++ private:
++  static void PostCallbackToUIThread(
++      scoped_refptr<base::SequencedTaskRunner> ui_runner,
++      base::WeakPtr<SelectFileDialogLinuxPortal> weak_ptr,
++      int* count) {
++    ui_runner->PostTask(FROM_HERE,
++                        base::BindOnce(&IncrementIfValid, weak_ptr, count));
++  }
++
++  static void IncrementIfValid(base::WeakPtr<SelectFileDialogLinuxPortal> ptr,
++                               int* count) {
++    if (ptr) {
++      (*count)++;
++    }
++  }
++};
++
++class TestableSelectFileDialogLinuxPortal : public SelectFileDialogLinuxPortal {
++ public:
++  explicit TestableSelectFileDialogLinuxPortal(Listener* listener)
++      : SelectFileDialogLinuxPortal(listener,
++                                    std::unique_ptr<ui::SelectFilePolicy>()) {}
++
++  using SelectFileDialogLinuxPortal::listener_;
++  using SelectFileDialogLinuxPortal::ListenerDestroyed;
++
++  base::WeakPtr<SelectFileDialogLinuxPortal> GetWeakPtrForTesting() {
++    return SelectFileDialogLinuxPortal::GetWeakPtrForTesting();
++  }
++
++ protected:
++  ~TestableSelectFileDialogLinuxPortal() override = default;
++};
++
++// Tests that weak pointers work correctly before ListenerDestroyed is called.
++TEST_F(SelectFileDialogLinuxPortalTest, WeakPtrsWorkBeforeListenerDestroyed) {
++  auto dialog = base::MakeRefCounted<TestableSelectFileDialogLinuxPortal>(
++      listener_.get());
++
++  bool callback_invoked = false;
++  base::WeakPtr<SelectFileDialogLinuxPortal> weak_ptr =
++      dialog->GetWeakPtrForTesting();
++  base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
++      FROM_HERE,
++      base::BindOnce(
++          [](base::WeakPtr<SelectFileDialogLinuxPortal> ptr, bool* invoked) {
++            if (ptr) {
++              *invoked = true;
++            }
++          },
++          weak_ptr, &callback_invoked));
++
++  base::RunLoop().RunUntilIdle();
++  EXPECT_TRUE(callback_invoked);
++}
++
++// Tests that ListenerDestroyed invalidates weak pointers and calls parent.
++TEST_F(SelectFileDialogLinuxPortalTest,
++       ListenerDestroyedInvalidatesAndCallsParent) {
++  auto dialog = base::MakeRefCounted<TestableSelectFileDialogLinuxPortal>(
++      listener_.get());
++
++  base::WeakPtr<SelectFileDialogLinuxPortal> weak_ptr =
++      dialog->GetWeakPtrForTesting();
++  EXPECT_TRUE(weak_ptr);
++  EXPECT_TRUE(dialog->listener_);
++
++  dialog->ListenerDestroyed();
++
++  EXPECT_FALSE(weak_ptr);
++  EXPECT_FALSE(dialog->listener_);
++}
++
++// Tests that weak pointer invalidation prevents callbacks from multiple racing
++// threads.
++TEST_F(SelectFileDialogLinuxPortalTest,
++       MultipleThreadsRacingWithListenerDestroyed) {
++  auto dialog = base::MakeRefCounted<TestableSelectFileDialogLinuxPortal>(
++      listener_.get());
++
++  base::Thread dbus_thread_1("TestDBusThread1");
++  base::Thread dbus_thread_2("TestDBusThread2");
++  ASSERT_TRUE(dbus_thread_1.Start());
++  ASSERT_TRUE(dbus_thread_2.Start());
++
++  int callbacks_invoked = 0;
++  base::WeakPtr<SelectFileDialogLinuxPortal> weak_ptr =
++      dialog->GetWeakPtrForTesting();
++  scoped_refptr<base::SequencedTaskRunner> ui_task_runner =
++      base::SequencedTaskRunner::GetCurrentDefault();
++
++  for (int i = 0; i < 3; ++i) {
++    SimulateBackgroundThreadCallback(dbus_thread_1, ui_task_runner, weak_ptr,
++                                     &callbacks_invoked);
++    SimulateBackgroundThreadCallback(dbus_thread_2, ui_task_runner, weak_ptr,
++                                     &callbacks_invoked);
++  }
++
++  dbus_thread_1.FlushForTesting();
++  dbus_thread_2.FlushForTesting();
++
++  dialog->ListenerDestroyed();
++
++  task_environment_.RunUntilIdle();
++  EXPECT_EQ(0, callbacks_invoked);
++
++  dbus_thread_1.Stop();
++  dbus_thread_2.Stop();
++}
++
++}  // namespace ui
+-- 
+2.51.0
+

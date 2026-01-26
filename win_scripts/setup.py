@@ -147,6 +147,8 @@ patches = [
     "other/fix_getupdatesprocessor_crash.patch",
     "other/fix_dangling_pointer_tooltip.patch",
     "other/fix_disable_aero_crash.patch",
+    "other/fix_file_dialog_crash.patch",
+    "other/fix_wayland_scale_crash.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -221,6 +223,8 @@ try_run(f"git apply --reject fix_profile_selector_crash.patch")
 try_run(f"git apply --reject fix_getupdatesprocessor_crash.patch")
 try_run(f"git apply --reject fix_dangling_pointer_tooltip.patch")
 try_run(f"git apply --reject fix_disable_aero_crash.patch")
+try_run(f"git apply --reject fix_file_dialog_crash.patch")
+try_run(f"git apply --reject fix_wayland_scale_crash.patch")
 
 
 print("\nCopying other files to out/thorium\n")
