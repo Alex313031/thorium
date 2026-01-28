@@ -106,6 +106,8 @@ patchThor () {
 	cp -v other/fix_getupdatesprocessor_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_dangling_pointer_tooltip.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_disable_aero_crash.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_file_dialog_crash.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_wayland_scale_crash.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -155,7 +157,9 @@ patchThor () {
 	git apply --reject ./fix_profile_selector_crash.patch &&
 	git apply --reject ./fix_getupdatesprocessor_crash.patch &&
 	git apply --reject ./fix_dangling_pointer_tooltip.patch &&
-	git apply --reject ./fix_disable_aero_crash.patch
+	git apply --reject ./fix_disable_aero_crash.patch &&
+	git apply --reject ./fix_file_dialog_crash.patch &&
+	git apply --reject ./fix_wayland_scale_crash.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 

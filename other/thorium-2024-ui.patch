@@ -1,5 +1,5 @@
 diff --git a/base/BUILD.gn b/base/BUILD.gn
-index 9247e9b3f4c92..eacd7f76564df 100644
+index 5b41b3d8052c4..1551e0e311810 100644
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
 @@ -1091,6 +1091,7 @@ component("base") {
@@ -19,7 +19,7 @@ index 9247e9b3f4c92..eacd7f76564df 100644
  }
  
 diff --git a/base/check.cc b/base/check.cc
-index bd63d5a88e34e..1bed253cb50ee 100644
+index fa5f814ec8ed2..9df0289cf4377 100644
 --- a/base/check.cc
 +++ b/base/check.cc
 @@ -323,6 +323,7 @@ std::ostream& CheckError::stream() {
@@ -57,7 +57,7 @@ index 1d236d210a16f..b5059c81559ec 100644
  
  assert(!(build_allocation_stack_trace_recorder && is_fuchsia),
 diff --git a/base/files/file_util_win.cc b/base/files/file_util_win.cc
-index 7cda11126e61e..fe82b35a1a5d1 100644
+index 09da552d2a63e..b2cda1c70abe4 100644
 --- a/base/files/file_util_win.cc
 +++ b/base/files/file_util_win.cc
 @@ -941,8 +941,9 @@ bool IsLink(const FilePath& file_path) {
@@ -72,7 +72,7 @@ index 7cda11126e61e..fe82b35a1a5d1 100644
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index b8eee13c99..1faa62547c 100644
+index b8eee13c990de..1faa62547c424 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
 @@ -30,6 +30,7 @@
@@ -164,7 +164,7 @@ index b8eee13c99..1faa62547c 100644
    // Give any log message handler first dibs on the message.
    if (g_log_message_handler &&
 diff --git a/base/logging.h b/base/logging.h
-index fe2ce670da340..82bbda21a16e5 100644
+index 262a86ef023b2..f62d46504676d 100644
 --- a/base/logging.h
 +++ b/base/logging.h
 @@ -301,6 +301,9 @@ BASE_EXPORT void SetMinLogLevel(int level);
@@ -204,7 +204,7 @@ index b103bbe61303d..469611cb36e7a 100644
    // Try to read the path using the Chromium-specific registry for Chromium.
    // If that fails, fallback to Chrome-specific registry key below.
 diff --git a/chrome/browser/resources/downloads/item.css b/chrome/browser/resources/downloads/item.css
-index f5c2357c5c986..86f18f7c77f8a 100644
+index b2a70b2e497ed..008dd2998e497 100644
 --- a/chrome/browser/resources/downloads/item.css
 +++ b/chrome/browser/resources/downloads/item.css
 @@ -333,7 +333,7 @@ cr-button {
@@ -217,7 +217,7 @@ index f5c2357c5c986..86f18f7c77f8a 100644
    margin-inline-start: 12px;
    margin-inline-end: 12px;
 diff --git a/chrome/browser/resources/downloads/item.html.ts b/chrome/browser/resources/downloads/item.html.ts
-index 1e0f2c895d708..64347e17d7e42 100644
+index 00e8ed3c7f1a7..75afa84e79ddf 100644
 --- a/chrome/browser/resources/downloads/item.html.ts
 +++ b/chrome/browser/resources/downloads/item.html.ts
 @@ -49,7 +49,7 @@ export function getHtml(this: DownloadsItemElement) {
@@ -283,7 +283,7 @@ index 8392975cdde4e..04dd53a9819ad 100644
        "views/frame/web_contents_close_handler.h",
        "views/frame/web_contents_close_handler_delegate.h",
 diff --git a/chrome/browser/ui/bookmarks/bookmark_utils.cc b/chrome/browser/ui/bookmarks/bookmark_utils.cc
-index 6df5654f9d..aab33d1d81 100644
+index 6df5654f9d8c6..aab33d1d81234 100644
 --- a/chrome/browser/ui/bookmarks/bookmark_utils.cc
 +++ b/chrome/browser/ui/bookmarks/bookmark_utils.cc
 @@ -7,6 +7,7 @@
@@ -308,7 +308,7 @@ index 6df5654f9d..aab33d1d81 100644
 +         ? &vector_icons::kFolderManagedIcon
 +         : &vector_icons::kFolderManagedRefreshIcon;
    }
-
+ 
    const ui::ThemedVectorIcon icon(id, color);
 @@ -350,8 +355,45 @@ ui::ImageModel GetBookmarkFolderIcon(BookmarkFolderIconType icon_type,
                              ui::ColorVariant color,
@@ -359,7 +359,7 @@ index 6df5654f9d..aab33d1d81 100644
                            folder.size());
    };
 diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
-index 64948595a4bc6..a568c893736ca 100644
+index e54821eb1f691..ae55157fb6aa1 100644
 --- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 +++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 @@ -48,7 +48,7 @@ using bookmarks::BookmarkNode;
@@ -372,7 +372,7 @@ index 64948595a4bc6..a568c893736ca 100644
  static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
  
 diff --git a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
-index cdaceec5e1..c4320d3550 100644
+index cdaceec5e1f1b..c4320d3550b22 100644
 --- a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
 +++ b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
 @@ -149,7 +149,9 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
@@ -421,7 +421,7 @@ index 98fe0ca8e4ad5..4f6cd4bfddf87 100644
              .Build());
    }
 diff --git a/chrome/browser/ui/browser_command_controller.cc b/chrome/browser/ui/browser_command_controller.cc
-index 86af74569f013..1f9cc1696eda4 100644
+index 02a4ad250ae42..8580f4c033843 100644
 --- a/chrome/browser/ui/browser_command_controller.cc
 +++ b/chrome/browser/ui/browser_command_controller.cc
 @@ -1556,7 +1556,8 @@ void BrowserCommandController::InitCommandState() {
@@ -435,7 +435,7 @@ index 86af74569f013..1f9cc1696eda4 100644
                                          enable_tab_search_commands);
    command_updater_.UpdateCommandEnabled(IDC_TAB_SEARCH_CLOSE,
 diff --git a/chrome/browser/ui/color/chrome_color_mixer.cc b/chrome/browser/ui/color/chrome_color_mixer.cc
-index 589c77c52175b..28e662fdd8e2f 100644
+index ee6ceebf9dc37..556f040b68766 100644
 --- a/chrome/browser/ui/color/chrome_color_mixer.cc
 +++ b/chrome/browser/ui/color/chrome_color_mixer.cc
 @@ -140,8 +140,7 @@ void AddChromeColorMixer(ui::ColorProvider* provider,
@@ -524,7 +524,7 @@ index 9698e807b11df..8bb6a245caeba 100644
    if (key.custom_theme) {
      key.custom_theme->AddColorMixers(provider, key);
 diff --git a/chrome/browser/ui/color/tab_strip_color_mixer.cc b/chrome/browser/ui/color/tab_strip_color_mixer.cc
-index 9faa599b47cc1..d683ac878cb0e 100644
+index ee5c3e70fda04..0c246b1b1e7e1 100644
 --- a/chrome/browser/ui/color/tab_strip_color_mixer.cc
 +++ b/chrome/browser/ui/color/tab_strip_color_mixer.cc
 @@ -136,10 +136,7 @@ void AddTabStripColorMixer(ui::ColorProvider* provider,
@@ -540,7 +540,7 @@ index 9faa599b47cc1..d683ac878cb0e 100644
        ui::AlphaBlend(kColorTabBackgroundActiveFrameInactive,
                       kColorTabBackgroundInactiveFrameInactive,
 diff --git a/chrome/browser/ui/frame/window_frame_util.h b/chrome/browser/ui/frame/window_frame_util.h
-index e4ccd7fab5421..0eadd6bdd8def 100644
+index 29a554aaef261..7bbf1a1e83ce4 100644
 --- a/chrome/browser/ui/frame/window_frame_util.h
 +++ b/chrome/browser/ui/frame/window_frame_util.h
 @@ -11,6 +11,8 @@ namespace gfx {
@@ -553,7 +553,7 @@ index e4ccd7fab5421..0eadd6bdd8def 100644
  // that need to be accessible outside of /browser/ui/views.
  class WindowFrameUtil {
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index 6b68ec265a..7f3d9784ca 100644
+index 6b68ec265a56a..7f3d9784cae31 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -7,6 +7,7 @@
@@ -752,7 +752,7 @@ index 6b68ec265a..7f3d9784ca 100644
        break;
    }
 @@ -146,15 +206,20 @@ int GetLayoutConstant(LayoutConstant constant) {
-
+ 
  gfx::Insets GetLayoutInsets(LayoutInset inset) {
    const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
 +  static const bool thorium_2024 = features::IsThorium2024();
@@ -817,7 +817,7 @@ index 6b68ec265a..7f3d9784ca 100644
    NOTREACHED();
  }
 diff --git a/chrome/browser/ui/layout_constants.h b/chrome/browser/ui/layout_constants.h
-index a35795ee8cc11..60577ba01a5fd 100644
+index 20fd07423cb59..afa0a7382bff7 100644
 --- a/chrome/browser/ui/layout_constants.h
 +++ b/chrome/browser/ui/layout_constants.h
 @@ -130,9 +130,21 @@ enum LayoutConstant {
@@ -843,7 +843,7 @@ index a35795ee8cc11..60577ba01a5fd 100644
    TAB_PRE_TITLE_PADDING,
  
 diff --git a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
-index 3ae6b02a62d64..63ef3fc6483fb 100644
+index 3bfd046315f84..ecde1e8589bd1 100644
 --- a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
 +++ b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
 @@ -11,6 +11,7 @@
@@ -877,7 +877,7 @@ index 3ae6b02a62d64..63ef3fc6483fb 100644
  }
  
 diff --git a/chrome/browser/ui/status_bubble.h b/chrome/browser/ui/status_bubble.h
-index 74a00df155806..c8e4a81911d80 100644
+index 3b9dc004bed49..86d29867939ba 100644
 --- a/chrome/browser/ui/status_bubble.h
 +++ b/chrome/browser/ui/status_bubble.h
 @@ -17,7 +17,7 @@ class GURL;
@@ -890,7 +890,7 @@ index 74a00df155806..c8e4a81911d80 100644
    virtual ~StatusBubble() = default;
  
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index fba81d1815359..88415257b897c 100644
+index 99ce504717444..9fc1c7e4452c7 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
 @@ -112,6 +112,10 @@ void TabMenuModel::Build(TabStripModel* tab_strip, int index) {
@@ -905,18 +905,18 @@ index fba81d1815359..88415257b897c 100644
      AddItem(
          TabStripModel::CommandAddToReadLater,
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
-index 922d2ff309..d326cbdd40 100644
+index 922d2ff309c60..d326cbdd40d9d 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -2215,6 +2215,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+@@ -2214,6 +2214,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
    }
-
+ 
    switch (command_id) {
 +    case CommandNewTabToLeft:
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -2328,7 +2329,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+@@ -2327,7 +2328,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    if (!ContainsIndex(context_index)) {
      return;
    }
@@ -935,10 +935,10 @@ index 922d2ff309..d326cbdd40 100644
        base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
        UMA_HISTOGRAM_ENUMERATION("Tab.NewTab", NewTabTypes::NEW_TAB_CONTEXT_MENU,
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.h b/chrome/browser/ui/tabs/tab_strip_model.h
-index 4d900c4a7f58c..8daa4634abeaf 100644
+index e560f05c890ae..ca8675560f023 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.h
 +++ b/chrome/browser/ui/tabs/tab_strip_model.h
-@@ -686,6 +686,7 @@ class TabStripModel : public TabGroupController {
+@@ -686,6 +686,7 @@ class TabStripModel {
    // for entries in the 'Add to existing group' submenu.
    enum ContextMenuCommand {
      CommandFirst,
@@ -947,7 +947,7 @@ index 4d900c4a7f58c..8daa4634abeaf 100644
      CommandReload,
      CommandDuplicate,
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index 30b23405ff..0743db8041 100644
+index 30b23405ff3f2..f2ff79d8e967f 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -8,6 +8,7 @@
@@ -980,7 +980,7 @@ index 30b23405ff..0743db8041 100644
 -constexpr int kTabWidth = 232;
 -
  }  // namespace
-
+ 
  TabStyle::~TabStyle() = default;
 @@ -39,6 +42,27 @@ int TabStyle::GetStandardHeight() const {
  }
@@ -1140,7 +1140,7 @@ index 30b23405ff..0743db8041 100644
  float TabStyle::GetSelectedTabOpacity() const {
 diff --git a/chrome/browser/ui/thorium_2024.h b/chrome/browser/ui/thorium_2024.h
 new file mode 100644
-index 0000000000000..de40b42fcc722
+index 0000000000000..3398230fbaadb
 --- /dev/null
 +++ b/chrome/browser/ui/thorium_2024.h
 @@ -0,0 +1,14 @@
@@ -1159,7 +1159,7 @@ index 0000000000000..de40b42fcc722
 +
 +#endif  // CHROME_BROWSER_UI_THORIUM_2024_UI_H_
 diff --git a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
-index 212eb46b54..60f5e321ca 100644
+index 212eb46b54f13..60f5e321caaca 100644
 --- a/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
 +++ b/chrome/browser/ui/toolbar/chrome_labs/chrome_labs_model.cc
 @@ -38,8 +38,43 @@ const std::vector<LabInfo>& GetData() {
@@ -1205,11 +1205,26 @@ index 212eb46b54..60f5e321ca 100644
 +
 +    return lab_info;
 +  }());
-
+ 
    return *lab_info_;
  }
+diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
+index 2a8759904d850..f9ef2af537b27 100644
+--- a/chrome/browser/ui/ui_features.cc
++++ b/chrome/browser/ui/ui_features.cc
+@@ -458,6 +458,10 @@ static std::string GetCountryCode() {
+ }
+ 
+ bool IsTabSearchMoving() {
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
++          "remove-tabsearch-button")) {
++    return false;
++  }
+   static const bool is_tab_search_moving = [] {
+     if (GetCountryCode() == "us" &&
+         base::FeatureList::IsEnabled(
 diff --git a/chrome/browser/ui/view_ids.h b/chrome/browser/ui/view_ids.h
-index fb9afeed5a60e..7b47ee8281b99 100644
+index 7da50ffc5819d..4c10cba04cb7c 100644
 --- a/chrome/browser/ui/view_ids.h
 +++ b/chrome/browser/ui/view_ids.h
 @@ -16,6 +16,7 @@ enum ViewID {
@@ -1229,7 +1244,7 @@ index fb9afeed5a60e..7b47ee8281b99 100644
    VIEW_ID_EXTENSIONS_MENU_BUTTON,
    VIEW_ID_APP_MENU,
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
-index 9cecb25b41d3b..a0662f288a022 100644
+index ffa5abc015547..c57af71d9e51b 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 @@ -58,6 +58,7 @@
@@ -1289,7 +1304,7 @@ index 9cecb25b41d3b..a0662f288a022 100644
    overflow_button_->SetVisible(show_bookmarks_overflow);
    x += overflow_pref.width();
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index 9b189df8d8ffd..83bee2c7bac9a 100644
+index 0f1e5c46255a1..28c2785e648b3 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
 @@ -7,9 +7,11 @@
@@ -1376,7 +1391,7 @@ index 9b189df8d8ffd..83bee2c7bac9a 100644
        return 4;
      case DISTANCE_TASK_MANAGER_SEARCH_ICON_SIZE:
 diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
-index 147193abed0f0..3a4acb12b6d5f 100644
+index 97dd55bfefcdf..8835f9fa73b73 100644
 --- a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
 +++ b/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
 @@ -20,6 +20,7 @@
@@ -1400,7 +1415,7 @@ index 147193abed0f0..3a4acb12b6d5f 100644
  
  DownloadBubbleRowView* DownloadBubblePrimaryView::GetRow(
 diff --git a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
-index 1807e4c267..72dff16f3b 100644
+index 1807e4c267811..72dff16f3b484 100644
 --- a/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
 +++ b/chrome/browser/ui/views/extensions/extensions_menu_item_view.cc
 @@ -31,6 +31,7 @@
@@ -1512,7 +1527,7 @@ index 0593b53bbfbb4..0f26600c30f22 100644
    maximize_button_->SetState(views::Button::STATE_NORMAL);
    restore_button_->SetState(views::Button::STATE_NORMAL);
 diff --git a/chrome/browser/ui/views/frame/browser_caption_button_container_win.h b/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
-index bda5b2b0ab02d..575c3639a2788 100644
+index bda5b2b0ab02d..f84b7f10f7439 100644
 --- a/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
 +++ b/chrome/browser/ui/views/frame/browser_caption_button_container_win.h
 @@ -7,6 +7,7 @@
@@ -1557,7 +1572,7 @@ index bda5b2b0ab02d..575c3639a2788 100644
    base::ScopedObservation<views::Widget, views::WidgetObserver>
        widget_observation_{this};
 diff --git a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
-index 84930758ab743..8b762a0c37582 100644
+index 799e936e155d2..84550fdbf212f 100644
 --- a/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
 +++ b/chrome/browser/ui/views/frame/browser_frame_view_layout_linux.cc
 @@ -75,5 +75,5 @@ gfx::Insets BrowserFrameViewLayoutLinux::RestoredFrameEdgeInsets() const {
@@ -1867,7 +1882,7 @@ index 09a8990a384f3..d6b02934cafc2 100644
    if (!browser_view()->GetTabStripVisible() ||
        !browser_view()->IsFullscreen() ||
 diff --git a/chrome/browser/ui/views/frame/browser_view.cc b/chrome/browser/ui/views/frame/browser_view.cc
-index 60e7ef5295163..04a54eed57b95 100644
+index 60e7ef5295163..687ef6996bbc1 100644
 --- a/chrome/browser/ui/views/frame/browser_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_view.cc
 @@ -1374,6 +1374,10 @@ bool BrowserView::UsesImmersiveFullscreenTabbedMode() const {
@@ -1881,8 +1896,36 @@ index 60e7ef5295163..04a54eed57b95 100644
    return tab_search_bubble_host_.get();
  }
  
+@@ -5283,15 +5287,18 @@ void BrowserView::AddedToWidget() {
+ 
+   toolbar_->Init();
+ 
+-  if (GetIsNormalType()) {
+-    if (features::HasTabSearchToolbarButton()) {
+-      tab_search_bubble_host_ = std::make_unique<TabSearchBubbleHost>(
+-          toolbar_->tab_search_button(), browser_.get(),
+-          tabstrip_->AsWeakPtr());
+-    } else {
+-      tab_search_bubble_host_ = std::make_unique<TabSearchBubbleHost>(
+-          tab_strip_region_view_->GetTabSearchButton(), browser_.get(),
+-          tabstrip_->AsWeakPtr());
++  if (!base::CommandLine::ForCurrentProcess()->HasSwitch(
++          "remove-tabsearch-button")) {
++    if (GetIsNormalType()) {
++      if (features::HasTabSearchToolbarButton()) {
++        tab_search_bubble_host_ = std::make_unique<TabSearchBubbleHost>(
++            toolbar_->tab_search_button(), browser_.get(),
++            tabstrip_->AsWeakPtr());
++      } else {
++        tab_search_bubble_host_ = std::make_unique<TabSearchBubbleHost>(
++            tab_strip_region_view_->GetTabSearchButton(), browser_.get(),
++            tabstrip_->AsWeakPtr());
++      }
+     }
+   }
+ 
 diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
-index 4c5356d8f20f6..ccbe7a8ead81e 100644
+index 5188551f5c787..8902f945f977e 100644
 --- a/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
 +++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view.cc
 @@ -259,7 +259,9 @@ void OpaqueBrowserFrameView::LayoutWebAppWindowTitle(
@@ -1897,7 +1940,7 @@ index 4c5356d8f20f6..ccbe7a8ead81e 100644
  
  void OpaqueBrowserFrameView::UpdateThrobber(bool running) {
 diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
-index 5c82d24686e9f..6d577bf74d5e2 100644
+index 1ab20a24816be..045d6ee776b10 100644
 --- a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
 +++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.cc
 @@ -78,7 +78,7 @@ gfx::Rect OpaqueBrowserFrameViewLayout::GetBoundsForTabStripRegion(
@@ -1963,7 +2006,7 @@ index 5c82d24686e9f..6d577bf74d5e2 100644
      bool enabled,
      views::View* host) {
 diff --git a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
-index 707226e0e8c70..5e1a2b4dd9921 100644
+index 9f7a0c03dcd6f..7196bc84c144c 100644
 --- a/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
 +++ b/chrome/browser/ui/views/frame/opaque_browser_frame_view_layout.h
 @@ -89,6 +89,8 @@ class OpaqueBrowserFrameViewLayout : public views::LayoutManager {
@@ -2146,7 +2189,7 @@ index cd93e66f918eb..e904e44e5c134 100644
  }
 diff --git a/chrome/browser/ui/views/frame/window_caption_util.cc b/chrome/browser/ui/views/frame/window_caption_util.cc
 new file mode 100644
-index 0000000000000..04703d70ecf9b
+index 0000000000000..f1be09e9f1a6a
 --- /dev/null
 +++ b/chrome/browser/ui/views/frame/window_caption_util.cc
 @@ -0,0 +1,26 @@
@@ -2204,7 +2247,7 @@ index 0000000000000..92e166d7ca93c
 +
 +#endif  // CHROME_BROWSER_UI_VIEWS_FRAME_WINDOW_CAPTION_UTIL_H_
 diff --git a/chrome/browser/ui/views/frame/windows_caption_button.cc b/chrome/browser/ui/views/frame/windows_caption_button.cc
-index 680c892a8ab48..d23c4db6c95ef 100644
+index 680c892a8ab48..149d03780ab6f 100644
 --- a/chrome/browser/ui/views/frame/windows_caption_button.cc
 +++ b/chrome/browser/ui/views/frame/windows_caption_button.cc
 @@ -15,6 +15,7 @@
@@ -2793,7 +2836,7 @@ index 24a77539fb127..9663f5e95901d 100644
  
  // static
 diff --git a/chrome/browser/ui/views/side_panel/side_panel.cc b/chrome/browser/ui/views/side_panel/side_panel.cc
-index 12f3662bee633..d4295bb1f3785 100644
+index 8b9659df61a2c..a9d893236f5c4 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel.cc
 @@ -55,7 +55,7 @@ namespace {
@@ -2806,7 +2849,7 @@ index 12f3662bee633..d4295bb1f3785 100644
  }
  
 diff --git a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
-index e65fda1bf0161..63a226c4bbf6e 100644
+index 9e144d29623e4..04a2836a060ae 100644
 --- a/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 +++ b/chrome/browser/ui/views/side_panel/side_panel_resize_area.cc
 @@ -12,6 +12,7 @@
@@ -2853,7 +2896,20 @@ index e65fda1bf0161..63a226c4bbf6e 100644
      const SkColor resize_handle_color =
          GetColorProvider()->GetColor(kColorSidePanelHoverResizeAreaHandle);
      SetBackground(CreateRoundedRectBackground(resize_handle_color, 2));
-iff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
+diff --git a/chrome/browser/ui/views/tab_search_bubble_host.h b/chrome/browser/ui/views/tab_search_bubble_host.h
+index 2b7480d8bc188..ca60ad77530ae 100644
+--- a/chrome/browser/ui/views/tab_search_bubble_host.h
++++ b/chrome/browser/ui/views/tab_search_bubble_host.h
+@@ -44,6 +44,8 @@ class TabSearchBubbleHost : public views::WidgetObserver,
+   TabSearchBubbleHost(views::Button* button,
+                       BrowserWindowInterface* browser_window_interface,
+                       base::WeakPtr<TabStrip> tab_strip);
++  // Legacy codepath for Th24 caption button
++  //TabSearchBubbleHost(views::Button* button, Profile* profile);
+   TabSearchBubbleHost(const TabSearchBubbleHost&) = delete;
+   TabSearchBubbleHost& operator=(const TabSearchBubbleHost&) = delete;
+   ~TabSearchBubbleHost() override;
+diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
 index 9306471ed423f..54ae8637e9982 100644
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
@@ -3056,7 +3112,7 @@ index 13e379af80c95..e8a9008cc204f 100644
    // padding between them to space them out visually.
    bool extra_alert_indicator_padding_ = false;
 diff --git a/chrome/browser/ui/views/tabs/tab_close_button.cc b/chrome/browser/ui/views/tabs/tab_close_button.cc
-index ac335a68f3fd0..8eef7a2f256c8 100644
+index 281d6c6fcccbf..24c9460a7d00f 100644
 --- a/chrome/browser/ui/views/tabs/tab_close_button.cc
 +++ b/chrome/browser/ui/views/tabs/tab_close_button.cc
 @@ -39,7 +39,7 @@
@@ -3068,19 +3124,6 @@ index ac335a68f3fd0..8eef7a2f256c8 100644
  constexpr gfx::Size kButtonSize = {28, 28};
  }  // namespace
  
-diff --git a/chrome/browser/ui/views/tab_search_bubble_host.h b/chrome/browser/ui/views/tab_search_bubble_host.h
-index 2b7480d8bc188..ca60ad77530ae 100644
---- a/chrome/browser/ui/views/tab_search_bubble_host.h
-+++ b/chrome/browser/ui/views/tab_search_bubble_host.h
-@@ -44,6 +44,8 @@ class TabSearchBubbleHost : public views::WidgetObserver,
-   TabSearchBubbleHost(views::Button* button,
-                       BrowserWindowInterface* browser_window_interface,
-                       base::WeakPtr<TabStrip> tab_strip);
-+  // Legacy codepath for Th24 caption button
-+  //TabSearchBubbleHost(views::Button* button, Profile* profile);
-   TabSearchBubbleHost(const TabSearchBubbleHost&) = delete;
-   TabSearchBubbleHost& operator=(const TabSearchBubbleHost&) = delete;
-   ~TabSearchBubbleHost() override;
 diff --git a/chrome/browser/ui/views/tabs/tab_search_button.cc b/chrome/browser/ui/views/tabs/tab_search_button.cc
 index de0e8090f837a..0d6e4ee309e9f 100644
 --- a/chrome/browser/ui/views/tabs/tab_search_button.cc
@@ -3345,7 +3388,7 @@ index 5e442e370ab34..5721f4f01616e 100644
                       flags);
    }
 diff --git a/chrome/browser/ui/views/tabs/tab_style_views.h b/chrome/browser/ui/views/tabs/tab_style_views.h
-index 4160d9c4d503f..54ae85ef82a3e 100644
+index d91a5531a145b..4b18fd4ea6356 100644
 --- a/chrome/browser/ui/views/tabs/tab_style_views.h
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.h
 @@ -48,6 +48,9 @@ class TabStyleViews {
@@ -3372,7 +3415,7 @@ index 79f18f4a6fa8c..fd06ceb39cadc 100644
      "split_tabs_button.h",
      "toolbar_action_hover_card_bubble_view.cc",
 diff --git a/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc b/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
-index b071682471a32..94123478b7fab 100644
+index 484166029b50c..fe0c66d258cfb 100644
 --- a/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
 +++ b/chrome/browser/ui/views/toolbar/chrome_labs/chrome_labs_bubble_view.cc
 @@ -109,7 +109,7 @@ ChromeLabsBubbleView::ChromeLabsBubbleView(views::Button* anchor_view,
@@ -3509,7 +3552,7 @@ index 0000000000000..43b9476bb127c
 +
 +#endif  // CHROME_BROWSER_UI_VIEWS_TOOLBAR_RESTORE_TAB_BUTTON_H_
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_button.cc b/chrome/browser/ui/views/toolbar/toolbar_button.cc
-index 36ba4fcfc2683..584c2b6e10941 100644
+index 02a6172f89426..baf9d0a8e0263 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_button.cc
 +++ b/chrome/browser/ui/views/toolbar/toolbar_button.cc
 @@ -176,7 +176,7 @@ void ToolbarButton::UpdateColorsAndInsets() {
@@ -3532,7 +3575,7 @@ index 36ba4fcfc2683..584c2b6e10941 100644
    return kDefaultIconSizeChromeRefresh;
  }
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_button.h b/chrome/browser/ui/views/toolbar/toolbar_button.h
-index d85292e244d48..f3775f4cd4ec0 100644
+index 12192cf2c7836..a6185fb054929 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_button.h
 +++ b/chrome/browser/ui/views/toolbar/toolbar_button.h
 @@ -233,6 +233,13 @@ class ToolbarButton : public views::LabelButton,
@@ -3717,10 +3760,10 @@ index b7052cda697c5..39f5f4fea851a 100644
  #endif  // BUILDFLAG(ENABLE_DEVTOOLS_FRONTEND)
  }
 diff --git a/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h b/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
-index f7dcd7cbfee20..6a0be3307f6c6 100644
+index a35723a40c9b7..5a7e248f4ff9b 100644
 --- a/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
 +++ b/chrome/browser/ui/webui/cr_components/theme_color_picker/customize_chrome_colors.h
-@@ -27,6 +27,17 @@ constexpr int kCustomizeChromeColorIds[] = {
+@@ -27,6 +27,17 @@ inline constexpr std::array kCustomizeChromeColorIds{
      6,   // Yellow and white.
      5,   // Beige and white.
      1,   // Warm grey.
@@ -3835,7 +3878,7 @@ index 7c4b57024e244..bca32abdf0a91 100644
    configs += [ "//build/config/compiler:wexit_time_destructors" ]
  
 diff --git a/chrome/common/chrome_paths.cc b/chrome/common/chrome_paths.cc
-index 3c569bc610124..160d1bd4090a3 100644
+index 05825d36640d0..d9821179f5baf 100644
 --- a/chrome/common/chrome_paths.cc
 +++ b/chrome/common/chrome_paths.cc
 @@ -55,7 +55,7 @@ const base::FilePath::CharType kFilepathSinglePrefExtensions[] =
@@ -3876,7 +3919,7 @@ index 3c569bc610124..160d1bd4090a3 100644
  #endif  // !BUILDFLAG(IS_MAC)
        break;
 diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_constants.cc
-index 248b6795e8cbe..488bade160e37 100644
+index e5e724a22d015..afd5da10dd987 100644
 --- a/chrome/common/webui_url_constants.cc
 +++ b/chrome/common/webui_url_constants.cc
 @@ -72,6 +72,7 @@ bool IsSystemWebUIHost(std::string_view host) {
@@ -3888,7 +3931,7 @@ index 248b6795e8cbe..488bade160e37 100644
        kChromeUIAccessibilityHost,
  #if !BUILDFLAG(IS_ANDROID)
 diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
-index d1a8dc8342177..a407f00138376 100644
+index c35d5252a52ee..259a6a949dad0 100644
 --- a/chrome/common/webui_url_constants.h
 +++ b/chrome/common/webui_url_constants.h
 @@ -31,6 +31,8 @@ namespace chrome {
@@ -3942,7 +3985,7 @@ index 44e287fe40796..96f6ea7daf274 100644
    </if>
  </grit-part>
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
-index 9e5567aec56dc..0e3978ff8da39 100644
+index 67cdf0f30f229..828ff519a96c6 100644
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
 @@ -3663,7 +3663,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
@@ -4024,7 +4067,7 @@ index 7e82d0e67a8c8..639cbe36ca068 100644
  BASE_DECLARE_FEATURE(kBubbleMetricsApi);
  
 diff --git a/ui/linux/linux_ui_factory.cc b/ui/linux/linux_ui_factory.cc
-index d21456ab73faa..de14c868fcc26 100644
+index f31b4ab713c99..d53961605df51 100644
 --- a/ui/linux/linux_ui_factory.cc
 +++ b/ui/linux/linux_ui_factory.cc
 @@ -190,7 +190,7 @@ SystemTheme GetDefaultSystemTheme() {
@@ -4311,7 +4354,7 @@ index 45f1aec037fa4..689a67d372858 100644
    }
  }
 diff --git a/ui/views/controls/button/toggle_button.h b/ui/views/controls/button/toggle_button.h
-index 5c465d0f8377c..637e853bec669 100644
+index a0e68d80a1d1d..9f284ba04e39a 100644
 --- a/ui/views/controls/button/toggle_button.h
 +++ b/ui/views/controls/button/toggle_button.h
 @@ -55,6 +55,10 @@ class VIEWS_EXPORT ToggleButton : public Button {
@@ -4363,7 +4406,7 @@ index dafb3fb1502e3..9a350bade5c3c 100644
  
  void PaintComboboxArrow(SkColor color,
 diff --git a/ui/views/controls/editable_combobox/editable_combobox.cc b/ui/views/controls/editable_combobox/editable_combobox.cc
-index 81bd9ac032b1f..da73d1d14d456 100644
+index 0e5865053b8d0..da84a81cc2896 100644
 --- a/ui/views/controls/editable_combobox/editable_combobox.cc
 +++ b/ui/views/controls/editable_combobox/editable_combobox.cc
 @@ -630,7 +630,9 @@ void EditableCombobox::UpdateTextfieldInsets() {
@@ -4378,7 +4421,7 @@ index 81bd9ac032b1f..da73d1d14d456 100644
  }
  
 diff --git a/ui/views/controls/menu/menu_config.cc b/ui/views/controls/menu/menu_config.cc
-index cc2b21432f010..d2aeab2198423 100644
+index a711c503287a7..ba0aef5301358 100644
 --- a/ui/views/controls/menu/menu_config.cc
 +++ b/ui/views/controls/menu/menu_config.cc
 @@ -6,6 +6,7 @@
@@ -4637,7 +4680,7 @@ index a2dae078ccbd3..16100afdb3e77 100644
  
  }  // namespace views
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
-index 81fabd16b2ce3..4b5b8781dd541 100644
+index a2fe435a88ac0..9356283366734 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
 +++ b/ui/views/controls/menu/menu_item_view.cc
 @@ -28,6 +28,7 @@
@@ -4769,7 +4812,7 @@ index 47d07172cc928..83f6c1fef6943 100644
  }
  
 diff --git a/ui/views/controls/tree/tree_view.h b/ui/views/controls/tree/tree_view.h
-index cfee7309a95c6..74108649ba65a 100644
+index 5f6f425d199b8..fecdcf06f18cc 100644
 --- a/ui/views/controls/tree/tree_view.h
 +++ b/ui/views/controls/tree/tree_view.h
 @@ -467,6 +467,10 @@ class VIEWS_EXPORT TreeView : public View,
@@ -4920,7 +4963,7 @@ index 69dc68d302b63..c0b974153be08 100644
    transition: box-shadow 80ms linear;
  }
 diff --git a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
-index 81d33bf3c3f99..d427358823b24 100644
+index 81d33bf3c3f99..6b43cf82217e2 100644
 --- a/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 +++ b/ui/webui/resources/cr_elements/cr_toggle/cr_toggle.css
 @@ -17,7 +17,6 @@
