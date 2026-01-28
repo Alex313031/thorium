@@ -908,7 +908,7 @@ diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/
 index 922d2ff309c60..d326cbdd40d9d 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -2214,6 +2214,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+@@ -2215,6 +2215,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
    }
  
    switch (command_id) {
@@ -916,7 +916,7 @@ index 922d2ff309c60..d326cbdd40d9d 100644
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -2327,7 +2328,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
+@@ -2328,7 +2329,17 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    if (!ContainsIndex(context_index)) {
      return;
    }
@@ -1212,7 +1212,7 @@ diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
 index 2a8759904d850..f9ef2af537b27 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -458,6 +458,10 @@ static std::string GetCountryCode() {
+@@ -460,6 +460,10 @@ static std::string GetCountryCode() {
  }
  
  bool IsTabSearchMoving() {

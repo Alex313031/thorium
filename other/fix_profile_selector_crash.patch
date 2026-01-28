@@ -128,7 +128,7 @@ diff --git a/components/vector_icons/BUILD.gn b/components/vector_icons/BUILD.gn
 index 0d5e7f372eec3..3009e078de801 100644
 --- a/components/vector_icons/BUILD.gn
 +++ b/components/vector_icons/BUILD.gn
-@@ -99,6 +99,7 @@ if (current_toolchain == default_toolchain) {
+@@ -101,6 +101,7 @@ if (current_toolchain == default_toolchain) {
        "file_download.icon",
        "file_download_chrome_refresh.icon",
        "file_download_off_chrome_refresh.icon",
