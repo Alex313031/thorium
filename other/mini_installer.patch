@@ -123,7 +123,7 @@ index 7e49b4e449981..4a59d3e73940d 100644
      # library, which in turn depends on the standard library and relies on it
      # to run initializers.
 -    if (!is_asan && !use_clang_profiling) {
-+    if (!is_asan && !use_clang_profiling || no_mini_installer_crt) {
++    if (!is_asan && !use_clang_profiling && no_mini_installer_crt) {
        no_default_deps = true
        ldflags += [ "/ENTRY:MainEntryPoint" ]
 +    } else {
