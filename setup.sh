@@ -94,6 +94,7 @@ patchThor () {
 	cp -v other/change-libavcodec-header.patch ${CR_SRC_DIR}/third_party/ffmpeg/ &&
 	cp -v other/fix-policy-templates.patch ${CR_SRC_DIR}/ &&
 	cp -v other/ftp-support-thorium.patch ${CR_SRC_DIR}/ &&
+	cp -v other/restore_download_shelf.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium-2024-ui.patch ${CR_SRC_DIR}/ &&
 	cp -v other/GPC.patch ${CR_SRC_DIR}/ &&
 	cp -v other/GPC-2.patch ${CR_SRC_DIR}/ &&
@@ -133,6 +134,8 @@ patchThor () {
 	printf "${YEL}Patching for Thorium 2024 UI...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./thorium-2024-ui.patch &&
+	printf "${YEL}Download Shelf patch...${c0}\n" &&
+	git apply --reject ./restore_download_shelf.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching mini_installer...${c0}\n" &&
