@@ -1,0 +1,73 @@
+diff --git a/chrome/browser/ui/views/download/download_item_view.cc b/chrome/browser/ui/views/download/download_item_view.cc
+index 42706748b2d50..90ce02a65ebd1 100644
+--- a/chrome/browser/ui/views/download/download_item_view.cc
++++ b/chrome/browser/ui/views/download/download_item_view.cc
+@@ -65,6 +65,7 @@
+ #include "ui/base/mojom/menu_source_type.mojom-forward.h"
+ #include "ui/base/text/bytes_formatting.h"
+ #include "ui/base/themed_vector_icon.h"
++#include "ui/base/ui_base_features.h"
+ #include "ui/color/color_id.h"
+ #include "ui/color/color_provider.h"
+ #include "ui/compositor/layer.h"
+@@ -116,7 +117,7 @@ namespace {
+ constexpr int kTextWidth = 140;
+ 
+ // Padding before the icon and at end of the item.
+-constexpr int kStartPadding = 12;
++constexpr int kStartPadding = 8;
+ constexpr int kEndPadding = 6;
+ 
+ // Horizontal padding between progress indicator and filename/status text.
+@@ -192,6 +193,12 @@ class TransparentButton : public views::Button {
+ 
+   void OnTooltipTextUpdated() { parent()->GetTooltipText(); }
+ 
++  // Fix bug in CR af6f4b9c4f3b02fbcba3ffa3c7f4b65b0995aba3 that prevented download item tooltip from showing.
++  std::u16string GetRenderedTooltipText(const gfx::Point& p) const override {
++    const std::u16string this_tooltip_text = parent()->GetTooltipText();
++    return this_tooltip_text;
++  }
++
+  private:
+   base::CallbackListSubscription tooltip_text_changed_subscription_;
+ };
+@@ -602,6 +609,9 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
+     }
+   }
+ 
++  if (features::IsThorium2024()) {
++    height -= 16;
++  }
+   // The normal height of the item which may be exceeded if text is large.
+   constexpr int kDefaultDownloadItemHeight = 48;
+   return gfx::Size(width, std::max(kDefaultDownloadItemHeight,
+@@ -610,13 +620,6 @@ gfx::Size DownloadItemView::CalculatePreferredSize(
+ 
+ void DownloadItemView::OnPaintBackground(gfx::Canvas* canvas) {
+   View::OnPaintBackground(canvas);
+-
+-  // Draw the separator as part of the background. It will be covered by the
+-  // focus ring when the view has focus.
+-  gfx::Rect rect(width() - 1, 0, 1, height());
+-  rect.Inset(gfx::Insets::VH(kTopBottomPadding, 0));
+-  canvas->FillRect(GetMirroredRect(rect),
+-                   GetColorProvider()->GetColor(kColorToolbarSeparator));
+ }
+ 
+ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+@@ -694,6 +697,14 @@ void DownloadItemView::OnPaint(gfx::Canvas* canvas) {
+     canvas->DrawImageInt(icon, bounds.x(), bounds.y());
+   }
+ 
++  // Draw the separator as part of the background. It will be covered by the
++  // focus ring when the view has focus.
++  // Alex313031: TODO: Use NTB method to pop out to overlay and move right 1px
++  gfx::Rect rect(width() - 1, 0, 1, height());
++  rect.Inset(gfx::Insets::VH(kTopBottomPadding, 0));
++  canvas->FillRect(GetMirroredRect(rect),
++                   GetColorProvider()->GetColor(kColorToolbarSeparator));
++
+   OnPaintBorder(canvas);
+ }
+ 

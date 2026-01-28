@@ -200,7 +200,7 @@ index b5b269da941db..1ee7046ac4a06 100644
 +++ b/chrome/installer/util/shell_util.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2012 The Chromium Authors
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  //

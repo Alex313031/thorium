@@ -70,7 +70,7 @@ def main():
         "git clean -ffd",
         "git rebase-update",
         "git fetch --tags",
-        "gclient sync --with_branch_heads --with_tags -f -R -D",
+        "gclient sync --with_branch_heads --with_tags --force --reset --nohooks --delete_unversioned_trees",
         "git clean -ffd",
         "gclient runhooks",
     ]
