@@ -41,7 +41,7 @@ cr_src_dir = os.getenv("CR_DIR", r"C:/src/chromium/src")
 
 
 # Set cr_ver
-cr_ver = "138.0.7204.300"
+cr_ver = "138.0.7204.301"
 
 
 print(f"\nCurrent Chromium version is: {cr_ver}\n")
@@ -56,8 +56,9 @@ try_run(f"git checkout -f tags/{cr_ver}")
 commands = [
     "git clean -ffd",
     "git clean -ffd",
-    "gclient sync --with_branch_heads --with_tags -f -R -D",
+    "gclient sync --with_branch_heads --with_tags --force --reset --nohooks --delete_unversioned_trees",
     "git clean -ffd",
+    "gclient runhooks",
 ]
 
 # Run each command with error handling
