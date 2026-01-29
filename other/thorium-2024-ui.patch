@@ -52,7 +52,7 @@ index 1d236d210a16f..b5059c81559ec 100644
 +  # This enables stack traces in logs and non-fatalizes DCHECKs.
 +  # Ultimately, it should help users collect necessary data for browser issues
 +  # without setting up a dedicated debugger.
-+  thorium_debug = is_debug
++  thorium_debug = false
  }
  
  assert(!(build_allocation_stack_trace_recorder && is_fuchsia),
@@ -72,7 +72,7 @@ index 09da552d2a63e..b2cda1c70abe4 100644
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index b8eee13c990de..1faa62547c424 100644
+index b8eee13c990de..820ce420251d2 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
 @@ -30,6 +30,7 @@
@@ -133,6 +133,15 @@ index b8eee13c990de..1faa62547c424 100644
      return true;
    }
  
+@@ -703,7 +720,7 @@ void DisplayDebugMessageInDialog(const std::string& str) {
+   // You can just look at stderr.
+   if (base::win::IsUser32AndGdi32Available()) {
+     MessageBoxW(nullptr, base::as_wcstr(base::UTF8ToUTF16(str)), L"Fatal error",
+-                MB_OK | MB_ICONHAND | MB_TOPMOST);
++                MB_OK | MB_ICONERROR | MB_DEFBUTTON1 | MB_APPLMODAL);
+   } else {
+     OutputDebugStringW(base::as_wcstr(base::UTF8ToUTF16(str)));
+   }
 @@ -724,9 +741,11 @@ void LogMessage::Flush() {
    // Don't let actions from this method affect the system error after returning.
    base::ScopedClearLastError scoped_clear_last_error;
