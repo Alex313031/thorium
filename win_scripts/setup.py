@@ -149,6 +149,7 @@ patches = [
     "other/fix_disable_aero_crash.patch",
     "other/fix_file_dialog_crash.patch",
     "other/fix_wayland_scale_crash.patch",
+    "other/restore_download_shelf.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -206,6 +207,12 @@ print("\nPatching for mini_installer\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject mini_installer.patch")
+
+
+print("\nDownload Shelf patch...\n")
+# Change directory to cr_src_dir and run commands
+os.chdir(cr_src_dir)
+try_run(f"git apply --reject restore_download_shelf.patch")
 
 
 print("\nApplying other Misc. patches...\n")
