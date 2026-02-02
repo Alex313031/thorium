@@ -1,3 +1,167 @@
+diff --git a/chrome/browser/ui/webui/BUILD.gn b/chrome/browser/ui/webui/BUILD.gn
+index b0cea16b095a6..05a4796c5a159 100644
+--- a/chrome/browser/ui/webui/BUILD.gn
++++ b/chrome/browser/ui/webui/BUILD.gn
+@@ -23,6 +23,7 @@ source_set("configs") {
+     "chrome_untrusted_web_ui_configs.h",
+     "chrome_web_ui_configs.cc",
+     "chrome_web_ui_configs.h",
++    "thorium_easter_eggs.h",
+   ]
+ 
+   configs += [ "//build/config/compiler:wexit_time_destructors" ]
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+index f740a1880ae9f..4c66dc0bb2331 100644
+--- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
+@@ -45,6 +45,7 @@
+ #include "chrome/browser/ui/webui/segmentation_internals/segmentation_internals_ui.h"
+ #include "chrome/browser/ui/webui/signin_internals_ui.h"
+ #include "chrome/browser/ui/webui/sync_internals/sync_internals_ui.h"
++#include "chrome/browser/ui/webui/thorium_easter_eggs.h"
+ #include "chrome/browser/ui/webui/translate_internals/translate_internals_ui.h"
+ #include "chrome/browser/ui/webui/usb_internals/usb_internals_ui.h"
+ #include "chrome/browser/ui/webui/user_actions/user_actions_ui.h"
+@@ -261,6 +262,7 @@ void RegisterChromeWebUIConfigs() {
+   map.AddWebUIConfig(std::make_unique<SignInInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<SiteEngagementUIConfig>());
+   map.AddWebUIConfig(std::make_unique<SyncInternalsUIConfig>());
++  map.AddWebUIConfig(std::make_unique<ThoriumWebUILoadUIConfig>());
+   map.AddWebUIConfig(std::make_unique<TranslateInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<UsbInternalsUIConfig>());
+   map.AddWebUIConfig(std::make_unique<UserActionsUIConfig>());
+
+diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
+index b7052cda697c5..1867f25e816c9 100644
+--- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
++++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
+@@ -359,7 +359,8 @@ bool ChromeWebUIControllerFactory::IsWebUIAllowedToMakeNetworkRequests(
+       // https://crbug.com/859345
+       origin.host() == chrome::kChromeUIDownloadsHost ||
+       // https://crbug.com/376417346
+-      origin.host() == chrome::kChromeUIExtensionsHost;
++      origin.host() == chrome::kChromeUIExtensionsHost ||
++      origin.host() == chrome::kChromeUIEggsHost;
+ }
+ 
+ ChromeWebUIControllerFactory::ChromeWebUIControllerFactory() = default;
+diff --git a/chrome/browser/ui/webui/thorium_easter_eggs.h b/chrome/browser/ui/webui/thorium_easter_eggs.h
+new file mode 100644
+index 0000000000000..52f4b2506773c
+--- /dev/null
++++ b/chrome/browser/ui/webui/thorium_easter_eggs.h
+@@ -0,0 +1,86 @@
++// Copyright 2026 Alex313031
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef THORIUM_EASTER_EGGS_H_
++#define THORIUM_EASTER_EGGS_H_
++
++#include "base/memory/ref_counted_memory.h"
++#include "chrome/browser/profiles/profile.h"
++#include "chrome/common/webui_url_constants.h"
++#include "content/public/browser/url_data_source.h"
++#include "content/public/browser/web_ui.h"
++#include "content/public/browser/web_ui_controller.h"
++#include "content/public/browser/webui_config.h"
++#include "services/network/public/mojom/content_security_policy.mojom.h"
++
++class ThoriumDataSource : public content::URLDataSource {
++ public:
++  ThoriumDataSource() {}
++  ThoriumDataSource(const ThoriumDataSource&) = delete;
++  ThoriumDataSource& operator=(const ThoriumDataSource&) = delete;
++  std::string GetSource() override;
++  std::string GetMimeType(const GURL& url) override;
++  std::string GetContentSecurityPolicy(network::mojom::CSPDirectiveName directive) override;
++  void StartDataRequest(const GURL& url,
++                        const content::WebContents::Getter& wc_getter,
++                        GotDataCallback callback) override;
++};
++
++std::string ThoriumDataSource::GetSource() { return "eggs"; }
++std::string ThoriumDataSource::GetMimeType(const GURL& url) { return "text/html"; }
++std::string ThoriumDataSource::GetContentSecurityPolicy(network::mojom::CSPDirectiveName directive) {
++  if (directive == network::mojom::CSPDirectiveName::ScriptSrc)
++    return "script-src 'unsafe-inline'";
++  return std::string();
++}
++void ThoriumDataSource::StartDataRequest(const GURL& url,
++                      const content::WebContents::Getter& wc_getter,
++                      GotDataCallback callback) {
++  std::string source = R"(
++    <html>
++    <head>
++      <title>Thorium Easter Eggs</title>
++      <meta name="color-scheme" content="light dark">
++      <meta name="viewport" content="width=device-width, initial-scale=1">
++      <link rel="shortcut icon" type="image/x-icon" href="chrome://theme/current-channel-logo@2x">
++    <style>
++      @import url(chrome://resources/css/text_defaults_md.css);
++      body { text-align: center; align-content: center; max-width: 75%; margin: auto;}
++      img { max-width: 75%; height: auto; }
++    </style>
++    </head>
++    <body>
++      <h2><u>Thorium Easter Eggs WebUI Page</u></h3>
++      <hr>
++      <p>
++        <img src="chrome://theme/IDR_PRODUCT_THORIUM_ELEMENT">
++        <hr>
++        <img src="chrome://theme/IDR_PRODUCT_THORIUM_ATOMIC">
++        <img src="chrome://theme/IDR_PRODUCT_CHROMIUM_QUESTION">
++        <img src="chrome://theme/IDR_PRODUCT_THORIUM_GUY">
++        <img src="chrome://theme/IDR_PRODUCT_CHROMIUM_BLANK">
++        <img src="chrome://theme/IDR_PRODUCT_AI_CHROME">
++      </p>
++    </body>
++    </html>
++  )";
++  std::move(callback).Run(base::MakeRefCounted<base::RefCountedString>(std::move(source)));
++}
++
++class ThoriumWebUILoad;
++class ThoriumWebUILoadUIConfig : public content::DefaultWebUIConfig<ThoriumWebUILoad> {
++  public:
++   ThoriumWebUILoadUIConfig() : DefaultWebUIConfig("chrome", chrome::kChromeUIEggsHost) {}
++};
++
++class ThoriumWebUILoad : public content::WebUIController {
++ public:
++  ThoriumWebUILoad(content::WebUI* web_ui) : content::WebUIController(web_ui) {
++    content::URLDataSource::Add(Profile::FromWebUI(web_ui), std::make_unique<ThoriumDataSource>());
++  }
++  ThoriumWebUILoad(const ThoriumWebUILoad&) = delete;
++  ThoriumWebUILoad& operator=(const ThoriumWebUILoad&) = delete;
++};
++
++#endif  // THORIUM_EASTER_EGGS_H_
+diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_constants.cc
+index e5e724a22d015..afd5da10dd987 100644
+--- a/chrome/common/webui_url_constants.cc
++++ b/chrome/common/webui_url_constants.cc
+@@ -72,6 +72,7 @@ bool IsSystemWebUIHost(std::string_view host) {
+ // These hosts will also be suggested by BuiltinProvider.
+ base::span<const base::cstring_view> ChromeURLHosts() {
+   static constexpr auto kChromeURLHosts = std::to_array<base::cstring_view>({
++      kChromeUIEggsHost,
+       kChromeUIAboutHost,
+       kChromeUIAccessibilityHost,
+ #if !BUILDFLAG(IS_ANDROID)
+diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
+index c35d5252a52ee..259a6a949dad0 100644
+--- a/chrome/common/webui_url_constants.h
++++ b/chrome/common/webui_url_constants.h
+@@ -31,6 +31,8 @@ namespace chrome {
+ // Not all components have corresponding URLs and vice versa. Only add as
+ // needed.
+ // Please keep in alphabetical order, with OS/feature specific sections below.
++inline constexpr char kChromeUIEggsHost[] = "eggs";
++inline constexpr char kChromeUIEggsURL[] = "chrome://eggs/";
+ inline constexpr char kChromeUIAboutHost[] = "about";
+ inline constexpr char kChromeUIAboutURL[] = "chrome://about/";
+ inline constexpr char kChromeUIAccessCodeCastHost[] = "access-code-cast";
 diff --git a/components/webui/about/resources/about_credits_reciprocal.tmpl b/components/webui/about/resources/about_credits_reciprocal.tmpl
 index 5096175e285c1..6d4a41ab2815f 100644
 --- a/components/webui/about/resources/about_credits_reciprocal.tmpl

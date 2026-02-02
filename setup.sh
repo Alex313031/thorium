@@ -139,7 +139,6 @@ patchThor () {
 	printf "${YEL}Download Shelf patch...${c0}\n" &&
 	git apply --reject ./restore_download_shelf.patch &&
 
-	printf "\n" &&
 	printf "${YEL}Patching mini_installer...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./mini_installer.patch &&
