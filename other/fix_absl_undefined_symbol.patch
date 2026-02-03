@@ -1,0 +1,12 @@
+diff --git a/third_party/abseil-cpp/symbols_x64_dbg.def b/third_party/abseil-cpp/symbols_x64_dbg.def
+index e49e9a82d1c5a..6c7a3102abac7 100644
+--- a/third_party/abseil-cpp/symbols_x64_dbg.def
++++ b/third_party/abseil-cpp/symbols_x64_dbg.def
+@@ -263,7 +263,6 @@ EXPORTS
+     ??$?8PEBQEAVLogSink@absl@@PEAPEAV01@@__Cr@std@@YA_NAEBV?$__wrap_iter@PEBQEAVLogSink@absl@@@01@AEBV?$__wrap_iter@PEAPEAVLogSink@absl@@@01@@Z
+     ??$?8PEBUConversionItem@ParsedFormatBase@str_format_internal@absl@@@__Cr@std@@YA_NAEBV?$__wrap_iter@PEBUConversionItem@ParsedFormatBase@str_format_internal@absl@@@01@0@Z
+     ??$?8PEBUUnrecognizedFlag@absl@@@__Cr@std@@YA_NAEBV?$__wrap_iter@PEBUUnrecognizedFlag@absl@@@01@0@Z
+-    ??$?8UUnrecognizedFlag@absl@@U01@@__Cr@std@@YA_NAEBV?$allocator@UUnrecognizedFlag@absl@@@01@0@Z
+     ??$?8V?$InlinedVector@UPayload@status_internal@absl@@$00V?$allocator@UPayload@status_internal@absl@@@__Cr@std@@@absl@@U?$default_delete@V?$InlinedVector@UPayload@status_internal@absl@@$00V?$allocator@UPayload@status_internal@absl@@@__Cr@std@@@absl@@@__Cr@std@@@__Cr@std@@YA_NAEBV?$unique_ptr@V?$InlinedVector@UPayload@status_internal@absl@@$00V?$allocator@UPayload@status_internal@absl@@@__Cr@std@@@absl@@U?$default_delete@V?$InlinedVector@UPayload@status_internal@absl@@$00V?$allocator@UPayload@status_internal@absl@@@__Cr@std@@@absl@@@__Cr@std@@@01@$$T@Z
+     ??$?8VZoneInfoSource@cctz@time_internal@absl@@U?$default_delete@VZoneInfoSource@cctz@time_internal@absl@@@__Cr@std@@@__Cr@std@@YA_NAEBV?$unique_ptr@VZoneInfoSource@cctz@time_internal@absl@@U?$default_delete@VZoneInfoSource@cctz@time_internal@absl@@@__Cr@std@@@01@$$T@Z
+     ??$?BV?$vector@V?$basic_string@DU?$char_traits@D@__Cr@std@@V?$allocator@D@23@@__Cr@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@__Cr@std@@V?$allocator@D@23@@__Cr@std@@@23@@__Cr@std@@$0A@@?$Splitter@VByChar@absl@@UAllowEmpty@2@V?$basic_string_view@DU?$char_traits@D@__Cr@std@@@__Cr@std@@@strings_internal@absl@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@__Cr@std@@V?$allocator@D@23@@__Cr@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@__Cr@std@@V?$allocator@D@23@@__Cr@std@@@23@@__Cr@std@@XZ
