@@ -92,7 +92,13 @@ class DownloadShelfUIControllerDelegate
  public:
   // |profile| is required to outlive DownloadShelfUIControllerDelegate.
   explicit DownloadShelfUIControllerDelegate(Profile* profile)
-      : profile_(profile) {}
+      : profile_(profile) {
+    // Match DownloadBubbleUIControllerDelegate behavior: in incognito mode,
+    // prompt for download location.
+    if (profile_->IsOffTheRecord()) {
+      profile_->GetPrefs()->SetBoolean(prefs::kPromptForDownload, true);
+    }
+  }
   ~DownloadShelfUIControllerDelegate() override = default;
 
  private:

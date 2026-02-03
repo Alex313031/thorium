@@ -150,6 +150,7 @@ patches = [
     "other/fix_file_dialog_crash.patch",
     "other/fix_wayland_scale_crash.patch",
     "other/restore_download_shelf.patch",
+    "other/fix_absl_undefined_symbol.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -220,6 +221,7 @@ print("\nApplying other Misc. patches...\n")
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject open_in_same_tab.patch")
 try_run(f"git apply --reject thorium_webui.patch")
+try_run(f"git apply --reject fix_absl_undefined_symbol.patch")
 
 
 print("\nApplying performance and crash fixes patches...\n")
