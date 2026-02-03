@@ -166,6 +166,9 @@ copy(
         os.path.join(thor_src_dir, "other",
                      "add-hevc-ffmpeg-decoder-parser.patch")
     ),
+    os.path.normpath(os.path.join(cr_src_dir, "third_party", "ffmpeg")),
+)
+copy(
     os.path.normpath(
         os.path.join(thor_src_dir, "other", "change-libavcodec-header.patch")
     ),

@@ -54,7 +54,7 @@ thor_src_dir = os.path.expandvars(
 
 
 # Set thor_ver
-thor_ver = "138.0.7204.301"
+thor_ver = "138.0.7204.303"
 
 
 print(f"\nCurrent Thorium version is: {thor_ver}\n")
