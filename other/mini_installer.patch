@@ -743,7 +743,7 @@ index 9155eba56943f..c5a6f1d538452 100644
  
  // The identifier of the RCDATA resource holding the version of Chrome on which
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
-index 011684089a29e..99eb9871c7e55 100644
+index 011684089a29e..25e785cd19e0a 100644
 --- a/chrome/installer/setup/install_worker.cc
 +++ b/chrome/installer/setup/install_worker.cc
 @@ -1,4 +1,4 @@
@@ -855,23 +855,79 @@ index 011684089a29e..99eb9871c7e55 100644
    // make this a conditional work item as if the file is not there now, it will
    // never be.
 diff --git a/chrome/installer/setup/installer_state.cc b/chrome/installer/setup/installer_state.cc
-index f1e38c0efc160..34b9e96c43cb3 100644
+index f1e38c0efc160..7334cb587c48b 100644
 --- a/chrome/installer/setup/installer_state.cc
 +++ b/chrome/installer/setup/installer_state.cc
-@@ -67,8 +67,13 @@ void InstallerState::Initialize(const base::CommandLine& command_line,
+@@ -44,14 +44,16 @@ InstallerState::InstallerState()
+       level_(UNKNOWN_LEVEL),
+       root_key_(nullptr),
+       msi_(false),
+-      verbose_logging_(false) {}
++      verbose_logging_(false),
++      debug_mode_(false) {}
+ 
+ InstallerState::InstallerState(Level level)
+     : operation_(UNINITIALIZED),
+       level_(UNKNOWN_LEVEL),
+       root_key_(nullptr),
+       msi_(false),
+-      verbose_logging_(false) {
++      verbose_logging_(false),
++      debug_mode_(false) {
+   // Use set_level() so that root_key_ is updated properly.
+   set_level(level);
+ }
+@@ -67,8 +69,16 @@ void InstallerState::Initialize(const base::CommandLine& command_line,
                  ? SYSTEM_LEVEL
                  : USER_LEVEL);
  
++  const bool debug_logging =
 +#if defined(_DEBUG)
-+  verbose_logging_ =
-+      GetMasterPreference(prefs, initial_preferences::kVerboseLogging, true);
++      true;
 +#else
-   verbose_logging_ =
-       GetMasterPreference(prefs, initial_preferences::kVerboseLogging, false);
++      false;
 +#endif
+   verbose_logging_ =
+-      GetMasterPreference(prefs, initial_preferences::kVerboseLogging, false);
++      GetMasterPreference(prefs, initial_preferences::kVerboseLogging, debug_logging);
++  debug_mode_ =
++      GetMasterPreference(prefs, initial_preferences::kDebugMode, debug_logging);
  
    msi_ = GetMasterPreference(prefs, initial_preferences::kMsi, false);
    if (!msi_) {
+@@ -163,6 +173,7 @@ void InstallerState::Clear() {
+   root_key_ = nullptr;
+   msi_ = false;
+   verbose_logging_ = false;
++  debug_mode_ = false;
+ }
+ 
+ void InstallerState::SetStage(InstallerStage stage) const {
+diff --git a/chrome/installer/setup/installer_state.h b/chrome/installer/setup/installer_state.h
+index d8d444e685734..7a92dbaa9f965 100644
+--- a/chrome/installer/setup/installer_state.h
++++ b/chrome/installer/setup/installer_state.h
+@@ -72,7 +72,11 @@ class InstallerState {
+ 
+   // True if the --verbose-logging command-line flag is set or if the
+   // verbose_logging initial preferences option is true.
+-  bool verbose_logging() const { return verbose_logging_; }
++  bool verbose_logging() const { return verbose_logging_ || debug_mode_; }
++
++  // True if the --verbose-logging command-line flag is set or if the
++  // debug_mode initial preferences option is true.
++  bool debug_mode() const { return debug_mode_; }
+ 
+   HKEY root_key() const { return root_key_; }
+ 
+@@ -130,6 +134,7 @@ class InstallerState {
+   HKEY root_key_;
+   bool msi_;
+   bool verbose_logging_;
++  bool debug_mode_;
+ };
+ 
+ }  // namespace installer
 diff --git a/chrome/installer/setup/launch_chrome.cc b/chrome/installer/setup/launch_chrome.cc
 index 52dfb225ee49d..372b7358c71c7 100644
 --- a/chrome/installer/setup/launch_chrome.cc
@@ -928,7 +984,7 @@ index 52dfb225ee49d..372b7358c71c7 100644
    }
    DCHECK_NE(ret, static_cast<int>(STILL_ACTIVE));
 diff --git a/chrome/installer/setup/setup_util.cc b/chrome/installer/setup/setup_util.cc
-index 7ea39a93b45e4..f287621dfb54e 100644
+index 7ea39a93b45e4..296651bcf4eec 100644
 --- a/chrome/installer/setup/setup_util.cc
 +++ b/chrome/installer/setup/setup_util.cc
 @@ -1,4 +1,4 @@
@@ -965,11 +1021,117 @@ index 7ea39a93b45e4..f287621dfb54e 100644
  }
  
  int GetInstallAge(const InstallerState& installer_state) {
+diff --git a/chrome/installer/util/initial_preferences.cc b/chrome/installer/util/initial_preferences.cc
+index 48ae7b2d6c69e..84da7b973e4ec 100644
+--- a/chrome/installer/util/initial_preferences.cc
++++ b/chrome/installer/util/initial_preferences.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/installer/util/initial_preferences.h"
+ 
++#include <windows.h>
+ #include <stddef.h>
+ 
+ #include <memory>
+@@ -145,6 +146,8 @@ void InitialPreferences::InitializeFromCommandLine(
+        installer::initial_preferences::kSystemLevel},
+       {installer::switches::kVerboseLogging,
+        installer::initial_preferences::kVerboseLogging},
++      {installer::switches::kDebugMode,
++       installer::initial_preferences::kDebugMode},
+   };
+ 
+   std::string name(installer::initial_preferences::kDistroDict);
+@@ -351,4 +354,23 @@ const InitialPreferences& InitialPreferences::ForCurrentPro:...skipping...
+diff --git a/chrome/installer/util/initial_preferences.cc b/chrome/installer/util/initial_preferences.cc
+index 48ae7b2d6c69e..84da7b973e4ec 100644
+--- a/chrome/installer/util/initial_preferences.cc
++++ b/chrome/installer/util/initial_preferences.cc
+@@ -4,6 +4,7 @@
+ 
+ #include "chrome/installer/util/initial_preferences.h"
+ 
++#include <windows.h>
+ #include <stddef.h>
+ 
+ #include <memory>
+@@ -145,6 +146,8 @@ void InitialPreferences::InitializeFromCommandLine(
+        installer::initial_preferences::kSystemLevel},
+       {installer::switches::kVerboseLogging,
+        installer::initial_preferences::kVerboseLogging},
++      {installer::switches::kDebugMode,
++       installer::initial_preferences::kDebugMode},
+   };
+ 
+   std::string name(installer::initial_preferences::kDistroDict);
+@@ -351,4 +354,23 @@ const InitialPreferences& InitialPreferences::ForCurrentProcess() {
+   return g_initial_preferences.Get();
+ }
+ 
++// Get the dir to setup.exe, then go up one level to get mini_installer dir.
++const base::FilePath GetMiniInstallerDir() {
++  wchar_t exe_path[MAX_PATH];
++  HMODULE this_app = GetModuleHandleW(nullptr);
++  if (!this_app) {
++    return base::FilePath();
++  }
++  DWORD got_path = GetModuleFileNameW(nullptr, exe_path, MAX_PATH);
++  if (got_path == 0 || got_path >= MAX_PATH) {
++    return base::FilePath();
++  }
++  
++  base::FilePath full_path(exe_path);
++  // Go up one directory by calling DirName twice.
++  base::FilePath parent_dir = full_path.DirName().DirName();
++  
++  return parent_dir;
++}
++
+ }  // namespace installer
+diff --git a/chrome/installer/util/initial_preferences.h b/chrome/installer/util/initial_preferences.h
+index c03cb7d5f6c9c..fb0ecc5f3339d 100644
+--- a/chrome/installer/util/initial_preferences.h
++++ b/chrome/installer/util/initial_preferences.h
+@@ -208,6 +208,9 @@ class InitialPreferences {
+   bool preferences_read_from_file_ = false;
+ };
+ 
++// Get the dir to mini_installer, for putting thorium_installer.log if --debug flag is used.
++const base::FilePath GetMiniInstallerDir();
++
+ }  // namespace installer
+ 
+ #endif  // CHROME_INSTALLER_UTIL_INITIAL_PREFERENCES_H_
+diff --git a/chrome/installer/util/initial_preferences_constants.cc b/chrome/installer/util/initial_preferences_constants.cc
+index 2bf39cf67b85a..a49721824410e 100644
+--- a/chrome/installer/util/initial_preferences_constants.cc
++++ b/chrome/installer/util/initial_preferences_constants.cc
+@@ -31,6 +31,7 @@ const char kSystemLevel[] = "system_level";
+ const char kVerboseLogging[] = "verbose_logging";
+ const char kExtensionsBlock[] = "extensions.settings";
+ const char kAllowDowngrade[] = "allow_downgrade";
++const char kDebugMode[] = "debug_mode";
+ 
+ }  // namespace initial_preferences
+ }  // namespace installer
+diff --git a/chrome/installer/util/initial_preferences_constants.h b/chrome/installer/util/initial_preferences_constants.h
+index df8961eed4cd2..561e86eeecae4 100644
+--- a/chrome/installer/util/initial_preferences_constants.h
++++ b/chrome/installer/util/initial_preferences_constants.h
+@@ -68,6 +68,8 @@ extern const char kVerboseLogging[];
+ extern const char kExtensionsBlock[];
+ // Boolean. Allow Chrome to be downgraded to a previous version if true.
+ extern const char kAllowDowngrade[];
++// Boolean. Whether to enable debug mode for logging.
++extern const char kDebugMode[];
+ 
+ }  // namespace initial_preferences
+ }  // namespace installer
 diff --git a/chrome/installer/util/logging_installer.cc b/chrome/installer/util/logging_installer.cc
-index 8b606fa040a8f..c64160e8a5279 100644
+index 8b606fa040a8f..cea3efd7f02af 100644
 --- a/chrome/installer/util/logging_installer.cc
 +++ b/chrome/installer/util/logging_installer.cc
-@@ -99,7 +99,7 @@ void InitInstallerLogging(const installer::InitialPreferences& prefs) {
+@@ -99,12 +99,13 @@ void InitInstallerLogging(const installer::InitialPreferences& prefs) {
    TruncateLogFileIfNeeded(log_file_path);
  
    logging::LoggingSettings settings;
@@ -978,7 +1140,15 @@ index 8b606fa040a8f..c64160e8a5279 100644
    settings.log_file_path = log_file_path.value().c_str();
    logging::InitLogging(settings);
  
-@@ -130,15 +130,12 @@ base::FilePath GetLogFilePath(const installer::InitialPreferences& prefs) {
+-  if (prefs.GetBool(installer::initial_preferences::kVerboseLogging, &value) &&
+-      value) {
++  bool kDebug = false;
++  if ((prefs.GetBool(installer::initial_preferences::kVerboseLogging, &value) && value) ||
++      (prefs.GetBool(installer::initial_preferences::kDebugMode, &kDebug) && kDebug)) {
+     logging::SetMinLogLevel(logging::LOGGING_VERBOSE);
+   } else {
+     logging::SetMinLogLevel(logging::LOGGING_ERROR);
+@@ -130,15 +131,21 @@ base::FilePath GetLogFilePath(const installer::InitialPreferences& prefs) {
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
        FILE_PATH_LITERAL("chrome_installer.log");
  #else  // BUILDFLAG(CHROMIUM_BRANDING)
@@ -988,10 +1158,101 @@ index 8b606fa040a8f..c64160e8a5279 100644
  
    // Fallback to current directory if getting the secure or temp directory
    // fails.
++  bool kDebug = false;
    base::FilePath tmp_path;
 -  std::ignore = ::IsUserAnAdmin()
 -                    ? base::PathService::Get(base::DIR_SYSTEM_TEMP, &tmp_path)
 -                    : base::PathService::Get(base::DIR_TEMP, &tmp_path);
++  if (prefs.GetBool(installer::initial_preferences::kDebugMode, &kDebug) && kDebug) {
++    tmp_path = installer::GetMiniInstallerDir();
++  } else {
++    std::ignore = ::IsUserAnAdmin()
++                      ? base::PathService::Get(base::DIR_SYSTEM_TEMP, &tmp_path)
++                      : base::PathService::Get(base::DIR_TEMP, &tmp_path);
++  }
++
    return tmp_path.Append(kLogFilename);
  }
+ 
+diff --git a/chrome/installer/util/shell_util.cc b/chrome/installer/util/shell_util.cc
+index b5b269da941db..fdb4dda7c2e9c 100644
+--- a/chrome/installer/util/shell_util.cc
++++ b/chrome/installer/util/shell_util.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2026 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ //
+@@ -1549,10 +1549,10 @@ const wchar_t* ShellUtil::kDefaultFileAssociations[] = {
+ const wchar_t* ShellUtil::kPotentialFileAssociations[] = {
+     L".htm", L".html", L".mhtml", L".pdf",  L".shtml",
+     L".svg", L".xht",  L".xhtml", L".webp", nullptr};
+-const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"http", L"https",
++const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"ftp", L"http", L"https",
+                                                             nullptr};
+ const wchar_t* ShellUtil::kPotentialProtocolAssociations[] = {
+-    L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
++    L"ftp", L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
+     L"sms",  L"smsto", L"snews", L"tel",    L"urn", L"webcal", nullptr};
+ const wchar_t* ShellUtil::kRegUrlProtocol = L"URL Protocol";
+ const wchar_t* ShellUtil::kRegApplication = L"\\Application";
+diff --git a/chrome/installer/util/util_constants.cc b/chrome/installer/util/util_constants.cc
+index b0d485e0cc105..85acc9de89848 100644
+--- a/chrome/installer/util/util_constants.cc
++++ b/chrome/installer/util/util_constants.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2012 The Chromium Authors
++// Copyright 2025 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -76,9 +76,10 @@ const char kForceConfigureUserSettings[] = "force-configure-user-settings";
+ // confirmation from user.
+ const char kForceUninstall[] = "force-uninstall";
+ 
+-// Specify the path to the Chrome archive for install. If not specified,
+-// chrome.packed.7z or chrome.7z in the same directory as setup.exe
+-// is used.
++// Specify the path to the compressed Chrome archive for install. If not
++// specified, chrome.packed.7z or chrome.7z in the same directory as setup.exe
++// is used (the packed file is preferred; see kUncompressedArchive to force use
++// of an uncompressed archive).
+ const char kInstallArchive[] = "install-archive";
+ 
+ // Use the given uncompressed chrome.7z archive as the source of files to
+@@ -183,6 +184,9 @@ const char kUpdateSetupExe[] = "update-setup-exe";
+ // Enable verbose logging (info level).
+ const char kVerboseLogging[] = "verbose-logging";
+ 
++// Enable debug mode
++const char kDebugMode[] = "debug";
++
+ }  // namespace switches
+ 
+ // The Active Setup executable will be an identical copy of setup.exe; this is
+@@ -196,9 +200,9 @@ const char kVerboseLogging[] = "verbose-logging";
+ // Active Setup.
+ const wchar_t kActiveSetupExe[] = L"chrmstp.exe";
+ const wchar_t kChromeDll[] = L"chrome.dll";
+-const wchar_t kChromeExe[] = L"chrome.exe";
+-const wchar_t kChromeNewExe[] = L"new_chrome.exe";
+-const wchar_t kChromeOldExe[] = L"old_chrome.exe";
++const wchar_t kChromeExe[] = L"thorium.exe";
++const wchar_t kChromeNewExe[] = L"new_thorium.exe";
++const wchar_t kChromeOldExe[] = L"old_thorium.exe";
+ const wchar_t kChromeProxyExe[] = L"chrome_proxy.exe";
+ const wchar_t kChromeProxyNewExe[] = L"new_chrome_proxy.exe";
+ const wchar_t kChromeProxyOldExe[] = L"old_chrome_proxy.exe";
+diff --git a/chrome/installer/util/util_constants.h b/chrome/installer/util/util_constants.h
+index 042823db6161e..54a163b5e5858 100644
+--- a/chrome/installer/util/util_constants.h
++++ b/chrome/installer/util/util_constants.h
+@@ -213,6 +213,7 @@ extern const char kUncompressedArchive[];
+ extern const char kUninstall[];
+ extern const char kUpdateSetupExe[];
+ extern const char kVerboseLogging[];
++extern const char kDebugMode[];
+ 
+ }  // namespace switches
  
