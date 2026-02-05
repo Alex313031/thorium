@@ -446,7 +446,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +  config.cxWidth = 0;
 +
 +  // Create the main window
-+  TaskDialogIndirect(&config, NULL, NULL, NULL);
++  TaskDialogIndirect(&config, nullptr, nullptr, nullptr);
 +
 +  return success;
 +}
@@ -615,10 +615,10 @@ index cbcd4cf1a3ef2..0ea333e90571d 100644
  
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.h b/chrome/installer/mini_installer/mini_installer_constants.h
-index 23de845654342..c6404b4dfd22c 100644
+index 23de845654342..05124d04659ac 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.h
 +++ b/chrome/installer/mini_installer/mini_installer_constants.h
-@@ -5,6 +5,15 @@
+@@ -5,6 +5,16 @@
  #ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  
@@ -628,6 +628,7 @@ index 23de845654342..c6404b4dfd22c 100644
 +static const wchar_t* kInstallBetaMessage = L"Would you like to install Thorium Beta?";
 +static const wchar_t* kInstallingMessage = L"Installing...";
 +static const wchar_t* kInstallingComplete = L"Installation Complete. \nYou may now close this window.";
++static const wchar_t* kInstallingSuccess = L"Installation Success!";
 +static const wchar_t* kInstallingFailed = L"Installation failed!";
 +static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
 +
@@ -1042,28 +1043,6 @@ index 48ae7b2d6c69e..84da7b973e4ec 100644
    };
  
    std::string name(installer::initial_preferences::kDistroDict);
-@@ -351,4 +354,23 @@ const InitialPreferences& InitialPreferences::ForCurrentPro:...skipping...
-diff --git a/chrome/installer/util/initial_preferences.cc b/chrome/installer/util/initial_preferences.cc
-index 48ae7b2d6c69e..84da7b973e4ec 100644
---- a/chrome/installer/util/initial_preferences.cc
-+++ b/chrome/installer/util/initial_preferences.cc
-@@ -4,6 +4,7 @@
- 
- #include "chrome/installer/util/initial_preferences.h"
- 
-+#include <windows.h>
- #include <stddef.h>
- 
- #include <memory>
-@@ -145,6 +146,8 @@ void InitialPreferences::InitializeFromCommandLine(
-        installer::initial_preferences::kSystemLevel},
-       {installer::switches::kVerboseLogging,
-        installer::initial_preferences::kVerboseLogging},
-+      {installer::switches::kDebugMode,
-+       installer::initial_preferences::kDebugMode},
-   };
- 
-   std::string name(installer::initial_preferences::kDistroDict);
 @@ -351,4 +354,23 @@ const InitialPreferences& InitialPreferences::ForCurrentProcess() {
    return g_initial_preferences.Get();
  }
@@ -1174,29 +1153,6 @@ index 8b606fa040a8f..cea3efd7f02af 100644
    return tmp_path.Append(kLogFilename);
  }
  
-diff --git a/chrome/installer/util/shell_util.cc b/chrome/installer/util/shell_util.cc
-index b5b269da941db..fdb4dda7c2e9c 100644
---- a/chrome/installer/util/shell_util.cc
-+++ b/chrome/installer/util/shell_util.cc
-@@ -1,4 +1,4 @@
--// Copyright 2012 The Chromium Authors
-+// Copyright 2026 The Chromium Authors and Alex313031
- // Use of this source code is governed by a BSD-style license that can be
- // found in the LICENSE file.
- //
-@@ -1549,10 +1549,10 @@ const wchar_t* ShellUtil::kDefaultFileAssociations[] = {
- const wchar_t* ShellUtil::kPotentialFileAssociations[] = {
-     L".htm", L".html", L".mhtml", L".pdf",  L".shtml",
-     L".svg", L".xht",  L".xhtml", L".webp", nullptr};
--const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"http", L"https",
-+const wchar_t* ShellUtil::kBrowserProtocolAssociations[] = {L"ftp", L"http", L"https",
-                                                             nullptr};
- const wchar_t* ShellUtil::kPotentialProtocolAssociations[] = {
--    L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
-+    L"ftp", L"http", L"https", L"irc",   L"mailto", L"mms", L"news",   L"nntp",
-     L"sms",  L"smsto", L"snews", L"tel",    L"urn", L"webcal", nullptr};
- const wchar_t* ShellUtil::kRegUrlProtocol = L"URL Protocol";
- const wchar_t* ShellUtil::kRegApplication = L"\\Application";
 diff --git a/chrome/installer/util/util_constants.cc b/chrome/installer/util/util_constants.cc
 index b0d485e0cc105..85acc9de89848 100644
 --- a/chrome/installer/util/util_constants.cc
