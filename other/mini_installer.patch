@@ -1058,11 +1058,11 @@ index 48ae7b2d6c69e..84da7b973e4ec 100644
 +  if (got_path == 0 || got_path >= MAX_PATH) {
 +    return base::FilePath();
 +  }
-+  
++
 +  base::FilePath full_path(exe_path);
 +  // Go up one directory by calling DirName twice.
 +  base::FilePath parent_dir = full_path.DirName().DirName();
-+  
++
 +  return parent_dir;
 +}
 +
