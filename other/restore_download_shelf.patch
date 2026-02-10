@@ -1,3 +1,34 @@
+diff --git a/chrome/browser/download/bubble/download_bubble_prefs.cc b/chrome/browser/download/bubble/download_bubble_prefs.cc
+index 54e28c8ed60e0..df711f3e4cdde 100644
+--- a/chrome/browser/download/bubble/download_bubble_prefs.cc
++++ b/chrome/browser/download/bubble/download_bubble_prefs.cc
+@@ -1,4 +1,4 @@
+-// Copyright 2022 The Chromium Authors
++// Copyright 2026 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -11,6 +11,7 @@
+ #include "components/enterprise/buildflags/buildflags.h"
+ #include "components/prefs/pref_service.h"
+ #include "components/safe_browsing/core/common/features.h"
++#include "ui/base/ui_base_features.h"
+ 
+ #if BUILDFLAG(ENTERPRISE_CLOUD_CONTENT_ANALYSIS)
+ #include "chrome/browser/enterprise/connectors/connectors_service.h"
+@@ -24,7 +25,11 @@ bool IsDownloadBubbleEnabled() {
+ #if BUILDFLAG(IS_CHROMEOS)
+   return false;
+ #else
+-  return true;
++  if (features::UseDownloadShelf()) {
++    return false;
++  } else {
++    return true;
++  }
+ #endif  // BUILDFLAG(IS_CHROMEOS)
+ }
+ 
 diff --git a/chrome/browser/ui/views/download/download_item_view.cc b/chrome/browser/ui/views/download/download_item_view.cc
 index 42706748b2d50..90ce02a65ebd1 100644
 --- a/chrome/browser/ui/views/download/download_item_view.cc
