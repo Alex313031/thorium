@@ -250,6 +250,9 @@ Android Patches from Bromite:
 Installer patches to include unstripped and RPATH binaries, with chrome_sandbox (needed for older distros), chromedriver and content-shell being added along with an icon and .desktop file for content-shell.
   - Created by me.
 
+Windows mini_installer GUI, with buttons and progress bar/error handling, instead of the silent, no GUI installer Chromium has.
+  - Created by me, see https://github.com/Alex313031/thorium/blob/main/other/mini_installer.patch
+
 Patches for mini_installer and abseil when using AVX on Windows. Credit goes to @RobRich999
 
 "Ctrl+Shift+Q" to close all windows (exit) "Ctrl+Shift+K" to open a new tab to the right "Ctrl+Shift+D" to duplicate the current tab "Ctrl+Shift+P" to pop out the current tab into a new window
