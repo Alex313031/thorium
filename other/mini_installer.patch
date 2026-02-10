@@ -298,7 +298,7 @@ index b746f68cef51d..5b63aac683d12 100644
    bool should_delete_extracted_files_;
    const wchar_t* previous_version_;
 diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
-index b24e4cbef109f..ae202dbf6da4a 100644
+index b24e4cbef109f..e9ae6d5659448 100644
 --- a/chrome/installer/mini_installer/mini_installer.cc
 +++ b/chrome/installer/mini_installer/mini_installer.cc
 @@ -1,4 +1,4 @@
@@ -307,15 +307,16 @@ index b24e4cbef109f..ae202dbf6da4a 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -27,6 +27,7 @@
+@@ -27,6 +27,8 @@
  #include "chrome/installer/mini_installer/mini_installer.h"
  
  #include <windows.h>
 +#include <commctrl.h>
++#include <io.h>
  
  // #define needed to link in RtlGenRandom(), a.k.a. SystemFunction036.  See the
  // "Community Additions" comment on MSDN here:
-@@ -44,6 +45,8 @@
+@@ -44,6 +46,8 @@
  #include <algorithm>
  #include <initializer_list>
  
@@ -324,7 +325,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
  #include "build/branding_buildflags.h"
  #include "chrome/installer/mini_installer/appid.h"
  #include "chrome/installer/mini_installer/configuration.h"
-@@ -53,11 +56,23 @@
+@@ -53,11 +57,23 @@
  #include "chrome/installer/mini_installer/memory_range.h"
  #include "chrome/installer/mini_installer/mini_file.h"
  #include "chrome/installer/mini_installer/mini_installer_constants.h"
@@ -348,7 +349,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
  // Deletes |path|, updating |max_delete_attempts| if more attempts were taken
  // than indicated in |max_delete_attempts|.
  void DeleteWithRetryAndMetrics(const wchar_t* path, int& max_delete_attempts) {
-@@ -851,21 +866,152 @@ bool GetWorkDir(HMODULE module,
+@@ -851,21 +867,234 @@ bool GetWorkDir(HMODULE module,
           CreateWorkDir(base_path.get(), work_dir, exit_code);
  }
  
@@ -359,40 +360,52 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +}
 +
 +bool GetShouldInstall() {
-+  const bool retval = should_install_;
-+  return retval;
++  return should_install_;
 +}
 +
 +DWORD WINAPI InstallThreadProc(LPVOID lpParam) {
 +  HWND hwnd = g_hWnd;
 +  bool success = false;
 +  // Run the installation
++  ProcessExitResult install_code = ProcessExitResult(GENERIC_INITIALIZATION_FAILURE);
 +  if (GetShouldInstall()) {
 +    std::wcout << kInstallingMessage << std::endl;
-+    ProcessExitResult install_code = WMainImpl(true, hModule, conf);
++    install_code = WMainImpl(true, hModule, conf);
 +    if (install_code.IsSuccess()) {
 +      success = true;
-+    } else {
-+      success = false;
 +    }
 +  }
++  DWORD getError = install_code.windows_error;
 +
 +  // Stop the marquee after installation
 +  SendMessageW(hwnd, TDM_SET_MARQUEE_PROGRESS_BAR, FALSE, 0);
 +  SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, FALSE, 0);
 +
-+  // Update the dialog to show completion
++  // Update the dialog to show completion status
 +  if (success) {
-+    SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingComplete);
-+  } else {
-+    SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingFailed);
-+  }
-+
-+  // Re-enable Cancel button to allow user to close
-+  SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDCANCEL, TRUE);
-+  if (success) {
++    static TASKDIALOGCONFIG DoneDlgConfig = { 0 };
++    DoneDlgConfig.cbSize = sizeof(DoneDlgConfig);
++    DoneDlgConfig.dwFlags = TDF_USE_HICON_MAIN | TDF_CAN_BE_MINIMIZED | TDF_SIZE_TO_CONTENT;
++    DoneDlgConfig.dwCommonButtons = TDCBF_OK_BUTTON;
++    DoneDlgConfig.nDefaultButton = IDOK;
++    DoneDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_SUCCESS));
++    DoneDlgConfig.pszWindowTitle = kInstallingSuccess;
++    DoneDlgConfig.pszContent = kInstallingComplete;
++    DoneDlgConfig.cxWidth = 0;
++    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&DoneDlgConfig));
 +    return 0;
 +  } else {
++    static TASKDIALOGCONFIG FailedDlgConfig = { 0 };
++    FailedDlgConfig.cbSize = sizeof(FailedDlgConfig);
++    FailedDlgConfig.dwFlags = TDF_USE_HICON_MAIN | TDF_CAN_BE_MINIMIZED | TDF_SIZE_TO_CONTENT;
++    FailedDlgConfig.dwCommonButtons = TDCBF_CLOSE_BUTTON;
++    FailedDlgConfig.nDefaultButton = IDCLOSE;
++    FailedDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_FAILED));
++    FailedDlgConfig.pszWindowTitle = kInstallingFailed;
++    std::wstring kInstallingError = L"Installing Thorium failed. \nError: " + std::to_wstring(getError);
++    FailedDlgConfig.pszContent = kInstallingError.c_str();
++    FailedDlgConfig.cxWidth = 0;
++    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&FailedDlgConfig));
 +    return 1;
 +  }
 +}
@@ -418,7 +431,8 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +        // Run the installation on a separate thread
 +        CreateThread(nullptr, 0, InstallThreadProc, hwnd, 0, nullptr);
 +        return S_FALSE;
-+      } else if (wParam == IDNO || wParam == IDCANCEL) {
++      } else if (wParam == IDNO || wParam == IDCANCEL || wParam == IDCLOSE) {
++        EndDialog(hwnd, wParam);
 +        break;
 +      }
 +    } break;
@@ -433,7 +447,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +  // Configure the task dialog
 +  TASKDIALOGCONFIG config = { 0 };
 +  config.cbSize = sizeof(config);
-+  config.dwFlags = TDF_SHOW_MARQUEE_PROGRESS_BAR | TDF_USE_HICON_MAIN | TDF_CAN_BE_MINIMIZED | TDF_SIZE_TO_CONTENT;
++  config.dwFlags = TDF_SHOW_MARQUEE_PROGRESS_BAR | TDF_USE_HICON_MAIN | TDF_CAN_BE_MINIMIZED | TDF_SIZE_TO_CONTENT | TDF_CALLBACK_TIMER;
 +  config.dwCommonButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON | TDCBF_CANCEL_BUTTON;
 +  config.nDefaultButton = IDNO;
 +  config.hMainIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MINI_INSTALLER));
@@ -446,9 +460,83 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +  config.cxWidth = 0;
 +
 +  // Create the main window
-+  TaskDialogIndirect(&config, nullptr, nullptr, nullptr);
-+
++  HRESULT kTaskDlgIndir = TaskDialogIndirect(&config, nullptr, nullptr, nullptr);
++  success = static_cast<bool>(kTaskDlgIndir == S_OK);
 +  return success;
++}
++
++void RouteStdioToConsole(bool create_console_if_not_found) {
++  // Don't change anything if stdout or stderr already point to a
++  // valid stream.
++  //
++  // If we are running under Buildbot or under Cygwin's default
++  // terminal (mintty), stderr and stderr will be pipe handles.  In
++  // that case, we don't want to open CONOUT$, because its output
++  // likely does not go anywhere.
++  //
++  // We don't use GetStdHandle() to check stdout/stderr here because
++  // it can return dangling IDs of handles that were never inherited
++  // by this process.  These IDs could have been reused by the time
++  // this function is called.  The CRT checks the validity of
++  // stdout/stderr on startup (before the handle IDs can be reused).
++  // _fileno(stdout) will return -2 (_NO_CONSOLE_FILENO) if stdout was
++  // invalid.
++  if (_fileno(stdout) >= 0 || _fileno(stderr) >= 0) {
++    // _fileno was broken for SUBSYSTEM:WINDOWS from VS2010 to VS2012/2013.
++    // http://crbug.com/358267. Confirm that the underlying HANDLE is valid
++    // before aborting.
++
++    intptr_t stdout_handle = _get_osfhandle(_fileno(stdout));
++    intptr_t stderr_handle = _get_osfhandle(_fileno(stderr));
++    if (stdout_handle >= 0 || stderr_handle >= 0) {
++      return;
++    }
++  }
++
++  if (!AttachConsole(ATTACH_PARENT_PROCESS)) {
++    unsigned int result = GetLastError();
++    // Was probably already attached.
++    if (result == ERROR_ACCESS_DENIED) {
++      return;
++    }
++    // Don't bother creating a new console for each child process if the
++    // parent process is invalid (eg: crashed).
++    if (result == ERROR_GEN_FAILURE) {
++      return;
++    }
++    if (create_console_if_not_found) {
++      // Make a new console if attaching to parent fails with any other error.
++      // It should be ERROR_INVALID_HANDLE at this point, which means the
++      // browser was likely not started from a console.
++      if (!AllocConsole()) {
++        return;
++      }
++    } else {
++      return;
++    }
++  }
++
++  // Arbitrary byte count to use when buffering output lines.  More
++  // means potential waste, less means more risk of interleaved
++  // log-lines in output.
++  enum { kOutputBufferSize = 64 * 1024 };
++
++  if (freopen("CONOUT$", "w", stdout)) {
++    setvbuf(stdout, nullptr, _IOLBF, kOutputBufferSize);
++    // Overwrite FD 1 for the benefit of any code that uses this FD
++    // directly.  This is safe because the CRT allocates FDs 0, 1 and
++    // 2 at startup even if they don't have valid underlying Windows
++    // handles.  This means we won't be overwriting an FD created by
++    // _open() after startup.
++    _dup2(_fileno(stdout), 1);
++  }
++  if (freopen("CONOUT$", "w", stderr)) {
++    setvbuf(stderr, nullptr, _IOLBF, kOutputBufferSize);
++    _dup2(_fileno(stderr), 2);
++  }
++
++  // Fix all cout, wcout, cin, wcin, cerr, wcerr, clog and wclog.
++  std::ios::sync_with_stdio();
 +}
 +
 +ProcessExitResult WMain(HINSTANCE hInstance, LPWSTR pCmdLine, int nCmdShow) {
@@ -470,13 +558,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
    }
  
 +  if (conf.enable_logging()) {
-+    if (!AllocConsole()) {
-+      return ProcessExitResult(GENERIC_INITIALIZATION_FAILURE, ::GetLastError());
-+    }
-+    // File handler pointer to a dummy file, possibly an actual logfile
-+    FILE* fNonExistFile = fDummyFile;
-+    freopen_s(&fNonExistFile, "CONOUT$", "w", stdout); // Standard error
-+    freopen_s(&fNonExistFile, "CONOUT$", "w", stderr); // Standard out
++    RouteStdioToConsole(false);
 +  }
 +
 +  static constexpr bool force_disable_dialog = false;
@@ -490,6 +572,7 @@ index b24e4cbef109f..ae202dbf6da4a 100644
 +        ProcessExitResult wnd_status = ProcessExitResult(SUCCESS_EXIT_CODE);
 +        if (!InitWndInstance(hInstance, nCmdShow)) {
 +          // Replace with GetError
++          std::wcerr << L"InitWndInstance failed!" << std::endl;
 +          wnd_status = ProcessExitResult(GENERIC_ERROR);
 +        }
 +        if (!GetShouldInstall()) {
@@ -506,24 +589,23 @@ index b24e4cbef109f..ae202dbf6da4a 100644
    // First get a path where we can extract payload
    PathString base_path;
    if (!GetWorkDir(module, &base_path, &exit_code)) {
-@@ -940,4 +1086,12 @@ ProcessExitResult WMain(HMODULE module) {
+@@ -940,4 +1169,11 @@ ProcessExitResult WMain(HMODULE module) {
    return exit_code;
  }
  
 +int HandleExit(ProcessExitResult result) {
 +  if (conf.enable_logging()) {
-+    system("pause");
++    //system("pause");
 +  }
-+  ::ExitProcess(result.exit_code);
 +  return result.exit_code;
 +}
 +
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer.h b/chrome/installer/mini_installer/mini_installer.h
-index 2b2d38313e429..bef89cdb2637a 100644
+index 2b2d38313e429..d84dabc4a5ac9 100644
 --- a/chrome/installer/mini_installer/mini_installer.h
 +++ b/chrome/installer/mini_installer/mini_installer.h
-@@ -6,13 +6,30 @@
+@@ -6,13 +6,28 @@
  #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_H_
  
  #include <windows.h>
@@ -538,8 +620,6 @@ index 2b2d38313e429..bef89cdb2637a 100644
  #include "chrome/installer/mini_installer/mini_string.h"
  #include "chrome/installer/mini_installer/path_string.h"
  
-+static FILE* fDummyFile;
-+
  namespace mini_installer {
  
 +extern HINSTANCE g_hInst;
@@ -554,7 +634,7 @@ index 2b2d38313e429..bef89cdb2637a 100644
  class Configuration;
  
  // A container of a process exit code (eventually passed to ExitProcess) and
-@@ -78,11 +95,23 @@ ProcessExitResult UnpackBinaryResources(HMODULE module,
+@@ -78,11 +93,23 @@ ProcessExitResult UnpackBinaryResources(HMODULE module,
                                          ResourceTypeString& archive_type,
                                          int& max_delete_attempts);
  
@@ -579,8 +659,21 @@ index 2b2d38313e429..bef89cdb2637a 100644
  
  }  // namespace mini_installer
  
+diff --git a/chrome/installer/mini_installer/mini_installer.rc b/chrome/installer/mini_installer/mini_installer.rc
+index fff6a53c69130..b0e8f30f9af4e 100644
+--- a/chrome/installer/mini_installer/mini_installer.rc
++++ b/chrome/installer/mini_installer/mini_installer.rc
+@@ -30,6 +30,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+ // Icon with lowest ID value placed first to ensure application icon
+ // remains consistent on all systems.
+ IDI_MINI_INSTALLER      ICON                    "mini_installer.ico"
++IDI_SUCCESS             ICON                    "mini_installer.ico"
++IDI_FAILED              ICON                    "failed.ico"
+ 
+ #ifdef APSTUDIO_INVOKED
+ /////////////////////////////////////////////////////////////////////////////
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.cc b/chrome/installer/mini_installer/mini_installer_constants.cc
-index cbcd4cf1a3ef2..0ea333e90571d 100644
+index cbcd4cf1a3ef2..13ea5306828ce 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.cc
 +++ b/chrome/installer/mini_installer/mini_installer_constants.cc
 @@ -1,4 +1,4 @@
@@ -615,7 +708,7 @@ index cbcd4cf1a3ef2..0ea333e90571d 100644
  
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.h b/chrome/installer/mini_installer/mini_installer_constants.h
-index 23de845654342..05124d04659ac 100644
+index 23de845654342..851bd42e65d17 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.h
 +++ b/chrome/installer/mini_installer/mini_installer_constants.h
 @@ -5,6 +5,16 @@
@@ -629,14 +722,14 @@ index 23de845654342..05124d04659ac 100644
 +static const wchar_t* kInstallingMessage = L"Installing...";
 +static const wchar_t* kInstallingComplete = L"Installation Complete. \nYou may now close this window.";
 +static const wchar_t* kInstallingSuccess = L"Installation Success!";
-+static const wchar_t* kInstallingFailed = L"Installation failed!";
++static const wchar_t* kInstallingFailed = L"Installation Failed!";
 +static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
 +
  namespace mini_installer {
  
  // Various filenames and prefixes.
 diff --git a/chrome/installer/mini_installer/mini_installer_exe_main.cc b/chrome/installer/mini_installer/mini_installer_exe_main.cc
-index aff0370044046..12ef123ac30a5 100644
+index aff0370044046..c19a6c4d577d0 100644
 --- a/chrome/installer/mini_installer/mini_installer_exe_main.cc
 +++ b/chrome/installer/mini_installer/mini_installer_exe_main.cc
 @@ -1,4 +1,4 @@
@@ -645,7 +738,7 @@ index aff0370044046..12ef123ac30a5 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -16,23 +16,22 @@
+@@ -16,23 +16,24 @@
  // http://blogs.msdn.com/oldnewthing/archive/2004/10/25/247180.aspx
  extern "C" IMAGE_DOS_HEADER __ImageBase;
  
@@ -677,13 +770,15 @@ index aff0370044046..12ef123ac30a5 100644
 -  return MainEntryPoint();
 +  mini_installer::ProcessExitResult result =
 +      mini_installer::WMain(hInstance, pCmdLine, nCmdShow);
-+  return mini_installer::HandleExit(result);
++  const int return_code = mini_installer::HandleExit(result);
++  ::ExitProcess(return_code);
++  return return_code;
  }
 -#endif
  
  // We don't link with the CRT (this is enforced through use of the /ENTRY linker
  // flag) so we have to implement CRT functions that the compiler generates calls
-@@ -59,17 +58,4 @@ void* memset(void* dest, int c, size_t count) {
+@@ -59,17 +60,4 @@ void* memset(void* dest, int c, size_t count) {
    return dest;
  }
  
@@ -724,13 +819,15 @@ index 2862d6b50a550..567c2bb2d6caa 100644
      END
      BLOCK "VarFileInfo"
 diff --git a/chrome/installer/mini_installer/mini_installer_resource.h b/chrome/installer/mini_installer/mini_installer_resource.h
-index 9155eba56943f..c5a6f1d538452 100644
+index 9155eba56943f..a498f79a58128 100644
 --- a/chrome/installer/mini_installer/mini_installer_resource.h
 +++ b/chrome/installer/mini_installer/mini_installer_resource.h
-@@ -10,6 +10,15 @@
+@@ -10,6 +10,19 @@
  // Used by mini_installer.rc
  //
  #define IDI_MINI_INSTALLER 107
++#define IDI_SUCCESS        108
++#define IDI_FAILED         109
 +
 +#define IDM_ABOUT          201
 +#define IDM_HELP           202
@@ -739,6 +836,8 @@ index 9155eba56943f..c5a6f1d538452 100644
 +#define IDC_YES_BUTTON     301
 +#define IDC_NO_BUTTON      302
 +#define IDC_CANCEL_BUTTON  303
++
++#define IDC_DONE_INSTALLING WM_USER + 2
 +
  #define IDC_STATIC -1
  
