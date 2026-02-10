@@ -389,8 +389,8 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +    DoneDlgConfig.dwCommonButtons = TDCBF_OK_BUTTON;
 +    DoneDlgConfig.nDefaultButton = IDOK;
 +    DoneDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_SUCCESS));
-+    DoneDlgConfig.pszWindowTitle = kInstallingSuccess;
-+    DoneDlgConfig.pszContent = kInstallingComplete;
++    DoneDlgConfig.pszWindowTitle = kInstallingComplete;
++    DoneDlgConfig.pszContent = kInstallingDoneMsg;
 +    DoneDlgConfig.cxWidth = 0;
 +    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&DoneDlgConfig));
 +    return 0;
@@ -667,7 +667,7 @@ index fff6a53c69130..b0e8f30f9af4e 100644
  // Icon with lowest ID value placed first to ensure application icon
  // remains consistent on all systems.
  IDI_MINI_INSTALLER      ICON                    "mini_installer.ico"
-+IDI_SUCCESS             ICON                    "mini_installer.ico"
++IDI_SUCCESS             ICON                    "success.ico"
 +IDI_FAILED              ICON                    "failed.ico"
  
  #ifdef APSTUDIO_INVOKED
@@ -720,8 +720,8 @@ index 23de845654342..851bd42e65d17 100644
 +static const wchar_t* kInstallMessage = L"Would you like to install Thorium?";
 +static const wchar_t* kInstallBetaMessage = L"Would you like to install Thorium Beta?";
 +static const wchar_t* kInstallingMessage = L"Installing...";
-+static const wchar_t* kInstallingComplete = L"Installation Complete. \nYou may now close this window.";
-+static const wchar_t* kInstallingSuccess = L"Installation Success!";
++static const wchar_t* kInstallingDoneMsg = L"Thorium was installed successfully! \nYou may now close this window.";
++static const wchar_t* kInstallingComplete = L"Installation Complete";
 +static const wchar_t* kInstallingFailed = L"Installation Failed!";
 +static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
 +
