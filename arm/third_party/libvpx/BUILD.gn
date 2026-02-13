@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2014 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
@@ -30,14 +30,14 @@ if (current_cpu == "x86") {
   } else {
     cpu_arch_full = "arm"
   }
-} else if (current_cpu == "arm64") {
-  if (is_win || is_chromeos || is_mac) {
+} else if (current_cpu == "arm64" || current_cpu == "arm64e") {
+  if (is_win || is_chromeos || is_mac || is_ios) {
     # This is necessary for CrOS and macOS as they reuse the Linux
     # configuration, of which there are two (see the later definition of
     # os_category).
     cpu_arch_full = "arm64-highbd"
   } else {
-    cpu_arch_full = current_cpu
+    cpu_arch_full = "arm64"
   }
 } else if (current_cpu == "riscv64") {
   cpu_arch_full = "generic"
@@ -315,11 +315,12 @@ if (current_cpu == "loong64") {
   }
 }
 
-if (current_cpu == "arm" || current_cpu == "arm64") {
+if (current_cpu == "arm" || current_cpu == "arm64" || current_cpu == "arm64e") {
   source_set("libvpx_intrinsics_neon") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     configs += [ ":libvpx_config" ]
     if (current_cpu == "arm") {
       configs -= [ "//build/config/compiler:compiler_arm_fpu" ]
@@ -344,13 +345,16 @@ if (current_cpu == "arm" || current_cpu == "arm64") {
   }
 }
 
-if (current_cpu == "arm64") {
+if (current_cpu == "arm64" || current_cpu == "arm64e") {
   source_set("libvpx_intrinsics_neon_dotprod") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     configs += [ ":libvpx_config" ]
-    configs += [ "//build/config/compiler:march_dotprod" ]
+    if (!is_win || is_clang) {
+      cflags = [ "-march=armv8.2-a+dotprod" ]
+    }
     if (cpu_arch_full == "arm64") {
       sources = libvpx_srcs_arm64_neon_dotprod
       deps = [ ":libvpx_arm64_headers" ]
@@ -364,8 +368,11 @@ if (current_cpu == "arm64") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     configs += [ ":libvpx_config" ]
-    configs += [ "//build/config/compiler:march_i8mm" ]
+    if (!is_win || is_clang) {
+      cflags = [ "-march=armv8.2-a+i8mm" ]
+    }
     if (cpu_arch_full == "arm64") {
       sources = libvpx_srcs_arm64_neon_i8mm
       deps = [ ":libvpx_arm64_headers" ]
@@ -383,8 +390,9 @@ if (current_cpu == "arm64") {
       check_includes = false
       configs -= [ "//build/config/compiler:chromium_code" ]
       configs += [ "//build/config/compiler:no_chromium_code" ]
+      configs -= [ "//build/config/compiler:thorium_optimization" ]
       configs += [ ":libvpx_config" ]
-      configs += [ "//build/config/compiler:march_dotprod_i8mm_sve" ]
+      cflags = [ "-march=armv8.2-a+dotprod+i8mm+sve" ]
       if (cpu_arch_full == "arm64") {
         sources = libvpx_srcs_arm64_sve
         deps = [ ":libvpx_arm64_headers" ]
@@ -398,8 +406,9 @@ if (current_cpu == "arm64") {
       check_includes = false
       configs -= [ "//build/config/compiler:chromium_code" ]
       configs += [ "//build/config/compiler:no_chromium_code" ]
+      configs -= [ "//build/config/compiler:thorium_optimization" ]
       configs += [ ":libvpx_config" ]
-      configs += [ "//build/config/compiler:march_sve2" ]
+      cflags = [ "-march=armv9-a+sve2" ]
       if (cpu_arch_full == "arm64") {
         sources = libvpx_srcs_arm64_sve2
         deps = [ ":libvpx_arm64_headers" ]
@@ -555,8 +564,8 @@ static_library("libvpx") {
       sources = libvpx_srcs_arm
       public_deps = [ ":libvpx_arm_headers" ]
     }
-  } else if (current_cpu == "arm64") {
-    if (is_chromeos || is_win || is_mac) {
+  } else if (current_cpu == "arm64" || current_cpu == "arm64e") {
+    if (is_chromeos || is_win || is_mac || is_ios) {
       sources = libvpx_srcs_arm64_highbd
       public_deps = [ ":libvpx_arm64_highbd_headers" ]
     } else {
@@ -591,10 +600,12 @@ static_library("libvpx") {
     ]
   }
   if (cpu_arch_full == "arm-neon-highbd" || cpu_arch_full == "arm-neon" ||
-      cpu_arch_full == "arm-neon-cpu-detect" || current_cpu == "arm64") {
+      cpu_arch_full == "arm-neon-cpu-detect" || current_cpu == "arm64" ||
+      current_cpu == "arm64e") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     deps += [ ":libvpx_intrinsics_neon" ]
   }
-  if (current_cpu == "arm64") {
+  if (current_cpu == "arm64" || current_cpu == "arm64e") {
     deps += [ ":libvpx_intrinsics_neon_dotprod" ]
     deps += [ ":libvpx_intrinsics_neon_i8mm" ]
     if (!is_win) {

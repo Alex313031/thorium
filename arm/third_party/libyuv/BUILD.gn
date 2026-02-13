@@ -6,7 +6,6 @@
 # in the file PATENTS. All contributing project authors may
 # be found in the AUTHORS file in the root of the source tree.
 
-import("//build/config/compiler_opt.gni")
 import("//build/config/features.gni")
 import("//testing/test.gni")
 import("libyuv.gni")
@@ -207,47 +206,22 @@ static_library("libyuv_internal") {
     # Enable optimize for speed (-O2) over size (-Os).
     configs += [ "//build/config/compiler:optimize_max" ]
   }
+  configs -= [ "//build/config/compiler:thorium_optimization" ]
 
   # To enable AVX2 or other cpu optimization, pass flag here
   if (!is_win) {
     cflags = [
+      # "-mpopcnt",
+      # "-mavx2",
+      # "-mfma",
       "-ffp-contract=fast",  # Enable fma vectorization for NEON.
     ]
-    if (use_avx) {
-      cflags += [
-        "-mavx",
-        "-maes",
-      ]
-    }
-    if (use_avx2) {
-      cflags += [
-        "-mpopcnt",
-        "-mavx2",
-        "-mfma",
-        "-ffp-contract=fast",
-      ]
-    }
-  } else {
-    if (use_avx) {
-      cflags = [
-        "/clang:-mavx",
-        "/clang:-maes",
-      ]
-    }
-    if (use_avx2) {
-      cflags += [
-        "/arch:AVX2",
-        "/clang:-mpopcnt",
-        "/clang:-mavx2",
-        "/clang:-mfma",
-        "/clang:-ffp-contract=fast",
-      ]
-    }
   }
 }
 
 if (libyuv_use_neon) {
   static_library("libyuv_neon") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     sources = [
       # ARM Source Files
       "source/compare_neon.cc",
@@ -265,7 +239,7 @@ if (libyuv_use_neon) {
     public_configs = [ ":libyuv_config" ]
 
     if (current_cpu == "arm64") {
-      configs += [ "//build/config/compiler:march_dotprod_i8mm" ]
+      cflags = [ "-march=armv8-a+dotprod+i8mm" ]
     } else {
       configs -= [ "//build/config/compiler:compiler_arm_fpu" ]
       cflags = [ "-mfpu=neon" ]
@@ -275,6 +249,7 @@ if (libyuv_use_neon) {
 
 if (libyuv_use_sve) {
   static_library("libyuv_sve") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     sources = [ "source/row_sve.cc" ]
 
     deps = [ ":libyuv_internal" ]
@@ -282,25 +257,31 @@ if (libyuv_use_sve) {
     public_configs = [ ":libyuv_config" ]
 
     # SVE2 is an Armv9-A feature.
-    configs += [ "//build/config/compiler:march_sve2" ]
+    cflags = [ "-march=armv9-a+sve2" ]
   }
 }
 
 if (libyuv_use_sme) {
   static_library("libyuv_sme") {
-    sources = [ "source/rotate_sme.cc" ]
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    sources = [
+      "source/rotate_sme.cc",
+      "source/row_sme.cc",
+      "source/scale_sme.cc",
+    ]
 
     deps = [ ":libyuv_internal" ]
 
     public_configs = [ ":libyuv_config" ]
 
     # SME is an Armv9-A feature.
-    configs += [ "//build/config/compiler:march_sme" ]
+    cflags = [ "-march=armv9-a+sme" ]
   }
 }
 
 if (libyuv_use_msa) {
   static_library("libyuv_msa") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     sources = [
       # MSA Source Files
       "source/compare_msa.cc",
@@ -317,6 +298,7 @@ if (libyuv_use_msa) {
 
 if (libyuv_use_lsx) {
   static_library("libyuv_lsx") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     sources = [
       # LSX Source Files
       "source/rotate_lsx.cc",
@@ -337,6 +319,7 @@ if (libyuv_use_lsx) {
 
 if (libyuv_use_lasx) {
   static_library("libyuv_lasx") {
+    configs -= [ "//build/config/compiler:thorium_optimization" ]
     sources = [
       # LASX Source Files
       "source/row_lasx.cc",
@@ -419,6 +402,9 @@ if (libyuv_include_tests) {
 
     if (is_linux || is_chromeos) {
       cflags = [ "-fexceptions" ]
+
+      # For enabling ASLR.
+      ldflags = [ "-pie" ]
     }
     if (is_ios) {
       configs -= [ "//build/config/compiler:default_symbols" ]
@@ -428,15 +414,13 @@ if (libyuv_include_tests) {
     if (!is_ios && !libyuv_disable_jpeg) {
       defines += [ "HAVE_JPEG" ]
     }
-    if (is_android) {
-      deps += [ "//testing/android/native_test:native_test_native_code" ]
-    }
 
     # TODO(YangZhang): These lines can be removed when high accuracy
     # YUV to RGB to Neon is ported.
     if ((target_cpu == "armv7" || target_cpu == "armv7s" ||
          (target_cpu == "arm" && arm_version >= 7) || target_cpu == "arm64") &&
         (arm_use_neon || arm_optionally_use_neon)) {
+      configs -= [ "//build/config/compiler:thorium_optimization" ]
       defines += [ "LIBYUV_NEON" ]
     }
 
