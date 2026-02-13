@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Alex313031 and Iridium
+# Copyright (c) 2026 Alex313031 and Iridium
 # Shows the output of a given command only on failure, or when VERBOSE is set.
 log_cmd() {
   if [ "${VERBOSE:-}" ]; then
