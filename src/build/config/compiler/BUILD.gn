@@ -2759,6 +2759,28 @@ config("no_incompatible_pointer_warnings") {
   }
 }
 
+# Thorium ARM optimizations
+config("thorium_optimization") {
+  cflags = []
+  ldflags = []
+  if (current_cpu == "x86") {
+  } else if (current_cpu == "x64") {
+  } else if (current_cpu == "arm") {
+  } else if (current_cpu == "arm64") {
+    if (is_win) {
+      cflags += [ "-march=armv8-a+simd", ]
+    } else if (is_mac) {
+      cflags += [ "-march=armv8.3-a+simd+crypto", ]
+    } else {
+      # Linux and ChromiumOS
+      cflags += [ "-march=armv8-a+simd", ]
+      if (is_raspi) {
+        cflags += [ "-mtune=cortex-a72", ]
+      }
+    }
+  }
+}
+
 # Optimization -----------------------------------------------------------------
 #
 # The BUILDCONFIG file sets the "default_optimization" config on targets by
@@ -2790,10 +2812,6 @@ if (is_win) {
       # it is not compatible with the ASan ODR checker.
       "/Gw",
     ]
-  }
-
-  if (current_cpu == "arm64") {
-    common_optimize_on_cflags += [ "-march=armv8-a+simd", ]
   }
 
   if (is_official_build) {
@@ -2887,16 +2905,6 @@ if (is_win) {
 } else {
   common_optimize_on_cflags = []
   common_optimize_on_ldflags = []
-
-  if (current_cpu == "arm64") {
-    common_optimize_on_cflags += [ "-march=armv8-a+simd", ]
-    if (is_raspi) {
-      common_optimize_on_cflags += [ "-mtune=cortex-a72", ]
-    }
-    if (is_mac) {
-      common_optimize_on_cflags += [ "-march=armv8.3-a+simd+crypto", ]
-    }
-  }
 
   if (is_official_build) {
     common_optimize_on_cflags += [
