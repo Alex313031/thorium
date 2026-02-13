@@ -1122,18 +1122,21 @@ index 7ea39a93b45e4..296651bcf4eec 100644
  
  int GetInstallAge(const InstallerState& installer_state) {
 diff --git a/chrome/installer/util/initial_preferences.cc b/chrome/installer/util/initial_preferences.cc
-index 48ae7b2d6c69e..84da7b973e4ec 100644
+index 48ae7b2d6c69e..1fa5f07604adf 100644
 --- a/chrome/installer/util/initial_preferences.cc
 +++ b/chrome/installer/util/initial_preferences.cc
-@@ -4,6 +4,7 @@
+@@ -4,6 +4,10 @@
  
  #include "chrome/installer/util/initial_preferences.h"
  
-+#include <windows.h>
++#if BUILDFLAG(IS_WIN)
++ #include <windows.h>
++#endif
++
  #include <stddef.h>
  
  #include <memory>
-@@ -145,6 +146,8 @@ void InitialPreferences::InitializeFromCommandLine(
+@@ -145,6 +149,8 @@ void InitialPreferences::InitializeFromCommandLine(
         installer::initial_preferences::kSystemLevel},
        {installer::switches::kVerboseLogging,
         installer::initial_preferences::kVerboseLogging},
@@ -1142,10 +1145,11 @@ index 48ae7b2d6c69e..84da7b973e4ec 100644
    };
  
    std::string name(installer::initial_preferences::kDistroDict);
-@@ -351,4 +354,23 @@ const InitialPreferences& InitialPreferences::ForCurrentProcess() {
+@@ -351,4 +357,25 @@ const InitialPreferences& InitialPreferences::ForCurrentProcess() {
    return g_initial_preferences.Get();
  }
  
++#if BUILDFLAG(IS_WIN)
 +// Get the dir to setup.exe, then go up one level to get mini_installer dir.
 +const base::FilePath GetMiniInstallerDir() {
 +  wchar_t exe_path[MAX_PATH];
@@ -1164,6 +1168,7 @@ index 48ae7b2d6c69e..84da7b973e4ec 100644
 +
 +  return parent_dir;
 +}
++#endif
 +
  }  // namespace installer
 diff --git a/chrome/installer/util/initial_preferences.h b/chrome/installer/util/initial_preferences.h
