@@ -42,7 +42,7 @@ declare_args() {
   # the Athlon 64. Big step from MMX, x87, and SSE (i.e. SSE1)
   # Baseline requirement to run Windows since update KB4103718
   # for Windows 7 SP1/Server 2008 R2 SP1/Home Server 2011.
-  use_sse2 = current_cpu == "x86"
+  use_sse2 = target_cpu == "x86"
 
   # SSE3
   # Normal Chromium baseline, present since Prescott (2004 Pentium 4)
@@ -50,7 +50,7 @@ declare_args() {
   # Only applicable to 32 Bit Windows and Linux builds, where
   # setting it to false allows making an SSE2 build. (`-mmmx -msse2`)
   # `-msse3`
-  use_sse3 = current_cpu == "x86" || current_cpu == "x64"
+  use_sse3 = target_cpu == "x86" || target_cpu == "x64"
 
   # SSE4.1
   # Normal PrimoBrowser baseline
@@ -129,7 +129,7 @@ if ((use_avx || use_avx2 || use_avx512 || use_fma) && symbol_level == "2") {
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
 # from anything higher usually.
 if (use_avx || use_avx2 || use_avx512 || use_fma) {
-  assert(current_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. current_cpu is x86")
+  assert(current_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. target_cpu is x86")
   assert(target_cpu != "x86", "AVX, AVX2, AVX-512, or FMA require x64. Set target_cpu to x64")
 }
 
@@ -163,7 +163,7 @@ if (use_fma && !use_avx) {
   print("")
 }
 
-if (!use_sse3 && current_cpu == "x64") {
+if (!use_sse3 && target_cpu == "x64") {
   print("use_sse3 is disabled. This should only be done for 32 Bit builds.")
   print("")
 }
