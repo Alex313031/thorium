@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031.
+# Copyright (c) 2026 Alex313031.
 
 ## !! NOT FOR RELEASE BUILDS !! ##
 ## Only for testing and automation, as it only produces debug and non-debug

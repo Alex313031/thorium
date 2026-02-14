@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Alex313031, midzer and gz83.
+# Copyright (c) 2026 Alex313031, midzer and gz83.
 
 """
 This file is the equivalent of reset_depot_tools.py in the parent folder, but we

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031.
+# Copyright (c) 2026 Alex313031.
 
 # Copy and run from within out/thorium or wherever you put your build, or cd there first!
 # i.e. cd /home/alex/bin/thorium/

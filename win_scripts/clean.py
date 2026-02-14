@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Alex313031 and gz83.
+# Copyright (c) 2026 Alex313031 and gz83.
 
 """
 This file is the equivalent of clean.sh in the parent directory, but it directly

@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Alex313031 and gz83.
+# Copyright (c) 2026 Alex313031 and gz83.
 
 """
 This file is the equivalent of upstream_version.sh in the parent folder, but for native

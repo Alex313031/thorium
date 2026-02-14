@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031.
+# Copyright (c) 2026 Alex313031.
 
 echo "Installs necessary prerequisites for building and running Chromium/ChromiumOS on Arch Linux."
 

@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Alex313031 and gz83.
+# Copyright (c) 2026 Alex313031 and gz83.
 
 """
 This file is used to sync commits in Chromium's Tip-of-tree branch and does not

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Alex313031.
+# Copyright (c) 2026 Alex313031.
 
 # Simply uses wget to fetch Thorium API Keys.
 # This is to keep them out of the main repo, in the case Google

@@ -1,6 +1,6 @@
 # Thorium Portable for Linux README
 
-## Copyright (c) 2024 Alex313031
+## Copyright (c) 2026 Alex313031
 
 This is a portable build of Thorium which can also be used to install/use Thorium on Linux distros that do not use .deb packages. The THORIUM-PORTABLE script and THORIUM-SHELL script will need to be made executable with `sudo chmod +x`, and when run will disable logging, default browser check, and set the user data dir to .config/thorium in this folder rather than the usual $HOME/.config/thorium folder.
 
