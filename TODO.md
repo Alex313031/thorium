@@ -40,11 +40,8 @@ https://source.chromium.org/chromium/chromium/src/+/99fe5ddf4ecd908fd52d1d035651
 
 Make UA and hints report chrome, and set hints
 
-fix thorium and shell portable --temp profile
-
 Test non-optimized Thorium, versus optimized Thorium, versus vanilla Chromium, versus vanilla Google Chrome, all at the same revision.
 
-Fix NTP blank with other search engines than Google
 Fix multiple profiles lag if exists
 Fix download shelf height better and prevent separators from disappearing on resize
 Fix unmaximized drag height for all platforms, possibly unify at 6,7,8 pixels, also GetDragHandleExtension
@@ -55,8 +52,11 @@ Fix omnibox dropdown alignment and search icon alignment again
 Add vector icon colors for top bar from Primo
 Fix omnibox dropdown highlight row right side rounding
 Fix side panel metrics and grab handle icon alignment
+Move thorium_shell, portable, and appimage to other, update doc refs
+Move patches to separate dir, update doc refs
 Fix download shelf height dynamically, inspect startpadding and Alex313031: TODO: Use NTB method to p in chrome/browser/ui/views/download/download_item_view.cc.
 Fix download shelf hovercards on filename too long
+kBetweenIconSpacing might cause crash
 MV2: https://github.com/primo-browser/primo/commit/5aa8d52a29f3b1162462a389444fb98b90ec4a1e  
      https://github.com/primo-browser/primo/commit/de205e3623e8d922c97b949e82e7937c1c7f5f8a
      https://github.com/primo-browser/primo/commit/e567420253e358977714769e5b83ea32f374e008
@@ -72,7 +72,6 @@ Fix spacing
 remove
 +    static const int kCornerRadius = corner_radius;
 
-logging_installer.cc > chromium_installer.log > thorium_installer.log
 Add PRIMO_DEBUG fixes to Thorium.
 https://github.com/primo-browser/primo/commit/946f3dfbed983efb7643fee26d31fd3c4205d9d9
 https://github.com/win32ss/supermium/issues/1412
@@ -95,5 +94,3 @@ UpdateThumb
 investigate transparent tabs flags.setAlphaf(0.7f)
 search tab_strip_region_views for layout_constants added
 investigate new metrics in layout_provider and layout_constants
-
-kBetweenIconSpacing might cause crash
