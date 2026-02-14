@@ -1153,7 +1153,7 @@ index 0000000000000..3398230fbaadb
 --- /dev/null
 +++ b/chrome/browser/ui/thorium_2024.h
 @@ -0,0 +1,14 @@
-+// Copyright 2025 Alex313031
++// Copyright 2026 Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -2234,7 +2234,7 @@ index 0000000000000..92e166d7ca93c
 --- /dev/null
 +++ b/chrome/browser/ui/views/frame/window_caption_util.h
 @@ -0,0 +1,21 @@
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -3451,7 +3451,7 @@ index 0000000000000..97d29250ae49d
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.cc
 @@ -0,0 +1,72 @@
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
@@ -3529,7 +3529,7 @@ index 0000000000000..43b9476bb127c
 --- /dev/null
 +++ b/chrome/browser/ui/views/toolbar/restore_tab_button.h
 @@ -0,0 +1,31 @@
-+// Copyright 2024 The Chromium Authors and Alex313031
++// Copyright 2026 The Chromium Authors and Alex313031
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +

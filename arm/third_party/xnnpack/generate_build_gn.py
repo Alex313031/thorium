@@ -1,4 +1,4 @@
-# Copyright 2024 The Chromium Authors and Alex313031
+# Copyright 2026 The Chromium Authors and Alex313031
 
 # IMPORTANT: YOU MUST RENAME depot_tools/bazel OR CHANGE YOUR PATH
 # OTHERWISE IT TRIES TO PULL IN A GOOGLE INTERNAL BAZEL BINARY
