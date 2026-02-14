@@ -842,6 +842,32 @@ index 9155eba56943f..a498f79a58128 100644
  #define IDC_STATIC -1
  
  // The identifier of the RCDATA resource holding the version of Chrome on which
+diff --git a/chrome/installer/mini_installer/mini_installer_version.h.template b/chrome/installer/mini_installer/mini_installer_version.h.template
+new file mode 100644
+index 0000000000000..2133403e2bd96
+--- /dev/null
++++ b/chrome/installer/mini_installer/mini_installer_version.h.template
+@@ -0,0 +1,20 @@
++#ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
++#define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
++
++// Copyright 2026 Alex313031
++
++static constexpr int MAJOR_VERSION = @MAJOR@;
++
++static constexpr int MINOR_VERSION = @MINOR@;
++
++static constexpr int BUILD_VERSION = @BUILD@;
++
++static constexpr int PATCH_VERSION = @PATCH@;
++
++static const wchar_t* kVersionString = L"@MAJOR@.@MINOR@.@BUILD@.@PATCH@";
++
++static const wchar_t* kInstallTitle = L"Thorium @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
++
++static const wchar_t* kInstallBetaTitle = L"Thorium Beta @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
++
++#endif // CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
 index 011684089a29e..25e785cd19e0a 100644
 --- a/chrome/installer/setup/install_worker.cc
