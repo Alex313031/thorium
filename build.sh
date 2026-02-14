@@ -47,6 +47,8 @@ cd ${CR_SRC_DIR} &&
 # For restoring individual build targets for customization
 #autoninja -C out/thorium thorium chrome_sandbox chromedriver clear_key_cdm thorium_shell policy_templates -j$@ &&
 autoninja -C out/thorium thorium_all -j$@ &&
+printf "${GRE}\nBuilding Thorium .deb & .rpm packages...\n" &&
+autoninja -C out/thorium "chrome/installer/linux:stable_deb" "chrome/installer/linux:stable_rpm" -j$@ &&
 
 printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&

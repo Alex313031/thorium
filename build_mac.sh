@@ -72,7 +72,8 @@ cd ${CR_SRC_DIR} &&
 # For restoring individual build targets for customization
 #autoninja -C out/thorium thorium chromedriver policy_templates -j$@ &&
 autoninja -C out/thorium thorium_all -j$@ &&
-autoninja -C out/thorium chrome/installer/mac -j$@ &&
+printf "${GRE}\nBuilding installer...\n" &&
+autoninja -C out/thorium chrome/installer/mac minidump_stackwalk -j$@ &&
 
 printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&

@@ -47,7 +47,8 @@ cd ${CR_SRC_DIR} &&
 # For restoring individual build targets for customization
 #autoninja -C out/thorium thorium chromedriver clear_key_cdm thorium_shell policy_templates pack_policy_templates setup mini_installer -j$@ &&
 autoninja -C out/thorium thorium_all -j$@ &&
-autoninja -C out/thorium setup mini_installer -j$@ &&
+printf "${GRE}\nBuilding mini_installer...\n" &&
+autoninja -C out/thorium thorium_installer -j$@ &&
 
 printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
