@@ -297,8 +297,9 @@ index b746f68cef51d..5b63aac683d12 100644
    bool has_invalid_switch_;
    bool should_delete_extracted_files_;
    const wchar_t* previous_version_;
+alex@B450M-DS3H-V2:~/chromium/src$ diff chrome/installer/mini_installer/mini_installer.cc
 diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
-index b24e4cbef109f..e9ae6d5659448 100644
+index b24e4cbef109f..019a617434a39 100644
 --- a/chrome/installer/mini_installer/mini_installer.cc
 +++ b/chrome/installer/mini_installer/mini_installer.cc
 @@ -1,4 +1,4 @@
@@ -316,16 +317,16 @@ index b24e4cbef109f..e9ae6d5659448 100644
  
  // #define needed to link in RtlGenRandom(), a.k.a. SystemFunction036.  See the
  // "Community Additions" comment on MSDN here:
-@@ -44,6 +46,8 @@
+@@ -43,6 +45,8 @@
+ 
  #include <algorithm>
  #include <initializer_list>
- 
 +#include <iostream>
-+
++#include <string>
+ 
  #include "build/branding_buildflags.h"
  #include "chrome/installer/mini_installer/appid.h"
- #include "chrome/installer/mini_installer/configuration.h"
-@@ -53,11 +57,23 @@
+@@ -53,11 +57,28 @@
  #include "chrome/installer/mini_installer/memory_range.h"
  #include "chrome/installer/mini_installer/mini_file.h"
  #include "chrome/installer/mini_installer/mini_installer_constants.h"
@@ -344,12 +345,17 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +
 +bool should_install_ = false;
 +
++static const std::wstring kInstallTitle = std::wstring(kProductName) + std::wstring(kVersionString) + L" Installer";
++static const std::wstring kInstallBetaTitle = std::wstring(kProductName) + L" Beta " + std::wstring(kVersionString) + L" Installer";
++static const std::wstring kInstallMessage = L"Would you like to install " + std::wstring(kProductName) + L"?";
++static const std::wstring kInstallBetaMessage = L"Would you like to install " + std::wstring(kProductName) + L" Beta?";
++
 +static Configuration conf;
 +
  // Deletes |path|, updating |max_delete_attempts| if more attempts were taken
  // than indicated in |max_delete_attempts|.
  void DeleteWithRetryAndMetrics(const wchar_t* path, int& max_delete_attempts) {
-@@ -851,21 +867,234 @@ bool GetWorkDir(HMODULE module,
+@@ -851,21 +872,236 @@ bool GetWorkDir(HMODULE module,
           CreateWorkDir(base_path.get(), work_dir, exit_code);
  }
  
@@ -382,6 +388,8 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +  SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, FALSE, 0);
 +
 +  // Update the dialog to show completion status
++  static const std::wstring kInstallingDoneMsg = std::wstring(kProductName) + L" was installed successfully! \nYou may now close this window.";
++  static const std::wstring kInstallingFailedMsg = L"Installing " + std::wstring(kProductName) + L" failed. \nError: ";
 +  if (success) {
 +    static TASKDIALOGCONFIG DoneDlgConfig = { 0 };
 +    DoneDlgConfig.cbSize = sizeof(DoneDlgConfig);
@@ -390,7 +398,7 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +    DoneDlgConfig.nDefaultButton = IDOK;
 +    DoneDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_SUCCESS));
 +    DoneDlgConfig.pszWindowTitle = kInstallingComplete;
-+    DoneDlgConfig.pszContent = kInstallingDoneMsg;
++    DoneDlgConfig.pszContent = kInstallingDoneMsg.c_str();
 +    DoneDlgConfig.cxWidth = 0;
 +    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&DoneDlgConfig));
 +    return 0;
@@ -402,7 +410,7 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +    FailedDlgConfig.nDefaultButton = IDCLOSE;
 +    FailedDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_FAILED));
 +    FailedDlgConfig.pszWindowTitle = kInstallingFailed;
-+    std::wstring kInstallingError = L"Installing Thorium failed. \nError: " + std::to_wstring(getError);
++    std::wstring kInstallingError = kInstallingFailedMsg + std::to_wstring(getError);
 +    FailedDlgConfig.pszContent = kInstallingError.c_str();
 +    FailedDlgConfig.cxWidth = 0;
 +    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&FailedDlgConfig));
@@ -451,9 +459,9 @@ index b24e4cbef109f..e9ae6d5659448 100644
 +  config.dwCommonButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON | TDCBF_CANCEL_BUTTON;
 +  config.nDefaultButton = IDNO;
 +  config.hMainIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MINI_INSTALLER));
-+  config.pszWindowTitle = is_beta ? kInstallBetaTitle : kInstallTitle;
++  config.pszWindowTitle = is_beta ? kInstallBetaTitle.c_str() : kInstallTitle.c_str();
 +  // config.pszMainInstruction = nullptr;
-+  config.pszContent = is_beta ? kInstallBetaMessage : kInstallMessage;
++  config.pszContent = is_beta ? kInstallBetaMessage.c_str() : kInstallMessage.c_str();
 +  //config.pButtons = buttons;
 +  //config.cButtons = ARRAYSIZE(buttons);
 +  config.pfCallback = TaskDialogCallbackProc;
@@ -589,7 +597,7 @@ index b24e4cbef109f..e9ae6d5659448 100644
    // First get a path where we can extract payload
    PathString base_path;
    if (!GetWorkDir(module, &base_path, &exit_code)) {
-@@ -940,4 +1169,11 @@ ProcessExitResult WMain(HMODULE module) {
+@@ -940,4 +1176,11 @@ ProcessExitResult WMain(HMODULE module) {
    return exit_code;
  }
  
@@ -708,26 +716,26 @@ index cbcd4cf1a3ef2..13ea5306828ce 100644
  
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.h b/chrome/installer/mini_installer/mini_installer_constants.h
-index 23de845654342..851bd42e65d17 100644
+index 23de845654342..666632cbd5a39 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.h
 +++ b/chrome/installer/mini_installer/mini_installer_constants.h
-@@ -5,6 +5,16 @@
+@@ -5,8 +5,16 @@
  #ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  
 +#include "chrome/installer/mini_installer/mini_installer_version.h"
 +
-+static const wchar_t* kInstallMessage = L"Would you like to install Thorium?";
-+static const wchar_t* kInstallBetaMessage = L"Would you like to install Thorium Beta?";
-+static const wchar_t* kInstallingMessage = L"Installing...";
-+static const wchar_t* kInstallingDoneMsg = L"Thorium was installed successfully! \nYou may now close this window.";
-+static const wchar_t* kInstallingComplete = L"Installation Complete";
-+static const wchar_t* kInstallingFailed = L"Installation Failed!";
-+static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
-+
  namespace mini_installer {
  
++static constexpr wchar_t kInstallingMessage[] = L"Installing...";
++static constexpr wchar_t kInstallingComplete[] = L"Installation Complete";
++static constexpr wchar_t kInstallingFailed[] = L"Installation Failed!";
++
++static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
++
  // Various filenames and prefixes.
+ extern const wchar_t kSetupExe[];
+ extern const wchar_t kChromeArchivePrefix[];
 diff --git a/chrome/installer/mini_installer/mini_installer_exe_main.cc b/chrome/installer/mini_installer/mini_installer_exe_main.cc
 index aff0370044046..c19a6c4d577d0 100644
 --- a/chrome/installer/mini_installer/mini_installer_exe_main.cc
@@ -844,14 +852,16 @@ index 9155eba56943f..a498f79a58128 100644
  // The identifier of the RCDATA resource holding the version of Chrome on which
 diff --git a/chrome/installer/mini_installer/mini_installer_version.h.template b/chrome/installer/mini_installer/mini_installer_version.h.template
 new file mode 100644
-index 0000000000000..2133403e2bd96
+index 0000000000000..edff34daa38a8
 --- /dev/null
 +++ b/chrome/installer/mini_installer/mini_installer_version.h.template
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,22 @@
 +#ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 +#define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 +
 +// Copyright 2026 Alex313031
++
++namespace mini_installer {
 +
 +static constexpr int MAJOR_VERSION = @MAJOR@;
 +
@@ -861,11 +871,11 @@ index 0000000000000..2133403e2bd96
 +
 +static constexpr int PATCH_VERSION = @PATCH@;
 +
-+static const wchar_t* kVersionString = L"@MAJOR@.@MINOR@.@BUILD@.@PATCH@";
++static constexpr wchar_t kVersionString[] = L"@MAJOR@.@MINOR@.@BUILD@.@PATCH@";
 +
-+static const wchar_t* kInstallTitle = L"Thorium @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
++static constexpr wchar_t kProductName[] = L"Thorium";
 +
-+static const wchar_t* kInstallBetaTitle = L"Thorium Beta @MAJOR@.@MINOR@.@BUILD@.@PATCH@ Installer";
++} // namespace mini_installer
 +
 +#endif // CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
