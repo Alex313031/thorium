@@ -1,6 +1,6 @@
 @@include@@repo_variables.include
 
-# Copyright (c) 2025 Alex313031.
+# Copyright (c) 2026 Alex313031.
 
 APT_GET="`command -v apt-get 2> /dev/null`"
 APT_CONFIG="`command -v apt-config 2> /dev/null`"
