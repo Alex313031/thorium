@@ -1813,7 +1813,7 @@ if (use_blink && !is_cronet_build) {
 # TODO(cassew): Add more OS's that don't support x86.
 # 32 bit Linux builds enabled by Alex313031
 is_valid_x86_target =
-    target_os != "ios" && target_os != "mac" &&
+    target_os != "ios" && target_os != "mac" ||
     (use_libfuzzer || !build_with_chromium)
 
 # Note: v8_target_cpu == arm allows using the V8 arm simulator on x86 for fuzzing.
