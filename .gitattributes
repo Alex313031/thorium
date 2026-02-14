@@ -1,14 +1,9 @@
 # Set default behavior to automatically normalize line endings.
 * text=auto
-*.c text
-*.h text
-*.cc text eol=lf
-*.cpp text eol=lf
 *.idl text eol=lf
 *.json text eol=lf
 *.js text eol=lf
 *.ts text eol=lf
-*.hpp text
 
 # Build system Files
 *.py text eol=lf
