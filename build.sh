@@ -54,5 +54,5 @@ printf "\n" &&
 cat ~/thorium/logos/thorium_logo_ascii_art.txt &&
 printf "\n" &&
 
-printf "${GRE}${bold}Build Completed! ${YEL}${bold}You can now run \'./package.sh\' to build installation packages.\n" &&
+printf "${GRE}${bold}Build Completed!\n" &&
 tput sgr0
