@@ -71,6 +71,7 @@ verify_package() {
       sed 's/^ *//' | LANG=C sort | uniq > "${EXPECTED_DEPENDS}"
   rpm -qpR "${OUTPUTDIR}/${PKGNAME}.${ARCHITECTURE}.rpm" | LANG=C sort | uniq \
       > "${ACTUAL_DEPENDS}"
+  cp -fv ${EXPECTED_DEPENDS} ${OUTPUTDIR}
   BAD_DIFF=0
   diff -u "${EXPECTED_DEPENDS}" "${ACTUAL_DEPENDS}" || BAD_DIFF=1
   if [ $BAD_DIFF -ne 0 ] && [ -z "${IGNORE_DEPS_CHANGES:-}" ]; then
