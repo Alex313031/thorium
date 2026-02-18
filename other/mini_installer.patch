@@ -345,7 +345,7 @@ index b24e4cbef109f..019a617434a39 100644
 +
 +bool should_install_ = false;
 +
-+static const std::wstring kInstallTitle = std::wstring(kProductName) + std::wstring(kVersionString) + L" Installer";
++static const std::wstring kInstallTitle = std::wstring(kProductName) + L" " + std::wstring(kVersionString) + L" Installer";
 +static const std::wstring kInstallBetaTitle = std::wstring(kProductName) + L" Beta " + std::wstring(kVersionString) + L" Installer";
 +static const std::wstring kInstallMessage = L"Would you like to install " + std::wstring(kProductName) + L"?";
 +static const std::wstring kInstallBetaMessage = L"Would you like to install " + std::wstring(kProductName) + L" Beta?";
