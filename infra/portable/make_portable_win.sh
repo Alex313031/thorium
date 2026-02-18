@@ -44,7 +44,7 @@ sleep 2 &&
 # Extract data.tar.xz
 mkdir -v -p ./temp &&
 mkdir -v -p ./temp/USER_DATA &&
-7z x thorium_mini_installer.exe &&
+7z x thorium_*_installer.exe &&
 7z x chrome.7z &&
 mv -v Chrome-bin ./temp/BIN &&
 cp -r -v ./README.win temp/README.txt &&
