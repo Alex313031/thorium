@@ -30642,7 +30642,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30666,7 +30666,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30693,7 +30693,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30717,7 +30717,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30747,7 +30747,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30774,7 +30774,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30805,7 +30805,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30833,7 +30833,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30913,7 +30913,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30937,7 +30937,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30964,7 +30964,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -30988,7 +30988,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31018,7 +31018,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31045,7 +31045,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31079,7 +31079,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31110,7 +31110,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31137,7 +31137,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31161,7 +31161,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31188,7 +31188,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31212,7 +31212,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31242,7 +31242,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31269,7 +31269,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31303,7 +31303,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31334,7 +31334,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31361,7 +31361,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31385,7 +31385,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31412,7 +31412,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31436,7 +31436,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31561,7 +31561,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31585,7 +31585,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31613,7 +31613,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31638,7 +31638,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31718,7 +31718,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31744,7 +31744,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31824,7 +31824,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31848,7 +31848,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31875,7 +31875,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31899,7 +31899,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31926,7 +31926,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31950,7 +31950,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -31998,7 +31998,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32043,7 +32043,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32070,7 +32070,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32094,7 +32094,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32121,7 +32121,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32145,7 +32145,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32172,7 +32172,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32196,7 +32196,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32223,7 +32223,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32247,7 +32247,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32274,7 +32274,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32298,7 +32298,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32325,7 +32325,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32349,7 +32349,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32376,7 +32376,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32400,7 +32400,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32427,7 +32427,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32451,7 +32451,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32478,7 +32478,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32502,7 +32502,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32529,7 +32529,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32553,7 +32553,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32580,7 +32580,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32604,7 +32604,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32631,7 +32631,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32655,7 +32655,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32685,7 +32685,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32712,7 +32712,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32739,7 +32739,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32763,7 +32763,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32791,7 +32791,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32816,7 +32816,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32843,7 +32843,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32867,7 +32867,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32894,7 +32894,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32918,7 +32918,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32946,7 +32946,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32971,7 +32971,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -32999,7 +32999,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33024,7 +33024,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33053,7 +33053,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33079,7 +33079,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33107,7 +33107,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33132,7 +33132,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33160,7 +33160,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33185,7 +33185,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33214,7 +33214,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33240,7 +33240,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33282,7 +33282,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33321,7 +33321,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33350,7 +33350,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33376,7 +33376,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33420,7 +33420,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33461,7 +33461,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33490,7 +33490,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33516,7 +33516,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33563,7 +33563,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33607,7 +33607,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33650,7 +33650,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33690,7 +33690,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33719,7 +33719,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33745,7 +33745,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33774,7 +33774,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33800,7 +33800,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33846,7 +33846,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33889,7 +33889,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33932,7 +33932,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -33972,7 +33972,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34000,7 +34000,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34025,7 +34025,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34058,7 +34058,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34088,7 +34088,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34119,7 +34119,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34147,7 +34147,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34179,7 +34179,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34208,7 +34208,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34238,7 +34238,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34265,7 +34265,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34295,7 +34295,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34322,7 +34322,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34350,7 +34350,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34375,7 +34375,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34405,7 +34405,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34432,7 +34432,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34460,7 +34460,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34485,7 +34485,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34517,7 +34517,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34546,7 +34546,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34574,7 +34574,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34599,7 +34599,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34632,7 +34632,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34662,7 +34662,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34690,7 +34690,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34715,7 +34715,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34779,7 +34779,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34840,7 +34840,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34868,7 +34868,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34893,7 +34893,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34921,7 +34921,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34946,7 +34946,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -34978,7 +34978,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35007,7 +35007,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35035,7 +35035,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35060,7 +35060,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35090,7 +35090,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35117,7 +35117,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35145,7 +35145,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35170,7 +35170,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35198,7 +35198,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35223,7 +35223,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35251,7 +35251,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35276,7 +35276,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35304,7 +35304,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35329,7 +35329,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35357,7 +35357,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35382,7 +35382,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35411,7 +35411,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35437,7 +35437,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35465,7 +35465,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35490,7 +35490,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35528,7 +35528,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35563,7 +35563,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35592,7 +35592,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35618,7 +35618,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35647,7 +35647,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35673,7 +35673,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35701,7 +35701,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35726,7 +35726,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35754,7 +35754,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35779,7 +35779,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35807,7 +35807,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35832,7 +35832,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35864,7 +35864,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35893,7 +35893,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35940,7 +35940,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -35984,7 +35984,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36012,7 +36012,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36037,7 +36037,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36065,7 +36065,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36090,7 +36090,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36118,7 +36118,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36143,7 +36143,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36171,7 +36171,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36196,7 +36196,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36224,7 +36224,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36249,7 +36249,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36277,7 +36277,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36302,7 +36302,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36330,7 +36330,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36355,7 +36355,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36383,7 +36383,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36408,7 +36408,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36436,7 +36436,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36461,7 +36461,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36491,7 +36491,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36518,7 +36518,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36546,7 +36546,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36571,7 +36571,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36601,7 +36601,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36628,7 +36628,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36656,7 +36656,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36681,7 +36681,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36711,7 +36711,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36738,7 +36738,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36766,7 +36766,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36791,7 +36791,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36821,7 +36821,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36848,7 +36848,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36876,7 +36876,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36901,7 +36901,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36929,7 +36929,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36954,7 +36954,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -36982,7 +36982,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37007,7 +37007,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37037,7 +37037,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37064,7 +37064,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37092,7 +37092,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37117,7 +37117,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37145,7 +37145,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37170,7 +37170,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37200,7 +37200,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37227,7 +37227,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37257,7 +37257,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37284,7 +37284,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37314,7 +37314,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37341,7 +37341,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37369,7 +37369,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37394,7 +37394,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37425,7 +37425,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37453,7 +37453,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37483,7 +37483,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37510,7 +37510,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37540,7 +37540,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37567,7 +37567,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37595,7 +37595,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37620,7 +37620,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37653,7 +37653,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37683,7 +37683,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37711,7 +37711,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37736,7 +37736,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37763,7 +37763,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37787,7 +37787,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37816,7 +37816,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37842,7 +37842,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37869,7 +37869,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37893,7 +37893,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37921,7 +37921,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37946,7 +37946,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -37975,7 +37975,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38001,7 +38001,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38028,7 +38028,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38052,7 +38052,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38085,7 +38085,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38115,7 +38115,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38142,7 +38142,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38166,7 +38166,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38194,7 +38194,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38219,7 +38219,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38246,7 +38246,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38270,7 +38270,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38300,7 +38300,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38327,7 +38327,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38354,7 +38354,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38378,7 +38378,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38418,7 +38418,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38455,7 +38455,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38485,7 +38485,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38512,7 +38512,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38550,7 +38550,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38585,7 +38585,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38613,7 +38613,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38638,7 +38638,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38671,7 +38671,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38701,7 +38701,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38731,7 +38731,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38758,7 +38758,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38796,7 +38796,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38831,7 +38831,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38859,7 +38859,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38884,7 +38884,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38917,7 +38917,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38947,7 +38947,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38974,7 +38974,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -38998,7 +38998,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39026,7 +39026,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39051,7 +39051,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39078,7 +39078,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39102,7 +39102,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39130,7 +39130,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39155,7 +39155,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39185,7 +39185,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39212,7 +39212,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39242,7 +39242,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39269,7 +39269,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39297,7 +39297,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39322,7 +39322,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39350,7 +39350,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39375,7 +39375,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39403,7 +39403,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39428,7 +39428,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39456,7 +39456,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39481,7 +39481,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39508,7 +39508,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39532,7 +39532,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39559,7 +39559,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39583,7 +39583,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39610,7 +39610,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39634,7 +39634,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39666,7 +39666,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39695,7 +39695,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39723,7 +39723,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39748,7 +39748,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39780,7 +39780,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39809,7 +39809,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39842,7 +39842,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39872,7 +39872,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39904,7 +39904,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39933,7 +39933,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39966,7 +39966,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -39996,7 +39996,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40025,7 +40025,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40051,7 +40051,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40079,7 +40079,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40104,7 +40104,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40134,7 +40134,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40161,7 +40161,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40191,7 +40191,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40218,7 +40218,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40246,7 +40246,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40271,7 +40271,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40299,7 +40299,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40324,7 +40324,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40352,7 +40352,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40377,7 +40377,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40405,7 +40405,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40430,7 +40430,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40457,7 +40457,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40481,7 +40481,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40508,7 +40508,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40532,7 +40532,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40559,7 +40559,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40583,7 +40583,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40612,7 +40612,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40638,7 +40638,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40667,7 +40667,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40693,7 +40693,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40721,7 +40721,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40746,7 +40746,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40776,7 +40776,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40803,7 +40803,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40835,7 +40835,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40864,7 +40864,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40892,7 +40892,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40917,7 +40917,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -40972,7 +40972,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41024,7 +41024,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41059,7 +41059,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41091,7 +41091,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41120,7 +41120,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41146,7 +41146,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41173,7 +41173,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41197,7 +41197,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41225,7 +41225,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41250,7 +41250,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41280,7 +41280,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41307,7 +41307,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41339,7 +41339,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41368,7 +41368,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41396,7 +41396,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41421,7 +41421,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41448,7 +41448,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41472,7 +41472,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41500,7 +41500,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41525,7 +41525,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41553,7 +41553,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41578,7 +41578,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41606,7 +41606,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41631,7 +41631,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41660,7 +41660,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41686,7 +41686,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41713,7 +41713,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41737,7 +41737,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41772,7 +41772,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41804,7 +41804,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41833,7 +41833,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41859,7 +41859,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41887,7 +41887,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41912,7 +41912,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41941,7 +41941,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41967,7 +41967,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -41995,7 +41995,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42020,7 +42020,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42047,7 +42047,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42071,7 +42071,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42099,7 +42099,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42124,7 +42124,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42154,7 +42154,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42181,7 +42181,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42209,7 +42209,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42234,7 +42234,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42261,7 +42261,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42285,7 +42285,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42313,7 +42313,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42338,7 +42338,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42366,7 +42366,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42391,7 +42391,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42418,7 +42418,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 
@@ -42442,7 +42442,7 @@ if (current_cpu == "arm64") {
     ]
 
     configs -= [ "//build/config/compiler:chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
     configs += [ "//build/config/sanitizers:cfi_icall_generalize_pointers" ]
 

@@ -15,6 +15,8 @@ import("//build/toolchain/siso.gni")
 config("compiler") {
   # These flags are shared between the C compiler and linker.
   common_mac_flags = []
+  common_mac_cflags = []
+  common_mac_ldflags = []
 
   # CPU architecture.
   if (current_cpu == "x64") {
@@ -29,11 +31,8 @@ config("compiler") {
   common_mac_flags += [ "--target=$clang_arch-apple-macos" ]
 
   if (is_official_build) {
-    common_mac_cflags = [ "-O3", ]
-    common_mac_ldflags = [ "-Wl,-O3", ]
-    import_instr_limit = 100
-  } else {
-    import_instr_limit = 30
+    common_mac_cflags += [ "-O3", ]
+    common_mac_ldflags += [ "-Wl,-O3", ]
   }
 
   # This is here so that all files get recompiled after an Xcode update.
@@ -45,23 +44,13 @@ config("compiler") {
   cflags = common_mac_flags + common_mac_cflags
 
   ldflags = common_mac_flags + common_mac_ldflags
-  
-  if (current_cpu == "arm64") {
-    # Alex313031 TODO: Possibly use -mcpu here?
-    cflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1", ]
-    ldflags += [ "-march=armv8.3-a+simd+crypto", "-mtune=apple-m1", ]
-  }
-
-  if (current_cpu == "x64" || use_avx2) {
-    cflags += [ "-march=x86-64-v3", ]
-    ldflags += [ "-Wl,-mllvm,-march=x86-64-v3", ]
-  }
 
   if (is_official_build) {
     cflags += [ "-ffp-contract=fast", ]
     ldflags += [
       "-Wl,-mllvm,-fp-contract=fast",
-      "-Wl,-mllvm,-import-instr-limit=$import_instr_limit",
+      "-Wl,-mllvm,-import-instr-limit=100",
+    ]
   }
 
   if (save_unstripped_output) {

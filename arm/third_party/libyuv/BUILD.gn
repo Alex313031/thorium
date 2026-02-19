@@ -206,7 +206,7 @@ static_library("libyuv_internal") {
     # Enable optimize for speed (-O2) over size (-Os).
     configs += [ "//build/config/compiler:optimize_max" ]
   }
-  configs -= [ "//build/config/compiler:thorium_optimization" ]
+  configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
 
   # To enable AVX2 or other cpu optimization, pass flag here
   if (!is_win) {
@@ -221,7 +221,7 @@ static_library("libyuv_internal") {
 
 if (libyuv_use_neon) {
   static_library("libyuv_neon") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [
       # ARM Source Files
       "source/compare_neon.cc",
@@ -249,7 +249,7 @@ if (libyuv_use_neon) {
 
 if (libyuv_use_sve) {
   static_library("libyuv_sve") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [ "source/row_sve.cc" ]
 
     deps = [ ":libyuv_internal" ]
@@ -263,7 +263,7 @@ if (libyuv_use_sve) {
 
 if (libyuv_use_sme) {
   static_library("libyuv_sme") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [
       "source/rotate_sme.cc",
       "source/row_sme.cc",
@@ -281,7 +281,7 @@ if (libyuv_use_sme) {
 
 if (libyuv_use_msa) {
   static_library("libyuv_msa") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [
       # MSA Source Files
       "source/compare_msa.cc",
@@ -298,7 +298,7 @@ if (libyuv_use_msa) {
 
 if (libyuv_use_lsx) {
   static_library("libyuv_lsx") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [
       # LSX Source Files
       "source/rotate_lsx.cc",
@@ -319,7 +319,7 @@ if (libyuv_use_lsx) {
 
 if (libyuv_use_lasx) {
   static_library("libyuv_lasx") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     sources = [
       # LASX Source Files
       "source/row_lasx.cc",
@@ -420,7 +420,7 @@ if (libyuv_include_tests) {
     if ((target_cpu == "armv7" || target_cpu == "armv7s" ||
          (target_cpu == "arm" && arm_version >= 7) || target_cpu == "arm64") &&
         (arm_use_neon || arm_optionally_use_neon)) {
-      configs -= [ "//build/config/compiler:thorium_optimization" ]
+      configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
       defines += [ "LIBYUV_NEON" ]
     }
 

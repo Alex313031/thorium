@@ -358,7 +358,7 @@ default_compiler_configs = [
   "//build/config/compiler:default_include_dirs",
   "//build/config/compiler:default_init_stack_vars",
   "//build/config/compiler:default_optimization",
-  "//build/config/compiler:thorium_optimization",
+  "//build/config/compiler:thorium_simd_optimization",
   "//build/config/compiler:default_stack_frames",
   "//build/config/compiler:default_symbols",
   "//build/config/compiler:disallow_unstable_features",

@@ -320,7 +320,7 @@ if (current_cpu == "arm" || current_cpu == "arm64" || current_cpu == "arm64e") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ ":libvpx_config" ]
     if (current_cpu == "arm") {
       configs -= [ "//build/config/compiler:compiler_arm_fpu" ]
@@ -350,7 +350,7 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ ":libvpx_config" ]
     if (!is_win || is_clang) {
       cflags = [ "-march=armv8.2-a+dotprod" ]
@@ -368,7 +368,7 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
     check_includes = false
     configs -= [ "//build/config/compiler:chromium_code" ]
     configs += [ "//build/config/compiler:no_chromium_code" ]
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     configs += [ ":libvpx_config" ]
     if (!is_win || is_clang) {
       cflags = [ "-march=armv8.2-a+i8mm" ]
@@ -390,7 +390,7 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
       check_includes = false
       configs -= [ "//build/config/compiler:chromium_code" ]
       configs += [ "//build/config/compiler:no_chromium_code" ]
-      configs -= [ "//build/config/compiler:thorium_optimization" ]
+      configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
       configs += [ ":libvpx_config" ]
       cflags = [ "-march=armv8.2-a+dotprod+i8mm+sve" ]
       if (cpu_arch_full == "arm64") {
@@ -406,7 +406,7 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
       check_includes = false
       configs -= [ "//build/config/compiler:chromium_code" ]
       configs += [ "//build/config/compiler:no_chromium_code" ]
-      configs -= [ "//build/config/compiler:thorium_optimization" ]
+      configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
       configs += [ ":libvpx_config" ]
       cflags = [ "-march=armv9-a+sve2" ]
       if (cpu_arch_full == "arm64") {
@@ -602,7 +602,7 @@ static_library("libvpx") {
   if (cpu_arch_full == "arm-neon-highbd" || cpu_arch_full == "arm-neon" ||
       cpu_arch_full == "arm-neon-cpu-detect" || current_cpu == "arm64" ||
       current_cpu == "arm64e") {
-    configs -= [ "//build/config/compiler:thorium_optimization" ]
+    configs -= [ "//build/config/compiler:thorium_simd_optimization" ]
     deps += [ ":libvpx_intrinsics_neon" ]
   }
   if (current_cpu == "arm64" || current_cpu == "arm64e") {
