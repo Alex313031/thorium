@@ -17,7 +17,7 @@ index 93a3d036f9c49..942100187320b 100644
  <?xml version="1.0" encoding="utf-8"?>
  <!--
 -Copyright 2020 The Chromium Authors
-+Copyright 2024 The Chromium Authors, Alex313031 and gz83
++Copyright 2026 The Chromium Authors, Alex313031 and gz83
  Use of this source code is governed by a BSD-style license that can be
  found in the LICENSE file.
  -->
@@ -39,7 +39,7 @@ index dfa33369d2db4..3246e8689ded7 100644
  <?xml version="1.0" encoding="utf-8"?>
  <!--
 -Copyright 2021 The Chromium Authors
-+Copyright 2024 The Chromium Authors, Alex313031 and gz83
++Copyright 2026 The Chromium Authors, Alex313031 and gz83
  Use of this source code is governed by a BSD-style license that can be
  found in the LICENSE file.
  -->
@@ -59,7 +59,7 @@ index 50f880e715489..ce7c2695ab09f 100644
 +++ b/components/feed/core/shared_prefs/pref_names.cc
 @@ -1,4 +1,4 @@
 -// Copyright 2020 The Chromium Authors
-+// Copyright 2024 The Chromium Authors, Alex313031 and gz83
++// Copyright 2026 The Chromium Authors, Alex313031 and gz83
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2024 The Chromium Authors, Midzer, and Alex313031
+# Copyright 2026 The Chromium Authors, Midzer, and Alex313031
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 '''Runs benchmarks as described in docs/pgo.md, and similar to the PGO bots.
