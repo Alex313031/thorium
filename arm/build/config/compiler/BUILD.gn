@@ -2779,7 +2779,8 @@ config("thorium_simd_optimization") {
       # Linux and ChromiumOS and Android
     }
   } else if (current_cpu == "arm") {
-    if (is_android || is_linux
+    if (is_android || is_linux) {
+    }
   } else if (current_cpu == "arm64") {
     if (is_win) {
       cflags += [ "-march=armv8-a+simd", ]
