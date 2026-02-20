@@ -112,6 +112,10 @@ if (is_debug) {
   assert(!use_bolt, "use_bolt only works with non-debug builds")
 }
 
+if (use_sse2) {
+  assert(target_cpu == "x86", "use_sse2 was true for a 64 bit target_cpu! This seems like a wrong combination.")
+}
+
 # Make sure we are a x86 arch
 if (use_sse2 || use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use_avx512) {
   assert(target_cpu == "x86" || target_cpu == "x64", "x86 SIMD intrinsic optimizations cannot be used with non-x86 targets.")
