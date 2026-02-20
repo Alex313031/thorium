@@ -1,5 +1,7 @@
 ## There are many command line flags which can be used with Chromium. Some change behavior or features, others are for debugging or experimenting. This page lists the available switches including their conditions and descriptions.
 
+Hint: On Linux, modify `~/.config/thorium/thorium-flags.conf` instead of `~/.config/thorium-flags.conf` or `~/.config/chromium-flags.conf`. 
+
 Format: Condition ## Explanation ##
 -----------------------------------
 
@@ -2808,3 +2810,4 @@ Format: Condition ## Explanation ##
 --xsession\_chooser[10] ##	No description ##
 
 --zygote ##	Causes the process to run as a zygote. ##
+
