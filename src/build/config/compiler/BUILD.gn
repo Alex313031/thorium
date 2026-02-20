@@ -1125,6 +1125,9 @@ config("compiler") {
     rustflags += [ "-Cllvm-args=-fp-contract=fast", "-Ctarget-feature=+neon", ]
   }
 
+  if (use_sse2 && !use_sse3) {
+    rustflags += [ "-Ctarget-feature=+sse2", ]
+  }
   if (use_sse3 && !use_sse41) {
     rustflags += [ "-Ctarget-feature=+sse3", ]
   }
