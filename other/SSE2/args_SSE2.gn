@@ -1,3 +1,4 @@
+use_sse2 = true
 use_sse3 = false
 use_sse41 = false
 use_sse42 = false
@@ -35,7 +36,7 @@ use_icf = true
 is_cfi = true
 v8_symbol_level = 0
 v8_enable_fast_torque = true
-v8_enable_builtins_optimization = true
+v8_enable_builtins_optimization = false
 v8_enable_maglev = false
 # v8_enable_turbofan = true
 # v8_enable_wasm_simd256_revec = true

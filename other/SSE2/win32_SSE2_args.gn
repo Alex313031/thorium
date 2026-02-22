@@ -1,3 +1,4 @@
+use_sse2 = true
 use_sse3 = false
 use_sse41 = false
 use_sse42 = false
