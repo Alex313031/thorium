@@ -212,7 +212,7 @@ index 0000000000000..70fa603fabbdb
 --- /dev/null
 +++ b/ui/webui/resources/text/BUILD.gn
 @@ -0,0 +1,16 @@
-+# Copyright 2020 The Chromium Authors
++# Copyright 2026 The Chromium Authors and Alex313031
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
 +
@@ -225,6 +225,7 @@ index 0000000000000..70fa603fabbdb
 +  resource_path_prefix = "text"
 +
 +  input_files = [
++    # chrome://resources/text/thorium_version.txt
 +    "thorium_version.txt"
 +  ]
 +}

@@ -1,0 +1,1 @@
+Mac (AVX2 or ARMv8.1)
