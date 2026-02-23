@@ -93,13 +93,17 @@ if (is_official_build) {
 
 # Thorium target that simply pulls in the chrome target as a dependency
 group("thorium") {
-  public_deps = [ "//chrome:chrome" ]
+  if (!is_android) {
+    public_deps = [ "//chrome:chrome" ]
+  } else {
+    public_deps = [ "//chrome/android:chrome_public_apk", ]
+  }
 
   if (is_win) {
     public_deps += [ "//chrome:chrome_dll" ]
   }
 
-  if (is_linux || is_chromeos) {
+  if (is_linux || is_chromeos || is_win || is_mac || is_android) {
     public_deps += [ ":thorium_sandbox" ]
   }
 }
@@ -129,6 +133,8 @@ group("thorium_installer") {
     public_deps += [ "//chrome/installer/linux:stable", ]
   } else if (is_mac) {
     public_deps += [ "//chrome/installer/mac:mac", ]
+  } else if (is_android) {
+    public_deps += [ "//chrome/android:chrome_public_apk", ]
   }
 }
 
@@ -164,25 +170,23 @@ group("thorium_all") {
     ]
   }
 
-  if ((is_posix && is_debug) || is_mac) {
-    deps += [ "//third_party/breakpad:minidump_stackwalk" ]
+  if (is_debug || is_mac) {
+    if (is_mac || is_win) {
+      deps += [ "//third_party/breakpad:minidump_stackwalk" ]
+    } else {
+      deps += [ "//third_party/breakpad:minidump_stackwalk($host_system_allocator_toolchain)" ]
+    }
   }
 
   if (is_android) {
+    deps += [
+      "//chrome/android:chrome_public_apk",
+      "//content/shell/android:content_shell_apk"
+    ]
     if (current_cpu == "arm") {
-      deps += [
-        "//android_webview:system_webview_apk",
-        "//chrome/android:chrome_public_apk",
-        "//content/shell/android:content_shell_apk"
-      ]
+      deps += [ "//android_webview:system_webview_apk", ]
     } else if (current_cpu == "arm64") {
-      deps += [
-        "//android_webview:system_webview_64_apk",
-        "//chrome/android:chrome_public_apk",
-        "//content/shell/android:content_shell_apk"
-      ]
-    } else {
-      deps += [ "//chrome/android:chrome_public_apk" ]
+      deps += [ "//android_webview:system_webview_64_apk", ]
     }
   }
   public_deps = deps
