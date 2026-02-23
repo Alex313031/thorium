@@ -80,16 +80,6 @@ config("compiler") {
     ldflags += [ "-Wl,-O3", ]
   }
 
-  if (current_cpu == "arm64") {
-    cflags += [ "-march=armv8-a+simd" ]
-    ldflags += [ "-march=armv8-a+simd" ]
-  }
-
-  if (current_cpu == "arm") {
-    cflags += [ "-march=armv7-a" ]
-    ldflags += [ "-march=armv7-a" ]
-  }
-
   if (current_cpu == "x86" || current_cpu == "x64") {
     cflags += [ "-msse3", "-mssse3", "-msse4.1" ]
     ldflags += [ "-msse3", "-mssse3", "-msse4.1" ]
