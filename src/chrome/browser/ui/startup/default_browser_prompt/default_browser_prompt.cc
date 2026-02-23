@@ -42,7 +42,7 @@ void ShowPrompt() {
 
 // Do not show the prompt if "suppress_default_browser_prompt_for_version" in
 // the initial preferences is set to the current version.
-bool ShouldShowDefaultBrowserPromptForCurrentVersion() {
+[[maybe_unused]] bool ShouldShowDefaultBrowserPromptForCurrentVersion() {
   return false;
 }
 
