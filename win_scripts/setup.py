@@ -145,6 +145,7 @@ patches = [
     "other/win_updater.patch",
     "other/keyboard_shortcuts.patch",
     "other/partalloc.patch",
+    "other/multi-language-translate.patch",
     "other/fix_profile_selector_crash.patch",
     "other/fix_getupdatesprocessor_crash.patch",
     "other/fix_dangling_pointer_tooltip.patch",
@@ -213,6 +214,12 @@ print("\nPatching for mini_installer\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject mini_installer.patch")
+
+
+print("\nPatching Multi language translate...\n")
+# Change directory to cr_src_dir and run commands
+os.chdir(cr_src_dir)
+try_run(f"git apply --reject multi-language-translate.patch")
 
 
 print("\nDownload Shelf patch...\n")
