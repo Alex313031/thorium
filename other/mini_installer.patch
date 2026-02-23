@@ -346,9 +346,9 @@ index b24e4cbef109f..019a617434a39 100644
 +bool should_install_ = false;
 +
 +static const std::wstring kInstallTitle = std::wstring(kProductName) + L" " + std::wstring(kVersionString) + L" Installer";
-+static const std::wstring kInstallBetaTitle = std::wstring(kProductName) + L" Beta " + std::wstring(kVersionString) + L" Installer";
++static const std::wstring kInstallBetaTitle = std::wstring(kBetaProductName) + L" " + std::wstring(kVersionString) + L" Installer";
 +static const std::wstring kInstallMessage = L"Would you like to install " + std::wstring(kProductName) + L"?";
-+static const std::wstring kInstallBetaMessage = L"Would you like to install " + std::wstring(kProductName) + L" Beta?";
++static const std::wstring kInstallBetaMessage = L"Would you like to install " + std::wstring(kBetaProductName) + L"?";
 +
 +static Configuration conf;
 +
@@ -780,7 +780,7 @@ index aff0370044046..c19a6c4d577d0 100644
 +      mini_installer::WMain(hInstance, pCmdLine, nCmdShow);
 +  const int return_code = mini_installer::HandleExit(result);
 +  ::ExitProcess(return_code);
-+  return return_code;
++  //return return_code;
  }
 -#endif
  
@@ -855,7 +855,7 @@ new file mode 100644
 index 0000000000000..edff34daa38a8
 --- /dev/null
 +++ b/chrome/installer/mini_installer/mini_installer_version.h.template
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,24 @@
 +#ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 +#define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 +
@@ -875,11 +875,13 @@ index 0000000000000..edff34daa38a8
 +
 +static constexpr wchar_t kProductName[] = L"Thorium";
 +
++static constexpr wchar_t kBetaProductName[] = L"Thorium Beta";
++
 +} // namespace mini_installer
 +
 +#endif // CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
-index 011684089a29e..25e785cd19e0a 100644
+index 011684089a29e..f39ba065eda38 100644
 --- a/chrome/installer/setup/install_worker.cc
 +++ b/chrome/installer/setup/install_worker.cc
 @@ -1,4 +1,4 @@
@@ -990,6 +992,57 @@ index 011684089a29e..25e785cd19e0a 100644
    // Install kVisualElementsManifest if it is present in |src_path|. No need to
    // make this a conditional work item as if the file is not there now, it will
    // never be.
+@@ -297,6 +357,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
+       ->set_best_effort(true);
+ }
+ 
++#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ // Adds work items to register the Elevation Service with Windows. Only for
+ // system level installs.
+ void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
+@@ -382,7 +443,6 @@ void AddTracingServiceWorkItems(const InstallationState& original_state,
+   }
+ }
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ // Adds work items to add the "store-dmtoken" command to Chrome's version key.
+ // This method is a no-op if this is anything other than system-level Chrome.
+ // The command is used when enrolling Chrome browser instances into enterprise
+@@ -982,7 +1042,7 @@ void AddInstallWorkItems(const InstallParams& install_params,
+                                      install_list);
+   AddEnterpriseDeviceTrustWorkItems(installer_state, setup_path, new_version,
+                                     install_list);
+-#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING
++#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   AddFirewallRulesWorkItems(installer_state, !current_version.IsValid(),
+                             install_list);
+ 
+@@ -992,10 +1052,12 @@ void AddInstallWorkItems(const InstallParams& install_params,
+       installer_state.root_key(),
+       GetNotificationHelperPath(target_path, new_version), install_list);
+ 
++#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   if (installer_state.system_install()) {
+     AddElevationServiceWorkItems(
+         GetElevationServicePath(target_path, new_version), install_list);
+   }
++#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ 
+   AddUpdateDowngradeVersionItem(installer_state.root_key(), current_version,
+                                 new_version, install_list);
+@@ -1275,10 +1337,12 @@ void AddFinalizeUpdateWorkItems(const InstallationState& original_state,
+   AddWerHelperRegistration(installer_state.root_key(),
+                            GetWerHelperPath(target_path, new_version), list);
+ 
++#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   if (installer_state.system_install()) {
+     AddTracingServiceWorkItems(
+         original_state, GetTracingServicePath(target_path, new_version), list);
+   }
++#endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
+ 
+   const std::wstring client_state_key = install_static::GetClientStateKeyPath();
+ 
 diff --git a/chrome/installer/setup/installer_state.cc b/chrome/installer/setup/installer_state.cc
 index f1e38c0efc160..7334cb587c48b 100644
 --- a/chrome/installer/setup/installer_state.cc
@@ -1142,12 +1195,12 @@ index 7ea39a93b45e4..296651bcf4eec 100644
  }
  
  bool IsDowngradeAllowed(const InitialPreferences& prefs) {
-+  static constexpr bool force_allow = true;
++  static constexpr bool force_allow_downgrade = true;
    bool allow_downgrade = false;
 -  return prefs.GetBool(initial_preferences::kAllowDowngrade,
 -                       &allow_downgrade) &&
 -         allow_downgrade;
-+  if (force_allow) {
++  if (force_allow_downgrade) {
 +    return true;
 +  } else {
 +    return prefs.GetBool(initial_preferences::kAllowDowngrade,
