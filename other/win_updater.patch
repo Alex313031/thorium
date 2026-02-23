@@ -1,0 +1,99 @@
+diff --git a/chrome/updater/BUILD.gn b/chrome/updater/BUILD.gn
+index e2305d7b194e0..92adaae4b70de 100644
+--- a/chrome/updater/BUILD.gn
++++ b/chrome/updater/BUILD.gn
+@@ -358,6 +358,7 @@ if (is_win || is_mac || is_linux) {
+         "//chrome/installer/util:constants",
+         "//chrome/installer/util:metainstaller_utils",
+         "//chrome/installer/util:work_item",
++        "//chrome/install_static:install_static_util",
+         "//chrome/updater/app/server/win:updater_idl",
+         "//chrome/updater/app/server/win:updater_idl_system",
+         "//chrome/updater/app/server/win:updater_idl_user",
+diff --git a/chrome/updater/win/installer/installer.cc b/chrome/updater/win/installer/installer.cc
+index 25e161d28dc56..51df12a584b5e 100644
+--- a/chrome/updater/win/installer/installer.cc
++++ b/chrome/updater/win/installer/installer.cc
+@@ -11,6 +11,11 @@
+ // LZMA file, which is further compressed as one file, and inserted as a
+ // binary resource in the resource section of the setup program.
+ 
++#ifdef UNSAFE_BUFFERS_BUILD
++// TODO(crbug.com/40285824): Remove this and spanify to fix the errors.
++#pragma allow_unsafe_buffers
++#endif
++
+ #include "chrome/updater/win/installer/installer.h"
+ 
+ #include <shellapi.h>
+@@ -30,6 +35,7 @@
+ #include "base/memory/ref_counted.h"
+ #include "base/path_service.h"
+ #include "base/strings/strcat.h"
++#include "base/strings/stringprintf.h"
+ #include "base/strings/utf_string_conversions.h"
+ #include "base/synchronization/waitable_event.h"
+ #include "base/task/thread_pool.h"
+@@ -44,6 +50,7 @@
+ #include "base/win/scoped_localalloc.h"
+ #include "base/win/windows_version.h"
+ #include "chrome/installer/util/lzma_util.h"
++#include "chrome/install_static/install_modes.h"
+ #include "chrome/updater/branded_constants.h"
+ #include "chrome/updater/constants.h"
+ #include "chrome/updater/ping_configurator.h"
+@@ -74,11 +81,19 @@ namespace {
+ // program file image used to create this process. The implementation of this
+ // function only handles UTF8 tags.
+ std::string ExtractTag() {
++#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+   PathString path;
+   return (::GetModuleFileName(nullptr, path.get(), path.capacity()) > 0 &&
+           ::GetLastError() == ERROR_SUCCESS)
+              ? tagging::BinaryReadTagString(base::FilePath(path.get()))
+              : std::string();
++#elif BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
++  const install_static::InstallConstants& mode = install_static::kInstallModes[install_static::GOOGLE_CHROME_FOR_TESTING_INDEX];
++  return base::StringPrintf("appguid=%s&appname=%s", mode.app_guid, mode.base_app_id);
++#else
++  const install_static::InstallConstants& mode = install_static::kInstallModes[install_static::CHROMIUM_INDEX];
++  return base::StringPrintf("appguid=%s&appname=%s", mode.app_guid, mode.base_app_id);
++#endif
+ }
+ 
+ // Shows a splash screen "Initializing...".
+diff --git a/chrome/updater/win/signing/sign.py b/chrome/updater/win/signing/sign.py
+index 59a5c46bbcd36..1fd3fae8c4484 100755
+--- a/chrome/updater/win/signing/sign.py
++++ b/chrome/updater/win/signing/sign.py
+@@ -98,28 +98,11 @@ class Signer:
+         self._sign_flags = sign_flags
+ 
+     def _add_tagging_cert(self, in_file, out_file):
+-        """Adds the tagging cert. Returns the path to the tagged file."""
+-        subprocess.run(
+-            [self._tagging_exe, '--set-tag',
+-             '--out=%s' % out_file, in_file],
+-            check=True)
++        shutil.copy(in_file, out_file)
+         return out_file
+ 
+     def _sign_item(self, in_file):
+-        """Sign an executable in-place."""
+-        # Retries may be required: lore states the timestamp server is flaky.
+-        for flags in self._sign_flags:
+-            command = [self._signtool_exe, 'sign']
+-            command += flags
+-            if self._certificate_file_path:
+-                command += ['/f', self._certificate_file_path]
+-                if self._certificate_password:
+-                    command += ['/p', self._certificate_password]
+-            elif self._identity:
+-                command += ['/s', 'My', '/n', self._identity]
+-
+-            command += [in_file]
+-            subprocess.run(command, check=True)
++        return
+ 
+     def _generate_target_manifest(self, appid, installer_path, manifest_path,
+                                   manifest_dict_replacements):

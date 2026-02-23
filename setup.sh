@@ -101,6 +101,9 @@ patchThor () {
 	cp -v other/mini_installer.patch ${CR_SRC_DIR}/ &&
 	cp -v other/open_in_same_tab.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium_webui.patch ${CR_SRC_DIR}/ &&
+	cp -v other/disable-privacy-sandbox.patch ${CR_SRC_DIR}/ &&
+	cp -v other/win_updater.patch ${CR_SRC_DIR}/ &&
+	# Patches to remove after upstream fixes them
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_profile_selector_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_getupdatesprocessor_crash.patch ${CR_SRC_DIR}/ &&
@@ -151,6 +154,10 @@ patchThor () {
 	git apply --reject ./open_in_same_tab.patch &&
 	printf "${YEL}Thorium WebUI patch...${c0}\n" &&
 	git apply --reject ./thorium_webui.patch &&
+	printf "${YEL}Thorium Updater patch...${c0}\n" &&
+	git apply --reject ./win_updater.patch &&
+	printf "${YEL}Disable Privacy Sandbox patch...${c0}\n" &&
+	git apply --reject ./disable-privacy-sandbox.patch &&
 	printf "${YEL}partalloc fix...${c0}\n" &&
 	git apply --reject ./partalloc.patch &&
 	printf "${YEL}absl undefined symbol fix...${c0}\n" &&
