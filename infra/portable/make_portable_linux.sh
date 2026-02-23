@@ -19,17 +19,46 @@ displayHelp () {
 	printf "\n" &&
 	printf "${bold}${GRE}Script to make a portable Thorium .zip for Linux.${c0}\n" &&
 	printf "${bold}${YEL}Please place the Thorium .deb file in this directory before running.${c0}\n" &&
-	printf "${bold}${YEL}Use the --arm flag for Raspberry Pi builds.${c0}\n" &&
+	printf "${bold}${YEL}Use the --arm flag for Raspberry Pi (arm64) builds.${c0}\n" &&
 	printf "\n"
 }
 case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# Detect which .deb is present by ISA priority, expand glob to a real path
+DEB_PATTERNS=(
+	"*AVX2*.deb"
+	"*AVX*.deb"
+	"*SSE4*.deb"
+	"*SSE3*.deb"
+	"*arm64*.deb"
+	"*.deb"
+)
+
+DEB_NAME=""
+for pattern in "${DEB_PATTERNS[@]}"; do
+	matches=( $pattern )
+	if [ -f "${matches[0]}" ]; then
+		DEB_NAME="${matches[0]}"
+		break
+	fi
+done
+
+if [ -z "$DEB_NAME" ]; then
+	die "${RED}No .deb file found. Place a thorium-browser_*.deb in this directory."
+fi
+
+FILENAME="${DEB_NAME%.deb}"
+ZIP_NAME="${FILENAME}.zip"
+
 makeARM () {
 	printf "\n" &&
 	printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this directory before running.${c0}\n" &&
 	printf "${bold}${RED}   AND you must have p7zip and zip installed.${c0}\n" &&
+	printf "\n" &&
+	printf "${bold}${YEL}Detected package: ${GRE}${DEB_NAME}${c0}\n" &&
+	printf "${bold}${YEL}Output zip will be: ${GRE}${ZIP_NAME}${c0}\n" &&
 	printf "\n" &&
 
 	read -p "Press Enter to continue or Ctrl + C to abort."
@@ -40,14 +69,9 @@ makeARM () {
 
 	sleep 2 &&
 
-	BASENAME=$(basename -- *.deb) &&
-	FILENAME="${BASENAME%.deb}" &&
-
-	export FILENAME &&
-
 	# Extract data.tar.xz
 	mkdir -v -p ./temp &&
-	ar xv *.deb &&
+	ar xv "$DEB_NAME" &&
 	tar xvf ./data.tar.xz &&
 	cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
 	rm -r -v ./temp/cron &&
@@ -64,7 +88,7 @@ makeARM () {
 	printf "${c0}\n" &&
 
 	# Build zip
-	cd temp; zip -r ../${FILENAME}.zip * &&
+	cd temp; zip -r "../${ZIP_NAME}" * &&
 
 	printf "\n" &&
 	printf "${YEL}Cleaning up...\n" &&
@@ -83,7 +107,7 @@ makeARM () {
 	rm -r -v ./temp &&
 
 	printf "\n" &&
-	printf "${GRE}Done! ${YEL}Zip at ./${FILENAME}.zip\n" &&
+	printf "${GRE}Done! ${YEL}Zip at ./${ZIP_NAME}\n" &&
 	printf "\n" &&
 	tput sgr0
 }
@@ -95,6 +119,9 @@ printf "\n" &&
 printf "${bold}${RED}NOTE: You must place the Thorium .deb file in this directory before running.${c0}\n" &&
 printf "${bold}${RED}   AND you must have p7zip and zip installed.${c0}\n" &&
 printf "\n" &&
+printf "${bold}${YEL}Detected package: ${GRE}${DEB_NAME}${c0}\n" &&
+printf "${bold}${YEL}Output zip will be: ${GRE}${ZIP_NAME}${c0}\n" &&
+printf "\n" &&
 
 read -p "Press Enter to continue or Ctrl + C to abort."
 printf "\n" &&
@@ -104,14 +131,9 @@ printf "${c0}\n" &&
 
 sleep 2 &&
 
-BASENAME=$(basename -- *.deb) &&
-FILENAME="${BASENAME%.deb}" &&
-
-export FILENAME &&
-
 # Extract data.tar.xz
 mkdir -v -p ./temp &&
-ar xv *.deb &&
+ar xv "$DEB_NAME" &&
 tar xvf ./data.tar.xz &&
 cp -r -v ./opt/chromium.org/thorium/* ./temp/ &&
 rm -r -v ./temp/cron &&
@@ -128,7 +150,7 @@ printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
 # Build zip
-cd temp; zip -r ../${FILENAME}.zip * &&
+cd temp; zip -r "../${ZIP_NAME}" * &&
 
 printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
@@ -147,6 +169,6 @@ rm -r -v ./debian-binary &&
 rm -r -v ./temp &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}Zip at ./${FILENAME}.zip\n" &&
+printf "${GRE}Done! ${YEL}Zip at ./${ZIP_NAME}\n" &&
 printf "\n" &&
 tput sgr0

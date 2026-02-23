@@ -142,6 +142,8 @@ patches = [
     "other/mini_installer.patch",
     "other/open_in_same_tab.patch",
     "other/thorium_webui.patch",
+    "other/disable-privacy-sandbox.patch",
+    "other/win_updater.patch",
     "other/partalloc.patch",
     "other/fix_profile_selector_crash.patch",
     "other/fix_getupdatesprocessor_crash.patch",
@@ -151,6 +153,7 @@ patches = [
     "other/fix_wayland_scale_crash.patch",
     "other/restore_download_shelf.patch",
     "other/fix_absl_undefined_symbol.patch",
+    "other/fix_drag_and_drop_on_wayland.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -225,6 +228,7 @@ os.chdir(cr_src_dir)
 try_run(f"git apply --reject open_in_same_tab.patch")
 try_run(f"git apply --reject thorium_webui.patch")
 try_run(f"git apply --reject fix_absl_undefined_symbol.patch")
+try_run(f"git apply --reject fix_drag_and_drop_on_wayland.patch")
 
 
 print("\nApplying performance and crash fixes patches...\n")
@@ -237,6 +241,13 @@ try_run(f"git apply --reject fix_dangling_pointer_tooltip.patch")
 try_run(f"git apply --reject fix_disable_aero_crash.patch")
 try_run(f"git apply --reject fix_file_dialog_crash.patch")
 try_run(f"git apply --reject fix_wayland_scale_crash.patch")
+
+
+print("\nApplying Thorium Updater patch and Disable Privacy Sandbox patch...\n")
+# Change directory to cr_src_dir and run commands
+os.chdir(cr_src_dir)
+try_run(f"git apply --reject win_updater.patch")
+try_run(f"git apply --reject disable-privacy-sandbox.patch")
 
 
 print("\nCopying other files to out/thorium\n")
@@ -287,6 +298,10 @@ def copy_woa():
         os.path.normpath(os.path.join(thor_src_dir, "arm", "third_party")),
         os.path.normpath(os.path.join(cr_src_dir, "third_party")),
     )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "arm", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
+    )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows on Arm\n")
     try_run(
@@ -316,6 +331,10 @@ def copy_avx512():
         os.path.normpath(os.path.join(
             thor_src_dir, "other", "AVX512", "thor_ver")),
         os.path.normpath(os.path.join(cr_src_dir, "out", "thorium")),
+    )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "other", "AVX512", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
     )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows x64\n")
@@ -347,6 +366,10 @@ def copy_avx2():
             thor_src_dir, "other", "AVX2", "thor_ver")),
         os.path.normpath(os.path.join(cr_src_dir, "out", "thorium")),
     )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "other", "AVX2", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
+    )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows x64\n")
     try_run(
@@ -372,6 +395,10 @@ def copy_sse4():
             thor_src_dir, "other", "SSE4.1", "thor_ver")),
         os.path.normpath(os.path.join(cr_src_dir, "out", "thorium")),
     )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "other", "SSE4.1", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
+    )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows x64\n")
     try_run(
@@ -396,6 +423,10 @@ def copy_sse3():
         os.path.normpath(os.path.join(
             thor_src_dir, "other", "SSE3", "thor_ver")),
         os.path.normpath(os.path.join(cr_src_dir, "out", "thorium")),
+    )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "other", "SSE3", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
     )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows x64\n")
@@ -426,6 +457,10 @@ def copy_sse2():
         os.path.normpath(os.path.join(
             thor_src_dir, "other", "SSE2", "thor_ver")),
         os.path.normpath(os.path.join(cr_src_dir, "out", "thorium")),
+    )
+    copy(
+        os.path.normpath(os.path.join(thor_src_dir, "other", "SSE2", "thorium_version.txt")),
+        os.path.normpath(os.path.join(cr_src_dir, "ui", "webui", "resources", "text")),
     )
     os.chdir(cr_src_dir)
     print("\nDownloading PGO Profiles for Windows x86\n")
