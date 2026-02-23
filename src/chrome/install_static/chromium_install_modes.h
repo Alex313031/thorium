@@ -32,7 +32,7 @@ inline constexpr auto kInstallModes = std::to_array<InstallConstants>({
         .install_suffix =
             L"",  // Empty install_suffix for the primary install mode.
         .logo_suffix = L"",  // No logo suffix for the primary install mode.
-        .app_guid = L"{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}",
+        .app_guid = L"{7D2B3E1D-D096-4594-9D8F-A6667F12E0AF}",
         .base_app_name = L"Thorium",              // A distinct base_app_name.
         .base_app_id = L"Thorium",                // A distinct base_app_id.
         .browser_prog_id_prefix = L"ThoriumHTM",  // Browser ProgID prefix.
