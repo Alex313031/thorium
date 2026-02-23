@@ -211,7 +211,7 @@ new file mode 100644
 index 0000000000000..70fa603fabbdb
 --- /dev/null
 +++ b/ui/webui/resources/text/BUILD.gn
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,17 @@
 +# Copyright 2026 The Chromium Authors and Alex313031
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -226,7 +226,8 @@ index 0000000000000..70fa603fabbdb
 +
 +  input_files = [
 +    # chrome://resources/text/thorium_version.txt
-+    "thorium_version.txt"
++    "thorium_version.txt",
++    "AUTHORS.txt",
 +  ]
 +}
 diff --git a/ui/webui/resources/text/thorium_version.txt b/ui/webui/resources/text/thorium_version.txt
