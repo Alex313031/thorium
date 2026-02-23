@@ -79,4 +79,4 @@ enable_updater = false
 enable_update_notifications = false
 chrome_pgo_phase = 2
 pgo_data_path = "/Users/midzer/chromium/src/out/thorium/profile/speedometer3.profdata"
-# chrome-mac-arm-7204-1753724821-90bf83294f901d7364f7eea1c40258b429f30194-dcc9303e916cdad038e497be632f48cf1db8b9e5.profdata
+# chrome-mac-arm-7204-1755550880-7bfb7c517a5052d092d56992f113cbf8effc9a4c-ab52d0be43c2a0ece2f12a52149a477c20b9c029.profdata
