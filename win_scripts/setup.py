@@ -138,7 +138,6 @@ patches = [
     "other/ftp-support-thorium.patch",
     "other/thorium-2024-ui.patch",
     "other/GPC.patch",
-    "other/GPC-2.patch",
     "other/mini_installer.patch",
     "other/open_in_same_tab.patch",
     "other/thorium_webui.patch",
@@ -198,7 +197,6 @@ print("\nPatching in GPC support\n")
 # Change directory to cr_src_dir and run commands
 os.chdir(cr_src_dir)
 try_run(f"git apply --reject GPC.patch")
-try_run(f"git apply --reject GPC-2.patch")
 
 
 print("\nPatching for Thorium 2024 UI\n")

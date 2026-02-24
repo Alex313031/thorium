@@ -97,7 +97,6 @@ patchThor () {
 	cp -v other/restore_download_shelf.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium-2024-ui.patch ${CR_SRC_DIR}/ &&
 	cp -v other/GPC.patch ${CR_SRC_DIR}/ &&
-	cp -v other/GPC-2.patch ${CR_SRC_DIR}/ &&
 	cp -v other/mini_installer.patch ${CR_SRC_DIR}/ &&
 	cp -v other/open_in_same_tab.patch ${CR_SRC_DIR}/ &&
 	cp -v other/thorium_webui.patch ${CR_SRC_DIR}/ &&
@@ -134,7 +133,6 @@ patchThor () {
 	printf "${YEL}Patching in GPC support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./GPC.patch &&
-	git apply --reject ./GPC-2.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching for Thorium 2024 UI...${c0}\n" &&
