@@ -103,16 +103,21 @@ patchThor () {
 	cp -v other/disable-privacy-sandbox.patch ${CR_SRC_DIR}/ &&
 	cp -v other/win_updater.patch ${CR_SRC_DIR}/ &&
 	cp -v other/keyboard_shortcuts.patch ${CR_SRC_DIR}/ &&
-	# Patches to remove after upstream fixes them
+	# Starting with M144, the following patches can be removed
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_profile_selector_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_getupdatesprocessor_crash.patch ${CR_SRC_DIR}/ &&
-	cp -v other/fix_dangling_pointer_tooltip.patch ${CR_SRC_DIR}/ &&
-	cp -v other/fix_disable_aero_crash.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_absl_undefined_symbol.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_file_dialog_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_wayland_scale_crash.patch ${CR_SRC_DIR}/ &&
-	cp -v other/fix_absl_undefined_symbol.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_drag_and_drop_on_wayland.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_touch_emulator_double_tap_zoom.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_setting_popover_invoker_crash.patch ${CR_SRC_DIR}/ &&
+	# Starting with M145, the following patch can be removed
+	cp -v other/fix_dangling_pointer_tooltip.patch ${CR_SRC_DIR}/ &&
+	# The following patch could not be fixed upstream because it
+	# is related to our custom flags
+	cp -v other/fix_disable_aero_crash.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -171,8 +176,11 @@ patchThor () {
 	git apply --reject ./fix_disable_aero_crash.patch &&
 	git apply --reject ./fix_file_dialog_crash.patch &&
 	git apply --reject ./fix_wayland_scale_crash.patch &&
+	git apply --reject ./fix_setting_popover_invoker_crash.patch &&
 	printf "${YEL}Fix Drag and Drop on wayland...${c0}\n" &&
-	git apply --reject ./fix_drag_and_drop_on_wayland.patch
+	git apply --reject ./fix_drag_and_drop_on_wayland.patch &&
+	printf "${YEL}Fix Touch Emulator Double Tap Zoom...${c0}\n" &&
+	git apply --reject ./fix_touch_emulator_double_tap_zoom.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 
