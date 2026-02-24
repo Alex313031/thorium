@@ -4336,7 +4336,7 @@ index a711c503287a7..ba0aef5301358 100644
  
  // static
 diff --git a/ui/views/controls/menu/menu_config.h b/ui/views/controls/menu/menu_config.h
-index 953cfa206baaf..5f530b921f3da 100644
+index 953cfa206baaf..0a4ff8d1533ed 100644
 --- a/ui/views/controls/menu/menu_config.h
 +++ b/ui/views/controls/menu/menu_config.h
 @@ -171,7 +171,7 @@ struct VIEWS_EXPORT MenuConfig {
@@ -4348,6 +4348,22 @@ index 953cfa206baaf..5f530b921f3da 100644
  
    // Radius of selection background on menu items.
    int item_corner_radius = 0;
+@@ -212,7 +212,6 @@ struct VIEWS_EXPORT MenuConfig {
+   // Margins for footnotes (HIGHLIGHTED item at the end of a menu).
+   int footnote_vertical_margin = 11;
+ 
+- protected:
+   // Should use a bubble border for menus.
+   bool use_bubble_border = false;
+ 
+@@ -225,6 +224,7 @@ struct VIEWS_EXPORT MenuConfig {
+   int auxiliary_corner_radius = LayoutProvider::Get()->GetCornerRadiusMetric(
+       ShapeContextTokens::kMenuAuxRadius);
+ 
++ protected:
+   // Radius of the rounded corners of the touchable menu border
+   int touchable_corner_radius = LayoutProvider::Get()->GetCornerRadiusMetric(
+       ShapeContextTokens::kMenuTouchRadius);
 diff --git a/ui/views/controls/menu/menu_config_chromeos.cc b/ui/views/controls/menu/menu_config_chromeos.cc
 index aec943d266793..98ee677630ff3 100644
 --- a/ui/views/controls/menu/menu_config_chromeos.cc
@@ -4415,7 +4431,7 @@ index eabfb364890d3..b31a7d3867a31 100644
 +++ b/ui/views/controls/menu/menu_config_mac.mm
 @@ -1,17 +1,60 @@
 -// Copyright 2014 The Chromium Authors
-+// Copyright 2024 The Chromium Authors
++// Copyright 2026 The Chromium Authors and Alex313031
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
