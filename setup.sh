@@ -169,7 +169,7 @@ patchThor () {
 	git apply --reject ./fix_file_dialog_crash.patch &&
 	git apply --reject ./fix_wayland_scale_crash.patch &&
 	printf "${YEL}Fix Drag and Drop on wayland...${c0}\n" &&
-	git apply --reject ./fix_dran_and_drop_on_wayland.patch
+	git apply --reject ./fix_drag_and_drop_on_wayland.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 
