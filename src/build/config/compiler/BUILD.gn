@@ -1319,97 +1319,6 @@ config("compiler_cpu_abi") {
         ldflags += [ "-m64" ]
       }
       cflags += [ "-msse3" ]
-      if (use_sse41 || is_chromeos) {
-        cflags += [
-          "-mssse3",
-          "-msse4.1",
-        ]
-      }
-      if (use_sse42) {
-        cflags += [
-          "-msse4",
-          "-msse4.2",
-        ]
-      }
-      if (use_avx) {
-        cflags += [
-          "-mpclmul",
-          "-maes",
-          "-mavx",
-        ]
-      }
-      if (use_fma) {
-        cflags += [
-          "-mfma",
-          "-ffp-contract=fast",
-          #"-ffast-math",
-        ]
-      }
-      if (use_avx2) {
-        cflags += [
-          "-mavx2",
-          "-mf16c",
-          "-mlzcnt",
-          "-mbmi",
-          "-mbmi2",
-          "-mtune=haswell",
-        ]
-      }
-      if (use_avx512) {
-        cflags += [
-          "-mavx512f",
-          "-mavx512cd",
-          "-mavx512vl",
-          "-mavx512bw",
-          "-mavx512dq",
-          "-mtune=skylake-avx512",
-        ]
-      }
-      ldflags += [ "-msse3", ]
-      if (use_sse41) {
-        ldflags += [
-          "-mssse3",
-          "-msse4.1",
-        ]
-      }
-      if (use_sse42) {
-        ldflags += [
-          "-msse4.2",
-        ]
-      }
-      if (use_avx) {
-        ldflags += [
-          "-mpclmul",
-          "-maes",
-          "-mavx",
-        ]
-      }
-      if (use_fma) {
-        ldflags += [
-          "-mfma",
-          "-Wl,-mllvm,-fp-contract=fast",
-        ]
-      }
-      if (use_avx2) {
-        ldflags += [
-          "-mavx2",
-          "-mf16c",
-          "-mlzcnt",
-          "-mbmi",
-          "-mbmi2",
-          "-Wl,-mllvm,-march=haswell",
-        ]
-      }
-      if (use_avx512) {
-        ldflags += [
-          "-mavx512f",
-          "-mavx512cd",
-          "-mavx512vl",
-          "-mavx512bw",
-          "-mavx512dq",
-          "-Wl,-mllvm,-march=skylake-avx512",
-        ]
-      }
     } else if (current_cpu == "x86") {
       if (is_clang && !is_android && !is_nacl && !is_chromeos_device) {
         cflags += [ "--target=i386-unknown-linux-gnu" ]
@@ -1425,25 +1334,6 @@ config("compiler_cpu_abi") {
           "-msse",
           "-msse2",
         ]
-
-        if (use_sse3) {
-          cflags += [ "-msse3", ]
-        }
-        if (use_sse41) {
-          cflags += [ "-mssse3", "-msse4.1", ]
-        }
-        if (use_sse42) {
-          cflags += [ "-msse4", "-msse4.2", ]
-        }
-        if (use_sse3) {
-          ldflags += [ "-msse3", ]
-        }
-        if (use_sse41) {
-          ldflags += [ "-mssse3", "-msse4.1", ]
-        }
-        if (use_sse42) {
-          ldflags += [ "-msse4.2", ]
-        }
       }
     } else if (current_cpu == "arm") {
       if (is_clang && !is_android && !is_nacl && !is_chromeos_device) {
@@ -2768,18 +2658,98 @@ config("thorium_simd_optimization") {
   ldflags = []
   if (current_cpu == "x86") {
     if (is_win) {
-    } else if (is_mac) {
+      if (use_sse2) {
+        cflags += [ "/ARCH:SSE2", "/clang:-msse2", ]
+      }
+      if (use_sse3) {
+        cflags += [ "/clang:-msse3", ]
+      }
+      if (use_sse41) {
+        cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "/clang:-msse4.2", ]
+      }
     } else {
+      if (use_sse2) {
+        cflags += [ "-msse2", ]
+        ldflags += [ "-msse2", ]
+      }
+      if (use_sse3) {
+        cflags += [ "-msse3", ]
+        ldflags += [ "-msse3", ]
+      }
+      if (use_sse41) {
+        cflags += [ "-mssse3", "-msse4.1", ]
+        ldflags += [ "-mssse3", "-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "-msse4", "-msse4.2", ]
+        ldflags += [ "-msse4.2", ]
+      }
     }
   } else if (current_cpu == "x64") {
     if (is_win) {
+      if (use_sse3) {
+        cflags += [ "/clang:-msse3", ]
+      }
+      if (use_sse41) {
+        cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "/clang:-msse4.2", ]
+      }
+      if (use_avx) {
+        cflags += [ "/clang:-mpclmul", "/clang:-maes", "/clang:-mavx", ]
+      }
+      if (use_fma) {
+        cflags += [ "/clang:-mfma", "/clang:-ffp-contract=fast", ]
+      }
+      if (use_avx2) {
+        cflags += [ "/clang:-mavx2", "/clang:-mf16c", "/clang:-mlzcnt", "/clang:-mbmi", "/clang:-mbmi2", ]
+        ldflags += [ "-mllvm:-march=haswell", ]
+      }
+      if (use_avx512) {
+        cflags += [ "/clang:-mavx512f", "/clang:-mavx512cd", "/clang:-mavx512vl", "/clang:-mavx512bw", "/clang:-mavx512dq", ]
+        ldflags += [ "-mllvm:-march=skylake-avx512", ]
+      }
     } else if (is_mac) {
       if (use_avx2) {
         cflags += [ "-march=x86-64-v3", ]
         ldflags += [ "-Wl,-mllvm,-march=x86-64-v3", ]
+      } else {
+        cflags += [ "-msse3", "-mssse3", "-msse4.1", ]
       }
     } else {
       # Linux and ChromiumOS and Android
+      if (use_sse3) {
+        cflags += [ "-msse3", ]
+        ldflags += [ "-msse3", ]
+      }
+      if (use_sse41) {
+        cflags += [ "-mssse3", "-msse4.1", ]
+        ldflags += [ "-mssse3", "-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "-msse4", "-msse4.2", ]
+        ldflags += [ "-msse4.2", ]
+      }
+      if (use_avx) {
+        cflags += [ "-mpclmul", "-maes", "-mavx", ]
+        ldflags += [ "-mpclmul", "-maes", "-mavx", ]
+      }
+      if (use_fma) {
+        cflags += [ "-mfma", "-ffp-contract=fast", ]
+        ldflags += [ "-mfma", "-Wl,-mllvm,-fp-contract=fast", ]
+      }
+      if (use_avx2) {
+        cflags += [ -mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", ]
+        ldflags += [ -mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", "-Wl,-mllvm,-march=haswell", ]
+      }
+      if (use_avx512) {
+        cflags += [ "-mavx512f", "-mavx512cd", "-mavx512vl", "-mavx512bw", "-mavx512dq", ]
+        ldflags += [ "-mavx512f", "-mavx512cd", "-mavx512vl", "-mavx512bw", "-mavx512dq", "-Wl,-mllvm,-march=skylake-avx512", ]
+      }
     }
   } else if (current_cpu == "arm") {
     if (is_android || is_linux) {
@@ -2844,67 +2814,10 @@ if (is_win) {
     ]
   }
 
-  if (use_sse3) {
-    common_optimize_on_cflags += [ "/clang:-msse3", ]
-  }
-  if (use_sse41) {
-    common_optimize_on_cflags += [
-      "/clang:-mssse3",
-      "/clang:-msse4.1",
-    ]
-  }
-  if (use_sse42) {
-    common_optimize_on_cflags += [
-      "/clang:-msse4.2",
-    ]
-  }
-  if (use_avx) {
-    common_optimize_on_cflags += [
-      "/clang:-mpclmul",
-      "/clang:-maes",
-      "/clang:-mavx",
-    ]
-  }
-  if (use_fma) {
-    common_optimize_on_cflags += [
-      "/clang:-mfma",
-      "/clang:-ffp-contract=fast",
-    ]
-  }
-  if (use_avx2) {
-    common_optimize_on_cflags += [
-      "/clang:-mavx2",
-      "/clang:-mf16c",
-      "/clang:-mlzcnt",
-      "/clang:-mbmi",
-      "/clang:-mbmi2",
-    ]
-  }
-  if (use_avx512) {
-    common_optimize_on_cflags += [
-      "/clang:-mavx512f",
-      "/clang:-mavx512cd",
-      "/clang:-mavx512vl",
-      "/clang:-mavx512bw",
-      "/clang:-mavx512dq",
-    ]
-  }
-
   if (is_official_build) {
     common_optimize_on_ldflags += [
       "-mllvm:-aggressive-ext-opt",
       "-mllvm:-enable-gvn-hoist",
-    ]
-  }
-
-  if (use_avx2) {
-    common_optimize_on_ldflags += [
-      "-mllvm:-march=haswell",
-    ]
-  }
-  if (use_avx512) {
-    common_optimize_on_ldflags += [
-      "-mllvm:-march=skylake-avx512",
     ]
   }
 
@@ -2932,115 +2845,10 @@ if (is_win) {
       "-mllvm", "-enable-gvn-hoist",
       "-O3",
     ]
-  }
-
-  if (use_sse3) {
-    common_optimize_on_cflags += [ "-msse3", ]
-  }
-  if (use_sse41) {
-    common_optimize_on_cflags += [
-      "-mssse3",
-      "-msse4.1",
-    ]
-  }
-  if (use_sse42) {
-    common_optimize_on_cflags += [
-      "-msse4",
-      "-msse4.2",
-    ]
-  }
-  if (use_avx) {
-    common_optimize_on_cflags += [
-      "-mpclmul",
-      "-maes",
-      "-mavx",
-    ]
-  }
-  if (use_fma) {
-    common_optimize_on_cflags += [
-      "-mfma",
-      "-ffp-contract=fast",
-    ]
-  }
-  if (use_avx2) {
-    common_optimize_on_cflags += [
-      "-mavx2",
-      "-mf16c",
-      "-mlzcnt",
-      "-mbmi",
-      "-mbmi2",
-    ]
-  }
-  if (use_avx512) {
-    common_optimize_on_cflags += [
-      "-mavx512f",
-      "-mavx512cd",
-      "-mavx512vl",
-      "-mavx512bw",
-      "-mavx512dq",
-    ]
-  }
-
-  if (is_official_build) {
     common_optimize_on_ldflags += [
       "-Wl,-mllvm,-aggressive-ext-opt",
       "-Wl,-mllvm,-enable-gvn-hoist",
-      #"-Wl,-O3", # Added below upstream
-    ]
-  }
-
-  if (current_cpu == "arm64") {
-    common_optimize_on_ldflags += [ "-march=armv8-a+simd", ]
-    if (is_mac) {
-      common_optimize_on_ldflags += [ "-march=armv8.3-a+simd+crypto", ]
-    }
-  }
-
-  if (use_sse3) {
-    common_optimize_on_ldflags += [ "-msse3", ]
-  }
-  if (use_sse41) {
-    common_optimize_on_ldflags += [
-      "-mssse3",
-      "-msse4.1",
-    ]
-  }
-  if (use_sse42) {
-    common_optimize_on_ldflags += [
-      "-msse4.2",
-    ]
-  }
-  if (use_avx) {
-    common_optimize_on_ldflags += [
-      "-mpclmul",
-      "-maes",
-      "-mavx",
-    ]
-  }
-  if (use_fma) {
-    common_optimize_on_ldflags += [
-      "-mfma",
-      "-Wl,-mllvm,-fp-contract=fast",
-    ]
-  }
-  if (use_avx2) {
-    common_optimize_on_ldflags += [
-      "-mavx2",
-      "-mf16c",
-      "-mlzcnt",
-      "-mbmi",
-      "-mbmi2",
-      "-Wl,-mllvm,-march=haswell",
-    ]
-  }
-  if (use_avx512) {
-    common_optimize_on_ldflags += [
-      "-mavx512f",
-      "-mavx512cd",
-      "-mavx512vl",
-      "-mavx512bw",
-      "-mavx512dq",
-      "-Wl,-mllvm,-march=skylake-avx512",
+      "-Wl,-O3",
     ]
   }
 

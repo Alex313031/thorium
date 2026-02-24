@@ -123,7 +123,7 @@ if (use_sse2 || use_sse3 || use_sse41 || use_sse42 || use_avx || use_avx2 || use
 
 # FMA doesn't work on 32 bit architectures
 if (use_fma) {
-  assert(current_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
+  assert(target_cpu != "x86" && current_cpu != "arm", "use_fma is true. FMA only works for 64 bit CPU architectures.")
 }
 
 if ((use_avx || use_avx2 || use_avx512 || use_fma) && symbol_level == "2") {
@@ -133,8 +133,7 @@ if ((use_avx || use_avx2 || use_avx512 || use_fma) && symbol_level == "2") {
 # 32 Bit OSes cant use anything above SSE4.2, and 32 Bit Apps can't benefit
 # from anything higher usually.
 if (use_avx || use_avx2 || use_avx512 || use_fma) {
-  assert(current_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. target_cpu is x86")
-  assert(target_cpu != "x86", "AVX, AVX2, AVX-512, or FMA require x64. Set target_cpu to x64")
+  assert(target_cpu == "x64", "AVX, AVX2, AVX-512, or FMA require x64. target_cpu is x86")
 }
 
 # AVX2 should always have FMA, however, there are times one might want

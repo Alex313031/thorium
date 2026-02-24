@@ -122,22 +122,15 @@ config("compiler") {
     # microarchitecture. MSVC only supports a subset of architectures, and the
     # next step after SSE2 will be AVX.
     if (current_cpu == "x86") {
-      cflags += [
-        "-mmmx",
-        "-msse",
-        "-msse2",
-      ]
+      cflags += [ "-mmmx", "-msse", "-msse2", "/clang:-msse2", ]
+      if (use_sse2) {
+        cflags += [ "/ARCH:SSE2", ]
+      }
       if (use_sse3) {
-        cflags += [
-          "-msse3",
-          "/clang:-msse3",
-        ]
+        cflags += [ "-msse3", "/clang:-msse3", ]
       }
     } else if (current_cpu == "x64") {
-      cflags += [
-        "-msse3",
-        "/clang:-msse3",
-      ]
+      cflags += [ "-msse3", "/clang:-msse3", ]
     }
     
     if (current_cpu == "x86" || current_cpu == "x64") {
