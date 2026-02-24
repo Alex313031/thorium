@@ -1627,9 +1627,6 @@ config("toolchain") {
   if (v8_current_cpu == "x86") {
     defines += [ "V8_TARGET_ARCH_IA32" ]
     if (is_win) {
-      if (is_official_build) {
-        cflags += [ "/O2", "-Xclang", "-O3", ]
-      }
       # Ensure no surprising artifacts from 80bit double math with x86.
       if (use_sse2 && !use_sse3) {
         cflags += [ "/arch:SSE2", ]
@@ -1643,6 +1640,19 @@ config("toolchain") {
       if (use_sse42) {
         cflags += [ "/clang:-msse4.2", ]
       }
+    } else {
+      if (use_sse2 && !use_sse3) {
+        cflags += [ "-msse2", ]
+      }
+      if (use_sse3 && !use_sse41) {
+        cflags += [ "-msse3", ]
+      }
+      if (use_sse41 && !use_sse42) {
+        cflags += [ "-mssse3", "-msse4.1", ]
+      }
+      if (use_sse42) {
+        cflags += [ "-msse4.2", ]
+      }
     }
   }
   if (v8_current_cpu == "x64") {
@@ -1652,9 +1662,6 @@ config("toolchain") {
       # applies only to executables and shared libraries produced by V8 since
       # ldflags are not pushed to dependants.
       cflags += [ "/clang:-msse3", ]
-      if (is_official_build) {
-        cflags += [ "/O2", "-Xclang", "-O3",  ]
-      }
       ldflags += [ "/STACK:2097152" ]
       if (use_sse41) {
         cflags += [ "/clang:-mssse3", "/clang:-msse4.1", ]
@@ -1663,81 +1670,56 @@ config("toolchain") {
         cflags += [ "/clang:-msse4.2", ]
       }
       if (use_avx) {
-        cflags += [
-          "/clang:-mpclmul",
-          "/clang:-maes",
-          "/clang:-mavx",
-        ]
+        cflags += [ "/clang:-mpclmul", "/clang:-maes", "/clang:-mavx", ]
       }
       if (use_avx2) {
-        cflags += [
-          "/clang:-mfma",
-          "/clang:-ffp-contract=fast",
-          "/clang:-mavx2",
-          "/clang:-mbmi",
-          "/clang:-mbmi2",
-        ]
+        cflags += [ "/clang:-mfma", "/clang:-ffp-contract=fast", "/clang:-mavx2", "/clang:-mf16c", "/clang:-mlzcnt", "/clang:-mbmi", "/clang:-mbmi2", ]
       }
       if (use_fma) {
         cflags += [ "/clang:-ffp-contract=fast", ]
       }
       if (use_avx512) {
         cflags += [
-          "/clang:-mf16c",
-          "/clang:-mlzcnt",
-          "/clang:-mavx512f",
-          "/clang:-mavx512cd",
-          "/clang:-mavx512vl",
-          "/clang:-mavx512bw",
-          "/clang:-mavx512dq",
+          "/clang:-mavx512f", "/clang:-mavx512cd", "/clang:-mavx512vl", "/clang:-mavx512bw", "/clang:-mavx512dq",
         ]
       }
     } else {
-      # Non-Windows SIMD flags
-      cflags += [ "-msse3", ]
-      if (use_sse41) {
-        cflags += [ "-mssse3", "-msse4.1", ]
-      }
-      if (use_sse42) {
-        cflags += [ "-msse4.2", ]
-      }
-      if (use_avx) {
-        cflags += [
-          "-mpclmul",
-          "-maes",
-          "-mavx",
-        ]
-      }
-      if (use_avx2) {
-        cflags += [
-          "-mfma",
-          "-ffp-contract=fast",
-          "-mavx2",
-          "-mbmi",
-          "-mbmi2",
-        ]
-      }
-      if (use_fma) {
-        cflags += [ "-ffp-contract=fast", ]
-      }
-      if (use_avx512) {
-        cflags += [
-          "-mf16c",
-          "-mlzcnt",
-          "-mavx512f",
-          "-mavx512cd",
-          "-mavx512vl",
-          "-mavx512bw",
-          "-mavx512dq",
-        ]
+      if (current_cpu == "x64") {
+        # Non-Windows SIMD flags
+        cflags += [ "-msse3", ]
+        if (use_sse41) {
+          cflags += [ "-mssse3", "-msse4.1", ]
+        }
+        if (use_sse42) {
+          cflags += [ "-msse4.2", ]
+        }
+        if (use_avx) {
+          cflags += [ "-mpclmul", "-maes", "-mavx", ]
+        }
+        if (use_avx2) {
+          cflags += [ "-mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", ]
+        }
+        if (use_fma) {
+          cflags += [ "-mfma", "-ffp-contract=fast", ]
+        }
+        if (use_avx512) {
+          cflags += [ "-mavx512f", "-mavx512cd", "-mavx512vl", "-mavx512bw", "-mavx512dq", ]
+        }
       }
     }
   }
-  if (is_linux || is_chromeos || is_android || is_mac) {
+  if (is_linux || is_chromeos || is_android || is_mac || is_win) {
     # Full optimization for V8.
-    cflags += [ "-O3", ]
-    ldflags += [ "-Wl,-O3", ]
+    if (is_official_build) {
+      if (is_win) {
+        cflags += [ "/O2", "-Xclang", "-O3",  ]
+      } else {
+        cflags += [ "-O3", ]
+        ldflags += [ "-Wl,-O3", ]
+      }
+    }
   }
+
   if (is_android && v8_android_log_stdout) {
     defines += [ "V8_ANDROID_LOG_STDOUT" ]
   }

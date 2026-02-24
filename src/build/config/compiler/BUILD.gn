@@ -1125,26 +1125,28 @@ config("compiler") {
     rustflags += [ "-Cllvm-args=-fp-contract=fast", "-Ctarget-feature=+neon", ]
   }
 
-  if (use_sse2 && !use_sse3) {
-    rustflags += [ "-Ctarget-feature=+sse2", ]
-  }
-  if (use_sse3 && !use_sse41) {
-    rustflags += [ "-Ctarget-feature=+sse3", ]
-  }
-  if (use_sse41 && !use_sse42) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1", ]
-  }
-  if (use_sse42 && !use_avx) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2", ]
-  }
-  if (use_avx && !use_avx2) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx", ]
-  }
-  if (use_avx2 && !use_avx512) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
-  }
-  if (use_avx512) {
-    rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f", "-Cllvm-args=-fp-contract=fast", ]
+  if (current_cpu == "x86" || current_cpu == "x64") {
+    if (use_sse2 && !use_sse3) {
+      rustflags += [ "-Ctarget-feature=+sse2", ]
+    }
+    if (use_sse3 && !use_sse41) {
+      rustflags += [ "-Ctarget-feature=+sse3", ]
+    }
+    if (use_sse41 && !use_sse42) {
+      rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1", ]
+    }
+    if (use_sse42 && !use_avx) {
+      rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2", ]
+    }
+    if (use_avx && !use_avx2) {
+      rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx", ]
+    }
+    if (use_avx2 && !use_avx512) {
+      rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2", "-Cllvm-args=-fp-contract=fast", ]
+    }
+    if (use_avx512) {
+      rustflags += [ "-Ctarget-feature=+sse3,+ssse3,+sse4.1,+sse4.2,+pclmulqdq,+aes,+avx,+avx2,+fma,+f16c,+lzcnt,+bmi2,+mavx512f", "-Cllvm-args=-fp-contract=fast", ]
+    }
   }
 
   if (!is_win || force_rustc_color_output) {
@@ -2659,7 +2661,7 @@ config("thorium_simd_optimization") {
   if (current_cpu == "x86") {
     if (is_win) {
       if (use_sse2) {
-        cflags += [ "/ARCH:SSE2", "/clang:-msse2", ]
+        cflags += [ "/arch:SSE2", "/clang:-msse2", ]
       }
       if (use_sse3) {
         cflags += [ "/clang:-msse3", ]
