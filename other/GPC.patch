@@ -445,13 +445,15 @@ new file mode 100644
 +
 +customElements.define(
 +  SettingsGpcToggleElement.is, SettingsGpcToggleElement);
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
-new file mode 100644
---- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
-@@ -0,0 +1,15 @@
-+<?xml version="1.0" encoding="utf-8"?>
-+<grit-part>
+diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
+index 83e2589d9ec51..e5de0c2d9178e 100644
+--- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
++++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
+@@ -1138,6 +1138,18 @@ For more settings that use data to improve your Thorium experience, go to <ph na
+         Enabling “Do Not Track” means that a request will be included with your browsing traffic. Any effect depends on whether a website responds to the request, and how the request is interpreted.
+ 
+ For example, some websites may respond to this request by showing you ads that aren’t based on other websites you’ve visited. Many websites will still collect and use your browsing data — for example to improve security, to provide content, ads and recommendations, and to generate reporting statistics.
++      </message>
 +      <message name="IDS_GPC_TITLE" desc="">
 +        Global Privacy Control "Sec-GPC"
 +      </message>
@@ -463,8 +465,9 @@ new file mode 100644
 +Businesses cannot sell or share your personal information after they receive your opt-out request unless you later authorize them to do so again.
 +
 +Please note that it only applies to the states of California (under CCPA and CPRA) and Colorado (under CoPA).
-+      </message>
-+</grit-part>
+       </message>
+       <message name="IDS_CAN_MAKE_PAYMENT_TITLE" desc="Title for preference to allow websites to know whether you have payment methods available through PaymentRequest.CanMakePayment interface">
+         Access payment methods
 diff --git a/chrome/browser/ui/prefs/pref_watcher.cc b/chrome/browser/ui/prefs/pref_watcher.cc
 --- a/chrome/browser/ui/prefs/pref_watcher.cc
 +++ b/chrome/browser/ui/prefs/pref_watcher.cc

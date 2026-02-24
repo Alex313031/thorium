@@ -335,11 +335,11 @@ index 6df5654f9d8c6..aab33d1d81234 100644
 +          default_id);
 +#elif BUILDFLAG(IS_MAC)
 +      SkColor sk_color;
-+      if (absl::holds_alternative<SkColor>(color)) {
-+        sk_color = absl::get<SkColor>(color);
++      if (color.IsPhysical()) {
++        sk_color = *color.GetSkColor();
 +      } else {
 +        DCHECK(color_provider);
-+        sk_color = color_provider->GetColor(absl::get<ui::ColorId>(color));
++        sk_color = color.ResolveToSkColor(color_provider);
 +      }
 +      const int white_id = (icon_type == BookmarkFolderIconType::kNormal)
 +                               ? IDR_FOLDER_CLOSED_WHITE
