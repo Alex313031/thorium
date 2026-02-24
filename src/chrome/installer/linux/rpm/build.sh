@@ -120,7 +120,7 @@ do_package() {
   verify_package "$DEPENDS"
   
   # Rename package to match Thorium naming scheme
-  mv "${OUTPUTDIR}/${PKGNAME}.${ARCHITECTURE}.rpm" "${OUTPUTDIR}/${PACKAGE}_${VERSION}.${ARCHITECTURE}.rpm"
+  mv "${OUTPUTDIR}/${PKGNAME}.${ARCHITECTURE}.rpm" "${OUTPUTDIR}/${PACKAGE}_${VERSION}${NAME_SUFFIX}.rpm"
 }
 
 # Remove temporary files and unwanted packaging output.
@@ -145,7 +145,7 @@ usage() {
 CHANNEL=stable
 
 process_opts() {
-  while getopts ":a:b:c:d:fho:t:" OPTNAME
+  while getopts ":a:b:c:d:fhn:o:t:" OPTNAME
   do
     case $OPTNAME in
       a )
@@ -163,6 +163,9 @@ process_opts() {
       h )
         usage
         exit 0
+        ;;
+      n )
+        NAME_SUFFIX="$OPTARG"
         ;;
       o )
         OUTPUTDIR=$(readlink -f "${OPTARG}")
@@ -191,6 +194,7 @@ process_opts() {
 
 SCRIPTDIR=$(readlink -f "$(dirname "$0")")
 OUTPUTDIR="${PWD}"
+NAME_SUFFIX=""
 
 # call cleanup() on exit
 trap cleanup 0

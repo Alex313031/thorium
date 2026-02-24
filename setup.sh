@@ -111,6 +111,7 @@ patchThor () {
 	cp -v other/fix_file_dialog_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_wayland_scale_crash.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_absl_undefined_symbol.patch ${CR_SRC_DIR}/ &&
+	cp -v other/fix_drag_and_drop_on_wayland.patch ${CR_SRC_DIR}/ &&
 
 	printf "\n" &&
 	printf "${YEL}Patching FFMPEG for HEVC...${c0}\n" &&
@@ -156,17 +157,19 @@ patchThor () {
 	git apply --reject ./win_updater.patch &&
 	printf "${YEL}Disable Privacy Sandbox patch...${c0}\n" &&
 	git apply --reject ./disable-privacy-sandbox.patch &&
-	printf "${YEL}partalloc fix...${c0}\n" &&
+	printf "${YEL}Partalloc fix...${c0}\n" &&
 	git apply --reject ./partalloc.patch &&
-	printf "${YEL}absl undefined symbol fix...${c0}\n" &&
+	printf "${YEL}Absl undefined symbol fix...${c0}\n" &&
 	git apply --reject ./fix_absl_undefined_symbol.patch &&
-	printf "${YEL}some crashes fixes...${c0}\n" &&
+	printf "${YEL}Some crashes fixes...${c0}\n" &&
 	git apply --reject ./fix_profile_selector_crash.patch &&
 	git apply --reject ./fix_getupdatesprocessor_crash.patch &&
 	git apply --reject ./fix_dangling_pointer_tooltip.patch &&
 	git apply --reject ./fix_disable_aero_crash.patch &&
 	git apply --reject ./fix_file_dialog_crash.patch &&
-	git apply --reject ./fix_wayland_scale_crash.patch
+	git apply --reject ./fix_wayland_scale_crash.patch &&
+	printf "${YEL}Fix Drag and Drop on wayland...${c0}\n" &&
+	git apply --reject ./fix_dran_and_drop_on_wayland.patch
 }
 [ -f ${CR_SRC_DIR}/fix-policy-templates.patch ] || patchThor;
 

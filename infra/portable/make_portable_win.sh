@@ -25,12 +25,48 @@ case $1 in
 	--help) displayHelp; exit 0;;
 esac
 
+# Detect which installer is present and set output zip name accordingly
+VERSION="138.0.7204.303"
+INSTALLER_NAME=""
+ZIP_NAME=""
+
+INSTALLER_LIST=(
+	"thorium_AVX2_mini_installer.exe"
+	"thorium_AVX_mini_installer.exe"
+	"thorium_SSE4_mini_installer.exe"
+	"thorium_SSE3_mini_installer.exe"
+	"thorium_mini_installer.exe"
+)
+
+for f in "${INSTALLER_LIST[@]}"; do
+	if [ -f "./$f" ]; then
+		INSTALLER_NAME="$f"
+		break
+	fi
+done
+
+if [ -z "$INSTALLER_NAME" ]; then
+	die "${RED}No installer file found. Place a thorium_*_mini_installer.exe in this directory."
+fi
+
+if [[ "$INSTALLER_NAME" == *"AVX2"* ]]; then
+	ZIP_NAME="Thorium_AVX2_${VERSION}.zip"
+elif [[ "$INSTALLER_NAME" == *"AVX"* ]]; then
+	ZIP_NAME="Thorium_AVX_${VERSION}.zip"
+elif [[ "$INSTALLER_NAME" == *"SSE4"* ]]; then
+	ZIP_NAME="Thorium_SSE4_${VERSION}.zip"
+elif [[ "$INSTALLER_NAME" == *"SSE3"* ]]; then
+	ZIP_NAME="Thorium_SSE3_${VERSION}.zip"
+else
+	ZIP_NAME="thorium_portable.zip"
+fi
+
 printf "\n" &&
 printf "${bold}${RED}NOTE: You must place the Thorium .exe file in this directory before running.${c0}\n" &&
 printf "${bold}${RED}   AND you must have 7-Zip installed and in your PATH.${c0}\n" &&
 printf "\n" &&
-printf "${bold}${RED} - Make sure to rename the .zip properly as per https://github.com/Alex313031/thorium/discussions/28#discussioncomment-3031799 ${c0}\n" &&
-printf "${bold}${RED}   AND make sure to edit the THORIUM_SHELL.BAT to match the version number of this release.${c0}\n" &&
+printf "${bold}${YEL}Detected installer: ${GRE}${INSTALLER_NAME}${c0}\n" &&
+printf "${bold}${YEL}Output zip will be: ${GRE}${ZIP_NAME}${c0}\n" &&
 printf "${YEL}\n" &&
 
 read -p "Press Enter to continue or Ctrl + C to abort."
@@ -41,10 +77,10 @@ printf "${c0}\n" &&
 
 sleep 2 &&
 
-# Extract data.tar.xz
+# Extract installer
 mkdir -v -p ./temp &&
 mkdir -v -p ./temp/USER_DATA &&
-7z x thorium_*_installer.exe &&
+7z x "$INSTALLER_NAME" &&
 7z x chrome.7z &&
 mv -v Chrome-bin ./temp/BIN &&
 cp -r -v ./README.win temp/README.txt &&
@@ -56,7 +92,7 @@ printf "${YEL}Zipping up...\n" &&
 printf "${c0}\n" &&
 
 # Build zip
-cd temp; zip -r ../thorium_portable.zip * &&
+cd temp; zip -r "../${ZIP_NAME}" * &&
 
 printf "\n" &&
 printf "${YEL}Cleaning up...\n" &&
@@ -70,6 +106,6 @@ rm -r -v chrome.7z &&
 rm -r -v temp &&
 
 printf "\n" &&
-printf "${GRE}Done! ${YEL}Zip at ./thorium_portable.zip\n - Remember to rename it with the version before distributing it.\n" &&
+printf "${GRE}Done! ${YEL}Zip at ./${ZIP_NAME}\n" &&
 printf "\n" &&
 tput sgr0

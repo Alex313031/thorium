@@ -106,7 +106,7 @@ verify_package() {
   fi
 
   # Rename package to match Thorium naming scheme
-  mv -v "${PACKAGE}_${VERSIONFULL}_${ARCHITECTURE}.deb" "${PACKAGE}_${DEBVERSIONNAME}_${ARCHITECTURE}.deb"
+  mv -v "${PACKAGE}_${VERSIONFULL}_${ARCHITECTURE}.deb" "${PACKAGE}_${DEBVERSIONNAME}${NAME_SUFFIX}.deb"
 }
 
 # Actually generate the package file.
@@ -187,7 +187,7 @@ verify_channel() {
 }
 
 process_opts() {
-  while getopts ":a:b:c:d:fho:s:t:" OPTNAME
+  while getopts ":a:b:c:d:fhn:o:s:t:" OPTNAME
   do
     case $OPTNAME in
       a )
@@ -205,6 +205,9 @@ process_opts() {
       h )
         usage
         exit 0
+        ;;
+      n )
+        NAME_SUFFIX="$OPTARG"
         ;;
       o )
         OUTPUTDIR=$(readlink -f "${OPTARG}")
@@ -236,6 +239,7 @@ process_opts() {
 
 SCRIPTDIR=$(readlink -f "$(dirname "$0")")
 OUTPUTDIR="${PWD}"
+NAME_SUFFIX=""
 
 # call cleanup() on exit
 trap cleanup 0

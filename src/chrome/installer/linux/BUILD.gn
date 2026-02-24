@@ -4,6 +4,7 @@
 
 import("//build/config/c++/c++.gni")
 import("//build/config/chrome_build.gni")
+import("//build/config/compiler_opt.gni")
 import("//build/config/features.gni")
 import("//build/config/sanitizers/sanitizers.gni")
 import("//build/config/sysroot.gni")
@@ -28,6 +29,27 @@ declare_args() {
 }
 
 assert(is_linux)
+
+# Determine SIMD instruction set suffix for package naming,
+# mirroring the logic in chrome/installer/mini_installer/BUILD.gn.
+_simd_suffix = ""
+if (current_cpu == "x86" || current_cpu == "x64") {
+  if (use_sse2 && !use_sse3) {
+    _simd_suffix = "_SSE2"
+  } else if (use_sse3 && !use_sse41 && !use_sse42) {
+    _simd_suffix = "_SSE3"
+  } else if (use_sse41 && !use_sse42) {
+    _simd_suffix = "_SSE4"
+  } else if (use_sse42 && !use_avx) {
+    _simd_suffix = "_SSE4.2"
+  } else if (use_avx && !use_avx2) {
+    _simd_suffix = "_AVX"
+  } else if (use_avx2 && !use_avx512) {
+    _simd_suffix = "_AVX2"
+  } else if (use_avx512) {
+    _simd_suffix = "_AVX512"
+  }
+}
 
 packaging_files_executables = [
   "$root_out_dir/thorium",
@@ -457,8 +479,16 @@ template("linux_package") {
       assert(false, "Linux installer not configured for this architecture.")
     }
 
+    # For x64, the SIMD suffix alone identifies the build variant (drop arch).
+    # For all other architectures, keep the arch identifier.
+    if (current_cpu == "x64") {
+      _deb_name_suffix = _simd_suffix
+    } else {
+      _deb_name_suffix = "_${deb_arch}${_simd_suffix}"
+    }
+
     inputs = packaging_files
-    outputs = [ "$root_out_dir/${package}_${chrome_version_full}_${deb_arch}.deb" ]
+    outputs = [ "$root_out_dir/${package}_${chrome_version_full}${_deb_name_suffix}.deb" ]
 
     args = [
       rebase_path("$root_out_dir/installer/debian/build.sh", root_build_dir),
@@ -468,6 +498,8 @@ template("linux_package") {
       invoker.channel,
       "-d",
       branding_path_component,
+      "-n",
+      _deb_name_suffix,
       "-o",
       rebase_path(root_out_dir, root_build_dir),
       "-s",
@@ -497,7 +529,7 @@ template("linux_package") {
       } else if (current_cpu == "arm") {
         rpm_arch = "armhf"
       } else if (current_cpu == "arm64") {
-        rpm_arch = "aarch64"
+        rpm_arch = "arm64"
       } else if (current_cpu == "mipsel") {
         rpm_arch = "mipsel"
       } else if (current_cpu == "mips64el") {
@@ -510,8 +542,16 @@ template("linux_package") {
         assert(false, "Linux installer not configured for this architecture.")
       }
 
+      # For x64, the SIMD suffix alone identifies the build variant (drop arch).
+      # For all other architectures, keep the arch identifier.
+      if (current_cpu == "x64") {
+        _rpm_name_suffix = _simd_suffix
+      } else {
+        _rpm_name_suffix = "_${rpm_arch}${_simd_suffix}"
+      }
+
       inputs = packaging_files
-      outputs = [ "$root_out_dir/${package}_${chrome_version_full}.${rpm_arch}.rpm" ]
+      outputs = [ "$root_out_dir/${package}_${chrome_version_full}${_rpm_name_suffix}.rpm" ]
 
       args = [
         rebase_path("$root_out_dir/installer/rpm/build.sh", root_build_dir),
@@ -521,6 +561,8 @@ template("linux_package") {
         invoker.channel,
         "-d",
         branding_path_component,
+        "-n",
+        _rpm_name_suffix,
         "-o",
         rebase_path(root_out_dir, root_build_dir),
         "-t",
