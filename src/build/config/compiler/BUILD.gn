@@ -2743,8 +2743,8 @@ config("thorium_simd_optimization") {
         ldflags += [ "-mfma", "-Wl,-mllvm,-fp-contract=fast", ]
       }
       if (use_avx2) {
-        cflags += [ -mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", ]
-        ldflags += [ -mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", "-Wl,-mllvm,-march=haswell", ]
+        cflags += [ "-mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", ]
+        ldflags += [ "-mavx2", "-mf16c", "-mlzcnt", "-mbmi", "-mbmi2", "-Wl,-mllvm,-march=haswell", ]
       }
       if (use_avx512) {
         cflags += [ "-mavx512f", "-mavx512cd", "-mavx512vl", "-mavx512bw", "-mavx512dq", ]
