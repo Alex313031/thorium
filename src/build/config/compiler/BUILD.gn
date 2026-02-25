@@ -1320,7 +1320,7 @@ config("compiler_cpu_abi") {
         cflags += [ "-m64" ]
         ldflags += [ "-m64" ]
       }
-      cflags += [ "-msse3" ]
+      #cflags += [ "-msse3" ]
     } else if (current_cpu == "x86") {
       if (is_clang && !is_android && !is_nacl && !is_chromeos_device) {
         cflags += [ "--target=i386-unknown-linux-gnu" ]
