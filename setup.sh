@@ -102,6 +102,7 @@ patchThor () {
 	cp -v other/thorium_webui.patch ${CR_SRC_DIR}/ &&
 	cp -v other/disable-privacy-sandbox.patch ${CR_SRC_DIR}/ &&
 	cp -v other/win_updater.patch ${CR_SRC_DIR}/ &&
+	cp -v other/keyboard_shortcuts.patch ${CR_SRC_DIR}/ &&
 	# Patches to remove after upstream fixes them
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_profile_selector_crash.patch ${CR_SRC_DIR}/ &&
@@ -155,6 +156,8 @@ patchThor () {
 	git apply --reject ./thorium_webui.patch &&
 	printf "${YEL}Thorium Updater patch...${c0}\n" &&
 	git apply --reject ./win_updater.patch &&
+	printf "${YEL}Thorium Keyboard Shortcuts patch...${c0}\n" &&
+	git apply --reject ./keyboard_shortcuts.patch &&
 	printf "${YEL}Disable Privacy Sandbox patch...${c0}\n" &&
 	git apply --reject ./disable-privacy-sandbox.patch &&
 	printf "${YEL}Partalloc fix...${c0}\n" &&
