@@ -1,12 +1,12 @@
  chrome/app/chrome_command_ids.h               |  1 +
- chrome/app/generated_resources.grd            | 10 ++++-
- .../render_view_context_menu.cc               | 39 +++++++++++++++++--
+ chrome/app/generated_resources.grd            |  6 +++
+ .../render_view_context_menu.cc               | 38 +++++++++++++++++--
  chrome/browser/ui/actions/chrome_action_id.h  |  1 +
- tools/metrics/histograms/enums.xml            |  2 +
- 5 files changed, 49 insertions(+), 5 deletions(-)
+ .../metrics/histograms/metadata/ui/enums.xml  |  2 +
+ 5 files changed, 45 insertions(+), 3 deletions(-)
 
 diff --git a/chrome/app/chrome_command_ids.h b/chrome/app/chrome_command_ids.h
-index 7cc22cc383..c9977c65fa 100644
+index 44f33237bd710..3e43e6de2a937 100644
 --- a/chrome/app/chrome_command_ids.h
 +++ b/chrome/app/chrome_command_ids.h
 @@ -351,6 +351,7 @@
@@ -18,33 +18,29 @@ index 7cc22cc383..c9977c65fa 100644
  // Image items.
  #define IDC_CONTENT_CONTEXT_SAVEIMAGEAS 50120
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
-index 1a3cf66891..0145529f16 100644
+index 5c3bf0094808b..441840f0feb01 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -624,7 +624,10 @@ are declared in tools/grit/grit_rule.gni.
- 
-           <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
+@@ -623,6 +623,9 @@ are declared in tools/grit/grit_args.gni.
            <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="The name of the Open Link in New Tab command in the content area context menu">
--            Open link in new &amp;tab
-+            Open link in &amp;new tab
-+          </message>
+             Open link in new &amp;tab
+           </message>
 +          <message name="IDS_CONTENT_CONTEXT_OPENLINKSAMETAB" desc="The name of the Open Link in Current Tab command in the content area context menu">
 +            Open link in &amp;current tab
-           </message>
++          </message>
            <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="The name of the Open Link in New Window command in the content area context menu">
              Open link in new &amp;window
-@@ -936,7 +939,10 @@ are declared in tools/grit/grit_rule.gni.
            </message>
-           <!-- Also update IDS_CONTENT_CONTEXT_OPENLINKNEWTAB_INAPP in google_chrome_strings.grd and chromium_strings.grd. -->
+@@ -935,6 +938,9 @@ are declared in tools/grit/grit_args.gni.
            <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWTAB" desc="In Title Case: The name of the Open Link in New Tab command in the content area context menu">
--            Open Link in New &amp;Tab
-+            Open Link in &amp;New Tab
-+          </message>
+             Open Link in New &amp;Tab
+           </message>
 +          <message name="IDS_CONTENT_CONTEXT_OPENLINKSAMETAB" desc="In Title Case: The name of the Open Link in Current Tab command in the content area context menu">
 +            Open Link in &amp;Current Tab
-           </message>
++          </message>
            <message name="IDS_CONTENT_CONTEXT_OPENLINKNEWWINDOW" desc="In Title Case: The name of the Open Link in New Window command in the content area context menu">
              Open Link in New &amp;Window
+           </message>
 diff --git a/chrome/browser/renderer_context_menu/render_view_context_menu.cc b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 index eaaab56c72145..b5eaaaa84a28d 100644
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
@@ -142,7 +138,7 @@ index eaaab56c72145..b5eaaaa84a28d 100644
        WindowOpenDisposition new_tab_disposition =
            WindowOpenDisposition::NEW_BACKGROUND_TAB;
 diff --git a/chrome/browser/ui/actions/chrome_action_id.h b/chrome/browser/ui/actions/chrome_action_id.h
-index caa31a26de..16832287bc 100644
+index 23da0d3577353..c9b0508950c15 100644
 --- a/chrome/browser/ui/actions/chrome_action_id.h
 +++ b/chrome/browser/ui/actions/chrome_action_id.h
 @@ -244,6 +244,7 @@
