@@ -70,7 +70,7 @@ check_dependencies \
 if [ ! -f "${!#}" ] ; then
   YAMLFILE=/tmp/_recipe.yml
   rm -f "$YAMLFILE"
-  wget -q "https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/recipes/${!#}.yml" -O "$YAMLFILE"
+  wget -q "https://github.com/AppImageCommunity/pkg2appimage/raw/${PKG2AICOMMIT}/recipes/${!#}.yml" -O "$YAMLFILE"
 else
   YAMLFILE=$(readlink -f "${!#}")
 fi
@@ -153,7 +153,7 @@ if [ -e "${HERE}/usr/share/pkg2appimage/functions.sh" ] ; then
   . "${HERE}/usr/share/pkg2appimage/functions.sh"
 elif [ -z "$FUNCTIONS_SH" ] ; then
   if [ ! -e functions.sh ] ; then
-    wget -q https://github.com/AppImage/AppImages/raw/${PKG2AICOMMIT}/functions.sh -O ./functions.sh
+    wget -q https://github.com/AppImageCommunity/pkg2appimage/raw/${PKG2AICOMMIT}/functions.sh -O ./functions.sh
   fi
   . ./functions.sh
 else
@@ -233,7 +233,7 @@ if [ ! -z "${_ingredients_dist}" ] ; then
     cp ${DEBFILE} .
   done
   # Use libcurl-slim to reduce AppImage size, thanks darealshinji
-  # Not really compiled on xenial but CentOS 6, https://github.com/AppImage/AppImages/issues/187
+  # Not really compiled on xenial but CentOS 6, https://github.com/AppImageCommunity/pkg2appimage/issues/187
   echo "deb http://ppa.launchpad.net/djcj/libcurl-slim/ubuntu xenial main" >> sources.list
   # Use gnutls-patched to have libgnutls look in various distributions' places for certificates,
   # https://github.com/darealshinji/vlc-AppImage/issues/1#issuecomment-321041496
@@ -461,7 +461,7 @@ sed -i -e 's|\.xpm||g' *.desktop || true
 
 # Setting PYTHONHOME instead
 # Fix Python imports,
-# https://github.com/AppImage/AppImages/issues/172
+# https://github.com/AppImageCommunity/pkg2appimage/issues/172
 # SITECUSTOMIZEFILES=$(find . -name "sitecustomize.py")
 # for SITECUSTOMIZEFILE in $SITECUSTOMIZEFILES ; do
 # rm $SITECUSTOMIZEFILE # Remove symlinks, replace by files
