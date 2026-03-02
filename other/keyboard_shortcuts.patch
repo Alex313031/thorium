@@ -1,3 +1,34 @@
+diff --git a/ash/public/cpp/accelerators.h b/ash/public/cpp/accelerators.h
+index 988f7146ec9e3..07fafec4e835f 100644
+--- a/ash/public/cpp/accelerators.h
++++ b/ash/public/cpp/accelerators.h
+@@ -1,4 +1,4 @@
+-// Copyright 2018 The Chromium Authors
++// Copyright 2026 The Chromium Authors and Alex313031
+ // Use of this source code is governed by a BSD-style license that can be
+ // found in the LICENSE file.
+ 
+@@ -244,15 +244,15 @@ ASH_PUBLIC_EXPORT inline constexpr auto kAcceleratorData = std::to_array<
+     {true, ui::VKEY_9, ui::EF_ALT_DOWN, AcceleratorAction::kLaunchLastApp},
+ 
+     // Window management shortcuts.
+-    {true, ui::VKEY_OEM_4, ui::EF_ALT_DOWN,
++    {true, ui::VKEY_LEFT, ui::VKEY_LWIN,
+      AcceleratorAction::kWindowCycleSnapLeft},
+-    {true, ui::VKEY_OEM_6, ui::EF_ALT_DOWN,
++    {true, ui::VKEY_RIGHT, ui::VKEY_LWIN,
+      AcceleratorAction::kWindowCycleSnapRight},
+-    {true, ui::VKEY_OEM_MINUS, ui::EF_ALT_DOWN,
++    {true, ui::VKEY_DOWN, ui::VKEY_LWIN,
+      AcceleratorAction::kWindowMinimize},
+-    {true, ui::VKEY_F, ui::EF_ALT_DOWN | ui::EF_COMMAND_DOWN,
++    {true, ui::VKEY_OEM_MINUS, ui::EF_ALT_DOWN | ui::EF_COMMAND_DOWN,
+      AcceleratorAction::kToggleFloating},
+-    {true, ui::VKEY_OEM_PLUS, ui::EF_ALT_DOWN,
++    {true, ui::VKEY_UP, ui::VKEY_LWIN,
+      AcceleratorAction::kToggleMaximized},
+     {true, ui::VKEY_BROWSER_FORWARD, ui::EF_CONTROL_DOWN,
+      AcceleratorAction::kFocusNextPane},
 diff --git a/chrome/browser/ui/cocoa/accelerators_cocoa.mm b/chrome/browser/ui/cocoa/accelerators_cocoa.mm
 index f7a207457997b..37a33c0e835db 100644
 --- a/chrome/browser/ui/cocoa/accelerators_cocoa.mm
@@ -30,7 +61,7 @@ index f7a207457997b..37a33c0e835db 100644
      {IDC_MINIMIZE_WINDOW, ui::EF_COMMAND_DOWN, ui::VKEY_M},
      {IDC_SELECT_NEXT_TAB, ui::EF_CONTROL_DOWN, ui::VKEY_TAB},
 diff --git a/chrome/browser/ui/views/accelerator_table.cc b/chrome/browser/ui/views/accelerator_table.cc
-index 9a52cf832f28e..1d529b7694310 100644
+index 9a52cf832f28e..67948411837ef 100644
 --- a/chrome/browser/ui/views/accelerator_table.cc
 +++ b/chrome/browser/ui/views/accelerator_table.cc
 @@ -1,4 +1,4 @@
@@ -60,3 +91,17 @@ index 9a52cf832f28e..1d529b7694310 100644
  #endif  // ENABLE_PRINTING
      {ui::VKEY_B, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN, IDC_FOCUS_BOOKMARKS},
      {ui::VKEY_A, ui::EF_SHIFT_DOWN | ui::EF_ALT_DOWN,
+@@ -313,11 +316,11 @@ std::vector<AcceleratorMapping> GetAcceleratorList() {
+     // Doing this check here and not at the bottom since kUIDebugAcceleratorMap
+     // contains Ctrl+Alt keys but we don't enable those for the public.
+ #if DCHECK_IS_ON()
+-    constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
++    /* constexpr int kCtrlAlt = ui::EF_CONTROL_DOWN | ui::EF_ALT_DOWN;
+     for (auto& mapping : *accelerators) {
+       DCHECK((mapping.modifiers & kCtrlAlt) != kCtrlAlt)
+           << "Accelerators with Ctrl+Alt are reserved by Windows.";
+-    }
++    } */
+ #endif
+ 
+     if (base::FeatureList::IsEnabled(features::kUIDebugTools)) {
