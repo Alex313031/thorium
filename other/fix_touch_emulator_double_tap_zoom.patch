@@ -1,0 +1,43 @@
+From 192fb17a609084a1ac0c2fa8e18ffa26e180b6a8 Mon Sep 17 00:00:00 2001
+From: Philip Pfaffe <pfaffe@chromium.org>
+Date: Tue, 22 Jul 2025 08:13:32 -0700
+Subject: [PATCH] Unconditionally call touch emulator for mobile-optimized
+ state changes
+
+crrev.com/c/6094203 called the touch emulator conditionally, only when
+the mobile-optimized state actually changes. This caused a regression
+with mobile emulation.
+
+Fixed: 409577163
+Change-Id: I8e59abc1d7e12a0c8fa828a5d546acf3c30cb3d5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6771797
+Commit-Queue: Philip Pfaffe <pfaffe@chromium.org>
+Commit-Queue: Aman Verma <amanvr@google.com>
+Reviewed-by: Aman Verma <amanvr@google.com>
+Auto-Submit: Philip Pfaffe <pfaffe@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1490172}
+---
+ content/browser/renderer_host/render_widget_host_impl.cc | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/content/browser/renderer_host/render_widget_host_impl.cc b/content/browser/renderer_host/render_widget_host_impl.cc
+index 252edf0bb40ba..d37d560a9b6a2 100644
+--- a/content/browser/renderer_host/render_widget_host_impl.cc
++++ b/content/browser/renderer_host/render_widget_host_impl.cc
+@@ -3834,10 +3834,9 @@ void RenderWidgetHostImpl::OnRenderFrameMetadataChangedAfterActivation(
+ 
+   if (mobile_optimized_state_changed) {
+     input_router()->NotifySiteIsMobileOptimized(is_mobile_optimized_);
+-    if (auto* touch_emulator =
+-            GetTouchEmulator(/*create_if_necessary=*/false)) {
+-      touch_emulator->SetDoubleTapSupportForPageEnabled(!is_mobile_optimized_);
+-    }
++  }
++  if (auto* touch_emulator = GetTouchEmulator(/*create_if_necessary=*/false)) {
++    touch_emulator->SetDoubleTapSupportForPageEnabled(!is_mobile_optimized_);
+   }
+ 
+   // TODO(danakj): Can this method be called during WebContents destruction?
+-- 
+2.47.3
+
