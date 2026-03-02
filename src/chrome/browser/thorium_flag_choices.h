@@ -123,6 +123,16 @@ const FeatureEntry::Choice kForceGpuMemAvailableMbChoices[] = {
 };
 
 #if BUILDFLAG(IS_LINUX)
+const FeatureEntry::Choice kTouchpadOverscrollHistoryNavigationChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"Enabled", switches::kEnableFeatures,
+     "TouchpadOverscrollHistoryNavigation"},
+    {"Disabled", switches::kDisableFeatures,
+     "TouchpadOverscrollHistoryNavigation"},
+};
+#endif // BUILDFLAG(IS_LINUX)
+
+#if BUILDFLAG(IS_LINUX)
 const FeatureEntry::Choice kGtkVersionChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"3",

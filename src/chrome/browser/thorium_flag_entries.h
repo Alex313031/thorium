@@ -186,6 +186,10 @@
      "Toggle whether the GL backend is used for VAAPI video decode acceleration. "
      "Enabled by default, but may break some configurations. Thorium flag.",
      kOsLinux, FEATURE_VALUE_TYPE(media::kAcceleratedVideoDecodeLinuxGL)},
+    {"touchpad-overscroll-history-navigation",
+     "Touchpad Overscroll History Navigation",
+     "Enables history navigation via touchpad overscroll gestures.",
+     kOsLinux, MULTI_VALUE_TYPE(kTouchpadOverscrollHistoryNavigationChoices)},
     {"gtk-version",
      "GTK Version Override",
      "Choose whether to use the GTK3 or GTK4 backend. It should be set to match the default GTK used by the system, "
