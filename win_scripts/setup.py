@@ -154,6 +154,8 @@ patches = [
     "other/restore_download_shelf.patch",
     "other/fix_absl_undefined_symbol.patch",
     "other/fix_drag_and_drop_on_wayland.patch",
+    "other/fix_touch_emulator_double_tap_zoom.patch",
+    "other/fix_setting_popover_invoker_crash.patch",
 ]
 for patch in patches:
     relative_path = patch.replace("other/", "", 1)
@@ -229,6 +231,7 @@ try_run(f"git apply --reject thorium_webui.patch")
 try_run(f"git apply --reject win_updater.patch")
 try_run(f"git apply --reject disable-privacy-sandbox.patch")
 try_run(f"git apply --reject keyboard_shortcuts.patch")
+try_run(f"git apply --reject fix_touch_emulator_double_tap_zoom.patch")
 
 
 print("\nApplying performance and crash fixes patches...\n")
@@ -243,6 +246,7 @@ try_run(f"git apply --reject fix_dangling_pointer_tooltip.patch")
 try_run(f"git apply --reject fix_disable_aero_crash.patch")
 try_run(f"git apply --reject fix_file_dialog_crash.patch")
 try_run(f"git apply --reject fix_wayland_scale_crash.patch")
+try_run(f"git apply --reject fix_setting_popover_invoker_crash.patch")
 
 
 print("\nCopying other files to out/thorium\n")

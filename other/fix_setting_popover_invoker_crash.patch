@@ -1,0 +1,56 @@
+From 76c78f62312def1b5af7e275a1e978814f7f2d0e Mon Sep 17 00:00:00 2001
+From: Mason Freed <masonf@chromium.org>
+Date: Wed, 18 Jun 2025 10:33:23 -0700
+Subject: [PATCH] Remove CHECK in setting popover invoker
+
+The prior check was possible to hit, fairly easily, by simply calling
+`showPopover()` on two popovers with the same source. That case seems
+to work just fine, so this CL removes the CHECK, and adds a crash
+test.
+
+Fixed: 424151801
+Change-Id: Icf1b28c2d6d9bc9e733b7a95243d929637a331f5
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/6648487
+Commit-Queue: Di Zhang <dizhangg@chromium.org>
+Reviewed-by: Di Zhang <dizhangg@chromium.org>
+Auto-Submit: Mason Freed <masonf@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1475695}
+---
+ third_party/blink/renderer/core/dom/invoker_data.h    |  2 --
+ .../html/semantics/popovers/popover-source-crash.html | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+ create mode 100644 third_party/blink/web_tests/external/wpt/html/semantics/popovers/popover-source-crash.html
+
+diff --git a/third_party/blink/renderer/core/dom/invoker_data.h b/third_party/blink/renderer/core/dom/invoker_data.h
+index bed7946722efc..44d85d660a969 100644
+--- a/third_party/blink/renderer/core/dom/invoker_data.h
++++ b/third_party/blink/renderer/core/dom/invoker_data.h
+@@ -35,8 +35,6 @@ class InvokerData final : public GarbageCollected<InvokerData>,
+ 
+   HTMLElement* GetInvokedPopover() const { return invoked_popover_; }
+   void SetInvokedPopover(HTMLElement* popover) {
+-    CHECK_NE(!popover, !invoked_popover_)
+-        << "Invoked popover must be cleared before being reset";
+     CHECK(!popover || popover->popoverOpen());
+     invoked_popover_ = popover;
+   }
+diff --git a/third_party/blink/web_tests/external/wpt/html/semantics/popovers/popover-source-crash.html b/third_party/blink/web_tests/external/wpt/html/semantics/popovers/popover-source-crash.html
+new file mode 100644
+index 0000000000000..11dcac6253fe5
+--- /dev/null
++++ b/third_party/blink/web_tests/external/wpt/html/semantics/popovers/popover-source-crash.html
+@@ -0,0 +1,11 @@
++<!DOCTYPE html>
++
++<button popovertarget=auto></button>
++<div popover=auto id=auto></div>
++<div popover=hint id=hint></div>
++
++<script>
++const button = document.querySelector('button');
++document.querySelector('#auto').showPopover({source: button});
++document.querySelector('#hint').showPopover({source: button});
++</script>
+-- 
+2.47.3
+
