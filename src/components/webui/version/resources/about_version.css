@@ -73,6 +73,11 @@ body {
   text-align: end;
 }
 
+#thor_version {
+  font-size: 1.0em;
+  text-align: end;
+}
+
 #useragent {
   font-family: monospace;
 }
