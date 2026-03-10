@@ -381,16 +381,54 @@ index e54821eb1f691..ae55157fb6aa1 100644
  static BookmarkNavigationWrapper* g_nav_wrapper_test_instance = nullptr;
  
 diff --git a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
-index cdaceec5e1f1b..c4320d3550b22 100644
+index cdaceec5e1f1b..61cc43e6433d0 100644
 --- a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
 +++ b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
-@@ -149,7 +149,9 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
+@@ -22,6 +22,9 @@
+ using bookmarks::BookmarkModel;
+ using bookmarks::BookmarkNode;
+ 
++// Default to Bookmarks Bar in Thorium, not "All Bookmarks"
++static constexpr bool default_bookmarks_bar = true;
++
+ struct RecentlyUsedFoldersComboModel::Item {
+   enum Type {
+     TYPE_NODE,
+@@ -68,9 +71,11 @@ RecentlyUsedFoldersComboModel::RecentlyUsedFoldersComboModel(
+     }
+ 
+     for (const BookmarkNode* mru_node : mru_bookmarks.account_nodes) {
+-      items_.emplace_back(mru_node, mru_node == model->account_other_node()
+-                                        ? Item::TYPE_ALL_BOOKMARKS_NODE
+-                                        : Item::TYPE_NODE);
++      const bool use_all_bookmarks_account =
++          mru_node == model->account_other_node() && !default_bookmarks_bar;
++      items_.emplace_back(mru_node, use_all_bookmarks_account
++                                    ? Item::TYPE_ALL_BOOKMARKS_NODE
++                                    : Item::TYPE_NODE);
+     }
+ 
+     // Add local nodes to `items_`.
+@@ -79,9 +84,11 @@ RecentlyUsedFoldersComboModel::RecentlyUsedFoldersComboModel(
+     }
+ 
+     for (const BookmarkNode* mru_node : mru_bookmarks.local_nodes) {
+-      items_.emplace_back(mru_node, mru_node == model->other_node()
+-                                        ? Item::TYPE_ALL_BOOKMARKS_NODE
+-                                        : Item::TYPE_NODE);
++      const bool use_all_bookmarks_local =
++          mru_node == model->other_node() && !default_bookmarks_bar;
++      items_.emplace_back(mru_node, use_all_bookmarks_local
++                                    ? Item::TYPE_ALL_BOOKMARKS_NODE
++                                    : Item::TYPE_NODE);
+     }
+   } else {
+     for (const BookmarkNode* mru_node : mru_bookmarks.local_nodes) {
+@@ -149,7 +156,7 @@ std::optional<size_t> RecentlyUsedFoldersComboModel::GetDefaultIndex() const {
    // TODO(pbos): Look at returning -1 here if there's no default index. Right
    // now a lot of code in Combobox assumes an index within `items_` bounds.
    auto it = std::ranges::find(items_, Item(parent_node_, Item::TYPE_NODE));
 -  if (it == items_.end()) {
-+  // Default to Bookmarks Bar in Thorium, not "All Bookmarks"
-+  static constexpr bool default_bookmarks_bar = true;
 +  if (it == items_.end() && !default_bookmarks_bar) {
      it = std::ranges::find(items_,
                             Item(parent_node_, Item::TYPE_ALL_BOOKMARKS_NODE));
