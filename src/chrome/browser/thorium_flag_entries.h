@@ -189,7 +189,7 @@
     {"touchpad-overscroll-history-navigation",
      "Touchpad Overscroll History Navigation",
      "Enables back/forward navigation via touchpad overscroll gestures.",
-     kOsLinux, FEATURE_VALUE_TYPE(features::TouchpadOverscrollHistoryNavigation)},
+     kOsLinux, FEATURE_VALUE_TYPE(features::kTouchpadOverscrollHistoryNavigation)},
     {"gtk-version",
      "GTK Version Override",
      "Choose whether to use the GTK3 or GTK4 backend. It should be set to match the default GTK used by the system, "
