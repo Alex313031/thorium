@@ -1,16 +1,5 @@
-From bfb08f0ab9a320a76bddfc36ee358cb6174c6626 Mon Sep 17 00:00:00 2001
-From: Ho Cheung
-Date: Thu, 13 Feb 2025 10:19:37 +0800
-Subject: [PATCH] [Android] Remove-discovery-module-from-NTP
-
----
- .../res/layout/new_tab_page_feed_v2_expandable_header.xml    | 5 +++--
- .../java/res/layout/new_tab_page_multi_feed_header.xml       | 5 +++--
- components/feed/core/shared_prefs/pref_names.cc              | 4 ++--
- 3 files changed, 8 insertions(+), 6 deletions(-)
-
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
-index 93a3d036f9c49..942100187320b 100644
+index 93a3d036f9c49..32ac344a6074d 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_feed_v2_expandable_header.xml
 @@ -1,6 +1,6 @@
@@ -32,7 +21,7 @@ index 93a3d036f9c49..942100187320b 100644
      <RelativeLayout
          tools:ignore="RelativeOverlap"
 diff --git a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
-index dfa33369d2db4..3246e8689ded7 100644
+index dfa33369d2db4..c57394177e3cd 100644
 --- a/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 +++ b/chrome/browser/feed/android/java/res/layout/new_tab_page_multi_feed_header.xml
 @@ -1,6 +1,6 @@
@@ -54,7 +43,7 @@ index dfa33369d2db4..3246e8689ded7 100644
    <LinearLayout
        android:id="@+id/main_content"
 diff --git a/components/feed/core/shared_prefs/pref_names.cc b/components/feed/core/shared_prefs/pref_names.cc
-index 50f880e715489..ce7c2695ab09f 100644
+index 50f880e715489..673472daf56ec 100644
 --- a/components/feed/core/shared_prefs/pref_names.cc
 +++ b/components/feed/core/shared_prefs/pref_names.cc
 @@ -1,4 +1,4 @@
@@ -72,6 +61,3 @@ index 50f880e715489..ce7c2695ab09f 100644
    registry->RegisterBooleanPref(kEnableSnippetsByDse, true);
  }
  
--- 
-2.47.1.windows.2
-
