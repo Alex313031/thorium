@@ -297,9 +297,8 @@ index b746f68cef51d..5b63aac683d12 100644
    bool has_invalid_switch_;
    bool should_delete_extracted_files_;
    const wchar_t* previous_version_;
-alex@B450M-DS3H-V2:~/chromium/src$ diff chrome/installer/mini_installer/mini_installer.cc
 diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
-index b24e4cbef109f..019a617434a39 100644
+index b24e4cbef109f..48140c8591991 100644
 --- a/chrome/installer/mini_installer/mini_installer.cc
 +++ b/chrome/installer/mini_installer/mini_installer.cc
 @@ -1,4 +1,4 @@
@@ -326,7 +325,7 @@ index b24e4cbef109f..019a617434a39 100644
  
  #include "build/branding_buildflags.h"
  #include "chrome/installer/mini_installer/appid.h"
-@@ -53,11 +57,28 @@
+@@ -53,11 +57,54 @@
  #include "chrome/installer/mini_installer/memory_range.h"
  #include "chrome/installer/mini_installer/mini_file.h"
  #include "chrome/installer/mini_installer/mini_installer_constants.h"
@@ -345,17 +344,43 @@ index b24e4cbef109f..019a617434a39 100644
 +
 +bool should_install_ = false;
 +
-+static const std::wstring kInstallTitle = std::wstring(kProductName) + L" " + std::wstring(kVersionString) + L" Installer";
-+static const std::wstring kInstallBetaTitle = std::wstring(kBetaProductName) + L" " + std::wstring(kVersionString) + L" Installer";
-+static const std::wstring kInstallMessage = L"Would you like to install " + std::wstring(kProductName) + L"?";
-+static const std::wstring kInstallBetaMessage = L"Would you like to install " + std::wstring(kBetaProductName) + L"?";
++// Dialog strings
++static constexpr wchar_t kInstallingActiveMessage[] = L"Installing...";
++static constexpr wchar_t kInstallCompleteTitle[] = L"Installation Complete";
++static constexpr wchar_t kInstallFailedTitle[] = L"Installation Failed!";
++
++static const std::wstring GetProductName() {
++  static const std::wstring product_name = is_thorium_beta ? std::wstring(kBetaProductName)
++                                                           : std::wstring(kProductName);
++  return product_name;
++}
++
++const std::wstring kInstallTitle() {
++  const std::wstring title = GetProductName() + L" " + std::wstring(kVersionString) + L" Installer";
++  return title;
++}
++
++const std::wstring kInstallMessage() {
++  const std::wstring msg = L"Would you like to install " + GetProductName() + L"?";
++  return msg;
++}
++
++const std::wstring kInstallingDoneMsg() {
++  const std::wstring msg = GetProductName() + L" was installed successfully! \nYou may now close this window.";
++  return msg;
++}
++
++const std::wstring kInstallingFailedMsg() {
++  const std::wstring msg = L"Installing " + GetProductName() + L" failed. \nError: ";
++  return msg;
++}
 +
 +static Configuration conf;
 +
  // Deletes |path|, updating |max_delete_attempts| if more attempts were taken
  // than indicated in |max_delete_attempts|.
  void DeleteWithRetryAndMetrics(const wchar_t* path, int& max_delete_attempts) {
-@@ -851,21 +872,236 @@ bool GetWorkDir(HMODULE module,
+@@ -851,21 +898,236 @@ bool GetWorkDir(HMODULE module,
           CreateWorkDir(base_path.get(), work_dir, exit_code);
  }
  
@@ -375,7 +400,7 @@ index b24e4cbef109f..019a617434a39 100644
 +  // Run the installation
 +  ProcessExitResult install_code = ProcessExitResult(GENERIC_INITIALIZATION_FAILURE);
 +  if (GetShouldInstall()) {
-+    std::wcout << kInstallingMessage << std::endl;
++    std::wcout << kInstallingActiveMessage << std::endl;
 +    install_code = WMainImpl(true, hModule, conf);
 +    if (install_code.IsSuccess()) {
 +      success = true;
@@ -388,8 +413,6 @@ index b24e4cbef109f..019a617434a39 100644
 +  SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, FALSE, 0);
 +
 +  // Update the dialog to show completion status
-+  static const std::wstring kInstallingDoneMsg = std::wstring(kProductName) + L" was installed successfully! \nYou may now close this window.";
-+  static const std::wstring kInstallingFailedMsg = L"Installing " + std::wstring(kProductName) + L" failed. \nError: ";
 +  if (success) {
 +    static TASKDIALOGCONFIG DoneDlgConfig = { 0 };
 +    DoneDlgConfig.cbSize = sizeof(DoneDlgConfig);
@@ -397,8 +420,9 @@ index b24e4cbef109f..019a617434a39 100644
 +    DoneDlgConfig.dwCommonButtons = TDCBF_OK_BUTTON;
 +    DoneDlgConfig.nDefaultButton = IDOK;
 +    DoneDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_SUCCESS));
-+    DoneDlgConfig.pszWindowTitle = kInstallingComplete;
-+    DoneDlgConfig.pszContent = kInstallingDoneMsg.c_str();
++    DoneDlgConfig.pszWindowTitle = kInstallCompleteTitle;
++    const std::wstring msg = kInstallingDoneMsg();
++    DoneDlgConfig.pszContent =  msg.c_str();
 +    DoneDlgConfig.cxWidth = 0;
 +    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&DoneDlgConfig));
 +    return 0;
@@ -409,9 +433,9 @@ index b24e4cbef109f..019a617434a39 100644
 +    FailedDlgConfig.dwCommonButtons = TDCBF_CLOSE_BUTTON;
 +    FailedDlgConfig.nDefaultButton = IDCLOSE;
 +    FailedDlgConfig.hMainIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_FAILED));
-+    FailedDlgConfig.pszWindowTitle = kInstallingFailed;
-+    std::wstring kInstallingError = kInstallingFailedMsg + std::to_wstring(getError);
-+    FailedDlgConfig.pszContent = kInstallingError.c_str();
++    FailedDlgConfig.pszWindowTitle = kInstallFailedTitle;
++    std::wstring kInstallingErrorMsg = kInstallingFailedMsg() + std::to_wstring(getError);
++    FailedDlgConfig.pszContent = kInstallingErrorMsg.c_str();
 +    FailedDlgConfig.cxWidth = 0;
 +    SendMessageW(hwnd, TDM_NAVIGATE_PAGE, 0, reinterpret_cast<LPARAM>(&FailedDlgConfig));
 +    return 1;
@@ -431,7 +455,7 @@ index b24e4cbef109f..019a617434a39 100644
 +      if (wParam == IDYES) {
 +        // Start the marquee animation (speed in milliseconds)
 +        SendMessageW(hwnd, TDM_SET_PROGRESS_BAR_MARQUEE, TRUE, 30);
-+        SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingMessage);
++        SendMessageW(hwnd, TDM_SET_ELEMENT_TEXT, TDE_CONTENT, (LPARAM)kInstallingActiveMessage);
 +        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDYES, FALSE);
 +        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDNO, FALSE);
 +        SendMessageW(hwnd, TDM_ENABLE_BUTTON, IDCANCEL, FALSE);
@@ -451,7 +475,6 @@ index b24e4cbef109f..019a617434a39 100644
 +
 +bool InitWndInstance(HINSTANCE hInstance, int nCmdShow) {
 +  bool success = false;
-+  const bool is_beta = false; // TODO. Add beta checker
 +  // Configure the task dialog
 +  TASKDIALOGCONFIG config = { 0 };
 +  config.cbSize = sizeof(config);
@@ -459,9 +482,11 @@ index b24e4cbef109f..019a617434a39 100644
 +  config.dwCommonButtons = TDCBF_YES_BUTTON | TDCBF_NO_BUTTON | TDCBF_CANCEL_BUTTON;
 +  config.nDefaultButton = IDNO;
 +  config.hMainIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MINI_INSTALLER));
-+  config.pszWindowTitle = is_beta ? kInstallBetaTitle.c_str() : kInstallTitle.c_str();
++  const std::wstring title = kInstallTitle();
++  config.pszWindowTitle = title.c_str();
 +  // config.pszMainInstruction = nullptr;
-+  config.pszContent = is_beta ? kInstallBetaMessage.c_str() : kInstallMessage.c_str();
++  const std::wstring msg = kInstallMessage();
++  config.pszContent = msg.c_str();
 +  //config.pButtons = buttons;
 +  //config.cButtons = ARRAYSIZE(buttons);
 +  config.pfCallback = TaskDialogCallbackProc;
@@ -597,7 +622,7 @@ index b24e4cbef109f..019a617434a39 100644
    // First get a path where we can extract payload
    PathString base_path;
    if (!GetWorkDir(module, &base_path, &exit_code)) {
-@@ -940,4 +1176,11 @@ ProcessExitResult WMain(HMODULE module) {
+@@ -940,4 +1202,11 @@ ProcessExitResult WMain(HMODULE module) {
    return exit_code;
  }
  
@@ -716,10 +741,10 @@ index cbcd4cf1a3ef2..13ea5306828ce 100644
  
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer_constants.h b/chrome/installer/mini_installer/mini_installer_constants.h
-index 23de845654342..666632cbd5a39 100644
+index 23de845654342..71dfb9bbaced8 100644
 --- a/chrome/installer/mini_installer/mini_installer_constants.h
 +++ b/chrome/installer/mini_installer/mini_installer_constants.h
-@@ -5,8 +5,16 @@
+@@ -5,8 +5,14 @@
  #ifndef CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  #define CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_CONSTANTS_H_
  
@@ -727,9 +752,7 @@ index 23de845654342..666632cbd5a39 100644
 +
  namespace mini_installer {
  
-+static constexpr wchar_t kInstallingMessage[] = L"Installing...";
-+static constexpr wchar_t kInstallingComplete[] = L"Installation Complete";
-+static constexpr wchar_t kInstallingFailed[] = L"Installation Failed!";
++const bool is_thorium_beta = false; // TODO. Add beta checker
 +
 +static const wchar_t* kMiniInstallerClass = L"ThMiniInstallerClass";
 +

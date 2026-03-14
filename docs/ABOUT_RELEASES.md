@@ -4,7 +4,7 @@ This document was created to explain __SSE__ and __AVX__, and to guide users on 
 version of Thorium is appropriate to download for their machine.
 
 Many users have been confused and posted issues across my repos on what option they should choose when downloading a release. 
-AVX what? SSE huh? What's the difference? Why does one work on my machine but the other doesn't ?
+AVX what? SSE huh? What's the difference? Why does one work on my machine but the other doesn't?
 
 ### About SIMD
 
