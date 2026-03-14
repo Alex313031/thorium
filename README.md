@@ -57,7 +57,7 @@
 > - Includes installer patches and files to include [ChromeDriver](https://chromedriver.chromium.org/home) and *thorium_shell* [(content_shell)](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/testing/web_tests_in_content_shell.md), with a .desktop file being provided for thorium_shell (named thorium-shell.desktop and shows in desktop environments as Thorium Content Shell). These are also included in the Windows releases, but it doesn't make a shorcut, although a .png and .ico is in the install directory for you to make your own shortcut with an icon. You can also run content_shell with the command thorium-shell (custom wrapper for it, located in /usr/bin/). You can run ChromeDriver at /usr/bin/chromedriver or chromedriver.exe on Windows. Also, patches for abseil library and mini_installer when building with AVX on Windows.
 > - Right clicking the launcher after install gives three additional desktop actions, one to open thorium-shell, another to open in Safe Mode which disables any flags one has set in chrome://flags until the next launch, and lastly to open in Dark Mode which appends the --force-dark-mode flag.
 
-&nbsp;&plus;&nbsp;Other patches and useful chrome://flags flags too long to list here. :smile:
+&nbsp;&plus;&nbsp;Other patches and useful chrome://flags flags too long to list here. ʘ‿ʘ
 
 - For more info, read the [PATCHES.md](https://github.com/Alex313031/thorium/blob/main/docs/PATCHES.md) file.
 - Known bugs are in the [BUGS.md](https://github.com/Alex313031/thorium/blob/main/infra/BUGS.md) file.
@@ -78,7 +78,7 @@ See > https://github.com/Alex313031/thorium/tree/main/infra/DEBUG#readme
 &nbsp;&minus; Also thanks to https://github.com/bromite/bromite, https://github.com/saiarcot895/chromium-ubuntu-build, https://github.com/Eloston/ungoogled-chromium, https://github.com/GrapheneOS/Vanadium, and https://github.com/iridium-browser/iridium-browser for patch code. \
 &nbsp;&minus; The pak_src dir, and the binaries in *pack_src/bin* are credited to @freeer https://github.com/myfreeer/chrome-pak-customizer/
 
-&nbsp;&nbsp; __NOTE:__ [*libpepflashplayer.so*](https://github.com/Alex313031/thorium/blob/main/infra/libpepflashplayer.so) is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ
+<!-- &nbsp;&nbsp; __NOTE:__ [*libpepflashplayer.so*](https://github.com/Alex313031/thorium/blob/main/infra/libpepflashplayer.so) is included for posterity and can be used to enable Adobe Flash on older Chromium releases. ʘ‿ʘ -->
 
 *Thanks for using Thorium!*
 
