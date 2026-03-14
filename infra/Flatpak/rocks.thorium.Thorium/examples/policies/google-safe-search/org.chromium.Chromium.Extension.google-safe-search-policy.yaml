@@ -1,7 +1,7 @@
-app-id: org.chromium.Chromium.Extension.google-safe-search-policy
+app-id: rocks.thorium.Thorium.Extension.google-safe-search-policy
 # This should match the extension point version
 branch: '1'
-runtime: org.chromium.Chromium
+runtime: rocks.thorium.Thorium
 runtime-version: stable
 sdk: org.freedesktop.Sdk//20.08
 build-extension: true

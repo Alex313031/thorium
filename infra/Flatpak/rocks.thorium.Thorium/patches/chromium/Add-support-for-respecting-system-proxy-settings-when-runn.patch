@@ -39,7 +39,7 @@ Some general notes on implementation:
   but this impl uses the same codepath no matter the DE when running
   on flatpak
 
-Closes https://github.com/flathub/org.chromium.Chromium/issues/36
+Closes https://github.com/flathub/rocks.thorium.Thorium/issues/36
 ---
  chrome/app/generated_resources.grd            |   6 +
  .../net/system_network_context_manager.cc     |   9 +-
