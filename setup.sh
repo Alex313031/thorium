@@ -104,6 +104,8 @@ patchThor () {
 	cp -v other/win_updater.patch ${CR_SRC_DIR}/ &&
 	cp -v other/keyboard_shortcuts.patch ${CR_SRC_DIR}/ &&
 	cp -v other/multi-language-translate.patch ${CR_SRC_DIR}/ &&
+	cp -v other/enable-extensions-android-thorium.patch ${CR_SRC_DIR}/ &&
+	cp -v other/enable-extension-incognito-thorium.patch ${CR_SRC_DIR}/ &&
 	# Starting with M144, the following patches can be removed
 	cp -v other/partalloc.patch ${CR_SRC_DIR}/ &&
 	cp -v other/fix_profile_selector_crash.patch ${CR_SRC_DIR}/ &&
@@ -141,6 +143,13 @@ patchThor () {
 	printf "${YEL}Patching in GPC support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
 	git apply --reject ./GPC.patch &&
+
+	printf "\n" &&
+	printf "${YEL}Patching in Android extensions support...${c0}\n" &&
+	cd ${CR_SRC_DIR} &&
+	git apply --reject ./enable-extensions-android-thorium.patch &&
+	printf "${YEL}Patching in extension incognito support...${c0}\n" &&
+	git apply --reject ./enable-extension-incognito-thorium.patch &&
 
 	printf "\n" &&
 	printf "${YEL}Patching for Thorium 2024 UI...${c0}\n" &&
