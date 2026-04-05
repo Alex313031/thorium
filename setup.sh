@@ -387,8 +387,8 @@ copyAndroid () {
 	#rm -v -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-hdpi/layered_app_icon.png &&
 	rm -v -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon_background.png &&
 	#rm -v -f ${CR_SRC_DIR}/chrome/android/java/res_chromium_base/mipmap-xxhdpi/layered_app_icon.png &&
-	[ -f ${CR_SRC_DIR}/enable-extensions-android-thorium.patch ] || cp -v other/enable-extensions-android-thorium.patch ${CR_SRC_DIR}/ &&
-	[ -f ${CR_SRC_DIR}/enable-extension-incognito-thorium.patch ] || cp -v other/enable-extension-incognito-thorium.patch ${CR_SRC_DIR}/ &&
+	cp -v other/enable-extensions-android-thorium.patch ${CR_SRC_DIR}/ &&
+	cp -v other/enable-extension-incognito-thorium.patch ${CR_SRC_DIR}/ &&
 	printf "\n" &&
 	printf "${YEL}Patching in Android extensions support...${c0}\n" &&
 	cd ${CR_SRC_DIR} &&
