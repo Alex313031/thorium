@@ -64,6 +64,12 @@ DNS Over HTTPS (DoH) Bare Minimum HTTP Headers Patch > https://github.com/uazo/c
 Disable Captive Portals Detection > https://github.com/uazo/cromite/blob/master/build/patches/Remove-detection-of-captive-portals.patch
   - Made by uazo
 
+Experimental Android Extension Support Patch > https://github.com/uazo/cromite/blob/master/build/patches/Experimental-support-for-extensions-on-Android.patch
+  - Made by uazo
+
+Enable Extensions in Incognito on Android Patch > https://github.com/uazo/cromite/blob/master/build/patches/Enable-extension-in-incognito.patch
+  - Made by uazo
+
 Enable Do Not Track By Default Patch > https://github.com/GrapheneOS/Vanadium/blob/main/patches/0045-enable-dubious-Do-Not-Track-feature-by-default.patch
 
 Enable Fingerprinting Protection Patch
