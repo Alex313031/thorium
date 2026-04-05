@@ -247,7 +247,7 @@ diff --git a/base/android/device_info.cc b/base/android/device_info.cc
  }
  
 -bool is_desktop() {
-+bool is_desktop_cromite() {
++bool is_desktop_thorium() {
    return get_device_info().isDesktop;
  }
  
@@ -275,7 +275,7 @@ diff --git a/base/android/device_info.h b/base/android/device_info.h
  BASE_EXPORT bool is_automotive();
  BASE_EXPORT bool is_foldable();
 -BASE_EXPORT bool is_desktop();
-+BASE_EXPORT bool is_desktop_cromite();
++BASE_EXPORT bool is_desktop_thorium();
 +BASE_EXPORT bool is_desktop_false();
  // Available only on Android T+.
  BASE_EXPORT int32_t vulkan_deqp_level();
@@ -288,7 +288,7 @@ diff --git a/base/android/java/src/org/chromium/base/DeviceInfo.java b/base/andr
      }
  
 -    public static boolean isDesktop() {
-+    public static boolean isDesktopCromite() {
++    public static boolean isDesktopThorium() {
          return getInstance().mIDeviceInfo.isDesktop;
      }
  
@@ -708,7 +708,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
              // isActivityStateBookmarkBarCompatible already checks the flag sAndroidBookmarkBar.
              if (BookmarkBarUtils.isActivityStateBookmarkBarCompatible(mActivity)) {
 -                if (DeviceInfo.isDesktop()) {
-+                if (DeviceInfo.isDesktopCromite()) {
++                if (DeviceInfo.isDesktopThorium()) {
                      // Desktop uses the synced UserPref.
                      BookmarkBarUtils.toggleUserPrefsShowBookmarksBar(
                              mProfileSupplier.get(), /* fromKeyboardShortcut= */ true);
@@ -3387,11 +3387,11 @@ diff --git a/extensions/browser/extension_host.cc b/extensions/browser/extension
 +
 +#if BUILDFLAG(IS_ANDROID)
 +  if (extension_host_type() == mojom::ViewType::kExtensionPopup) {
-+    constexpr char kOsOverrideForCromite[] = "Linux; Android 10; Cromite";
++    constexpr char kOsOverrideForThorium[] = "Linux; Android 10; Thorium";
 +    const std::string product = embedder_support::GetProductAndVersion();
 +    blink::UserAgentOverride ua_override;
 +    ua_override.ua_string_override =
-+        embedder_support::BuildUserAgentFromOSAndProduct(kOsOverrideForCromite,
++        embedder_support::BuildUserAgentFromOSAndProduct(kOsOverrideForThorium,
 +                                                        product);
 +    host_contents_->SetUserAgentOverride(ua_override,
 +                                         false /*override_in_new_tabs=*/);
