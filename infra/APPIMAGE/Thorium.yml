@@ -17,7 +17,8 @@ script:
   - cp -v -r ../../temp/* usr/bin/
   - mkdir -v -p usr/share/icons/hicolor/16x16/apps/
   - # Copy Logo/Icon 
-  - cp -v usr/bin/product_logo_256.png thorium.png
+  - cp -v usr/bin/thorium.svg thorium.svg
+  - cp -v usr/bin/thorium.svg usr/share/icons/
   - cp -v usr/bin/product_logo_16.png usr/share/icons/hicolor/16x16/apps/thorium.png
   - cp -v usr/bin/product_logo_22.png usr/share/icons/hicolor/22x22/apps/thorium.png
   - cp -v usr/bin/product_logo_24.png usr/share/icons/hicolor/24x24/apps/thorium.png
