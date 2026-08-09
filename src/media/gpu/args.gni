@@ -1,0 +1,63 @@
+# Copyright 2016 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/ozone.gni")
+
+declare_args() {
+  # Indicates if V4L plugin is used.
+  use_v4lplugin = false
+
+  # Indicates if Video4Linux2 codec is used. This is used for all CrOS
+  # platforms which have v4l2 hardware encoder / decoder.
+  use_v4l2_codec = false
+
+  # Indicates if VA-API-based hardware acceleration is to be used.
+  use_vaapi =
+      is_linux && !is_castos &&
+      (ozone_platform_x11 || ozone_platform_wayland) &&
+      (target_cpu == "x86" || target_cpu == "x64" || target_cpu == "arm64")
+
+  # Indicates if ChromeOS protected media support exists. This is used
+  # to enable the CDM daemon in Chrome OS as well as support for
+  # encrypted content with HW video decoders.
+  use_chromeos_protected_media = false
+
+  # Indicates if the ChromeOS protected media functionality should also be
+  # utilized by HW video decoding for ARC.
+  use_arc_protected_media = false
+
+  # Indicates if ChromeOS protected media supports the AV1 codec. By default
+  # H.264, VP9 and HEVC are enabled if protected media is enabled; AV1 is
+  # optional.
+  use_chromeos_protected_av1 = false
+}
+
+if (use_arc_protected_media) {
+  assert(
+      use_chromeos_protected_media,
+      "use_chromeos_protected_media must be set if use_arc_protected_media is")
+}
+
+if (use_chromeos_protected_av1) {
+  assert(
+      use_chromeos_protected_media,
+      "use_chromeos_protected_media must be set if use_chromeos_protected_av1 is")
+}
+
+# GN requires args that depend on other args to be declared in successive
+# declare_args() blocks.
+declare_args() {
+  # VA-API also allows decoding of images, but we don't want to use this
+  # outside of chromeos, even if video decoding is enabled.
+  use_vaapi_image_codecs = use_vaapi && is_chromeos
+}
+
+use_linux_video_acceleration = use_vaapi || use_v4l2_codec
+
+declare_args() {
+  # A platform that is capable of hardware av1 decoding.
+  use_av1_hw_decoder =
+      is_chromeos || (is_linux && (use_vaapi || use_v4l2_codec)) ||
+      is_win || is_apple
+}
