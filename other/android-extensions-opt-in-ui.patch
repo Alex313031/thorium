@@ -1,5 +1,5 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-index e19506022196e..9860d2ef16ac4 100644
+index 9fd0905082304..4adef14787140 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 @@ -4376,6 +4376,13 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
@@ -171,10 +171,10 @@ index 522e280c9365f..a9e1f8836e46d 100644
      this.addEventListener('view-enter-start', this.onViewEnterStart_);
      this.addEventListener('view-exit-start', this.onViewExitStart_);
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
-index 3dbae6c775cdd..077811174245e 100644
+index 55782c3d0e6a9..073170c9f581a 100644
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
-@@ -26,8 +26,10 @@ import org.chromium.base.supplier.NullableObservableSupplier;
+@@ -25,8 +25,10 @@ import org.chromium.base.supplier.NullableObservableSupplier;
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.Nullable;
  import org.chromium.chrome.browser.feature_engagement.TrackerFactory;
@@ -185,7 +185,7 @@ index 3dbae6c775cdd..077811174245e 100644
  import org.chromium.chrome.browser.tabmodel.TabCreator;
  import org.chromium.chrome.browser.theme.ThemeColorProvider;
  import org.chromium.chrome.browser.toolbar.MenuBuilderHelper;
-@@ -39,9 +41,12 @@ import org.chromium.chrome.browser.ui.theme.BrandedColorScheme;
+@@ -38,9 +40,12 @@ import org.chromium.chrome.browser.ui.theme.BrandedColorScheme;
  import org.chromium.chrome.browser.user_education.IphCommandBuilder;
  import org.chromium.chrome.browser.user_education.UserEducationHelper;
  import org.chromium.components.browser_ui.styles.SemanticColorUtils;
@@ -198,23 +198,16 @@ index 3dbae6c775cdd..077811174245e 100644
  import org.chromium.ui.base.WindowAndroid;
  import org.chromium.ui.hierarchicalmenu.FlyoutController;
  import org.chromium.ui.listmenu.ListMenu;
-@@ -267,6 +272,22 @@ public class ExtensionsMenuCoordinator
+@@ -269,6 +274,15 @@ public class ExtensionsMenuCoordinator
       * <p>This should only be called when the menu is about to be shown.
       */
      private void createMediator() {
 +        if (!ChromeFeatureList.isEnabled(ChromeFeatureList.ENABLE_EXTENSIONS_ANDROID)) {
-+            Tab currentTab = mCurrentTabSupplier.get();
-+            if (mOpenUrlInCustomTab != null
-+                    && currentTab != null
-+                    && currentTab.isIncognitoBranded()) {
-+                mOpenUrlInCustomTab.onResult(UrlConstants.CHROME_EXTENSIONS_URL);
-+            } else {
-+                mTabCreator.createNewTab(
-+                        new LoadUrlParams(
-+                                UrlConstants.CHROME_EXTENSIONS_URL, PageTransition.AUTO_TOPLEVEL),
-+                        TabLaunchType.FROM_CHROME_UI,
-+                        null);
-+            }
++            mTabCreator.createNewTab(
++                    new LoadUrlParams(
++                            UrlConstants.CHROME_EXTENSIONS_URL, PageTransition.AUTO_TOPLEVEL),
++                    TabLaunchType.FROM_CHROME_UI,
++                    null);
 +            return;
 +        }
 +
