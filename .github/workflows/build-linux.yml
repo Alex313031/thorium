@@ -60,7 +60,8 @@ jobs:
     needs: select
     strategy:
       fail-fast: false
-      max-parallel: ${{ inputs.parallel_profiles }}
+      # Manual runs can supply numeric inputs as strings; normalize their type.
+      max-parallel: ${{ fromJSON(format('{0}', inputs.parallel_profiles)) }}
       matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
     uses: ./.github/workflows/build-linux-profile.yml
     permissions:
@@ -68,7 +69,7 @@ jobs:
       actions: write
     with:
       profile: ${{ matrix.profile }}
-      jobs: ${{ inputs.jobs }}
-      minutes: ${{ inputs.minutes }}
+      jobs: ${{ fromJSON(format('{0}', inputs.jobs)) }}
+      minutes: ${{ fromJSON(format('{0}', inputs.minutes)) }}
       resume_run_id: ${{ inputs.resume_run_id }}
       resume_artifact_id: ${{ inputs.resume_artifact_id }}
