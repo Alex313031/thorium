@@ -321,7 +321,9 @@ find . -path *icons* -path *512* -name "*$LOWERAPP*" -exec cp {} usr/share/icons
 get_icon
 
 if [ -z "${_union}" ] ; then
-  get_apprun
+  if [ "${_apprun_from_recipe:-}" != true ]; then
+    get_apprun
+  fi
 else
 cat > AppRun <<\EOF
 #!/bin/sh
@@ -398,6 +400,9 @@ fi
 # Execute extra steps defined in recipe
 if [ ! -z "${_script}" ] ; then
   shell_execute $YAMLFILE _script
+fi
+if [ "${_apprun_from_recipe:-}" == true ]; then
+  [ -x AppRun ] || { echo 'Recipe did not create an executable AppRun'; exit 1; }
 fi
 
 DESKTOP=$(find . -name '*.desktop' | sort | head -n 1)
@@ -481,10 +486,15 @@ fi
 # Go out of AppImage
 cd ..
 
+appimage_tool_args=()
+if [ -n "${APPIMAGE_RUNTIME_FILE:-}" ]; then
+  [ -f "$APPIMAGE_RUNTIME_FILE" ] || exit 1
+  appimage_tool_args+=(--runtime-file "$APPIMAGE_RUNTIME_FILE")
+fi
 if [ -z "${_updateinformation}" ] ; then
-  generate_type2_appimage
+  generate_type2_appimage "${appimage_tool_args[@]}"
 else
-  generate_type2_appimage -u "${_updateinformation}"
+  generate_type2_appimage "${appimage_tool_args[@]}" -u "${_updateinformation}"
 fi
 
 ls -lh ../out/*.AppImage

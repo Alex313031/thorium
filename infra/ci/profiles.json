@@ -1,0 +1,267 @@
+{
+  "linux-x64-avx": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "default",
+    "args_file": "args.gn",
+    "target_os": "linux",
+    "target_cpu": "x64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_AVX.deb",
+      "thorium-browser_{version}_AVX.rpm",
+      "thorium-browser_{version}_AVX.zip",
+      "Thorium_Browser_{version}_AVX.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "amd64",
+    "rpm_arch": "x86_64",
+    "portable_profile": "AVX",
+    "appimage_arch": "x86_64",
+    "appimage_runtime": "runtime-x86_64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "avx",
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "is_cfi": true
+    }
+  },
+  "linux-x64-avx2": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "avx2",
+    "args_file": "other/AVX2/AVX2_args.gn",
+    "target_os": "linux",
+    "target_cpu": "x64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_AVX2.deb",
+      "thorium-browser_{version}_AVX2.rpm",
+      "thorium-browser_{version}_AVX2.zip",
+      "Thorium_Browser_{version}_AVX2.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "amd64",
+    "rpm_arch": "x86_64",
+    "portable_profile": "AVX2",
+    "appimage_arch": "x86_64",
+    "appimage_runtime": "runtime-x86_64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "avx2_fma",
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "is_cfi": true
+    }
+  },
+  "linux-x64-avx512": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "avx512",
+    "args_file": "other/AVX512/AVX512_args.gn",
+    "target_os": "linux",
+    "target_cpu": "x64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_AVX512.deb",
+      "thorium-browser_{version}_AVX512.rpm",
+      "thorium-browser_{version}_AVX512.zip",
+      "Thorium_Browser_{version}_AVX512.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "amd64",
+    "rpm_arch": "x86_64",
+    "portable_profile": "AVX512",
+    "appimage_arch": "x86_64",
+    "appimage_runtime": "runtime-x86_64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "avx512_skx",
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "is_cfi": true
+    },
+    "required_build_tools": [
+      "//v8:mksnapshot(//build/toolchain/linux:clang_x64_thorium_build_host)"
+    ]
+  },
+  "linux-x64-sse3": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "sse3",
+    "args_file": "other/SSE3/args_SSE3.gn",
+    "target_os": "linux",
+    "target_cpu": "x64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_SSE3.deb",
+      "thorium-browser_{version}_SSE3.rpm",
+      "thorium-browser_{version}_SSE3.zip",
+      "Thorium_Browser_{version}_SSE3.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "amd64",
+    "rpm_arch": "x86_64",
+    "portable_profile": "SSE3",
+    "appimage_arch": "x86_64",
+    "appimage_runtime": "runtime-x86_64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "sse3",
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "is_cfi": true,
+      "rtc_enable_avx2": false
+    }
+  },
+  "linux-x64-sse4": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "sse4",
+    "args_file": "other/SSE4.1/args_SSE4.1.gn",
+    "target_os": "linux",
+    "target_cpu": "x64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_SSE4.deb",
+      "thorium-browser_{version}_SSE4.rpm",
+      "thorium-browser_{version}_SSE4.zip",
+      "Thorium_Browser_{version}_SSE4.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "amd64",
+    "rpm_arch": "x86_64",
+    "portable_profile": "SSE4",
+    "appimage_arch": "x86_64",
+    "appimage_runtime": "runtime-x86_64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "sse4_1",
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "is_cfi": true,
+      "rtc_enable_avx2": false
+    }
+  },
+  "linux-arm64": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "raspi",
+    "args_file": "arm/raspi/raspi_args.gn",
+    "target_os": "linux",
+    "target_cpu": "arm64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_arm64.deb",
+      "thorium-browser_{version}_arm64.rpm",
+      "thorium-browser_{version}_arm64.zip",
+      "Thorium_Browser_{version}_arm64.AppImage"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "arm64",
+    "rpm_arch": "aarch64",
+    "portable_profile": "ARM64",
+    "appimage_arch": "aarch64",
+    "appimage_runtime": "runtime-aarch64",
+    "expected_gn_args": {
+      "thorium_x86_profile": "none",
+      "chrome_pgo_phase": 0,
+      "use_thin_lto": true,
+      "is_cfi": true,
+      "is_raspi": true,
+      "bundle_widevine_cdm": false
+    }
+  }
+}
