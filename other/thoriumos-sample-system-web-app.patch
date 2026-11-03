@@ -101,7 +101,7 @@ index 145ef702d8d25..241c3227f1ab3 100644
  namespace content {
  class WebUI;
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index db9a1dd9c09b6..7c372d16e4449 100644
+index 03fcc5760648e..a369827446fa9 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -714,12 +714,10 @@ if (is_chromeos) {

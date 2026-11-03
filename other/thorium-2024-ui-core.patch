@@ -2517,10 +2517,10 @@ index a2dae078ccbd3..0ecd33a3af66e 100644
    use_bubble_border = corner_radius > 0;
  }
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
-index 89ffaf3d3776d..949f70c5d5d84 100644
+index 6b4595a80ef88..8c457e3bfbbeb 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
 +++ b/ui/views/controls/menu/menu_item_view.cc
-@@ -1762,11 +1762,13 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
+@@ -1766,11 +1766,13 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
    last_paint_as_selected_ = paint_as_selected;
    const Colors colors = CalculateColors(paint_as_selected);
    if (submenu_arrow_image_view_) {

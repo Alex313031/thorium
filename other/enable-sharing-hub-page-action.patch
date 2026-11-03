@@ -36,18 +36,18 @@ index 40c5e669eb231..3db13b78ae29f 100644
    update_action_visibility(kActionSendTabToSelf);
    update_action_visibility(kActionCopyUrl);
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index 3b9130a5b36f5..c9e4e1b1d4fdd 100644
+index 0f7a326019ebc..5f8929f14bc62 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
-@@ -125,6 +125,7 @@
- #include "chrome/browser/ui/lens/lens_search_controller.h"
+@@ -126,6 +126,7 @@
  #include "chrome/browser/ui/lens/lens_string_utils.h"
+ #include "chrome/browser/ui/location_bar/location_bar.h"
  #include "chrome/browser/ui/omnibox/ai_mode_page_action_controller.h"
 +#include "chrome/browser/ui/omnibox/omnibox_pedal_implementations.h"
  #include "chrome/browser/ui/page_action/page_action_controller.h"
  #include "chrome/browser/ui/page_action/page_action_triggers.h"
  #include "chrome/browser/ui/page_info/page_info_dialog.h"
-@@ -4497,6 +4498,13 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
+@@ -4509,6 +4510,13 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
                },
                bwi))
            .SetActionId(kActionSharingHub)

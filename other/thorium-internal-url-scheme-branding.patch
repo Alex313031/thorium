@@ -201,7 +201,7 @@ index 5b32f2d6254d4..4a8584955d1d6 100644
  
  #endif  // CHROME_BROWSER_THORIUM_URL_UTILS_H_
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
-index fb690ae3a6492..10286931eb764 100644
+index fd036a85dfb29..0fd4c8e169d19 100644
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
 @@ -58,6 +58,7 @@
@@ -212,7 +212,7 @@ index fb690ae3a6492..10286931eb764 100644
  #include "chrome/browser/translate/chrome_translate_client.h"
  #include "chrome/browser/ttc/core/entrypoint_controller.h"
  #include "chrome/browser/ui/accelerator_utils.h"
-@@ -2882,7 +2883,9 @@ bool IsDebuggerAttachedToCurrentTab(BrowserWindowInterface* browser) {
+@@ -2885,7 +2886,9 @@ bool IsDebuggerAttachedToCurrentTab(BrowserWindowInterface* browser) {
  void CopyURL(BrowserWindowInterface* browser,
               content::WebContents* web_contents) {
    ui::ScopedClipboardWriter scw(ui::ClipboardBuffer::kCopyPaste);

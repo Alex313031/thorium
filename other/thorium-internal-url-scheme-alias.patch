@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index 3148354138136..db9a1dd9c09b6 100644
+index cadfe4ecbe6f4..03fcc5760648e 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -867,6 +867,8 @@ source_set("core") {
@@ -12,7 +12,7 @@ index 3148354138136..db9a1dd9c09b6 100644
      "unexpire_flags.h",
      "universal_web_contents_observers.cc",
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index 2e0f287290b76..c4e8b88681977 100644
+index aa8b16f4672e9..46d6fd134e1af 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
 @@ -194,6 +194,7 @@
@@ -23,7 +23,7 @@ index 2e0f287290b76..c4e8b88681977 100644
  #include "chrome/browser/tracing/chrome_tracing_delegate.h"
  #include "chrome/browser/translate/translate_service.h"
  #include "chrome/browser/ui/blocked_content/blocked_window_params.h"
-@@ -5126,6 +5127,8 @@ bool ChromeContentBrowserClient::
+@@ -5131,6 +5132,8 @@ bool ChromeContentBrowserClient::
  
  void ChromeContentBrowserClient::BrowserURLHandlerCreated(
      BrowserURLHandler* handler) {

@@ -1,8 +1,8 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-index 9fd0905082304..4adef14787140 100644
+index eb43c940be449..c2d9489f708fd 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -4376,6 +4376,13 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -4382,6 +4382,13 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
              @Nullable MotionEventInfo triggeringMotion) {
          final Tab currentTab = getActivityTab();
          boolean currentTabIsNtp = isTabNtp(currentTab);

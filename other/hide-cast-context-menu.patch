@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/renderer_context_menu/render_view_context_menu.cc b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-index 25138f218528f..feaaf4e58171e 100644
+index 767cebcdd6a04..7f7ff4e381902 100644
 --- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
 +++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
-@@ -2411,7 +2411,9 @@ void RenderViewContextMenu::AppendVideoItems() {
+@@ -2429,7 +2429,9 @@ void RenderViewContextMenu::AppendVideoItems() {
      menu_model_.AddItemWithStringId(IDC_CONTENT_CONTEXT_PICTUREINPICTURE,
                                      IDS_CONTENT_CONTEXT_PICTUREINPICTURE);
  
@@ -13,7 +13,7 @@ index 25138f218528f..feaaf4e58171e 100644
        menu_model_.AddItemWithStringIdAndIcon(
            IDC_ROUTE_MEDIA, IDS_MEDIA_ROUTER_MENU_ITEM_TITLE,
            ui::ImageModel::FromVectorIcon(features::IsRoundedIconsEnabled()
-@@ -2830,7 +2832,9 @@ void RenderViewContextMenu::AppendTranslateItem() {
+@@ -2861,7 +2863,9 @@ void RenderViewContextMenu::AppendTranslateOrPartialTranslateItem() {
  }
  
  void RenderViewContextMenu::AppendMediaRouterItem() {

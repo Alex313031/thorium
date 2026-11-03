@@ -840,7 +840,7 @@ index d274a83ec2f34..9833ec2a2e2f5 100644
      case ash::USE_LAUNCH_TYPE_WINDOW:
      case ash::USE_LAUNCH_TYPE_TABBED_WINDOW:
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index c9e4e1b1d4fdd..09b3b33ebe03e 100644
+index 5f8929f14bc62..027ebc7ec1083 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
 @@ -12,6 +12,7 @@
@@ -851,7 +851,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
  #include "base/metrics/histogram_functions.h"
-@@ -885,9 +886,12 @@ void BrowserActions::InitializePageActionIconActions() {
+@@ -886,9 +887,12 @@ void BrowserActions::InitializePageActionIconActions() {
                l10n_util::GetStringUTF16(IDS_FIND)))
            .SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_FIND))
            .SetImage(ui::ImageModel::FromVectorIcon(
@@ -867,7 +867,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
            .SetAccelerator(GetAcceleratorForCommandId(IDC_FIND))
            .Build());
  
-@@ -1046,6 +1050,9 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1047,6 +1051,9 @@ void BrowserActions::InitializeChromeMenuActions() {
    TabStripModel* const tab_strip_model = bwi_->GetTabStripModel();
    BrowserWindowInterface* const bwi = base::to_address(bwi_);
    const bool is_guest_session = profile->IsGuestSession();
@@ -877,7 +877,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
  
    root_action_item_->AddChild(
        ChromeMenuAction(
-@@ -1059,8 +1066,13 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1060,8 +1067,13 @@ void BrowserActions::InitializeChromeMenuActions() {
                profile),
            kActionNewIncognitoWindow, IDS_NEW_INCOGNITO_WINDOW,
            IDS_NEW_INCOGNITO_WINDOW,
@@ -893,7 +893,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
            .SetEnabled(IncognitoModePrefs::IsIncognitoTypeAllowed(
                profile, IncognitoModePrefs::IncognitoModeType::kStandard))
            .SetProperty(actions::kShortTitleTextKey,
-@@ -1323,8 +1335,10 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1324,8 +1336,10 @@ void BrowserActions::InitializeChromeMenuActions() {
                bwi, is_incognito),
            kActionClearBrowsingData, IDS_CLEAR_BROWSING_DATA,
            IDS_CLEAR_BROWSING_DATA,
@@ -906,7 +906,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
            .SetEnabled(is_incognito ||
                        (!is_guest_session && !profile->IsSystemProfile()))
            .SetAccelerator(GetAcceleratorForCommandId(IDC_CLEAR_BROWSING_DATA))
-@@ -1512,8 +1526,12 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1513,8 +1527,12 @@ void BrowserActions::InitializeChromeMenuActions() {
                l10n_util::GetStringUTF16(IDS_BOOKMARK_THIS_TAB)))
            .SetTooltipText(BrowserActions::GetCleanTitleAndTooltipText(
                l10n_util::GetStringUTF16(IDS_BOOKMARK_THIS_TAB)))
@@ -921,7 +921,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
            .SetAccelerator(GetAcceleratorForCommandId(IDC_BOOKMARK_THIS_TAB))
            .Build());
  
-@@ -1620,8 +1638,11 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1621,8 +1639,11 @@ void BrowserActions::InitializeChromeMenuActions() {
                  },
                  bwi),
              kActionShowChromeLabs, IDS_CHROMELABS, IDS_CHROMELABS,
@@ -935,7 +935,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
              .SetVisible(ShouldShowChromeLabsUI(profile))
              .Build());
    }
-@@ -4408,7 +4429,10 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
+@@ -4420,7 +4441,10 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
            .SetImage(ui::ImageModel::FromVectorIcon(
                features::IsRoundedIconsEnabled()
                    ? vector_icons::kInfoIcon
@@ -947,7 +947,7 @@ index c9e4e1b1d4fdd..09b3b33ebe03e 100644
            .Build());
  
    root_action_item_->AddChild(
-@@ -4546,19 +4570,23 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
+@@ -4558,19 +4582,23 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
  
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    root_action_item_->AddChild(
@@ -4925,7 +4925,7 @@ index 796882c3269c0..5c1ed4dccfb77 100644
      }
      AddItemWithStringIdAndIcon(IDC_WEB_APP_UPGRADE_DIALOG,
 diff --git a/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc b/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
-index 5f5a1819d1154..e9f98584ea3c0 100644
+index dc0975fd520ff..dccb183e4b411 100644
 --- a/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
 +++ b/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
 @@ -15,6 +15,7 @@
@@ -5938,7 +5938,7 @@ index 4171cd3e9380a..887f198b5e94f 100644
    SetImageModel(Button::STATE_NORMAL, drop_arrow_image);
  }
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
-index 949f70c5d5d84..a566acf209999 100644
+index 8c457e3bfbbeb..0af4f54ab26a1 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
 +++ b/ui/views/controls/menu/menu_item_view.cc
 @@ -15,6 +15,7 @@
@@ -5949,7 +5949,7 @@ index 949f70c5d5d84..a566acf209999 100644
  #include "base/containers/adapters.h"
  #include "base/i18n/case_conversion.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -1762,11 +1763,20 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
+@@ -1766,11 +1767,20 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
    last_paint_as_selected_ = paint_as_selected;
    const Colors colors = CalculateColors(paint_as_selected);
    if (submenu_arrow_image_view_) {

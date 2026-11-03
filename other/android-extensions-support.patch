@@ -390,10 +390,10 @@ index d4913144d4f23..132fca653833b 100644
              applySingleThemeOverlay(R.style.ThemeOverlay_BrowserUI_DesktopDensity_TabStrip);
          }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-index b7cccfdc006bb..c6f7150aedef5 100644
+index af106d0a96ec6..c22d2bac396ff 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -2348,7 +2348,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -2352,7 +2352,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
  
      @Override
      public boolean shouldPersistAcrossReboots() {
@@ -402,7 +402,7 @@ index b7cccfdc006bb..c6f7150aedef5 100644
      }
  
      private void handleDebugIntent(Intent intent) {
-@@ -5021,7 +5021,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -5027,7 +5027,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
  
      private boolean shouldUseDesktopBackConventions() {
          return ChromeFeatureList.sBackGestureReflectsDesktopBehavior.isEnabled()
@@ -988,10 +988,10 @@ index ee65ca24702c4..477b13b42cdd1 100644
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON" file="google_chrome/webstore_icon.png" />
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON_16" file="google_chrome/webstore_icon_16.png" />
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index 7c372d16e4449..908c068365106 100644
+index a369827446fa9..f4c617f24d5bb 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1387,7 +1387,7 @@ source_set("core") {
+@@ -1388,7 +1388,7 @@ source_set("core") {
      ]
    }
  
@@ -1000,7 +1000,7 @@ index 7c372d16e4449..908c068365106 100644
      deps += [
        "//chrome/browser/ui/webui/discards",
        "//ui/webui/resources/cr_components/color_change_listener:mojom",
-@@ -3153,7 +3153,7 @@ source_set("browser") {
+@@ -3154,7 +3154,7 @@ source_set("browser") {
      ]
    }
  
@@ -1009,7 +1009,7 @@ index 7c372d16e4449..908c068365106 100644
      deps += [ "//chrome/browser/ui/webui/ai_overlay_dialog:impl" ]
    }
  
-@@ -3286,7 +3286,7 @@ source_set("browser") {
+@@ -3287,7 +3287,7 @@ source_set("browser") {
  
    # TODO(https://crbug.com/356905053): Add more dependencies here and merge this
    # block with the `enable_extensions` block above.
@@ -1018,7 +1018,7 @@ index 7c372d16e4449..908c068365106 100644
      deps += [ "//chrome/browser/ui/android/extensions" ]
    }
  
-@@ -3644,7 +3644,7 @@ group("browser_generated_files") {
+@@ -3645,7 +3645,7 @@ group("browser_generated_files") {
        "//chrome/browser/ui/webui/side_panel/customize_chrome:mojo_bindings",
      ]
    }
@@ -1027,7 +1027,7 @@ index 7c372d16e4449..908c068365106 100644
      public_deps += [ "//chrome/browser/ui/webui/discards:mojo_bindings" ]
    }
  
-@@ -3704,7 +3704,7 @@ group("browser_generated_files") {
+@@ -3705,7 +3705,7 @@ group("browser_generated_files") {
        "//ui/webui/resources/cr_components/help_bubble:mojo_bindings",
      ]
    }
@@ -1037,7 +1037,7 @@ index 7c372d16e4449..908c068365106 100644
          [ "//chrome/browser/ui/webui/ai_overlay_dialog:mojo_bindings" ]
    }
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index e11e116e8f65e..189060bb81952 100644
+index 3040e873efd93..a2d2a9647c335 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
 @@ -401,6 +401,10 @@
@@ -1051,7 +1051,7 @@ index e11e116e8f65e..189060bb81952 100644
  #if BUILDFLAG(ENABLE_PDF)
  #include "pdf/pdf_features.h"
  #endif
-@@ -7931,7 +7935,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -7941,7 +7945,7 @@ const FeatureEntry kFeatureEntries[] = {
  
      {"settings-in-tab", flag_descriptions::kSettingsInTabName,
       flag_descriptions::kSettingsInTabDescription, kOsAndroid,
@@ -1060,7 +1060,7 @@ index e11e116e8f65e..189060bb81952 100644
       FEATURE_VALUE_TYPE(chrome::android::kSettingsInTabDesktop)},
  #else
       FEATURE_VALUE_TYPE(chrome::android::kSettingsInTab)},
-@@ -9257,6 +9261,13 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9267,6 +9271,13 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(ash::features::kTrafficCountersForWiFiTesting)},
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
@@ -1074,7 +1074,7 @@ index e11e116e8f65e..189060bb81952 100644
  #if BUILDFLAG(ENABLE_EXTENSIONS)
      {"api-contextual-tasks-private",
       flag_descriptions::kApiContextualTasksPrivateName,
-@@ -14172,11 +14183,11 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -14182,11 +14193,11 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(chrome::android::kDesktopAndroidFilePickerForMedia)},
  #endif
  
@@ -1657,10 +1657,10 @@ index 20909d73a9b23..19dc01258b831 100644
  
  }  // namespace chrome::internal
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index 3f65f30e96017..08fac0443838e 100644
+index e542f89b197fa..ab1f236196373 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -4339,7 +4339,7 @@ base::OnceClosure ChromeContentBrowserClient::SelectClientCertificate(
+@@ -4340,7 +4340,7 @@ base::OnceClosure ChromeContentBrowserClient::SelectClientCertificate(
      // TODO(wenz): This should instead proceed with the selected certificate
      // when there are matching certificates in the OS.
  #if BUILDFLAG(ENABLE_EXTENSIONS) && \
@@ -1669,7 +1669,7 @@ index 3f65f30e96017..08fac0443838e 100644
      if (matching_certificates.empty() && nonmatching_certificates.empty()) {
        extensions::ProcessMap* process_map =
            extensions::ProcessMap::Get(profile);
-@@ -4673,7 +4673,7 @@ void ChromeContentBrowserClient::OverrideWebPreferences(
+@@ -4674,7 +4674,7 @@ void ChromeContentBrowserClient::OverrideWebPreferences(
  // Fill font preferences. These are not registered on Android unless we're built
  // with extensions (the chrome.fontSettings API can change these).
  // - http://crbug.com/40337093, http://crbug.com/41304476.
@@ -1809,7 +1809,7 @@ index 97ec400e7c729..1b6b9d3d0c24b 100644
  #define MAYBE_LastSavePath DISABLED_LastSavePath
  #else
 diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUILD.gn
-index 45ffea4f8d3b9..447b7b481e781 100644
+index bd3a172183d75..6c3d150ee2798 100644
 --- a/chrome/browser/extensions/BUILD.gn
 +++ b/chrome/browser/extensions/BUILD.gn
 @@ -689,7 +689,7 @@ source_set("extensions") {
@@ -1821,7 +1821,7 @@ index 45ffea4f8d3b9..447b7b481e781 100644
        sources += [
          # These files are temporary workarounds to allow for a lightweight
          # extensions runtime in desktop-android builds. They should be removed
-@@ -2644,7 +2644,7 @@ source_set("browser_tests") {
+@@ -2647,7 +2647,7 @@ source_set("browser_tests") {
        "//components/messages/android:test_support",
      ]
  
@@ -2109,7 +2109,7 @@ index 2281ab20bd5a7..b4fffbd115ad9 100644
      testonly = true
      defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
 diff --git a/chrome/browser/extensions/api/tabs/tabs_api.cc b/chrome/browser/extensions/api/tabs/tabs_api.cc
-index 8599fed2dfbbc..873242f374433 100644
+index 2a631eb9fc793..02a375f25cc29 100644
 --- a/chrome/browser/extensions/api/tabs/tabs_api.cc
 +++ b/chrome/browser/extensions/api/tabs/tabs_api.cc
 @@ -1918,6 +1918,9 @@ base::ListValue TabsQueryFunction::BuildTabList(
@@ -2420,7 +2420,7 @@ index 80f75b5e7c4c3..432486c4ef6a0 100644
        base::android::device_info::is_automotive() ||
        base::android::device_info::is_xr()) {
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index f0072ff24f5be..947b87bd7de95 100644
+index 3a721c793167d..6b41d7d381796 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
 @@ -2599,6 +2599,10 @@ inline constexpr char kExtensionsCollapseMainMenuDescription[] =
@@ -2510,10 +2510,10 @@ index aedad43f43efc..4ba732c93e0bf 100644
  
      public static final List<CachedFlag> sFlagsCachedFullBrowser =
 diff --git a/chrome/browser/glic/BUILD.gn b/chrome/browser/glic/BUILD.gn
-index 365a65e6b2704..55ca6ec0393e0 100644
+index aeae2db2ea8e7..7f47bb71f53c9 100644
 --- a/chrome/browser/glic/BUILD.gn
 +++ b/chrome/browser/glic/BUILD.gn
-@@ -1147,7 +1147,7 @@ source_set("browser_tests") {
+@@ -1148,7 +1148,7 @@ source_set("browser_tests") {
      ]
    }
  
@@ -2522,7 +2522,7 @@ index 365a65e6b2704..55ca6ec0393e0 100644
      sources += [
        "experimental_opt_in/glic_experimental_opt_in_ui_host_android_browsertest.cc",
        "service/glic_android_peek_browsertest.cc",
-@@ -1155,7 +1155,7 @@ source_set("browser_tests") {
+@@ -1156,7 +1156,7 @@ source_set("browser_tests") {
      ]
    }
  
@@ -5197,7 +5197,7 @@ index c54d8b5c0a7ab..035729da98311 100644
             ? AutocompleteProvider::Type::kDocument
             : AutocompleteProvider::Type::kNone) |
 diff --git a/components/omnibox/browser/autocomplete_controller.cc b/components/omnibox/browser/autocomplete_controller.cc
-index 957cbc93e25ad..094c23367c2eb 100644
+index e978d4b3f1aec..8fede835702a7 100644
 --- a/components/omnibox/browser/autocomplete_controller.cc
 +++ b/components/omnibox/browser/autocomplete_controller.cc
 @@ -128,7 +128,7 @@ using OEP = metrics::OmniboxEventProto;
@@ -5210,7 +5210,7 @@ index 957cbc93e25ad..094c23367c2eb 100644
  
  void RecordMlScoreCoverage(size_t matches_with_non_null_scores,
 diff --git a/components/omnibox/browser/autocomplete_controller_unittest.cc b/components/omnibox/browser/autocomplete_controller_unittest.cc
-index 22d2b47e86a28..6d01a3e84ee0c 100644
+index 9cfc2b001e3fe..dc425925efe80 100644
 --- a/components/omnibox/browser/autocomplete_controller_unittest.cc
 +++ b/components/omnibox/browser/autocomplete_controller_unittest.cc
 @@ -389,7 +389,7 @@ TEST_F(AutocompleteControllerTest, CompanyEntityImageNotRemoved) {
@@ -5507,10 +5507,10 @@ index b0043a5c1974d..b2a1e125a277f 100644
  #if BUILDFLAG(IS_ANDROID)
  // Additional gate for user policy registration and download based on user
 diff --git a/components/webapps/browser/installable/installable_icon_fetcher.cc b/components/webapps/browser/installable/installable_icon_fetcher.cc
-index 6e2c1dfafd887..589da9ade56b5 100644
+index a2f613b2789f4..9224891998d67 100644
 --- a/components/webapps/browser/installable/installable_icon_fetcher.cc
 +++ b/components/webapps/browser/installable/installable_icon_fetcher.cc
-@@ -130,7 +130,7 @@ void ProcessFaviconInBackground(
+@@ -133,7 +133,7 @@ void ProcessFaviconInBackground(
        FROM_HERE, base::BindOnce(std::move(success_callback), decoded));
  }
  
@@ -5519,16 +5519,16 @@ index 6e2c1dfafd887..589da9ade56b5 100644
  // Generates a homescreen icon for `page_url` and posts a task to invoke
  // `callback` on `ui_thread_task_runner.`
  void GenerateHomeScreenIconInBackground(
-@@ -371,7 +371,7 @@ void InstallableIconFetcher::OnIconFetched(const GURL& icon_url,
- }
- 
- void InstallableIconFetcher::MaybeEndWithError(InstallableStatusCode code) {
+@@ -412,7 +412,7 @@ void InstallableIconFetcher::MaybeEndWithError(InstallableStatusCode code) {
+       }
+     }
+   }
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
 +#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
    // Desktop android will generate an icon if none is available.
-   if (!web_contents_) {
-     EndWithError(code);
-@@ -399,7 +399,7 @@ void InstallableIconFetcher::EndWithError(InstallableStatusCode code) {
+   base::ThreadPool::PostTask(
+       FROM_HERE,
+@@ -446,7 +446,7 @@ void InstallableIconFetcher::EndWithError(InstallableStatusCode code) {
    std::move(finish_callback_).Run(code);
  }
  
@@ -5538,10 +5538,10 @@ index 6e2c1dfafd887..589da9ade56b5 100644
                                                         const SkBitmap& bitmap) {
    if (bitmap.drawsNothing()) {
 diff --git a/components/webapps/browser/installable/installable_icon_fetcher.h b/components/webapps/browser/installable/installable_icon_fetcher.h
-index 4b7bbb5a860b4..29ea34d87272b 100644
+index 114551ba58a53..e4c75db78108a 100644
 --- a/components/webapps/browser/installable/installable_icon_fetcher.h
 +++ b/components/webapps/browser/installable/installable_icon_fetcher.h
-@@ -76,7 +76,7 @@ class InstallableIconFetcher {
+@@ -80,7 +80,7 @@ class InstallableIconFetcher {
    // Ends the fetch with an error.
    void EndWithError(InstallableStatusCode code);
  
@@ -5551,18 +5551,27 @@ index 4b7bbb5a860b4..29ea34d87272b 100644
  #endif
  
 diff --git a/components/webapps/browser/installable/installable_icon_fetcher_unittest.cc b/components/webapps/browser/installable/installable_icon_fetcher_unittest.cc
-index a79df768b5f72..5df685ee97bc2 100644
+index 7185aced30980..0116a1da1dfd7 100644
 --- a/components/webapps/browser/installable/installable_icon_fetcher_unittest.cc
 +++ b/components/webapps/browser/installable/installable_icon_fetcher_unittest.cc
-@@ -329,7 +329,7 @@ TEST_F(InstallableIconFetcherTest, FaviconFallbackHandlesAllCandidatesFailing) {
-   EXPECT_TRUE(web_contents_tester()->TestDidDownloadImage(kFailingCandidateUrl,
-                                                           200, {}, {}));
+@@ -195,7 +195,7 @@ class InstallableIconFetcherTest : public content::RenderViewHostTestHarness {
+       base::test::TestFuture<InstallableStatusCode>& future,
+       const InstallablePageData& page_data,
+       const GURL& page_url) {
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+     EXPECT_EQ(future.Get(), InstallableStatusCode::NO_ERROR_DETECTED);
+     EXPECT_TRUE(page_data.primary_icon_fetched());
+     EXPECT_EQ(page_data.primary_icon_url(), page_url);
+@@ -1065,7 +1065,7 @@ TEST_F(InstallableIconFetcherTest, RootFaviconFallbackSkippedWhenFlagOff) {
+   ExpectEndedWithoutDownloadedIcon(future, page_data, GURL(kPageUrl));
+ }
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
 +#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
-   // On Desktop Android, MaybeEndWithError generates a monogram homescreen icon.
-   EXPECT_EQ(future.Get(), InstallableStatusCode::NO_ERROR_DETECTED);
-   EXPECT_TRUE(page_data.primary_icon_fetched());
+ TEST_F(InstallableIconFetcherTest, RootFaviconFallbackPrecedesGeneratedIcon) {
+   base::test::ScopedFeatureList scoped_feature_list;
+   scoped_feature_list.InitAndEnableFeature(
 diff --git a/components/webui/version/resources/about_version.html b/components/webui/version/resources/about_version.html
 index 3d0a96ad54efd..99720e9998128 100644
 --- a/components/webui/version/resources/about_version.html
@@ -5631,7 +5640,7 @@ index 0559ec1a959fd..dc1e7a6d6a0e4 100644
        "SiteIsolation.IsSitePerProcessOrStricter.AndroidDesktop",
        SiteIsolationPolicy::IsSitePerProcessOrStricter());
 diff --git a/content/browser/renderer_host/render_widget_host_view_android.cc b/content/browser/renderer_host/render_widget_host_view_android.cc
-index ef753539c64d3..0925396f7c0cc 100644
+index c9573ca5c4cc4..da6289f5e8721 100644
 --- a/content/browser/renderer_host/render_widget_host_view_android.cc
 +++ b/content/browser/renderer_host/render_widget_host_view_android.cc
 @@ -187,7 +187,7 @@ bool IsTooltipsEnabled() {
@@ -6422,7 +6431,7 @@ index d9360f2f96c22..c92a84b2a46b2 100644
          ifdefs.append('BUILDFLAG(IS_LINUX)')
        elif platform == Platforms.MAC:
 diff --git a/ui/android/java/src/org/chromium/ui/base/SelectFileDialog.java b/ui/android/java/src/org/chromium/ui/base/SelectFileDialog.java
-index 3581d42bd7497..453338c1b7ab7 100644
+index 8d691b2d7624a..77bad83f5d86c 100644
 --- a/ui/android/java/src/org/chromium/ui/base/SelectFileDialog.java
 +++ b/ui/android/java/src/org/chromium/ui/base/SelectFileDialog.java
 @@ -479,7 +479,7 @@ public class SelectFileDialog implements WindowAndroid.IntentCallback, PhotoPick

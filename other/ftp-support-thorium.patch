@@ -46,10 +46,10 @@ index 21e5fd0d9256f..ec3a10b9cb0de 100644
        <!-- Saving Page-->
        <message name="IDS_SAVE_PAGE_DESC_HTML_ONLY" desc="In the Save Page dialog, the description of saving only the HTML of a webpage.">
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index aa9fde3752c21..e11e116e8f65e 100644
+index 16a1714610cfe..3040e873efd93 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -8625,6 +8625,12 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -8635,6 +8635,12 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           heavy_ad_intervention::features::kHeavyAdPrivacyMitigations)},
  
@@ -63,7 +63,7 @@ index aa9fde3752c21..e11e116e8f65e 100644
      {"crostini-container-install",
       flag_descriptions::kCrostiniContainerInstallName,
 diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
-index 75467d42ae6c8..f0072ff24f5be 100644
+index a22eb7ac1ec30..3a721c793167d 100644
 --- a/chrome/browser/flag_descriptions.h
 +++ b/chrome/browser/flag_descriptions.h
 @@ -826,6 +826,15 @@ inline constexpr char kEnableDrDcDescription[] =

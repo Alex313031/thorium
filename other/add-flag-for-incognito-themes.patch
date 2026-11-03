@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index c4e8b88681977..f75095be894d4 100644
+index 46d6fd134e1af..9caa2b9c27226 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -4076,9 +4076,13 @@ GetPreferredColorScheme(const WebPreferences& web_prefs,
+@@ -4077,9 +4077,13 @@ GetPreferredColorScheme(const WebPreferences& web_prefs,
  #else  // !BUILDFLAG(IS_ANDROID)
    Profile* profile =
        Profile::FromBrowserContext(web_contents->GetBrowserContext());

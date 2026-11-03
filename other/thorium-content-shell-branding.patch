@@ -214,7 +214,7 @@ index 0c52b54f11aaa..02b15082cd391 100644
    shell_data.window_widget->Init(std::move(params));
  #endif  // BUILDFLAG(IS_CHROMEOS)
 diff --git a/content/test/BUILD.gn b/content/test/BUILD.gn
-index 51cb749d82788..7152427b6a589 100644
+index cc0e7c2f7db55..04cae6cab208a 100644
 --- a/content/test/BUILD.gn
 +++ b/content/test/BUILD.gn
 @@ -1,4 +1,4 @@

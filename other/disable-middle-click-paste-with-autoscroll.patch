@@ -23,10 +23,10 @@ index d2e550883598e..d9d76ad1ee924 100644
  #endif
    prefs->caret_blink_interval =
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
-index 10286931eb764..f218f6d1c7a7b 100644
+index 0fd4c8e169d19..85fb2bac0e822 100644
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1416,7 +1416,8 @@ void NewTabToRight(BrowserWindowInterface* browser) {
+@@ -1419,7 +1419,8 @@ void NewTabToRight(BrowserWindowInterface* browser) {
  void NewTabFromClipboardURL(BrowserWindowInterface* browser) {
  #if BUILDFLAG(IS_LINUX)
    if (ui::Clipboard::IsSupportedClipboardBuffer(
@@ -37,7 +37,7 @@ index 10286931eb764..f218f6d1c7a7b 100644
      CHECK(clipboard)
          << "Clipboard instance is not available, cannot proceed with "
 diff --git a/third_party/blink/renderer/core/editing/selection_controller.cc b/third_party/blink/renderer/core/editing/selection_controller.cc
-index d54fb10f7f92a..d2cf82009014e 100644
+index 05150791539c4..b07c21a2655e4 100644
 --- a/third_party/blink/renderer/core/editing/selection_controller.cc
 +++ b/third_party/blink/renderer/core/editing/selection_controller.cc
 @@ -62,6 +62,7 @@
@@ -48,7 +48,7 @@ index d54fb10f7f92a..d2cf82009014e 100644
  #include "third_party/blink/renderer/core/paint/paint_layer.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  #include "ui/base/mojom/menu_source_type.mojom-blink.h"
-@@ -1313,6 +1314,13 @@ bool SelectionController::HandlePasteGlobalSelection(
+@@ -1325,6 +1326,13 @@ bool SelectionController::HandlePasteGlobalSelection(
    if (!frame_->GetPage())
      return false;
  

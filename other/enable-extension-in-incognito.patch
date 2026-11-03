@@ -1,5 +1,5 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-index c6f7150aedef5..9fd0905082304 100644
+index c22d2bac396ff..eb43c940be449 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 @@ -1051,8 +1051,9 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
@@ -13,7 +13,7 @@ index c6f7150aedef5..9fd0905082304 100644
  
          chromeAndroidTask.addFeature(
                  new ChromeAndroidTaskFeatureKey(
-@@ -4667,7 +4668,17 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -4673,7 +4674,17 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
          } else if (id == R.id.extensions_menu_menu_id) {
              ExtensionsToolbarCoordinator coordinator =
                      getToolbarManager().getExtensionsToolbarCoordinator();

@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index 33a6696fd803a..3148354138136 100644
+index 5aa5b0447d685..cadfe4ecbe6f4 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -18,7 +18,7 @@ index 33a6696fd803a..3148354138136 100644
      "unexpire_flags.h",
      "universal_web_contents_observers.cc",
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index f63da84d96d58..aa9fde3752c21 100644
+index 3bd06fa95993f..16a1714610cfe 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
 @@ -1,4 +1,4 @@
@@ -35,7 +35,7 @@ index f63da84d96d58..aa9fde3752c21 100644
  #include "components/password_manager/core/common/password_manager_features.h"
  #include "components/payments/core/features.h"
  #include "components/performance_manager/public/features.h"
-@@ -5193,11 +5194,16 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
+@@ -5203,11 +5204,16 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
      "force-enterprise-isolated-mode";
  
  // When adding a new choice, add it to the end of the list.

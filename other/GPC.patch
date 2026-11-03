@@ -549,10 +549,10 @@ index c147ff6f38d3b..fa6b8b1eea795 100644
    // the use of Clear Key key system which is always allowed as required by the
    // spec.
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 7dbe25340557c..347fc1661561d 100644
+index fa8e2fcea7d93..78a66e51ba02d 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3484,6 +3484,7 @@
+@@ -3496,6 +3496,7 @@
      },
      {
        name: "GlobalPrivacyControl",
