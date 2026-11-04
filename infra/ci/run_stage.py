@@ -2,6 +2,7 @@
 """Run complete Linux target phases until completion or a planned deadline."""
 
 import argparse
+import codecs
 import os
 from pathlib import Path
 import resource
@@ -52,37 +53,58 @@ def stop_group(process, grace=120):
     return process.wait()
 
 
-def run_command(command, cwd, env, deadline, log):
-    process = subprocess.Popen(command, cwd=cwd, env=env, start_new_session=True,
-                               stdout=log, stderr=subprocess.STDOUT)
-    heartbeat = time.monotonic()
-    try:
-        while process.poll() is None:
-            if time.monotonic() - heartbeat >= 60:
-                print(f"Building; {max(0, deadline - time.monotonic()) / 60:.0f} minutes left in this stage", flush=True)
-                heartbeat = time.monotonic()
-            if time.monotonic() >= deadline:
-                # A real failure already visible at the boundary remains a failure.
-                if process.poll() is not None:
-                    break
-                code = stop_group(process)
-                if code == 0:
-                    return "complete", code
-                if code not in (-signal.SIGINT, 128 + signal.SIGINT):
-                    raise subprocess.CalledProcessError(code, command)
-                return "checkpointed", code
-            time.sleep(0.5)
-        code = process.wait()
-        if code:
-            raise subprocess.CalledProcessError(code, command)
-        if group_alive(process.pid):
-            stop_group(process)
-            raise RuntimeError("build exited with live child processes")
-        return "complete", code
-    except BaseException:
-        if group_alive(process.pid):
-            stop_group(process)
-        raise
+def forward_log(stream, decoder, *, final=False):
+    """Mirror saved output without waiting for a newline or a child pipe."""
+    while True:
+        data = stream.read(64 * 1024)
+        text = decoder.decode(data, final=final and not data)
+        if text:
+            sys.stdout.write(text)
+            sys.stdout.flush()
+        # Bound each live read so log traffic cannot starve the deadline check.
+        # Once the process group stops, drain the remaining bytes and decoder.
+        if not final or not data:
+            return
+
+
+def run_command(command, cwd, env, deadline, log_path):
+    with log_path.open("wb") as log, log_path.open("rb") as live_log:
+        decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+        # Keep the compiler writing directly to disk, including during SIGINT
+        # shutdown, so console forwarding cannot fill a child-output pipe.
+        process = subprocess.Popen(command, cwd=cwd, env=env, start_new_session=True,
+                                   stdout=log, stderr=subprocess.STDOUT)
+        heartbeat = time.monotonic()
+        try:
+            while process.poll() is None:
+                forward_log(live_log, decoder)
+                if time.monotonic() - heartbeat >= 60:
+                    print(f"Building; {max(0, deadline - time.monotonic()) / 60:.0f} minutes left in this stage", flush=True)
+                    heartbeat = time.monotonic()
+                if time.monotonic() >= deadline:
+                    # A real failure already visible at the boundary remains a failure.
+                    if process.poll() is not None:
+                        break
+                    code = stop_group(process)
+                    if code == 0:
+                        return "complete", code
+                    if code not in (-signal.SIGINT, 128 + signal.SIGINT):
+                        raise subprocess.CalledProcessError(code, command)
+                    return "checkpointed", code
+                time.sleep(0.5)
+            code = process.wait()
+            if code:
+                raise subprocess.CalledProcessError(code, command)
+            if group_alive(process.pid):
+                stop_group(process)
+                raise RuntimeError("build exited with live child processes")
+            return "complete", code
+        except BaseException:
+            if group_alive(process.pid):
+                stop_group(process)
+            raise
+        finally:
+            forward_log(live_log, decoder, final=True)
 
 
 def completed_actions(out):
@@ -140,8 +162,7 @@ def main():
                        "--target", target, "-j", str(jobs)]
             print(f"Stage {manifest['stage']}, phase {phase + 1}: {target}", flush=True)
             log_path = logs / f"stage-{manifest['stage']:02d}-phase-{phase + 1}.log"
-            with log_path.open("w") as log:
-                status, code = run_command(command, work / "src", env, deadline, log)
+            status, code = run_command(command, work / "src", env, deadline, log_path)
             manifest["last_exit_code"] = code
             if status == "checkpointed":
                 break
