@@ -219,6 +219,49 @@
       "rtc_enable_avx2": false
     }
   },
+  "linux-i386": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "sse2",
+    "args_file": "other/SSE2/args_SSE2.gn",
+    "target_os": "linux",
+    "target_cpu": "x86",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--lib32",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/linux:stable_deb",
+      "chrome/installer/linux:stable_rpm"
+    ],
+    "products": [
+      "thorium-browser_{version}_i386.deb",
+      "thorium-browser_{version}_i386.rpm",
+      "thorium-browser_{version}_i386.zip"
+    ],
+    "host_cpu": "x64",
+    "deb_arch": "i386",
+    "rpm_arch": "i386",
+    "portable_profile": null,
+    "expected_gn_args": {
+      "thorium_x86_profile": "sse2",
+      "chrome_pgo_phase": 0,
+      "use_thin_lto": true,
+      "is_cfi": false,
+      "rtc_enable_avx2": false,
+      "bundle_widevine_cdm": false
+    }
+  },
   "linux-arm64": {
     "runner": "ubuntu-24.04",
     "setup_profile": "raspi",
@@ -262,6 +305,102 @@
       "is_cfi": true,
       "is_raspi": true,
       "bundle_widevine_cdm": false
+    }
+  },
+  "android-arm32": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "android",
+    "args_file": "arm/android/arm32_args.gn",
+    "target_os": "android",
+    "target_cpu": "arm",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--lib32",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "chrome_public_apk",
+      "content_shell_apk",
+      "system_webview_apk"
+    ],
+    "products": [
+      "Thorium_Public_arm32.apk",
+      "Thorium_Shell_arm32.apk",
+      "SystemWebView_arm32.apk"
+    ],
+    "host_cpu": "x64",
+    "apk_abi": "armeabi-v7a",
+    "expected_gn_args": {
+      "v8_target_cpu": "arm",
+      "is_official_build": true,
+      "is_debug": false,
+      "is_java_debug": false,
+      "debuggable_apks": false,
+      "is_high_end_android": false,
+      "chrome_pgo_phase": 0,
+      "clang_use_default_sample_profile": true,
+      "use_thin_lto": true,
+      "v8_enable_builtins_optimization": true,
+      "chrome_orderfile_path": "//chrome/android/orderfiles/arm/orderfile.arm.out",
+      "system_webview_package_name": "com.thorium.webview",
+      "android_channel": "stable"
+    }
+  },
+  "android-arm64": {
+    "runner": "ubuntu-24.04",
+    "setup_profile": "android",
+    "args_file": "arm/android/arm64_args.gn",
+    "target_os": "android",
+    "target_cpu": "arm64",
+    "out_dir": "out/thorium",
+    "host_deps_args": [
+      "--no-prompt",
+      "--no-syms",
+      "--lib32",
+      "--no-arm",
+      "--no-chromeos-fonts",
+      "--no-backwards-compatible"
+    ],
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "chrome_public_apk",
+      "content_shell_apk",
+      "system_webview_apk"
+    ],
+    "products": [
+      "Thorium_Public_arm64.apk",
+      "Thorium_Shell_arm64.apk",
+      "SystemWebView_arm64.apk"
+    ],
+    "host_cpu": "x64",
+    "apk_abi": "arm64-v8a",
+    "expected_gn_args": {
+      "v8_target_cpu": "arm64",
+      "is_official_build": true,
+      "is_debug": false,
+      "is_java_debug": false,
+      "debuggable_apks": false,
+      "is_high_end_android": true,
+      "chrome_pgo_phase": 2,
+      "clang_use_default_sample_profile": false,
+      "use_thin_lto": true,
+      "v8_enable_builtins_optimization": true,
+      "chrome_orderfile_path": "//chrome/android/orderfiles/arm64/orderfile.arm64.out",
+      "system_webview_package_name": "com.thorium.webview",
+      "android_channel": "stable"
     }
   }
 }

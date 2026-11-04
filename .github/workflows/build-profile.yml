@@ -1,4 +1,4 @@
-name: Linux profile build
+name: Profile build
 
 on:
   workflow_call:
@@ -292,11 +292,11 @@ jobs:
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/build-inputs
           merge-multiple: true
-      - name: Package ZIP and AppImage from the same DEB
+      - name: Collect configured release packages
         run: |
           set -o pipefail
           python3 infra/ci/collect_products.py package --inputs "$RUNNER_TEMP/build-inputs" --destination "$RUNNER_TEMP/products" --tools "$RUNNER_TEMP/appimage-tools" 2>&1 | tee "$RUNNER_TEMP/package.log"
-      - name: Upload all four packages and provenance
+      - name: Upload configured packages and provenance
         id: products
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6, Node 24
         with:
@@ -310,7 +310,7 @@ jobs:
           ARTIFACT_ID: ${{ steps.products.outputs.artifact-id }}
           ARTIFACT_URL: ${{ steps.products.outputs.artifact-url }}
         run: |
-          echo "Download: [$THORIUM_CI_PROFILE, artifact $ARTIFACT_ID]($ARTIFACT_URL), retained for 14 days. Includes DEB, RPM, ZIP, AppImage, manifest and SHA256SUMS. Product tests were not run; check and publish manually." >> "$GITHUB_STEP_SUMMARY"
+          echo "Download: [$THORIUM_CI_PROFILE, artifact $ARTIFACT_ID]($ARTIFACT_URL), retained for 14 days. Includes the configured packages, manifest and SHA256SUMS. Product tests were not run; check and publish manually." >> "$GITHUB_STEP_SUMMARY"
       - name: Upload packaging diagnostics
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6, Node 24

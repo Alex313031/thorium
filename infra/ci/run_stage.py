@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run complete Linux target phases until completion or a planned deadline."""
+"""Run target phases until completion or a planned deadline."""
 
 import argparse
 import codecs

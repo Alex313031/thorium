@@ -5,12 +5,12 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: 'Linux variant; all builds six independent profiles'
+        description: 'Linux variant; all builds seven independent profiles'
         type: choice
-        options: [avx, avx2, avx512, sse3, sse4, arm64, all]
+        options: [avx, avx2, avx512, sse3, sse4, i386, arm64, all]
         default: avx2
       parallel_profiles:
-        description: 'Concurrent profile chains (1-6; default 2)'
+        description: 'Concurrent profile chains (1-7; default 2)'
         type: number
         default: 2
       jobs:
@@ -63,7 +63,7 @@ jobs:
       # Manual runs can supply numeric inputs as strings; normalize their type.
       max-parallel: ${{ fromJSON(format('{0}', inputs.parallel_profiles)) }}
       matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
-    uses: ./.github/workflows/build-linux-profile.yml
+    uses: ./.github/workflows/build-profile.yml
     permissions:
       contents: read
       actions: write

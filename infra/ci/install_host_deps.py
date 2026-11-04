@@ -34,8 +34,11 @@ def install(work, sources, profile, label):
             os.environ.get("RUNNER_ENVIRONMENT") != "github-hosted" or
             platform.system() != "Linux" or platform.machine() != "x86_64"):
         raise ValueError("host dependency installation requires a GitHub-hosted Linux x64 runner")
-    if profile["target_os"] != "linux" or profile["target_cpu"] not in ("x64", "arm64"):
-        raise ValueError("host dependency policy is only configured for Linux x64/ARM64 targets")
+    supported = {"linux": ("x86", "x64", "arm64"), "android": ("arm", "arm64")}
+    if profile["target_cpu"] not in supported.get(profile["target_os"], ()):
+        raise ValueError("host dependency policy is not configured for this target")
+    if profile["target_os"] == "android" and "--lib32" not in profile["host_deps_args"]:
+        raise ValueError("Android builds require --lib32 host dependencies")
     spec = sources["host_dependencies"]
     src = work.resolve() / "src"
     script = checked_path(work, SNAPSHOT)

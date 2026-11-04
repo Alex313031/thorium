@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Prepare the locked full Chromium tarball for the selected Linux profile."""
+"""Prepare the locked full Chromium tarball for the selected build profile."""
 
 import argparse
+import bz2
 import json
 import os
 from pathlib import Path
@@ -29,7 +30,11 @@ def install_dependencies(work, cache, sources):
             records.append({**item, "provided_by": "source_archive"})
             continue
         archive = download(item, cache)
-        if item["kind"] == "file":
+        if item["kind"] == "bz2":
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with bz2.open(archive, "rb") as src, path.open("wb") as out:
+                shutil.copyfileobj(src, out)
+        elif item["kind"] == "file":
             path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(archive, path)
             if item.get("executable"):
@@ -91,7 +96,7 @@ def configure_tree(work, sources, profile):
     parsed = gclient_eval.Parse((src / "DEPS").read_text(), str(src / "DEPS"))
     variables = dict(parsed["vars"])
     variables.update({"checkout_linux": True, "checkout_win": False,
-                      "checkout_mac": False, "checkout_android": False,
+                      "checkout_mac": False, "checkout_android": profile["target_os"] == "android",
                       "host_os": "linux", "host_cpu": "x64"})
     gn_values = []
     for key in parsed["gclient_gn_args"]:
@@ -102,7 +107,7 @@ def configure_tree(work, sources, profile):
             value = gclient_eval.EvaluateCondition(value, variables)
         gn_values.append(f"{key} = {json.dumps(value)}")
     (src / "build/config/gclient_args.gni").write_text(
-        "# Generated from the locked DEPS for Linux archive builds on an x64 host.\n" +
+        "# Generated from the locked DEPS for archive builds on a Linux x64 host.\n" +
         "\n".join(gn_values) + "\n")
 
     # Siso still imports a backend module in offline mode. Empty properties

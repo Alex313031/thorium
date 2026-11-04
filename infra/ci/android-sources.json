@@ -1,0 +1,490 @@
+{
+  "schema_version": 1,
+  "chromium_revision": "fb096c0011f9d50f0a264a9376420cdea9c421e3",
+  "deps_sha256": "c4d60cae7b46d4ae476e3409226d89bf72c1fd61e1d97d64027ebae4356f23ae",
+  "reference_release": "https://github.com/gz83/thorium/releases/tag/M156.0.8078.28",
+  "dependencies": [
+    {
+      "kind": "zip",
+      "path": "src/third_party/aosp_dalvik/cipd",
+      "package": "chromium/third_party/aosp_dalvik/linux-amd64",
+      "revision": "version:2@13.0.0_r24.cr1",
+      "sha256": "acce87b5e4e7e42749ccc93a4cf9e1b2fc63bfcdf33c1262f0fd6a81ced34549",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/aosp_dalvik/linux-amd64/+/rM6HteTn5CdJzMk6TPnhsvxjv83zPBJi8P1qgc7TRUkC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/chrome/android/orderfiles/arm",
+      "package": "chromium/chrome/android/orderfiles/arm",
+      "revision": "-KPrjnZU01DGokQ2iX0Ar3TVU7PweQt9NzMGhUM80ToC",
+      "target_cpus": [
+        "arm",
+        "arm64"
+      ],
+      "sha256": "f8a3eb8e7654d350c6a24436897d00af74d553b3f0790b7d37330685433cd13a",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/chrome/android/orderfiles/arm/+/-KPrjnZU01DGokQ2iX0Ar3TVU7PweQt9NzMGhUM80ToC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/chrome/android/orderfiles/arm64",
+      "package": "chromium/chrome/android/orderfiles/arm64",
+      "revision": "vX0JzIrsR-6WX-cDW7c5a1Yj3H6HXVkCBnJiWSBegM0C",
+      "target_cpus": [
+        "arm64"
+      ],
+      "sha256": "bd7d09cc8aec47ee965fe7035bb7396b5623dc7e875d590206726259205e80cd",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/chrome/android/orderfiles/arm64/+/vX0JzIrsR-6WX-cDW7c5a1Yj3H6HXVkCBnJiWSBegM0C"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/protoc/cipd",
+      "package": "chromium/third_party/android_build_tools/protoc/linux-amd64",
+      "revision": "version:2@v35.1",
+      "sha256": "05ba488a2e7dbe29f3d9642ba5b1903fb94557634af64125f6a568de4c9d31f1",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/protoc/linux-amd64/+/BbpIii59vinz2WQrpbGQP7lFV2NK9kEl9qVo3kydMfEC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_toolchain/ndk",
+      "package": "chromium/third_party/android_toolchain/android_toolchain/linux-amd64",
+      "revision": "version:2@30.0.16248370",
+      "sha256": "fb7df3554223b9aaba66c25f37b95d8442d4ae456e6359275a3f31ec4e74d22d",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_toolchain/android_toolchain/linux-amd64/+/-33zVUIjuaq6ZsJfN7ldhELUrkVuY1knWj8x7E500i0C"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/androidx/cipd",
+      "package": "chromium/third_party/androidx",
+      "revision": "BPpMyM0SWd-E1wUl8rg83DvakkDwYKkwEfy561BXtXkC",
+      "sha256": "04fa4cc8cd1259df84d70525f2b83cdc3bda9240f060a93011fcb9eb5057b579",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/androidx/+/BPpMyM0SWd-E1wUl8rg83DvakkDwYKkwEfy561BXtXkC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/androidx/third_party/ink/src",
+      "revision": "4413fe7bd41f09f37d7c8fe87df59b6e0f54300a",
+      "url": "https://chromium.googlesource.com/external/github.com/google/ink.git/+archive/4413fe7bd41f09f37d7c8fe87df59b6e0f54300a.tar.gz",
+      "tar_contents_sha256": "ab1153ff78cdaaf028cbef80402bc388966d3c0da9a12e9b3fcabdefe8f90033"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/androidx_javascriptengine/src",
+      "revision": "7539442db1dc790c64d0d9bade922329292d834b",
+      "url": "https://chromium.googlesource.com/aosp/platform/frameworks/support/javascriptengine/javascriptengine/src.git/+archive/7539442db1dc790c64d0d9bade922329292d834b.tar.gz",
+      "tar_contents_sha256": "53361c84fbd8c2caad364df1655c58d4267d3fdfc4d13a2464d3d223b3189134"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_system_sdk/cipd",
+      "package": "chromium/third_party/android_system_sdk/public",
+      "revision": "v45fMxp0I1ypgTGwRUVKh2k2jXxAgAUNvCO-LPFjpaAC",
+      "sha256": "bf8e5f331a74235ca98131b045454a8769368d7c4080050dbc23be2cf163a5a0",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_system_sdk/public/+/v45fMxp0I1ypgTGwRUVKh2k2jXxAgAUNvCO-LPFjpaAC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/aapt2/cipd",
+      "package": "chromium/third_party/android_build_tools/aapt2",
+      "revision": "7tEuuB92wV8xh54fCO0bRk_6FS_7XtsBl9LB5Tf5d0AC",
+      "sha256": "eed12eb81f76c15f31879e1f08ed1b464ffa152ffb5edb0197d2c1e537f97740",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/aapt2/+/7tEuuB92wV8xh54fCO0bRk_6FS_7XtsBl9LB5Tf5d0AC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/apkanalyzer/cipd",
+      "package": "chromium/third_party/android_build_tools/apkanalyzer",
+      "revision": "zx9JRwc9Dxfnzac4GqNIUa7rWsoABWZjl5ePnEIoSWYC",
+      "sha256": "cf1f4947073d0f17e7cda7381aa34851aeeb5aca0005666397978f9c42284966",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/apkanalyzer/+/zx9JRwc9Dxfnzac4GqNIUa7rWsoABWZjl5ePnEIoSWYC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/bazel_tools/cipd",
+      "package": "chromium/third_party/android_build_tools/bazel_tools/linux-amd64",
+      "revision": "version:2@7.4.1",
+      "sha256": "591a4a9c879daa57e0751fde2403748ff5afe7edd5f81131cda90740cc896420",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/bazel_tools/linux-amd64/+/WRpKnIedqlfgdR_eJAN0j_Wv5-3V-BExzakHQMyJZCAC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/bundletool/cipd",
+      "package": "chromium/third_party/android_build_tools/bundletool",
+      "revision": "7Vo6ZzIxIaC51ATTBlo_KUkgxJCmmGmXAijlVkXUTpAC",
+      "sha256": "ed5a3a67323121a0b9d404d3065a3f294920c490a69869970228e55645d44e90",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/bundletool/+/7Vo6ZzIxIaC51ATTBlo_KUkgxJCmmGmXAijlVkXUTpAC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/dagger_compiler/cipd",
+      "package": "chromium/third_party/android_build_tools/dagger_compiler",
+      "revision": "AC0DoTEXQf40KFt7hyCNSEJPrT9Rprw9zsZxNKdw7BQC",
+      "sha256": "002d03a1311741fe34285b7b87208d48424fad3f51a6bc3dcec67134a770ec14",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/dagger_compiler/+/AC0DoTEXQf40KFt7hyCNSEJPrT9Rprw9zsZxNKdw7BQC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/error_prone/cipd",
+      "package": "chromium/third_party/android_build_tools/error_prone",
+      "revision": "TP-iwhtizFRV0x62m6MtiWtm4Wh9cYsTCOTYQM0zIiYC",
+      "sha256": "4cffa2c21b62cc5455d31eb69ba32d896b66e1687d718b1308e4d840cd332226",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/error_prone/+/TP-iwhtizFRV0x62m6MtiWtm4Wh9cYsTCOTYQM0zIiYC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/error_prone_javac/cipd",
+      "package": "chromium/third_party/android_build_tools/error_prone_javac",
+      "revision": "7EcHxlEXEaLRWEyHIAxf0ouPjkmN1Od6jkutuo0sfBIC",
+      "sha256": "ec4707c6511711a2d1584c87200c5fd28b8f8e498dd4e77a8e4badba8d2c7c12",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/error_prone_javac/+/7EcHxlEXEaLRWEyHIAxf0ouPjkmN1Od6jkutuo0sfBIC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/lint/cipd",
+      "package": "chromium/third_party/android_build_tools/lint",
+      "revision": "ULu90pUJM0k7-pXHcOv1prPIBXRR6I2O2id_rrBPpXAC",
+      "sha256": "50bbbdd2950933493bfa95c770ebf5a6b3c8057451e88d8eda277faeb04fa570",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/lint/+/ULu90pUJM0k7-pXHcOv1prPIBXRR6I2O2id_rrBPpXAC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/manifest_merger/cipd",
+      "package": "chromium/third_party/android_build_tools/manifest_merger",
+      "revision": "UI1-nz58XA4IftX7frEhOBKof1qdVpX31Zjn4tE21f0C",
+      "sha256": "508d7e9f3e7c5c0e087ed5fb7eb1213812a87f5a9d5695f7d598e7e2d136d5fd",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/manifest_merger/+/UI1-nz58XA4IftX7frEhOBKof1qdVpX31Zjn4tE21f0C"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_build_tools/nullaway/cipd",
+      "package": "chromium/third_party/android_build_tools/nullaway",
+      "revision": "ds9Vm6LkQNc9O9nuG0_FbrsNQ5VoGPpFIWKur53l3wUC",
+      "sha256": "76cf559ba2e440d73d3bd9ee1b4fc56ebb0d43956818fa452162aeaf9de5df05",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_build_tools/nullaway/+/ds9Vm6LkQNc9O9nuG0_FbrsNQ5VoGPpFIWKur53l3wUC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_sdk/public",
+      "package": "chromium/third_party/android_sdk/public/build-tools/37.0.0/linux",
+      "revision": "version_37.0.0",
+      "sha256": "d1140d92ec8edb45636a74dba80a6c542b288997c3dc7bd0fb48089444a6b85c",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_sdk/public/build-tools/37.0.0/linux/+/0RQNkuyO20VjanTbqApsVCsoiZfD3HvQ-0gIlESmuFwC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_sdk/public",
+      "package": "chromium/third_party/android_sdk/public/platform-tools",
+      "revision": "qTD9QdBlBf3dyHsN1lJ0RH6AhHxR42Hmg2Ih-Vj4zIEC",
+      "sha256": "a930fd41d06505fdddc87b0dd65274447e80847c51e361e6836221f958f8cc81",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_sdk/public/platform-tools/+/qTD9QdBlBf3dyHsN1lJ0RH6AhHxR42Hmg2Ih-Vj4zIEC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_sdk/public",
+      "package": "chromium/third_party/android_sdk/public/platforms/android-37.0",
+      "revision": "JsUGMsJK2pkQxVKr7EcJbxbwjJEIWjEPLqcbv7ifdmcC",
+      "sha256": "26c50632c24ada9910c552abec47096f16f08c91085a310f2ea71bbfb89f7667",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_sdk/public/platforms/android-37.0/+/JsUGMsJK2pkQxVKr7EcJbxbwjJEIWjEPLqcbv7ifdmcC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/apache-portable-runtime/src",
+      "revision": "c3f11fcd86b42922834cae91103cf068246c6bb6",
+      "url": "https://chromium.googlesource.com/external/apache-portable-runtime.git/+archive/c3f11fcd86b42922834cae91103cf068246c6bb6.tar.gz",
+      "tar_contents_sha256": "9057d7bf5b084c248e9fe813faabb2ee53141f69d0c0ab73c31983b1d77d28ac"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/checkstyle/cipd",
+      "package": "chromium/third_party/checkstyle",
+      "revision": "vnbLn0H_kr5nVeziAzIlGqjH1LhxEslL7O0w-UKTHh4C",
+      "sha256": "be76cb9f41ff92be6755ece20332251aa8c7d4b87112c94beced30f942931e1e",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/checkstyle/+/vnbLn0H_kr5nVeziAzIlGqjH1LhxEslL7O0w-UKTHh4C"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/espresso",
+      "package": "chromium/third_party/espresso",
+      "revision": "5LoBT0j383h_4dXbnap7gnNQMtMjpbMJD1JaGIYNj-IC",
+      "sha256": "e4ba014f48f7f3787fe1d5db9daa7b82735032d323a5b3090f525a18860d8fe2",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/espresso/+/5LoBT0j383h_4dXbnap7gnNQMtMjpbMJD1JaGIYNj-IC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/google-truth/src",
+      "revision": "838b9b3ed5181c96dcde04bd71a6c1351f7882a8",
+      "url": "https://chromium.googlesource.com/external/github.com/google/truth.git/+archive/838b9b3ed5181c96dcde04bd71a6c1351f7882a8.tar.gz",
+      "tar_contents_sha256": "f5fa0fee4ba4513a0a8610024714e60646433f220fc74a90080313daecd841ba"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/cardboard/src",
+      "revision": "5969239e7c87f4cd64c8ec170ce1e7f4eb559e37",
+      "url": "https://chromium.googlesource.com/external/github.com/googlevr/cardboard/+archive/5969239e7c87f4cd64c8ec170ce1e7f4eb559e37.tar.gz",
+      "tar_contents_sha256": "34218a4a2be5eb8f1555235f7818979f5ca52dfb187d2d2f5b19ca9d7ac46d42"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/arcore-android-sdk/src",
+      "revision": "80036a515b38deca1ad080b7c436856b454358f5",
+      "url": "https://chromium.googlesource.com/external/github.com/google-ar/arcore-android-sdk.git/+archive/80036a515b38deca1ad080b7c436856b454358f5.tar.gz",
+      "tar_contents_sha256": "968b5f97fc7c3ea3fc1bef7766cbda6fdec5c3bbd1295a35e2c3c5da6f9bdf25"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/arcore-android-sdk-client/cipd",
+      "package": "chromium/third_party/arcore-android-sdk-client",
+      "revision": "gHDxvBRNpM868XTWU9SdfMqtVYTFSvK2tLRAKq4V37wC",
+      "sha256": "8070f1bc144da4cf3af174d653d49d7ccaad5584c54af2b6b4b4402aae15dfbc",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/arcore-android-sdk-client/+/gHDxvBRNpM868XTWU9SdfMqtVYTFSvK2tLRAKq4V37wC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/google-java-format/cipd",
+      "package": "chromium/third_party/google-java-format",
+      "revision": "vwy9yNEcAztEM-pQboJifH7_IPdxc5LkhQZMp2XKQ-UC",
+      "sha256": "bf0cbdc8d11c033b4433ea506e82627c7eff20f7717392e485064ca765ca43e5",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/google-java-format/+/vwy9yNEcAztEM-pQboJifH7_IPdxc5LkhQZMp2XKQ-UC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/hamcrest/cipd",
+      "package": "chromium/third_party/hamcrest",
+      "revision": "dBioOAmFJjqAr_DY7dipbXdVfAxUQwjOBNibMPtX8lQC",
+      "sha256": "7418a8380985263a80aff0d8edd8a96d77557c0c544308ce04d89b30fb57f254",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/hamcrest/+/dBioOAmFJjqAr_DY7dipbXdVfAxUQwjOBNibMPtX8lQC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/icu4j/cipd",
+      "package": "chromium/third_party/icu4j",
+      "revision": "8dV7WRVX0tTaNNqkLEnCA_dMofr2MJXFK400E7gOFygC",
+      "sha256": "f1d57b591557d2d4da34daa42c49c203f74ca1faf63095c52b8d3413b80e1728",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/icu4j/+/8dV7WRVX0tTaNNqkLEnCA_dMofr2MJXFK400E7gOFygC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/jacoco/cipd",
+      "package": "chromium/third_party/jacoco",
+      "revision": "6qArMm1GKYy92Ubn7rJ-8TGgwpr90jl792Roc1OCMs0C",
+      "sha256": "eaa02b326d46298cbdd946e7eeb27ef131a0c29afdd2397bf7646873538232cd",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/jacoco/+/6qArMm1GKYy92Ubn7rJ-8TGgwpr90jl792Roc1OCMs0C"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/javalang/src",
+      "revision": "566963547575e93d305871d9cb26ce47ff1a036e",
+      "url": "https://chromium.googlesource.com/external/github.com/c2nes/javalang.git/+archive/566963547575e93d305871d9cb26ce47ff1a036e.tar.gz",
+      "tar_contents_sha256": "ccf6062393904abf6bf00d6a8634b4ec2bf44010a69707add450039505ce6815"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/jdk/current",
+      "package": "chromium/third_party/jdk/linux-amd64",
+      "revision": "version:2@jdk-25.0.4.1+1.d0eb1c0366.cr0",
+      "sha256": "d0c726bde23771c156204af2664d28c20dc7abebcbdb517a619116b4ffb77f80",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/jdk/linux-amd64/+/0McmveI3ccFWIEryZk0owg3Hq-vL21F6YZEWtP-3f4AC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/jdk11",
+      "package": "chromium/third_party/jdk",
+      "revision": "egbcSHbmF1XZQbKxp_PQiGLFWlQK65krTGqQE-Bj4j8C",
+      "sha256": "7a06dc4876e61755d941b2b1a7f3d08862c55a540aeb992b4c6a9013e063e23f",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/jdk/+/egbcSHbmF1XZQbKxp_PQiGLFWlQK65krTGqQE-Bj4j8C"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/junit/src",
+      "revision": "300468b1efd48d76fac2f7bd6d576846dcbbf5ed",
+      "url": "https://chromium.googlesource.com/external/junit.git/+archive/300468b1efd48d76fac2f7bd6d576846dcbbf5ed.tar.gz",
+      "tar_contents_sha256": "5929b55960f7f1d84d5db1f91c753275185731bbd371c7a34d7238c3bef2344a"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/kotlin_stdlib/cipd",
+      "package": "chromium/third_party/kotlin_stdlib",
+      "revision": "3nV_Q9kDGjtGirTcLT-4xFZ6vNG6ar9HNSkDQUEC7h8C",
+      "sha256": "de757f43d9031a3b468ab4dc2d3fb8c4567abcd1ba6abf47352903414102ee1f",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/kotlin_stdlib/+/3nV_Q9kDGjtGirTcLT-4xFZ6vNG6ar9HNSkDQUEC7h8C"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/kotlinc/current",
+      "package": "chromium/third_party/kotlinc",
+      "revision": "R1b_2VmAdxUjLeGb_lDhzK_ytUCBeWaGnCjwzsbgr6MC",
+      "sha256": "4756ffd959807715232de19bfe50e1ccaff2b540817966869c28f0cec6e0afa3",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/kotlinc/+/R1b_2VmAdxUjLeGb_lDhzK_ytUCBeWaGnCjwzsbgr6MC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/ktfmt/cipd",
+      "package": "chromium/third_party/ktfmt",
+      "revision": "sTkE6WR0B2Wmkvp6QinHRFm1AUtZBKBom1haRKkV_rMC",
+      "sha256": "b13904e964740765a692fa7a4229c74459b5014b5904a0689b585a44a915feb3",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/ktfmt/+/sTkE6WR0B2Wmkvp6QinHRFm1AUtZBKBom1haRKkV_rMC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/libunwindstack",
+      "revision": "333fcafb91bd3830c5ef814c071ff73df9cdc976",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/libunwindstack.git/+archive/333fcafb91bd3830c5ef814c071ff73df9cdc976.tar.gz",
+      "tar_contents_sha256": "72df857f6ce3a9c9ee65a9ec222b146919b51f4389c53981cda8721e4b06d5af"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/netty-tcnative/src",
+      "revision": "b21c6eee658866b83122c674e3c0da054e09a3d7",
+      "url": "https://chromium.googlesource.com/external/netty-tcnative.git/+archive/b21c6eee658866b83122c674e3c0da054e09a3d7.tar.gz",
+      "tar_contents_sha256": "818c1cf52b8b25f85a3719cd682acd1fcd522f8dd57edc03406d140bdf4319bb"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/netty4/src",
+      "revision": "cc4420b13bb4eeea5b1cf4f93b2755644cd3b120",
+      "url": "https://chromium.googlesource.com/external/netty4.git/+archive/cc4420b13bb4eeea5b1cf4f93b2755644cd3b120.tar.gz",
+      "tar_contents_sha256": "0d98c9834bf323ba04933bb0e53107210a1096c113daea822de52b7fe085ec24"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/r8/cipd",
+      "package": "chromium/third_party/r8",
+      "revision": "kzCVQZYn5qKR-4wEJ9__4yrIWrCS9VFv8kPharQ-WMgC",
+      "sha256": "933095419627e6a291fb8c0427dfffe32ac85ab092f5516ff243e16ab43e58c8",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/r8/+/kzCVQZYn5qKR-4wEJ9__4yrIWrCS9VFv8kPharQ-WMgC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/r8/d8/cipd",
+      "package": "chromium/third_party/r8",
+      "revision": "IftCs1-T5uV7FcoEpDBQyEzPJr0DguIcmwK2BrNjsMYC",
+      "sha256": "21fb42b35f93e6e57b15ca04a43050c84ccf26bd0382e21c9b02b606b363b0c6",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/r8/+/IftCs1-T5uV7FcoEpDBQyEzPJr0DguIcmwK2BrNjsMYC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/requests/src",
+      "revision": "c2b307dbefe21177af03f9feb37181a89a799fcc",
+      "url": "https://chromium.googlesource.com/external/github.com/kennethreitz/requests.git/+archive/c2b307dbefe21177af03f9feb37181a89a799fcc.tar.gz",
+      "tar_contents_sha256": "7025842f43a5e013fb1c29abac0e096e9c54f77e50024fbce4e6c74cad31026a"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/sqlite4java/cipd",
+      "package": "chromium/third_party/sqlite4java",
+      "revision": "LofjKH9dgXIAJhRYCPQlMFywSwxYimrfDeBmaHc-Z5EC",
+      "sha256": "2e87e3287f5d81720026145808f425305cb04b0c588a6adf0de06668773e6791",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/sqlite4java/+/LofjKH9dgXIAJhRYCPQlMFywSwxYimrfDeBmaHc-Z5EC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/turbine/cipd",
+      "package": "chromium/third_party/turbine",
+      "revision": "boo7QDiTvCkA9jTkgPTGKoVxGDt-PV-OZkly6HHgE2wC",
+      "sha256": "6e8a3b403893bc2900f634e480f4c62a8571183b7e3d5f8e664972e871e0136c",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/turbine/+/boo7QDiTvCkA9jTkgPTGKoVxGDt-PV-OZkly6HHgE2wC"
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/android_deps/autorolled/cipd",
+      "package": "chromium/third_party/android_deps/autorolled",
+      "revision": "-VG0wmSq86E_kYUtjovcWcZ9CHJExiXYLZW21pDxZ6sC",
+      "sha256": "f951b4c264aaf3a13f91852d8e8bdc59c67d087244c625d82d95b6d690f167ab",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/android_deps/autorolled/+/-VG0wmSq86E_kYUtjovcWcZ9CHJExiXYLZW21pDxZ6sC"
+    },
+    {
+      "kind": "tar",
+      "path": "src/buildtools/android/doclava",
+      "sha256": "935a602c0dda7f769fc48fc777697ea23ccead170fbc70d2d41af5713ef50bbf",
+      "size_bytes": 3517760,
+      "url": "https://storage.googleapis.com/chromium-doclava/1931becb8a8e21685f39c62854e9e814d64ccf1a?generation=1516199210583319"
+    },
+    {
+      "kind": "file",
+      "path": "src/v8/tools/builtins-pgo/profiles/meta.json",
+      "sha256": "22abaabdcfb055a75c01096bb0faf2820e6ce7796d03fbb2150a6c5c39f2c601",
+      "size_bytes": 206,
+      "url": "https://storage.googleapis.com/chromium-v8-builtins-pgo/by-version/15.6.75.27/meta.json?generation=1793113568875812",
+      "bundled_files": {
+        ".": "22abaabdcfb055a75c01096bb0faf2820e6ce7796d03fbb2150a6c5c39f2c601"
+      }
+    },
+    {
+      "kind": "file",
+      "path": "src/v8/tools/builtins-pgo/profiles/x64.profile",
+      "sha256": "dee60b6c63ef4bfe4f2f0c0b0a1bf3edcab97a2b0297fcdcf7d5023c72cdc780",
+      "size_bytes": 5258460,
+      "url": "https://storage.googleapis.com/chromium-v8-builtins-pgo/by-version/15.6.75.27/x64.profile?generation=1793113564756145",
+      "bundled_files": {
+        ".": "dee60b6c63ef4bfe4f2f0c0b0a1bf3edcab97a2b0297fcdcf7d5023c72cdc780"
+      }
+    },
+    {
+      "kind": "file",
+      "path": "src/v8/tools/builtins-pgo/profiles/x86.profile",
+      "sha256": "19a512beaa92401ad79f8144fb206b9a7ea31d0b92ed1f7ebaf5b7fdfc9ff5ca",
+      "size_bytes": 4793958,
+      "url": "https://storage.googleapis.com/chromium-v8-builtins-pgo/by-version/15.6.75.27/x86.profile?generation=1793113563329416",
+      "bundled_files": {
+        ".": "19a512beaa92401ad79f8144fb206b9a7ea31d0b92ed1f7ebaf5b7fdfc9ff5ca"
+      }
+    },
+    {
+      "kind": "bz2",
+      "path": "src/chrome/android/profiles/afdo.prof",
+      "sha256": "d2a252e16b0ecf50e1cd0d217d456fe20615e112f0a1b0b5c97323528dc6c0fe",
+      "size_bytes": 4784467,
+      "url": "https://storage.googleapis.com/chromeos-prebuilt/afdo-job/llvm/chromeos-chrome-amd64-156.0.8078.77_rc-r1-merged.afdo.bz2?generation=1793122046387768",
+      "target_cpus": [
+        "arm",
+        "arm64"
+      ],
+      "bundled_files": {
+        ".": "0b258fb668c1a8f30a977f791ac71f31e26ddd0a8f19310b6ce657bc6c8fd5a9"
+      }
+    },
+    {
+      "kind": "zip",
+      "path": "src/android_webview/tools/orderfiles/arm",
+      "package": "chromium/android_webview/tools/orderfiles/arm",
+      "revision": "zQfkCW55FSgvuJw_0H_v4HgneOYzlQ5NUxIbFiZvn6oC",
+      "sha256": "cd07e4096e7915282fb89c3fd07fefe0782778e633950e4d53121b16266f9faa",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/android_webview/tools/orderfiles/arm/+/zQfkCW55FSgvuJw_0H_v4HgneOYzlQ5NUxIbFiZvn6oC",
+      "target_cpus": [
+        "arm",
+        "arm64"
+      ]
+    },
+    {
+      "kind": "zip",
+      "path": "src/android_webview/tools/orderfiles/arm64",
+      "package": "chromium/android_webview/tools/orderfiles/arm64_webview_pgo",
+      "revision": "wOeQb0VAZ51FEI5t-8SdsJvDPB7jZrKJ1Z58hpR0j-IC",
+      "sha256": "c0e7906f4540679d45108e6dfbc49db09bc33c1ee366b289d59e7c8694748fe2",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/android_webview/tools/orderfiles/arm64_webview_pgo/+/wOeQb0VAZ51FEI5t-8SdsJvDPB7jZrKJ1Z58hpR0j-IC",
+      "target_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "kind": "file",
+      "path": "src/chrome/build/pgo_profiles/chrome-android32-main-1790596728-c52e61ad324d126bb9019a66fe9c43ce1bd2d64c-0a21ff198e1b00771f224e725102ba9fdc618317.profdata",
+      "sha256": "86f3a01bc8af5cf996f4c32d054f1e9451c2028285a025f6d152faa6bcf18a62",
+      "size_bytes": 242644456,
+      "url": "https://storage.googleapis.com/chromium-optimization-profiles/pgo_profiles/chrome-android32-main-1790596728-c52e61ad324d126bb9019a66fe9c43ce1bd2d64c-0a21ff198e1b00771f224e725102ba9fdc618317.profdata?generation=1790633878548858",
+      "bundled_files": {
+        ".": "86f3a01bc8af5cf996f4c32d054f1e9451c2028285a025f6d152faa6bcf18a62"
+      },
+      "target_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/llvm-build/Release+Asserts",
+      "revision": "llvmorg-24-init-7747-g62397f8b-53",
+      "sha256": "b8a6fb4d3a1cb5afef558581ea0bd519993987d758750414a1295b4601f3b1b8",
+      "size_bytes": 6205144,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Linux_x64/clang-android-runtime-library-llvmorg-24-init-7747-g62397f8b-53.tar.xz?generation=1790402682067996"
+    }
+  ]
+}

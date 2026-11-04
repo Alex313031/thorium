@@ -30,9 +30,11 @@ def validate(run_id, artifact_id):
     if not re.fullmatch(r"[1-9][0-9]*", run_id) or not re.fullmatch(r"[1-9][0-9]*", artifact_id):
         raise ValueError("resume requires positive numeric run and artifact IDs")
     run = api(f"actions/runs/{run_id}")
+    _, profile = configuration()
+    workflow = f".github/workflows/build-{profile['target_os']}.yml"
     if (run["head_sha"] != os.environ["GITHUB_SHA"] or
             run["event"] != "workflow_dispatch" or
-            run["path"] != ".github/workflows/build-linux.yml" or
+            run["path"] != workflow or
             run["head_repository"]["full_name"] != os.environ["GITHUB_REPOSITORY"]):
         raise ValueError("resume must come from this workflow, repository and exact commit")
     artifact = api(f"actions/artifacts/{artifact_id}")

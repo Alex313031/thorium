@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect the complete Linux package set and build existing ZIP/AppImage tools."""
+"""Collect the profile's release packages using the existing packaging tools."""
 
 import argparse
 import os
@@ -8,14 +8,8 @@ import shutil
 import subprocess
 import sys
 
-from common import (ROOT, configuration, download, input_identity, profile_name, read_json,
-                    run, sha256, summary, validate_manifest, write_json)
-
-
-def file_record(path):
-    if not path.is_file() or path.stat().st_size == 0 or path.is_symlink():
-        raise ValueError(f"missing, empty or symlinked product: {path}")
-    return {"name": path.name, "size_bytes": path.stat().st_size, "sha256": sha256(path)}
+from common import (ROOT, configuration, download, file_record, input_identity, profile_name,
+                    read_json, run, summary, validate_manifest, write_json)
 
 
 def check_packages(directory, version, profile):
@@ -72,46 +66,52 @@ def package(directory, destination, tools_dir):
     sources, profile = configuration()
     manifest = verify_inputs(directory)
     destination.mkdir(parents=True, exist_ok=False)
-    tools_dir.mkdir(parents=True, exist_ok=False)
-    for item in sources["appimage"]["dependencies"]:
-        downloaded = download(item, tools_dir / "cache")
-        path = tools_dir / item["path"]
-        shutil.copyfile(downloaded, path)
-        if item.get("executable"):
-            path.chmod(0o755)
     env = dict(os.environ)
-    env.update({"PATH": f"{tools_dir}:{env['PATH']}",
-                "FUNCTIONS_SH": str(tools_dir / "appimage-functions.sh"),
-                "STATIC_FILES": str(tools_dir),
-                "APPIMAGE_RUNTIME_FILE": str(tools_dir / profile["appimage_runtime"]),
-                "PKG2AICOMMIT": sources["appimage"]["pkg2appimage_commit"],
-                "DOCKER_BUILD": "1", "ARCH": profile["appimage_arch"]})
-    # pkg2appimage extracts the packaging tool when DOCKER_BUILD is set;
-    # no FUSE mount, installation, or execution of the Thorium payload is needed.
     version = sources["chromium_version"]
     names = [name.format(version=version) for name in profile["products"]]
+    appimage_name = next((name for name in names if name.endswith(".AppImage")), None)
     deb = directory / names[0]
+    # Linux i386 is identified by DEB architecture, not a portable SIMD profile.
+    portable_args = ["--profile", profile["portable_profile"]] if profile["portable_profile"] else []
     run([sys.executable, ROOT / "infra/portable/portable.py", "--platform", "linux",
-         "--input", deb, "--profile", profile["portable_profile"], "--expected-version", version,
+         "--input", deb, *portable_args, "--expected-version", version,
          "--output", destination / names[2]], env=env)
-    run([sys.executable, ROOT / "infra/APPIMAGE/appimage.py", "build", deb], env=env)
-    shutil.copy2(ROOT / "infra/APPIMAGE/out" / names[3], destination / names[3])
+    if appimage_name:
+        tools_dir.mkdir(parents=True, exist_ok=False)
+        for item in sources["appimage"]["dependencies"]:
+            downloaded = download(item, tools_dir / "cache")
+            path = tools_dir / item["path"]
+            shutil.copyfile(downloaded, path)
+            if item.get("executable"):
+                path.chmod(0o755)
+        env.update({"PATH": f"{tools_dir}:{env['PATH']}",
+                    "FUNCTIONS_SH": str(tools_dir / "appimage-functions.sh"),
+                    "STATIC_FILES": str(tools_dir),
+                    "APPIMAGE_RUNTIME_FILE": str(tools_dir / profile["appimage_runtime"]),
+                    "PKG2AICOMMIT": sources["appimage"]["pkg2appimage_commit"],
+                    "DOCKER_BUILD": "1", "ARCH": profile["appimage_arch"]})
+        # Extract the packaging tool without FUSE or executing the Thorium payload.
+        run([sys.executable, ROOT / "infra/APPIMAGE/appimage.py", "build", deb], env=env)
+        shutil.copy2(ROOT / "infra/APPIMAGE/out" / appimage_name, destination / appimage_name)
     for name in names[:2]:
         shutil.copy2(directory / name, destination / name)
     records = [file_record(destination / name) for name in names]
     manifest.update({"files": records, "runtime_tests": "not_run",
-                     "appimage_tools": sources["appimage"], "release_published": False})
+                     "appimage_tools": sources["appimage"] if appimage_name else None,
+                     "release_published": False})
     write_json(destination / "manifest.json", manifest)
     (destination / "SHA256SUMS").write_text("".join(f"{item['sha256']}  {item['name']}\n" for item in records))
     if (directory / "logs").is_dir():
         shutil.copytree(directory / "logs", destination / "logs")
-    (destination / "README.txt").write_text(
+    readme = (
         profile_name() + ", Chromium " + version + "\n"
-        "All three default build phases and four package formats are complete. Product tests were not run; check and publish manually.\n"
-        "Verify SHA256SUMS and manifest.json. Artifacts are not permanent release storage.\n"
-        "After downloading the AppImage directly from Actions, use chmod +x to restore its executable permission if needed.\n")
+        f"All three default build phases and {len(records)} package formats are complete. Product tests were not run; check and publish manually.\n"
+        "Verify SHA256SUMS and manifest.json. Artifacts are not permanent release storage.\n")
+    if appimage_name:
+        readme += "After downloading the AppImage directly from Actions, use chmod +x to restore its executable permission if needed.\n"
+    (destination / "README.txt").write_text(readme)
     summary(f"Build stages: {manifest['stage']}; resumptions between build stages: {manifest['resumed_stages']}.\n\n"
-            f"All four {profile_name()} packages, checksums and manifest have been generated. Product tests were not run; no Release was published.\n\n" +
+            f"All {len(records)} {profile_name()} packages, checksums and manifest have been generated. Product tests were not run; no Release was published.\n\n" +
             "\n".join(f"- `{item['name']}` ({item['size_bytes']} bytes)" for item in records))
 
 
@@ -126,6 +126,14 @@ def main():
     pack.add_argument("--destination", type=Path, required=True)
     pack.add_argument("--tools", type=Path, required=True)
     args = parser.parse_args()
+    _, profile = configuration()
+    if profile["target_os"] == "android":
+        from android_products import export_inputs as export_android, package as package_android
+        if args.command == "export":
+            export_android(args.work_root.resolve(), args.destination.resolve())
+        else:
+            package_android(args.inputs.resolve(), args.destination.resolve())
+        return
     if args.command == "export":
         export_inputs(args.work_root.resolve(), args.destination.resolve())
     else:
