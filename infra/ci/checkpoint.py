@@ -2,6 +2,7 @@
 """Export or restore an immutable full build checkpoint, with an external digest."""
 
 import argparse
+import os
 from pathlib import Path
 import subprocess
 import time
@@ -21,8 +22,12 @@ def pack(work, destination):
     payload = destination / "build.tar.zst"
     temporary = destination / "build.tar.zst.partial"
     start = time.monotonic()
-    subprocess.run(["tar", "--format=posix", "--use-compress-program=zstd -T2 -3", "-cf", str(temporary),
-                    "-C", str(work), "."], check=True)
+    if os.name == "nt":
+        from windows_archive import pack_checkpoint
+        pack_checkpoint(work, temporary)
+    else:
+        subprocess.run(["tar", "--format=posix", "--use-compress-program=zstd -T2 -3", "-cf", str(temporary),
+                        "-C", str(work), "."], check=True)
     subprocess.run(["zstd", "-t", str(temporary)], check=True)
     temporary.replace(payload)
     write_json(destination / "checkpoint.json", {
@@ -48,12 +53,16 @@ def restore(archive_dir, work):
         raise ValueError("checkpoint archive is truncated or corrupted")
     if work.exists():
         raise ValueError("restore requires a fresh work root")
-    work.mkdir(parents=True)
     # Only our own digest-checked artifacts from a matching, trusted run enter
-    # this path. GNU tar preserves all modes, links, nanosecond timestamps and
-    # hidden Siso state instead of uploading loose files.
-    subprocess.run(["tar", "--zstd", "-xf", str(payload), "--no-same-owner", "--same-permissions",
-                    "-C", str(work)], check=True)
+    # this path. Tar preserves links, timestamps and hidden Siso state instead
+    # of uploading loose files. Windows also restores NTFS case sensitivity.
+    if os.name == "nt":
+        from windows_archive import restore_checkpoint
+        restore_checkpoint(payload, work)
+    else:
+        work.mkdir(parents=True)
+        subprocess.run(["tar", "--zstd", "-xf", str(payload), "--no-same-owner", "--same-permissions",
+                        "-C", str(work)], check=True)
     manifest = validate_manifest(work)
     if any(manifest[key] != header[key] for key in ("stage", "phase_index", "status")):
         raise ValueError("checkpoint header and payload disagree")

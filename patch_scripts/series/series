@@ -17,7 +17,7 @@ third_party/widevine: other/widevine-cdm-support.patch
 third_party/search_engines_data/resources: other/thorium-search-engines-data.patch
 third_party/zstd/src: other/zstd-clang-cl-bmi2-detection.patch
 v8: other/v8-remove-local-sse2-override.patch
-v8: other/v8-linux-snapshot-toolchain.patch
+v8: other/v8-snapshot-toolchain.patch
 [sse2] third_party/angle: other/SSE2/angle-lockfree.patch
 
 # 10 - Media, codecs, and third_party-facing browser glue.
@@ -53,6 +53,7 @@ other/dom-distiller-reader-mode.patch
 other/thorium-root-build-targets.patch
 other/thorium-chrome-build-targets.patch
 other/thorium-build-config-and-simd.patch
+other/windows-avx512-build-host-toolchain.patch
 other/enable-xnnpack-arm-fp16-vector.patch
 other/thorium-build-platform-tools.patch
 other/llvm-optimized-toolchain-build.patch

@@ -9,7 +9,7 @@ from common import configuration, output, profiles, summary
 
 def select(requested, jobs, minutes, parallel, resume_run, resume_artifact, platform="linux"):
     available = {name: profile for name, profile in profiles().items()
-                 if profile["target_os"] == platform}
+                 if profile["target_os"] == {"windows": "win"}.get(platform, platform)}
     if not available:
         raise ValueError(f"unsupported build platform: {platform}")
     if not 1 <= jobs <= 8 or not 10 <= minutes <= 240 or not 1 <= parallel <= len(available):
@@ -26,6 +26,8 @@ def select(requested, jobs, minutes, parallel, resume_run, resume_artifact, plat
         selected = list(available)
     elif platform == "android":
         selected = ["android-" + requested]
+    elif platform == "windows":
+        selected = ["windows-" + ("" if requested in ("sse2", "arm64") else "x64-") + requested]
     elif requested in ("i386", "arm64"):
         selected = ["linux-" + requested]
     else:
@@ -39,7 +41,7 @@ def select(requested, jobs, minutes, parallel, resume_run, resume_artifact, plat
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--platform", choices=("linux", "android"), default="linux")
+    parser.add_argument("--platform", choices=("linux", "android", "windows"), default="linux")
     parser.add_argument("--profile", required=True)
     parser.add_argument("--jobs", type=int, required=True)
     parser.add_argument("--minutes", type=int, required=True)

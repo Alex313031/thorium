@@ -1,0 +1,153 @@
+name: Windows build stage
+
+on:
+  workflow_call:
+    inputs:
+      profile: {type: string, required: true}
+      status: {type: string, required: true}
+      artifact-id: {type: string, required: true}
+      source-run-id: {type: string, required: true}
+      ordinal: {type: number, required: true}
+      jobs: {type: number, required: true}
+      minutes: {type: number, required: true}
+    outputs:
+      status:
+        value: ${{ jobs.build.outputs.status || jobs.forward.outputs.status }}
+      artifact-id:
+        value: ${{ jobs.build.outputs.artifact-id || jobs.forward.outputs.artifact-id }}
+      source-run-id:
+        value: ${{ jobs.build.outputs.source-run-id || jobs.forward.outputs.source-run-id }}
+
+permissions:
+  contents: read
+
+env:
+  THORIUM_CI_PROFILE: ${{ inputs.profile }}
+
+jobs:
+  forward:
+    # Keep the reusable call successful and its outputs defined even when the
+    # expensive build job is skipped. No checkout or source download is needed.
+    if: inputs.status == 'complete'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    outputs:
+      status: ${{ inputs.status }}
+      artifact-id: ${{ inputs.artifact-id }}
+      source-run-id: ${{ inputs.source-run-id }}
+    steps:
+      - run: echo 'All default build phases already completed; forwarding packaging inputs.'
+
+  build:
+    if: inputs.status != 'complete'
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 350
+    defaults:
+      run:
+        shell: pwsh
+    permissions:
+      contents: read
+      actions: read
+    env:
+      WORK_ROOT: 'C:\t\work'
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    outputs:
+      status: ${{ steps.compile.outputs.status }}
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      source-run-id: ${{ github.run_id }}
+    steps:
+      - name: Start job budget
+        run: '"THORIUM_JOB_STARTED=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" >> $env:GITHUB_ENV'
+      - name: Preserve checkout line endings and long paths
+        run: |
+          git config --global core.autocrlf false
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot configure Git line endings.' }
+          git config --global core.longpaths true
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot configure Git long paths.' }
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5, Node 24
+        with:
+          persist-credentials: false
+      - name: Prepare native Windows runner
+        run: ./infra/ci/runner_windows.ps1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        with:
+          artifact-ids: ${{ inputs.artifact-id }}
+          run-id: ${{ inputs.source-run-id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/incoming
+          merge-multiple: true
+      - name: Restore exact checkpoint
+        run: python infra/ci/checkpoint.py restore --archive-dir "$env:RUNNER_TEMP/incoming" --work-root "$env:WORK_ROOT"
+      - name: Verify native toolchain matches the checkpoint
+        run: python infra/ci/windows_host.py verify --work-root "$env:WORK_ROOT"
+      - name: Build both remaining default phases
+        id: compile
+        env:
+          BUILD_JOBS: ${{ inputs.jobs }}
+          BUILD_MINUTES: ${{ inputs.minutes }}
+        run: python infra/ci/run_stage.py --work-root "$env:WORK_ROOT" --jobs "$env:BUILD_JOBS" --minutes "$env:BUILD_MINUTES"
+      - name: Export next handoff
+        id: handoff
+        env:
+          BUILD_STATUS: ${{ steps.compile.outputs.status }}
+          ORDINAL: ${{ inputs.ordinal }}
+        run: |
+          if ($env:BUILD_STATUS -eq 'checkpointed') {
+            python infra/ci/checkpoint.py pack --work-root "$env:WORK_ROOT" --archive-dir "$env:RUNNER_TEMP/handoff"
+            $kind = 'checkpoint'
+          } elseif ($env:BUILD_STATUS -eq 'complete') {
+            python infra/ci/collect_products.py export --work-root "$env:WORK_ROOT" --destination "$env:RUNNER_TEMP/handoff"
+            $kind = 'build-inputs'
+          } else { throw 'Unexpected build status.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Handoff export failed.' }
+          "name=thorium-$kind-$env:THORIUM_CI_PROFILE-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT-$env:ORDINAL" >> $env:GITHUB_OUTPUT
+      - name: Upload immutable handoff
+        id: upload
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6, Node 24
+        with:
+          name: ${{ steps.handoff.outputs.name }}
+          path: ${{ runner.temp }}/handoff/
+          compression-level: 0
+          retention-days: 2
+          if-no-files-found: error
+      - name: Record handoff ID
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: '"Next stage input: [artifact $env:ARTIFACT_ID]($env:ARTIFACT_URL), retained for 2 days." >> $env:GITHUB_STEP_SUMMARY'
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6, Node 24
+        with:
+          name: thorium-diagnostics-${{ inputs.profile }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.ordinal }}
+          path: |
+            ${{ runner.temp }}/runner.json
+            C:/t/work/manifest.json
+            C:/t/work/windows-host.json
+            C:/t/work/logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  retire_previous:
+    needs: build
+    if: inputs.source-run-id == format('{0}', github.run_id) && needs.build.outputs.artifact-id != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Retire superseded checkpoint after successful upload
+        # Failure to reclaim storage must not invalidate the new artifact.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_RUN: ${{ inputs.source-run-id }}
+          PREVIOUS_ARTIFACT: ${{ inputs.artifact-id }}
+        run: python3 infra/ci/artifacts.py retire --run-id "$PREVIOUS_RUN" --artifact-id "$PREVIOUS_ARTIFACT"

@@ -19,10 +19,10 @@ index d136cdfb312..03b62eaec53 100644
                                 arm_control_flow_integrity != "none")
  
 diff --git a/gni/snapshot_toolchain.gni b/gni/snapshot_toolchain.gni
-index 37ed262640d..5f3352a683f 100644
+index 37ed262640d..70f034a17a5 100644
 --- a/gni/snapshot_toolchain.gni
 +++ b/gni/snapshot_toolchain.gni
-@@ -46,7 +46,21 @@ declare_args() {
+@@ -46,7 +46,23 @@ declare_args() {
  # https://crbug.com/625353.
  
  if (v8_snapshot_toolchain == "") {
@@ -33,10 +33,12 @@ index 37ed262640d..5f3352a683f 100644
 +    # Generate Windows and macOS ARM64 snapshots with the ARM64 simulator.
 +    # Both targets need target-configured code from a Linux-hosted generator.
 +    v8_snapshot_toolchain = "//build/toolchain/linux:clang_x64_v8_arm64"
-+  } else if (host_os == "linux" && current_os == "linux" &&
-+             host_cpu == "x64" && current_cpu == "x64" &&
-+             host_toolchain ==
-+                 "//build/toolchain/linux:clang_x64_thorium_build_host") {
++  } else if (host_os == current_os && host_cpu == "x64" &&
++             current_cpu == "x64" &&
++             (host_toolchain ==
++              "//build/toolchain/linux:clang_x64_thorium_build_host" ||
++              host_toolchain ==
++              "//build/toolchain/win:win_clang_x64_thorium_build_host")) {
 +    # mksnapshot and the other V8 generators execute on the build host. Use
 +    # Thorium's baseline host toolchain so an AVX-512 target can be built on
 +    # an x64 host that does not itself implement AVX-512.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared primitives for Thorium Actions builds on Linux hosts."""
+"""Shared primitives for Thorium Actions builds."""
 
 import hashlib
 import json
@@ -71,6 +71,13 @@ def configuration(selected=None):
                 android["deps_sha256"] != sources["deps_sha256"]):
             raise ValueError("Android inputs do not match the Chromium source lock")
         sources["dependencies"].extend(android["dependencies"])
+    if profile["target_os"] == "win":
+        windows = read_json(CONFIG / "windows-sources.json")
+        if (windows["chromium_revision"] != sources["chromium_revision"] or
+                windows["deps_sha256"] != sources["deps_sha256"]):
+            raise ValueError("Windows inputs do not match the Chromium source lock")
+        sources["dependencies"] = windows["dependencies"]
+        sources["windows"] = {key: value for key, value in windows.items() if key != "dependencies"}
     # The host stays x64; only target-specific inputs differ between profiles.
     for owner in (sources, sources["appimage"]):
         owner["dependencies"] = [item for item in owner["dependencies"]
@@ -86,11 +93,14 @@ def input_identity():
     # Include actual input bytes so a local verification with uncommitted edits
     # cannot be mistaken for a build of an unchanged commit.
     files = {}
-    for relative in ("setup.py", "build.py", "version.py", "args.gn", "arm", "src", "other",
+    for relative in ("setup.py", "build.py", "version.py", "args.gn", "win_args.gn", "arm", "src", "other",
                      "patch_scripts", "pak_src", "thorium_shell", "infra/ci",
                      "infra/portable", "infra/APPIMAGE", "logos",
                      ".github/workflows/build-linux.yml",
                      ".github/workflows/build-android.yml",
+                     ".github/workflows/build-windows.yml",
+                     ".github/workflows/build-windows-profile.yml",
+                     ".github/workflows/build-windows-stage.yml",
                      ".github/workflows/build-profile.yml",
                      ".github/workflows/build-stage.yml"):
         path = ROOT / relative
@@ -202,10 +212,17 @@ def unpack(archive, destination, kind="tar"):
                     path.parent.mkdir(parents=True, exist_ok=True)
                     # CIPD packages can overlay read-only files from the export
                     # or another package installed into the same directory.
+                    if os.name == "nt" and path.is_file() and not path.is_symlink():
+                        path.chmod(0o600)
                     path.unlink(missing_ok=True)
                     with package.open(member) as src, path.open("wb") as out:
                         shutil.copyfileobj(src, out)
                     path.chmod((mode & 0o777) or 0o644)
+        return
+    if os.name == "nt":
+        from windows_archive import extract_tar
+        with tarfile.open(archive, "r|*") as package:
+            extract_tar(package, destination)
         return
     with tarfile.open(archive, "r|*") as package:
         for member in package:
@@ -226,7 +243,7 @@ def build_environment(work):
         if key.startswith(("GIT_", "RBE_", "RECLIENT_", "SISO_")):
             env.pop(key)
     env.update({
-        "PATH": f"{work / 'depot_tools'}:{env['PATH']}",
+        "PATH": str(work / 'depot_tools') + os.pathsep + env['PATH'],
         "DEPOT_TOOLS_UPDATE": "0", "DEPOT_TOOLS_METRICS": "0",
         "DEPOT_TOOLS_COLLECT_METRICS": "0",
         "VPYTHON_BYPASS": "manually managed python not supported by chrome operations",
@@ -235,6 +252,14 @@ def build_environment(work):
         "CR_DIR": str(work / "src"), "THOR_DIR": str(ROOT),
         "PYTHONUNBUFFERED": "1",
     })
+    if os.name == "nt":
+        host = read_json(work / "windows-host.json")
+        env.update({"DEPOT_TOOLS_WIN_TOOLCHAIN": "0", "GYP_MSVS_VERSION": host["vs_year"],
+                    "DEPOT_TOOLS_BOOTSTRAP_PYTHON3": "0", "PYTHONUTF8": "1"})
+        env[f"vs{host['vs_year']}_install"] = host["vs_path"]
+        env["GYP_MSVS_OVERRIDE_PATH"] = host["vs_path"]
+        env["WINDOWSSDKDIR"] = host["sdk_path"]
+        env["PATH"] = str(work / "src/buildtools/win") + os.pathsep + env["PATH"]
     return env
 
 

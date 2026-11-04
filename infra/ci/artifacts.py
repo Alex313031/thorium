@@ -31,7 +31,8 @@ def validate(run_id, artifact_id):
         raise ValueError("resume requires positive numeric run and artifact IDs")
     run = api(f"actions/runs/{run_id}")
     _, profile = configuration()
-    workflow = f".github/workflows/build-{profile['target_os']}.yml"
+    platform = {"win": "windows"}.get(profile["target_os"], profile["target_os"])
+    workflow = f".github/workflows/build-{platform}.yml"
     if (run["head_sha"] != os.environ["GITHUB_SHA"] or
             run["event"] != "workflow_dispatch" or
             run["path"] != workflow or

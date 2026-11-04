@@ -5,11 +5,14 @@ import argparse
 import codecs
 import os
 from pathlib import Path
-import resource
+import shutil
 import signal
 import subprocess
 import sys
 import time
+
+if os.name != "nt":
+    import resource
 
 from common import (ROOT, build_environment, configuration, output, summary,
                     validate_manifest, write_json)
@@ -68,6 +71,9 @@ def forward_log(stream, decoder, *, final=False):
 
 
 def run_command(command, cwd, env, deadline, log_path):
+    if os.name == "nt":
+        from windows_process import run_command as run_windows_command
+        return run_windows_command(command, cwd, env, deadline, log_path, forward_log)
     with log_path.open("wb") as log, log_path.open("rb") as live_log:
         decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
         # Keep the compiler writing directly to disk, including during SIGINT
@@ -185,8 +191,9 @@ def main():
     finally:
         manifest["compile_seconds"] = time.monotonic() - start
         manifest["completed_actions_delta"] = completed_actions(out) - before
-        manifest["max_rss_kib"] = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-        manifest["free_bytes"] = os.statvfs(work).f_bavail * os.statvfs(work).f_frsize
+        manifest["max_rss_kib"] = (resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+                                   if os.name != "nt" else None)
+        manifest["free_bytes"] = shutil.disk_usage(work).free
         write_json(work / "manifest.json", manifest)
         summary(f"Stage {manifest['stage']}: **{manifest['status']}**, "
                 f"completed phases: {phase}/{len(profile['targets'])}, "

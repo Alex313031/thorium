@@ -127,6 +127,13 @@ def main():
     pack.add_argument("--tools", type=Path, required=True)
     args = parser.parse_args()
     _, profile = configuration()
+    if profile["target_os"] == "win":
+        from windows_products import export_inputs as export_windows, package as package_windows
+        if args.command == "export":
+            export_windows(args.work_root.resolve(), args.destination.resolve())
+        else:
+            package_windows(args.inputs.resolve(), args.destination.resolve())
+        return
     if profile["target_os"] == "android":
         from android_products import export_inputs as export_android, package as package_android
         if args.command == "export":

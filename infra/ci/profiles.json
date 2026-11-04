@@ -402,5 +402,233 @@
       "system_webview_package_name": "com.thorium.webview",
       "android_channel": "stable"
     }
+  },
+  "windows-x64-avx": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "default",
+    "args_file": "win_args.gn",
+    "target_os": "win",
+    "target_cpu": "x64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_AVX_mini_installer.exe",
+      "Thorium_AVX_{version}.zip"
+    ],
+    "portable_profile": "AVX",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "avx"
+    }
+  },
+  "windows-x64-avx2": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "avx2",
+    "args_file": "other/AVX2/win_AVX2_args.gn",
+    "target_os": "win",
+    "target_cpu": "x64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_AVX2_mini_installer.exe",
+      "Thorium_AVX2_{version}.zip"
+    ],
+    "portable_profile": "AVX2",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "avx2_fma"
+    }
+  },
+  "windows-x64-avx512": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "avx512",
+    "args_file": "other/AVX512/win_AVX512_args.gn",
+    "target_os": "win",
+    "target_cpu": "x64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_AVX512_mini_installer.exe",
+      "Thorium_AVX512_{version}.zip"
+    ],
+    "portable_profile": "AVX512",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "avx512_skx"
+    },
+    "required_build_tools": [
+      "//v8:mksnapshot(//build/toolchain/win:win_clang_x64_thorium_build_host)"
+    ]
+  },
+  "windows-x64-sse3": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "sse3",
+    "args_file": "other/SSE3/win64_SSE3_args.gn",
+    "target_os": "win",
+    "target_cpu": "x64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_SSE3_mini_installer.exe",
+      "Thorium_SSE3_{version}.zip"
+    ],
+    "portable_profile": "SSE3",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "sse3"
+    }
+  },
+  "windows-x64-sse4": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "sse4",
+    "args_file": "other/SSE4.1/win64_SSE4.1_args.gn",
+    "target_os": "win",
+    "target_cpu": "x64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_SSE4_mini_installer.exe",
+      "Thorium_SSE4_{version}.zip"
+    ],
+    "portable_profile": "SSE4",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "sse4_1"
+    }
+  },
+  "windows-sse2": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "sse2",
+    "args_file": "other/SSE2/win32_SSE2_args.gn",
+    "target_os": "win",
+    "target_cpu": "x86",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_WIN32_SSE2_mini_installer.exe",
+      "Thorium_WIN32_SSE2_{version}.zip"
+    ],
+    "portable_profile": "SSE2",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "thorium_x86_profile": "sse2"
+    }
+  },
+  "windows-arm64": {
+    "runner": "windows-2025-vs2026",
+    "setup_profile": "woa",
+    "args_file": "arm/win_ARM_args.gn",
+    "target_os": "win",
+    "target_cpu": "arm64",
+    "host_os": "win",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "thorium_installer"
+    ],
+    "products": [
+      "thorium_ARM64_installer.exe",
+      "Thorium_ARM64_{version}.zip"
+    ],
+    "portable_profile": "ARM64",
+    "expected_gn_args": {
+      "is_official_build": true,
+      "is_debug": false,
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "win_enable_cfg_guards": true,
+      "is_win_arm64": true,
+      "v8_target_cpu": "arm64"
+    }
   }
 }
