@@ -30,6 +30,16 @@
       "url": "https://storage.googleapis.com/chromium-nodejs/44f845cd5bd9d805cb1c73a98d5726b38ed8662a?generation=1789349489677960"
     },
     {
+      "kind": "zip",
+      "path": "src/third_party/devtools-frontend/src/third_party/esbuild",
+      "reason": "DevTools' nested DEPS requires a native host esbuild; the full archive contains the Linux binary.",
+      "package": "infra/3pp/tools/esbuild/windows-amd64",
+      "revision": "version:3@0.28.2.chromium.2",
+      "sha256": "bd52d92214dfe6297d3e0b0bac94901d8928223e4be8bf2b16833b68fa0ad369",
+      "size_bytes": 8967380,
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/esbuild/windows-amd64/+/vVLZIhTf5il9PgsLrJSQHYkoIj5L6L8rFoM7aPoK02kC"
+    },
+    {
       "kind": "file",
       "path": "src/chrome/test/data/webui/extensions/test_service.ts",
       "reason": "Official full archive omits this baseline file required by the patch series.",

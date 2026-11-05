@@ -47,6 +47,18 @@ def install_dependencies(work, cache, sources):
     return records
 
 
+def verify_devtools_esbuild(src, env):
+    """Check the native tool before uploading the prepared source checkpoint."""
+    devtools = src / "third_party/devtools-frontend/src"
+    binary = devtools / "third_party/esbuild" / ("esbuild.exe" if os.name == "nt" else "esbuild")
+    expected = json.loads((devtools / "node_modules/esbuild/package.json").read_text())["version"]
+    print(f"Checking DevTools esbuild: {binary} --version (expected {expected})", flush=True)
+    actual = subprocess.check_output([str(binary), "--version"], cwd=src, env=env,
+                                     text=True, timeout=30).strip()
+    if actual != expected:
+        raise ValueError(f"DevTools esbuild version mismatch: {actual}; expected {expected}")
+
+
 def configure_tree(work, sources, profile):
     src = work / "src"
     if sha256(src / "DEPS") != sources["deps_sha256"]:
@@ -91,6 +103,7 @@ def configure_tree(work, sources, profile):
             python.symlink_to(sys.executable)
     (depot / ".disable_auto_update").touch()
     env = build_environment(work)
+    verify_devtools_esbuild(src, env)
 
     # Parse the locked DEPS with depot_tools' own restricted parser. Only emit
     # gclient's GN variables; do not run sync, hooks, or dependency cloning.
