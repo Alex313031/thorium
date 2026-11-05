@@ -98,9 +98,11 @@ def configure_tree(work, sources, profile):
     import gclient_eval
     parsed = gclient_eval.Parse((src / "DEPS").read_text(), str(src / "DEPS"))
     variables = dict(parsed["vars"])
-    variables.update({"checkout_linux": os.name != "nt", "checkout_win": profile["target_os"] == "win",
-                      "checkout_mac": False, "checkout_android": profile["target_os"] == "android",
-                      "host_os": "win" if os.name == "nt" else "linux", "host_cpu": "x64"})
+    host_os = "win" if os.name == "nt" else "mac" if sys.platform == "darwin" else "linux"
+    variables.update({"checkout_linux": host_os == "linux", "checkout_win": profile["target_os"] == "win",
+                      "checkout_mac": profile["target_os"] == "mac",
+                      "checkout_android": profile["target_os"] == "android",
+                      "host_os": host_os, "host_cpu": profile["host_cpu"]})
     gn_values = []
     for key in parsed["gclient_gn_args"]:
         value = variables[key]
@@ -110,7 +112,7 @@ def configure_tree(work, sources, profile):
             value = gclient_eval.EvaluateCondition(value, variables)
         gn_values.append(f"{key} = {json.dumps(value)}")
     (src / "build/config/gclient_args.gni").write_text(
-        "# Generated from the locked DEPS for archive builds on an x64 host.\n" +
+        "# Generated from the locked DEPS for archive builds.\n" +
         "\n".join(gn_values) + "\n")
 
     # Siso still imports a backend module in offline mode. Empty properties
@@ -130,7 +132,8 @@ def configure_tree(work, sources, profile):
     # local Siso for a fresh output tree with .sisoenv and build_with_chromium.
     # Check the effective values below rather than silently overriding them.
     shutil.copyfile(ROOT / profile["args_file"], out / "args.gn")
-    gn = src / ("buildtools/win/gn.exe" if os.name == "nt" else "buildtools/linux64/gn")
+    gn = src / {"win": "buildtools/win/gn.exe", "mac": "buildtools/mac/gn",
+                "linux": "buildtools/linux64/gn"}[host_os]
     run([gn, "gen", out, "--fail-on-unused-args"], cwd=src, env=env)
     expected = {**profile["expected_gn_args"], "target_os": profile["target_os"],
                 "target_cpu": profile["target_cpu"], "use_siso": True,

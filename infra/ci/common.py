@@ -9,6 +9,7 @@ import re
 import shutil
 import stat
 import subprocess
+import sys
 import tarfile
 import time
 import urllib.request
@@ -78,11 +79,19 @@ def configuration(selected=None):
             raise ValueError("Windows inputs do not match the Chromium source lock")
         sources["dependencies"] = windows["dependencies"]
         sources["windows"] = {key: value for key, value in windows.items() if key != "dependencies"}
-    # The host stays x64; only target-specific inputs differ between profiles.
+    if profile["target_os"] == "mac":
+        macos = read_json(CONFIG / "macos-sources.json")
+        if (macos["chromium_revision"] != sources["chromium_revision"] or
+                macos["deps_sha256"] != sources["deps_sha256"]):
+            raise ValueError("macOS inputs do not match the Chromium source lock")
+        sources["dependencies"] = macos["dependencies"]
+        sources["macos"] = {key: value for key, value in macos.items() if key != "dependencies"}
     for owner in (sources, sources["appimage"]):
         owner["dependencies"] = [item for item in owner["dependencies"]
-                                 if "target_cpus" not in item or
-                                 profile["target_cpu"] in item["target_cpus"]]
+                                 if ("target_cpus" not in item or
+                                     profile["target_cpu"] in item["target_cpus"]) and
+                                 ("host_cpus" not in item or
+                                  profile["host_cpu"] in item["host_cpus"])]
     if not any(name.endswith(".AppImage") for name in profile["products"]):
         sources["appimage"]["dependencies"] = []
     return sources, profile
@@ -93,14 +102,17 @@ def input_identity():
     # Include actual input bytes so a local verification with uncommitted edits
     # cannot be mistaken for a build of an unchanged commit.
     files = {}
-    for relative in ("setup.py", "build.py", "version.py", "args.gn", "win_args.gn", "arm", "src", "other",
+    for relative in ("setup.py", "build.py", "create_dmg.py", "version.py", "args.gn", "win_args.gn", "arm", "src", "other",
                      "patch_scripts", "pak_src", "thorium_shell", "infra/ci",
-                     "infra/portable", "infra/APPIMAGE", "logos",
+                     "infra/portable", "infra/APPIMAGE", "infra/macos/package_dmg.py", "logos",
                      ".github/workflows/build-linux.yml",
                      ".github/workflows/build-android.yml",
                      ".github/workflows/build-windows.yml",
                      ".github/workflows/build-windows-profile.yml",
                      ".github/workflows/build-windows-stage.yml",
+                     ".github/workflows/build-macos.yml",
+                     ".github/workflows/build-macos-profile.yml",
+                     ".github/workflows/build-macos-stage.yml",
                      ".github/workflows/build-profile.yml",
                      ".github/workflows/build-stage.yml"):
         path = ROOT / relative
@@ -260,6 +272,10 @@ def build_environment(work):
         env["GYP_MSVS_OVERRIDE_PATH"] = host["vs_path"]
         env["WINDOWSSDKDIR"] = host["sdk_path"]
         env["PATH"] = str(work / "src/buildtools/win") + os.pathsep + env["PATH"]
+    elif sys.platform == "darwin":
+        host = read_json(work / "macos-host.json")
+        env["DEVELOPER_DIR"] = host["developer_dir"]
+        env["PATH"] = str(work / "src/buildtools/mac") + os.pathsep + env["PATH"]
     return env
 
 

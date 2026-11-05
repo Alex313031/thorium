@@ -630,5 +630,62 @@
       "is_win_arm64": true,
       "v8_target_cpu": "arm64"
     }
+  },
+  "macos-x64": {
+    "runner": "macos-26-intel",
+    "setup_profile": "mac",
+    "args_file": "other/Mac/mac_args.gn",
+    "target_os": "mac",
+    "target_cpu": "x64",
+    "host_cpu": "x64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/mac:mac"
+    ],
+    "products": [
+      "Thorium_MacOS_x64.dmg"
+    ],
+    "expected_gn_args": {
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "use_system_xcode": true,
+      "is_official_build": true,
+      "v8_target_cpu": "x64",
+      "thorium_x86_profile": "avx2_fma"
+    }
+  },
+  "macos-arm64": {
+    "runner": "macos-26",
+    "setup_profile": "mac",
+    "args_file": "other/Mac/mac_ARM_args.gn",
+    "target_os": "mac",
+    "target_cpu": "arm64",
+    "host_cpu": "arm64",
+    "out_dir": "out/thorium",
+    "jobs": 2,
+    "compile_minutes": 210,
+    "max_stages": 10,
+    "checkpoint_retention_days": 2,
+    "product_retention_days": 14,
+    "targets": [
+      "thorium_all",
+      "chrome/installer/mac:mac"
+    ],
+    "products": [
+      "Thorium_MacOS_ARM64.dmg"
+    ],
+    "expected_gn_args": {
+      "chrome_pgo_phase": 2,
+      "use_thin_lto": true,
+      "use_system_xcode": true,
+      "is_official_build": true,
+      "v8_target_cpu": "arm64"
+    }
   }
 }

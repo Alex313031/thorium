@@ -5,6 +5,7 @@ import argparse
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 
 from common import (input_identity, output, read_json, sha256, validate_manifest,
@@ -26,7 +27,8 @@ def pack(work, destination):
         from windows_archive import pack_checkpoint
         pack_checkpoint(work, temporary)
     else:
-        subprocess.run(["tar", "--format=posix", "--use-compress-program=zstd -T2 -3", "-cf", str(temporary),
+        subprocess.run(["gtar" if sys.platform == "darwin" else "tar",
+                        "--format=posix", "--use-compress-program=zstd -T2 -3", "-cf", str(temporary),
                         "-C", str(work), "."], check=True)
     subprocess.run(["zstd", "-t", str(temporary)], check=True)
     temporary.replace(payload)
@@ -61,7 +63,8 @@ def restore(archive_dir, work):
         restore_checkpoint(payload, work)
     else:
         work.mkdir(parents=True)
-        subprocess.run(["tar", "--zstd", "-xf", str(payload), "--no-same-owner", "--same-permissions",
+        subprocess.run(["gtar" if sys.platform == "darwin" else "tar",
+                        "--zstd", "-xf", str(payload), "--no-same-owner", "--same-permissions",
                         "-C", str(work)], check=True)
     manifest = validate_manifest(work)
     if any(manifest[key] != header[key] for key in ("stage", "phase_index", "status")):

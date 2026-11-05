@@ -193,6 +193,9 @@ def main():
         manifest["completed_actions_delta"] = completed_actions(out) - before
         manifest["max_rss_kib"] = (resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
                                    if os.name != "nt" else None)
+        if sys.platform == "darwin":
+            manifest["max_rss_kib"] //= 1024  # Darwin reports bytes, Linux reports KiB.
+            manifest["backing_free_bytes"] = shutil.disk_usage(os.environ["RUNNER_TEMP"]).free
         manifest["free_bytes"] = shutil.disk_usage(work).free
         write_json(work / "manifest.json", manifest)
         summary(f"Stage {manifest['stage']}: **{manifest['status']}**, "

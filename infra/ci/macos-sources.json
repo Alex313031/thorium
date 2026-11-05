@@ -1,0 +1,495 @@
+{
+  "schema_version": 1,
+  "chromium_revision": "fb096c0011f9d50f0a264a9376420cdea9c421e3",
+  "deps_sha256": "c4d60cae7b46d4ae476e3409226d89bf72c1fd61e1d97d64027ebae4356f23ae",
+  "xcode_version": "26.6",
+  "xcode_build": "17F113",
+  "sdk_version": "26.5",
+  "sdk_build": "25F70",
+  "pkg_dmg_sha256": "d5bd7b756047a1929b9bfaf6cda7b0b5fdf1b4292ea16484b30601700afa7598",
+  "dependencies": [
+    {
+      "kind": "tar",
+      "path": "depot_tools",
+      "revision": "816da11f80777dcf8c10bdaa84df18450dcba12a",
+      "tar_contents_sha256": "053b0bdb761dd7d8627147167fc539cc5b7aba17972086dc77ea31cf755def87",
+      "url": "https://chromium.googlesource.com/chromium/tools/depot_tools/+archive/816da11f80777dcf8c10bdaa84df18450dcba12a.tar.gz"
+    },
+    {
+      "bundled_files": {
+        "typescript/lib/tsc.js": "2cffde0b8c6760dfb0b5b0382bbb7e00ba6a8b2d981b9205b256a700a481d983"
+      },
+      "kind": "tar",
+      "path": "src/third_party/node/node_modules",
+      "sha256": "146cb2af600aa8cf80635592b65219fc94ff3deb384a46a41261405feb46c228",
+      "size_bytes": 11312049,
+      "url": "https://storage.googleapis.com/chromium-nodejs/44f845cd5bd9d805cb1c73a98d5726b38ed8662a?generation=1789349489677960"
+    },
+    {
+      "kind": "file",
+      "path": "src/chrome/test/data/webui/extensions/test_service.ts",
+      "reason": "Official full archive omits this baseline file required by the patch series.",
+      "sha256": "1d1026ca01c4ccb9faa83bf4321cfa473c3608387695a32d0d07ea600fdcccdc",
+      "size_bytes": 13635,
+      "url": "https://raw.githubusercontent.com/chromium/chromium/fb096c0011f9d50f0a264a9376420cdea9c421e3/chrome/test/data/webui/extensions/test_service.ts"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/test_fonts/test_fonts",
+      "reason": "DEPS test fonts are a build dependency of Thorium Shell.",
+      "sha256": "f0e9628f9e43e3f3476cde06a1849058de460e0e037b7449ce0d42b9a73c37d5",
+      "size_bytes": 33413117,
+      "url": "https://storage.googleapis.com/chromium-fonts/9c07d19d9c5ee1ff94f717e6fb17e0c8c354e6f9?generation=1775663926405386"
+    },
+    {
+      "path": "src/third_party/llvm-build/Release+Asserts",
+      "kind": "tar",
+      "sha256": "695492d1345108a5df22c3fe9f41cc3d4dbf0a8ab4f3ad8bcae91f9995c2dc59",
+      "size_bytes": 53874992,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac/clang-llvmorg-24-init-7747-g62397f8b-53.tar.xz?generation=1790402688586555",
+      "host_cpus": [
+        "x64"
+      ],
+      "revision": "llvmorg-24-init-7747-g62397f8b-53"
+    },
+    {
+      "path": "src/third_party/llvm-build/Release+Asserts",
+      "kind": "tar",
+      "sha256": "466924342ea4ea3f412b58055b437f76ef42a3e1f4298b97f8e1a6299a039133",
+      "size_bytes": 5534640,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac/llvmobjdump-llvmorg-24-init-7747-g62397f8b-53.tar.xz?generation=1790402688759551",
+      "host_cpus": [
+        "x64"
+      ],
+      "revision": "llvmorg-24-init-7747-g62397f8b-53"
+    },
+    {
+      "path": "src/third_party/rust-toolchain",
+      "kind": "tar",
+      "sha256": "62530251d7e7d3741840289a45a3e4950ad0023857e03bf0e9d57f2d723a8624",
+      "size_bytes": 264337576,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-2-llvmorg-24-init-7747-g62397f8b.tar.xz?generation=1789143387895737",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/llvm-libclang",
+      "kind": "tar",
+      "sha256": "6fa15d9cf2ff55b5ae1e4276369cfbde1f4f770e60ccb133e1fc7446c5ce607e",
+      "size_bytes": 23309500,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac/rust-libclang-1edd55dcfcd573872c727fa3e086369a71661ee0-2-llvmorg-24-init-7747-g62397f8b.tar.xz?generation=1789143389794597",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/node/mac",
+      "kind": "tar",
+      "sha256": "a25cd3ef35d8b4b5a59498a5a62b5b12cc271dc420ee809abaa76110d12c156e",
+      "size_bytes": 49563652,
+      "url": "https://storage.googleapis.com/chromium-nodejs/9202c05a8e7c67cb2bb2fec1e50fb6188d26f281?generation=1767604826991919",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/buildtools/mac-format/clang-format",
+      "kind": "file",
+      "sha256": "39a9c4e138a8c5e6ab5cd7b21321c2ca03f3f518a6ed07de82162d9f4f37318f",
+      "size_bytes": 3567528,
+      "url": "https://storage.googleapis.com/chromium-clang-format/35ddc571ab654a4f58d7b35f394b04835d0b98f9?generation=1779297382681217",
+      "host_cpus": [
+        "x64"
+      ],
+      "executable": true
+    },
+    {
+      "path": "src/third_party/llvm-build/Release+Asserts",
+      "kind": "tar",
+      "sha256": "7ce015cde974fc32bb80e1f48aa7dddbdcbe44fd6f8614de5e63cae4733960d5",
+      "size_bytes": 44452152,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac_arm64/clang-llvmorg-24-init-7747-g62397f8b-53.tar.xz?generation=1790402697155562",
+      "host_cpus": [
+        "arm64"
+      ],
+      "revision": "llvmorg-24-init-7747-g62397f8b-53"
+    },
+    {
+      "path": "src/third_party/llvm-build/Release+Asserts",
+      "kind": "tar",
+      "sha256": "f93f89580341f51b80c713776a2f9645f090a971d82e459abbcc11fdd21b2ae4",
+      "size_bytes": 5202064,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac_arm64/llvmobjdump-llvmorg-24-init-7747-g62397f8b-53.tar.xz?generation=1790402697359142",
+      "host_cpus": [
+        "arm64"
+      ],
+      "revision": "llvmorg-24-init-7747-g62397f8b-53"
+    },
+    {
+      "path": "src/third_party/rust-toolchain",
+      "kind": "tar",
+      "sha256": "5db21ffd4909ce82c0832df9d1eb06b01b15a54176b7341e39f7181f4b483dbc",
+      "size_bytes": 248304876,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac_arm64/rust-toolchain-1edd55dcfcd573872c727fa3e086369a71661ee0-2-llvmorg-24-init-7747-g62397f8b.tar.xz?generation=1789143391575553",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/llvm-libclang",
+      "kind": "tar",
+      "sha256": "d330fd41100be52b4e804c9252b3f3bb34cfed16d2973934de0930b297f7201e",
+      "size_bytes": 20689276,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/Mac_arm64/rust-libclang-1edd55dcfcd573872c727fa3e086369a71661ee0-2-llvmorg-24-init-7747-g62397f8b.tar.xz?generation=1789143393459608",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/node/mac_arm64",
+      "kind": "tar",
+      "sha256": "b1be502d1635330ebf51d85f8d32a0d3dd92b35c6700def56ae6f903906ea825",
+      "size_bytes": 48369082,
+      "url": "https://storage.googleapis.com/chromium-nodejs/6661e9b9bd7df6b45daf506c82d06d303597cb27?generation=1767604830942392",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/buildtools/mac_arm64-format/clang-format",
+      "kind": "file",
+      "sha256": "a1fb17260eda2971f52ed341501b93703b0fce69ffb43a179b891b66f6f63e5a",
+      "size_bytes": 3245456,
+      "url": "https://storage.googleapis.com/chromium-clang-format/945e45cbcb5443c3e569d5e0783fd012154fc4a7?generation=1779297393605542",
+      "host_cpus": [
+        "arm64"
+      ],
+      "executable": true
+    },
+    {
+      "path": "src/third_party/apache-mac",
+      "kind": "zip",
+      "package": "infra/3pp/tools/httpd-php/mac-amd64",
+      "revision": "version:2@httpd2.4.38.php7.3.31.chromium.3",
+      "sha256": "12ef0fec2f190326da3e984b5b02b67de34af1c4c402141f608e8cf62dc4ec97",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/httpd-php/mac-amd64/+/Eu8P7C8ZAybaPphLWwK2feNK8cTEAhQfYI6M9i3E7JcC"
+    },
+    {
+      "path": "src/third_party/apache-mac-arm64",
+      "kind": "zip",
+      "package": "infra/3pp/tools/httpd-php/mac-arm64",
+      "revision": "version:2@httpd2.4.38.php7.3.31.chromium.3",
+      "sha256": "48747bb125450e4f6580f8fcdc567b92cf2532d7eed45e273f35bb14ac08db4c",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/httpd-php/mac-arm64/+/SHR7sSVFDk9lgPj83FZ7ks8lMtfu1F4nPzW7FKwI20wC"
+    },
+    {
+      "path": "src/third_party/updater/chrome_mac_universal/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chrome_mac_universal",
+      "revision": "version:2@156.0.8067.0",
+      "sha256": "f1f05295d4ea321ccf420112202c6354f47160b5f616942365f1c3e4339a4216",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chrome_mac_universal/+/8fBSldTqMhzPQgESICxjVPRxYLX2FpQjZfHD5DOaQhYC"
+    },
+    {
+      "path": "src/third_party/updater/chrome_mac_universal_prod/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chrome_mac_universal_prod",
+      "revision": "version:2@152.0.7933.0",
+      "sha256": "b335923ad4fdcbea68978775c4ea9433b16ff9e10f2bdd16828cdaa7305ba0c1",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chrome_mac_universal_prod/+/szWSOtT9y-pol4d1xOqUM7Fv-eEPK90WgozapzBboMEC"
+    },
+    {
+      "path": "src/third_party/updater/chrome_mac_universal_sans_iid/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chrome_mac_universal",
+      "revision": "gzutuY-G7u8n5746jgmishm8uWjUR070TXdFc23Ea7YC",
+      "sha256": "833badb98f86eeef27e7be3a8e09a2b219bcb968d4474ef44d7745736dc46bb6",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chrome_mac_universal/+/gzutuY-G7u8n5746jgmishm8uWjUR070TXdFc23Ea7YC"
+    },
+    {
+      "path": "src/third_party/updater/chrome_mac_universal_prod_sans_iid/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chrome_mac_universal_prod",
+      "revision": "IrAigaqukp1GbaksroZcR3Jo0oOYKg9kzatjzNNbXKQC",
+      "sha256": "22b02281aaae929d466da92cae865c477268d283982a0f64cdab63ccd35b5ca4",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chrome_mac_universal_prod/+/IrAigaqukp1GbaksroZcR3Jo0oOYKg9kzatjzNNbXKQC"
+    },
+    {
+      "path": "src/third_party/updater/chromium_mac_amd64/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chromium_mac_amd64",
+      "revision": "version:2@1701051",
+      "sha256": "45707d5036ab0d3a12133e074c62648a2d2a286aafc3792c039f15f19f54f0db",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chromium_mac_amd64/+/RXB9UDarDToSEz4HTGJkii0qKGqvw3ksA58V8Z9U8NsC"
+    },
+    {
+      "path": "src/third_party/updater/chromium_mac_arm64/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chromium_mac_arm64",
+      "revision": "version:2@1701045",
+      "sha256": "4947791b4c135c894dfc6532feeffdd048ae572bd680bd9c7a87594e3f1b8d2c",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chromium_mac_arm64/+/SUd5G0wTXIlN_GUy_u_90EiuVyvWgL2ceodZTj8bjSwC"
+    },
+    {
+      "path": "src/third_party/updater/chromium_mac_amd64_sans_iid/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chromium_mac_amd64",
+      "revision": "zVv93X5XSClxTR1YejkQuBdSpye7JfPS_h6GcH1N4i4C",
+      "sha256": "cd5bfddd7e574829714d1d587a3910b81752a727bb25f3d2fe1e86707d4de22e",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chromium_mac_amd64/+/zVv93X5XSClxTR1YejkQuBdSpye7JfPS_h6GcH1N4i4C"
+    },
+    {
+      "path": "src/third_party/updater/chromium_mac_arm64_sans_iid/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/updater/chromium_mac_arm64",
+      "revision": "Va20qxSst3lq4WfEZlWiwzXCpSo5XbhhuqJXyqzvhF8C",
+      "sha256": "55adb4ab14acb7796ae167c46655a2c335c2a52a395db861baa257caacef845f",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/updater/chromium_mac_arm64/+/Va20qxSst3lq4WfEZlWiwzXCpSo5XbhhuqJXyqzvhF8C"
+    },
+    {
+      "path": "src/third_party/enterprise_companion/chromium_mac_amd64/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/enterprise_companion/chromium_mac_amd64",
+      "revision": "rS1qtwKmH6SIUzWeONWFLRnru-VrY7ahLEw-gqHgcG0C",
+      "sha256": "ad2d6ab702a61fa48853359e38d5852d19ebbbe56b63b6a12c4c3e82a1e0706d",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/enterprise_companion/chromium_mac_amd64/+/rS1qtwKmH6SIUzWeONWFLRnru-VrY7ahLEw-gqHgcG0C"
+    },
+    {
+      "path": "src/third_party/enterprise_companion/chromium_mac_arm64/cipd",
+      "kind": "zip",
+      "package": "chromium/third_party/enterprise_companion/chromium_mac_arm64",
+      "revision": "8Ycdju9pEwFGnOXO9wu3x_mvTMTvbiQQoTSpafwkvUoC",
+      "sha256": "f1871d8eef691301469ce5cef70bb7c7f9af4cc4ef6e2410a134a969fc24bd4a",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/enterprise_companion/chromium_mac_arm64/+/8Ycdju9pEwFGnOXO9wu3x_mvTMTvbiQQoTSpafwkvUoC"
+    },
+    {
+      "path": "src/tools/skia_goldctl/mac_amd64",
+      "kind": "zip",
+      "package": "skia/tools/goldctl/mac-amd64",
+      "revision": "0uY46ZT5pC0z344dAzMC-uw1lvOILmzOzk7ixbRA2XYC",
+      "sha256": "d2e638e994f9a42d33df8e1d033302faec3596f3882e6ccece4ee2c5b440d976",
+      "url": "https://chrome-infra-packages.appspot.com/dl/skia/tools/goldctl/mac-amd64/+/0uY46ZT5pC0z344dAzMC-uw1lvOILmzOzk7ixbRA2XYC"
+    },
+    {
+      "path": "src/tools/skia_goldctl/mac_arm64",
+      "kind": "zip",
+      "package": "skia/tools/goldctl/mac-arm64",
+      "revision": "qtinrB1vxVUkZFUyxCPslWwaMO9FRH58pRXnuMeIflAC",
+      "sha256": "aad8a7ac1d6fc55524645532c423ec956c1a30ef45447e7ca515e7b8c7887e50",
+      "url": "https://chrome-infra-packages.appspot.com/dl/skia/tools/goldctl/mac-arm64/+/qtinrB1vxVUkZFUyxCPslWwaMO9FRH58pRXnuMeIflAC"
+    },
+    {
+      "path": "src/ui/gl/resources/angle-metal",
+      "kind": "zip",
+      "package": "chromium/gpu/angle-metal-shader-libraries",
+      "revision": "S0FPOVKrgaiqyuR20SSHiPorLgYez29bfwEdKBobUMMC",
+      "sha256": "4b414f3952ab81a8aacae476d1248788fa2b2e061ecf6f5b7f011d281a1b50c3",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/gpu/angle-metal-shader-libraries/+/S0FPOVKrgaiqyuR20SSHiPorLgYez29bfwEdKBobUMMC"
+    },
+    {
+      "path": "src/third_party/screen-ai/macos_amd64",
+      "kind": "zip",
+      "package": "chromium/third_party/screen-ai/mac-amd64",
+      "revision": "version:153.03",
+      "sha256": "8f57f0439219e8b7414935a00f18107e5ca5fc0cfa1302174b9a633b0f43a350",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/screen-ai/mac-amd64/+/j1fwQ5IZ6LdBSTWgDxgQflyl_Az6EwIXS5pjOw9Do1AC"
+    },
+    {
+      "path": "src/third_party/screen-ai/macos_arm64",
+      "kind": "zip",
+      "package": "chromium/third_party/screen-ai/mac-arm64",
+      "revision": "version:153.03",
+      "sha256": "3fbf0d5853b3f0676b8bf370613a67160ef7f18f9237b2b41d7b070a7e350ef4",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/screen-ai/mac-arm64/+/P78NWFOz8Gdri_NwYTpnFg738Y-SN7K0HXsHCn41DvQC"
+    },
+    {
+      "path": "src/buildtools/mac",
+      "kind": "zip",
+      "package": "gn/gn/mac-amd64",
+      "revision": "git_revision:510ec7992c30f172205792f190e96111a896ba8f",
+      "sha256": "dfa7d1aeba11768c96880c6603b5b13adbd6d620107d418f7bc72f15825955a6",
+      "url": "https://chrome-infra-packages.appspot.com/dl/gn/gn/mac-amd64/+/36fRrroRdoyWiAxmA7WxOtvW1iAQfUGPe8cvFYJZVaYC",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/cpython3/host",
+      "kind": "zip",
+      "package": "infra/3pp/tools/cpython3/mac-amd64",
+      "revision": "version:3@3.11.9.chromium.38",
+      "sha256": "4117f3d5f00e323469c420036f4a39e3fd6413959a59da26c62d7acbe25acbdd",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/cpython3/mac-amd64/+/QRfz1fAOMjRpxCADb0o54_1kE5WaWdomxi16y-Jay90C",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/siso/cipd",
+      "kind": "zip",
+      "package": "build/siso/mac-amd64",
+      "revision": "git_revision:c574896b272b40aac6e44c228ee0b471ea7e3d7d",
+      "sha256": "d4996a4a032460566ce64bbb0de521260f54cd865add7ab50d4232592d7f9643",
+      "url": "https://chrome-infra-packages.appspot.com/dl/build/siso/mac-amd64/+/1JlqSgMkYFZs5ku7DeUhJg9UzYZa3Xq1DUIyWS1_lkMC",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/ninja",
+      "kind": "zip",
+      "package": "infra/3pp/tools/ninja/mac-amd64",
+      "revision": "version:3@1.12.1.chromium.4",
+      "sha256": "9866e69dc0d1efccac019697213b5ab2e0332dcc629682f13733e0792ea95119",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/ninja/mac-amd64/+/mGbmncDR78ysAZaXITtasuAzLcxiloLxNzPgeS6pURkC",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/swift-format",
+      "kind": "zip",
+      "package": "infra/3pp/tools/swift-format/mac-amd64",
+      "revision": "version:2@505.chromium.1",
+      "sha256": "7bdb12ae25108995be858f8ed3880efb2a78f30deb74ea6a3fbffe3dd6511dbf",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/swift-format/mac-amd64/+/e9sSriUQiZW-hY-O04gO-yp48w3rdOpqP7_-PdZRHb8C",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/third_party/typescript/mac-amd64/src",
+      "kind": "zip",
+      "package": "chromium/third_party/typescript/mac-amd64",
+      "revision": "version:2@7.0.2",
+      "sha256": "a766d2752e79f4d452061bbdacec99048f2c570fc869c9324ee19574e9a4e37e",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/typescript/mac-amd64/+/p2bSdS559NRSBhu9rOyZBI8sVw_IackyTuGVdOmk434C",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/chrome/build/pgo_profiles/chrome-mac-8078-1793210039-d0da025478573e13f407f013182890d1e5d06d00-2bf76a0407535d2fe700f41a1ec47590d03948c0.profdata",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-optimization-profiles/pgo_profiles/chrome-mac-8078-1793210039-d0da025478573e13f407f013182890d1e5d06d00-2bf76a0407535d2fe700f41a1ec47590d03948c0.profdata?generation=1793213808095547",
+      "sha256": "9acafe2a2140cc9751ac68c89bc76625c95950d6018892150913131cd06226e5",
+      "size_bytes": 321624976,
+      "target_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "path": "src/tools/clang/dsymutil/bin/dsymutil",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-browser-clang/55066ee8ff148d9f04a46e71216866134fc538a6?generation=1782752439055533",
+      "sha256": "158bf6a6c6d577a9059661191e1b1769aa58f62a3b7a95f35227b51cfcfae075",
+      "size_bytes": 59687704,
+      "host_cpus": [
+        "x64"
+      ],
+      "executable": true
+    },
+    {
+      "path": "src/buildtools/mac",
+      "kind": "zip",
+      "package": "gn/gn/mac-arm64",
+      "revision": "git_revision:510ec7992c30f172205792f190e96111a896ba8f",
+      "sha256": "a6de52657f3d01a073b00aa91db512f85d3ae9d2b2c0ad46949cda4e8204f62a",
+      "url": "https://chrome-infra-packages.appspot.com/dl/gn/gn/mac-arm64/+/pt5SZX89AaBzsAqpHbUS-F066dKywK1GlJzaToIE9ioC",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/cpython3/host",
+      "kind": "zip",
+      "package": "infra/3pp/tools/cpython3/mac-arm64",
+      "revision": "version:3@3.11.9.chromium.38",
+      "sha256": "cfa6cee19e64c2d934ba1f68c465ce7793bb2f26430279a53be7bcea764b4621",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/cpython3/mac-arm64/+/z6bO4Z5kwtk0uh9oxGXOd5O7LyZDAnmlO-e86nZLRiEC",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/siso/cipd",
+      "kind": "zip",
+      "package": "build/siso/mac-arm64",
+      "revision": "git_revision:c574896b272b40aac6e44c228ee0b471ea7e3d7d",
+      "sha256": "086d9679f2b0b2be6a17a09e0821ee6af4d2cc7bdfae99e51ed6c051607cacb1",
+      "url": "https://chrome-infra-packages.appspot.com/dl/build/siso/mac-arm64/+/CG2WefKwsr5qF6CeCCHuavTSzHvfrpnlHtbAUWB8rLEC",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/ninja",
+      "kind": "zip",
+      "package": "infra/3pp/tools/ninja/mac-arm64",
+      "revision": "version:3@1.12.1.chromium.4",
+      "sha256": "c5e9b4ffab3b2edefbc41849fc81f116c8d047b258906becc061be9ecaf04afd",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/ninja/mac-arm64/+/xem0_6s7Lt77xBhJ_IHxFsjQR7JYkGvswGG-nsrwSv0C",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/swift-format",
+      "kind": "zip",
+      "package": "infra/3pp/tools/swift-format/mac-arm64",
+      "revision": "version:2@505.chromium.1",
+      "sha256": "f84ae6f12b9a22207f12b6572e01eaff744622a580d3dc5b69f660bc23958125",
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/swift-format/mac-arm64/+/-Erm8SuaIiB_ErZXLgHq_3RGIqWA09xbafZgvCOVgSUC",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/third_party/typescript/mac-arm64/src",
+      "kind": "zip",
+      "package": "chromium/third_party/typescript/mac-arm64",
+      "revision": "version:2@7.0.2",
+      "sha256": "eb7b046a37c1ebf3085343de86cb4aa292b5fcfff27d49b6d7ea3ecde764af3d",
+      "url": "https://chrome-infra-packages.appspot.com/dl/chromium/third_party/typescript/mac-arm64/+/63sEajfB6_MIU0PehstKopK1_P_yfUm21-o-zedkrz0C",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/chrome/build/pgo_profiles/chrome-mac-arm-8078-1793210039-70a79c5304368db0122ec98c91db5c4c6851ed9a-2bf76a0407535d2fe700f41a1ec47590d03948c0.profdata",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-optimization-profiles/pgo_profiles/chrome-mac-arm-8078-1793210039-70a79c5304368db0122ec98c91db5c4c6851ed9a-2bf76a0407535d2fe700f41a1ec47590d03948c0.profdata?generation=1793212514129023",
+      "sha256": "1acb662d07e224d2c38f2f8cb80b63c06b5b4c927ec90b79adde5843a26c5b88",
+      "size_bytes": 315515160,
+      "target_cpus": [
+        "arm64"
+      ]
+    },
+    {
+      "path": "src/tools/clang/dsymutil/bin/dsymutil",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-browser-clang/d72733d9365a8c75966b524a739bccb23151a021?generation=1782752537397671",
+      "sha256": "704b60f6b13359b4065ee8710d27bb7def9ef40ad6da0549e7f78be89fd8aaa6",
+      "size_bytes": 52150632,
+      "host_cpus": [
+        "arm64"
+      ],
+      "executable": true
+    },
+    {
+      "path": "src/v8/tools/builtins-pgo/profiles/meta.json",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-v8-builtins-pgo/by-version/15.6.75.27/meta.json?generation=1793113568875812",
+      "sha256": "22abaabdcfb055a75c01096bb0faf2820e6ce7796d03fbb2150a6c5c39f2c601",
+      "size_bytes": 206
+    },
+    {
+      "path": "src/v8/tools/builtins-pgo/profiles/x64.profile",
+      "kind": "file",
+      "url": "https://storage.googleapis.com/chromium-v8-builtins-pgo/by-version/15.6.75.27/x64.profile?generation=1793113564756145",
+      "sha256": "dee60b6c63ef4bfe4f2f0c0b0a1bf3edcab97a2b0297fcdcf7d5023c72cdc780",
+      "size_bytes": 5258460
+    }
+  ]
+}

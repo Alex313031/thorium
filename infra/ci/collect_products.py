@@ -127,6 +127,13 @@ def main():
     pack.add_argument("--tools", type=Path, required=True)
     args = parser.parse_args()
     _, profile = configuration()
+    if profile["target_os"] == "mac":
+        from macos_products import export_inputs as export_macos, package as package_macos
+        if args.command == "export":
+            export_macos(args.work_root.resolve(), args.destination.resolve())
+        else:
+            package_macos(args.inputs.resolve(), args.destination.resolve(), args.tools.resolve())
+        return
     if profile["target_os"] == "win":
         from windows_products import export_inputs as export_windows, package as package_windows
         if args.command == "export":
