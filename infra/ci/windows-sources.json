@@ -40,12 +40,39 @@
       "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/esbuild/windows-amd64/+/vVLZIhTf5il9PgsLrJSQHYkoIj5L6L8rFoM7aPoK02kC"
     },
     {
+      "kind": "zip",
+      "path": "src/third_party/dawn/tools/golang/windows-amd64",
+      "reason": "Dawn's nested DEPS requires the host Go toolchain for Tint source generation.",
+      "package": "infra/3pp/tools/go/windows-amd64",
+      "revision": "version:3@1.26.6",
+      "sha256": "a058eacbccbd7d700ae8a1d8559ea8240871a73585ee1f260098158b13da88f9",
+      "size_bytes": 74435038,
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/go/windows-amd64/+/oFjqy8y9fXAK6KHYVZ6oJAhxpzWF7h8mAJgVixPaiPkC"
+    },
+    {
       "kind": "file",
       "path": "src/chrome/test/data/webui/extensions/test_service.ts",
       "reason": "Official full archive omits this baseline file required by the patch series.",
       "sha256": "1d1026ca01c4ccb9faa83bf4321cfa473c3608387695a32d0d07ea600fdcccdc",
       "size_bytes": 13635,
       "url": "https://raw.githubusercontent.com/chromium/chromium/fb096c0011f9d50f0a264a9376420cdea9c421e3/chrome/test/data/webui/extensions/test_service.ts"
+    },
+    {
+      "kind": "tar",
+      "path": "src/third_party/test_fonts/test_fonts",
+      "reason": "DEPS test fonts are a build dependency of Thorium Shell.",
+      "sha256": "f0e9628f9e43e3f3476cde06a1849058de460e0e037b7449ce0d42b9a73c37d5",
+      "size_bytes": 33413117,
+      "url": "https://storage.googleapis.com/chromium-fonts/9c07d19d9c5ee1ff94f717e6fb17e0c8c354e6f9?generation=1775663926405386"
+    },
+    {
+      "kind": "file",
+      "path": "src/build/toolchain/win/rc/win/rc.exe",
+      "reason": "Chromium's rc_win hook supplies the compiler invoked by build/toolchain/win/rc/rc.py.",
+      "revision": "dea7da0d9bfcb8dad6cf53ca608dddac3459faaa",
+      "sha256": "903769d98df8a005c79d52d7089fe34f23c0b7ada4cd0c42b6063526a5593e6a",
+      "size_bytes": 603648,
+      "url": "https://storage.googleapis.com/chromium-browser-clang/rc/dea7da0d9bfcb8dad6cf53ca608dddac3459faaa?generation=1729017425353926"
     },
     {
       "path": "src/buildtools/win-format/clang-format.exe",

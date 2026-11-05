@@ -59,6 +59,28 @@ def verify_devtools_esbuild(src, env):
         raise ValueError(f"DevTools esbuild version mismatch: {actual}; expected {expected}")
 
 
+def verify_dawn_go(src, profile, env):
+    """Check the host toolchain used by Dawn's generate-sources-gn.py."""
+    dawn = src / "third_party/dawn"
+    revision = re.search(r"^\s*'dawn_go_version': 'version:\d+@([0-9.]+)',",
+                         (dawn / "DEPS").read_text(), re.M)
+    if not revision:
+        raise ValueError("Dawn DEPS is missing its pinned Go version")
+    host_os = "windows" if os.name == "nt" else "mac" if sys.platform == "darwin" else "linux"
+    host_cpu = {"x64": "amd64", "arm64": "arm64"}[profile["host_cpu"]]
+    binary = dawn / "tools/golang" / f"{host_os}-{host_cpu}" / "bin" / (
+        "go.exe" if os.name == "nt" else "go")
+    go_os = "darwin" if host_os == "mac" else host_os
+    expected = f"go version go{revision[1]} {go_os}/{host_cpu}"
+    print(f"Checking Dawn Go: {binary} version (expected {expected})", flush=True)
+    # Inspect the installed tool itself, without automatic toolchain downloads.
+    actual = subprocess.check_output([str(binary), "version"], cwd=dawn,
+                                     env={**env, "GOTOOLCHAIN": "local"},
+                                     text=True, timeout=30).strip()
+    if actual != expected:
+        raise ValueError(f"Dawn Go version mismatch: {actual}; expected {expected}")
+
+
 def configure_tree(work, sources, profile):
     src = work / "src"
     if sha256(src / "DEPS") != sources["deps_sha256"]:
@@ -104,6 +126,8 @@ def configure_tree(work, sources, profile):
     (depot / ".disable_auto_update").touch()
     env = build_environment(work)
     verify_devtools_esbuild(src, env)
+    if profile["target_os"] in ("mac", "win"):
+        verify_dawn_go(src, profile, env)
 
     # Parse the locked DEPS with depot_tools' own restricted parser. Only emit
     # gclient's GN variables; do not run sync, hooks, or dependency cloning.

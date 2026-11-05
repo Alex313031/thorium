@@ -5506,6 +5506,19 @@ index b0043a5c1974d..b2a1e125a277f 100644
  
  #if BUILDFLAG(IS_ANDROID)
  // Additional gate for user policy registration and download based on user
+diff --git a/components/webapps/browser/features.cc b/components/webapps/browser/features.cc
+index 0f6ad9b0eac56..3621f8f48e8b2 100644
+--- a/components/webapps/browser/features.cc
++++ b/components/webapps/browser/features.cc
+@@ -27,7 +27,7 @@ BASE_FEATURE(kAlwaysShowInstallDisambiguationDialog,
+ // If enabled, Android will install any eligible page as a DIY WebAPK
+ // instead of downgrading to a shortcut.
+ BASE_FEATURE(kAndroidInstallAnyPageAsDiyAppStopgap,
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_FALSE)
+              base::FEATURE_ENABLED_BY_DEFAULT
+ #else
+              base::FEATURE_DISABLED_BY_DEFAULT
 diff --git a/components/webapps/browser/installable/installable_icon_fetcher.cc b/components/webapps/browser/installable/installable_icon_fetcher.cc
 index a2f613b2789f4..9224891998d67 100644
 --- a/components/webapps/browser/installable/installable_icon_fetcher.cc

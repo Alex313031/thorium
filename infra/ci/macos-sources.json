@@ -52,6 +52,32 @@
       ]
     },
     {
+      "kind": "zip",
+      "path": "src/third_party/dawn/tools/golang/mac-amd64",
+      "reason": "Dawn's nested DEPS requires the host Go toolchain for Tint source generation.",
+      "package": "infra/3pp/tools/go/mac-amd64",
+      "revision": "version:3@1.26.6",
+      "sha256": "826203a4cfd63f03dc77efe3fea160405e4a57fe46a714d8a256b5f45ee9218f",
+      "size_bytes": 74279328,
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/go/mac-amd64/+/gmIDpM_WPwPcd-_j_qFgQF5KV_5GpxTYola19F7pIY8C",
+      "host_cpus": [
+        "x64"
+      ]
+    },
+    {
+      "kind": "zip",
+      "path": "src/third_party/dawn/tools/golang/mac-arm64",
+      "reason": "Dawn's nested DEPS requires the host Go toolchain for Tint source generation.",
+      "package": "infra/3pp/tools/go/mac-arm64",
+      "revision": "version:3@1.26.6",
+      "sha256": "195ef9ddebdf0b7d3149f8a223ac9c07aea698d26ea410069e4709a3c17f9a7e",
+      "size_bytes": 70952207,
+      "url": "https://chrome-infra-packages.appspot.com/dl/infra/3pp/tools/go/mac-arm64/+/GV753evfC30xSfiiI6ycB66mmNJupBAGnkcJo8F_mn4C",
+      "host_cpus": [
+        "arm64"
+      ]
+    },
+    {
       "kind": "file",
       "path": "src/chrome/test/data/webui/extensions/test_service.ts",
       "reason": "Official full archive omits this baseline file required by the patch series.",
