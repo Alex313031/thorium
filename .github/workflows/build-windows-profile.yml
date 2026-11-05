@@ -83,7 +83,7 @@ jobs:
       - name: Prepare full tarball, patches and GN
         if: inputs.resume_artifact_id == ''
         run: |
-          python infra/ci/prepare_windows.py --work-root "$env:WORK_ROOT" --cache 'C:\t\cache' 2>&1 | Tee-Object -FilePath "$env:RUNNER_TEMP/prepare.log"
+          python infra/ci/prepare_windows.py --work-root "$env:WORK_ROOT" --cache 'C:\t\cache' 2>&1 | Tee-Object -FilePath 'C:\t\diagnostics\prepare.log'
           if ($LASTEXITCODE -ne 0) { throw 'Windows source preparation failed.' }
       - name: Create initial checkpoint
         if: inputs.resume_artifact_id == ''
@@ -103,8 +103,8 @@ jobs:
         with:
           name: thorium-prepare-${{ inputs.profile }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            ${{ runner.temp }}/runner.json
-            ${{ runner.temp }}/prepare.log
+            C:/t/diagnostics/runner.json
+            C:/t/diagnostics/prepare.log
             C:/t/work/manifest.json
             C:/t/work/dependencies.json
             C:/t/work/windows-host.json

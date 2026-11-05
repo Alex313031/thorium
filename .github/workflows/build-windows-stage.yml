@@ -124,7 +124,7 @@ jobs:
         with:
           name: thorium-diagnostics-${{ inputs.profile }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.ordinal }}
           path: |
-            ${{ runner.temp }}/runner.json
+            C:/t/diagnostics/runner.json
             C:/t/work/manifest.json
             C:/t/work/windows-host.json
             C:/t/work/logs/

@@ -10,6 +10,9 @@ foreach ($tool in @('python', 'git', 'zstd', '7z')) {
     if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { throw "Missing required tool: $tool" }
 }
 if (-not $PackagingOnly) {
+    # Keep diagnostic inputs on the same volume as the work tree. RUNNER_TEMP
+    # can be on D:, which cannot share an artifact root with C:\t\work.
+    New-Item -ItemType Directory -Force 'C:\t\diagnostics' | Out-Null
     # Remove unrelated preinstalled SDKs, leaving Visual Studio and Windows Kits.
     $unused = @(
         'C:\Android', 'C:\Program Files\Android', 'C:\Program Files\Java',
@@ -28,7 +31,7 @@ if (-not $PackagingOnly) {
         if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path -Recurse -Force }
     }
     New-Item -ItemType Directory -Force 'C:\t\cache' | Out-Null
-    python infra/ci/windows_host.py bootstrap --cache 'C:\t\cache' --report "$env:RUNNER_TEMP/runner.json"
+    python infra/ci/windows_host.py bootstrap --cache 'C:\t\cache' --report 'C:\t\diagnostics\runner.json'
     if ($LASTEXITCODE -ne 0) { throw 'Windows toolchain provisioning failed.' }
 }
 Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free

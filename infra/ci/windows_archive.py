@@ -2,11 +2,56 @@
 """Preserve the full source tree and exact timestamps on NTFS."""
 
 from decimal import Decimal
+from functools import cache
 import os
 from pathlib import Path
 import shutil
 import subprocess
 import tarfile
+
+
+@cache
+def windows_file_api():
+    import ctypes
+    from ctypes import wintypes
+
+    api = ctypes.WinDLL("kernel32", use_last_error=True)
+    api.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD,
+                               ctypes.c_void_p, wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE]
+    api.CreateFileW.restype = wintypes.HANDLE
+    api.SetFileTime.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.FILETIME),
+                               ctypes.POINTER(wintypes.FILETIME), ctypes.POINTER(wintypes.FILETIME)]
+    api.SetFileTime.restype = wintypes.BOOL
+    api.CloseHandle.argtypes = [wintypes.HANDLE]
+    api.CloseHandle.restype = wintypes.BOOL
+    return api
+
+
+def restore_windows_link_time(path, ns):
+    """Set the link's own timestamp on Python versions without Windows lutime."""
+    import ctypes
+    from ctypes import wintypes
+
+    api = windows_file_api()
+    # Do not resolve the path: that would select the link target. Extended paths
+    # also cover source entries longer than MAX_PATH and dangling symlinks.
+    name = os.path.abspath(path)
+    if not name.startswith("\\\\?\\"):
+        name = "\\\\?\\UNC\\" + name[2:] if name.startswith("\\\\") else "\\\\?\\" + name
+    ticks = ns // 100 + 116444736000000000  # 100 ns intervals since 1601-01-01.
+    if not 0 <= ticks < 2 ** 64:
+        raise ValueError(f"timestamp is outside the Windows FILETIME range: {path}")
+    timestamp = wintypes.FILETIME(ticks & 0xffffffff, ticks >> 32)
+    # FILE_WRITE_ATTRIBUTES; share read/write/delete; OPEN_EXISTING;
+    # FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS.
+    handle = api.CreateFileW(name, 0x0100, 0x0007, None, 3, 0x00200000 | 0x02000000, None)
+    if handle == ctypes.c_void_p(-1).value:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        if not api.SetFileTime(handle, None, ctypes.byref(timestamp), ctypes.byref(timestamp)):
+            raise ctypes.WinError(ctypes.get_last_error())
+    finally:
+        api.CloseHandle(handle)
 
 
 def make_directory(path):
@@ -20,7 +65,13 @@ def make_directory(path):
 def restore_time(path, member):
     value = member.pax_headers.get("mtime", str(member.mtime))
     ns = int(Decimal(value) * 1_000_000_000)
-    os.utime(path, ns=(ns, ns), follow_symlinks=False)
+    if os.name == "nt" and os.utime not in os.supports_follow_symlinks:
+        if member.issym():
+            restore_windows_link_time(path, ns)
+        else:
+            os.utime(path, ns=(ns, ns))
+    else:
+        os.utime(path, ns=(ns, ns), follow_symlinks=False)
 
 
 def extract_tar(package, destination):
