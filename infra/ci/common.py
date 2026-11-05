@@ -272,6 +272,13 @@ def build_environment(work):
         env["GYP_MSVS_OVERRIDE_PATH"] = host["vs_path"]
         env["WINDOWSSDKDIR"] = host["sdk_path"]
         env["PATH"] = str(work / "src/buildtools/win") + os.pathsep + env["PATH"]
+        # The full archive lives on case-sensitive NTFS. Windows tool lookup
+        # appends PATHEXT verbatim, so .EXE/.BAT alone miss gn.exe/autoninja.bat.
+        # Keep existing suffixes and their order, adding lowercase spellings.
+        extensions = (env.get("PATHEXT") or ".COM;.EXE;.BAT;.CMD").split(";")
+        env["PATHEXT"] = ";".join(dict.fromkeys(
+            spelling for extension in extensions if extension
+            for spelling in (extension, extension.lower())))
     elif sys.platform == "darwin":
         host = read_json(work / "macos-host.json")
         env["DEVELOPER_DIR"] = host["developer_dir"]
