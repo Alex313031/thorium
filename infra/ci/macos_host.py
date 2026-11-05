@@ -87,6 +87,7 @@ def bootstrap(report_path, packaging_only):
             if path.exists():
                 run(["sudo", "rm", "-rf", "--", path])
         free = shutil.disk_usage(os.environ["RUNNER_TEMP"]).free
+        print(f"Physical free space before creating the build volume: {free / 1024 ** 3:.1f} GiB", flush=True)
         if free < 60 * 1024 ** 3:
             raise ValueError(f"insufficient free space before source preparation/restore: {free / 1024 ** 3:.1f} GiB")
         # A sparse APFS image preserves case-distinct upstream paths while using
@@ -94,7 +95,8 @@ def bootstrap(report_path, packaging_only):
         image = Path(os.environ["RUNNER_TEMP"]) / "thorium-build.sparseimage"
         if image.exists() or VOLUME.exists():
             raise ValueError("a fresh macOS build volume is required")
-        run(["hdiutil", "create", "-size", "300g", "-type", "SPARSE", "-fs", "APFSX",
+        # hdiutil requires the filesystem personality name, not the APFSX alias.
+        run(["hdiutil", "create", "-size", "300g", "-type", "SPARSE", "-fs", "Case-sensitive APFS",
              "-volname", "ThoriumCI", image])
         run(["hdiutil", "attach", "-nobrowse", "-owners", "off", "-mountpoint", VOLUME, image])
         with tempfile.TemporaryDirectory(prefix=".case-check-", dir=VOLUME) as temporary:
