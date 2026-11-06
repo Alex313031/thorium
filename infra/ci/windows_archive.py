@@ -74,11 +74,29 @@ def restore_time(path, member):
         os.utime(path, ns=(ns, ns), follow_symlinks=False)
 
 
-def extract_tar(package, destination):
+def relative_checkpoint_link(member, root):
+    """Keep absolute build-generated links inside the checkpoint tree."""
+    if not ((member.issym() or member.islnk()) and os.path.isabs(member.linkname)):
+        return member
+    target = Path(member.linkname).resolve()
+    if not target.is_relative_to(root):
+        raise tarfile.LinkOutsideDestinationError(member, str(target))
+    base = (root / member.name).parent if member.issym() else root
+    member = member.replace(linkname=Path(os.path.relpath(target, base)).as_posix())
+    # A PAX linkpath overrides linkname when the member is written again.
+    member.pax_headers.pop("linkpath", None)
+    return member
+
+
+def extract_tar(package, destination, *, checkpoint=False):
     destination = Path(destination).resolve()
     links, directories = [], []
     for original in package:
-        member = tarfile.data_filter(original, str(destination))
+        # Siso's log aliases (such as siso.exe.INFO) can be absolute on Windows.
+        # Accept internal links only for our digest-checked checkpoints; source
+        # archives retain the default data filter's absolute-link rejection.
+        member = relative_checkpoint_link(original, destination) if checkpoint else original
+        member = tarfile.data_filter(member, str(destination))
         if member is None:
             continue
         path = destination / member.name
@@ -132,7 +150,7 @@ def extract_tar(package, destination):
 
 
 def add_tree(package, root):
-    root = Path(root)
+    root = Path(root).resolve()
     pending = [root]
     while pending:
         path = pending.pop()
@@ -140,6 +158,7 @@ def add_tree(package, root):
         member = package.gettarinfo(str(path), arcname=name)
         ns = path.lstat().st_mtime_ns
         member.pax_headers["mtime"] = f"{ns // 1_000_000_000}.{ns % 1_000_000_000:09d}"
+        member = relative_checkpoint_link(member, root)
         if member.isfile():
             with path.open("rb") as stream:
                 package.addfile(member, stream)
@@ -169,7 +188,7 @@ def restore_checkpoint(payload, work):
     process = subprocess.Popen(["zstd", "-d", "-c", str(payload)], stdout=subprocess.PIPE)
     try:
         with tarfile.open(fileobj=process.stdout, mode="r|") as package:
-            extract_tar(package, work)
+            extract_tar(package, work, checkpoint=True)
         # Consume tar padding so zstd can finish and verify its checksum.
         while process.stdout.read(1024 * 1024):
             pass
