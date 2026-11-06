@@ -4,7 +4,7 @@
 from decimal import Decimal
 from functools import cache
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import subprocess
 import tarfile
@@ -74,6 +74,17 @@ def restore_time(path, member):
         os.utime(path, ns=(ns, ns), follow_symlinks=False)
 
 
+def is_siso_log_alias(member):
+    """Identify disposable log symlinks directly inside a build output directory."""
+    if not member.issym():
+        return False
+    path = PurePosixPath(member.name.replace("\\", "/"))
+    program, _, severity = path.name.rpartition(".")
+    return (len(path.parts) == 4 and path.parts[:2] == ("src", "out") and
+            program in ("siso", "siso.exe") and
+            severity in ("INFO", "WARNING", "ERROR", "FATAL"))
+
+
 def relative_checkpoint_link(member, root):
     """Keep absolute build-generated links inside the checkpoint tree."""
     if not ((member.issym() or member.islnk()) and os.path.isabs(member.linkname)):
@@ -92,8 +103,13 @@ def extract_tar(package, destination, *, checkpoint=False):
     destination = Path(destination).resolve()
     links, directories = [], []
     for original in package:
-        # Siso's log aliases (such as siso.exe.INFO) can be absolute on Windows.
-        # Accept internal links only for our digest-checked checkpoints; source
+        # Older checkpoints contain log aliases pointing into the previous
+        # runner's temporary directory. Siso recreates them on its next run;
+        # they are not incremental build state and must not be restored.
+        if checkpoint and is_siso_log_alias(original):
+            print(f"Skipping transient Siso log alias: {original.name}", flush=True)
+            continue
+        # Accept internal absolute links only for digest-checked checkpoints; source
         # archives retain the default data filter's absolute-link rejection.
         member = relative_checkpoint_link(original, destination) if checkpoint else original
         member = tarfile.data_filter(member, str(destination))
@@ -156,6 +172,11 @@ def add_tree(package, root):
         path = pending.pop()
         name = path.relative_to(root).as_posix() if path != root else "."
         member = package.gettarinfo(str(path), arcname=name)
+        # These aliases can point outside the work tree into the runner's temp
+        # directory. Keep regular logs and all Siso/Ninja state in the archive.
+        if is_siso_log_alias(member):
+            print(f"Skipping transient Siso log alias: {member.name}", flush=True)
+            continue
         ns = path.lstat().st_mtime_ns
         member.pax_headers["mtime"] = f"{ns // 1_000_000_000}.{ns % 1_000_000_000:09d}"
         member = relative_checkpoint_link(member, root)
