@@ -87,7 +87,7 @@ overlay-derived, or still need separate provenance review.
 - [`zstd-clang-cl-bmi2-detection.patch`](../other/zstd-clang-cl-bmi2-detection.patch) (apply root: `third_party/zstd/src`) - Keeps clang-cl AVX2 builds on zstd's runtime BMI2 dispatch unless `-mbmi2` is explicitly enabled.
 - [`v8-remove-local-sse2-override.patch`](../other/v8-remove-local-sse2-override.patch) (apply root: `v8`)
 - [`v8-linux-snapshot-toolchain.patch`](../other/v8-linux-snapshot-toolchain.patch) (apply root: `v8`)
-- [`angle-lockfree.patch`](../other/SSE2/angle-lockfree.patch) (apply root: `third_party/angle/src`; condition: `sse2`)
+- [`angle-lockfree.patch`](../other/SSE2/angle-lockfree.patch) (apply root: `third_party/angle/src`; condition: `sse2`) - Fails the build if `std::atomic<uint64_t>` is not lock-free, which on 32-bit x86 needs an i586 or newer baseline for `cmpxchg8b`.
 
 ### 10 - Media, codecs, and third_party-facing browser glue.
 

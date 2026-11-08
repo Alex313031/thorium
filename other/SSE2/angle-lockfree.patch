@@ -1,22 +1,17 @@
 diff --git a/src/libANGLE/renderer/serial_utils.h b/src/libANGLE/renderer/serial_utils.h
-index beeb7c8068..60e87d96c6 100644
+index beeb7c8068..8a9c6c1969 100644
 --- a/src/libANGLE/renderer/serial_utils.h
 +++ b/src/libANGLE/renderer/serial_utils.h
-@@ -120,6 +120,7 @@ class Serial final
- class alignas(8) AtomicQueueSerial final
- {
-   public:
-+    constexpr AtomicQueueSerial() : mValue(kInvalid) { ASSERT(mValue.is_lock_free()); }
-     AtomicQueueSerial &operator=(const Serial &other)
-     {
-         mValue.store(other.mValue, std::memory_order_release);
-@@ -128,8 +129,8 @@ class alignas(8) AtomicQueueSerial final
-     Serial getSerial() const { return Serial(mValue.load(std::memory_order_consume)); }
- 
+@@ -130,6 +130,12 @@ class alignas(8) AtomicQueueSerial final
    private:
-+    std::atomic<uint64_t> mValue;
      static constexpr uint64_t kInvalid = 0;
--    std::atomic<uint64_t> mValue       = kInvalid;
+     std::atomic<uint64_t> mValue       = kInvalid;
++
++    // This serial is loaded and stored from multiple threads, so the atomic has to be lock-free
++    // rather than fall back to a lock in libatomic. On 32-bit x86 that means cmpxchg8b, i.e. an
++    // i586 or newer baseline, which the SSE2 profile implies.
++    static_assert(std::atomic<uint64_t>::is_always_lock_free,
++                  "AtomicQueueSerial requires lock-free 64-bit atomics");
  };
  
  // Used as default/initial serial
