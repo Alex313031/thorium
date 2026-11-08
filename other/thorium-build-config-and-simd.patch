@@ -59,7 +59,7 @@ index bc4236a4e7080..441163edcfdab 100644
  set_defaults("static_library") {
    configs = default_compiler_configs
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index c106acfca9f33..c8db4e4c569f5 100644
+index c106acfca9f33..aa30b9a92cb1c 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -266,7 +266,39 @@ index c106acfca9f33..c8db4e4c569f5 100644
  # Optimization -----------------------------------------------------------------
  #
  # The BUILDCONFIG file sets the "default_optimization" config on targets by
-@@ -2737,9 +2856,18 @@ config("optimize_max") {
+@@ -2651,11 +2770,16 @@ config("default_stack_frames") {
+ config("optimize") {
+   if (is_win) {
+     # clang-cl's /O2 corresponds to clang's -O3, and really want -O2 for
+-    # consistency with the other platforms.
+-    cflags = [
+-               "/O2",
+-               "/clang:-O2",
+-             ] + common_optimize_on_cflags
++    # consistency with the other platforms. A full optimization build is the
++    # request to give that up and take clang's -O3.
++    cflags = [ "/O2" ]
++    if (is_full_optimization_build &&
++        (current_cpu == "x86" || current_cpu == "x64")) {
++      cflags += [ "/clang:-O3" ]
++    } else {
++      cflags += [ "/clang:-O2" ]
++    }
++    cflags += common_optimize_on_cflags
+ 
+     # The `-O3` for clang turns on extra optimizations compared to the standard
+     # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
+@@ -2685,6 +2809,9 @@ config("optimize") {
+     # Similar to clang, we optimize with `-Copt-level=s` to keep loop
+     # vectorization while otherwise optimizing for size.
+     rustflags = [ "-Copt-level=s" ]
++  } else if (is_full_optimization_build && (is_linux || is_mac || is_android)) {
++    cflags = [ "-O3" ] + common_optimize_on_cflags
++    rustflags = [ "-Copt-level=3" ]
+   } else {
+     cflags = [ "-O2" ] + common_optimize_on_cflags
+ 
+@@ -2737,9 +2864,18 @@ config("optimize_max") {
    if (is_win) {
      # Favor speed over size, /O2 must be before the common flags.
      # /O2 implies /Ot, /Oi, and /GF.
