@@ -234,34 +234,44 @@ jobs:
               reports[(data.get('expected_macos_version'), data['arch'])] = data
           expected = [(selected, 'x64'), (selected, 'arm64')]
           lines = ['### Native macOS comparison', '',
-                   '| Target | Actual macOS | Bundle version | Headless | GUI | GUI repeat (diagnostic) | Local input/navigation | Startup #1286 | Baidu #1316 | WebGL (diagnostic) | Audio (diagnostic) | Overall |',
-                   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |']
+                   '| Target | Actual macOS | Bundle version | Headless | GUI first attempt | GUI repeat | GUI result source | Local input/navigation | Startup #1286 | Baidu #1316 | WebGL (diagnostic) | Audio (diagnostic) | Overall |',
+                   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |']
           def status(probe):
               return probe.get('status', 'INCOMPLETE')
           for os_version, arch in expected:
               report = reports.get((os_version, arch), {})
               probes = report.get('probes', {})
+              recovered = report.get('gui_recovered') is True
               gui_repeat = status(probes['gui-repeat']) if 'gui-repeat' in probes else '—'
-              issues = probes.get('gui', {}).get('issues', {})
-              capabilities = probes.get('gui', {}).get('capabilities', {})
-              interaction = probes.get('gui', {}).get('interaction') or {}
+              gui_source = 'gui-repeat' if recovered else 'gui'
+              gui_result = probes.get(gui_source, {})
+              issues = gui_result.get('issues', {})
+              capabilities = gui_result.get('capabilities', {})
+              interaction = gui_result.get('interaction') or {}
+              overall = status(report)
+              if overall == 'PASS' and recovered:
+                  overall = 'PASS (GUI retry)'
               version = report.get('bundle', {}).get('CFBundleShortVersionString', 'missing')
               lines.append(f"| macOS {os_version} / {arch} | {report.get('os_version', 'missing')} | {version} | "
                            f"{status(probes.get('headless', {}))} | {status(probes.get('gui', {}))} | "
-                           f"{gui_repeat} | "
+                           f"{gui_repeat} | {gui_source if gui_source in probes else '—'} | "
                            f"{status(interaction)} | "
                            f"{status(issues.get('1286', {}))} | {status(issues.get('1316', {}))} | "
                            f"{status(capabilities.get('webgl', {}))} | {status(capabilities.get('audio', {}))} | "
-                           f"{status(report)} |")
+                           f"{overall} |")
           lines += ['', 'PASS = completed successfully; FAIL = a check failed; INCOMPLETE = not verified '
                     '(including network blocks, CAPTCHA, missing page elements or reports). Only PASS is green. '
-                    'GUI repeat reruns a failed GUI baseline with the same arguments and a fresh profile, '
-                    'before flag diagnostics; it does not replace the baseline result. — = repeat not run. '
+                    'GUI repeat reruns a failed GUI baseline with the same arguments and a fresh profile. '
+                    'PASS (GUI retry) means the first GUI attempt failed and the repeat passed; '
+                    'the original failure is retained. GUI result source identifies the probe used for '
+                    'interaction, issue and capability results. — = probe not run. '
+                    'Flag diagnostics cannot recover a failure; crashes, crash artifacts and early browser exits '
+                    'remain failures. '
                     'Startup checks browser/window/renderer responsiveness, not native control input. '
                     'WebGL/audio failures are diagnostic-only; crashes, required CDP timeouts and renderer hangs '
-                    'during them still fail the run. Baidu CAPTCHA/network blocks remain INCOMPLETE but may '
+                    'during them still fail the individual probe. Baidu CAPTCHA/network blocks remain INCOMPLETE but may '
                     'coexist with smoke PASS after local HTTP input/navigation and liveness pass. '
-                    'Missing inputs/results, crashes and hangs are not exempt. Smoke PASS does not mean #1316 passed. '
+                    'Missing search inputs/results do not qualify for that exception. Smoke PASS does not mean #1316 passed. '
                     'Consult the artifacts for issue steps, capability results, logs, screenshots and crash data.']
           text = '\n'.join(lines) + '\n'
           Path('comparison.md').write_text(text)

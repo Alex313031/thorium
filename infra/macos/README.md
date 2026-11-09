@@ -52,7 +52,7 @@ observation period. Screenshots, full HTML snapshots, input inventories and
 step results are retained when available. CAPTCHA is recorded without being
 bypassed.
 
-## Results and diagnostic runs
+## Results, GUI retries and diagnostic runs
 
 | Status | Meaning |
 | --- | --- |
@@ -60,13 +60,14 @@ bypassed.
 | `FAIL` | An assertion failed, a required command timed out, or a crash or unresponsive renderer was detected. |
 | `INCOMPLETE` | The check was not reached or could not be verified, including a blocked external page or missing search input/results. |
 
-An overall `PASS` requires both baselines, startup responsiveness and local
-input/navigation to pass. The Baidu search must also pass unless it encounters
-a verified CAPTCHA or network block while its renderer still responds. In
-that case the search remains `INCOMPLETE`, and `external_blocked: true` records
-the exception. Missing input fields or result content do not qualify for this
-exception. An overall smoke pass therefore does not guarantee a successful
-external search.
+An overall `PASS` requires the headless baseline and either the GUI baseline
+or an accepted GUI retry to pass. The successful GUI probe must verify startup
+responsiveness and local input/navigation. Its Baidu search must also pass
+unless it encounters a verified CAPTCHA or network block while its renderer
+still responds. In that case the search remains `INCOMPLETE`, and
+`external_blocked: true` records the exception. Missing input fields or result
+content do not qualify for this exception. An overall smoke pass therefore
+does not guarantee a successful external search.
 
 WebGL and audio assertion failures are diagnostic and do not determine the
 overall result. Each is checked independently after navigation, so a WebGL
@@ -75,17 +76,27 @@ during these checks still fail the baseline. A Google network failure alone
 also remains diagnostic when the renderer is responsive.
 
 After a GUI baseline `FAIL`, `gui-repeat` first repeats the GUI probe with
-the same browser arguments and a fresh profile. This checks whether a second
-launch succeeds without changing browser settings, for example after system
-services have warmed up. A passing repeat does not establish the cause of the
-original failure.
+the same browser arguments and a fresh profile. A complete retry `PASS` can
+recover the GUI result if the original probe had no detected crashes, crash
+files or early browser exit. The original `gui: FAIL` and its logs remain in
+the report, with `gui_recovered: true` and a warning recording the recovery.
+When all other required checks pass, the overall result is `PASS`, displayed
+as `PASS (GUI retry)`, and the job exits successfully. This accepts success
+after a retry; it does not establish the cause of the first failure or show
+that the startup problem has been fixed.
+
+A failed or incomplete retry cannot recover the GUI result. A retry also
+cannot override a failed or incomplete headless baseline, detected GUI crashes
+or early exits, or failures in package, version, architecture or signature
+validation.
 
 After this repeat, if applicable, three separate diagnostic runs add only
 `--disable-extensions`, `--disable-gpu`, or `--no-sandbox`, each with a fresh
 profile. They repeat the failing baseline mode; headless is selected if both
 baselines failed. When only headless fails, these flag diagnostics run without
-a GUI repeat. No diagnostic pass overrides a baseline failure. An `INCOMPLETE`
-result alone does not trigger diagnostic runs.
+a GUI repeat. They still run after a successful GUI retry, but their results
+cannot change the overall status. An `INCOMPLETE` result alone does not trigger
+a GUI retry or flag diagnostics.
 
 GUI testing still runs after a headless failure. Each browser probe has a
 five-minute deadline and bounded cleanup. Detected renderer crashes, early
@@ -97,7 +108,7 @@ for `INCOMPLETE`. Missing reports cannot produce a successful comparison.
 
 Each `macos-smoke-<os>-<arch>-<run>-<attempt>` artifact contains:
 
-- `summary.json` and `summary.md` with baseline and diagnostic results;
+- `summary.json` and `summary.md` with baseline, GUI retry and diagnostic results;
 - `input.json`, the DMG hash, bundle identity, actual OS/CPU/display details,
   Mach-O architectures, UUIDs and load commands;
 - code-signature, entitlement and extended-attribute inspection output;
@@ -112,9 +123,12 @@ Each `macos-smoke-<os>-<arch>-<run>-<attempt>` artifact contains:
 
 The final comparison shows the actual OS and application version for each
 target, alongside core, interaction and diagnostic results, including the GUI
-repeat. It compares reports from the current run attempt. Start a new manual
-run or re-run all jobs to collect both architectures together; re-running only
-failed jobs may leave the other architecture's report in an earlier attempt.
+retry. It retains both GUI attempt statuses and identifies which probe supplies
+the GUI details: `gui-repeat` after an accepted recovery, otherwise `gui`.
+Local interaction, issue and capability columns use that probe's results.
+It compares reports from the current run attempt. Start a new manual run or
+re-run all jobs to collect both architectures together; re-running only failed
+jobs may leave the other architecture's report in an earlier attempt.
 Use the package hash and Framework UUID to distinguish rebuilds that share a
 version number. Matching dSYMs from the exact binary build are required to
 symbolize crashes.

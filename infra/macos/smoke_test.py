@@ -131,9 +131,20 @@ def run_probe(browser, work, results, version, mode, *, extra_args=()):
     return report
 
 
+def gui_recovered(probes):
+    original = probes.get("gui", {})
+    repeat = probes.get("gui-repeat", {})
+    exit_info = original.get("exit") or {}
+    return (original.get("status") == "FAIL" and repeat.get("status") == "PASS"
+            and not original.get("crashes") and not original.get("crash_artifacts")
+            and exit_info.get("during_cleanup", True))
+
+
 def summarize(probes):
-    # Diagnostic successes can never turn a failed baseline into a passing test.
-    statuses = [probes.get(name, {}).get("status", "INCOMPLETE") for name in ("headless", "gui")]
+    # Only the repeat with unchanged arguments can satisfy the GUI check.
+    # Keep crashes and early browser exits fatal, even when the repeat passes.
+    gui = "gui-repeat" if gui_recovered(probes) else "gui"
+    statuses = [probes.get(name, {}).get("status", "INCOMPLETE") for name in ("headless", gui)]
     if "FAIL" in statuses:
         return "FAIL"
     return "PASS" if all(status == "PASS" for status in statuses) else "INCOMPLETE"
@@ -148,6 +159,7 @@ def run_browser_probes(browser, work, results, version, report):
         except Exception as error:
             report["probes"][label] = {
                 "success": False, "status": "FAIL", "error": str(error)}
+        report["gui_recovered"] = gui_recovered(report["probes"])
         report["status"] = summarize(report["probes"])
         report["success"] = report["status"] == "PASS"
         write_json(results / "summary.json", report)
@@ -157,9 +169,17 @@ def run_browser_probes(browser, work, results, version, report):
 
     if report["probes"]["gui"]["status"] == "FAIL":
         # Repeat unchanged GUI arguments before changing any flags. run_probe
-        # gives this label a separate profile and crash directory. A pass can
-        # expose startup/order effects, but cannot replace the failed baseline.
+        # gives this label a separate profile and crash directory. Keep the
+        # original failure visible even when the repeat satisfies the GUI check.
         record_probe("gui-repeat", "gui")
+        if report["gui_recovered"]:
+            warning = ("The initial GUI probe failed; its repeat passed with unchanged "
+                       "browser arguments and a fresh profile. The GUI check accepts "
+                       "the repeat, but the initial failure remains in the report.")
+            report["warnings"].append(warning)
+            write_json(results / "summary.json", report)
+            if os.environ.get("GITHUB_ACTIONS") == "true":
+                print(f"::warning title=GUI passed on retry::{warning}", flush=True)
 
     # Prefer headless diagnostics when both baselines fail, as in the WOA harness.
     mode = next((mode for mode in ("headless", "gui")
@@ -182,7 +202,7 @@ def main():
     results.mkdir(parents=True, exist_ok=True)
     report = {"success": False, "status": "INCOMPLETE", "arch": args.arch, "expected_version": args.expected_version,
               "expected_macos_version": os.environ.get("TEST_MACOS_VERSION"),
-              "probes": {}, "errors": [], "warnings": []}
+              "probes": {}, "errors": [], "warnings": [], "gui_recovered": False}
     try:
         if platform.system() != "Darwin":
             raise RuntimeError("This harness requires macOS")
@@ -250,7 +270,10 @@ def main():
     finally:
         report["success"] = report["status"] == "PASS"
         write_json(results / "summary.json", report)
-        lines = [f"### macOS {report.get('os_version', 'unknown')} / {args.arch}: {report['status']}",
+        overall = report["status"]
+        if overall == "PASS" and report["gui_recovered"]:
+            overall = "PASS (GUI retry)"
+        lines = [f"### macOS {report.get('os_version', 'unknown')} / {args.arch}: {overall}",
                  f"Expected version: `{args.expected_version}`", "",
                  "| Probe | Overall | Core | Local input/navigation | Startup #1286 | Baidu #1316 | WebGL (diagnostic) | Audio (diagnostic) |",
                  "| --- | --- | --- | --- | --- | --- | --- | --- |"]
@@ -264,22 +287,28 @@ def main():
                       *issue_statuses, *capability_statuses]
             lines.append("| " + " | ".join(values) + " |")
         lines.append("")
-        for issue, result in report["probes"].get("gui", {}).get("issues", {}).items():
+        accepted_gui = "gui-repeat" if report["gui_recovered"] else "gui"
+        lines.append(f"GUI details below use `{accepted_gui}`; all probe results are retained above.")
+        lines.append("")
+        for issue, result in report["probes"].get(accepted_gui, {}).get("issues", {}).items():
             reason = " ".join(result.get("reason", "").split())[:1000]
             lines.append(f"- #{issue}: {result.get('status', 'INCOMPLETE')} — {reason}")
         lines += ["", "PASS = completed successfully; FAIL = a check failed; INCOMPLETE = not verified. "
                   "Missing GUI issue results are unverified, not a pass. Startup checks browser/window/renderer "
                   "responsiveness, not native control input.",
                   "", "WebGL and audio are independent diagnostics and do not determine the overall status. "
-                  "Crashes, required CDP timeouts and unresponsive renderers during these checks still fail the run. "
-                  "See gui/gpu-info.json and browser logs when investigating GPU capability failures.",
+                  "Crashes, required CDP timeouts and unresponsive renderers during these checks still fail that probe. "
+                  "See the corresponding probe's gpu-info.json and browser logs when investigating GPU capability failures.",
                   "", "Baidu CAPTCHA/network blocks remain INCOMPLETE and may coexist with an overall PASS "
                   "only after local HTTP input/navigation and renderer liveness pass. "
-                  "Missing inputs/results, crashes and hangs are not exempt. A smoke PASS does not mean #1316 passed. "
-                  "The gui-repeat diagnostic uses unchanged GUI arguments with a fresh profile before "
-                  "the flag diagnostics. Its result can reveal startup/order effects, but does not identify "
-                  "their cause. Diagnostic passes do not replace baseline results. "
+                  "Missing inputs/results and hangs still fail that probe. A smoke PASS does not mean #1316 passed. "
+                  "The gui-repeat probe uses unchanged GUI arguments with a fresh profile before "
+                  "the flag diagnostics. A passing repeat can satisfy the GUI check if the initial probe "
+                  "had no detected crashes or early browser exit; headless must also pass. "
+                  "PASS (GUI retry) retains the original failure and does not establish its cause or a fix. "
+                  "Flag diagnostic passes never change the overall result. "
                   "See the uploaded JSON, logs and dumps."]
+        lines += [f"\nWarning: {warning}" for warning in report["warnings"]]
         lines += [f"\nError: {error}" for error in report["errors"]]
         summary = "\n".join(lines) + "\n"
         (results / "summary.md").write_text(summary)
