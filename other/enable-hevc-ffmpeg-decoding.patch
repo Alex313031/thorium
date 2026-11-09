@@ -1,5 +1,5 @@
 diff --git a/media/base/supported_types.cc b/media/base/supported_types.cc
-index efc7246c8cd3e..49f9e7b3fcba1 100644
+index efc7246c8cd3e..51734902ee029 100644
 --- a/media/base/supported_types.cc
 +++ b/media/base/supported_types.cc
 @@ -1,4 +1,4 @@
@@ -8,14 +8,17 @@ index efc7246c8cd3e..49f9e7b3fcba1 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -229,25 +229,12 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
+@@ -229,25 +229,19 @@ bool IsAudioCodecProprietary(AudioCodec codec) {
  #endif  // !BUILDFLAG(USE_PROPRIETARY_CODECS)
  
  bool IsDecoderHevcProfileSupported(const VideoType& type) {
--  if (!IsColorSpaceSupported(type.color_space)) {
--    return false;
--  }
--
++  // Every other codec decoded in software here gates on the color space, and
++  // HEVC is the one most likely to arrive as HDR. BT.2020 with PQ or HLG passes
++  // this; only a color space Chromium cannot manage at all is rejected.
+   if (!IsColorSpaceSupported(type.color_space)) {
+     return false;
+   }
+ 
 -#if BUILDFLAG(ENABLE_PLATFORM_HEVC)
 -#if BUILDFLAG(PLATFORM_HAS_OPTIONAL_HEVC_DECODE_SUPPORT)
 -#if BUILDFLAG(IS_CHROMEOS)
@@ -38,7 +41,7 @@ index efc7246c8cd3e..49f9e7b3fcba1 100644
  }
  
  bool IsDecoderVp9ProfileSupported(const VideoType& type) {
-@@ -580,7 +567,7 @@ bool IsEncoderOptionalVideoType(const media::VideoType& type) {
+@@ -580,7 +574,7 @@ bool IsEncoderOptionalVideoType(const media::VideoType& type) {
  
  bool IsDecoderBuiltInVideoCodec(VideoCodec codec) {
  #if BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) && BUILDFLAG(USE_PROPRIETARY_CODECS)

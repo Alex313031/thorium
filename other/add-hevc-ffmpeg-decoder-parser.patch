@@ -1573,7 +1573,7 @@ index e3684b3b3d..241c90ba98 100644
 +    &ff_hevc_parser,
      NULL };
 diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
-index 6dd28dae57..2a2df78d3e 100644
+index 6dd28dae57..00d744263d 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
 @@ -307,6 +307,23 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
@@ -1594,7 +1594,7 @@ index 6dd28dae57..2a2df78d3e 100644
 +    "libavcodec/hevc/pred.c",
 +    "libavcodec/hevc/ps.c",
 +    "libavcodec/hevc/refs.c",
-+    "libavcodec/hevc/sei.c"
++    "libavcodec/hevc/sei.c",
 +  ]
 +
    ffmpeg_c_sources += [
@@ -1608,7 +1608,7 @@ index 6dd28dae57..2a2df78d3e 100644
 +  ffmpeg_c_sources += [
 +    "libavcodec/x86/bswapdsp_init.c",
 +    "libavcodec/x86/hevc/dsp_init.c",
-+    "libavcodec/x86/h26x/h2656dsp.c"
++    "libavcodec/x86/h26x/h2656dsp.c",
 +  ]
 +
 +  ffmpeg_asm_sources += [
@@ -1620,7 +1620,7 @@ index 6dd28dae57..2a2df78d3e 100644
 +    "libavcodec/x86/hevc/mc.asm",
 +    "libavcodec/x86/hevc/sao.asm",
 +    "libavcodec/x86/hevc/sao_10bit.asm",
-+    "libavcodec/x86/h26x/h2656_inter.asm"
++    "libavcodec/x86/h26x/h2656_inter.asm",
 +  ]
 +
    ffmpeg_c_sources += [
