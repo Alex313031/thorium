@@ -115,7 +115,8 @@ does not provide Developer ID signing or Apple notarization.
 
 To compare packaged x64 and ARM64 applications on native GitHub Actions
 runners, use the [macOS smoke-test workflow](../infra/macos/README.md). It tests
-both DMGs at the same version and preserves renderer crash and hang diagnostics.
+both DMGs at the same application version on macOS 15 or 26 and preserves
+renderer crash and hang diagnostics.
 
 Thorium's macOS 26 icon pipeline is maintained under
 [`logos/NEW/mac/gen`](../logos/NEW/mac/gen). Generated `Assets.car` and

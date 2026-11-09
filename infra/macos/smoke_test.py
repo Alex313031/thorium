@@ -139,6 +139,37 @@ def summarize(probes):
     return "PASS" if all(status == "PASS" for status in statuses) else "INCOMPLETE"
 
 
+def run_browser_probes(browser, work, results, version, report):
+    def record_probe(label, mode, *, extra_args=()):
+        try:
+            report["probes"][label] = run_probe(
+                browser, work, results / label, version, mode,
+                extra_args=extra_args)
+        except Exception as error:
+            report["probes"][label] = {
+                "success": False, "status": "FAIL", "error": str(error)}
+        report["status"] = summarize(report["probes"])
+        report["success"] = report["status"] == "PASS"
+        write_json(results / "summary.json", report)
+
+    for mode in ("headless", "gui"):
+        record_probe(mode, mode)
+
+    if report["probes"]["gui"]["status"] == "FAIL":
+        # Repeat unchanged GUI arguments before changing any flags. run_probe
+        # gives this label a separate profile and crash directory. A pass can
+        # expose startup/order effects, but cannot replace the failed baseline.
+        record_probe("gui-repeat", "gui")
+
+    # Prefer headless diagnostics when both baselines fail, as in the WOA harness.
+    mode = next((mode for mode in ("headless", "gui")
+                 if report["probes"][mode]["status"] == "FAIL"), None)
+    if mode:
+        for name, flag in (("no-extensions", "--disable-extensions"),
+                           ("no-gpu", "--disable-gpu"), ("no-sandbox", "--no-sandbox")):
+            record_probe(f"{mode}-{name}", mode, extra_args=[flag])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dmg", type=Path, required=True)
@@ -212,29 +243,7 @@ def main():
             # Preserve the package's original signature and quarantine state.
             command(["codesign", "--verify", "--deep", "--strict", "--verbose=2", str(app)],
                     results / "signature-verify.txt", required=True)
-            for mode in ("headless", "gui"):
-                try:
-                    report["probes"][mode] = run_probe(browser, work, results / mode, args.expected_version, mode)
-                except Exception as error:
-                    report["probes"][mode] = {"success": False, "status": "FAIL", "error": str(error)}
-                report["status"] = summarize(report["probes"])
-                report["success"] = report["status"] == "PASS"
-                write_json(results / "summary.json", report)
-            # Repeat the same suite with one changed flag. Prefer the headless
-            # failure when both modes fail, as in the WOA harness.
-            mode = next((mode for mode in ("headless", "gui")
-                         if report["probes"][mode]["status"] == "FAIL"), None)
-            if mode:
-                for name, flag in (("no-extensions", "--disable-extensions"),
-                                   ("no-gpu", "--disable-gpu"), ("no-sandbox", "--no-sandbox")):
-                    label = f"{mode}-{name}"
-                    try:
-                        report["probes"][label] = run_probe(
-                            browser, work, results / label, args.expected_version, mode,
-                            extra_args=[flag])
-                    except Exception as error:
-                        report["probes"][label] = {"success": False, "status": "FAIL", "error": str(error)}
-            report["status"] = summarize(report["probes"])
+            run_browser_probes(browser, work, results, args.expected_version, report)
     except Exception as error:
         report["status"] = "FAIL"
         report["errors"].append(str(error))
@@ -267,7 +276,10 @@ def main():
                   "", "Baidu CAPTCHA/network blocks remain INCOMPLETE and may coexist with an overall PASS "
                   "only after local HTTP input/navigation and renderer liveness pass. "
                   "Missing inputs/results, crashes and hangs are not exempt. A smoke PASS does not mean #1316 passed. "
-                  "Diagnostic passes do not replace baseline results. See the uploaded JSON, logs and dumps."]
+                  "The gui-repeat diagnostic uses unchanged GUI arguments with a fresh profile before "
+                  "the flag diagnostics. Its result can reveal startup/order effects, but does not identify "
+                  "their cause. Diagnostic passes do not replace baseline results. "
+                  "See the uploaded JSON, logs and dumps."]
         lines += [f"\nError: {error}" for error in report["errors"]]
         summary = "\n".join(lines) + "\n"
         (results / "summary.md").write_text(summary)

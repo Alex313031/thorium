@@ -32,9 +32,9 @@ on:
         type: string
         default: 156.0.8078.28
       macos_version:
-        description: 14 tests Sonoma ARM64 plus native 15 controls; 15 or 26 tests both architectures
+        description: macOS version to test on native x64 and ARM64 runners (15 or 26)
         type: string
-        default: "14"
+        default: "15"
       x64_sha256:
         description: Optional expected x64 DMG SHA-256
         type: string
@@ -74,11 +74,10 @@ on:
         type: string
         default: 156.0.8078.28
       macos_version:
-        description: 14 tests ARM64 plus x64/ARM64 controls on 15; 15 or 26 tests both architectures
+        description: macOS version to test on native x64 and ARM64 runners (15 or 26)
         type: choice
-        default: "14"
+        default: "15"
         options:
-          - "14"
           - "15"
           - "26"
       x64_sha256:
@@ -100,9 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Sonoma has a standard ARM64 runner; Intel Sonoma requires a paid
-        # larger runner. Keep a native x64/ARM64 pair on 15 as the control.
-        include: ${{ fromJSON(inputs.macos_version == '14' && '[{"os":"14","arch":"arm64","runner":"macos-14"},{"os":"15","arch":"x64","runner":"macos-15-intel"},{"os":"15","arch":"arm64","runner":"macos-15"}]' || inputs.macos_version == '26' && '[{"os":"26","arch":"x64","runner":"macos-26-intel"},{"os":"26","arch":"arm64","runner":"macos-26"}]' || '[{"os":"15","arch":"x64","runner":"macos-15-intel"},{"os":"15","arch":"arm64","runner":"macos-15"}]') }}
+        include: ${{ fromJSON(inputs.macos_version == '26' && '[{"os":"26","arch":"x64","runner":"macos-26-intel"},{"os":"26","arch":"arm64","runner":"macos-26"}]' || '[{"os":"15","arch":"x64","runner":"macos-15-intel"},{"os":"15","arch":"arm64","runner":"macos-15"}]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     env:
@@ -145,8 +142,8 @@ jobs:
           count = sum((e['CURRENT_RUN_ARTIFACT'] == 'true', bool(e['SOURCE_RUN_ID']), bool(e['RELEASE_TAG'])))
           if count != 1:
               raise SystemExit('Select exactly one of current_run_artifact, source_run_id, or release_tag.')
-          if e['MACOS_VERSION'] not in ('14', '15', '26'):
-              raise SystemExit('macos_version must be 14, 15 or 26.')
+          if e['MACOS_VERSION'] not in ('15', '26'):
+              raise SystemExit('macos_version must be 15 or 26.')
           if e['SOURCE_RUN_ID'] and not re.fullmatch(r'[0-9]+', e['SOURCE_RUN_ID']):
               raise SystemExit('source_run_id must be numeric.')
           if e['RELEASE_TAG'] and not re.fullmatch(r'[0-9A-Za-z][0-9A-Za-z._+-]{0,127}', e['RELEASE_TAG']):
@@ -228,33 +225,38 @@ jobs:
           python3 - <<'PY'
           import json, os
           from pathlib import Path
+          selected = os.environ['MACOS_VERSION']
+          if selected not in ('15', '26'):
+              raise SystemExit('macos_version must be 15 or 26.')
           reports = {}
           for source in Path('reports').glob('*/summary.json'):
               data = json.loads(source.read_text())
               reports[(data.get('expected_macos_version'), data['arch'])] = data
-          selected = os.environ['MACOS_VERSION']
-          expected = [('14', 'arm64'), ('15', 'x64'), ('15', 'arm64')] if selected == '14' else [
-              (selected, 'x64'), (selected, 'arm64')]
+          expected = [(selected, 'x64'), (selected, 'arm64')]
           lines = ['### Native macOS comparison', '',
-                   '| Target | Actual macOS | Bundle version | Headless | GUI | Local input/navigation | Startup #1286 | Baidu #1316 | WebGL (diagnostic) | Audio (diagnostic) | Overall |',
-                   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |']
+                   '| Target | Actual macOS | Bundle version | Headless | GUI | GUI repeat (diagnostic) | Local input/navigation | Startup #1286 | Baidu #1316 | WebGL (diagnostic) | Audio (diagnostic) | Overall |',
+                   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |']
           def status(probe):
               return probe.get('status', 'INCOMPLETE')
           for os_version, arch in expected:
               report = reports.get((os_version, arch), {})
               probes = report.get('probes', {})
+              gui_repeat = status(probes['gui-repeat']) if 'gui-repeat' in probes else '—'
               issues = probes.get('gui', {}).get('issues', {})
               capabilities = probes.get('gui', {}).get('capabilities', {})
               interaction = probes.get('gui', {}).get('interaction') or {}
               version = report.get('bundle', {}).get('CFBundleShortVersionString', 'missing')
               lines.append(f"| macOS {os_version} / {arch} | {report.get('os_version', 'missing')} | {version} | "
                            f"{status(probes.get('headless', {}))} | {status(probes.get('gui', {}))} | "
+                           f"{gui_repeat} | "
                            f"{status(interaction)} | "
                            f"{status(issues.get('1286', {}))} | {status(issues.get('1316', {}))} | "
                            f"{status(capabilities.get('webgl', {}))} | {status(capabilities.get('audio', {}))} | "
                            f"{status(report)} |")
           lines += ['', 'PASS = completed successfully; FAIL = a check failed; INCOMPLETE = not verified '
                     '(including network blocks, CAPTCHA, missing page elements or reports). Only PASS is green. '
+                    'GUI repeat reruns a failed GUI baseline with the same arguments and a fresh profile, '
+                    'before flag diagnostics; it does not replace the baseline result. — = repeat not run. '
                     'Startup checks browser/window/renderer responsiveness, not native control input. '
                     'WebGL/audio failures are diagnostic-only; crashes, required CDP timeouts and renderer hangs '
                     'during them still fail the run. Baidu CAPTCHA/network blocks remain INCOMPLETE but may '

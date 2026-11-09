@@ -74,11 +74,18 @@ failure does not skip audio. Required CDP timeouts, renderer hangs and crashes
 during these checks still fail the baseline. A Google network failure alone
 also remains diagnostic when the renderer is responsive.
 
-After a baseline `FAIL`, three separate diagnostic runs add only
+After a GUI baseline `FAIL`, `gui-repeat` first repeats the GUI probe with
+the same browser arguments and a fresh profile. This checks whether a second
+launch succeeds without changing browser settings, for example after system
+services have warmed up. A passing repeat does not establish the cause of the
+original failure.
+
+After this repeat, if applicable, three separate diagnostic runs add only
 `--disable-extensions`, `--disable-gpu`, or `--no-sandbox`, each with a fresh
-profile. They repeat the failing mode; headless is selected if both modes
-failed. A diagnostic pass never overrides a baseline failure. An `INCOMPLETE`
-result alone does not trigger these runs.
+profile. They repeat the failing baseline mode; headless is selected if both
+baselines failed. When only headless fails, these flag diagnostics run without
+a GUI repeat. No diagnostic pass overrides a baseline failure. An `INCOMPLETE`
+result alone does not trigger diagnostic runs.
 
 GUI testing still runs after a headless failure. Each browser probe has a
 five-minute deadline and bounded cleanup. Detected renderer crashes, early
@@ -104,9 +111,13 @@ Each `macos-smoke-<os>-<arch>-<run>-<attempt>` artifact contains:
   a failing browser. Sampling errors are retained if macOS denies access.
 
 The final comparison shows the actual OS and application version for each
-target, alongside core, interaction and diagnostic results. Use the package
-hash and Framework UUID to distinguish rebuilds that share a version number.
-Matching dSYMs from the exact binary build are required to symbolize crashes.
+target, alongside core, interaction and diagnostic results, including the GUI
+repeat. It compares reports from the current run attempt. Start a new manual
+run or re-run all jobs to collect both architectures together; re-running only
+failed jobs may leave the other architecture's report in an earlier attempt.
+Use the package hash and Framework UUID to distinguish rebuilds that share a
+version number. Matching dSYMs from the exact binary build are required to
+symbolize crashes.
 
 Hosted images do not reproduce every physical Mac or macOS patch release.
 Runner provisioning failures occur before browser testing and provide no
@@ -118,11 +129,18 @@ playback and human-visible UI quality require separate testing.
 
 ## Select the test environment
 
-Set `macos_version` explicitly when starting a run. The workflow defines the
-supported choices and their native runner matrix, including any additional
-jobs used to compare OS versions. Jobs continue independently when another
-target fails. Check [GitHub's runner availability](https://github.com/actions/runner-images#available-images)
-before selecting an older OS image.
+Set `macos_version` explicitly when starting a run. The hosted workflow
+supports these choices, with `15` as the default:
+
+| `macos_version` | Native x64 runner | Native ARM64 runner |
+| --- | --- | --- |
+| `15` | `macos-15-intel` | `macos-15` |
+| `26` | `macos-26-intel` | `macos-26` |
+
+Both jobs test the selected OS major version and continue independently when
+the other target fails. Hosted choices follow [GitHub's runner availability](https://github.com/actions/runner-images#available-images).
+They do not restrict direct harness runs on a compatible local or self-hosted
+Mac.
 
 Set `expected_version` to the four-part version inside both application bundles,
 without a release-tag prefix. A release tag may use a different name. Review
