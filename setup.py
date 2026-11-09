@@ -112,10 +112,6 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
         metavar="PATH",
         help="Thorium repository root (default: THOR_DIR or ~/thorium)",
     )
-    parser.add_argument("--archive", action="store_true",
-                        help="Prepare a fresh source archive once, without Git metadata.")
-    parser.add_argument("--expected-version",
-                        help="Required with --archive; must match chrome/VERSION.")
     profiles = parser.add_mutually_exclusive_group()
     profiles.add_argument(
         "--mac",
@@ -577,7 +573,7 @@ def execute_copy_plan(plan: CopyPlan) -> None:
 
 
 def apply_patch_series(
-    thorium_root: Path, chromium_src: Path, profile: str, *, archive: bool = False
+    thorium_root: Path, chromium_src: Path, profile: str
 ) -> None:
     script = thorium_root / "patch_scripts" / "series" / "apply_series.py"
     condition = {
@@ -596,8 +592,6 @@ def apply_patch_series(
     ]
     if condition:
         command.extend(("--condition", condition))
-    if archive:
-        command.append("--archive")
     print("\nApplying Thorium patch series")
     run(command, thorium_root)
 
@@ -630,13 +624,8 @@ def validate_inputs(
     chromium_src: Path,
     base_plan: CopyPlan,
     profile_plan: ProfilePlan,
-    *,
-    archive: bool = False,
 ) -> None:
-    if archive:
-        require_directory(chromium_src, "Chromium archive")
-    else:
-        require_checkout(chromium_src, "Chromium")
+    require_checkout(chromium_src, "Chromium")
     require_file(chromium_src / "BUILD.gn", "Chromium root BUILD.gn")
     validate_copy_plan(base_plan, "Thorium setup source")
     validate_copy_plan(profile_plan.copies, "profile source")
@@ -655,30 +644,12 @@ def validate_inputs(
         require_file(config / filename, "GRD rebase configuration")
 
 
-def setup(thorium_root: Path, chromium_src: Path, profile: str, *,
-          archive: bool = False, expected_version: str | None = None) -> None:
+def setup(thorium_root: Path, chromium_src: Path, profile: str) -> None:
     thorium_root = thorium_root.expanduser().resolve()
     chromium_src = chromium_src.expanduser().resolve()
 
     require_directory(thorium_root, "Thorium")
     output = chromium_src / "out" / "thorium"
-    archive_stamp = chromium_src / ".thorium-archive-setup.json"
-    if archive:
-        if not expected_version:
-            raise SetupError("--archive requires --expected-version")
-        if (chromium_src / ".git").exists() or archive_stamp.exists() or output.exists():
-            raise SetupError("archive setup requires a fresh tree; re-extract before retrying")
-        require_file(chromium_src / "DEPS", "archive DEPS")
-        version_file = chromium_src / "chrome" / "VERSION"
-        require_file(version_file, "archive version")
-        values = dict(line.split("=", 1) for line in version_file.read_text().splitlines()
-                      if "=" in line)
-        actual = ".".join(values.get(key, "").strip()
-                          for key in ("MAJOR", "MINOR", "BUILD", "PATCH"))
-        if actual != expected_version:
-            raise SetupError(f"archive version mismatch: {actual} != {expected_version}")
-    elif expected_version:
-        raise SetupError("--expected-version is only supported with --archive")
     base_plan = base_copy_plan(thorium_root, chromium_src, profile)
     selected_profile_plan = profile_copy_plan(profile, thorium_root, chromium_src)
     validate_inputs(
@@ -686,12 +657,7 @@ def setup(thorium_root: Path, chromium_src: Path, profile: str, *,
         chromium_src,
         base_plan,
         selected_profile_plan,
-        archive=archive,
     )
-
-    if archive:
-        archive_stamp.write_text(json.dumps({"status": "preparing", "profile": profile,
-                                            "version": expected_version}) + "\n")
 
     try:
         output.mkdir(parents=True, exist_ok=True)
@@ -712,13 +678,12 @@ def setup(thorium_root: Path, chromium_src: Path, profile: str, *,
     pending_files = previous_files | current_files
     if pending_files != previous_files:
         write_setup_manifest(manifest, pending_files)
-    if not archive:
-        clean_stale_managed_files(chromium_src, previous_files, current_files)
+    clean_stale_managed_files(chromium_src, previous_files, current_files)
 
     print("\nCopying Thorium source overlays over the Chromium tree")
     execute_copy_plan(base_plan)
 
-    apply_patch_series(thorium_root, chromium_src, profile, archive=archive)
+    apply_patch_series(thorium_root, chromium_src, profile)
     apply_grd_rebase(thorium_root, chromium_src)
 
     execute_profile_plan(selected_profile_plan)
@@ -726,9 +691,6 @@ def setup(thorium_root: Path, chromium_src: Path, profile: str, *,
     read_art(thorium_root / "logos" / "thorium_ascii_art.txt")
     if pending_files != current_files:
         write_setup_manifest(manifest, current_files)
-    if archive:
-        archive_stamp.write_text(json.dumps({"status": "complete", "profile": profile,
-                                            "version": expected_version}) + "\n")
     print("\nDone!")
     print("\nEnjoy Thorium!\n")
 
@@ -743,8 +705,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     args = parse_args(sys.argv[1:] if argv is None else argv)
     try:
-        setup(args.thorium_root, args.chromium_src, args.profile,
-              archive=args.archive, expected_version=args.expected_version)
+        setup(args.thorium_root, args.chromium_src, args.profile)
     except SetupError as error:
         print(f"{Path(sys.argv[0]).name}: {error}", file=sys.stderr)
         return EXIT_FAILURE

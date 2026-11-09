@@ -184,7 +184,7 @@ index 4163d9806888f..cbe9b920043ca 100644
  
  declare_args() {
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index c8db4e4c569f5..f27a680540cb3 100644
+index aa30b9a92cb1c..b7af241096554 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -244,7 +244,7 @@ if (is_android) {
