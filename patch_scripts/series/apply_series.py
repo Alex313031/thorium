@@ -162,42 +162,13 @@ def validate_entries(entries: list[SeriesEntry], thorium_root: Path, source_tree
         seen.add(key)
 
         patch = thorium_root / entry.patch_path
-        if not patch.resolve().is_relative_to(thorium_root.resolve()):
-            errors.append(f"patch outside Thorium root at line {entry.line_no}")
         if not patch.is_file():
             errors.append(f"missing patch at line {entry.line_no}: {entry.patch_path}")
 
         apply_dir = source_tree / entry.apply_root
-        if not apply_dir.resolve().is_relative_to(source_tree.resolve()):
-            errors.append(f"apply root outside source tree at line {entry.line_no}")
         if not apply_dir.is_dir():
             errors.append(f"missing apply root at line {entry.line_no}: {entry.apply_root}")
     return errors
-
-
-def apply_archive_series(entries: list[SeriesEntry], thorium_root: Path,
-                         source_tree: Path) -> int:
-    """Apply in order without discovering a parent repository or creating HEAD.
-
-    The caller owns a freshly extracted tree. A failed preparation must be
-    discarded, rather than accepting reverse-applicable patches as success.
-    git apply itself handles binary patches and executable mode changes.
-    """
-    env = {key: value for key, value in os.environ.items()
-           if not key.startswith("GIT_")}
-    env["GIT_CEILING_DIRECTORIES"] = str(source_tree.parent)
-    for entry in entries:
-        patch = (thorium_root / entry.patch_path).resolve()
-        command = ["git", "-C", str(source_tree), "apply", "--no-index"]
-        if entry.apply_root != ".":
-            command.append(f"--directory={entry.apply_root}")
-        print(f"apply (archive): {entry.apply_root}: {entry.patch_path}", flush=True)
-        for flags in (["--check"], []):
-            if subprocess.run([*command, *flags, str(patch)], env=env).returncode:
-                print(f"failed: {entry.patch_path}; re-extract the archive before retrying",
-                      file=sys.stderr)
-                return 1
-    return 0
 
 
 def main(argv: list[str]) -> int:
@@ -212,15 +183,10 @@ def main(argv: list[str]) -> int:
     )
     parser.add_argument("--series", type=Path, default=default_root / "patch_scripts" / "series" / "series")
     parser.add_argument("--condition", action="append", default=[], help="Enable one conditional entry, e.g. raspi or sse2.")
-    parser.add_argument("--apply", action="store_true",
-                        help="Apply patches; Git checkouts use --reject, archive mode stops at the first failed patch.")
-    parser.add_argument("--archive", action="store_true",
-                        help="Apply to a fresh archive tree without Git metadata; requires --apply.")
+    parser.add_argument("--apply", action="store_true", help="Apply patches with git apply --reject.")
     args = parser.parse_args(argv)
     if len(args.condition) > 1:
         parser.error("only one --condition value is supported per run")
-    if args.archive and not args.apply:
-        parser.error("--archive requires --apply; patches are checked sequentially before application")
 
     thorium_root = args.thorium_root.resolve()
     source_tree = (args.source_tree or default_source_tree()).resolve()
@@ -235,11 +201,6 @@ def main(argv: list[str]) -> int:
         for error in errors:
             print(f"error: {error}", file=sys.stderr)
         return 2
-
-    if args.archive:
-        if (source_tree / ".git").exists():
-            parser.error("--archive refuses a Git checkout")
-        return apply_archive_series(entries, thorium_root, source_tree)
 
     if not args.apply:
         with tempfile.TemporaryDirectory(prefix="thorium-series-index-") as temp:

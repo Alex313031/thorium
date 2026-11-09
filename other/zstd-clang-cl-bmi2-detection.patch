@@ -1,5 +1,5 @@
 diff --git a/lib/common/portability_macros.h b/lib/common/portability_macros.h
-index bcca634e..869beaf6 100644
+index bcca634e4..869beaf63 100644
 --- a/lib/common/portability_macros.h
 +++ b/lib/common/portability_macros.h
 @@ -78,7 +78,7 @@

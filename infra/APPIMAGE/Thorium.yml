@@ -4,8 +4,6 @@ app: Thorium
 appId: "org.chromium.Thorium"
 
 compression: minimum
-# The script below writes our own launcher; no upstream AppRun download is needed.
-apprun_from_recipe: true
 
 script:
   - cp -v -r "$THORIUM_APPIMAGE_PAYLOAD"/. usr/bin/
