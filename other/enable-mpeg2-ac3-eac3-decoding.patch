@@ -26,7 +26,7 @@ index 51734902ee029..2251b80e59319 100644
        return false;
    }
 diff --git a/media/ffmpeg/ffmpeg_common.cc b/media/ffmpeg/ffmpeg_common.cc
-index c84f80be05b28..2f577f4c57a05 100644
+index c84f80be05b28..22ab0ce8130ae 100644
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
 @@ -179,6 +179,12 @@ AVCodecID AudioCodecToCodecID(AudioCodec audio_codec,
@@ -42,7 +42,51 @@ index c84f80be05b28..2f577f4c57a05 100644
      case AudioCodec::kALAC:
        return AV_CODEC_ID_ALAC;
      case AudioCodec::kMP3:
-@@ -1113,7 +1119,7 @@ int32_t HashCodecName(const char* codec_name) {
+@@ -391,14 +397,20 @@ bool AVCodecContextToAudioDecoderConfig(const AVCodecContext* codec_context,
+   }
+ 
+   switch (codec) {
+-    // For AC3/EAC3 we enable only demuxing, but not decoding, so FFmpeg does
+-    // not fill |sample_fmt|.
+     case AudioCodec::kAC3:
+     case AudioCodec::kEAC3:
+ #if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+-      // The spec for AC3/EAC3 audio is ETSI TS 102 366. According to sections
+-      // F.3.1 and F.5.1 in that spec the sample_format for AC3/EAC3 must be 16.
+-      sample_format = kSampleFormatS16;
++      // Upstream builds ffmpeg with the AC3/EAC3 demuxers but not the
++      // decoders, so ffmpeg leaves |sample_fmt| unset and the bitstream is
++      // described as the 16-bit its spec (ETSI TS 102 366 F.3.1, F.5.1)
++      // requires before being handed to a platform decoder. We build the
++      // decoders, so ffmpeg does fill |sample_fmt| -- with planar float, from
++      // ff_ac3_decoder -- and that is what the decoded buffers will hold.
++      // Describing them as S16 is simply wrong, so keep what ffmpeg reports
++      // and fall back to upstream's value only when it reports nothing.
++      if (sample_format == kUnknownSampleFormat) {
++        sample_format = kSampleFormatS16;
++      }
+       break;
+ #else
+       NOTREACHED();
+@@ -454,10 +466,14 @@ bool AVCodecContextToAudioDecoderConfig(const AVCodecContext* codec_context,
+                      seek_preroll, codec_delay);
+ 
+ #if BUILDFLAG(ENABLE_PLATFORM_AC3_EAC3_AUDIO)
+-  // These are bitstream formats unknown to ffmpeg, so they don't have
+-  // a known sample format size.
+-  if (codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3)
++  // A bitstream ffmpeg only demuxes has no sample format, so the
++  // bytes_per_channel check at the end of this function cannot be made. When
++  // the decoder is built in, ffmpeg does report one and the check applies like
++  // it does to every other codec.
++  if ((codec == AudioCodec::kAC3 || codec == AudioCodec::kEAC3) &&
++      codec_context->sample_fmt == AV_SAMPLE_FMT_NONE) {
+     return true;
++  }
+ #endif
+ #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
+   if (codec == AudioCodec::kMpegHAudio)
+@@ -1113,7 +1129,7 @@ int32_t HashCodecName(const char* codec_name) {
  
  const char* GetAllowedAudioDecoders() {
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
