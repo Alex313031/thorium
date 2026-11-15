@@ -41,7 +41,6 @@ EXTERNAL_ADDITION_MESSAGE_IDS = frozenset(
         "IDS_MODULE_INSTALL_FAILURE_TEXT",
         "IDS_MODULE_INSTALL_START_TEXT",
         "IDS_SETTINGS_SKILLS_SETTING_LABEL",
-        "IDS_TRAFFIC_COUNTERS_DATA_USAGE_DIFFERENT_FROM_PROVIDER_LABEL",
         "IDS_VERSION_UI_LICENSE",
     }
 )
@@ -184,7 +183,6 @@ GRDP_PARENT_GRD_PATHS = {
     "chrome/app/shared_settings_strings.grdp": "chrome/app/generated_resources.grd",
     "components/autofill_payments_strings.grdp": "components/components_strings.grd",
     "components/autofill_strings.grdp": "components/components_strings.grd",
-    "components/components_settings_strings.grdp": "components/components_strings.grd",
     "components/error_page_strings.grdp": "components/components_strings.grd",
     "components/flags_strings.grdp": "components/components_strings.grd",
     "components/heavy_ad_intervention_strings.grdp": "components/components_strings.grd",
@@ -924,8 +922,6 @@ def build_translation_insertions(
     insertions: list[XtbTranslationInsertion] = []
     for lookup in lookups:
         change = lookup.change
-        if xtb_translation_strategy(change) == "english_source_fallback":
-            continue
         if change.old_translation_id == change.new_translation_id:
             continue
 
