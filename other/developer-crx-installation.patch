@@ -524,7 +524,7 @@ index 111354c843a28..6205d9092ad8b 100644
  
    /**
 diff --git a/chrome/browser/resources/extensions/extensions.ts b/chrome/browser/resources/extensions/extensions.ts
-index 12032e33269db..0f9bd402d160a 100644
+index cd75100e3b063..73eb1b39335de 100644
 --- a/chrome/browser/resources/extensions/extensions.ts
 +++ b/chrome/browser/resources/extensions/extensions.ts
 @@ -46,7 +46,7 @@ export {ExtensionsReviewPanelElement} from './review_panel.js';
@@ -586,63 +586,6 @@ index 50ece1a22b04d..5cdf25cab2146 100644
    }
  }
  
-diff --git a/chrome/browser/resources/extensions/manager.html.ts b/chrome/browser/resources/extensions/manager.html.ts
-index 19c6e350823f8..7d3a13d12281b 100644
---- a/chrome/browser/resources/extensions/manager.html.ts
-+++ b/chrome/browser/resources/extensions/manager.html.ts
-@@ -8,8 +8,8 @@ import type {ExtensionsManagerElement} from './manager.js';
- 
- export function getHtml(this: ExtensionsManagerElement) {
-   // clang-format off
--  if (this.androidExtensionsDisabled_) {
--    return html`
-+  return html`<!--_html_template_start_-->
-+${this.androidExtensionsDisabled_ ? html`
-       <main id="android-extensions-disabled" aria-labelledby="disabled-title">
-         <h1 id="disabled-title">$i18n{androidExtensionsDisabledTitle}</h1>
-         <p id="disabled-description">$i18n{androidExtensionsDisabledDescription}</p>
-@@ -23,10 +23,8 @@ export function getHtml(this: ExtensionsManagerElement) {
-             aria-describedby="disabled-description">
-           $i18n{toolbarLoadUnpacked}
-         </cr-button>
--      </main>`;
--  }
--
--  return html`<!--_html_template_start_-->
-+      </main>
-+` : html`
- <extensions-drop-overlay ?drag-enabled="${this.inDevMode}">
- </extensions-drop-overlay>
- <extensions-toolbar id="toolbar" ?in-dev-mode="${this.inDevMode}"
-@@ -144,6 +142,7 @@ ${this.showInstallWarningsDialog_ ? html`
-   </extensions-install-warnings-dialog>
- ` : ''}
- <cr-toast-manager></cr-toast-manager>
-+`}
- <!--_html_template_end_-->`;
-   // clang-format on
- }
-diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/resources/extensions/manager.ts
-index a9e1f8836e46d..77a23b3482ad2 100644
---- a/chrome/browser/resources/extensions/manager.ts
-+++ b/chrome/browser/resources/extensions/manager.ts
-@@ -105,6 +105,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
- 
-   static override get properties() {
-     return {
-+      androidExtensionsDisabled_: {type: Boolean},
-       canLoadUnpacked: {type: Boolean},
-       delegate: {type: Object},
-       inDevMode: {type: Boolean},
-@@ -163,7 +164,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
-   }
- 
-   accessor canLoadUnpacked: boolean = false;
--  protected readonly androidExtensionsDisabled_: boolean =
-+  protected accessor androidExtensionsDisabled_: boolean =
-       loadTimeData.getBoolean('androidExtensionsDisabled');
-   accessor delegate: ServiceInterface = Service.getInstance();
-   accessor inDevMode: boolean = loadTimeData.getBoolean('inDevMode');
 diff --git a/chrome/browser/resources/extensions/service.ts b/chrome/browser/resources/extensions/service.ts
 index b70ac01c6aa25..d4da1442a7dfb 100644
 --- a/chrome/browser/resources/extensions/service.ts

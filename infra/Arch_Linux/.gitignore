@@ -1,5 +1,9 @@
 *
 !PKGBUILD
 !.SRCINFO
-!.nvchecker.toml
 !.gitignore
+!.nvchecker.toml
+!LICENSE
+!thorium-browser.sh
+!thorium-cpu-check.sh
+!thorium-shell.sh
