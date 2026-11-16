@@ -1730,7 +1730,7 @@ index a8e1e6e39477d..a36440723ab53 100644
  
 diff --git a/chrome/installer/setup/installed_browser_shutdown.cc b/chrome/installer/setup/installed_browser_shutdown.cc
 new file mode 100644
-index 0000000000000..f1cb7f1d52b9e
+index 0000000000000..d68e2cec64b98
 --- /dev/null
 +++ b/chrome/installer/setup/installed_browser_shutdown.cc
 @@ -0,0 +1,217 @@
@@ -1742,7 +1742,7 @@ index 0000000000000..f1cb7f1d52b9e
 +
 +#include <windows.h>
 +
-+#include <restartmanager.h>
++#include <RestartManager.h>
 +
 +#include <algorithm>
 +#include <optional>
