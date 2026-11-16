@@ -142,7 +142,7 @@ index a3829f7f3af10..a6ca21a2a76f9 100644
  
        if (defined(invoker.write_clang_profiling_data) &&
 diff --git a/build/config/chrome_build.gni b/build/config/chrome_build.gni
-index 92cffc2beb18c..50bf2141ab0b8 100644
+index 92cffc2beb18c..bad84c011472e 100644
 --- a/build/config/chrome_build.gni
 +++ b/build/config/chrome_build.gni
 @@ -34,7 +34,8 @@ declare_args() {
@@ -162,7 +162,8 @@ index 92cffc2beb18c..50bf2141ab0b8 100644
 -if (is_desktop_android) {
 +if (is_desktop_android_thorium) {
    assert(target_os == "android",
-          "Target must be Android to use is_desktop_android.")
+-         "Target must be Android to use is_desktop_android.")
++         "Target must be Android to use is_desktop_android_thorium.")
  
    # Disable for non-android secondary toolchains.
 -  is_desktop_android = is_android
@@ -209,6 +210,19 @@ index 2be009d2a173e..1884734432e1a 100644
           base::FeatureList::IsEnabled(
               features::kThrottleMainFrameTo60HzDesktopAndroid);
  #else
+diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
+index 12c5b88a0f4b6..5b5fe6bf8bc27 100644
+--- a/chrome/android/BUILD.gn
++++ b/chrome/android/BUILD.gn
+@@ -2422,7 +2422,7 @@ if (_is_default_toolchain) {
+       ]
+     }
+ 
+-    if (is_desktop_android) {
++    if (is_desktop_android_thorium) {
+       deps += [
+         # TODO(crbug.com/473636857): Include in normal builds once all Android
+         # support is finished.
 diff --git a/chrome/android/chrome_public_apk_tmpl.gni b/chrome/android/chrome_public_apk_tmpl.gni
 index 043f5d653e3e7..597aa16f970ab 100644
 --- a/chrome/android/chrome_public_apk_tmpl.gni
@@ -975,7 +989,7 @@ index 24f8cbe6bd907..5914f397b48f9 100644
        "//chrome/browser/ui/android/extensions",
        "//chrome/browser/ui/android/extensions/browser_window_helper/internal",
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index f9290a13c195b..159565a105cd5 100644
+index f9290a13c195b..8dcd2d048004e 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
 @@ -396,6 +396,10 @@
@@ -1026,6 +1040,22 @@ index f9290a13c195b..159565a105cd5 100644
  
      {"browsing-history-improved-hostname-suffix-matching",
       flag_descriptions::kBrowsingHistoryImprovedHostnameSuffixMatchingName,
+@@ -14421,13 +14432,13 @@ const FeatureEntry kFeatureEntries[] = {
+      FEATURE_VALUE_TYPE(features::kReadAnythingSendFeedback)},
+ #endif
+ 
+-#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+     {"web-hid-on-desktop-android-service-workers",
+      flag_descriptions::kWebHidOnDesktopAndroidServiceWorkersName,
+      flag_descriptions::kWebHidOnDesktopAndroidServiceWorkersDescription,
+      kOsAndroid,
+      FEATURE_VALUE_TYPE(features::kWebHidOnDesktopAndroidServiceWorkers)},
+-#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+ 
+     {"payment-handler-custom-size",
+      flag_descriptions::kPaymentHandlerCustomSizeName,
 diff --git a/chrome/browser/android/autocomplete/tab_matcher_android.cc b/chrome/browser/android/autocomplete/tab_matcher_android.cc
 index 71bdb3772e4a9..48879662a5724 100644
 --- a/chrome/browser/android/autocomplete/tab_matcher_android.cc
@@ -1518,7 +1548,7 @@ index 9e5ff58848ee4..f34bdf1bd364d 100644
  
  }  // namespace chrome::internal
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index 694f60ad60493..4a4aa8115d5b7 100644
+index 694f60ad60493..aa2eb99269768 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
 @@ -4384,7 +4384,7 @@ base::OnceClosure ChromeContentBrowserClient::SelectClientCertificate(
@@ -1530,6 +1560,15 @@ index 694f60ad60493..4a4aa8115d5b7 100644
      if (matching_certificates.empty() && nonmatching_certificates.empty()) {
        extensions::ProcessMap* process_map =
            extensions::ProcessMap::Get(profile);
+@@ -4739,7 +4739,7 @@ void ChromeContentBrowserClient::OverrideWebPreferences(
+ // Fill font preferences. These are not registered on Android unless we're built
+ // with extensions (the chrome.fontSettings API can change these).
+ // - http://crbug.com/40337093, http://crbug.com/41304476.
+-#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+   bool is_initial_webui = false;
+ #if !BUILDFLAG(IS_ANDROID)
+   is_initial_webui =
 diff --git a/chrome/browser/composeplate/android/java/src/org/chromium/chrome/browser/composeplate/ComposeplateUtils.java b/chrome/browser/composeplate/android/java/src/org/chromium/chrome/browser/composeplate/ComposeplateUtils.java
 index 351bc001b0acb..d2f6536019d98 100644
 --- a/chrome/browser/composeplate/android/java/src/org/chromium/chrome/browser/composeplate/ComposeplateUtils.java
@@ -2298,6 +2337,46 @@ index 2c8fcb71d3612..bf9c94ea6df84 100644
    // Note:
    //
    // (1) GLiC tests only enable `kEnableAndroidSidePanel` on desktop Android.
+diff --git a/chrome/browser/hid/chrome_hid_delegate.cc b/chrome/browser/hid/chrome_hid_delegate.cc
+index 0d8f8fc223752..50ae32becca09 100644
+--- a/chrome/browser/hid/chrome_hid_delegate.cc
++++ b/chrome/browser/hid/chrome_hid_delegate.cc
+@@ -384,13 +384,13 @@ bool ChromeHidDelegate::IsKnownSecurityKey(
+ bool ChromeHidDelegate::IsServiceWorkerAllowedForOrigin(
+     const url::Origin& origin) {
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+-#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+   if (!base::FeatureList::IsEnabled(blink::features::kWebHID) ||
+       !base::FeatureList::IsEnabled(
+           features::kWebHidOnDesktopAndroidServiceWorkers)) {
+     return false;
+   }
+-#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+   if (origin.scheme() == extensions::kExtensionScheme) {
+     return true;
+   }
+diff --git a/chrome/browser/hid/hid_chooser_context.cc b/chrome/browser/hid/hid_chooser_context.cc
+index 0c5af3b45a2c7..a53b600d115ba 100644
+--- a/chrome/browser/hid/hid_chooser_context.cc
++++ b/chrome/browser/hid/hid_chooser_context.cc
+@@ -563,13 +563,13 @@ bool HidChooserContext::HasDevicePermission(
+ 
+ bool HidChooserContext::IsFidoAllowedForOrigin(const url::Origin& origin) {
+ #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
+-#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+   if (!base::FeatureList::IsEnabled(blink::features::kWebHID) ||
+       !base::FeatureList::IsEnabled(
+           features::kWebHidOnDesktopAndroidServiceWorkers)) {
+     return false;
+   }
+-#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+   if (origin.scheme() == extensions::kExtensionScheme &&
+       kPrivilegedFidoExtensionIds.contains(origin.host())) {
+     return true;
 diff --git a/chrome/browser/incognito/android/java/src/org/chromium/chrome/browser/incognito/IncognitoUtils.java b/chrome/browser/incognito/android/java/src/org/chromium/chrome/browser/incognito/IncognitoUtils.java
 index 363eb2dc2d2f2..4f64b2a161bff 100644
 --- a/chrome/browser/incognito/android/java/src/org/chromium/chrome/browser/incognito/IncognitoUtils.java
@@ -3042,6 +3121,112 @@ index ebea83483e9d3..84c433fdb9f22 100644
    source_set("browser_tests") {
      testonly = true
      defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+diff --git a/chrome/browser/ui/android/ai_overlay_dialog/BUILD.gn b/chrome/browser/ui/android/ai_overlay_dialog/BUILD.gn
+index 8e38c715e41f1..0dbd0c1de145a 100644
+--- a/chrome/browser/ui/android/ai_overlay_dialog/BUILD.gn
++++ b/chrome/browser/ui/android/ai_overlay_dialog/BUILD.gn
+@@ -45,7 +45,7 @@ source_set("ai_overlay_dialog") {
+     "//ui/base",
+   ]
+ 
+-  if (is_desktop_android) {
++  if (is_desktop_android_thorium) {
+     deps += [ "//chrome/browser/ui/ai_overlay_dialog" ]
+   }
+ }
+diff --git a/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.cc b/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.cc
+index 13d525cb3cb1b..b191d97c69656 100644
+--- a/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.cc
++++ b/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.cc
+@@ -13,10 +13,10 @@
+ #include "ui/android/window_android.h"
+ #include "ui/base/base_window.h"
+ 
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ #include "chrome/browser/ui/ai_overlay_dialog/ai_overlay_dialog_controller.h"
+ #include "chrome/browser/ui/ai_overlay_dialog/ai_overlay_dialog_controller_android.h"
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ 
+ // Must come after headers specializing FromJniType() / ToJniType().
+ #include "chrome/browser/ui/android/ai_overlay_dialog/jni_headers/AiOverlayDialogBridge_jni.h"
+@@ -28,7 +28,7 @@ static int64_t JNI_AiOverlayDialogBridge_Create(
+     JNIEnv* env,
+     const jni_zero::JavaRef<jobject>& caller,
+     BrowserWindowInterface* browser) {
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+   // Mirrors the guards BrowserWindowFeatures uses on desktop.
+   if (!browser ||
+       browser->GetType() != BrowserWindowInterface::Type::TYPE_NORMAL) {
+@@ -38,7 +38,7 @@ static int64_t JNI_AiOverlayDialogBridge_Create(
+       new AiOverlayDialogBridge(env, caller, browser));
+ #else
+   return 0;
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ }
+ 
+ AiOverlayDialogBridge::AiOverlayDialogBridge(
+@@ -46,9 +46,9 @@ AiOverlayDialogBridge::AiOverlayDialogBridge(
+     const base::android::JavaRef<jobject>& java_bridge,
+     BrowserWindowInterface* browser)
+     : java_bridge_(env, java_bridge) {
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+   controller_ = std::make_unique<AiOverlayDialogControllerAndroid>(browser);
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ }
+ 
+ AiOverlayDialogBridge::~AiOverlayDialogBridge() {
+@@ -71,7 +71,7 @@ void AiOverlayDialogBridge::Destroy(JNIEnv* env) {
+ static void JNI_AiOverlayDialogBridge_ToggleOverlay(
+     JNIEnv* env,
+     const jni_zero::JavaRef<jobject>& j_web_contents) {
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+   content::WebContents* web_contents =
+       content::WebContents::FromJavaWebContents(j_web_contents);
+   if (!web_contents) {
+@@ -96,7 +96,7 @@ static void JNI_AiOverlayDialogBridge_ToggleOverlay(
+   if (auto* controller = AiOverlayDialogController::From(browser)) {
+     controller->ToggleOverlay();
+   }
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ }
+ 
+ void UpdateAudioEnergyJni(BrowserWindowInterface* browser, float energy) {
+diff --git a/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.h b/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.h
+index a01b04922a410..f72f40e568ad6 100644
+--- a/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.h
++++ b/chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.h
+@@ -17,9 +17,9 @@ class BrowserWindowInterface;
+ 
+ namespace ttc {
+ 
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ class AiOverlayDialogControllerAndroid;
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ 
+ // Native counterpart of the Java |AiOverlayDialogBridge|.
+ //
+@@ -43,9 +43,9 @@ class AiOverlayDialogBridge final {
+ 
+  private:
+   JavaObjectWeakGlobalRef java_bridge_;
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+   std::unique_ptr<AiOverlayDialogControllerAndroid> controller_;
+-#endif  // BUILDFLAG(IS_DESKTOP_ANDROID)
++#endif  // BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ };
+ 
+ // Forwards `energy` to the audio energy listener registered for `browser`'s
 diff --git a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java b/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java
 index ffb24f2d3f136..917e7017130cf 100644
 --- a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/chrome/browser/ui/appmenu/AppMenu.java
@@ -3924,9 +4109,18 @@ index 12cd33b31a98d..497d7ff166b98 100644
          }
  
 diff --git a/chrome/browser/ui/webui/BUILD.gn b/chrome/browser/ui/webui/BUILD.gn
-index 2e86cbe538585..68674d60afb5c 100644
+index 2e86cbe538585..a7c4f491c8430 100644
 --- a/chrome/browser/ui/webui/BUILD.gn
 +++ b/chrome/browser/ui/webui/BUILD.gn
+@@ -104,7 +104,7 @@ source_set("configs") {
+     deps += [ "//chrome/browser/ui/webui/signin:inline_login" ]
+   }
+ 
+-  if (!is_android || is_desktop_android) {
++  if (!is_android || is_desktop_android_thorium) {
+     deps += [ "//chrome/browser/ui/webui/ai_overlay_dialog" ]
+   }
+ 
 @@ -284,7 +284,7 @@ source_set("configs") {
      ]
    }
@@ -3955,7 +4149,7 @@ index 2e86cbe538585..68674d60afb5c 100644
        "//chrome/browser/ui/webui/management",
        "//chrome/browser/ui/webui/new_tab_page",
 diff --git a/chrome/browser/ui/webui/ai_overlay_dialog/BUILD.gn b/chrome/browser/ui/webui/ai_overlay_dialog/BUILD.gn
-index 8d9964107d447..5ca8460bf1505 100644
+index 8d9964107d447..6ec8bf3e9abe4 100644
 --- a/chrome/browser/ui/webui/ai_overlay_dialog/BUILD.gn
 +++ b/chrome/browser/ui/webui/ai_overlay_dialog/BUILD.gn
 @@ -5,7 +5,7 @@
@@ -3967,6 +4161,37 @@ index 8d9964107d447..5ca8460bf1505 100644
  
  mojom("mojo_bindings") {
    sources = [ "ai_overlay_dialog.mojom" ]
+@@ -131,7 +131,7 @@ source_set("impl") {
+       "//ui/events",
+     ]
+   }
+-  if (is_desktop_android) {
++  if (is_desktop_android_thorium) {
+     deps += [
+       "//chrome/browser/ui/android/ai_overlay_dialog",
+       "//chrome/browser/ui/android/ai_overlay_dialog:jni_headers",
+diff --git a/chrome/browser/ui/webui/ai_overlay_dialog/ai_overlay_dialog_page_handler.cc b/chrome/browser/ui/webui/ai_overlay_dialog/ai_overlay_dialog_page_handler.cc
+index 60dbc1ece7f62..3c15c02e82a58 100644
+--- a/chrome/browser/ui/webui/ai_overlay_dialog/ai_overlay_dialog_page_handler.cc
++++ b/chrome/browser/ui/webui/ai_overlay_dialog/ai_overlay_dialog_page_handler.cc
+@@ -58,7 +58,7 @@
+ #include "chrome/browser/tab_list/tab_list_interface.h"
+ #endif
+ 
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+ #include "chrome/browser/ui/android/ai_overlay_dialog/ai_overlay_dialog_bridge.h"
+ #else
+ #include "chrome/browser/ui/actions/chrome_action_id.h"
+@@ -204,7 +204,7 @@ void AiOverlayDialogPageHandler::GetMockAudioData(
+ }
+ 
+ void AiOverlayDialogPageHandler::UpdateAudioEnergy(float energy) {
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_THORIUM)
+   ttc::UpdateAudioEnergyJni(browser_, energy);
+ #else
+   if (!overlay_action_item_) {
 diff --git a/chrome/browser/ui/webui/chrome_untrusted_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_untrusted_web_ui_configs.cc
 index 861c5c41cf767..1c7c7f7843b9d 100644
 --- a/chrome/browser/ui/webui/chrome_untrusted_web_ui_configs.cc
@@ -4208,6 +4433,24 @@ index cd00ece588572..504b35a28ac7f 100644
  inline constexpr char kChromeUIDiscardsHost[] = "discards";
  inline constexpr char kChromeUIDiscardsURL[] = "chrome://discards/";
  #endif
+diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
+index 792412915da65..932c58685fc4e 100644
+--- a/chrome/renderer/chrome_content_renderer_client.cc
++++ b/chrome/renderer/chrome_content_renderer_client.cc
+@@ -1548,11 +1548,11 @@ void ChromeContentRendererClient::
+   if (IsStandaloneContentExtensionProcess()) {
+     // These Web API features are exposed in extensions.
+     blink::WebRuntimeFeatures::EnableWebUSBOnServiceWorkers(true);
+-#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+     if (base::FeatureList::IsEnabled(blink::features::kWebHID) &&
+         base::FeatureList::IsEnabled(
+             features::kWebHidOnDesktopAndroidServiceWorkers))
+-#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
++#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_THORIUM)
+     {
+       blink::WebRuntimeFeatures::EnableWebHIDOnServiceWorkers(true);
+     }
 diff --git a/chrome/renderer/sandbox_status_extension_android.cc b/chrome/renderer/sandbox_status_extension_android.cc
 index 122507ac7161b..657e1793026d4 100644
 --- a/chrome/renderer/sandbox_status_extension_android.cc
@@ -5033,6 +5276,19 @@ index 32d38de202004..2ad42f1e3fe87 100644
  // A blocklist of policies to be blocked/ignored on Desktop Android.
  BASE_FEATURE(kDesktopAndroidPolicy, base::FEATURE_DISABLED_BY_DEFAULT);
  const base::FeatureParam<std::string> kDesktopAndroidPolicyBlocklist{
+diff --git a/components/search/search.cc b/components/search/search.cc
+index 3592f9a17985c..1a768c81acd4a 100644
+--- a/components/search/search.cc
++++ b/components/search/search.cc
+@@ -15,7 +15,7 @@ namespace search {
+ 
+ bool IsInstantExtendedAPIEnabled() {
+ // See exception on b/532190074 for WebUI NTP on Desktop Android.
+-#if BUILDFLAG(IS_DESKTOP_ANDROID)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_FALSE)
+   return base::FeatureList::IsEnabled(
+       ntp_features::kNtpEnableInstantApiAndroid);
+ #elif BUILDFLAG(IS_IOS) || BUILDFLAG(IS_ANDROID)
 diff --git a/components/signin/public/base/signin_switches.cc b/components/signin/public/base/signin_switches.cc
 index 70bc2b4b6ff3e..e89c9e65588fd 100644
 --- a/components/signin/public/base/signin_switches.cc
@@ -6462,10 +6718,25 @@ index 70ba89cb3c728..a33a5d5a1c1b4 100644
    }
  }
 diff --git a/ui/webui/webui_features.gni b/ui/webui/webui_features.gni
-index 9bf007ffcf4af..65b7d59172168 100644
+index 9bf007ffcf4af..8ea0e75a8ccbd 100644
 --- a/ui/webui/webui_features.gni
 +++ b/ui/webui/webui_features.gni
-@@ -55,12 +55,12 @@ if (enable_cast_receiver || is_cast_android || is_castos) {
+@@ -37,7 +37,7 @@ declare_args() {
+ 
+   # Enable the WebUI tab strip new tab button
+   # (chrome://tabstrip-ntb.top-chrome).
+-  enable_webui_tabstrip_ntb = is_desktop_android
++  enable_webui_tabstrip_ntb = is_desktop_android_false
+ }
+ 
+ if (enable_cast_receiver || is_cast_android || is_castos) {
+@@ -50,17 +50,17 @@ if (enable_cast_receiver || is_cast_android || is_castos) {
+     # Enable the WebUI version of the Bookmarks page.
+     enable_webui_bookmarks =
+         target_os == "win" || target_os == "mac" || target_os == "linux" ||
+-        target_os == "chromeos" || is_desktop_android
++        target_os == "chromeos" || is_desktop_android_false
+ 
      # Enable the WebUI version of the History page.
      enable_webui_history =
          target_os == "win" || target_os == "mac" || target_os == "linux" ||
