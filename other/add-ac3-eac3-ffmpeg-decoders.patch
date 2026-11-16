@@ -1079,7 +1079,7 @@ index 29f1f59381..6fb0769ce7 100644
 +    &ff_eac3_demuxer,
      NULL };
 diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
-index 8203a92f8a..927e47f149 100644
+index 8899cb0062..1108d51099 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
 @@ -327,6 +327,15 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
@@ -1098,15 +1098,15 @@ index 8203a92f8a..927e47f149 100644
    ]
  
    ffmpeg_c_sources += [
-@@ -373,6 +382,7 @@ if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
-   ffmpeg_c_sources += [
+@@ -374,6 +383,7 @@ if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      "libavcodec/x86/hevc/dsp_init.c",
+     "libavcodec/x86/hevc/pred_init.c",
      "libavcodec/x86/h26x/h2656dsp.c",
 +    "libavcodec/x86/ac3dsp_init.c",
    ]
  
    ffmpeg_asm_sources += [
-@@ -384,6 +394,8 @@ if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
+@@ -386,6 +396,8 @@ if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      "libavcodec/x86/hevc/sao.asm",
      "libavcodec/x86/hevc/sao_10bit.asm",
      "libavcodec/x86/h26x/h2656_inter.asm",
@@ -1115,7 +1115,7 @@ index 8203a92f8a..927e47f149 100644
    ]
  
    ffmpeg_c_sources += [
-@@ -547,6 +559,7 @@ if ((current_cpu == "arm64" || current_cpu == "arm64e") &&
+@@ -549,6 +561,7 @@ if ((current_cpu == "arm64" || current_cpu == "arm64e") &&
      "libavcodec/aarch64/h264qpel_init_aarch64.c",
      "libavcodec/aarch64/sbrdsp_init_aarch64.c",
      "libavcodec/aarch64/videodsp_init.c",
@@ -1123,7 +1123,7 @@ index 8203a92f8a..927e47f149 100644
    ]
    ffmpeg_gas_sources += [
      "libavcodec/aarch64/autorename_libavcodec_aarch64_aacpsdsp_neon.S",
-@@ -558,6 +571,7 @@ if ((current_cpu == "arm64" || current_cpu == "arm64e") &&
+@@ -560,6 +573,7 @@ if ((current_cpu == "arm64" || current_cpu == "arm64e") &&
      "libavcodec/aarch64/autorename_libavcodec_aarch64_hpeldsp_neon.S",
      "libavcodec/aarch64/autorename_libavcodec_aarch64_sbrdsp_neon.S",
      "libavcodec/aarch64/videodsp.S",

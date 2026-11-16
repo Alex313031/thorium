@@ -1402,7 +1402,7 @@ index e3684b3b3d..241c90ba98 100644
 +    &ff_hevc_parser,
      NULL };
 diff --git a/ffmpeg_generated.gni b/ffmpeg_generated.gni
-index ba2c2b2584..8203a92f8a 100644
+index ba2c2b2584..8899cb0062 100644
 --- a/ffmpeg_generated.gni
 +++ b/ffmpeg_generated.gni
 @@ -313,6 +313,22 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
@@ -1428,13 +1428,14 @@ index ba2c2b2584..8203a92f8a 100644
    ffmpeg_c_sources += [
      "libavcodec/aom_film_grain.c",
      "libavcodec/atsc_a53.c",
-@@ -353,6 +369,23 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
+@@ -353,6 +369,25 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
  if ((current_cpu == "x64" && ffmpeg_branding == "Chrome") ||
      (is_win && current_cpu == "x86" && ffmpeg_branding == "Chrome") ||
      (use_linux_config && current_cpu == "x86" && ffmpeg_branding == "Chrome")) {
 +
 +  ffmpeg_c_sources += [
 +    "libavcodec/x86/hevc/dsp_init.c",
++    "libavcodec/x86/hevc/pred_init.c",
 +    "libavcodec/x86/h26x/h2656dsp.c",
 +  ]
 +
@@ -1444,6 +1445,7 @@ index ba2c2b2584..8203a92f8a 100644
 +    "libavcodec/x86/hevc/dequant.asm",
 +    "libavcodec/x86/hevc/idct.asm",
 +    "libavcodec/x86/hevc/mc.asm",
++    "libavcodec/x86/hevc/pred.asm",
 +    "libavcodec/x86/hevc/sao.asm",
 +    "libavcodec/x86/hevc/sao_10bit.asm",
 +    "libavcodec/x86/h26x/h2656_inter.asm",
@@ -1452,7 +1454,7 @@ index ba2c2b2584..8203a92f8a 100644
    ffmpeg_c_sources += [
      "libavcodec/x86/autorename_libavcodec_x86_aacpsdsp_init.c",
      "libavcodec/x86/autorename_libavcodec_x86_bswapdsp_init.c",
-@@ -422,6 +455,15 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
+@@ -422,6 +457,15 @@ if (((current_cpu == "arm64" || current_cpu == "arm64e") &&
  
  if (use_linux_config && current_cpu == "riscv64" &&
      ffmpeg_branding == "Chrome") {
@@ -1468,7 +1470,7 @@ index ba2c2b2584..8203a92f8a 100644
    ffmpeg_c_sources += [
      "libavcodec/riscv/aacpsdsp_init.c",
      "libavcodec/riscv/autorename_libavcodec_riscv_videodsp_init.c",
-@@ -481,6 +523,22 @@ if (current_cpu == "x64" || (is_win && current_cpu == "x86") ||
+@@ -481,6 +525,22 @@ if (current_cpu == "x64" || (is_win && current_cpu == "x86") ||
  
  if ((current_cpu == "arm64" || current_cpu == "arm64e") &&
      ffmpeg_branding == "Chrome") {
@@ -1491,7 +1493,7 @@ index ba2c2b2584..8203a92f8a 100644
    ffmpeg_c_sources += [
      "libavcodec/aarch64/aacpsdsp_init_aarch64.c",
      "libavcodec/aarch64/h264chroma_init_aarch64.c",
-@@ -526,6 +584,23 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
+@@ -526,6 +586,23 @@ if (current_cpu == "arm64" || current_cpu == "arm64e") {
  }
  
  if (use_linux_config && current_cpu == "arm" && ffmpeg_branding == "Chrome") {

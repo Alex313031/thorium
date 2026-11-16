@@ -1,5 +1,5 @@
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
-index ce715334da1f2..9963e1105eb1d 100644
+index fb1383639a6e0..c52c98e5c0b79 100644
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
 @@ -6,6 +6,7 @@
@@ -18,7 +18,7 @@ index ce715334da1f2..9963e1105eb1d 100644
  #include "base/strings/string_util.h"
  #include "base/strings/sys_string_conversions.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -651,6 +653,86 @@ struct MainFunction {
+@@ -652,6 +654,86 @@ struct MainFunction {
  };
  
  #if !defined(BUILDING_CHROME_RENDERER)
@@ -105,7 +105,7 @@ index ce715334da1f2..9963e1105eb1d 100644
  // Initializes the user data dir. Must be called before InitializeLocalState().
  void InitializeUserDataDir(base::CommandLine* command_line) {
  #if BUILDFLAG(IS_WIN)
-@@ -1586,6 +1668,11 @@ void ChromeMainDelegate::PreSandboxStartup() {
+@@ -1587,6 +1669,11 @@ void ChromeMainDelegate::PreSandboxStartup() {
    // Initialize the user data dir for any process type that needs it.
    if (chrome::ProcessNeedsProfileDir(process_type)) {
      InitializeUserDataDir(base::CommandLine::ForCurrentProcess());

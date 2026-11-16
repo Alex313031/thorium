@@ -1,5 +1,5 @@
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
-index 33a3b3844ad48..ce715334da1f2 100644
+index 33a3b3844ad48..fb1383639a6e0 100644
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,15 @@ index 33a3b3844ad48..ce715334da1f2 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -753,14 +753,13 @@ void InitLogging(const std::string& process_type) {
+@@ -39,6 +39,7 @@
+ #include "base/threading/hang_watcher.h"
+ #include "base/time/time.h"
+ #include "base/timer/timer.h"
++#include "base/version_info/version_info.h"
+ #include "build/build_config.h"
+ #include "chrome/common/buildflags.h"
+ #include "chrome/common/channel_info.h"
+@@ -753,14 +754,13 @@ void InitLogging(const std::string& process_type) {
        *base::CommandLine::ForCurrentProcess();
    logging::InitChromeLogging(command_line, file_state);
  

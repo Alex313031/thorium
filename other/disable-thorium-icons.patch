@@ -522,10 +522,18 @@ index 9645fcbe2aa19..e571643e35fd1 100644
      AddItemWithStringIdAndIcon(
          kContextualCueingEditPromptCommand,
 diff --git a/chrome/browser/glic/browser_ui/glic_selection_widget.cc b/chrome/browser/glic/browser_ui/glic_selection_widget.cc
-index 3e80349aad1c1..027e1e6a8aae4 100644
+index 3e80349aad1c1..be4b4b2429ee9 100644
 --- a/chrome/browser/glic/browser_ui/glic_selection_widget.cc
 +++ b/chrome/browser/glic/browser_ui/glic_selection_widget.cc
-@@ -246,9 +246,13 @@ class GlicSelectionContentsView : public views::View {
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ 
++#include "base/command_line.h"
+ #include "base/feature_list.h"
+ #include "base/strings/strcat.h"
+ #include "base/task/single_thread_task_runner.h"
+@@ -246,9 +247,13 @@ class GlicSelectionContentsView : public views::View {
            views::BoxLayout::CrossAxisAlignment::kCenter);
  
        auto close_tooltip = l10n_util::GetStringUTF16(IDS_CLOSE);
@@ -786,7 +794,7 @@ index d6ccb19396194..70bce25465ff4 100644
      case ash::USE_LAUNCH_TYPE_WINDOW:
      case ash::USE_LAUNCH_TYPE_TABBED_WINDOW:
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index cf893576c800b..1d3eb6df69ffe 100644
+index cbf4a6b5596c2..a115c68b7b0a2 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
 @@ -12,6 +12,7 @@

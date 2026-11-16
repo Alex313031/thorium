@@ -11,7 +11,7 @@ index 88668a0b3e980..436f4cbd1a625 100644
        "//chrome/browser/ui/page_info",
        "//chrome/browser/ui/page_info:about_this_site_icon",
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index d716fe0590cf2..cf893576c800b 100644
+index d716fe0590cf2..cbf4a6b5596c2 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
 @@ -131,6 +131,7 @@
@@ -26,9 +26,9 @@ index d716fe0590cf2..cf893576c800b 100644
                },
                bwi))
            .SetActionId(kActionSharingHub)
-+          .SetText(BrowserActions::GetCleanTitleAndTooltipText(
++          .SetText(GetCleanTitleText(
 +              l10n_util::GetStringUTF16(IDS_SHARING_HUB_TITLE)))
-+          .SetTooltipText(BrowserActions::GetCleanTitleAndTooltipText(
++          .SetTooltipText(GetCleanTooltipText(
 +              l10n_util::GetStringUTF16(IDS_SHARING_HUB_TOOLTIP)))
 +          .SetImage(ui::ImageModel::FromVectorIcon(GetSharingHubVectorIcon(),
 +                                                   ui::kColorIcon))

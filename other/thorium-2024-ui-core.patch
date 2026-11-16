@@ -561,7 +561,7 @@ index 18a885d04da10..ec4eb027b300c 100644
    overflow_button_->SetVisible(show_bookmarks_overflow);
    x += overflow_pref.width();
 diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
-index 6ee376f2de8ba..38005b8d9a564 100644
+index 6ee376f2de8ba..0d14f7a3ae287 100644
 --- a/chrome/browser/ui/views/chrome_layout_provider.cc
 +++ b/chrome/browser/ui/views/chrome_layout_provider.cc
 @@ -12,6 +12,7 @@
@@ -641,6 +641,25 @@ index 6ee376f2de8ba..38005b8d9a564 100644
      case DISTANCE_TASK_MANAGER_SEARCH_BAR_ICON_AND_BUTTON_HORIZONTAL_SPACING:
        return 4;
      case DISTANCE_TASK_MANAGER_SEARCH_ICON_SIZE:
+@@ -355,6 +362,18 @@ int ChromeLayoutProvider::GetCornerRadiusMetric(views::ShapeContextToken token,
+     return LayoutProvider::GetCornerRadiusMetric(token, size);
+   }
+ 
++  if (features::IsThorium2024()) {
++    switch (token) {
++      case ChromeShapeContextTokens::kExtensionsMenuButtonRadius:
++      case ChromeShapeContextTokens::kFindBarViewRadius:
++        return GetCornerRadiusMetric(views::Emphasis::kMedium, size);
++      case ChromeShapeContextTokens::kOmniboxExpandedRadius:
++        return 16;
++      default:
++        break;
++    }
++  }
++
+   switch (token) {
+     case kSidePanelContentRadius:
+     case kRecentActivityContainerRadius:
 diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
 index dd7065b5496f5..927de4f841e73 100644
 --- a/chrome/browser/ui/views/download/bubble/download_bubble_primary_view.cc
@@ -2606,7 +2625,7 @@ index c4841d92c29c8..32fd420f50f88 100644
    InternalNode root_;
  
 diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index b33457156a2ba..55f1ba04621a0 100644
+index b33457156a2ba..9858f6cf85fd6 100644
 --- a/ui/views/layout/layout_provider.cc
 +++ b/ui/views/layout/layout_provider.cc
 @@ -82,6 +82,7 @@ int LayoutProvider::GetDistanceMetric(int metric) const {
@@ -2640,7 +2659,7 @@ index b33457156a2ba..55f1ba04621a0 100644
      case DISTANCE_UNRELATED_CONTROL_HORIZONTAL:
        return 16;
      case DISTANCE_UNRELATED_INFOBAR_CONTAINER_HORIZONTAL:
-@@ -222,6 +223,31 @@ ShapeSysTokens GetShapeSysToken(ShapeContextToken id) {
+@@ -222,6 +223,27 @@ ShapeSysTokens GetShapeSysToken(ShapeContextToken id) {
  
  int LayoutProvider::GetCornerRadiusMetric(ShapeContextToken id,
                                            const gfx::Size& size) const {
@@ -2651,16 +2670,12 @@ index b33457156a2ba..55f1ba04621a0 100644
 +      case ShapeContextTokens::kButtonRadius:
 +      case ShapeContextTokens::kComboboxRadius:
 +      case ShapeContextTokens::kDialogRadius:
-+      case ShapeContextTokens::kExtensionsMenuButtonRadius:
-+      case ShapeContextTokens::kFindBarViewRadius:
 +        return GetCornerRadiusMetric(Emphasis::kMedium, size);
 +      case ShapeContextTokens::kMenuRadius:
 +      case ShapeContextTokens::kMenuAuxRadius:
 +        return GetCornerRadiusMetric(Emphasis::kNone);
 +      case ShapeContextTokens::kMenuTouchRadius:
 +        return GetCornerRadiusMetric(Emphasis::kHigh);
-+      case ShapeContextTokens::kOmniboxExpandedRadius:
-+        return 16;
 +      case ShapeContextTokens::kTextfieldRadius:
 +        return 4;
 +      case ShapeContextTokens::kContentSeparatorRadius:
