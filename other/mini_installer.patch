@@ -440,7 +440,7 @@ index fc23ed716a20e..e18eec1993f04 100644
  
  }  // namespace mini_installer
 diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
-index c37d8d1409b30..310050807ef70 100644
+index c37d8d1409b30..86a70bf00eab3 100644
 --- a/chrome/installer/mini_installer/mini_installer.cc
 +++ b/chrome/installer/mini_installer/mini_installer.cc
 @@ -1,29 +1,20 @@
@@ -599,7 +599,7 @@ index c37d8d1409b30..310050807ef70 100644
  
      // We only want the first 5 digits to remain within the 8.3 file name
      // format (compliant with previous implementation).
-@@ -705,21 +705,301 @@ bool GetWorkDir(HMODULE module,
+@@ -705,21 +705,310 @@ bool GetWorkDir(HMODULE module,
           CreateWorkDir(base_path.get(), work_dir, exit_code);
  }
  
@@ -700,6 +700,15 @@ index c37d8d1409b30..310050807ef70 100644
 +
 +int GetInstallFailureMessageId(DWORD exit_code) {
 +  switch (exit_code) {
++    // setup.exe's installer::InstallStatus values from util_constants.h.
++    // Do not link //chrome/installer/util:constants (and //base) into this
++    // baseline-ISA executable just to reference these status values.
++    case 28:  // INSTALL_DIR_IN_USE
++      return IDS_UNINSTALL_CLOSE_APP_BASE;
++    case 31:  // SAME_VERSION_REPAIR_FAILED
++      return IDS_SAME_VERSION_REPAIR_FAILED_BASE;
++    case 10:  // OS_ERROR
++      return IDS_INSTALL_OS_ERROR_BASE;
 +    case PATCH_NOT_FOR_INSTALLED_VERSION:
 +    case UNABLE_TO_EXTRACT_CHROME_ARCHIVE:
 +    case UNABLE_TO_EXTRACT_SETUP_EXE:
@@ -911,7 +920,7 @@ index c37d8d1409b30..310050807ef70 100644
    // First get a path where we can extract payload
    PathString base_path;
    if (!GetWorkDir(module, &base_path, &exit_code)) {
-@@ -742,7 +1022,8 @@ ProcessExitResult WMain(HMODULE module) {
+@@ -742,7 +1031,8 @@ ProcessExitResult WMain(HMODULE module) {
  
    if (exit_code.IsSuccess()) {
      exit_code = RunSetup(configuration, module, archive_name.get(),
@@ -921,7 +930,7 @@ index c37d8d1409b30..310050807ef70 100644
    }
  
    if (configuration.should_delete_extracted_files()) {
-@@ -766,4 +1047,22 @@ ProcessExitResult WMain(HMODULE module) {
+@@ -766,4 +1056,22 @@ ProcessExitResult WMain(HMODULE module) {
    return exit_code;
  }
  
@@ -1535,7 +1544,7 @@ index 0000000000000..8c97032d04a87
 +
 +#endif  // CHROME_INSTALLER_MINI_INSTALLER_MINI_INSTALLER_VERSION_H_
 diff --git a/chrome/installer/setup/BUILD.gn b/chrome/installer/setup/BUILD.gn
-index e7e695f652355..4d0ea119dcdef 100644
+index e7e695f652355..5d86e36c76d4b 100644
 --- a/chrome/installer/setup/BUILD.gn
 +++ b/chrome/installer/setup/BUILD.gn
 @@ -4,6 +4,7 @@
@@ -1546,7 +1555,16 @@ index e7e695f652355..4d0ea119dcdef 100644
  import("//chrome/process_version_rc_template.gni")
  import("//services/webnn/features.gni")
  import("//testing/test.gni")
-@@ -106,6 +107,12 @@ if (is_win) {
+@@ -71,6 +72,8 @@ if (is_win) {
+       "install_params.h",
+       "install_worker.cc",
+       "install_worker.h",
++      "installed_browser_shutdown.cc",
++      "installed_browser_shutdown.h",
+       "installer_crash_reporter_client.cc",
+       "installer_crash_reporter_client.h",
+       "installer_crash_reporting.cc",
+@@ -106,11 +109,19 @@ if (is_win) {
        "wof_compression.h",
      ]
  
@@ -1559,7 +1577,14 @@ index e7e695f652355..4d0ea119dcdef 100644
      public_deps = [
        "//base",
        "//chrome/installer/util:with_rc_strings",
-@@ -119,6 +126,7 @@ if (is_win) {
+     ]
+ 
++    libs = [ "rstrtmgr.lib" ]
++
+     deps = [
+       "//base",
+       "//build:branding_buildflags",
+@@ -119,6 +130,7 @@ if (is_win) {
        "//chrome/common/child_module",
        "//chrome/install_static:buildflags",
        "//chrome/install_static:install_static_util",
@@ -1567,8 +1592,37 @@ index e7e695f652355..4d0ea119dcdef 100644
        "//chrome/updater:public_util",
        "//components/base32",
        "//components/crash/core/app",
+diff --git a/chrome/installer/setup/install.cc b/chrome/installer/setup/install.cc
+index a1e330eba1253..fa852d935efc4 100644
+--- a/chrome/installer/setup/install.cc
++++ b/chrome/installer/setup/install.cc
+@@ -28,6 +28,7 @@
+ #include "chrome/install_static/install_util.h"
+ #include "chrome/installer/setup/install_params.h"
+ #include "chrome/installer/setup/install_worker.h"
++#include "chrome/installer/setup/installed_browser_shutdown.h"
+ #include "chrome/installer/setup/installer_crash_reporting.h"
+ #include "chrome/installer/setup/installer_state.h"
+ #include "chrome/installer/setup/setup_constants.h"
+@@ -207,6 +208,16 @@ InstallStatus InstallNewVersion(const InstallParams& install_params,
+   const base::Version& current_version = *install_params.current_version;
+   const base::Version& new_version = *install_params.new_version;
+ 
++  // System-level installs cannot rely on Google Update to finish an in-use
++  // rename; same-version installs replace the version directory in place.
++  // Automatically close this installation before either operation starts.
++  // User-level cross-version updates retain Chromium's in-use update behavior.
++  if ((installer_state.system_install() ||
++       (current_version.IsValid() && current_version == new_version)) &&
++      !CloseInstalledBrowser(installer_state.target_path())) {
++    return INSTALL_DIR_IN_USE;
++  }
++
+   installer_state.SetStage(BUILDING);
+ 
+   SetCurrentVersionCrashKey(current_version);
 diff --git a/chrome/installer/setup/install_worker.cc b/chrome/installer/setup/install_worker.cc
-index a8e1e6e39477d..41496ef9afab2 100644
+index a8e1e6e39477d..a36440723ab53 100644
 --- a/chrome/installer/setup/install_worker.cc
 +++ b/chrome/installer/setup/install_worker.cc
 @@ -1,4 +1,4 @@
@@ -1577,16 +1631,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  //
-@@ -30,6 +30,8 @@
- #include "base/functional/callback_helpers.h"
- #include "base/logging.h"
- #include "base/memory/ptr_util.h"
-+#include "base/process/kill.h"
-+#include "base/process/process_iterator.h"
- #include "base/strings/string_util.h"
- #include "base/strings/utf_string_conversions.h"
- #include "base/version.h"
-@@ -83,6 +85,9 @@ namespace installer {
+@@ -83,6 +83,9 @@ namespace installer {
  
  namespace {
  
@@ -1596,7 +1641,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  void AddInstallerCopyTasks(const InstallParams& install_params,
                             WorkItemList* install_list) {
    DCHECK(install_list);
-@@ -110,6 +115,7 @@ void AddInstallerCopyTasks(const InstallParams& install_params,
+@@ -110,6 +113,7 @@ void AddInstallerCopyTasks(const InstallParams& install_params,
    }
  }
  
@@ -1604,7 +1649,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  // Adds work items to register the Elevation Service with Windows. Only for
  // system level installs.
  void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
-@@ -133,6 +139,7 @@ void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
+@@ -133,6 +137,7 @@ void AddElevationServiceWorkItems(const base::FilePath& elevation_service_path,
        install_static::GetOldElevatorIids());
    list->AddWorkItem(install_service_work_item);
  }
@@ -1612,66 +1657,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  
  // Create Version key for a product (if not already present) and sets the new
  // product version as the last step.
-@@ -268,6 +275,43 @@ void AddDeleteUninstallEntryForMSIWorkItems(
-   delete_reg_key->set_best_effort(true);
- }
- 
-+// Restricts process cleanup to the browser executable in this installation.
-+class InstalledBrowserProcessFilter : public base::ProcessFilter {
-+ public:
-+  explicit InstalledBrowserProcessFilter(const base::FilePath& target_path)
-+      : executable_path_(target_path.Append(installer::kChromeExe)) {}
-+
-+  bool Includes(const base::ProcessEntry& entry) const override {
-+    base::Process process(::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,
-+                                        FALSE, entry.th32ProcessID));
-+    if (!process.IsValid()) {
-+      return false;
-+    }
-+
-+    DWORD path_length = MAX_PATH;
-+    wchar_t path[MAX_PATH] = {};
-+    if (!::QueryFullProcessImageNameW(process.Handle(), 0, path,
-+                                      &path_length)) {
-+      PLOG(WARNING) << "QueryFullProcessImageName failed for PID "
-+                    << entry.th32ProcessID;
-+      return false;
-+    }
-+    return base::FilePath::CompareEqualIgnoreCase(executable_path_.value(),
-+                                                  path);
-+  }
-+
-+ private:
-+  const base::FilePath executable_path_;
-+};
-+
-+// Same-version installation replaces the version directory in place, so no
-+// process may retain loaded files from that directory.
-+void CloseInstalledBrowser(const base::FilePath& target_path) {
-+  InstalledBrowserProcessFilter filter(target_path);
-+  base::CleanupProcesses(installer::kChromeExe, base::TimeDelta(),
-+                         /*exit_code=*/0, &filter);
-+}
-+
- // Adds Chrome specific install work items to |install_list|.
- void AddChromeWorkItems(const InstallParams& install_params,
-                         WorkItemList* install_list) {
-@@ -279,6 +323,14 @@ void AddChromeWorkItems(const InstallParams& install_params,
- 
-   const base::FilePath& target_path = installer_state.target_path();
- 
-+  const bool is_same_version_install =
-+      current_version.IsValid() && current_version == new_version;
-+  // System installs cannot rely on Google Update to elevate and complete an
-+  // in-use rename, and same-version installs replace the directory in place.
-+  if (installer_state.system_install() || is_same_version_install) {
-+    CloseInstalledBrowser(target_path);
-+  }
-+
-   if (current_version.IsValid()) {
-     // TODO(crbug.com/441478433): Delete this cleanup some time in 2027.
-     // Delete the archive from an existing install to save some disk space.
-@@ -293,9 +345,9 @@ void AddChromeWorkItems(const InstallParams& install_params,
+@@ -293,9 +298,10 @@ void AddChromeWorkItems(const InstallParams& install_params,
      delete_old_archive_work_item->set_rollback_enabled(false);
    }
  
@@ -1680,11 +1666,12 @@ index a8e1e6e39477d..41496ef9afab2 100644
 -  // version directory already exists.
 +  // Always replace the version directory. Duplicate checking only compares
 +  // file sizes in official builds, so it can silently retain an older binary
-+  // with the same version and size. Same-version processes are closed above.
++  // with the same version and size. InstallNewVersion closes running processes
++  // before starting a system-level or same-version installation.
    const base::FilePath target_version_dir =
        target_path.AppendASCII(new_version.GetString());
    // Allow items in `src_path` to be left behind. It is in a temporary directory
-@@ -303,7 +355,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
+@@ -303,7 +309,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
    install_list->AddMoveTreeWorkItem(
        src_path.AppendASCII(new_version.GetString()), target_version_dir,
        temp_path,
@@ -1693,7 +1680,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
                                  .lenient_deletion = true});
  
    // Compress the locale packs now that they are in their final location.
-@@ -315,12 +367,18 @@ void AddChromeWorkItems(const InstallParams& install_params,
+@@ -315,12 +321,18 @@ void AddChromeWorkItems(const InstallParams& install_params,
    // Copy installer in install directory.
    AddInstallerCopyTasks(install_params, install_list);
  
@@ -1712,7 +1699,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  
    // Move chrome.exe to new_chrome.exe if the target is in use; otherwise,
    // delete a pre-existing new_chrome.exe and overwrite the target.
-@@ -372,6 +430,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
+@@ -372,6 +384,7 @@ void AddChromeWorkItems(const InstallParams& install_params,
    install_list->AddWorkItem(manifest_item.release());
  }
  
@@ -1720,7 +1707,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  // Adds work items to register or unregister the elevated tracing service.
  void AddTracingServiceWorkItems(const InstallationState& original_state,
                                  const base::FilePath& tracing_service_path,
-@@ -434,7 +493,6 @@ void AddTracingServiceWorkItems(const InstallationState& original_state,
+@@ -434,7 +447,6 @@ void AddTracingServiceWorkItems(const InstallationState& original_state,
    }
  }
  
@@ -1728,7 +1715,7 @@ index a8e1e6e39477d..41496ef9afab2 100644
  // Adds work items to add the "store-dmtoken" command to Chrome's version key.
  // This method is a no-op if this is anything other than system-level Chrome.
  // The command is used when enrolling Chrome browser instances into enterprise
-@@ -1391,10 +1449,12 @@ void AddFinalizeUpdateWorkItems(const InstallationState& original_state,
+@@ -1391,10 +1403,12 @@ void AddFinalizeUpdateWorkItems(const InstallationState& original_state,
    AddWerHelperRegistration(installer_state.root_key(),
                             GetWerHelperPath(target_path, new_version), list);
  
@@ -1741,6 +1728,256 @@ index a8e1e6e39477d..41496ef9afab2 100644
  
    const std::wstring client_state_key = install_static::GetClientStateKeyPath();
  
+diff --git a/chrome/installer/setup/installed_browser_shutdown.cc b/chrome/installer/setup/installed_browser_shutdown.cc
+new file mode 100644
+index 0000000000000..f1cb7f1d52b9e
+--- /dev/null
++++ b/chrome/installer/setup/installed_browser_shutdown.cc
+@@ -0,0 +1,217 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "chrome/installer/setup/installed_browser_shutdown.h"
++
++#include <windows.h>
++
++#include <restartmanager.h>
++
++#include <algorithm>
++#include <optional>
++#include <string>
++#include <utility>
++#include <vector>
++
++#include "base/files/file_path.h"
++#include "base/functional/bind.h"
++#include "base/functional/callback_helpers.h"
++#include "base/logging.h"
++#include "base/process/process.h"
++#include "base/process/process_iterator.h"
++#include "base/time/time.h"
++#include "chrome/installer/util/util_constants.h"
++
++namespace installer {
++namespace {
++
++struct InstalledProcess {
++  base::Process process;
++  RM_UNIQUE_PROCESS identity;
++  DWORD parent_pid;
++};
++
++bool HasExited(const InstalledProcess& process) {
++  return ::WaitForSingleObject(process.process.Handle(), 0) == WAIT_OBJECT_0;
++}
++
++std::optional<std::vector<InstalledProcess>> FindInstalledProcesses(
++    const base::FilePath& target_path) {
++  std::vector<InstalledProcess> processes;
++  const base::FilePath executable_path = target_path.Append(kChromeExe);
++  base::NamedProcessIterator iterator(kChromeExe, nullptr);
++  while (const base::ProcessEntry* entry = iterator.NextProcessEntry()) {
++    // Do not require termination rights to request a cooperative shutdown.
++    // Keep this handle for waiting and capture the creation time for any later
++    // termination attempt, so a reused PID cannot target a different process.
++    base::Process process(
++        ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE,
++                      entry->th32ProcessID));
++    if (!process.IsValid()) {
++      if (::GetLastError() == ERROR_INVALID_PARAMETER) {
++        continue;
++      }
++      PLOG(ERROR) << "Cannot inspect browser process " << entry->th32ProcessID;
++      return std::nullopt;
++    }
++    if (::WaitForSingleObject(process.Handle(), 0) == WAIT_OBJECT_0) {
++      continue;
++    }
++    std::wstring path(32768, L'\0');
++    DWORD path_length = static_cast<DWORD>(path.size());
++    if (!::QueryFullProcessImageNameW(process.Handle(), 0, path.data(),
++                                      &path_length)) {
++      const DWORD error = ::GetLastError();
++      if (::WaitForSingleObject(process.Handle(), 0) == WAIT_OBJECT_0) {
++        continue;
++      }
++      LOG(ERROR) << "Cannot query browser process path: " << error;
++      return std::nullopt;
++    }
++    path.resize(path_length);
++    if (!base::FilePath::CompareEqualIgnoreCase(executable_path.value(),
++                                                path)) {
++      continue;
++    }
++    RM_UNIQUE_PROCESS identity = {};
++    identity.dwProcessId = entry->th32ProcessID;
++    FILETIME exit_time, kernel_time, user_time;
++    if (!::GetProcessTimes(process.Handle(), &identity.ProcessStartTime,
++                           &exit_time, &kernel_time, &user_time)) {
++      PLOG(ERROR) << "Cannot identify installed browser process";
++      return std::nullopt;
++    }
++    processes.push_back({std::move(process), identity, entry->parent_pid()});
++  }
++  if (::GetLastError() != ERROR_NO_MORE_FILES) {
++    PLOG(ERROR) << "Cannot enumerate browser processes";
++    return std::nullopt;
++  }
++  return processes;
++}
++
++void RequestUpdateShutdown(const std::vector<InstalledProcess>& processes) {
++  std::vector<RM_UNIQUE_PROCESS> applications;
++  for (const auto& process : processes) {
++    if (HasExited(process)) {
++      continue;
++    }
++    // Notify parent browsers first. Do not stop their renderers/GPU processes
++    // while the browser is still saving its profile. A later pass discovers
++    // any remaining roots, including a browser launched by another browser.
++    const bool has_parent = std::ranges::any_of(
++        processes, [&process](const InstalledProcess& candidate) {
++          return candidate.identity.dwProcessId == process.parent_pid &&
++                 ::CompareFileTime(&candidate.identity.ProcessStartTime,
++                                   &process.identity.ProcessStartTime) <= 0 &&
++                 !HasExited(candidate);
++        });
++    if (!has_parent) {
++      applications.push_back(process.identity);
++    }
++  }
++  if (applications.empty()) {
++    return;
++  }
++
++  DWORD session = 0;
++  wchar_t session_key[CCH_RM_SESSION_KEY + 1] = {};
++  DWORD error = ::RmStartSession(&session, 0, session_key);
++  if (error != ERROR_SUCCESS) {
++    LOG(WARNING) << "Cannot start Restart Manager session: " << error;
++    return;
++  }
++  base::ScopedClosureRunner end_session(
++      base::BindOnce([](DWORD handle) { ::RmEndSession(handle); }, session));
++  error = ::RmRegisterResources(session, 0, nullptr,
++                                static_cast<UINT>(applications.size()),
++                                applications.data(), 0, nullptr);
++  if (error == ERROR_SUCCESS) {
++    // Sends WM_QUERYENDSESSION/WM_ENDSESSION with ENDSESSION_CLOSEAPP.
++    // Chromium's browser and background tray call SessionEnding(), saving
++    // the exit type and committing preferences before the process exits.
++    // Force is deliberately deferred until all shutdown passes have finished.
++    error = ::RmShutdown(session, 0, nullptr);
++  }
++  if (error != ERROR_SUCCESS) {
++    LOG(WARNING) << "Restart Manager update shutdown incomplete: " << error;
++  }
++}
++
++void WaitForExit(const std::vector<InstalledProcess>& processes,
++                 base::TimeDelta timeout) {
++  const base::TimeTicks deadline = base::TimeTicks::Now() + timeout;
++  for (const auto& process : processes) {
++    process.process.WaitForExitWithTimeout(
++        std::max(base::TimeDelta(), deadline - base::TimeTicks::Now()),
++        nullptr);
++  }
++}
++
++void ForceExit(const InstalledProcess& process) {
++  if (HasExited(process)) {
++    return;
++  }
++  base::Process terminable(
++      ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_TERMINATE,
++                    FALSE, process.identity.dwProcessId));
++  if (!terminable.IsValid()) {
++    PLOG(WARNING) << "Cannot open browser process for forced shutdown";
++    return;
++  }
++  FILETIME creation_time, exit_time, kernel_time, user_time;
++  if (!::GetProcessTimes(terminable.Handle(), &creation_time, &exit_time,
++                         &kernel_time, &user_time) ||
++      ::CompareFileTime(&creation_time, &process.identity.ProcessStartTime) !=
++          0) {
++    LOG(WARNING) << "Browser process identity changed before forced shutdown";
++    return;
++  }
++  LOG(WARNING) << "Forcing installed browser process to exit: "
++               << process.identity.dwProcessId
++               << "; unsaved session state may require crash recovery";
++  terminable.Terminate(/*exit_code=*/0, /*wait=*/false);
++}
++
++}  // namespace
++
++bool CloseInstalledBrowser(const base::FilePath& target_path) {
++  // Re-enumerate after each pass: shutting down a parent can expose a second
++  // browser root or leave child processes behind. Bound retries so an external
++  // program continually relaunching the browser cannot hang setup forever.
++  for (int attempt = 0; attempt < 2; ++attempt) {
++    auto processes = FindInstalledProcesses(target_path);
++    if (!processes) {
++      return false;
++    }
++    if (processes->empty()) {
++      return true;
++    }
++    RequestUpdateShutdown(*processes);
++    WaitForExit(*processes, base::Seconds(5));
++  }
++
++  for (int attempt = 0; attempt < 2; ++attempt) {
++    auto processes = FindInstalledProcesses(target_path);
++    if (!processes) {
++      return false;
++    }
++    if (processes->empty()) {
++      return true;
++    }
++    for (const auto& process : *processes) {
++      ForceExit(process);
++    }
++    WaitForExit(*processes, base::Seconds(5));
++  }
++
++  const auto remaining = FindInstalledProcesses(target_path);
++  if (!remaining || !remaining->empty()) {
++    LOG(ERROR) << "Installed browser processes remain; cannot replace files";
++    return false;
++  }
++  return true;
++}
++
++}  // namespace installer
+diff --git a/chrome/installer/setup/installed_browser_shutdown.h b/chrome/installer/setup/installed_browser_shutdown.h
+new file mode 100644
+index 0000000000000..f81956a5f4ede
+--- /dev/null
++++ b/chrome/installer/setup/installed_browser_shutdown.h
+@@ -0,0 +1,21 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef CHROME_INSTALLER_SETUP_INSTALLED_BROWSER_SHUTDOWN_H_
++#define CHROME_INSTALLER_SETUP_INSTALLED_BROWSER_SHUTDOWN_H_
++
++namespace base {
++class FilePath;
++}
++
++namespace installer {
++
++// Requests an update shutdown for browsers in this installation, then forcibly
++// terminates remaining processes. Returns false if inspection or cleanup fails.
++// A forced fallback cannot guarantee that the browser saved its exit state.
++bool CloseInstalledBrowser(const base::FilePath& target_path);
++
++}  // namespace installer
++
++#endif  // CHROME_INSTALLER_SETUP_INSTALLED_BROWSER_SHUTDOWN_H_
 diff --git a/chrome/installer/setup/installer_state.cc b/chrome/installer/setup/installer_state.cc
 index fda0a2e9f4fce..10f0fa80e7cbb 100644
 --- a/chrome/installer/setup/installer_state.cc
@@ -1824,6 +2061,23 @@ index 858eb502f635d..9e66bedad5566 100644
      return false;
    }
    DCHECK_NE(ret, static_cast<int>(STILL_ACTIVE));
+diff --git a/chrome/installer/setup/setup_main.cc b/chrome/installer/setup/setup_main.cc
+index 3b9e3170f0b73..d5d2f4a9fd1a0 100644
+--- a/chrome/installer/setup/setup_main.cc
++++ b/chrome/installer/setup/setup_main.cc
+@@ -1398,7 +1398,11 @@ InstallStatus InstallProductsHelper(InstallationState& original_state,
+       int install_msg_base = IDS_INSTALL_FAILED_BASE;
+       base::FilePath chrome_exe;
+       std::wstring quoted_chrome_exe;
+-      if (install_status == SAME_VERSION_REPAIR_FAILED) {
++      if (install_status == INSTALL_DIR_IN_USE) {
++        install_msg_base = IDS_UNINSTALL_CLOSE_APP_BASE;
++      } else if (install_status == OS_ERROR) {
++        install_msg_base = IDS_INSTALL_OS_ERROR_BASE;
++      } else if (install_status == SAME_VERSION_REPAIR_FAILED) {
+         install_msg_base = IDS_SAME_VERSION_REPAIR_FAILED_BASE;
+       } else if (install_status != INSTALL_FAILED) {
+         if (installer_state.target_path().empty()) {
 diff --git a/chrome/installer/setup/setup_util.cc b/chrome/installer/setup/setup_util.cc
 index c1d710de17d40..41024406b4483 100644
 --- a/chrome/installer/setup/setup_util.cc
@@ -2123,7 +2377,7 @@ index 4734595db4123..00c926a320275 100644
  }
  
 diff --git a/chrome/installer/util/prebuild/create_installer_string_rc.py b/chrome/installer/util/prebuild/create_installer_string_rc.py
-index c0c3db2e6448f..69f884a4e87f9 100755
+index c0c3db2e6448f..68c2e062f94cf 100755
 --- a/chrome/installer/util/prebuild/create_installer_string_rc.py
 +++ b/chrome/installer/util/prebuild/create_installer_string_rc.py
 @@ -11,12 +11,20 @@
@@ -2147,6 +2401,14 @@ index c0c3db2e6448f..69f884a4e87f9 100755
    'IDS_INSTALL_INSUFFICIENT_RIGHTS',
    'IDS_INSTALL_INVALID_ARCHIVE',
    'IDS_INSTALL_OS_ERROR',
+@@ -27,6 +35,7 @@ STRING_IDS = [
+   'IDS_PRODUCT_DESCRIPTION',
+   'IDS_PRODUCT_NAME',
+   'IDS_SAME_VERSION_REPAIR_FAILED',
++  'IDS_UNINSTALL_CLOSE_APP',
+   'IDS_SHORTCUT_TOOLTIP',
+   'IDS_TRACING_SERVICE_DESCRIPTION',
+ ]
 diff --git a/chrome/installer/util/thorium_cpu_features.h b/chrome/installer/util/thorium_cpu_features.h
 new file mode 100644
 index 0000000000000..fb3d431b6a02e

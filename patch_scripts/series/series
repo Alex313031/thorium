@@ -173,9 +173,14 @@ other/android-disable-signin-without-account-manager.patch
 other/android-extensions-support.patch
 other/enable-extension-in-incognito.patch
 other/add-quick-extension-toggle-menu.patch
+other/fix-extensions-menu-scrollbar.patch
 other/enable-android-devtools-frontend.patch
 other/android-extensions-opt-in-ui.patch
 other/developer-crx-installation.patch
+
+# 90 - Windows GDI text rendering and native font fallbacks (default off).
+third_party/skia: other/windows-gdi-font-rendering-skia.patch
+other/windows-gdi-font-rendering.patch
 
 # 95 - Conditional / platform-specific overlays that are still active.
 [raspi] other/linux-widevine-cdm-locations.patch

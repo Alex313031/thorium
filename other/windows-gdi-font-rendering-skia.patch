@@ -1,0 +1,1096 @@
+diff --git a/include/ports/SkTypeface_win.h b/include/ports/SkTypeface_win.h
+index 45711ba231..b30f645b30 100644
+--- a/include/ports/SkTypeface_win.h
++++ b/include/ports/SkTypeface_win.h
+@@ -45,6 +45,24 @@ SK_API void SkLOGFONTFromTypeface(const SkTypeface* typeface, LOGFONT* lf);
+   */
+ SK_API void SkTypeface_SetEnsureLOGFONTAccessibleProc(void (*)(const LOGFONT&));
+ 
++class SkData;
++class SkString;
++
++/**
++ *  Loads an installed font's data into GDI, for a font GDI can't open by name
++ *  (e.g. hidden or redirected by registry settings). Like the GDI font
++ *  manager's makeFromData(), GDI gets a privately named copy, but the typeface
++ *  reports familyNames (the first is its family name) and the font's own slant
++ *  and width. For a variable font, position selects the instance (e.g. a named
++ *  instance); GDI gets a static copy of it.
++ */
++SK_API sk_sp<SkTypeface> SkCreateGdiTypefaceFromData(
++        sk_sp<SkData> data,
++        int collectionIndex,
++        const SkString familyNames[],
++        int familyNameCount,
++        const SkFontArguments::VariationPosition& position);
++
+ // Experimental!
+ //
+ class SkFontMgr;
+diff --git a/src/pdf/SkPDFSubsetFont.cpp b/src/pdf/SkPDFSubsetFont.cpp
+index b04e2781c0..781580f8b6 100644
+--- a/src/pdf/SkPDFSubsetFont.cpp
++++ b/src/pdf/SkPDFSubsetFont.cpp
+@@ -122,11 +122,22 @@ sk_sp<SkData> to_data(HBBlob blob) {
+ HBFace make_subset(hb_subset_input_t* input, hb_face_t* face, bool retainZeroGlyph) {
+     // TODO: When possible, check if a font is 'tricky' with FT_IS_TRICKY.
+     // If it isn't known if a font is 'tricky', retain the hints.
+-    unsigned int flags = HB_SUBSET_FLAGS_RETAIN_GIDS;
++    unsigned int flags = HB_SUBSET_FLAGS_RETAIN_GIDS | HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE;
+     if (retainZeroGlyph) {
+         flags |= HB_SUBSET_FLAGS_NOTDEF_OUTLINE;
+     }
+     hb_subset_input_set_flags(input, flags);
++    // PDF viewers don't use layout tables. Chromium built HarfBuzz without
++    // layout subsetting, which dropped them; keep that output now that the
++    // GDI port needs layout subsetting.
++    hb_set_t* dropTables = hb_subset_input_set(input, HB_SUBSET_SETS_DROP_TABLE_TAG);
++    for (hb_tag_t tag : {HB_TAG('G', 'D', 'E', 'F'),
++                         HB_TAG('G', 'P', 'O', 'S'),
++                         HB_TAG('G', 'S', 'U', 'B'),
++                         HB_TAG('B', 'A', 'S', 'E'),
++                         HB_TAG('M', 'A', 'T', 'H')}) {
++        hb_set_add(dropTables, tag);
++    }
+     return HBFace(hb_subset_or_fail(face, input));
+ }
+ 
+diff --git a/src/ports/SkFontHost_win.cpp b/src/ports/SkFontHost_win.cpp
+index 1366ce5a83..997f499634 100644
+--- a/src/ports/SkFontHost_win.cpp
++++ b/src/ports/SkFontHost_win.cpp
+@@ -16,9 +16,14 @@
+ #include "include/core/SkStream.h"
+ #include "include/core/SkString.h"
+ #include "include/ports/SkTypeface_win.h"
++#if defined(SK_TYPEFACE_FACTORY_FONTATIONS)
++#include "include/ports/SkTypeface_fontations.h"
++#endif
+ #include "include/private/SkMacros.h"
++#include "include/private/SkMutex.h"
+ #include "include/private/SkOnce.h"
+ #include "include/private/SkTDArray.h"
++#include "include/private/SkTPin.h"
+ #include "include/private/SkTemplates.h"
+ #include "include/private/SkTo.h"
+ #include "src/core/SkAdvancedTypefaceMetrics.h"
+@@ -44,6 +49,19 @@
+ #include <usp10.h>
+ #include <objbase.h>
+ 
++#include <algorithm>
++#include <climits>
++#include <cmath>
++#include <cstdlib>
++#include <utility>
++#include <vector>
++
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++#include "hb-ot.h"      // NO_G3_REWRITE
++#include "hb-subset.h"  // NO_G3_REWRITE
++#include "hb.h"         // NO_G3_REWRITE
++#endif
++
+ using namespace skia_private;
+ 
+ namespace {
+@@ -249,7 +267,8 @@ public:
+         , fSerializeAsStream(serializeAsStream)
+     {
+         SkAutoHDC hdc(fLogFont);
+-        TEXTMETRIC textMetric;
++        TEXTMETRIC textMetric{};
++        textMetric.tmWeight = style.weight();
+         if (0 == GetTextMetrics(hdc, &textMetric)) {
+             call_ensure_accessible(lf);
+             if (0 == GetTextMetrics(hdc, &textMetric)) {
+@@ -321,12 +340,69 @@ public:
+             new FontMemResourceTypeface(get_style(lf), lf, fontMemResource));
+     }
+ 
++    /**
++     *  GDI draws a variable font at its default instance only. With the axes
++     *  known, makeClone() gives GDI a static copy of the requested instance.
++     */
++    void setVariationAxes(std::vector<SkFontParameters::Variation::Axis> axes) {
++        fAxes = std::move(axes);
++    }
++
++    /**
++     *  For an installed font loaded from its data (SkCreateGdiTypefaceFromData):
++     *  the family names to report instead of the unique name GDI knows it by.
++     *  The first is its family name. Instances made by makeClone() keep them.
++     */
++    void setFamilyNames(std::vector<SkString> names) { fFamilyNames = std::move(names); }
++
++    /**
++     *  For an installed font loaded from its data: GDI reports its weight, but
++     *  its private LOGFONT carries no slant or width, so take those from the
++     *  font's OS/2 table (else Blink slants an italic face a second time).
++     */
++    void setStyleFromOS2() {
++        uint8_t os2[64];
++        if (this->getTableData(SkSetFourByteTag('O', 'S', '/', '2'), 0, sizeof(os2), os2) !=
++            sizeof(os2)) {
++            return;
++        }
++        const int widthClass = (os2[6] << 8) | os2[7];
++        const int selection = (os2[62] << 8) | os2[63];
++        const SkFontStyle::Slant slant = (selection & 1)          ? SkFontStyle::kItalic_Slant
++                                         : (selection & (1 << 9)) ? SkFontStyle::kOblique_Slant
++                                                                  : SkFontStyle::kUpright_Slant;
++        this->setFontStyle(
++                SkFontStyle(this->fontStyle().weight(), SkTPin(widthClass, 1, 9), slant));
++    }
++
+ protected:
++    void onGetFamilyName(SkString* familyName) const override {
++        if (fFamilyNames.empty()) {
++            INHERITED::onGetFamilyName(familyName);
++        } else {
++            *familyName = fFamilyNames.front();
++        }
++    }
++    SkTypeface::LocalizedStrings* onCreateFamilyNameIterator() const override;
++
+     void weak_dispose() const override {
+         RemoveFontMemResourceEx(fFontMemResource);
++        {
++            SkAutoMutexExclusive lock(fInstancesMutex);
++            fRecentInstances.clear();
++            for (const Instance& instance : fInstances) {
++                instance.typeface->weak_unref();
++            }
++            fInstances.clear();
++        }
+         INHERITED::weak_dispose();
+     }
+ 
++    sk_sp<SkTypeface> onMakeClone(const SkFontArguments& args) const override;
++    int onGetVariationDesignPosition(
++            SkSpan<SkFontArguments::VariationPosition::Coordinate>) const override;
++    int onGetVariationDesignParameters(SkSpan<SkFontParameters::Variation::Axis>) const override;
++
+ private:
+     /**
+      *  Takes ownership of fontMemResource.
+@@ -335,7 +411,22 @@ private:
+         : LogFontTypeface(style, lf, true), fFontMemResource(fontMemResource)
+     { }
+ 
++    bool isVariable() const { return !fAxes.empty(); }
++
+     HANDLE fFontMemResource;
++    std::vector<SkString> fFamilyNames;
++    std::vector<SkFontParameters::Variation::Axis> fAxes;
++
++    // Every live instance made by onMakeClone(), held weakly so that an
++    // instance still in use is never made twice, and the most recently used
++    // ones held strongly so that they outlive short gaps in use.
++    struct Instance {
++        std::vector<float> values;  // In fAxes order.
++        SkTypeface* typeface;       // Weak reference.
++    };
++    mutable SkMutex fInstancesMutex;
++    mutable std::vector<Instance> fInstances SK_GUARDED_BY(fInstancesMutex);
++    mutable std::vector<sk_sp<SkTypeface>> fRecentInstances SK_GUARDED_BY(fInstancesMutex);
+ 
+     using INHERITED = LogFontTypeface;
+ };
+@@ -548,8 +639,8 @@ void* HDCOffscreen::draw(const SkGlyph& glyph, bool isBW, size_t* srcRBPtr) {
+     uint16_t glyphID = glyph.getGlyphID();
+     BOOL ret = ExtTextOutW(fDC, 0, 0, ETO_GLYPH_INDEX, nullptr, reinterpret_cast<LPCWSTR>(&glyphID),
+                            1, nullptr);
+-    GdiFlush();
+-    if (0 == ret) {
++    const BOOL flushed = GdiFlush();
++    if (0 == ret || 0 == flushed) {
+         return nullptr;
+     }
+     *srcRBPtr = srcRB;
+@@ -609,11 +700,13 @@ private:
+      *  Used to set the direction of advances.
+      */
+     SkMatrix     fG_inv;
+-    enum Type {
+-        kTrueType_Type, kBitmap_Type, kLine_Type
+-    } fType;
++    enum Type { kTrueType_Type, kBitmap_Type, kLine_Type } fType = kTrueType_Type;
++    bool fGdiReady = false;
++    bool fHasHiResMetrics = false;
+     bool fGenerateFromPath;
+-    TEXTMETRIC fTM;
++    TEXTMETRIC fTM{};
++    /** The unrounded text size (GDI selects the font at a whole pixel size). */
++    SkScalar fRealTextSize;
+ };
+ 
+ static FIXED SkFloatToFIXED(float x) {
+@@ -648,7 +741,7 @@ SkScalerContext_GDI::SkScalerContext_GDI(LogFontTypeface& rawTypeface,
+         , fFont(nullptr)
+         , fSC(nullptr)
+         , fGenerateFromPath(false)
+-{
++        , fRealTextSize(0) {
+     LogFontTypeface* typeface = static_cast<LogFontTypeface*>(this->getTypeface());
+ 
+     fDDC = ::CreateCompatibleDC(nullptr);
+@@ -670,6 +763,12 @@ SkScalerContext_GDI::SkScalerContext_GDI(LogFontTypeface& rawTypeface,
+     SkMatrix A;
+     fRec.computeMatrices(scaleConstraints, &scale, &sA, &GsA, &fG_inv, &A);
+ 
++    // The size DirectWrite scales font metrics by (its realTextSize).
++    SkVector realScale;
++    SkMatrix realRemaining;
++    fRec.computeMatrices(SkScalerContextRec::PreMatrixScale::kVertical, &realScale, &realRemaining);
++    fRealTextSize = realScale.fY;
++
+     fGsA.eM11 = SkScalarToFIXED(GsA.get(SkMatrix::kMScaleX));
+     fGsA.eM12 = SkScalarToFIXED(-GsA.get(SkMatrix::kMSkewY)); // This should be ~0.
+     fGsA.eM21 = SkScalarToFIXED(-GsA.get(SkMatrix::kMSkewX));
+@@ -701,11 +800,14 @@ SkScalerContext_GDI::SkScalerContext_GDI(LogFontTypeface& rawTypeface,
+     }
+ 
+     fSavefont = (HFONT)SelectObject(fDDC, fFont);
++    if (!fSavefont || fSavefont == (HFONT)HGDI_ERROR) {
++        return;
++    }
+ 
+     if (0 == GetTextMetrics(fDDC, &fTM)) {
+         call_ensure_accessible(lf);
+         if (0 == GetTextMetrics(fDDC, &fTM)) {
+-            fTM.tmPitchAndFamily = TMPF_TRUETYPE;
++            return;
+         }
+     }
+ 
+@@ -766,6 +868,7 @@ SkScalerContext_GDI::SkScalerContext_GDI(LogFontTypeface& rawTypeface,
+                 SkScalar removeEMScale = SkScalarInvert(upem);
+                 fHiResMatrix = A;
+                 fHiResMatrix.preScale(removeEMScale, removeEMScale);
++                fHasHiResMetrics = true;
+             }
+         }
+ 
+@@ -789,6 +892,7 @@ SkScalerContext_GDI::SkScalerContext_GDI(LogFontTypeface& rawTypeface,
+     }
+ 
+     fOffscreen.init(fFont, xform);
++    fGdiReady = true;
+ }
+ 
+ SkScalerContext_GDI::~SkScalerContext_GDI() {
+@@ -804,9 +908,7 @@ SkScalerContext_GDI::~SkScalerContext_GDI() {
+     }
+ }
+ 
+-bool SkScalerContext_GDI::isValid() const {
+-    return fDDC && fFont;
+-}
++bool SkScalerContext_GDI::isValid() const { return fGdiReady; }
+ 
+ SkScalerContext::GlyphMetrics SkScalerContext_GDI::generateMetrics(const SkGlyph& glyph,
+                                                                    SkArenaAlloc*) {
+@@ -892,7 +994,7 @@ SkScalerContext::GlyphMetrics SkScalerContext_GDI::generateMetrics(const SkGlyph
+     mx.advance.fX = (float)((int)gm.gmCellIncX);
+     mx.advance.fY = (float)((int)gm.gmCellIncY);
+ 
+-    if ((fTM.tmPitchAndFamily & TMPF_VECTOR) && this->isLinearMetrics()) {
++    if ((fTM.tmPitchAndFamily & TMPF_VECTOR) && this->isLinearMetrics() && fHasHiResMetrics) {
+         sk_bzero(&gm, sizeof(gm));
+         status = GetGlyphOutlineW(fDDC, glyphId, GGO_METRICS | GGO_GLYPH_INDEX, &gm, 0, nullptr, &fHighResMat22);
+         if (GDI_ERROR != status) {
+@@ -911,6 +1013,295 @@ SkScalerContext::GlyphMetrics SkScalerContext_GDI::generateMetrics(const SkGlyph
+ }
+ 
+ static const MAT2 gMat2Identity = {{0, 1}, {0, 0}, {0, 0}, {0, 1}};
++
++#ifndef SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS
++static uint16_t be16(const uint8_t* data, size_t offset) {
++    return uint16_t((uint16_t(data[offset]) << 8) | data[offset + 1]);
++}
++
++static uint32_t be32(const uint8_t* data, size_t offset) {
++    return (uint32_t(be16(data, offset)) << 16) | be16(data, offset + 2);
++}
++
++static DWORD font_table_tag(char a, char b, char c, char d) {
++    return SkEndian_SwapBE32(SkSetFourByteTag(a, b, c, d));
++}
++
++// Reads up to `size` bytes from the start of the selected font's table `tag`.
++// Returns how many bytes were read: 0 if the table is missing.
++static DWORD read_font_table(HDC dc, DWORD tag, uint8_t* data, DWORD size) {
++    const DWORD tableSize = GetFontData(dc, tag, 0, nullptr, 0);
++    if (tableSize == GDI_ERROR || tableSize == 0) {
++        return 0;
++    }
++    size = std::min(size, tableSize);
++    return GetFontData(dc, tag, 0, data, size) == size ? size : 0;
++}
++
++// The gasp range holding `ppem`, read the way Skia's DirectWrite port reads it.
++struct GaspRange {
++    int fVersion;
++    int fMin;
++    int fMax;
++    uint16_t fFlags;
++};
++static bool get_gasp_range(HDC dc, int ppem, GaspRange* range) {
++    const DWORD tag = font_table_tag('g', 'a', 's', 'p');
++    const DWORD tableSize = GetFontData(dc, tag, 0, nullptr, 0);
++    if (tableSize == GDI_ERROR || tableSize < 4) {
++        return false;
++    }
++    std::vector<uint8_t> gasp(tableSize);
++    if (GetFontData(dc, tag, 0, gasp.data(), tableSize) != tableSize) {
++        return false;
++    }
++    const int version = be16(gasp.data(), 0);
++    const int numRanges = be16(gasp.data(), 2);
++    if (version > 1 || numRanges > 1024 || tableSize < 4 + 4u * numRanges) {
++        return false;
++    }
++    int minPPEM = -1;
++    for (int i = 0; i < numRanges; ++i) {
++        const int maxPPEM = be16(gasp.data(), 4 + 4 * i);
++        if (minPPEM < ppem && ppem <= maxPPEM) {
++            *range = {version, minPPEM + 1, maxPPEM, be16(gasp.data(), 6 + 4 * i)};
++            return true;
++        }
++        minPPEM = maxPPEM;
++    }
++    return false;
++}
++
++// Whether the font has an embedded bitmap strike for a size in [minPPEM,
++// maxPPEM], judged as Skia's DirectWrite port does (EBLC, else EBSC).
++static bool has_bitmap_strike(HDC dc, int minPPEM, int maxPPEM) {
++    // Reads a version 2.0 table's records (after its 8-byte header) into
++    // `records`; not the bitmap data that may follow them.
++    auto read_records = [dc](DWORD tag, uint32_t recordSize, std::vector<uint8_t>* records) {
++        uint8_t header[8];
++        const DWORD tableSize = GetFontData(dc, tag, 0, nullptr, 0);
++        if (tableSize == GDI_ERROR || tableSize < sizeof(header) ||
++            GetFontData(dc, tag, 0, header, sizeof(header)) != sizeof(header) ||
++            be32(header, 0) != 0x00020000) {
++            return false;
++        }
++        const uint32_t numSizes = be32(header, 4);
++        if (numSizes > 1024 || tableSize < sizeof(header) + recordSize * numSizes) {
++            return false;
++        }
++        const DWORD recordsSize = recordSize * numSizes;
++        records->resize(recordsSize);
++        return recordsSize == 0 ||
++               GetFontData(dc, tag, sizeof(header), records->data(), recordsSize) == recordsSize;
++    };
++    std::vector<uint8_t> records;
++    if (!read_records(font_table_tag('E', 'B', 'L', 'C'), 48, &records)) {
++        return false;
++    }
++    for (size_t offset = 0; offset < records.size(); offset += 48) {
++        const uint8_t* strike = records.data() + offset;  // BitmapSize
++        if (strike[44] == strike[45] && minPPEM <= strike[44] && strike[44] <= maxPPEM &&
++            be16(strike, 42) >= be16(strike, 40) + 3) {
++            return true;
++        }
++    }
++    if (!read_records(font_table_tag('E', 'B', 'S', 'C'), 28, &records)) {
++        return false;
++    }
++    for (size_t offset = 0; offset < records.size(); offset += 28) {
++        const uint8_t* scale = records.data() + offset;  // BitmapScale
++        if (scale[24] == scale[25] && minPPEM <= scale[24] && scale[24] <= maxPPEM) {
++            return true;
++        }
++    }
++    return false;
++}
++
++// DirectWrite's x or cap height for a font whose OS/2 table has none: the top
++// of the character's glyph box in font units (glyf header, or the unhinted
++// outline for CFF fonts), or `estimate` when the font has no glyph for it in
++// Unicode (as in symbol fonts), the glyph is empty, or its top isn't above the
++// baseline. Returns false if the glyph can't be measured.
++static bool glyph_height(HDC dc, const uint8_t* head, wchar_t ch, int estimate, int* height) {
++    WORD glyph;
++    if (GetTextCharset(dc) == SYMBOL_CHARSET ||
++        GetGlyphIndicesW(dc, &ch, 1, &glyph, GGI_MARK_NONEXISTING_GLYPHS) == GDI_ERROR ||
++        glyph == 0xFFFF) {
++        *height = estimate;
++        return true;
++    }
++    int top;
++    const bool longLoca = be16(head, 50) == 1;
++    const DWORD entrySize = longLoca ? 4 : 2;
++    uint8_t loca[8];
++    if (GetFontData(
++                dc, font_table_tag('l', 'o', 'c', 'a'), glyph * entrySize, loca, 2 * entrySize) ==
++        2 * entrySize) {
++        const DWORD start = longLoca ? be32(loca, 0) : be16(loca, 0) * 2u;
++        const DWORD end = longLoca ? be32(loca, 4) : be16(loca, 2) * 2u;
++        if (start == end) {  // No outline, e.g. the letters of icon fonts.
++            *height = estimate;
++            return true;
++        }
++        uint8_t glyf[10];
++        if (end < start + sizeof(glyf) ||
++            GetFontData(dc, font_table_tag('g', 'l', 'y', 'f'), start, glyf, sizeof(glyf)) !=
++                    sizeof(glyf)) {
++            return false;
++        }
++        top = int16_t(be16(glyf, 8));
++    } else {
++        // No loca (CFF outlines): measure the unhinted outline scaled to font
++        // units. GDI reports a 1x1 box for an empty glyph.
++        TEXTMETRIC tm;
++        if (!GetTextMetrics(dc, &tm) || tm.tmHeight - tm.tmInternalLeading <= 0) {
++            return false;
++        }
++        const FIXED toUnits =
++                SkFloatToFIXED(float(be16(head, 18)) / (tm.tmHeight - tm.tmInternalLeading));
++        const MAT2 mat = {toUnits, {0, 0}, {0, 0}, toUnits};
++        GLYPHMETRICS gm;
++        if (GetGlyphOutlineW(dc,
++                             glyph,
++                             GGO_METRICS | GGO_UNHINTED | GGO_GLYPH_INDEX,
++                             &gm,
++                             0,
++                             nullptr,
++                             &mat) == GDI_ERROR) {
++            return false;
++        }
++        top = (gm.gmBlackBoxX <= 1 && gm.gmBlackBoxY <= 1) ? 0 : gm.gmptGlyphOrigin.y;
++    }
++    *height = top > 0 ? top : estimate;
++    return true;
++}
++
++// Sets the metrics Skia's DirectWrite port reports for the font, so that pages
++// and the UI lay out as in other Windows browsers: ascent, descent and line gap
++// (the GDI values above are the OS/2 typographic ones, which DirectWrite uses
++// only when the font sets fsSelection USE_TYPO_METRICS; otherwise it uses the
++// Windows ascent and descent plus whatever line gap hhea adds beyond them),
++// x-height and cap height (OS/2, else the glyph tops or estimates), underline
++// (post), font box and max width (head), and no average width, so that Blink
++// and ui/gfx measure 'x' as they do with DirectWrite. Everything is scaled by
++// the text size DirectWrite would use, not by the whole pixels GDI draws at:
++// the real size, or that size rounded to 1/64 px where Skia's DirectWrite port
++// picks a mode that uses it (aliased text, embedded bitmap strikes, and hinted
++// fonts without a version 1 gasp range up to 20 px). Aliased text and bitmap
++// strikes also get whole-pixel x and cap heights there, as in DirectWrite's
++// GDI-compatible measuring. (That measuring also takes ascent and descent from
++// VDMX tables, which this doesn't: with Windows font smoothing off, fonts with
++// VDMX can lay out 1 px differently.) Values that can't be read keep the GDI
++// ones.
++static void set_directwrite_metrics(
++        HDC dc, SkScalar realTextSize, bool aliased, bool embeddedBitmaps, SkFontMetrics* metrics) {
++    uint8_t head[54];
++    uint8_t os2[90];
++    if (read_font_table(dc, font_table_tag('h', 'e', 'a', 'd'), head, sizeof(head)) !=
++                sizeof(head) ||
++        be16(head, 18) == 0) {
++        return;
++    }
++    const DWORD os2Size = read_font_table(dc, font_table_tag('O', 'S', '/', '2'), os2, sizeof(os2));
++    if (os2Size < 78) {
++        return;
++    }
++    const int upem = be16(head, 18);
++
++    SkScalar size64 = SkScalarRoundToScalar(realTextSize * 64) / 64;
++    if (size64 == 0) {
++        size64 = SK_Scalar1;
++    }
++    bool gdiCompatible = aliased;
++    if (!gdiCompatible && embeddedBitmaps) {
++        const int ppem = SkScalarTruncToInt(size64);
++        GaspRange range;
++        if (get_gasp_range(dc, ppem, &range) && range.fFlags == 0x0001 /* gridfit only */) {
++            gdiCompatible = has_bitmap_strike(dc, range.fMin, range.fMax);
++        } else {
++            gdiCompatible = has_bitmap_strike(dc, ppem, ppem);
++        }
++    }
++    bool roundTo64 = gdiCompatible;
++    if (!roundTo64 && realTextSize <= 20) {
++        GaspRange range;
++        const bool gaspV1 =
++                get_gasp_range(dc, SkScalarRoundToInt(size64), &range) && range.fVersion >= 1;
++        // A TrueType maxp (version 1.0) with instructions.
++        uint8_t maxp[28];
++        const bool hinted =
++                read_font_table(dc, font_table_tag('m', 'a', 'x', 'p'), maxp, sizeof(maxp)) ==
++                        sizeof(maxp) &&
++                be32(maxp, 0) == 0x00010000 && be16(maxp, 26) != 0;
++        roundTo64 = !gaspV1 && hinted;
++    }
++    const SkScalar textSize = roundTo64 ? size64 : realTextSize;
++    const SkScalar scale = textSize / upem;
++
++    int ascent, descent, lineGap;
++    if (be16(os2, 62) & (1 << 7)) {
++        // DirectWrite clamps a typographic ascent or descent of the wrong sign
++        // to 0 and keeps the line gap's sign.
++        ascent = std::max(0, int(int16_t(be16(os2, 68))));
++        descent = std::max(0, -int(int16_t(be16(os2, 70))));
++        lineGap = int16_t(be16(os2, 72));
++    } else {
++        // usWinAscent is unsigned, but DirectWrite reads usWinDescent as a
++        // magnitude: some fonts store it negative. Likewise the hhea descender,
++        // and a negative hhea line gap counts as 0.
++        ascent = be16(os2, 74);
++        descent = std::abs(int(int16_t(be16(os2, 76))));
++        lineGap = 0;
++        uint8_t hhea[10];
++        if (read_font_table(dc, font_table_tag('h', 'h', 'e', 'a'), hhea, sizeof(hhea)) ==
++            sizeof(hhea)) {
++            const int hheaHeight = int16_t(be16(hhea, 4)) + std::abs(int(int16_t(be16(hhea, 6)))) +
++                                   std::max(0, int(int16_t(be16(hhea, 8))));
++            lineGap = std::max(0, hheaHeight - (ascent + descent));
++        }
++    }
++    metrics->fAscent = -ascent * scale;
++    metrics->fDescent = descent * scale;
++    metrics->fLeading = lineGap * scale;
++
++    // GDI-compatible values are whole pixels, given back in font units.
++    auto gdi_compatible = [&](int units) {
++        if (!gdiCompatible) {
++            return units;
++        }
++        const int pixels = SkScalarRoundToInt(units * scale);
++        return SkScalarRoundToInt(pixels * upem / textSize);
++    };
++    const bool os2V2 = be16(os2, 0) >= 2 && os2Size >= 90;
++    int xHeight = os2V2 ? int16_t(be16(os2, 86)) : 0;
++    int capHeight = os2V2 ? int16_t(be16(os2, 88)) : 0;
++    if (xHeight > 0 || glyph_height(dc, head, 'x', upem / 2, &xHeight)) {
++        metrics->fXHeight = gdi_compatible(xHeight) * scale;
++    }
++    if (capHeight > 0 || glyph_height(dc, head, 'H', upem * 7 / 10, &capHeight)) {
++        metrics->fCapHeight = gdi_compatible(capHeight) * scale;
++    }
++
++    uint8_t post[12];
++    if (read_font_table(dc, font_table_tag('p', 'o', 's', 't'), post, sizeof(post)) ==
++        sizeof(post)) {
++        int thickness = int16_t(be16(post, 10));
++        if (thickness == 0) {
++            thickness = (upem + 7) / 14;  // DirectWrite's value for "none given".
++        }
++        metrics->fUnderlinePosition = -int16_t(be16(post, 8)) * scale;
++        metrics->fUnderlineThickness = thickness * scale;
++    }
++
++    metrics->fXMin = int16_t(be16(head, 36)) * scale;
++    metrics->fBottom = -int16_t(be16(head, 38)) * scale;
++    metrics->fXMax = int16_t(be16(head, 40)) * scale;
++    metrics->fTop = -int16_t(be16(head, 42)) * scale;
++    metrics->fMaxCharWidth = metrics->fXMax - metrics->fXMin;
++    metrics->fAvgCharWidth = 0;
++}
++#endif  // SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS
++
+ void SkScalerContext_GDI::generateFontMetrics(SkFontMetrics* metrics) {
+     if (nullptr == metrics) {
+         return;
+@@ -972,6 +1363,22 @@ void SkScalerContext_GDI::generateFontMetrics(SkFontMetrics* metrics) {
+     if (len != GDI_ERROR && gm.gmBlackBoxY > 0) {
+         metrics->fXHeight = SkIntToScalar(gm.gmBlackBoxY);
+     }
++
++    // Callers center text and resolve CSS 'cap' units with the cap height.
++    // otmsCapEmHeight is not filled in, so measure 'H'.
++    sk_bzero(&gm, sizeof(gm));
++    len = GetGlyphOutlineW(fDDC, 'H', GGO_METRICS, &gm, 0, nullptr, &gMat2Identity);
++    if (len != GDI_ERROR && gm.gmBlackBoxY > 0) {
++        metrics->fCapHeight = SkIntToScalar(gm.gmBlackBoxY);
++    }
++
++#ifndef SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS
++    set_directwrite_metrics(fDDC,
++                            fRealTextSize,
++                            fRec.fMaskFormat == SkMask::kBW_Format,
++                            SkToBool(fRec.fFlags & SkScalerContext::kEmbeddedBitmapText_Flag),
++                            metrics);
++#endif
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////
+@@ -1795,8 +2202,164 @@ static HANDLE activate_font(const SkData* fontData) {
+     return fontHandle;
+ }
+ 
+-// Does not affect ownership of stream.
+-static sk_sp<SkTypeface> create_from_stream(std::unique_ptr<SkStreamAsset> stream) {
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++static hb_face_t* hb_face_from_data(const sk_sp<const SkData>& data) {
++    hb_blob_t* blob = hb_blob_create(static_cast<const char*>(data->data()),
++                                     SkToUInt(data->size()),
++                                     HB_MEMORY_MODE_READONLY,
++                                     const_cast<SkData*>(SkRef(data.get())),
++                                     [](void* ctx) { static_cast<const SkData*>(ctx)->unref(); });
++    hb_face_t* face = hb_face_create(blob, 0);
++    hb_blob_destroy(blob);
++    return face;
++}
++
++// Returns the fvar axes of a variable font, or nothing for other fonts.
++static std::vector<SkFontParameters::Variation::Axis> variation_axes(
++        const sk_sp<const SkData>& data) {
++    std::vector<SkFontParameters::Variation::Axis> axes;
++    hb_face_t* face = hb_face_from_data(data);
++    unsigned count = hb_ot_var_get_axis_count(face);
++    if (count > 0) {
++        std::vector<hb_ot_var_axis_info_t> infos(count);
++        hb_ot_var_get_axis_infos(face, 0, &count, infos.data());
++        for (unsigned i = 0; i < count; ++i) {
++            axes.emplace_back(infos[i].tag,
++                              infos[i].min_value,
++                              infos[i].default_value,
++                              infos[i].max_value,
++                              infos[i].flags & HB_OT_VAR_AXIS_FLAG_HIDDEN);
++        }
++    }
++    hb_face_destroy(face);
++    return axes;
++}
++
++// Returns a static font that is `data` at `values` (one per axis of `axes`):
++// every glyph, character mapping (including variation sequences), layout
++// feature and hinting table is kept, with the variations applied.
++static sk_sp<SkData> instantiate_variable_font(
++        const sk_sp<const SkData>& data,
++        const std::vector<SkFontParameters::Variation::Axis>& axes,
++        const std::vector<float>& values) {
++    hb_face_t* face = hb_face_from_data(data);
++    const unsigned glyphCount = hb_face_get_glyph_count(face);
++    hb_subset_input_t* input = hb_subset_input_create_or_fail();
++    hb_face_t* instance = nullptr;
++    if (input && glyphCount > 0) {
++        hb_set_add_range(hb_subset_input_glyph_set(input), 0, glyphCount - 1);
++        for (hb_subset_sets_t sets : {HB_SUBSET_SETS_UNICODE, HB_SUBSET_SETS_LAYOUT_FEATURE_TAG}) {
++            hb_set_t* set = hb_subset_input_set(input, sets);
++            hb_set_clear(set);
++            hb_set_invert(set);
++        }
++        // HarfBuzz doesn't instance hdmx or VDMX; without them GDI computes
++        // device metrics from the instance itself.
++        hb_set_t* dropTables = hb_subset_input_set(input, HB_SUBSET_SETS_DROP_TABLE_TAG);
++        hb_set_del(dropTables, HB_TAG('k', 'e', 'r', 'n'));
++        hb_set_add(dropTables, HB_TAG('h', 'd', 'm', 'x'));
++        hb_set_add(dropTables, HB_TAG('V', 'D', 'M', 'X'));
++        // Variable fonts keep overlapping contours; the flag tells FreeType
++        // (MacType) to rasterize those glyphs without darkened overlaps.
++        hb_subset_input_set_flags(input,
++                                  HB_SUBSET_FLAGS_RETAIN_GIDS | HB_SUBSET_FLAGS_NOTDEF_OUTLINE |
++                                          HB_SUBSET_FLAGS_NO_PRUNE_UNICODE_RANGES |
++                                          HB_SUBSET_FLAGS_PASSTHROUGH_UNRECOGNIZED |
++                                          HB_SUBSET_FLAGS_NO_LAYOUT_CLOSURE |
++                                          HB_SUBSET_FLAGS_SET_OVERLAPS_FLAG);
++        bool pinned = true;
++        for (size_t i = 0; i < axes.size(); ++i) {
++            pinned = pinned &&
++                     hb_subset_input_pin_axis_location(input, face, axes[i].tag, values[i]);
++        }
++        if (pinned) {
++            instance = hb_subset_or_fail(face, input);
++        }
++    }
++    hb_subset_input_destroy(input);
++    hb_face_destroy(face);
++    if (!instance) {
++        return nullptr;
++    }
++
++    hb_blob_t* blob = hb_face_reference_blob(instance);
++    hb_face_destroy(instance);
++    unsigned int length;
++    const char* bytes = hb_blob_get_data(blob, &length);
++    if (!bytes || !length) {
++        hb_blob_destroy(blob);
++        return nullptr;
++    }
++    return SkData::MakeWithProc(
++            bytes,
++            length,
++            [](const void*, void* ctx) { hb_blob_destroy(static_cast<hb_blob_t*>(ctx)); },
++            blob);
++}
++#endif  // defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++
++// Rebuild only the selected collection face, without subsetting or changing
++// glyph IDs. RenameFont accepts an SFNT, not a TTC. HarfBuzz's builder rewrites
++// offsets and checksums; copying tables also retains cmap variation sequences.
++static sk_sp<SkData> extract_single_face(sk_sp<SkData> data, int collectionIndex) {
++    if (!data || data->size() < 4 || collectionIndex < 0) {
++        return nullptr;
++    }
++    if (memcmp(data->data(), "ttcf", 4) != 0) {
++        return collectionIndex == 0 ? data : nullptr;
++    }
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++    if (data->size() > UINT_MAX) {
++        return nullptr;
++    }
++    hb_blob_t* source = hb_blob_create(static_cast<const char*>(data->data()),
++                                       SkToUInt(data->size()),
++                                       HB_MEMORY_MODE_READONLY,
++                                       nullptr,
++                                       nullptr);
++    if (static_cast<unsigned>(collectionIndex) >= hb_face_count(source)) {
++        hb_blob_destroy(source);
++        return nullptr;
++    }
++    hb_face_t* face = hb_face_create(source, collectionIndex);
++    hb_blob_destroy(source);
++    unsigned count = hb_face_get_table_tags(face, 0, nullptr, nullptr);
++    std::vector<hb_tag_t> tags(count);
++    hb_face_get_table_tags(face, 0, &count, tags.data());
++    hb_face_t* builder = hb_face_builder_create();
++    bool ok = count > 0 && count == tags.size();
++    for (hb_tag_t tag : tags) {
++        if (tag == HB_TAG('D', 'S', 'I', 'G')) {
++            continue;  // The collection's signature cannot survive extraction.
++        }
++        hb_blob_t* table = hb_face_reference_table(face, tag);
++        ok = hb_face_builder_add_table(builder, tag, table) && ok;
++        hb_blob_destroy(table);
++    }
++    hb_face_destroy(face);
++    hb_blob_t* blob = ok ? hb_face_reference_blob(builder) : hb_blob_get_empty();
++    hb_face_destroy(builder);
++    unsigned length = 0;
++    const char* bytes = hb_blob_get_data(blob, &length);
++    sk_sp<SkData> result = length ? SkData::MakeWithCopy(bytes, length) : nullptr;
++    hb_blob_destroy(blob);
++    return result;
++#else
++    return nullptr;
++#endif
++}
++
++static sk_sp<SkTypeface> create_from_stream(std::unique_ptr<SkStreamAsset> stream,
++                                            int collectionIndex = 0) {
++    if (!stream || !stream->rewind()) {
++        return nullptr;
++    }
++    sk_sp<SkData> data = extract_single_face(
++            SkData::MakeFromStream(stream.get(), stream->getLength()), collectionIndex);
++    if (!data) {
++        return nullptr;
++    }
++    stream = std::make_unique<SkMemoryStream>(std::move(data));
+     // Create a unique and unpredictable font name.
+     // Avoids collisions and access from CSS.
+     char familyName[BASE64_GUID_ID_LEN];
+@@ -1821,7 +2384,258 @@ static sk_sp<SkTypeface> create_from_stream(std::unique_ptr<SkStreamAsset> strea
+     LOGFONT lf;
+     logfont_for_name(familyName, &lf);
+ 
+-    return sk_sp<SkTypeface>(SkCreateFontMemResourceTypefaceFromLOGFONT(lf, fontReference));
++    sk_sp<SkTypeface> typeface = SkCreateFontMemResourceTypefaceFromLOGFONT(lf, fontReference);
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++    std::vector<SkFontParameters::Variation::Axis> axes = variation_axes(rewrittenFontData);
++    if (typeface && !axes.empty()) {
++        static_cast<FontMemResourceTypeface*>(typeface.get())->setVariationAxes(std::move(axes));
++    }
++#endif
++    return typeface;
++}
++
++SkTypeface::LocalizedStrings* FontMemResourceTypeface::onCreateFamilyNameIterator() const {
++    if (fFamilyNames.empty()) {
++        return INHERITED::onCreateFamilyNameIterator();
++    }
++    class Names : public SkTypeface::LocalizedStrings {
++    public:
++        explicit Names(std::vector<SkString> names) : fNames(std::move(names)) {}
++        bool next(SkTypeface::LocalizedString* localizedString) override {
++            if (fNext >= fNames.size()) {
++                return false;
++            }
++            localizedString->fString = fNames[fNext++];
++            localizedString->fLanguage.set("und");  // undetermined
++            return true;
++        }
++
++    private:
++        std::vector<SkString> fNames;
++        size_t fNext = 0;
++    };
++    return new Names(fFamilyNames);
++}
++
++sk_sp<SkTypeface> SkCreateGdiTypefaceFromData(sk_sp<SkData> data,
++                                              int collectionIndex,
++                                              const SkString familyNames[],
++                                              int familyNameCount,
++                                              const SkFontArguments::VariationPosition& position) {
++    data = extract_single_face(std::move(data), collectionIndex);
++    if (!data) {
++        return nullptr;
++    }
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++    // GDI draws only a variable font's default instance, so load a static
++    // copy of the requested instance, at exactly its values (installed fonts
++    // are loaded at their named instances, a bounded set, so no snapping).
++    if (position.coordinateCount > 0) {
++        const std::vector<SkFontParameters::Variation::Axis> axes = variation_axes(data);
++        std::vector<float> values;
++        bool atDefault = true;
++        for (const SkFontParameters::Variation::Axis& axis : axes) {
++            float value = axis.def;
++            for (int i = 0; i < position.coordinateCount; ++i) {
++                if (position.coordinates[i].axis == axis.tag) {
++                    value = position.coordinates[i].value;
++                }
++            }
++            value = SkTPin(value, axis.min, axis.max);
++            atDefault = atDefault && value == axis.def;
++            values.push_back(value);
++        }
++        if (!axes.empty() && !atDefault) {
++            sk_sp<SkData> instance = instantiate_variable_font(data, axes, values);
++            if (!instance) {
++                return nullptr;  // Let the caller retain the original native face.
++            }
++            data = std::move(instance);
++        }
++    }
++#endif
++    sk_sp<SkTypeface> typeface =
++            create_from_stream(std::make_unique<SkMemoryStream>(std::move(data)));
++    if (typeface) {
++        auto* memTypeface = static_cast<FontMemResourceTypeface*>(typeface.get());
++        memTypeface->setStyleFromOS2();
++        if (familyNameCount > 0) {
++            memTypeface->setFamilyNames({familyNames, familyNames + familyNameCount});
++        }
++    }
++    return typeface;
++}
++
++#if defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++sk_sp<SkTypeface> FontMemResourceTypeface::onMakeClone(const SkFontArguments& args) const {
++    const SkFontArguments::VariationPosition position = args.getVariationDesignPosition();
++    if (!this->isVariable() || position.coordinateCount <= 0) {
++        return INHERITED::onMakeClone(args);
++    }
++
++    // As in the other ports, the last coordinate given for an axis wins, and
++    // values are clamped to the axis range. Each instance is a whole static
++    // font, so values are snapped to 1/64 of the axis range (optical size,
++    // which follows the font size, to whole units), and an animated axis
++    // makes a bounded number of instances. Values near the default snap to it.
++    static constexpr SkFourByteTag kOpszTag = SkSetFourByteTag('o', 'p', 's', 'z');
++    std::vector<float> values;
++    values.reserve(fAxes.size());
++    bool atDefault = true;
++    for (const SkFontParameters::Variation::Axis& axis : fAxes) {
++        float value = axis.def;
++        for (int i = 0; i < position.coordinateCount; ++i) {
++            if (position.coordinates[i].axis == axis.tag) {
++                value = position.coordinates[i].value;
++            }
++        }
++        value = SkTPin(value, axis.min, axis.max);
++        const float step = axis.tag == kOpszTag ? 1.0f : (axis.max - axis.min) / 64;
++        if (step > 0) {
++            if (std::abs(value - axis.def) < step / 2) {
++                value = axis.def;
++            } else {
++                value = SkTPin(axis.min + std::round((value - axis.min) / step) * step,
++                               axis.min,
++                               axis.max);
++            }
++        }
++        atDefault = atDefault && value == axis.def;
++        values.push_back(value);
++    }
++    if (atDefault) {
++        return sk_ref_sp(this);
++    }
++
++    SkAutoMutexExclusive lock(fInstancesMutex);
++    sk_sp<SkTypeface> typeface;
++    for (const Instance& instance : fInstances) {
++        if (instance.values == values && instance.typeface->try_ref()) {
++            typeface.reset(instance.typeface);
++            break;
++        }
++    }
++    if (!typeface) {
++        // Forget the instances nobody uses any more.
++        size_t kept = 0;
++        for (const Instance& instance : fInstances) {
++            if (instance.typeface->weak_expired()) {
++                instance.typeface->weak_unref();
++            } else {
++                fInstances[kept++] = instance;
++            }
++        }
++        fInstances.resize(kept);
++
++        // Read the selected font back from GDI only when a new instance is needed.
++        int ttcIndex = 0;
++        std::unique_ptr<SkStreamAsset> stream = this->openStream(&ttcIndex);
++        sk_sp<const SkData> data = stream ? stream->getData() : nullptr;
++        sk_sp<SkData> instanceData =
++                data ? instantiate_variable_font(data, fAxes, values) : nullptr;
++        if (instanceData) {
++            typeface =
++                    create_from_stream(std::make_unique<SkMemoryStream>(std::move(instanceData)));
++        }
++        if (typeface && !fFamilyNames.empty()) {
++            auto* instance = static_cast<FontMemResourceTypeface*>(typeface.get());
++            instance->setFamilyNames(fFamilyNames);
++            instance->setStyleFromOS2();
++        }
++#if defined(SK_TYPEFACE_FACTORY_FONTATIONS)
++        if (!typeface && data) {
++            // Native instances use the exact requested coordinates. They must
++            // not enter the GDI cache, whose keys contain snapped coordinates.
++            if (auto native = SkTypeface_Make_Fontations(data, args)) {
++                return native;
++            }
++        }
++#endif
++        if (!typeface) {
++            // A failure at one position must not disable the whole variable
++            // font or claim that the default instance satisfies this request.
++            return nullptr;
++        }
++        typeface->weak_ref();
++        fInstances.push_back({std::move(values), typeface.get()});
++    }
++
++    static constexpr size_t kRecentInstances = 8;
++    auto recent = std::find(fRecentInstances.begin(), fRecentInstances.end(), typeface);
++    if (recent != fRecentInstances.end()) {
++        std::rotate(recent, recent + 1, fRecentInstances.end());
++    } else {
++        if (fRecentInstances.size() == kRecentInstances) {
++            fRecentInstances.erase(fRecentInstances.begin());
++        }
++        fRecentInstances.push_back(typeface);
++    }
++    return typeface;
++}
++
++int FontMemResourceTypeface::onGetVariationDesignPosition(
++        SkSpan<SkFontArguments::VariationPosition::Coordinate> coordinates) const {
++    if (!this->isVariable()) {
++        return INHERITED::onGetVariationDesignPosition(coordinates);
++    }
++    // Instances are separate static fonts, so this typeface is always at the
++    // default instance.
++    if (coordinates.size() >= fAxes.size()) {
++        for (size_t i = 0; i < fAxes.size(); ++i) {
++            coordinates[i].axis = fAxes[i].tag;
++            coordinates[i].value = fAxes[i].def;
++        }
++    }
++    return SkToInt(fAxes.size());
++}
++
++int FontMemResourceTypeface::onGetVariationDesignParameters(
++        SkSpan<SkFontParameters::Variation::Axis> parameters) const {
++    if (!this->isVariable()) {
++        return INHERITED::onGetVariationDesignParameters(parameters);
++    }
++    if (parameters.size() >= fAxes.size()) {
++        std::copy(fAxes.begin(), fAxes.end(), parameters.begin());
++    }
++    return SkToInt(fAxes.size());
++}
++#else
++sk_sp<SkTypeface> FontMemResourceTypeface::onMakeClone(const SkFontArguments& args) const {
++    return INHERITED::onMakeClone(args);
++}
++
++int FontMemResourceTypeface::onGetVariationDesignPosition(
++        SkSpan<SkFontArguments::VariationPosition::Coordinate> coordinates) const {
++    return INHERITED::onGetVariationDesignPosition(coordinates);
++}
++
++int FontMemResourceTypeface::onGetVariationDesignParameters(
++        SkSpan<SkFontParameters::Variation::Axis> parameters) const {
++    return INHERITED::onGetVariationDesignParameters(parameters);
++}
++#endif  // defined(SK_PDF_USE_HARFBUZZ_SUBSET)
++
++// 'ttcf' returns the whole collection for any face in it. Table 0 returns the
++// selected face from its offset table to the end of the file, which gives its
++// offset, and the collection header lists each face's offset.
++static int ttc_index_of_selected_font(HDC hdc, const SkData& ttc) {
++    const DWORD faceSize = GetFontData(hdc, 0, 0, nullptr, 0);
++    if (faceSize == GDI_ERROR || faceSize > ttc.size() || ttc.size() < 12) {
++        return -1;
++    }
++    const uint32_t faceOffset = SkToU32(ttc.size() - faceSize);
++    const uint8_t* bytes = ttc.bytes();
++    auto readBE32 = [bytes](size_t offset) {
++        return (uint32_t(bytes[offset]) << 24) | (uint32_t(bytes[offset + 1]) << 16) |
++               (uint32_t(bytes[offset + 2]) << 8) | uint32_t(bytes[offset + 3]);
++    };
++    const uint32_t numFonts = readBE32(8);
++    for (uint32_t i = 0; i < numFonts && 12 + 4 * (size_t(i) + 1) <= ttc.size(); ++i) {
++        if (readBE32(12 + 4 * size_t(i)) == faceOffset) {
++            return SkToInt(i);
++        }
++    }
++    return -1;
+ }
+ 
+ std::unique_ptr<SkStreamAsset> LogFontTypeface::onOpenStream(int* ttcIndex) const {
+@@ -1842,7 +2656,16 @@ std::unique_ptr<SkStreamAsset> LogFontTypeface::onOpenStream(int* ttcIndex) cons
+         }
+         if (bufferSize != GDI_ERROR) {
+             sk_sp<SkData> streamData = SkData::MakeUninitialized(bufferSize);
+-            if (GetFontData(hdc, tables[i], 0, streamData->writable_data(), bufferSize)) {
++            if (GetFontData(hdc, tables[i], 0, streamData->writable_data(), bufferSize) ==
++                bufferSize) {
++                if (tables[i] == kTTCTag) {
++                    *ttcIndex = ttc_index_of_selected_font(hdc, *streamData);
++                    if (*ttcIndex < 0) {
++                        // A different collection face can have valid but
++                        // unrelated glyph IDs. Never silently choose face 0.
++                        return nullptr;
++                    }
++                }
+                 stream.reset(new SkMemoryStream(std::move(streamData)));
+                 break;
+             } else {
+@@ -2112,10 +2935,16 @@ void LogFontTypeface::onFilterRec(SkScalerContextRec* rec) const {
+     }
+ 
+     unsigned flagsWeDontSupport = SkScalerContext::kForceAutohinting_Flag |
+-                                  SkScalerContext::kEmbeddedBitmapText_Flag |
+                                   SkScalerContext::kEmbolden_Flag |
+                                   SkScalerContext::kLCD_BGROrder_Flag |
+                                   SkScalerContext::kLCD_Vertical_Flag;
++#ifdef SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS
++    flagsWeDontSupport |= SkScalerContext::kEmbeddedBitmapText_Flag;
++#else
++    // kEmbeddedBitmapText_Flag stays, although GDI picks bitmaps itself:
++    // generateFontMetrics() measures like DirectWrite, which measures bitmap
++    // strikes differently when they are requested.
++#endif
+     rec->fFlags &= ~flagsWeDontSupport;
+ 
+     SkFontHinting h = rec->getHinting();
+@@ -2284,10 +3113,7 @@ protected:
+ 
+     sk_sp<SkTypeface> onMakeFromStreamIndex(std::unique_ptr<SkStreamAsset> stream,
+                                             int ttcIndex) const override {
+-        if (ttcIndex != 0) {
+-            return nullptr;
+-        }
+-        return create_from_stream(std::move(stream));
++        return create_from_stream(std::move(stream), ttcIndex);
+     }
+ 
+     sk_sp<SkTypeface> onMakeFromStreamArgs(std::unique_ptr<SkStreamAsset> stream,
