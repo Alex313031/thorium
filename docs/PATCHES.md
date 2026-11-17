@@ -209,6 +209,58 @@ overlay-derived, or still need separate provenance review.
 - [`add-flag-for-right-click-close-tab.patch`](../other/add-flag-for-right-click-close-tab.patch)
 - [`add-flag-for-hover-activate-tab.patch`](../other/add-flag-for-hover-activate-tab.patch)
 - [`add-flag-for-open-bookmarks-in-new-tab.patch`](../other/add-flag-for-open-bookmarks-in-new-tab.patch)
+- [`multi-column-bookmarks.patch`](../other/multi-column-bookmarks.patch) - Adds
+  `chrome://flags/#multi-column-bookmarks` (default off; restart required) for
+  Views bookmark folder menus, including the bookmark bar overflow and folders
+  in the application menu. Native macOS system menus are outside this patch.
+  Items fill columns from top to bottom using the actual item heights and menu
+  padding. Column widths are capped at 400 DIPs; the available display work area
+  limits the number of columns. When all columns are full, their content heights
+  grow together and the existing vertical scroll controls remain available.
+  Measurement and layout share one calculation, including when menu items are
+  added, removed, hidden, or relaid out at a different width. Child menus open
+  next to the originating column so the pointer can reach them without crossing
+  unrelated bookmarks. They can cover adjacent parent columns; if there is no
+  usable side space they fall back to an overlapping single column. Left/right
+  keys move between columns (mirrored in RTL); opening or closing an already-open
+  folder takes precedence. Up/down, Home/End, prefix search, activation, and
+  context menus keep their existing behavior. Up/down and first/last-item
+  navigation reuse a single item list per traversal instead of rebuilding it for
+  every skipped item, avoiding quadratic work across hidden or disabled entries.
+  Drag indicators use each column's bounds, and empty space below a
+  short column accepts drops after that column's last bookmark.
+  Column sizing feeds Chromium's existing rectangular/bubble positioning, so
+  anchor alignment, RTL positioning, and shadow insets retain their native
+  behavior. Drag targets are recalculated after scrolling or relayout, even when
+  the pointer stays at the same screen position; unchanged drag events reuse the
+  result, while modifier-key changes still update copy/move feedback.
+  Drop submission revalidates the current target, including when no further drag
+  update arrived after reflow. Drops outside the visible content and invalid or
+  deleted targets are rejected safely.
+  Scroll arrows and end-of-content checks use the actual laid-out height, so a
+  narrower popup that reflows into fewer columns keeps its overflow reachable.
+  The post-layout arrow state is not overwritten by the earlier preferred size.
+  Live updates preserve the scroll offset instead of jumping to the top after
+  deleting a bookmark; layout clamps the offset if the content becomes shorter.
+  Reopening the menu still starts at the top.
+  Opted-in menus cache at most two layout snapshots, invalidated when content or
+  layout constraints change. Repeated sizing reuses those snapshots; measuring
+  skips the unused single-column height pass, and wheel/column navigation and
+  scroll-arrow refreshes avoid constructing temporary lists of every menu item.
+  Column layout uses pixel scrolling even when only one column fits, so hidden
+  rows with empty bounds cannot break the single-column row search. Whole wheel
+  notches use a measured row-sized step instead of treating wheel units as DIPs;
+  precise scrolling and sub-notch deltas keep their pixel increments. The step
+  is recorded during layout, with no item scans or size queries on wheel events.
+  Wheel events remain handled at the scroll limits. Scrolling over a folder does
+  not open its submenu over adjacent columns or build its contents; scrolling
+  over a column gap closes deeper submenus and keeps the menu under the pointer
+  open. Loaded favicons update their existing image view; unchanged icon
+  dimensions preserve the layout cache instead of triggering a full reflow for
+  each arriving icon.
+  Specialized scrollbar/pinned-region menus and platforms which delegate menu
+  bounds entirely to the window manager retain their existing single-column
+  layout.
 - [`add-flag-for-open-omnibox-url-in-new-tab.patch`](../other/add-flag-for-open-omnibox-url-in-new-tab.patch)
 - [`disable-qr-code-generator.patch`](../other/disable-qr-code-generator.patch) — Adds a user-facing flag that disables QR-code sharing entry points while preserving Chromium's enterprise policy as an independent upper bound.
 - [`hide-cast-context-menu.patch`](../other/hide-cast-context-menu.patch) — Adds a user-facing flag that hides Cast from rendered-page context menus without disabling Media Router or other Cast entry points.

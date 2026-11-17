@@ -75,10 +75,10 @@ index 5de0ad6e04cc3..eee8ef63e7df9 100644
    virtual void OnReloadPageButtonClicked() = 0;
  
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index 9a6b5a997ac09..e088b606ca6f0 100644
+index 96e0548ffebb2..aedb050f8d94f 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -182,6 +182,9 @@ BASE_FEATURE(kLegacySearchIntegrityCheck, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -185,6 +185,9 @@ BASE_FEATURE(kLegacySearchIntegrityCheck, base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kExtensionsCollapseMainMenu, base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -89,10 +89,10 @@ index 9a6b5a997ac09..e088b606ca6f0 100644
  // default.
  BASE_FEATURE(kExtensionsPinnedByDefault, base::FEATURE_ENABLED_BY_DEFAULT);
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index a45e73517e414..843bf86a47a7f 100644
+index 4d052afb28058..580e1dc2a81d9 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -92,6 +92,8 @@ bool IsSettingsSearch2026Enabled();
+@@ -94,6 +94,8 @@ bool IsSettingsSearch2026Enabled();
  // the "Discover Chrome Extensions" item will be present.
  BASE_DECLARE_FEATURE(kExtensionsCollapseMainMenu);
  

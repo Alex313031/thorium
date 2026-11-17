@@ -52,10 +52,10 @@ index d33b2f1ded1b1..b44f1064c72e9 100644
    GURL alternate_nav_url;
    AutocompleteMatch match = CurrentMatchAndAlternateNavUrl(&alternate_nav_url);
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index e781d7a9088b4..c37f9748684a4 100644
+index 5a13246d11dcc..0ff1cd0b955c6 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -276,6 +276,16 @@ BASE_FEATURE_PARAM(std::string,
+@@ -279,6 +279,16 @@ BASE_FEATURE_PARAM(std::string,
                     "mode",
                     "foreground");
  
@@ -73,10 +73,10 @@ index e781d7a9088b4..c37f9748684a4 100644
  // Enables the UI for Process Isolation in chrome://settings/system.
  BASE_FEATURE(kProcessIsolationSettings, base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index 69ecae1ef2df4..da1678b0e195e 100644
+index 51ef41c35061f..0e1122aad946c 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -417,6 +417,9 @@ BASE_DECLARE_FEATURE_PARAM(int, kHoverActivateTabDelayMs);
+@@ -419,6 +419,9 @@ BASE_DECLARE_FEATURE_PARAM(int, kHoverActivateTabDelayMs);
  BASE_DECLARE_FEATURE(kOpenBookmarksInNewTab);
  BASE_DECLARE_FEATURE_PARAM(std::string, kOpenBookmarksInNewTabMode);
  

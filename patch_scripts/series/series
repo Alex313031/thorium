@@ -123,6 +123,7 @@ other/add-flag-for-double-click-close-tab.patch
 other/add-flag-for-right-click-close-tab.patch
 other/add-flag-for-hover-activate-tab.patch
 other/add-flag-for-open-bookmarks-in-new-tab.patch
+other/multi-column-bookmarks.patch
 other/add-flag-for-open-omnibox-url-in-new-tab.patch
 other/disable-qr-code-generator.patch
 other/hide-cast-context-menu.patch

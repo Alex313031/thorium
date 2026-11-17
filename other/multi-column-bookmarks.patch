@@ -1,0 +1,1190 @@
+diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
+index e781d7a9088b4..5a13246d11dcc 100644
+--- a/chrome/browser/ui/ui_features.cc
++++ b/chrome/browser/ui/ui_features.cc
+@@ -19,6 +19,9 @@
+ 
+ namespace features {
+ 
++// Wrap long native bookmark menus into columns within the display work area.
++BASE_FEATURE(kMultiColumnBookmarks, base::FEATURE_DISABLED_BY_DEFAULT);
++
+ // Enables the migration of browser commands to Action API.
+ BASE_FEATURE(kUseActionsForBrowserCommands, base::FEATURE_ENABLED_BY_DEFAULT);
+ 
+diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
+index 69ecae1ef2df4..51ef41c35061f 100644
+--- a/chrome/browser/ui/ui_features.h
++++ b/chrome/browser/ui/ui_features.h
+@@ -19,6 +19,8 @@ namespace features {
+ // All features in alphabetical order. The features should be documented
+ // alongside the definition of their values in the .cc file.
+ 
++BASE_DECLARE_FEATURE(kMultiColumnBookmarks);
++
+ BASE_DECLARE_FEATURE(kUseActionsForBrowserCommands);
+ bool ShouldUseActionsForBrowserCommands();
+ 
+diff --git a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
+index f9cd6f6ed0ff7..bbee65b156639 100644
+--- a/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
++++ b/chrome/browser/ui/views/bookmarks/bookmark_menu_delegate.cc
+@@ -10,6 +10,7 @@
+ 
+ #include "base/containers/fixed_flat_set.h"
+ #include "base/containers/to_vector.h"
++#include "base/feature_list.h"
+ #include "base/functional/bind.h"
+ #include "base/memory/raw_ptr.h"
+ #include "base/memory/weak_ptr.h"
+@@ -34,6 +35,7 @@
+ #include "chrome/browser/ui/side_panel/side_panel_action_callback.h"
+ #include "chrome/browser/ui/side_panel/side_panel_enums.h"
+ #include "chrome/browser/ui/toolbar/app_menu_model.h"
++#include "chrome/browser/ui/ui_features.h"
+ #include "chrome/browser/ui/views/bookmarks/bookmark_bar_view.h"
+ #include "chrome/browser/ui/views/event_utils.h"
+ #include "chrome/grit/generated_resources.h"
+@@ -60,6 +62,7 @@
+ #include "ui/gfx/image/image_skia_operations.h"
+ #include "ui/menus/simple_menu_model.h"
+ #include "ui/views/accessibility/view_accessibility.h"
++#include "ui/views/controls/image_view.h"
+ #include "ui/views/controls/menu/menu_controller.h"
+ #include "ui/views/controls/menu/menu_item_view.h"
+ #include "ui/views/controls/menu/submenu_view.h"
+@@ -671,8 +674,20 @@ void BookmarkMenuDelegate::BookmarkNodeFaviconChanged(
+     return;  // We're not showing a menu item for the node.
+   }
+ 
+-  menu_pair->second->SetIcon(GetFaviconForNode(
+-      GetBookmarkMergedSurfaceService()->bookmark_model(), node));
++  MenuItemView* menu_item = menu_pair->second;
++  const ui::ImageModel icon = GetFaviconForNode(
++      GetBookmarkMergedSurfaceService()->bookmark_model(), node);
++  if (menu_item->icon_view() && !icon.IsEmpty() && !icon.IsVectorIcon() &&
++      menu_item->GetParentMenuItem() &&
++      menu_item->GetParentMenuItem()->GetSubmenu()->use_multiple_columns()) {
++    // Replacing the icon view invalidates the whole column layout for every
++    // favicon that arrives. Updating the image in place only requests a layout
++    // when its preferred size changes. Vector icons still need SetIcon() to
++    // update the menu item's selection-dependent color.
++    menu_item->icon_view()->SetImage(icon);
++  } else {
++    menu_item->SetIcon(icon);
++  }
+ }
+ 
+ void BookmarkMenuDelegate::WillRemoveBookmarks(
+@@ -981,6 +996,9 @@ void BookmarkMenuDelegate::BuildNodeMenuItemAt(const BookmarkNode* node,
+ void BookmarkMenuDelegate::BuildMenu(const BookmarkParentFolder& folder,
+                                      size_t start_child_index,
+                                      MenuItemView* menu) {
++  if (base::FeatureList::IsEnabled(features::kMultiColumnBookmarks)) {
++    menu->CreateSubmenu()->SetUseMultipleColumns(true);
++  }
+   const BookmarkMergedSurfaceService* service =
+       GetBookmarkMergedSurfaceService();
+   CHECK_LE(start_child_index, service->GetChildrenCount(folder),
+diff --git a/ui/views/controls/menu/menu_controller.cc b/ui/views/controls/menu/menu_controller.cc
+index 20ad3d05bb0e8..0d66bdfd50f94 100644
+--- a/ui/views/controls/menu/menu_controller.cc
++++ b/ui/views/controls/menu/menu_controller.cc
+@@ -292,6 +292,9 @@ gfx::Rect GetChildMenuAnchorBounds(MenuItemView* item) {
+     bounds = item->GetBoundsInScreen();
+     bounds.Inset(item->GetHighlightInsets());
+   }
++  // Keep a column menu anchored to its own row. Moving its submenu outside the
++  // entire parent would require crossing other columns and changing selection
++  // before the pointer can reach the submenu.
+   // TODO(pkasting): Not clear to me why we want to set the height to 1 dip.
+   bounds.set_height(1);
+   return bounds;
+@@ -1305,8 +1308,18 @@ bool MenuController::OnMouseWheel(SubmenuView* source,
+ 
+   MenuPart part = GetMenuPart(source, event.location());
+ 
+-  SetSelection(part.menu ? part.menu.get() : state_.item.get(),
+-               SELECTION_OPEN_SUBMENU | SELECTION_UPDATE_IMMEDIATELY);
++  MenuItemView* item = part.menu ? part.menu.get() : state_.item.get();
++  int selection_types = SELECTION_OPEN_SUBMENU | SELECTION_UPDATE_IMMEDIATELY;
++  if (part.submenu && part.submenu->use_multiple_columns()) {
++    // Wheel scrolling must not open the hovered folder over adjacent columns,
++    // or build and measure its children on every wheel event. For column gaps,
++    // keep the menu under the pointer open and close any deeper submenu.
++    item = part.menu ? part.menu.get() : part.submenu->GetMenuItem();
++    if (part.menu) {
++      selection_types = SELECTION_UPDATE_IMMEDIATELY;
++    }
++  }
++  SetSelection(item, selection_types);
+   if (destroy_pending_) {
+     return false;
+   }
+@@ -1484,13 +1497,22 @@ int MenuController::OnDragUpdated(SubmenuView* source,
+ 
+   const gfx::Point screen_loc =
+       View::ConvertPointToScreen(source, event.location());
+-  if (valid_drop_coordinates_ && screen_loc == drop_pt_) {
++  // Column menus invalidate these coordinates when they scroll or relayout.
++  // Modifier changes must still update copy/move feedback without mouse motion.
++  if (valid_drop_coordinates_ && screen_loc == drop_pt_ &&
++      event.flags() == last_drop_event_flags_ &&
++      event.source_operations() == last_drop_source_operations_) {
+     return last_drop_operation_;
+   }
+   drop_pt_ = screen_loc;
++  last_drop_event_flags_ = event.flags();
++  last_drop_source_operations_ = event.source_operations();
+   valid_drop_coordinates_ = true;
+ 
+   MenuItemView* menu_item = GetMenuItemAt(source, event.location());
++  if (!menu_item) {
++    menu_item = source->GetMenuItemBeforeColumnSpace(event.location());
++  }
+   bool over_empty_menu = false;
+   if (!menu_item) {
+     // See if we're over an empty menu. `GetMenuItemAt` fails in this case
+@@ -2152,6 +2174,9 @@ bool MenuController::OnKeyPressed(const ui::KeyEvent& event) {
+       if (IsEditableCombobox()) {
+         break;
+       }
++      if (MoveSelectionToAdjacentColumn(!base::i18n::IsRTL())) {
++        break;
++      }
+       if (base::i18n::IsRTL()) {
+         CloseSubmenu();
+       } else {
+@@ -2163,6 +2188,9 @@ bool MenuController::OnKeyPressed(const ui::KeyEvent& event) {
+       if (IsEditableCombobox()) {
+         break;
+       }
++      if (MoveSelectionToAdjacentColumn(base::i18n::IsRTL())) {
++        break;
++      }
+       if (base::i18n::IsRTL()) {
+         OpenSubmenuChangeSelectionIfCan();
+       } else {
+@@ -2992,6 +3020,90 @@ void MenuController::StopCancelAllTimer() {
+   cancel_all_timer_.Stop();
+ }
+ 
++std::optional<gfx::Size> MenuController::CalculateMultiColumnMenuSize(
++    MenuItemView* item,
++    const gfx::Rect& anchor_bounds,
++    bool bubble_menu) {
++  SubmenuView* submenu = item->GetSubmenu();
++  if (!submenu->use_multiple_columns()) {
++    return std::nullopt;
++  }
++  // A stationary drag must be hit-tested again after the columns move.
++  valid_drop_coordinates_ = false;
++  auto* container = submenu->GetScrollViewContainer();
++  const gfx::Rect& work_area = state_.monitor_bounds;
++  // Keep specialized pinned/combobox/system menus on their existing path.
++  if (work_area.IsEmpty() || ShouldIgnoreScreenBoundsForMenus() ||
++      IsCombobox() || use_ash_system_ui_layout_ || submenu->use_scroll_bar() ||
++      !container->pinned_header_region().empty() ||
++      !container->pinned_footer_region().empty()) {
++    submenu->SetMultiColumnLayoutBounds(gfx::Size(), 400);
++    return std::nullopt;
++  }
++
++  const gfx::Insets insets = container->GetInsets();
++  // Shadows may extend outside the work area; the visible menu may not.
++  const gfx::Insets outside =
++      bubble_menu ? container->outside_border_insets() : gfx::Insets();
++  const int max_column_width =
++      std::clamp(item->GetDelegate()->GetMaxWidthForMenu(item), 1, 400);
++  const int overlap = MenuConfig::instance().submenu_horizontal_overlap;
++  const int left_space = std::clamp(anchor_bounds.x() - work_area.x() + overlap,
++                                    0, work_area.width()) +
++                         outside.width();
++  const int right_space =
++      std::clamp(work_area.right() - anchor_bounds.right() + overlap, 0,
++                 work_area.width()) +
++      outside.width();
++  int max_width = work_area.width() + outside.width();
++  int max_height = work_area.height() + outside.height();
++  bool allow_multiple_columns = true;
++  const int anchor_offset = MenuItemView::IsBubble(state_.anchor)
++                                ? MenuConfig::instance().touchable_anchor_offset
++                                : 0;
++  const int above =
++      std::clamp(anchor_bounds.y() - work_area.y() - anchor_offset, 0,
++                 work_area.height()) +
++      outside.height();
++  const int below =
++      std::clamp(work_area.bottom() - anchor_bounds.bottom() - anchor_offset, 0,
++                 work_area.height()) +
++      outside.height();
++  if (item->GetParentMenuItem()) {
++    // Fit beside the originating column, so the submenu is directly reachable.
++    // On very narrow displays, overlap is unavoidable; keep a usable single
++    // column and clamp to screen.
++    const int side_width = std::max(left_space, right_space);
++    if (side_width >= std::min(max_column_width, 160) + insets.width()) {
++      max_width = side_width;
++    } else {
++      max_width = std::min(max_width, max_column_width + insets.width());
++      allow_multiple_columns = false;
++    }
++  } else {
++    using MenuPosition = MenuItemView::MenuPosition;
++    if (item->actual_menu_position() == MenuPosition::kAboveBounds) {
++      max_height = above;
++    } else if (item->actual_menu_position() == MenuPosition::kBelowBounds) {
++      max_height = below;
++    } else {
++      max_height = std::max(above, below);
++    }
++    if (max_height <= insets.height() + submenu->GetPreferredItemHeight()) {
++      max_height = work_area.height() + outside.height();
++    }
++  }
++
++  submenu->SetMultiColumnLayoutBounds(
++      gfx::Size(std::max(1, max_width - insets.width()),
++                std::max(1, max_height - insets.height())),
++      max_column_width, allow_multiple_columns);
++  gfx::Size size = container->GetPreferredSize({});
++  size.SetToMin(gfx::Size(max_width, max_height));
++
++  return size;
++}
++
+ gfx::Rect MenuController::CalculateMenuBounds(
+     MenuItemView* item,
+     MenuOpenDirection preferred_open_direction,
+@@ -3013,8 +3125,11 @@ gfx::Rect MenuController::CalculateMenuBounds(
+   SetAnchorParametersForItem(item, anchor_bounds.origin(), anchor);
+ 
+   const auto* const scroll_view_container = submenu->GetScrollViewContainer();
+-  gfx::Rect menu_bounds =
+-      gfx::Rect(scroll_view_container->GetPreferredSize({}));
++  const auto multi_column_size =
++      CalculateMultiColumnMenuSize(item, anchor_bounds, /*bubble_menu=*/false);
++  gfx::Rect menu_bounds(multi_column_size
++                            ? *multi_column_size
++                            : scroll_view_container->GetPreferredSize({}));
+ 
+   const gfx::Rect& monitor_bounds = state_.monitor_bounds;
+ 
+@@ -3024,8 +3139,10 @@ gfx::Rect MenuController::CalculateMenuBounds(
+   }
+ 
+   // Don't let the menu go too wide or too tall.
+-  menu_bounds.set_width(std::min(
+-      menu_bounds.width(), item->GetDelegate()->GetMaxWidthForMenu(item)));
++  if (!multi_column_size) {
++    menu_bounds.set_width(std::min(
++        menu_bounds.width(), item->GetDelegate()->GetMaxWidthForMenu(item)));
++  }
+   if (!monitor_bounds.IsEmpty()) {
+     menu_bounds.set_width(
+         std::min(menu_bounds.width(), monitor_bounds.width()));
+@@ -3196,10 +3313,17 @@ gfx::Rect MenuController::CalculateBubbleMenuBounds(
+   SubmenuView* submenu = item->GetSubmenu();
+   CHECK(submenu);
+   const auto* const scroll_view_container = submenu->GetScrollViewContainer();
+-  gfx::Size menu_size = scroll_view_container->GetPreferredSize({});
+-  // Respect the delegate's maximum width.
+-  menu_size.set_width(std::min(menu_size.width(),
+-                               item->GetDelegate()->GetMaxWidthForMenu(item)));
++  const auto multi_column_size =
++      CalculateMultiColumnMenuSize(item, anchor_bounds, /*bubble_menu=*/true);
++  gfx::Size menu_size = multi_column_size
++                            ? *multi_column_size
++                            : scroll_view_container->GetPreferredSize({});
++  // For column menus the delegate's maximum applies to each column, not the
++  // entire popup. Preserve the existing limit for other menus.
++  if (!multi_column_size) {
++    menu_size.set_width(std::min(
++        menu_size.width(), item->GetDelegate()->GetMaxWidthForMenu(item)));
++  }
+ 
+   // For comboboxes, ensure the menu is at least as wide as the anchor.
+   const gfx::Insets border_insets =
+@@ -3402,7 +3526,12 @@ gfx::Rect MenuController::CalculateBubbleMenuBounds(
+         x = x_right;
+       } else if (x_left >= x_min) {
+         // Enough room on the left, show there.
+-        *resulting_direction = preferred_open_direction;
++        if (multi_column_size) {
++          *resulting_direction =
++              preferred_open_direction == MenuOpenDirection::kLeading
++                  ? MenuOpenDirection::kTrailing
++                  : MenuOpenDirection::kLeading;
++        }
+         x = x_left;
+       } else {
+         // No room on either side. Flush the menu to the right edge.
+@@ -3570,17 +3699,18 @@ void MenuController::MoveSelectionToFirstOrLastItem(
+ MenuItemView* MenuController::FindInitialSelectableMenuItem(
+     MenuItemView* parent,
+     SelectionIncrementDirectionType direction) {
+-  const size_t parent_count = parent->GetSubmenu()->GetMenuItems().size();
++  const auto menu_items = parent->GetSubmenu()->GetMenuItems();
++  const size_t parent_count = menu_items.size();
+   if (direction == INCREMENT_SELECTION_DOWN) {
+     for (size_t index = 0; index < parent_count; ++index) {
+-      MenuItemView* child = parent->GetSubmenu()->GetMenuItemAt(index);
++      MenuItemView* child = menu_items[index];
+       if (child->IsTraversableByKeyboard()) {
+         return child;
+       }
+     }
+   } else {
+     for (size_t index = parent_count; index > 0; --index) {
+-      MenuItemView* child = parent->GetSubmenu()->GetMenuItemAt(index - 1);
++      MenuItemView* child = menu_items[index - 1];
+       if (child->IsTraversableByKeyboard()) {
+         return child;
+       }
+@@ -3589,6 +3719,22 @@ MenuItemView* MenuController::FindInitialSelectableMenuItem(
+   return nullptr;
+ }
+ 
++bool MenuController::MoveSelectionToAdjacentColumn(bool forward) {
++  MenuItemView* item = pending_state_.item;
++  if (!item || !item->GetParentMenuItem() || item->SubmenuIsShowing() ||
++      (forward && item->HasSubmenu() && item->GetEnabled())) {
++    // Opening/closing a folder takes precedence over moving between columns.
++    return false;
++  }
++  SubmenuView* submenu = item->GetParentMenuItem()->GetSubmenu();
++  MenuItemView* adjacent = submenu->GetAdjacentColumnMenuItem(item, forward);
++  if (!adjacent) {
++    return false;
++  }
++  SetSelection(adjacent, SELECTION_UPDATE_IMMEDIATELY);
++  return true;
++}
++
+ void MenuController::OpenSubmenuChangeSelectionIfCan() {
+   ScopedDeletionGuard guard(AsWeakPtr());
+   MenuItemView* item = pending_state_.item;
+@@ -4213,7 +4359,7 @@ void MenuController::SetNextHotTrackedView(
+       return;
+     }
+     // Stop on the next keyboard-traversable item.
+-    MenuItemView* child = parent->GetSubmenu()->GetMenuItemAt(index);
++    MenuItemView* child = menu_items[index];
+     if (child->IsTraversableByKeyboard()) {
+       SetInitialHotTrackedView(child, direction);
+       return;
+diff --git a/ui/views/controls/menu/menu_controller.h b/ui/views/controls/menu/menu_controller.h
+index 655814df01abd..5c61f837c5c10 100644
+--- a/ui/views/controls/menu/menu_controller.h
++++ b/ui/views/controls/menu/menu_controller.h
+@@ -9,6 +9,7 @@
+ 
+ #include <list>
+ #include <memory>
++#include <optional>
+ #include <set>
+ #include <string>
+ #include <utility>
+@@ -573,6 +574,13 @@ class VIEWS_EXPORT MenuController final : public gfx::AnimationDelegate,
+   void StartCancelAllTimer();
+   void StopCancelAllTimer();
+ 
++  // Bookmark-only sizing, shared by rectangular and bubble menu positioning.
++  // Returns nullopt for menus which have not opted in or cannot be constrained.
++  std::optional<gfx::Size> CalculateMultiColumnMenuSize(
++      MenuItemView* item,
++      const gfx::Rect& anchor_bounds,
++      bool bubble_menu);
++
+   // Calculates the bounds of the menu to show. `resulting_direction` is set to
+   // match the direction the menu opened in. Also calculates anchor that system
+   // compositor can use to position the menu. Resulting menu bounds, and bounds
+@@ -630,6 +638,8 @@ class VIEWS_EXPORT MenuController final : public gfx::AnimationDelegate,
+   // the selection is changed such that the menu opens immediately.
+   void OpenSubmenuChangeSelectionIfCan();
+ 
++  bool MoveSelectionToAdjacentColumn(bool forward);
++
+   // If possible, closes the submenu.
+   void CloseSubmenu();
+ 
+@@ -847,6 +857,8 @@ class VIEWS_EXPORT MenuController final : public gfx::AnimationDelegate,
+   // continually processing whether we can drop, we cache the coordinates.
+   bool valid_drop_coordinates_ = false;
+   gfx::Point drop_pt_;
++  int last_drop_event_flags_ = 0;
++  int last_drop_source_operations_ = 0;
+   int last_drop_operation_ = ui::DragDropTypes::DRAG_NONE;
+ 
+   // If true, we're in the middle of invoking ShowAt on a submenu.
+diff --git a/ui/views/controls/menu/menu_scroll_view_container.cc b/ui/views/controls/menu/menu_scroll_view_container.cc
+index 618177724d161..0ce998e0df791 100644
+--- a/ui/views/controls/menu/menu_scroll_view_container.cc
++++ b/ui/views/controls/menu/menu_scroll_view_container.cc
+@@ -300,6 +300,10 @@ class MenuScrollViewContainer::MenuScrollView : public View {
+     // every child (the contents and the scroll bar).
+     LayoutSuperclass<View>(this);
+ 
++    if (owner_->content_view_->use_multiple_columns() && !scroll_bar) {
++      owner_->RefreshScrollButtons(/*use_layout_bounds=*/true);
++    }
++
+     // Size and place the scroll bar before laying out children. The contents'
+     // size is set by the owner, so it is already known here.
+     if (scroll_bar) {
+@@ -352,7 +356,9 @@ class MenuScrollViewContainer::MenuScrollView : public View {
+     }
+ 
+     const int min_y = 0;
+-    const int max_y = -(child->GetPreferredSize({}).height() - this->height());
++    const int max_y = owner_->content_view_->use_multiple_columns()
++                          ? -std::max(0, child->height() - height())
++                          : -(child->GetPreferredSize({}).height() - height());
+ 
+     if (old_y == min_y && old_y != y) {
+       owner_->DidScrollAwayFromTop();
+@@ -673,13 +679,31 @@ void MenuScrollViewContainer::SetScrollBarThumbVisible(bool visible) {
+ 
+ void MenuScrollViewContainer::OnBoundsChanged(
+     const gfx::Rect& previous_bounds) {
+-  // When the bounds on the MenuScrollViewContainer itself change, the scroll
+-  // offset is always reset to 0, so always hide the scroll-up control, and only
+-  // show the scroll-down control if it's going to be useful.
+-  scroll_up_button_->SetVisible(false);
+-  scroll_down_button_->SetVisible(!scroll_bar_ &&
+-                                  content_view_->GetPreferredSize({}).height() >
+-                                      GetContentsBounds().height());
++  RefreshScrollButtons();
++}
++
++void MenuScrollViewContainer::RefreshScrollButtons(bool use_layout_bounds) {
++  if (use_layout_bounds) {
++    // The host can be narrower than the measuring constraint, so columns may
++    // be taller after layout. Use actual bounds for both arrows and the scroll
++    // limit. Compare against the space without arrows to avoid keeping them
++    // visible solely because they themselves reduce the viewport height.
++    const bool overflows = content_view_->height() >
++                           background_view_->GetContentsBounds().height();
++    if (!overflows) {
++      content_view_->SetY(0);
++    }
++    scroll_up_button_->SetVisible(overflows && content_view_->y() < 0);
++    scroll_down_button_->SetVisible(
++        overflows && content_view_->bounds().bottom() > scroll_view_->height());
++  } else {
++    // Seed the arrows before the viewport is laid out. Column menus reconcile
++    // them with the actual height and preserved scroll offset after layout.
++    scroll_up_button_->SetVisible(false);
++    scroll_down_button_->SetVisible(
++        !scroll_bar_ && content_view_->GetPreferredSize({}).height() >
++                            GetContentsBounds().height());
++  }
+ 
+   const bool any_scroll_button_visible =
+       scroll_up_button_->GetVisible() || scroll_down_button_->GetVisible();
+diff --git a/ui/views/controls/menu/menu_scroll_view_container.h b/ui/views/controls/menu/menu_scroll_view_container.h
+index d1513df4894c0..34be1d1a39e25 100644
+--- a/ui/views/controls/menu/menu_scroll_view_container.h
++++ b/ui/views/controls/menu/menu_scroll_view_container.h
+@@ -85,6 +85,10 @@ class VIEWS_EXPORT MenuScrollViewContainer : public View,
+   void OnBoundsChanged(const gfx::Rect& previous_bounds) override;
+ 
+  private:
++  // Initial bounds use the preferred height; after a multi-column reflow use
++  // the actual content and viewport bounds, including when host size is stable.
++  void RefreshScrollButtons(bool use_layout_bounds = false);
++
+   friend class MenuScrollView;
+ 
+   void DidScrollToTop();
+diff --git a/ui/views/controls/menu/submenu_view.cc b/ui/views/controls/menu/submenu_view.cc
+index cb3a68f348b4c..da36a6ce3f5b0 100644
+--- a/ui/views/controls/menu/submenu_view.cc
++++ b/ui/views/controls/menu/submenu_view.cc
+@@ -5,6 +5,8 @@
+ #include "ui/views/controls/menu/submenu_view.h"
+ 
+ #include <algorithm>
++#include <array>
++#include <cstdlib>
+ #include <numeric>
+ #include <set>
+ #include <tuple>
+@@ -12,9 +14,12 @@
+ #include <vector>
+ 
+ #include "base/compiler_specific.h"
++#include "base/functional/callback_helpers.h"
++#include "base/numerics/clamped_math.h"
+ #include "base/numerics/safe_conversions.h"
+ #include "ui/accessibility/ax_enums.mojom.h"
+ #include "ui/accessibility/ax_node_data.h"
++#include "ui/base/dragdrop/drag_drop_types.h"
+ #include "ui/base/ime/input_method.h"
+ #include "ui/base/metadata/metadata_impl_macros.h"
+ #include "ui/base/models/menu_separator_types.h"
+@@ -22,8 +27,10 @@
+ #include "ui/base/ui_base_types.h"
+ #include "ui/color/color_id.h"
+ #include "ui/color/color_provider.h"
++#include "ui/compositor/layer_tree_owner.h"
+ #include "ui/compositor/paint_recorder.h"
+ #include "ui/events/event.h"
++#include "ui/events/event_constants.h"
+ #include "ui/gfx/canvas.h"
+ #include "ui/views/accessibility/tree/widget_ax_manager.h"
+ #include "ui/views/accessibility/view_accessibility.h"
+@@ -35,6 +42,7 @@
+ #include "ui/views/controls/menu/menu_item_view.h"
+ #include "ui/views/controls/menu/menu_scroll_view_container.h"
+ #include "ui/views/controls/menu/menu_separator.h"
++#include "ui/views/view_observer.h"
+ #include "ui/views/view_utils.h"
+ #include "ui/views/widget/root_view.h"
+ #include "ui/views/widget/widget.h"
+@@ -46,6 +54,9 @@ namespace {
+ // Height of the drop indicator. This should be an even number.
+ constexpr int kDropIndicatorHeight = 2;
+ 
++constexpr int kMenuColumnGap = 8;
++constexpr int kMinimumMenuColumnWidth = 160;
++
+ template <typename MIV, typename V>
+ std::vector<MIV*> GetMenuItemsFromChildren(const View::Views& children) {
+   std::vector<MIV*> menu_items;
+@@ -59,6 +70,58 @@ std::vector<MIV*> GetMenuItemsFromChildren(const View::Views& children) {
+ 
+ }  // namespace
+ 
++// Keep only the measuring and actual viewport widths. A snapshot remains alive
++// while bounds are assigned, even if a child callback invalidates the cache.
++class SubmenuView::MultiColumnLayoutCache final : public ViewObserver {
++ public:
++  explicit MultiColumnLayoutCache(SubmenuView* owner) : owner_(owner) {
++    owner_->AddObserver(this);
++  }
++  ~MultiColumnLayoutCache() override { owner_->RemoveObserver(this); }
++
++  std::shared_ptr<const MultiColumnLayout> Get(int available_width) {
++    const gfx::Insets insets = owner_->GetInsets();
++    const int minimum_width = owner_->minimum_preferred_width_;
++    for (const auto& entry : entries_) {
++      if (entry.layout && entry.insets == insets &&
++          entry.minimum_width == minimum_width &&
++          (entry.available_width == available_width ||
++           entry.layout->size.width() == available_width)) {
++        return entry.layout;
++      }
++    }
++    const size_t generation = generation_;
++    auto layout = std::make_shared<const MultiColumnLayout>(
++        owner_->CalculateMultiColumnLayout(available_width));
++    if (generation == generation_) {
++      entries_[next_entry_] = {available_width, insets, minimum_width, layout};
++      next_entry_ = (next_entry_ + 1) % entries_.size();
++    }
++    return layout;
++  }
++
++  void Invalidate() {
++    entries_ = {};
++    ++generation_;
++  }
++
++  void OnViewLayoutInvalidated(View* observed_view) override {
++    owner_->InvalidateMultiColumnLayout();
++  }
++
++ private:
++  struct Entry {
++    int available_width = 0;
++    gfx::Insets insets;
++    int minimum_width = 0;
++    std::shared_ptr<const MultiColumnLayout> layout;
++  };
++  const raw_ptr<SubmenuView> owner_;
++  std::array<Entry, 2> entries_;
++  size_t next_entry_ = 0;
++  size_t generation_ = 0;
++};
++
+ SubmenuView::SubmenuView(MenuItemView* parent) : parent_menu_item_(parent) {
+   CHECK(parent_menu_item_);
+ 
+@@ -69,6 +132,7 @@ SubmenuView::SubmenuView(MenuItemView* parent) : parent_menu_item_(parent) {
+ }
+ 
+ SubmenuView::~SubmenuView() {
++  multi_column_layout_cache_.reset();
+   // The menu may not have been closed yet (it will be hidden, but not
+   // necessarily closed).
+   Close();
+@@ -131,6 +195,7 @@ PrefixSelector* SubmenuView::GetPrefixSelector() {
+ }
+ 
+ void SubmenuView::UpdateMenuPartSizes() {
++  InvalidateMultiColumnLayout();
+   const MenuConfig& config = MenuConfig::instance();
+ 
+   const auto get_metrics = [&] {
+@@ -203,6 +268,9 @@ void SubmenuView::UpdateMenuPartSizes() {
+ }
+ 
+ void SubmenuView::ChildPreferredSizeChanged(View* child) {
++  // PreferredSizeChanged notifies the parent before invalidating the child.
++  // Clear before resize_open_menu can synchronously measure the menu again.
++  InvalidateMultiColumnLayout();
+   if (!resize_open_menu_) {
+     return;
+   }
+@@ -219,8 +287,19 @@ void SubmenuView::ChildPreferredSizeChanged(View* child) {
+   }
+ }
+ 
++void SubmenuView::ChildVisibilityChanged(View* child) {
++  View::ChildVisibilityChanged(child);
++  if (use_multiple_columns_) {
++    // There is no layout manager to invalidate layout on visibility changes.
++    InvalidateLayout();
++    // Resizing can synchronously close the menu, so do not access it afterward.
++    ChildPreferredSizeChanged(child);
++  }
++}
++
+ void SubmenuView::ViewHierarchyChanged(
+     const ViewHierarchyChangedDetails& details) {
++  InvalidateMultiColumnLayout();
+   if (!details.is_add && details.child == drop_item_) {
+     drop_item_ = nullptr;
+     drop_position_ = MenuDelegate::DropPosition::kNone;
+@@ -235,6 +314,24 @@ void SubmenuView::Layout(PassKey) {
+     return;
+   }
+ 
++  if (use_multiple_columns_ && !multi_column_available_size_.IsEmpty()) {
++    // Measure and place with the same constraints. In particular, never size
++    // the host for several columns and then lay its items out as one tall list.
++    const auto layout = multi_column_layout_cache_->Get(parent()->width());
++    multi_column_count_ = layout->column_count;
++    multi_column_scroll_step_ = layout->scroll_step;
++    SetBounds(
++        0,
++        std::clamp(y(), std::min(0, parent()->height() - layout->size.height()),
++                   0),
++        parent()->width(), layout->size.height());
++    for (size_t i = 0; i < children().size(); ++i) {
++      children()[i]->SetBoundsRect(layout->child_bounds[i]);
++    }
++    return;
++  }
++  multi_column_count_ = 1;
++
+   // Use our current y, unless it means part of the menu isn't visible anymore.
+   const int pref_height = GetPreferredSize(SizeBounds(size())).height();
+   SetBounds(x(),
+@@ -274,6 +371,15 @@ void SubmenuView::Layout(PassKey) {
+ 
+ gfx::Size SubmenuView::CalculatePreferredSize(
+     const SizeBounds& /*available_size*/) const {
++  if (use_multiple_columns_ && !multi_column_available_size_.IsEmpty()) {
++    return multi_column_layout_cache_->Get(multi_column_available_size_.width())
++        ->size;
++  }
++  return CalculateSingleColumnPreferredSize();
++}
++
++gfx::Size SubmenuView::CalculateSingleColumnPreferredSize(
++    bool include_height) const {
+   if (children().empty()) {
+     return gfx::Size();
+   }
+@@ -311,12 +417,15 @@ gfx::Size SubmenuView::CalculatePreferredSize(
+   }
+   // Pinned items aren't in `children()`, but their titles are painted using
+   // this submenu's minor text column, so include them to avoid eliding.
+-  for (const MenuItemView* item : GetMenuItems()) {
+-    if (item->IsPinned() && item->GetVisible()) {
+-      const auto& dimensions = item->GetDimensions();
+-      max_simple_width = std::max(max_simple_width, dimensions.standard_width);
+-      max_minor_text_width_ =
+-          std::max(max_minor_text_width_, dimensions.minor_text_width);
++  if (!use_multiple_columns_ || use_scroll_bar_) {
++    for (const MenuItemView* item : GetMenuItems()) {
++      if (item->IsPinned() && item->GetVisible()) {
++        const auto& dimensions = item->GetDimensions();
++        max_simple_width =
++            std::max(max_simple_width, dimensions.standard_width);
++        max_minor_text_width_ =
++            std::max(max_minor_text_width_, dimensions.minor_text_width);
++      }
+     }
+   }
+   const auto& config = MenuConfig::instance();
+@@ -336,6 +445,10 @@ gfx::Size SubmenuView::CalculatePreferredSize(
+     width = std::max(touchable_minimum_width, width);
+   }
+ 
++  if (!include_height) {
++    return gfx::Size(width, 0);
++  }
++
+   // Then, the height for that width.
+   const int menu_item_width = width - insets.width();
+   bool previous_child_was_lower_separator = false;
+@@ -364,6 +477,230 @@ gfx::Size SubmenuView::CalculatePreferredSize(
+   return gfx::Size(width, height + insets.height());
+ }
+ 
++void SubmenuView::SetUseMultipleColumns(bool use_multiple_columns) {
++  if (use_multiple_columns_ == use_multiple_columns) {
++    return;
++  }
++  use_multiple_columns_ = use_multiple_columns;
++  if (use_multiple_columns_) {
++    multi_column_layout_cache_ = std::make_unique<MultiColumnLayoutCache>(this);
++  } else {
++    multi_column_layout_cache_.reset();
++  }
++  multi_column_count_ = 1;
++  multi_column_available_size_ = gfx::Size();
++  PreferredSizeChanged();
++}
++
++void SubmenuView::SetMultiColumnLayoutBounds(const gfx::Size& available_size,
++                                             int max_column_width,
++                                             bool allow_multiple_columns) {
++  max_column_width = std::max(1, max_column_width);
++  if (multi_column_available_size_ == available_size &&
++      max_column_width_ == max_column_width &&
++      allow_multiple_columns_ == allow_multiple_columns) {
++    return;
++  }
++  multi_column_available_size_ = available_size;
++  max_column_width_ = max_column_width;
++  allow_multiple_columns_ = allow_multiple_columns;
++  InvalidateMultiColumnLayout();
++  // Do not call PreferredSizeChanged(): this is called by the controller while
++  // sizing a menu, and resize_open_menu could recursively enter that code.
++  InvalidateLayout();
++}
++
++SubmenuView::MultiColumnLayout SubmenuView::CalculateMultiColumnLayout(
++    int available_width) const {
++  MultiColumnLayout result;
++  result.child_bounds.resize(children().size());
++  const gfx::Insets insets = GetInsets();
++  const int content_width = std::max(1, available_width - insets.width());
++  // Row heights are measured below at the capped column width, so computing
++  // the full single-column height here would duplicate that work.
++  const int natural_width =
++      CalculateSingleColumnPreferredSize(/*include_height=*/false).width() -
++      insets.width();
++  const int column_width =
++      std::min(content_width,
++               std::min(max_column_width_,
++                        std::max(kMinimumMenuColumnWidth, natural_width)));
++  const int max_columns = allow_multiple_columns_
++                              ? std::max(1, (content_width + kMenuColumnGap) /
++                                                (column_width + kMenuColumnGap))
++                              : 1;
++
++  struct Row {
++    size_t child_index;
++    int height;
++    int padding;
++  };
++  std::vector<Row> rows;
++  rows.reserve(children().size());
++  int total_height = 0;
++  int tallest_row = 0;
++  bool has_scroll_step = false;
++  bool previous_lower_separator = false;
++  bool previous_item_separator = false;
++  for (size_t i = 0; i < children().size(); ++i) {
++    const View* child = children()[i];
++    if (!child->GetVisible()) {
++      continue;
++    }
++    const auto* separator = AsViewClass<MenuSeparator>(child);
++    const bool item_separator =
++        separator && separator->GetType() == ui::MENU_ITEM_SEPARATOR;
++    const int padding =
++        !rows.empty() && !previous_lower_separator &&
++                !previous_item_separator &&
++                (!separator || (separator->GetType() != ui::UPPER_SEPARATOR &&
++                                !item_separator))
++            ? MenuConfig::instance().between_item_vertical_padding
++            : 0;
++    const int height = std::max(0, child->GetHeightForWidth(column_width));
++    if (!has_scroll_step && height > 0 && IsViewClass<MenuItemView>(child)) {
++      // Reuse the row measurement so wheel events never have to scan items or
++      // create a temporary menu item to determine their scroll distance.
++      result.scroll_step = std::max(
++          1, base::ClampAdd(
++                 height, MenuConfig::instance().between_item_vertical_padding));
++      has_scroll_step = true;
++    }
++    rows.push_back({i, height, padding});
++    total_height = base::ClampAdd(total_height, padding, height);
++    tallest_row = std::max(tallest_row, height);
++    previous_lower_separator =
++        separator && separator->GetType() == ui::LOWER_SEPARATOR;
++    previous_item_separator = item_separator;
++  }
++  if (rows.empty()) {
++    result.size = gfx::Size(column_width + insets.width(), insets.height());
++    return result;
++  }
++
++  const auto columns_for_height = [&rows, max_columns](int height_limit) {
++    int columns = 1;
++    int height = 0;
++    bool first_row = true;
++    for (const auto& row : rows) {
++      const int padding = first_row ? 0 : row.padding;
++      if (!first_row &&
++          base::ClampAdd(height, padding, row.height) > height_limit) {
++        ++columns;
++        if (columns > max_columns) {
++          return columns;
++        }
++        height = row.height;
++      } else {
++        height = base::ClampAdd(height, padding, row.height);
++      }
++      first_row = false;
++    }
++    return columns;
++  };
++
++  // Fill each column down to the available height. If all columns still cannot
++  // hold the menu, find the smallest taller column height that can. This keeps
++  // overflow spread across all columns, instead of putting it in the last one.
++  int column_height =
++      std::max({1, tallest_row,
++                multi_column_available_size_.height() - insets.height()});
++  if (max_columns == 1) {
++    column_height = std::max(column_height, total_height);
++  } else if (columns_for_height(column_height) > max_columns) {
++    int high = total_height;
++    while (column_height < high) {
++      const int middle = column_height + (high - column_height) / 2;
++      if (columns_for_height(middle) > max_columns) {
++        column_height = middle + 1;
++      } else {
++        high = middle;
++      }
++    }
++  }
++
++  int column = 0;
++  int height = 0;
++  int max_height = 0;
++  bool first_row = true;
++  for (const auto& row : rows) {
++    int padding = first_row ? 0 : row.padding;
++    if (!first_row &&
++        base::ClampAdd(height, padding, row.height) > column_height) {
++      ++column;
++      height = 0;
++      padding = 0;
++    }
++    height = base::ClampAdd(height, padding);
++    result.child_bounds[row.child_index] =
++        gfx::Rect(insets.left() + column * (column_width + kMenuColumnGap),
++                  insets.top() + height, column_width, row.height);
++    height = base::ClampAdd(height, row.height);
++    max_height = std::max(max_height, height);
++    first_row = false;
++  }
++  result.column_count = column + 1;
++  result.size = gfx::Size(result.column_count * column_width +
++                              column * kMenuColumnGap + insets.width(),
++                          max_height + insets.height());
++  return result;
++}
++
++MenuItemView* SubmenuView::GetAdjacentColumnMenuItem(MenuItemView* item,
++                                                     bool forward) {
++  if (!use_multiple_columns_ || multi_column_count_ <= 1 ||
++      item->parent() != this) {
++    return nullptr;
++  }
++  MenuItemView* best = nullptr;
++  for (View* child : children()) {
++    auto* candidate = AsViewClass<MenuItemView>(child);
++    if (!candidate || IsViewClass<EmptyMenuMenuItem>(candidate) ||
++        !candidate->IsTraversableByKeyboard() ||
++        (forward ? candidate->x() <= item->x() : candidate->x() >= item->x())) {
++      continue;
++    }
++    const auto distance = [item](const MenuItemView* target) {
++      return std::pair(std::abs(target->x() - item->x()),
++                       std::abs(target->bounds().CenterPoint().y() -
++                                item->bounds().CenterPoint().y()));
++    };
++    if (!best || distance(candidate) < distance(best)) {
++      best = candidate;
++    }
++  }
++  return best;
++}
++
++MenuItemView* SubmenuView::GetMenuItemBeforeColumnSpace(
++    const gfx::Point& point) {
++  if (!use_multiple_columns_ || multi_column_count_ <= 1 ||
++      !GetLocalBounds().Contains(point)) {
++    return nullptr;
++  }
++  for (auto i = children().rbegin(); i != children().rend(); ++i) {
++    auto* item = AsViewClass<MenuItemView>(*i);
++    if (!item || IsViewClass<EmptyMenuMenuItem>(item) || !item->GetVisible()) {
++      continue;
++    }
++    const gfx::Rect bounds = item->GetMirroredBounds();
++    if (point.x() >= bounds.x() && point.x() < bounds.right()) {
++      return item->GetEnabled() && point.y() >= bounds.bottom() ? item
++                                                                : nullptr;
++    }
++  }
++  return nullptr;
++}
++
++void SubmenuView::InvalidateMultiColumnLayout() {
++  if (multi_column_layout_cache_) {
++    multi_column_layout_cache_->Invalidate();
++    if (auto* controller = parent_menu_item_->GetMenuController()) {
++      controller->valid_drop_coordinates_ = false;
++    }
++  }
++}
++
+ void SubmenuView::PaintChildren(const PaintInfo& paint_info) {
+   View::PaintChildren(paint_info);
+ 
+@@ -426,17 +763,59 @@ void SubmenuView::OnDragExited() {
+ views::View::DropCallback SubmenuView::GetDropCallback(
+     const ui::DropTargetEvent& event) {
+   DCHECK(parent_menu_item_->GetMenuController());
++  if (use_multiple_columns_) {
++    // Scrolling or relayout can move the target after the last drag update.
++    // DropHelper does not send another update before requesting the callback.
++    // Reuse the controller's coordinate cache when the target is unchanged.
++    const auto weak_this = weak_ptr_factory_.GetWeakPtr();
++    const auto controller = parent_menu_item_->GetMenuController()->AsWeakPtr();
++    if (!GetVisibleBounds().Contains(event.location())) {
++      controller->OnDragExited(this);
++      return base::DoNothing();
++    }
++    const int operation = controller->OnDragUpdated(this, event);
++    if (!weak_this || !controller || controller->destroy_pending_ ||
++        controller->exit_type() != MenuController::ExitType::kNone) {
++      return base::DoNothing();
++    }
++    if (operation == ui::DragDropTypes::DRAG_NONE ||
++        !controller->drop_target_tracker_.view()) {
++      controller->OnDragExited(this);
++      return base::DoNothing();
++    }
++  }
+   drop_item_ = nullptr;
+   return parent_menu_item_->GetMenuController()->GetDropCallback(this, event);
+ }
+ 
+ bool SubmenuView::OnMouseWheel(const ui::MouseWheelEvent& e) {
+   gfx::Rect vis_bounds = GetVisibleBounds();
+-  const auto menu_items = GetMenuItems();
+-  if (vis_bounds.height() == height() || menu_items.empty()) {
++  if (vis_bounds.height() == height()) {
+     // All menu items are visible, nothing to scroll.
+     return true;
+   }
++  if (use_multiple_columns_ && !multi_column_available_size_.IsEmpty()) {
++    // Column layout is not sorted by y. Even if only one column fits, hidden
++    // rows have empty bounds and break the single-column lower_bound below.
++    float scroll_delta = e.y_offset();
++    if (!(e.flags() & ui::EF_PRECISION_SCROLLING_DELTA)) {
++      const int steps = e.y_offset() / ui::MouseWheelEvent::kWheelDelta;
++      if (steps != 0) {
++        // Ordinary wheel notches scroll by rows in the single-column path.
++        // Keep that scale; a wheel delta is not a distance in DIPs. Precise
++        // scrolling and sub-notch deltas retain their pixel increments.
++        scroll_delta = static_cast<float>(steps) * multi_column_scroll_step_;
++      }
++    }
++    OnScroll(0, scroll_delta);
++    // Like the row-based path, consume the wheel even at a scroll boundary.
++    return true;
++  }
++
++  const auto menu_items = GetMenuItems();
++  if (menu_items.empty()) {
++    return true;
++  }
+   if (use_scroll_bar_) {
+     return OnScroll(0, e.y_offset());
+   }
+@@ -553,6 +932,12 @@ bool SubmenuView::IsShowing() const {
+ 
+ void SubmenuView::ShowAt(const MenuHost::InitParams& init_params) {
+   auto weak_this = weak_ptr_factory_.GetWeakPtr();
++  if (use_multiple_columns_) {
++    scroll_animator_->Stop();
++    roundoff_error_ = 0;
++    SetY(0);
++    InvalidateLayout();
++  }
+   if (host_) {
+     host_->SetMenuHostBounds(init_params.bounds);
+     host_->ShowMenuHost(init_params.do_capture);
+@@ -612,8 +997,19 @@ void SubmenuView::ShowAt(const MenuHost::InitParams& init_params) {
+ void SubmenuView::Reposition(const gfx::Rect& bounds,
+                              const ui::OwnedWindowAnchor& anchor) {
+   if (host_) {
++    auto weak_this = weak_ptr_factory_.GetWeakPtr();
++    if (use_multiple_columns_) {
++      scroll_animator_->Stop();
++      roundoff_error_ = 0;
++      // Preserve the scroll offset during live updates such as deleting a
++      // bookmark. Layout clamps it if the content or viewport size changes.
++      InvalidateLayout();
++    }
+     // Anchor must be updated first.
+     host_->SetMenuHostOwnedWindowAnchor(anchor);
++    if (!weak_this || !host_) {
++      return;
++    }
+     host_->SetMenuHostBounds(bounds);
+   }
+ }
+@@ -751,11 +1147,20 @@ MenuScrollViewContainer* SubmenuView::GetScrollViewContainer() {
+ }
+ 
+ MenuItemView* SubmenuView::GetLastItem() {
+-  const auto menu_items = GetMenuItems();
+-  return menu_items.empty() ? nullptr : menu_items.back();
++  return const_cast<MenuItemView*>(std::as_const(*this).GetLastItem());
+ }
+ 
+ const MenuItemView* SubmenuView::GetLastItem() const {
++  if (use_multiple_columns_ && !use_scroll_bar_) {
++    // Scroll-arrow refreshes only need the last item, not a copy of every row.
++    for (auto i = children().rbegin(); i != children().rend(); ++i) {
++      const auto* item = AsViewClass<MenuItemView>(*i);
++      if (item && !IsViewClass<EmptyMenuMenuItem>(item)) {
++        return item;
++      }
++    }
++    return nullptr;
++  }
+   const auto menu_items = GetMenuItems();
+   return menu_items.empty() ? nullptr : menu_items.back();
+ }
+@@ -784,6 +1189,14 @@ void SubmenuView::MenuHostDestroyed() {
+ }
+ 
+ void SubmenuView::OnBoundsChanged(const gfx::Rect& previous_bounds) {
++  if (use_multiple_columns_) {
++    // Scrolling changes hit targets even when the screen pointer is stationary.
++    // Keep the layout cache: moving the viewport does not change column
++    // packing.
++    if (auto* controller = parent_menu_item_->GetMenuController()) {
++      controller->valid_drop_coordinates_ = false;
++    }
++  }
+   SchedulePaint();
+ }
+ 
+@@ -805,7 +1218,8 @@ gfx::Rect SubmenuView::CalculateDropIndicatorBounds(
+     MenuItemView* item,
+     MenuDelegate::DropPosition position) {
+   DCHECK(position != MenuDelegate::DropPosition::kNone);
+-  gfx::Rect item_bounds = item->bounds();
++  gfx::Rect item_bounds =
++      use_multiple_columns_ ? item->GetMirroredBounds() : item->bounds();
+   switch (position) {
+     case MenuDelegate::DropPosition::kBefore:
+       item_bounds.Offset(0, -kDropIndicatorHeight / 2);
+@@ -849,7 +1263,7 @@ bool SubmenuView::OnScroll(float dx, float dy) {
+   //   new_vis_bounds = { x = 0, y = 499, w = 100, h = 500 }
+   // so pixels y=499 through y=998 of this view are drawn, and pixel y=999 is
+   // hidden - oops.
+-  y = std::clamp(y, 0, full_bounds.height() - vis_bounds.height());
++  y = std::clamp(y, 0, std::max(0, full_bounds.height() - vis_bounds.height()));
+ 
+   gfx::Rect new_vis_bounds(x, y, vis_bounds.width(), vis_bounds.height());
+   if (new_vis_bounds != vis_bounds) {
+diff --git a/ui/views/controls/menu/submenu_view.h b/ui/views/controls/menu/submenu_view.h
+index b6b5c7b3d3bc9..a0f178c551856 100644
+--- a/ui/views/controls/menu/submenu_view.h
++++ b/ui/views/controls/menu/submenu_view.h
+@@ -207,6 +207,27 @@ class VIEWS_EXPORT SubmenuView : public View,
+   }
+   bool use_scroll_bar() const { return use_scroll_bar_; }
+ 
++  // Opt-in for bookmark menus. Other menus retain their single-column layout.
++  void SetUseMultipleColumns(bool use_multiple_columns);
++  bool use_multiple_columns() const { return use_multiple_columns_; }
++
++  // Available size of this view (excluding the scroll container's border and
++  // pinned regions), in DIPs. The controller sets this before measuring the
++  // menu. Keep this height stable while scrolling; scroll buttons must not
++  // change which column an item belongs to. Disable additional columns when a
++  // child menu cannot fit beside its parent.
++  void SetMultiColumnLayoutBounds(const gfx::Size& available_size,
++                                  int max_column_width,
++                                  bool allow_multiple_columns = true);
++
++  // Finds the closest keyboard-selectable row in the next/previous logical
++  // column. View mirrors the logical column coordinates in RTL layouts.
++  MenuItemView* GetAdjacentColumnMenuItem(MenuItemView* item, bool forward);
++
++  // Allows dropping after the last item in a column's unused trailing area.
++  // `point` is in this view's (physical, possibly RTL) event coordinates.
++  MenuItemView* GetMenuItemBeforeColumnSpace(const gfx::Point& point);
++
+   void SetBorderColorId(std::optional<ui::ColorId> color_id);
+ 
+  protected:
+@@ -215,12 +236,26 @@ class VIEWS_EXPORT SubmenuView : public View,
+   void OnBoundsChanged(const gfx::Rect& previous_bounds) override;
+ 
+   void ChildPreferredSizeChanged(View* child) override;
++  void ChildVisibilityChanged(View* child) override;
+   void ViewHierarchyChanged(
+       const ViewHierarchyChangedDetails& details) override;
+ 
+  private:
+   friend class MenuControllerTest;
+ 
++  struct MultiColumnLayout {
++    gfx::Size size;
++    std::vector<gfx::Rect> child_bounds;
++    int column_count = 1;
++    int scroll_step = 1;
++  };
++
++  class MultiColumnLayoutCache;
++  gfx::Size CalculateSingleColumnPreferredSize(
++      bool include_height = true) const;
++  MultiColumnLayout CalculateMultiColumnLayout(int available_width) const;
++  void InvalidateMultiColumnLayout();
++
+   void SchedulePaintForDropIndicator(MenuItemView* item,
+                                      MenuDelegate::DropPosition position);
+ 
+@@ -298,6 +333,14 @@ class VIEWS_EXPORT SubmenuView : public View,
+ 
+   bool use_scroll_bar_ = false;
+ 
++  bool use_multiple_columns_ = false;
++  bool allow_multiple_columns_ = true;
++  gfx::Size multi_column_available_size_;
++  int max_column_width_ = 400;
++  int multi_column_count_ = 1;
++  int multi_column_scroll_step_ = 1;
++  std::unique_ptr<MultiColumnLayoutCache> multi_column_layout_cache_;
++
+   base::WeakPtrFactory<SubmenuView> weak_ptr_factory_{this};
+ };
+ 

@@ -122,6 +122,13 @@
      "Encrypted ClientHello",
      "Controls whether Thorium allows TLS Encrypted ClientHello. Enabled still requires server support and usable HTTPS/SVCB DNS records.",
      kOsAll, MULTI_VALUE_TYPE(kEncryptedClientHelloChoices)},
+    {"webrtc-ip-handling-policy",
+     "WebRTC IP Handling Policy",
+     "Controls which network interfaces WebRTC can use. Default follows your "
+     "current settings; Thorium uses the default public and private interfaces "
+     "unless overridden. Enterprise policies and extension settings take "
+     "precedence over this flag. Restart required.",
+     kOsAll, MULTI_VALUE_TYPE(kWebRtcIPHandlingPolicyChoices)},
 
 #if !BUILDFLAG(IS_ANDROID)
     {"show-component-extension-options",
@@ -285,6 +292,11 @@
      FEATURE_WITH_PARAMS_VALUE_TYPE(features::kOpenBookmarksInNewTab,
                                     kOpenBookmarksInNewTabVariations,
                                     "OpenBookmarksInNewTab")},
+    {"multi-column-bookmarks",
+     "Multi-column Bookmarks",
+     "Displays long bookmark folder menus in columns within the screen work area. "
+     "Menus scroll vertically when all available columns are full. Restart required.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kMultiColumnBookmarks)},
     {"open-omnibox-url-in-new-tab",
      "Open Omnibox URLs in New Tab",
      "Opens navigations from the address bar in a foreground or background new tab instead of the current tab.",
