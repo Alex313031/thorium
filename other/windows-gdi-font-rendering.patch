@@ -353,19 +353,21 @@ index a5041175f17b8..b63f448be68bb 100644
      }
  #endif
 diff --git a/content/renderer/renderer_main_platform_delegate_win.cc b/content/renderer/renderer_main_platform_delegate_win.cc
-index f5d81225df850..47a8032f93500 100644
+index f5d81225df850..c5378280c4e54 100644
 --- a/content/renderer/renderer_main_platform_delegate_win.cc
 +++ b/content/renderer/renderer_main_platform_delegate_win.cc
-@@ -55,6 +55,13 @@ void RendererMainPlatformDelegate::PlatformInitialize() {
+@@ -55,6 +55,15 @@ void RendererMainPlatformDelegate::PlatformInitialize() {
      // cached and there's no more need to access the registry. If the sandbox
      // is disabled, we don't have to make this dummy call.
      std::unique_ptr<icu::TimeZone> zone(icu::TimeZone::createDefault());
 +
-+    // Skia's GDI typefaces use usp10.dll, which is delay-loaded and can't be
-+    // loaded once the token is lowered.
++    // Skia's GDI typefaces use usp10.dll, and memory fonts call CoCreateGuid
++    // from ole32.dll to generate private family names. Both DLLs are
++    // delay-loaded and must be loaded before the token is lowered.
 +    if (command_line.HasSwitch(
 +            sandbox::policy::switches::kDisableDirectWrite)) {
 +      ::LoadLibraryW(L"usp10.dll");
++      ::LoadLibraryW(L"ole32.dll");
 +    }
    }
  
@@ -759,7 +761,7 @@ index 2083907573ff5..73a6b01fd16ec 100644
  
  #endif  // UI_GFX_FONT_UTIL_H_
 diff --git a/ui/gfx/platform_font_skia.cc b/ui/gfx/platform_font_skia.cc
-index 43f6329347514..120c385f46d53 100644
+index 43f6329347514..3e68f2ad47350 100644
 --- a/ui/gfx/platform_font_skia.cc
 +++ b/ui/gfx/platform_font_skia.cc
 @@ -16,6 +16,7 @@
@@ -806,8 +808,8 @@ index 43f6329347514..120c385f46d53 100644
    return typeface;
  }
  
-+// Skia's GDI glyph images ignore subpixel offsets, so UI text drawn through GDI
-+// (--disable-direct-write) is laid out on whole pixels, as GDI programs do.
++// GDI glyph masks use integer device positions. RenderText keeps fractional
++// layout advances separately so device scaling does not round widths twice.
 +FontRenderParams AdjustRenderParamsForUIFontMgr(FontRenderParams params) {
 +#if BUILDFLAG(IS_WIN)
 +  if (win::GetGdiUIFontMgr()) {
@@ -839,8 +841,54 @@ index 43f6329347514..120c385f46d53 100644
  }
  
  void PlatformFontSkia::InitFromPlatformFont(const PlatformFontSkia* other) {
+@@ -450,6 +466,13 @@ void PlatformFontSkia::ComputeMetricsIfNecessary() {
+       font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
+     }
+ 
++#if BUILDFLAG(IS_WIN)
++    if (win::GetGdiUIFontMgr()) {
++      // Match the advances used by HarfBuzz when estimating UI text widths.
++      font.setLinearMetrics(true);
++    }
++#endif
++
+     font.setEmbolden(weight_ >= Font::Weight::BOLD && !typeface_->isBold());
+     font.setSkewX((Font::ITALIC & style_) && !typeface_->isItalic()
+                       ? -SK_Scalar1 / 4
+diff --git a/ui/gfx/render_text.cc b/ui/gfx/render_text.cc
+index fcbc710b74f28..6a9868ad103fa 100644
+--- a/ui/gfx/render_text.cc
++++ b/ui/gfx/render_text.cc
+@@ -47,6 +47,11 @@
+ #include "ui/gfx/text_utils.h"
+ #include "ui/gfx/utf16_indexing.h"
+ 
++#if BUILDFLAG(IS_WIN)
++#include "third_party/skia/include/core/SkFontMgr.h"
++#include "ui/gfx/win/direct_write.h"
++#endif
++
+ namespace gfx {
+ 
+ namespace {
+@@ -507,6 +512,15 @@ void ApplyRenderParams(const FontRenderParams& params,
+   font->setSubpixel(params.subpixel_positioning);
+   font->setForceAutoHinting(params.autohinter);
+   font->setHinting(FontRenderParamsHintingToSkFontHinting(params.hinting));
++
++#if BUILDFLAG(IS_WIN)
++  if (win::GetGdiUIFontMgr()) {
++    // Keep advances scalable across device scale factors while GDI glyph masks
++    // remain aligned to whole device pixels.
++    font->setLinearMetrics(true);
++    font->setSubpixel(false);
++  }
++#endif
+ }
+ 
+ }  // namespace internal
 diff --git a/ui/gfx/render_text_harfbuzz.cc b/ui/gfx/render_text_harfbuzz.cc
-index 8a6d4e8209dbe..25727254bc569 100644
+index 8a6d4e8209dbe..ba402aa6f45fc 100644
 --- a/ui/gfx/render_text_harfbuzz.cc
 +++ b/ui/gfx/render_text_harfbuzz.cc
 @@ -41,6 +41,7 @@
@@ -859,7 +907,18 @@ index 8a6d4e8209dbe..25727254bc569 100644
  #include "ui/gfx/harfbuzz_font_skia.h"
  #include "ui/gfx/platform_font.h"
  #include "ui/gfx/range/range_f.h"
-@@ -982,7 +984,8 @@ sk_sp<SkTypeface> CreateSkiaTypeface(const Font& font,
+@@ -67,6 +69,10 @@
+ #include "base/i18n/android_locale.h"
+ #endif  // BUILDFLAG(IS_ANDROID)
+ 
++#if BUILDFLAG(IS_WIN)
++#include "ui/gfx/win/direct_write.h"
++#endif
++
+ #include <hb.h>
+ 
+ namespace gfx {
+@@ -982,7 +988,8 @@ sk_sp<SkTypeface> CreateSkiaTypeface(const Font& font,
    SkFontStyle skia_style(
        static_cast<int>(weight), SkFontStyle::kNormal_Width,
        italic ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant);
@@ -868,6 +927,40 @@ index 8a6d4e8209dbe..25727254bc569 100644
 +                                            skia_style);
  #endif
  }
+ 
+@@ -1494,6 +1501,15 @@ void ShapeRunWithFont(const ShapeRunWithFontInput& in,
+   out->positions.resize(out->glyph_count);
+   out->width = 0.0f;
+ 
++  bool round_advances = !in.render_params.subpixel_positioning;
++#if BUILDFLAG(IS_WIN)
++  if (win::GetGdiUIFontMgr()) {
++    // GDI masks snap to device pixels during rasterization. Rounding here
++    // would quantize linear advances and kerning in logical pixels first.
++    round_advances = false;
++  }
++#endif
++
+   // Font on MAC like ".SF NS Text" may have a negative x_offset. Positive
+   // x_offset are also found on Windows (e.g. "Segoe UI"). It requires tests
+   // relying on the behavior of |glyph_width_for_test_| to also be given a zero
+@@ -1531,14 +1547,10 @@ void ShapeRunWithFont(const ShapeRunWithFontInput& in,
+     if (in.obscured)
+       out->width += in.obscured_glyph_spacing;
+ 
+-    // When subpixel positioning is not enabled, glyph width is rounded to avoid
+-    // fractional width. Disable this conversion when a glyph width is provided
+-    // for testing. Using an integral glyph width has the same behavior as
+-    // disabling the subpixel positioning.
++    // Round advances for integer layout, except when an explicit glyph width
++    // is supplied for testing.
+     const bool force_subpixel_for_test = in.glyph_width_for_test != 0;
+-
+-    // Round run widths if subpixel positioning is off to match native behavior.
+-    if (!in.render_params.subpixel_positioning && !force_subpixel_for_test)
++    if (round_advances && !force_subpixel_for_test)
+       out->width = std::round(out->width);
+   }
  
 diff --git a/ui/gfx/switches.cc b/ui/gfx/switches.cc
 index d5b75df72307a..39a024b34b26a 100644
