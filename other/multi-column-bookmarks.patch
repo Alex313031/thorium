@@ -498,7 +498,7 @@ index d1513df4894c0..34be1d1a39e25 100644
  
    void DidScrollToTop();
 diff --git a/ui/views/controls/menu/submenu_view.cc b/ui/views/controls/menu/submenu_view.cc
-index cb3a68f348b4c..da36a6ce3f5b0 100644
+index cb3a68f348b4c..111626ff9ed68 100644
 --- a/ui/views/controls/menu/submenu_view.cc
 +++ b/ui/views/controls/menu/submenu_view.cc
 @@ -5,6 +5,8 @@
@@ -819,7 +819,7 @@ index cb3a68f348b4c..da36a6ce3f5b0 100644
 +    if (!has_scroll_step && height > 0 && IsViewClass<MenuItemView>(child)) {
 +      // Reuse the row measurement so wheel events never have to scan items or
 +      // create a temporary menu item to determine their scroll distance.
-+      result.scroll_step = std::max(
++      result.scroll_step = std::max<int>(
 +          1, base::ClampAdd(
 +                 height, MenuConfig::instance().between_item_vertical_padding));
 +      has_scroll_step = true;

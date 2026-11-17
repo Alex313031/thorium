@@ -112,7 +112,7 @@ overlay-derived, or still need separate provenance review.
 - [`thorium-app-metadata-branding.patch`](../other/thorium-app-metadata-branding.patch)
 - [`thorium-theme-resources.patch`](../other/thorium-theme-resources.patch) — Registers all eight Thorium WebUI images in M154’s theme resource map, retaining Android’s direct resource-ID access to the version-page mascot.
 - [`thorium-app-vector-icons.patch`](../other/thorium-app-vector-icons.patch)
-- [`preinstall-ublock-origin.patch`](../other/preinstall-ublock-origin.patch) — Downloads and verifies the upstream uBlock Origin 1.75.0 GitHub CRX at build time, then bundles it for offline installation in new profiles without Chrome Web Store access. The bundled CRX retains upstream’s extension update URL.
+- [`preinstall-ublock-origin.patch`](../other/preinstall-ublock-origin.patch) — Bundles verified uBlock Origin 1.75.0 for offline installation in new profiles, retaining upstream's update URL.
 - [`bookmark-default-prefs.patch`](../other/bookmark-default-prefs.patch)
 - [`bookmark-dialog-default-folder.patch`](../other/bookmark-dialog-default-folder.patch)
 - [`increase-bookmark-open-prompt-threshold.patch`](../other/increase-bookmark-open-prompt-threshold.patch)
@@ -150,8 +150,8 @@ overlay-derived, or still need separate provenance review.
 - [`disable-default-browser-prompt.patch`](../other/disable-default-browser-prompt.patch)
 - [`thorium-chrome-urls-page.patch`](../other/thorium-chrome-urls-page.patch)
 - [`thorium-flags-registration.patch`](../other/thorium-flags-registration.patch)
-- [`thorium-internal-url-scheme-alias.patch`](../other/thorium-internal-url-scheme-alias.patch) — Accepts `thorium://` as a standard user-facing alias and canonicalizes it through a BrowserURLHandler pre-rewrite before Chromium's normal platform, policy, extension, and WebUI handlers run, without granting the alias WebUI, CORS, service-worker, or secure-scheme privileges.
-- [`thorium-internal-url-scheme-branding.patch`](../other/thorium-internal-url-scheme-branding.patch) — Provides default-enabled, flag-controlled `thorium://` presentation in desktop and Android address, suggestion, copy, and hover-card surfaces, plus desktop status and Tab Search surfaces, while retaining canonical internal URLs.
+- [`thorium-internal-url-scheme-alias.patch`](../other/thorium-internal-url-scheme-alias.patch) — Resolves `thorium://` to canonical internal URLs before Chromium's normal handlers, without granting the alias additional scheme privileges.
+- [`thorium-internal-url-scheme-branding.patch`](../other/thorium-internal-url-scheme-branding.patch) — Displays `thorium://` in desktop and Android UI while retaining canonical internal URLs. Enabled by default and controlled by a flag.
 - [`thorium-flags-page-branding.patch`](../other/thorium-flags-page-branding.patch)
 - [`thorium-version-page-branding.patch`](../other/thorium-version-page-branding.patch)
 - [`thorium-vector-icons.patch`](../other/thorium-vector-icons.patch)
@@ -174,10 +174,9 @@ overlay-derived, or still need separate provenance review.
   the [`signin_spin.json` resource overlay](../src/components/browser_ui/styles/android/java/res_chromium/raw/signin_spin.json).
 - [`disable-middle-click-paste-with-autoscroll.patch`](../other/disable-middle-click-paste-with-autoscroll.patch) - Disables Linux middle-click selection paste and paste-and-navigate paths when Blink MiddleClickAutoscroll is enabled.
 - [`views-menu-delay.patch`](../other/views-menu-delay.patch) - Adds `chrome://flags/#instant-menu-show` (disabled by default).
-  Enabled preserves Thorium's legacy 1 ms submenu delay and, on Windows, its fixed 400 ms bookmark drag-and-drop hover delay.
-  Default/Disabled preserves Chromium's 400 ms submenu delay, with Windows using the system setting for both submenu and bookmark drag-and-drop hover delays.
-  Non-Windows bookmark drag-and-drop timing is unchanged. The submenu override runs after platform initialization and is independent of the Thorium 2024 UI flag. Restart the browser after changing the flag.
-  See [issue #1303](https://github.com/Alex313031/thorium/issues/1303).
+  Sets submenu delay to 1 ms; on Windows also fixes bookmark drag-hover at 400 ms.
+  Default uses Chromium/platform timing. Independent of Th24; restart required.
+  See [#1303](https://github.com/Alex313031/thorium/issues/1303).
 - [`new-tab-to-left-context-menu.patch`](../other/new-tab-to-left-context-menu.patch)
 - [`status-bubble-instant-expand.patch`](../other/status-bubble-instant-expand.patch)
 - [`enable-sharing-hub-page-action.patch`](../other/enable-sharing-hub-page-action.patch) - Makes the Sharing Hub address-bar action visible by default in eligible normal windows using Chromium's current Page Action framework, while preserving policy, profile, window-mode, platform-icon, metrics, and bubble-anchor behavior.
@@ -193,7 +192,7 @@ overlay-derived, or still need separate provenance review.
 - [`thorium-chrome-labs-experiments.patch`](../other/thorium-chrome-labs-experiments.patch)
 - [`add-flag-for-system-linux-theme.patch`](../other/add-flag-for-system-linux-theme.patch)
 - [`restore_download_shelf.patch`](../other/restore_download_shelf.patch) — Restores the desktop download shelf; ChromeOS retains system download notifications and does not instantiate the shelf.
-- [`downloads-page-enhancements.patch`](../other/downloads-page-enhancements.patch) — Shows full download URLs by default. On desktop, set `thorium://flags/#downloads-show-full-url` to **Disabled** and relaunch to hide the full URL while retaining Chromium's source information and copy-link action. Keeps Thorium's action-button spacing and always-visible more-actions menu. Addresses [#1309](https://github.com/Alex313031/thorium/issues/1309).
+- [`downloads-page-enhancements.patch`](../other/downloads-page-enhancements.patch) — Shows full download URLs by default, controlled by `#downloads-show-full-url` on desktop. Retains Thorium's button layout and visible more-actions menu. Addresses [#1309](https://github.com/Alex313031/thorium/issues/1309).
 
 ### 60 - Installer, shell integration, and context-menu behavior.
 
@@ -211,55 +210,9 @@ overlay-derived, or still need separate provenance review.
 - [`add-flag-for-open-bookmarks-in-new-tab.patch`](../other/add-flag-for-open-bookmarks-in-new-tab.patch)
 - [`multi-column-bookmarks.patch`](../other/multi-column-bookmarks.patch) - Adds
   `chrome://flags/#multi-column-bookmarks` (default off; restart required) for
-  Views bookmark folder menus, including the bookmark bar overflow and folders
-  in the application menu. Native macOS system menus are outside this patch.
-  Items fill columns from top to bottom using the actual item heights and menu
-  padding. Column widths are capped at 400 DIPs; the available display work area
-  limits the number of columns. When all columns are full, their content heights
-  grow together and the existing vertical scroll controls remain available.
-  Measurement and layout share one calculation, including when menu items are
-  added, removed, hidden, or relaid out at a different width. Child menus open
-  next to the originating column so the pointer can reach them without crossing
-  unrelated bookmarks. They can cover adjacent parent columns; if there is no
-  usable side space they fall back to an overlapping single column. Left/right
-  keys move between columns (mirrored in RTL); opening or closing an already-open
-  folder takes precedence. Up/down, Home/End, prefix search, activation, and
-  context menus keep their existing behavior. Up/down and first/last-item
-  navigation reuse a single item list per traversal instead of rebuilding it for
-  every skipped item, avoiding quadratic work across hidden or disabled entries.
-  Drag indicators use each column's bounds, and empty space below a
-  short column accepts drops after that column's last bookmark.
-  Column sizing feeds Chromium's existing rectangular/bubble positioning, so
-  anchor alignment, RTL positioning, and shadow insets retain their native
-  behavior. Drag targets are recalculated after scrolling or relayout, even when
-  the pointer stays at the same screen position; unchanged drag events reuse the
-  result, while modifier-key changes still update copy/move feedback.
-  Drop submission revalidates the current target, including when no further drag
-  update arrived after reflow. Drops outside the visible content and invalid or
-  deleted targets are rejected safely.
-  Scroll arrows and end-of-content checks use the actual laid-out height, so a
-  narrower popup that reflows into fewer columns keeps its overflow reachable.
-  The post-layout arrow state is not overwritten by the earlier preferred size.
-  Live updates preserve the scroll offset instead of jumping to the top after
-  deleting a bookmark; layout clamps the offset if the content becomes shorter.
-  Reopening the menu still starts at the top.
-  Opted-in menus cache at most two layout snapshots, invalidated when content or
-  layout constraints change. Repeated sizing reuses those snapshots; measuring
-  skips the unused single-column height pass, and wheel/column navigation and
-  scroll-arrow refreshes avoid constructing temporary lists of every menu item.
-  Column layout uses pixel scrolling even when only one column fits, so hidden
-  rows with empty bounds cannot break the single-column row search. Whole wheel
-  notches use a measured row-sized step instead of treating wheel units as DIPs;
-  precise scrolling and sub-notch deltas keep their pixel increments. The step
-  is recorded during layout, with no item scans or size queries on wheel events.
-  Wheel events remain handled at the scroll limits. Scrolling over a folder does
-  not open its submenu over adjacent columns or build its contents; scrolling
-  over a column gap closes deeper submenus and keeps the menu under the pointer
-  open. Loaded favicons update their existing image view; unchanged icon
-  dimensions preserve the layout cache instead of triggering a full reflow for
-  each arriving icon.
-  Specialized scrollbar/pinned-region menus and platforms which delegate menu
-  bounds entirely to the window manager retain their existing single-column
+  Views bookmark menus. Columns fit the display work area, with vertical
+  scrolling, keyboard navigation, drag-and-drop and live updates. Native macOS
+  menus and specialized or window-manager-positioned menus keep their existing
   layout.
 - [`add-flag-for-open-omnibox-url-in-new-tab.patch`](../other/add-flag-for-open-omnibox-url-in-new-tab.patch)
 - [`disable-qr-code-generator.patch`](../other/disable-qr-code-generator.patch) — Adds a user-facing flag that disables QR-code sharing entry points while preserving Chromium's enterprise policy as an independent upper bound.
@@ -271,7 +224,7 @@ overlay-derived, or still need separate provenance review.
 - [`add-flag-for-tab-hover-cards.patch`](../other/add-flag-for-tab-hover-cards.patch)
 - [`force-disable-tab-outlines.patch`](../other/force-disable-tab-outlines.patch)
 - [`quiet-notification-defaults.patch`](../other/quiet-notification-defaults.patch)
-- [`secure-doh-without-system-dns-config.patch`](../other/secure-doh-without-system-dns-config.patch) — M154 already supports DoH overrides without a system DNS configuration. Retains the `#disable-thorium-dns-config` escape hatch for explicitly configured Secure DoH in that case; system DNS merges, complete overrides, and Automatic/Off modes retain upstream behavior.
+- [`secure-doh-without-system-dns-config.patch`](../other/secure-doh-without-system-dns-config.patch) — Keeps explicitly configured Secure DoH available without system DNS configuration, with a `#disable-thorium-dns-config` opt-out. Other DNS modes and configuration merging retain upstream behavior.
 - [`keep-doh-enabled-on-managed-devices.patch`](../other/keep-doh-enabled-on-managed-devices.patch) — Prevents device-management and parental-control detection from implicitly disabling DoH; an explicit managed `DnsOverHttpsMode` policy remains authoritative.
 - [`add-flag-for-encrypted-client-hello.patch`](../other/add-flag-for-encrypted-client-hello.patch)
 - [`reduce-doh-request-headers.patch`](../other/reduce-doh-request-headers.patch)
@@ -291,7 +244,7 @@ overlay-derived, or still need separate provenance review.
 - [`thoriumos-sample-system-web-app.patch`](../other/thoriumos-sample-system-web-app.patch) — Enables the sample system web app in official builds using M154’s `is_chromeos` guard, preserving trusted/untrusted TypeScript resource mappings.
 - [`thoriumos-disable-stats-reporting.patch`](../other/thoriumos-disable-stats-reporting.patch)
 - [`add-flag-for-auto-dark-mode.patch`](../other/add-flag-for-auto-dark-mode.patch)
-- [`disable-thorium-icons.patch`](../other/disable-thorium-icons.patch) — Selects separate Thorium vector icons, shared WebUI SVGs and common folder PNGs; `--disable-thorium-icons` preserves upstream rounded and legacy resources, including WebUI icon mappings. The Incognito new-tab page selects its central icon and favicon at runtime, restoring Chromium's original SVGs when the flag is enabled ([#1307](https://github.com/Alex313031/thorium/issues/1307)).
+- [`disable-thorium-icons.patch`](../other/disable-thorium-icons.patch) — Uses Thorium icons by default; `--disable-thorium-icons` restores Chromium icons across native UI, WebUI and the Incognito new-tab page ([#1307](https://github.com/Alex313031/thorium/issues/1307)).
 - [`always-enable-reload-menu.patch`](../other/always-enable-reload-menu.patch)
 
 ### 80 - Extensions, privacy, install branding, and late platform overlays.
@@ -301,7 +254,7 @@ overlay-derived, or still need separate provenance review.
 - [`show-hosted-apps-in-extensions.patch`](../other/show-hosted-apps-in-extensions.patch)
 - [`thorium_webui.patch`](../other/thorium_webui.patch)
 - [`keep-expired-flags.patch`](../other/keep-expired-flags.patch)
-- [`disable-privacy-sandbox.patch`](../other/disable-privacy-sandbox.patch) — Defaults iframe URNs and the M1 advertising API override to disabled; the other advertising override is already disabled upstream. Removes production attestation preload packaging and component-update registration, and disables Android APK fallback loading by default. Preserves upstream Fenced Frames compatibility behavior, attestation enforcement, RWS, CHIPS, FedCM, Storage Access API and account capabilities. Feature overrides can re-enable these defaults; existing user data is not deleted.
+- [`disable-privacy-sandbox.patch`](../other/disable-privacy-sandbox.patch) — Disables iframe URNs and the M1 advertising API override, removes attestation preload/update support and defaults Android APK fallback loading to off. Preserves attestation enforcement and upstream Fenced Frames, RWS, CHIPS, FedCM and Storage Access compatibility. Feature overrides remain available; existing user data is retained.
 - [`disable-encryption.patch`](../other/disable-encryption.patch)
 - [`disable-feature-promos.patch`](../other/disable-feature-promos.patch)
 - [`thorium-install-static-branding.patch`](../other/thorium-install-static-branding.patch)
@@ -309,21 +262,22 @@ overlay-derived, or still need separate provenance review.
 - [`windows-profile-shortcut-icon-version.patch`](../other/windows-profile-shortcut-icon-version.patch)
 - [`disable-aero.patch`](../other/disable-aero.patch)
 - [`android-disable-signin-without-account-manager.patch`](../other/android-disable-signin-without-account-manager.patch)
-- [`android-extensions-support.patch`](../other/android-extensions-support.patch) — Adapts Android extension support to M158 using the existing `_THORIUM` and `_FALSE` selectors. Migrates new GN and C++ consumers directly, including AI overlay dependencies, extension font preferences and WebHID feature guards, without restoring the upstream selector definitions removed by this patch. Keeps WebUI bookmarks and the WebUI tab-strip new-tab button disabled by default on Android, and excludes the desktop Instant API path, consistent with the existing mobile UI policy. Retains the extension toggle and depends on the following `enable-extension-in-incognito.patch` for shared toolbar bridges.
-- [`enable-extension-in-incognito.patch`](../other/enable-extension-in-incognito.patch) — Adapts Cromite's Android incognito extension support to M156, including its [fold/unfold guards](https://github.com/uazo/cromite/commit/010ed3a42e57f049f9b1a3525edb5d44c5e48353), [menu and lifecycle fixes](https://github.com/uazo/cromite/commit/69c411bff972cd6cd6a807c144dbfbc84698e3d5), and [toolbar recreation](https://github.com/uazo/cromite/commit/297bf3438d35a6bd3a024a29b3a82913da718fab). Uses M156's TabModel-scoped feature teardown and reverse destruction order; preserves extension background hosts used by another incognito window. Keeps UI delegates scoped to their task, safely reuses the toolbar container, handles unavailable or destroying WebContents (including request-dismissal broadcasts), and initializes empty menu states. Retains the twelve native-pointer/Profile/shutdown guards from [Thorium PR #1](https://github.com/gz83/thorium/pull/1), nullable-result handling, and ungoogled-chromium-android's [menu fallback](https://github.com/ungoogled-software/ungoogled-chromium-android/blob/9dd576cd7536589f58ee96965599bc8e9af10809/patches/Extensions/misc/extensions-menu-null-guard.patch). Preserves M156's regular-tab extension-management route, options-page navigation, discovery entry, and toolbar width/visibility rules. Excludes Cromite's always-incognito CCT routing, its Profile override and callback chain, forced current-tab options navigation, and discovery/toolbar policy overrides. The following opt-in patch uses the existing regular TabCreator for its management-page fallback.
+- [`android-extensions-support.patch`](../other/android-extensions-support.patch) — Adapts experimental Android extensions to M158, retaining the extension toggle and mobile UI defaults. Depends on `enable-extension-in-incognito.patch` for shared toolbar bridges.
+- [`enable-extension-in-incognito.patch`](../other/enable-extension-in-incognito.patch) — Adds Cromite-derived Android incognito extension support while preserving regular-tab management and navigation.
+  Includes Cromite's [fold/unfold guards](https://github.com/uazo/cromite/commit/010ed3a42e57f049f9b1a3525edb5d44c5e48353), [lifecycle fixes](https://github.com/uazo/cromite/commit/69c411bff972cd6cd6a807c144dbfbc84698e3d5) and [toolbar recreation](https://github.com/uazo/cromite/commit/297bf3438d35a6bd3a024a29b3a82913da718fab), plus [Thorium shutdown guards](https://github.com/gz83/thorium/pull/1) and an [Android menu fallback](https://github.com/ungoogled-software/ungoogled-chromium-android/blob/9dd576cd7536589f58ee96965599bc8e9af10809/patches/Extensions/misc/extensions-menu-null-guard.patch). Preserves background hosts shared by incognito windows; excludes Cromite's always-incognito routing and policy overrides.
 - [`add-quick-extension-toggle-menu.patch`](../other/add-quick-extension-toggle-menu.patch) - Adds a default-off, `chrome://flags`-controlled quick enable/disable section to the extensions menu. Keeps the menu open when disabling the last extension so it can be re-enabled.
-- [`fix-extensions-menu-scrollbar.patch`](../other/fix-extensions-menu-scrollbar.patch) - Uses a shared scroll view for both extensions menu implementations. On Windows, reuses Views overlay scrollbars when the OS allows auto-hiding, removing the persistent native track. Insets the legacy menu's overlay track at both ends by its corner radius so the bubble's client clipping does not cut the thumb; content bounds are unchanged. Keeps native scrollbars for always-show, forced-color and high-contrast settings, and reacts to OS/theme changes while the menu is open. Follows the Windows accessibility preference independently of the web-content OverlayScrollbar flag. Other platforms retain their existing scrollbar implementation.
+- [`fix-extensions-menu-scrollbar.patch`](../other/fix-extensions-menu-scrollbar.patch) - Uses Windows overlay scrollbars in both extensions menus when OS settings allow auto-hiding, with correct rounded-corner clipping. Follows accessibility and theme changes; other platforms retain their existing scrollbars.
 
-- [`enable-android-devtools-frontend.patch`](../other/enable-android-devtools-frontend.patch) — Ports [Cromite’s Android DevTools frontend patch](https://github.com/uazo/cromite/blob/master/build/patches/Enable-Android-DevTools-Frontend.patch). Enables DevTools and Task Manager on phones, adds More tools to the mobile menu, and allows touch submenus. Uses native feature defaults and follows the Android extension patches.
-- [`android-extensions-opt-in-ui.patch`](../other/android-extensions-opt-in-ui.patch) — Keeps Android extensions opt-in. Exposes the existing feature state to Java and the extensions WebUI, shows localized enabling instructions and a disabled load button when off, and directs menu and toolbar entry points to that page. An outer `extensions-app` component creates either the disabled-state UI or the normal manager, preserving the manager's unconditional template and cached `$` element access. Follows the Android extension and Incognito bridge patches.
-- [`developer-crx-installation.patch`](../other/developer-crx-installation.patch) — M156 fix for [#1281](https://github.com/Alex313031/thorium/issues/1281). Adds an explicit, default-off download installation option that also requires extension developer mode, without classifying third-party downloads as trusted. Handles generic MIME types, displayed filenames for document URIs, and reopening saved CRX downloads. Keeps Web Store proof enforcement, CRX signature verification, permission prompts, and extension policy checks. Adds a CRX file picker to the extensions page, propagates CRX installation errors, reads Android directory-drop data at drop time, and uses a stable temporary archive name for document URIs. Follows the Android opt-in UI patch; page selection is owned by its outer component.
+- [`enable-android-devtools-frontend.patch`](../other/enable-android-devtools-frontend.patch) — Ports [Cromite's Android DevTools frontend](https://github.com/uazo/cromite/blob/master/build/patches/Enable-Android-DevTools-Frontend.patch), adding DevTools, Task Manager, More tools and touch submenus on phones. Follows the Android extension patches.
+- [`android-extensions-opt-in-ui.patch`](../other/android-extensions-opt-in-ui.patch) — Keeps Android extensions opt-in, showing localized enabling instructions and a disabled load button until enabled. Routes menu and toolbar entry points to that page; follows the extension and Incognito bridge patches.
+- [`developer-crx-installation.patch`](../other/developer-crx-installation.patch) — Adds opt-in CRX download installation requiring extension developer mode, plus a file picker and Android document-URI support. Preserves Web Store proof, signatures, permission prompts and policy checks. Follows the Android opt-in UI patch; addresses [#1281](https://github.com/Alex313031/thorium/issues/1281).
 
 ### 90 - Windows GDI text rendering and native font fallbacks (default off).
 
-- [`windows-gdi-font-rendering-skia.patch`](../other/windows-gdi-font-rendering-skia.patch) (apply root: `third_party/skia`) — Skia portion of bart-oski's GDI patch, ported to Chromium `158.0.8127.41`. Retains font metrics, variable-font instancing, TTC stream indices and PDF subsetting behavior. Adds selected-face TTC extraction without glyph subsetting and rejects invalid or unresolved collection indices. Native variable-font fallbacks use the exact requested coordinates without entering the quantized GDI cache; a failed instance does not disable the font's other variations. Fallback stays at font selection/loading and variable-font instancing; GDI glyph drawing uses the existing Skia failure handling without a secondary Fontations scaler, extra outline bounds or a retained SFNT copy. Font data reads require an exact byte count; scaler initialization and high-resolution metrics keep their validity checks.
-- [`windows-gdi-font-rendering.patch`](../other/windows-gdi-font-rendering.patch) — Chromium portion, applied after the existing Thorium series. Adds default-off `chrome://flags/#force-gdi` / `--disable-direct-write` for Windows page and browser UI text. Preserves M158 sandbox extensions and excludes PDF renderers. Uses DirectWrite/Fontations for fonts GDI cannot render, shares format-aware data loading with CSS `local()`, preserves collection/variation/palette arguments, isolates cached faces by requested family, and keeps the exact character-fallback face in Blink. UI shaping and width estimation use linear advances without per-glyph rounding in logical pixels; GDI glyph masks remain aligned to device pixels. Contains no added test cases, test-only APIs or test-resource declarations. Checked through source review, patch-application checks and read-only GDI metric queries; no browser build or test-suite execution was performed.
+- [`windows-gdi-font-rendering-skia.patch`](../other/windows-gdi-font-rendering-skia.patch) (apply root: `third_party/skia`) — Ports bart-oski's Skia GDI support to Chromium `158.0.8127.41`, preserving font metrics, variable fonts, TTC face selection and PDF subsetting. Validates font data and retains native fallbacks for unsupported fonts.
+- [`windows-gdi-font-rendering.patch`](../other/windows-gdi-font-rendering.patch) — Adds default-off `chrome://flags/#force-gdi` / `--disable-direct-write` for Windows page and browser UI text, excluding PDF renderers. Retains native font fallbacks and corrects UI spacing across display scales.
 
-Both patches derive from [bart-oski's pinned Chromium 157 patch](https://gist.githubusercontent.com/bart-oski/8ada98da488e2fdd64e9e7b79764668c/raw/74f698750e50c3c9585a87e70192d77e3f8346aa/barts-gdi-chrome-157.0.8103.15.patch); its source copyright/license notices are retained. The implementation is GDI-preferred, not a guarantee that every glyph uses MacType. MacType must load successfully into the drawing process. Enabling the flag removes win32k lockdown and the non-system-font restriction for non-PDF GDI renderers, relaxes their startup DLL signing restriction, and disables browser dynamic-code blocking unless managed policy requires it. Delayed mitigations and token lowering remain. Unsupported fonts retain native rendering to preserve coverage; fonts absent from the system or supplied web resources can still lack glyphs.
+Both patches derive from [bart-oski's pinned Chromium 157 patch](https://gist.githubusercontent.com/bart-oski/8ada98da488e2fdd64e9e7b79764668c/raw/74f698750e50c3c9585a87e70192d77e3f8346aa/barts-gdi-chrome-157.0.8103.15.patch), retaining its license notices. MacType must load into the drawing process; native fallbacks may still render some fonts. Enabling GDI removes win32k lockdown and the non-system-font restriction for non-PDF GDI renderers, relaxes their startup DLL signing, and disables browser dynamic-code blocking unless managed policy requires it. Delayed mitigations and token lowering remain.
 
 ### 95 - Conditional / platform-specific overlays that are still active.
 
