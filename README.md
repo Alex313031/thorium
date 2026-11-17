@@ -38,8 +38,10 @@ Choose a build that matches your CPU. A binary compiled for an unsupported SIMD 
 - Uses `thorium://` as the user-facing alias for internal pages while retaining canonical `chrome://` compatibility. This includes desktop and Android address-bar surfaces.
 - Provides the optional Thorium 2024 UI with translucent inactive tabs, plus classic Omnibox and bookmark styling, rectangular tabs, custom tab widths, expanded theme colors, and platform menu controls. See the [Thorium 2024 UI explainer](./docs/TH24.md).
 - Adds extensive tab controls: left- or right-aligned Tab Search, Pin/Unpin Tab Search, Restore Tab, Ctrl+Tab MRU, scrollable tabs, hover activation, custom close-button behavior, double-click/right-click tab closing, and "New tab to the left".
-- Restores the classic Download Shelf behind `thorium://flags/#download-shelf`, enhances the downloads page, enables parallel downloading by default, and provides additional download notifications and controls.
-- On desktop, full download URLs are shown by default. To show only Chromium's source information, set `thorium://flags/#downloads-show-full-url` to **Disabled** and relaunch. The copy download link button remains available.
+- Adds optional multi-column bookmark menus (`thorium://flags/#multi-column-bookmarks`, off by default; excludes native macOS menus), plus controls for opening bookmarks and address-bar entries in new tabs.
+- Restores the classic Download Shelf on Windows, macOS, and Linux via `thorium://flags/#download-shelf`, enables parallel downloading by default, and provides additional download notifications and controls.
+- The desktop downloads page shows full URLs by default and includes a copy-link button. Disable `thorium://flags/#downloads-show-full-url` and relaunch to show only Chromium's source information.
+- On desktop, a submenu below the default text-search command searches selected text with other engines and active site searches from `thorium://settings/searchEngines`, without changing the default. Selections Chromium treats as URLs keep its "Go to" behavior.
 - Adds close confirmation, close-window-with-last-tab, background-mode, quiet-notification, custom New Tab Page, auto-dark-mode, theme, avatar-button, extension-menu, and tab-hover-card controls.
 
 #### Performance and Media
@@ -51,21 +53,23 @@ Choose a build that matches your CPU. A binary compiled for an unsupported SIMD 
 #### Privacy and Networking
 
 - Adds and enables [Global Privacy Control](https://globalprivacycontrol.org/), disables Privacy Sandbox defaults, reduces DoH request headers, and offers controls for encrypted ClientHello, history retention, and clearing data on exit.
+- Avoids automatically disabling Secure DNS (DoH) solely because a device is managed or has parental controls; explicit DNS policies still apply.
 - Prevents URL elision by default, provides Thorium search-engine data and branded search icons, and keeps the local New Tab Page behavior configured by Thorium defaults.
 - Disables unwanted startup/default-browser warnings, feature promos, AI entry points, alternate error pages, and remote field-trial fetching by default.
 
 #### Extensions
 
 - Preinstalls classic uBlock Origin when Chromium's preinstall provider processes a new supported profile. Existing profiles are not force-backfilled, and uninstalling it prevents automatic reinstallation.
-- Includes Manifest V2 support, increased declarative-net-request limits, a quick extension toggle menu, and extension keyboard shortcuts.
+- Includes Manifest V2 support and increased declarative-net-request limits. On desktop, `thorium://flags/#extensions-menu-quick-toggles` adds quick enable/disable controls to the extensions menu (off by default).
 - In extension developer mode, **Install CRX file** on `thorium://extensions` opens a local file picker on desktop and Android. To also install third-party CRX files directly from downloads, enable `thorium://flags/#allow-offstore-extension-downloads`, relaunch, and enable developer mode on the extensions page. This option is off by default; CRX signatures, permission prompts, and extension policies still apply.
-- Includes experimental desktop-style extension support on Android, disabled by default, and an option to enable extensions in Incognito. To install and use Android extensions, open `chrome://flags/#enable-extensions-android`, select **Enabled**, and relaunch Thorium. **Default** currently leaves this feature disabled.
+- Includes experimental desktop-style extensions on Android, with Incognito support. Enable `thorium://flags/#enable-extensions-android` and relaunch to use them; the feature is off by default.
 
 #### Platform Integration and Tools
 
 - Includes Thorium-branded Windows mini-installer UI, Linux DEB/RPM packaging and desktop integration, ChromeDriver, and `thorium_shell` packaging where supported.
+- Offers optional Windows GDI text rendering (`thorium://flags/#force-gdi`, off by default) for compatibility with tools such as MacType. Enabling it relaxes some browser and renderer security protections; see [details](./docs/PATCHES.md#90---windows-gdi-text-rendering-and-native-font-fallbacks-default-off).
+- Enables on-device DevTools and Task Manager on Android, including phones, with a More tools menu and touch submenus.
 - Includes <img src="https://github.com/Alex313031/thorium/blob/main/logos/STAGING/pak.png" alt="PAK utility" width="16"> [pak](./pak_src/README.md), a cross-platform utility for packing and unpacking Chromium [&#42;.pak](https://textslashplain.com/2022/05/03/chromium-internals-pak-files/) resources.
-- Applies build, compiler, UI, privacy, media, installer, and platform patches through the audited order in [`patch_scripts/series/series`](./patch_scripts/series/series).
 
 &nbsp;&plus;&nbsp;Additional patches and useful `thorium://flags` entries are too numerous to list here.
 

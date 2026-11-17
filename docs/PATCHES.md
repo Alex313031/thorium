@@ -198,6 +198,7 @@ overlay-derived, or still need separate provenance review.
 
 - [`mini_installer.patch`](../other/mini_installer.patch) - Keeps the Thorium installer UI and packaging. System-level and same-version installs automatically close the target installation before file replacement. Uses Windows Restart Manager to let parent browsers save their session-exit state, then forcibly terminates remaining processes after bounded retries. Matches the executable path, keeps process handles, and registers PID/start-time pairs. Forced fallback can still require crash recovery; profile files and recovery UI are not altered. Inspection or termination failures remain installation errors. User-level cross-version installs retain Chromium's in-use update handling.
 - [`open_in_same_tab.patch`](../other/open_in_same_tab.patch)
+- [`context-menu-other-search-engines.patch`](../other/context-menu-other-search-engines.patch) - Adds a submenu below the default text-search command for other configured engines and active site searches. Covers all 81 translation targets.
 - [`windows-thorium-flags-conf.patch`](../other/windows-thorium-flags-conf.patch) - reads `thorium-flags.conf` from the install directory and `%AppData%\Thorium`, avoiding the removable `%LocalAppData%\Thorium` profile root during uninstall.
 
 ### 70 - User-facing flags, defaults, download/security behavior, and ThoriumOS.

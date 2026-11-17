@@ -114,6 +114,7 @@ other/downloads-page-enhancements.patch
 # 60 - Installer, shell integration, and context-menu behavior.
 other/mini_installer.patch
 other/open_in_same_tab.patch
+other/context-menu-other-search-engines.patch
 other/windows-thorium-flags-conf.patch
 
 # 70 - User-facing flags, defaults, download/security behavior, and ThoriumOS.
