@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/profiles/profile_shortcut_manager_win.cc b/chrome/browser/profiles/profile_shortcut_manager_win.cc
-index 9d7baf50010af..463e6d54dc482 100644
+index df3db71c00dbe..374c164adc789 100644
 --- a/chrome/browser/profiles/profile_shortcut_manager_win.cc
 +++ b/chrome/browser/profiles/profile_shortcut_manager_win.cc
 @@ -1,4 +1,4 @@

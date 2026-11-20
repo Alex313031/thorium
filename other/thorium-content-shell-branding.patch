@@ -1,5 +1,5 @@
 diff --git a/components/BUILD.gn b/components/BUILD.gn
-index 936e523aa0c65..1a540cf790354 100644
+index f88c4c5eb0421..6103b277d0136 100644
 --- a/components/BUILD.gn
 +++ b/components/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 936e523aa0c65..1a540cf790354 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -1220,8 +1220,8 @@ if (use_blink) {
+@@ -1241,8 +1241,8 @@ if (use_blink) {
      ]
  
      if (is_mac) {
@@ -20,7 +20,7 @@ index 936e523aa0c65..1a540cf790354 100644
  
      if (toolkit_views && !is_mac && !is_castos) {
 diff --git a/content/shell/BUILD.gn b/content/shell/BUILD.gn
-index b469f34869406..482b8406f5bdc 100644
+index 8b637148169c2..a24ce7856d5ed 100644
 --- a/content/shell/BUILD.gn
 +++ b/content/shell/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -40,7 +40,7 @@ index b469f34869406..482b8406f5bdc 100644
    content_shell_major_version = "999"
  }
  
-@@ -618,7 +618,7 @@ repack("pak") {
+@@ -619,7 +619,7 @@ repack("pak") {
  }
  
  if (is_android) {
@@ -49,7 +49,7 @@ index b469f34869406..482b8406f5bdc 100644
      testonly = true
      deps = [ "//content/shell/android:content_shell_apk" ]
    }
-@@ -633,7 +633,7 @@ if (is_android) {
+@@ -634,7 +634,7 @@ if (is_android) {
      ]
    }
  
@@ -58,7 +58,7 @@ index b469f34869406..482b8406f5bdc 100644
      testonly = true
      output_name = content_shell_product_name
      sources = [ "app/shell_main_mac.cc" ]
-@@ -754,7 +754,7 @@ if (is_android) {
+@@ -755,7 +755,7 @@ if (is_android) {
      }
    }
  } else {
@@ -67,7 +67,7 @@ index b469f34869406..482b8406f5bdc 100644
      testonly = true
  
      sources = [ "app/shell_main.cc" ]
-@@ -816,7 +816,7 @@ if (is_android) {
+@@ -817,7 +817,7 @@ if (is_android) {
      fuchsia_component("content_shell_component") {
        testonly = true
        manifest = "fuchsia/content_shell.cml"
@@ -76,15 +76,7 @@ index b469f34869406..482b8406f5bdc 100644
        visibility = [ ":*" ]
      }
  
-@@ -862,6 +862,7 @@ if (is_apple) {
-       }
-       if (!use_v8_context_snapshot || include_both_v8_snapshots) {
-         sources += [ "$root_out_dir/snapshot_blob.bin" ]
-+        public_deps += [ "//v8:run_mksnapshot_default" ]
-       }
-     }
- 
-@@ -1113,7 +1114,7 @@ if (is_android) {
+@@ -1115,7 +1115,7 @@ if (is_android) {
        "//content/test/data/media/",
      ]
      data_deps = [
@@ -93,7 +85,7 @@ index b469f34869406..482b8406f5bdc 100644
        "//build/android:devil_chromium_py",
        "//build/android:test_runner_py",
        "//testing:test_scripts_shared",
-@@ -1125,7 +1126,7 @@ if (is_android) {
+@@ -1127,7 +1127,7 @@ if (is_android) {
  group("content_shell_crash_test") {
    testonly = true
    data_deps = [
@@ -103,7 +95,7 @@ index b469f34869406..482b8406f5bdc 100644
      "//third_party/angle:includes",
    ]
 diff --git a/content/shell/android/BUILD.gn b/content/shell/android/BUILD.gn
-index 916f77fc3d4a1..51ca8914f59c5 100644
+index 534a5a5fb79cf..dc4c43c3625f9 100644
 --- a/content/shell/android/BUILD.gn
 +++ b/content/shell/android/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -138,7 +130,7 @@ index 916f77fc3d4a1..51ca8914f59c5 100644
    android_manifest_dep = ":content_shell_test_manifest"
    shared_libraries = [ ":libcontent_native_test" ]
 diff --git a/content/shell/android/shell_apk/AndroidManifest.xml.jinja2 b/content/shell/android/shell_apk/AndroidManifest.xml.jinja2
-index 8c344aaa0b373..d0d7396716d50 100644
+index e70918216c8dd..7eb1f1dd3099f 100644
 --- a/content/shell/android/shell_apk/AndroidManifest.xml.jinja2
 +++ b/content/shell/android/shell_apk/AndroidManifest.xml.jinja2
 @@ -1,7 +1,7 @@
@@ -214,7 +206,7 @@ index 0c52b54f11aaa..02b15082cd391 100644
    shell_data.window_widget->Init(std::move(params));
  #endif  // BUILDFLAG(IS_CHROMEOS)
 diff --git a/content/test/BUILD.gn b/content/test/BUILD.gn
-index cc0e7c2f7db55..04cae6cab208a 100644
+index 4393239aceed5..d510d562f0067 100644
 --- a/content/test/BUILD.gn
 +++ b/content/test/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -223,7 +215,7 @@ index cc0e7c2f7db55..04cae6cab208a 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -2363,8 +2363,8 @@ test("content_browsertests") {
+@@ -2394,8 +2394,8 @@ test("content_browsertests") {
        "../renderer/render_view_browsertest_mac.mm",
      ]
      deps += [ "//third_party/ocmock" ]

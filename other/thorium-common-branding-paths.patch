@@ -21,10 +21,10 @@ index e48fbf29760fb..0cb25d08d5f6c 100644
  
    std::string_view suffix;
 diff --git a/chrome/browser/extensions/api/messaging/launch_context_win.cc b/chrome/browser/extensions/api/messaging/launch_context_win.cc
-index d4b7dd25cc1d9..1ab5820d6bc0e 100644
+index bde1be53e4cc2..ccf07f56e3d45 100644
 --- a/chrome/browser/extensions/api/messaging/launch_context_win.cc
 +++ b/chrome/browser/extensions/api/messaging/launch_context_win.cc
-@@ -63,7 +63,7 @@ bool GetManifestPathWithFlags(HKEY root_key,
+@@ -64,7 +64,7 @@ bool GetManifestPathWithFlags(HKEY root_key,
                                std::wstring* result) {
  #if BUILDFLAG(CHROMIUM_BRANDING)
    static constexpr wchar_t kChromiumNativeMessagingRegistryKey[] =
@@ -123,10 +123,10 @@ index 1a6b899b4bc3a..1b5159d3fec19 100644
  
  #if BUILDFLAG(IS_MAC)
 diff --git a/chrome/common/chrome_paths.cc b/chrome/common/chrome_paths.cc
-index 32d01c008e134..1ea53306a7eb5 100644
+index 4448f86df86f7..c524811340bc0 100644
 --- a/chrome/common/chrome_paths.cc
 +++ b/chrome/common/chrome_paths.cc
-@@ -55,7 +55,7 @@ const base::FilePath::CharType kFilepathSinglePrefExtensions[] =
+@@ -56,7 +56,7 @@ const base::FilePath::CharType kFilepathSinglePrefExtensions[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
      FILE_PATH_LITERAL("/usr/share/google-chrome/extensions");
  #else
@@ -135,7 +135,7 @@ index 32d01c008e134..1ea53306a7eb5 100644
  #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
  
  #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
-@@ -434,8 +434,7 @@ bool PathProvider(int key, base::FilePath* result) {
+@@ -440,8 +440,7 @@ bool PathProvider(int key, base::FilePath* result) {
          return false;
        }
  
@@ -145,7 +145,7 @@ index 32d01c008e134..1ea53306a7eb5 100644
                  .Append(FILE_PATH_LITERAL("External Extensions"));
  #else
        if (!base::PathService::Get(base::DIR_MODULE, &cur)) {
-@@ -460,7 +459,7 @@ bool PathProvider(int key, base::FilePath* result) {
+@@ -466,7 +465,7 @@ bool PathProvider(int key, base::FilePath* result) {
            "/Library/Google/ChromeForTesting/NativeMessagingHosts"));
  #else
        cur = base::FilePath(FILE_PATH_LITERAL(
@@ -154,7 +154,7 @@ index 32d01c008e134..1ea53306a7eb5 100644
  #endif
  #else  // BUILDFLAG(IS_MAC)
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
-@@ -471,7 +470,7 @@ bool PathProvider(int key, base::FilePath* result) {
+@@ -477,7 +476,7 @@ bool PathProvider(int key, base::FilePath* result) {
            "/etc/opt/chrome_for_testing/native-messaging-hosts"));
  #else
        cur = base::FilePath(

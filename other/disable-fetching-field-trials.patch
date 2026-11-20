@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 5704075c2302e..da31582616d85 100644
+index 6d16dca93432a..11414328abd8e 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 @@ -1,4 +1,4 @@
@@ -48,7 +48,7 @@ index 5704075c2302e..da31582616d85 100644
  
      /**
 diff --git a/components/variations/service/variations_service.cc b/components/variations/service/variations_service.cc
-index cb4ef4fb8679e..e8a703c898e65 100644
+index a54b220c27411..756e15ba512a0 100644
 --- a/components/variations/service/variations_service.cc
 +++ b/components/variations/service/variations_service.cc
 @@ -1,4 +1,4 @@
@@ -57,7 +57,7 @@ index cb4ef4fb8679e..e8a703c898e65 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -273,22 +273,7 @@ bool GetInstanceManipulations(const net::HttpResponseHeaders* headers,
+@@ -282,22 +282,7 @@ bool GetInstanceManipulations(const net::HttpResponseHeaders* headers,
  // Variations seed fetching is only enabled in official Chrome builds, if a URL
  // is specified on the command line, and for testing.
  bool IsFetchingEnabled() {

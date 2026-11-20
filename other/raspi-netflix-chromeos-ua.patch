@@ -1,8 +1,8 @@
 diff --git a/components/embedder_support/user_agent_utils.cc b/components/embedder_support/user_agent_utils.cc
-index 3c042e1af651e..985a192bb0c99 100644
+index 71a1c7b92bef7..cbebbc84bd35b 100644
 --- a/components/embedder_support/user_agent_utils.cc
 +++ b/components/embedder_support/user_agent_utils.cc
-@@ -438,6 +438,8 @@ std::string GetOSVersion(IncludeAndroidBuildNumber include_android_build_number,
+@@ -415,6 +415,8 @@ std::string GetOSVersion(IncludeAndroidBuildNumber include_android_build_number,
  #elif BUILDFLAG(IS_ANDROID)
                        "%s%s", android_version_str.c_str(),
                        android_info_str.c_str()
@@ -11,7 +11,7 @@ index 3c042e1af651e..985a192bb0c99 100644
  #else
                        ""
  #endif
-@@ -829,6 +831,11 @@ std::string BuildOSCpuInfoFromOSVersionAndCpuType(const std::string& os_version,
+@@ -801,6 +803,11 @@ std::string BuildOSCpuInfoFromOSVersionAndCpuType(const std::string& os_version,
  #elif BUILDFLAG(IS_IOS)
                        "CPU %s OS %s like Mac OS X", cpu_type.c_str(),
                        os_version.c_str()

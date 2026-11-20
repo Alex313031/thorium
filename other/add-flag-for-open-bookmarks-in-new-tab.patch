@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
-index 0a62f3b8dfb55..4ea9444827261 100644
+index a0a8b938a34e3..1f0012a099f6e 100644
 --- a/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 +++ b/chrome/browser/ui/bookmarks/bookmark_utils_desktop.cc
 @@ -8,6 +8,7 @@
@@ -10,32 +10,32 @@ index 0a62f3b8dfb55..4ea9444827261 100644
  #include "base/functional/bind.h"
  #include "base/functional/callback.h"
  #include "base/memory/raw_ptr.h"
-@@ -386,6 +387,20 @@ void OpenAllIfAllowed(
-     page_load_metrics::NavigationHandleUserData::InitiatorLocation
-         navigation_type,
+@@ -380,6 +381,20 @@ void OpenAllIfAllowed(
+     bookmarks::OpenAllBookmarksContext context,
+     std::optional<page_load_metrics::NavigationInitiator> navigation_initiator,
      std::optional<BookmarkLaunchAction> launch_action) {
 +  // Convert single-bookmark left clicks from current-tab navigation to a new
 +  // foreground/background tab when the feature is enabled. Folder opens and
 +  // explicit dispositions such as middle-click are left unchanged.
 +  if (base::FeatureList::IsEnabled(features::kOpenBookmarksInNewTab) &&
-+      initial_disposition == WindowOpenDisposition::CURRENT_TAB &&
++      initial_disposition == WindowOpenDisposition::kCurrentTab &&
 +      nodes.size() == 1 && nodes[0]->is_url()) {
 +    const std::string mode = features::kOpenBookmarksInNewTabMode.Get();
 +    if (mode == "background") {
-+      initial_disposition = WindowOpenDisposition::NEW_BACKGROUND_TAB;
++      initial_disposition = WindowOpenDisposition::kNewBackgroundTab;
 +    } else {
-+      initial_disposition = WindowOpenDisposition::NEW_FOREGROUND_TAB;
++      initial_disposition = WindowOpenDisposition::kNewForegroundTab;
 +    }
 +  }
 +
    std::vector<UrlAndId> url_and_ids = GetURLsToOpen(
-       nodes, initial_disposition == WindowOpenDisposition::OFF_THE_RECORD);
+       nodes, initial_disposition == WindowOpenDisposition::kOffTheRecord);
  
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index d913d5499f5a9..a51500cdd6a49 100644
+index 3f26aa23bb001..e781d7a9088b4 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -231,6 +231,16 @@ BASE_FEATURE_PARAM(int,
+@@ -266,6 +266,16 @@ BASE_FEATURE_PARAM(int,
                     "hover_delay_ms",
                     500);
  
@@ -53,10 +53,10 @@ index d913d5499f5a9..a51500cdd6a49 100644
  // Enables the UI for Process Isolation in chrome://settings/system.
  BASE_FEATURE(kProcessIsolationSettings, base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index bf436aa2a6083..9d52f710d61e3 100644
+index 51737935f8998..69ecae1ef2df4 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -397,6 +397,9 @@ BASE_DECLARE_FEATURE(kRightClickToCloseTab);
+@@ -414,6 +414,9 @@ BASE_DECLARE_FEATURE(kRightClickToCloseTab);
  BASE_DECLARE_FEATURE(kHoverActivateTab);
  BASE_DECLARE_FEATURE_PARAM(int, kHoverActivateTabDelayMs);
  

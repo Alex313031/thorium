@@ -19,7 +19,7 @@ index ae3ce667f878d..c5997883fab47 100644
                              }
                              SigninMetricsUtils.logAddAccountStateHistogram(State.STARTED);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninBridge.java b/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninBridge.java
-index fb8131777be43..40da704070d8b 100644
+index 004586067586a..e5eca74eca797 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninBridge.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninBridge.java
 @@ -148,6 +148,9 @@ final class SigninBridge {
@@ -33,10 +33,10 @@ index fb8131777be43..40da704070d8b 100644
          if (windowAndroid == null || !tab.isUserInteractable()) {
              // The page is opened in the background, ignore the header. See
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninFirstRunFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninFirstRunFragment.java
-index 6862188a56395..81012c99adfae 100644
+index 4aecfaa03a00e..79daaf89a89fa 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninFirstRunFragment.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/signin/SigninFirstRunFragment.java
-@@ -206,9 +206,11 @@ public class SigninFirstRunFragment extends Fragment
+@@ -226,9 +226,11 @@ public class SigninFirstRunFragment extends Fragment
                                  return;
                              }
  
@@ -77,10 +77,10 @@ index a7b591e76aa29..23d9c7edcfe9e 100644
                                      // to open settings instead.
                                      SigninUtils.openSettingsForAllAccounts(getActivity());
 diff --git a/chrome/browser/signin/services/android/java/src/org/chromium/chrome/browser/signin/services/SigninManagerImpl.java b/chrome/browser/signin/services/android/java/src/org/chromium/chrome/browser/signin/services/SigninManagerImpl.java
-index d3436207af688..cc1e19f2e9c19 100644
+index 452f0286b83a0..aa8df00a3093f 100644
 --- a/chrome/browser/signin/services/android/java/src/org/chromium/chrome/browser/signin/services/SigninManagerImpl.java
 +++ b/chrome/browser/signin/services/android/java/src/org/chromium/chrome/browser/signin/services/SigninManagerImpl.java
-@@ -236,6 +236,9 @@ class SigninManagerImpl implements SigninManager, AccountsChangeObserver {
+@@ -246,6 +246,9 @@ class SigninManagerImpl implements SigninManager, AccountsChangeObserver {
  
      @Override
      public boolean isSigninSupported(boolean requireUpdatedPlayServices) {
@@ -91,10 +91,10 @@ index d3436207af688..cc1e19f2e9c19 100644
              return ExternalAuthUtils.getInstance().canUseGooglePlayServices();
          }
 diff --git a/chrome/browser/ui/android/signin/java/src/org/chromium/chrome/browser/ui/signin/fullscreen_signin/FullscreenSigninMediator.java b/chrome/browser/ui/android/signin/java/src/org/chromium/chrome/browser/ui/signin/fullscreen_signin/FullscreenSigninMediator.java
-index 1687705219dfc..b00a4de489d6b 100644
+index 969daa36ebcaf..27802bd54d548 100644
 --- a/chrome/browser/ui/android/signin/java/src/org/chromium/chrome/browser/ui/signin/fullscreen_signin/FullscreenSigninMediator.java
 +++ b/chrome/browser/ui/android/signin/java/src/org/chromium/chrome/browser/ui/signin/fullscreen_signin/FullscreenSigninMediator.java
-@@ -401,7 +401,8 @@ public class FullscreenSigninMediator
+@@ -445,7 +445,8 @@ public class FullscreenSigninMediator
      }
  
      private boolean isSigninSupported(Profile profile) {
@@ -105,7 +105,7 @@ index 1687705219dfc..b00a4de489d6b 100644
                  && !mConfig.shouldDisableSignin;
      }
 diff --git a/components/signin/internal/identity_manager/primary_account_manager.cc b/components/signin/internal/identity_manager/primary_account_manager.cc
-index cb7399be2cc65..e6fb11c529a74 100644
+index b7c706aa23ea0..ad33679b01878 100644
 --- a/components/signin/internal/identity_manager/primary_account_manager.cc
 +++ b/components/signin/internal/identity_manager/primary_account_manager.cc
 @@ -391,7 +391,11 @@ void PrimaryAccountManager::RegisterProfilePrefs(PrefRegistrySimple* registry) {

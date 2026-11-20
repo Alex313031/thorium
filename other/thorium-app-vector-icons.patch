@@ -1,5 +1,5 @@
 diff --git a/chrome/app/vector_icons/BUILD.gn b/chrome/app/vector_icons/BUILD.gn
-index 9b57154109f49..6df99455e44c8 100644
+index d08b8c017e082..fdef100a88d46 100644
 --- a/chrome/app/vector_icons/BUILD.gn
 +++ b/chrome/app/vector_icons/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 9b57154109f49..6df99455e44c8 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -352,6 +352,7 @@ aggregate_vector_icons("chrome_vector_icons") {
+@@ -354,6 +354,7 @@ aggregate_vector_icons("chrome_vector_icons") {
      "translate_old.icon",
      "trash_can_old.icon",
      "trash_can_refresh_old.icon",
@@ -16,7 +16,7 @@ index 9b57154109f49..6df99455e44c8 100644
      "travel_explore.icon",
      "travel_explore_old.icon",
      "tv.icon",
-@@ -407,6 +408,34 @@ aggregate_vector_icons("chrome_vector_icons") {
+@@ -410,6 +411,34 @@ aggregate_vector_icons("chrome_vector_icons") {
      # go/keep-sorted end
    ]
  

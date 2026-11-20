@@ -1,5 +1,5 @@
 diff --git a/components/policy/tools/template_writers/writer_configuration.py b/components/policy/tools/template_writers/writer_configuration.py
-index 283ea725c5a18..86bd75c6920f0 100755
+index 4a4dc51a09cca..3eb3deed1a77d 100755
 --- a/components/policy/tools/template_writers/writer_configuration.py
 +++ b/components/policy/tools/template_writers/writer_configuration.py
 @@ -10,9 +10,6 @@ def GetConfigurationForBuild(defines):
@@ -18,49 +18,49 @@ index 283ea725c5a18..86bd75c6920f0 100755
    # 'messages' in policy_templates.json.
 -  if '_chromium' in defines:
 -    config = {
--        'build': 'chromium',
--        'app_name': 'Chromium',
--        'doc_url': 'https://chromeenterprise.google/policies/',
--        'frame_name': 'Chromium Frame',
--        'os_name': 'ChromiumOS',
--        'webview_name': 'Chromium WebView',
--        'win_config': {
--            'win': {
--                'reg_mandatory_key_name': 'Software\\Policies\\Chromium',
--                'reg_recommended_key_name':
--                'Software\\Policies\\Chromium\\Recommended',
--                'mandatory_category_path': ['chromium'],
--                'recommended_category_path': ['chromium_recommended'],
--                'category_path_strings': {
--                    'chromium': 'Chromium',
--                    'chromium_recommended': 'Chromium - {doc_recommended}',
--                },
--                'namespace': 'Chromium.Policies.Chromium',
--            },
--            'chrome_os': {
--                'reg_mandatory_key_name': 'Software\\Policies\\ChromiumOS',
--                'reg_recommended_key_name':
--                'Software\\Policies\\ChromiumOS\\Recommended',
--                'mandatory_category_path': ['chromium_os'],
--                'recommended_category_path': ['chromium_os_recommended'],
--                'category_path_strings': {
--                    'chromium_os': 'ChromiumOS',
--                    'chromium_os_recommended': 'ChromiumOS - {doc_recommended}',
--                },
--                'namespace': 'Chromium.Policies.ChromiumOS'
--            },
+-      'build': 'chromium',
+-      'app_name': 'Chromium',
+-      'doc_url': 'https://chromeenterprise.google/policies/',
+-      'frame_name': 'Chromium Frame',
+-      'os_name': 'ChromiumOS',
+-      'webview_name': 'Chromium WebView',
+-      'win_config': {
+-        'win': {
+-          'reg_mandatory_key_name': 'Software\\Policies\\Chromium',
+-          'reg_recommended_key_name': 'Software\\Policies\\Chromium\\Recommended',
+-          'mandatory_category_path': ['chromium'],
+-          'recommended_category_path': ['chromium_recommended'],
+-          'category_path_strings': {
+-            'chromium': 'Chromium',
+-            'chromium_recommended': 'Chromium - {doc_recommended}',
+-          },
+-          'namespace': 'Chromium.Policies.Chromium',
 -        },
--        'admx_prefix': 'chromium',
--        'linux_policy_path': '/etc/chromium/policies/',
--        'bundle_id': 'org.chromium',
+-        'chrome_os': {
+-          'reg_mandatory_key_name': 'Software\\Policies\\ChromiumOS',
+-          'reg_recommended_key_name': 'Software\\Policies\\ChromiumOS\\Recommended',
+-          'mandatory_category_path': ['chromium_os'],
+-          'recommended_category_path': ['chromium_os_recommended'],
+-          'category_path_strings': {
+-            'chromium_os': 'ChromiumOS',
+-            'chromium_os_recommended': 'ChromiumOS - {doc_recommended}',
+-          },
+-          'namespace': 'Chromium.Policies.ChromiumOS',
+-        },
+-      },
+-      'admx_prefix': 'chromium',
+-      'linux_policy_path': '/etc/chromium/policies/',
+-      'bundle_id': 'org.chromium',
 -    }
--  elif '_google_chrome' in defines or '_is_chrome_for_testing_branded' in defines:
+-  elif (
+-    '_google_chrome' in defines or '_is_chrome_for_testing_branded' in defines
+-  ):
 +  if defines.get('_google_chrome', False) == True or defines.get('_is_chrome_for_testing_branded', False) == True:
      if '_google_chrome' in defines:
        linux_policy_path = '/etc/opt/chrome/policies/'
        win_policy_path = 'Software\\Policies\\Google\\Chrome'
-@@ -126,7 +85,43 @@ def GetConfigurationForBuild(defines):
-         'bundle_id': 'com.google.chrome.ios',
+@@ -117,7 +76,43 @@ def GetConfigurationForBuild(defines):
+       'bundle_id': 'com.google.chrome.ios',
      }
    else:
 -    raise Exception('Unknown build')

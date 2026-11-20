@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index 17ab4e685bec5..04698435ceec5 100644
+index c89651404a4d8..dd307ca2374dc 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
-@@ -341,6 +341,10 @@ void TabMenuModel::Build(int index) {
+@@ -342,6 +342,10 @@ void TabMenuModel::Build(int index) {
    }
    SetElementIdentifierAt(GetItemCount() - 1, kAddNewTabAdjacentMenuItem);
  
@@ -14,20 +14,20 @@ index 17ab4e685bec5..04698435ceec5 100644
      if (tab_strip_->GetActiveTab()->IsSplit()) {
        swap_with_split_submenu_ =
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
-index e03b98f928807..8d900698a7fff 100644
+index 4a85ea7e9e633..6c5dd383ed745 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
-@@ -2666,6 +2666,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
-   }
+@@ -2697,6 +2697,7 @@ bool TabStripModel::IsContextMenuCommandEnabled(
+   tabs::TabHandle context_tab = GetTabAtIndex(context_index)->GetHandle();
  
    switch (command_id) {
 +    case CommandNewTabToLeft:
      case CommandNewTabToRight:
      case CommandCloseTab:
        return true;
-@@ -2794,6 +2795,15 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
-     return;
+@@ -2862,6 +2863,15 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
    }
+   tabs::TabHandle context_tab = GetTabAtIndex(context_index)->GetHandle();
    switch (command_id) {
 +    case CommandNewTabToLeft: {
 +      base::RecordAction(UserMetricsAction("TabContextMenu_NewTab"));
@@ -42,22 +42,22 @@ index e03b98f928807..8d900698a7fff 100644
        base::UmaHistogramCounts1000(
            "Tab.ContextMenu.NewTabToRight.SelectedTabsCount",
 diff --git a/components/tabs/public/tab_context_menu_command.h b/components/tabs/public/tab_context_menu_command.h
-index 0ed448fdc4af7..684e8434e93a4 100644
+index 2ea23723648d7..3807f6b834b2d 100644
 --- a/components/tabs/public/tab_context_menu_command.h
 +++ b/components/tabs/public/tab_context_menu_command.h
-@@ -39,6 +39,7 @@ enum TabContextMenuCommand {
-   CommandGlicSwitchToRecentConversation,
-   CommandGlicUnshare,
+@@ -42,6 +42,7 @@ enum TabContextMenuCommand {
+   CommandAiModeCreateNewThread,
+   CommandAiModeUnshare,
    CommandToggleFocusGroup,
 +  CommandNewTabToLeft,
  };
  // LINT.ThenChange(//tools/metrics/histograms/metadata/tab/histograms.xml:TabContextMenuCommand)
  
 diff --git a/tools/metrics/histograms/metadata/tab/histograms.xml b/tools/metrics/histograms/metadata/tab/histograms.xml
-index 773d91c5760ff..44eb332ffaa93 100644
+index 16589eb5c96db..be60a0025c5f1 100644
 --- a/tools/metrics/histograms/metadata/tab/histograms.xml
 +++ b/tools/metrics/histograms/metadata/tab/histograms.xml
-@@ -88,6 +88,7 @@ chromium-metrics-reviews@google.com.
+@@ -98,6 +98,7 @@ chromium-metrics-reviews@google.com.
    <variant name="MoveToExistingWindow"
        summary="the Move to existing window command"/>
    <variant name="MoveToNewWindow" summary="the Move to new window command"/>

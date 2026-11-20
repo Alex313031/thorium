@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/background/extensions/background_mode_manager.cc b/chrome/browser/background/extensions/background_mode_manager.cc
-index 1fa1ad93461e5..1a8e16981a8f3 100644
+index 16e28b4d16f27..efb397f0ca356 100644
 --- a/chrome/browser/background/extensions/background_mode_manager.cc
 +++ b/chrome/browser/background/extensions/background_mode_manager.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 1fa1ad93461e5..1a8e16981a8f3 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -348,7 +348,7 @@ BackgroundModeManager::~BackgroundModeManager() {
+@@ -351,7 +351,7 @@ BackgroundModeManager::~BackgroundModeManager() {
  
  // static
  void BackgroundModeManager::RegisterPrefs(PrefRegistrySimple* registry) {

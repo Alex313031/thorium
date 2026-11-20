@@ -1,8 +1,8 @@
 diff --git a/base/BUILD.gn b/base/BUILD.gn
-index 9569528f10db0..6208e005bac31 100644
+index c71d7a643405a..c9862d6443cb8 100644
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -1196,6 +1196,7 @@ component("base") {
+@@ -1201,6 +1201,7 @@ component("base") {
      "//build:chromecast_buildflags",
      "//build:robolectric_buildflags",
      "//third_party/abseil-cpp:absl",
@@ -10,7 +10,7 @@ index 9569528f10db0..6208e005bac31 100644
    ]
  
    sources += [
-@@ -3034,6 +3035,7 @@ buildflag_header("debugging_buildflags") {
+@@ -3078,6 +3079,7 @@ buildflag_header("debugging_buildflags") {
      "ENABLE_ALLOCATION_TRACE_RECORDER_FULL_REPORTING=$build_allocation_trace_recorder_full_reporting",
      "PRINT_UNSYMBOLIZED_STACK_TRACES=$print_unsymbolized_stack_traces",
      "ENABLE_CHECK_ELISION_WARNING=$enable_check_elision_warning",
@@ -72,7 +72,7 @@ index 4b3b7ee07ba65..59888a3abfda6 100644
    if (!GetFileAttributesEx(file_path.value().c_str(), GetFileExInfoStandard,
                             &attr)) {
 diff --git a/base/logging.cc b/base/logging.cc
-index 7686a1e1e1f8e..6867ebd1a339f 100644
+index 7beceac45c360..85658d6c09ca8 100644
 --- a/base/logging.cc
 +++ b/base/logging.cc
 @@ -10,6 +10,7 @@
@@ -99,7 +99,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
  }
  
  std::string BuildCrashString(const char* file,
-@@ -554,10 +557,24 @@ int GetMinLogLevel() {
+@@ -556,10 +559,24 @@ int GetMinLogLevel() {
    return g_min_log_level;
  }
  
@@ -124,7 +124,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
  
    // Return true here unless we know ~LogMessage won't do anything.
    return g_logging_destination != LOG_NONE || g_log_message_handler ||
-@@ -569,7 +586,7 @@ bool ShouldCreateLogMessage(int severity) {
+@@ -571,7 +588,7 @@ bool ShouldCreateLogMessage(int severity) {
  // set, or only LOG_TO_FILE is set, since that is useful for local development
  // and debugging.
  bool ShouldLogToStderr(int severity) {
@@ -133,7 +133,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
      return true;
    }
  
-@@ -680,7 +697,7 @@ void DisplayDebugMessageInDialog(std::string_view str) {
+@@ -682,7 +699,7 @@ void DisplayDebugMessageInDialog(std::string_view str) {
    // You can just look at stderr.
    if (base::win::IsUser32AndGdi32Available()) {
      MessageBoxW(nullptr, base::as_wcstr(base::UTF8ToUTF16(str)), L"Fatal error",
@@ -142,7 +142,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
    } else {
      OutputDebugStringW(base::as_wcstr(base::UTF8ToUTF16(str)));
    }
-@@ -701,8 +718,11 @@ void LogMessage::Flush() {
+@@ -703,8 +720,11 @@ void LogMessage::Flush() {
    // Don't let actions from this method affect the system error after returning.
    base::ScopedClearLastError scoped_clear_last_error;
  
@@ -155,7 +155,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
    // Include a stack trace on a fatal, unless a debugger is attached.
    if (severity_ == LOGGING_FATAL && !base::debug::BeingDebugged()) {
      base::debug::StackTrace stack_trace;
-@@ -736,6 +756,7 @@ void LogMessage::Flush() {
+@@ -738,6 +758,7 @@ void LogMessage::Flush() {
    std::string str_newline(stream_.str());
    TraceLogMessage(file_, line_, str_newline.substr(message_start_));
  
@@ -163,7 +163,7 @@ index 7686a1e1e1f8e..6867ebd1a339f 100644
    // FATAL messages should always run the assert handler and crash, even if a
    // message handler marks them as otherwise handled.
    absl::Cleanup handle_fatal_message = [&] {
-@@ -747,6 +768,7 @@ void LogMessage::Flush() {
+@@ -749,6 +770,7 @@ void LogMessage::Flush() {
    if (severity_ == LOGGING_FATAL) {
      SetLogFatalCrashKey(this);
    }
@@ -186,10 +186,10 @@ index 2d72f112e9b9f..567503f15f329 100644
  BASE_EXPORT bool ShouldCreateLogMessage(int severity);
  
 diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
-index 22bf8ff11537d..c9e7d31b761c2 100644
+index 232d1c239df5c..6c740514d17a1 100644
 --- a/content/browser/renderer_host/render_process_host_impl.cc
 +++ b/content/browser/renderer_host/render_process_host_impl.cc
-@@ -4093,7 +4093,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
+@@ -4128,7 +4128,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
      }
    }
  

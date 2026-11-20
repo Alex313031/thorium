@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/net/stub_resolver_config_reader.cc b/chrome/browser/net/stub_resolver_config_reader.cc
-index e30c6edaa5f65..80d7302b46b88 100644
+index 6b059fcccf9cb..50f53520d1ffc 100644
 --- a/chrome/browser/net/stub_resolver_config_reader.cc
 +++ b/chrome/browser/net/stub_resolver_config_reader.cc
 @@ -1,4 +1,4 @@
@@ -42,7 +42,7 @@ index e30c6edaa5f65..80d7302b46b88 100644
  // Defines the base::Feature for controlling the ZTDNS check.
  BASE_FEATURE(kZeroTrustDNS, base::FEATURE_ENABLED_BY_DEFAULT);
  
-@@ -243,42 +234,11 @@ void StubResolverConfigReader::UpdateNetworkService(bool record_metrics) {
+@@ -246,42 +237,11 @@ void StubResolverConfigReader::UpdateNetworkService(bool record_metrics) {
  }
  
  bool StubResolverConfigReader::ShouldDisableDohForManaged() {

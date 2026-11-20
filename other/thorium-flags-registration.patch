@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index 5aa5b0447d685..cadfe4ecbe6f4 100644
+index f0f529901a3fc..b712a1750e440 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 5aa5b0447d685..cadfe4ecbe6f4 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -865,6 +865,8 @@ source_set("core") {
+@@ -1035,6 +1035,8 @@ source_set("core") {
      "resources_util.cc",
      "shell_integration.cc",
      "startup_data.cc",
@@ -18,7 +18,7 @@ index 5aa5b0447d685..cadfe4ecbe6f4 100644
      "unexpire_flags.h",
      "universal_web_contents_observers.cc",
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index 3bd06fa95993f..16a1714610cfe 100644
+index 0f43cb2b3c593..c0b0a4158f167 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
 @@ -1,4 +1,4 @@
@@ -27,7 +27,7 @@ index 3bd06fa95993f..16a1714610cfe 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -155,6 +155,7 @@
+@@ -153,6 +153,7 @@
  #include "components/paint_preview/buildflags/buildflags.h"
  #include "components/paint_preview/features/features.h"
  #include "components/password_manager/core/browser/features/password_features.h"
@@ -35,7 +35,7 @@ index 3bd06fa95993f..16a1714610cfe 100644
  #include "components/password_manager/core/common/password_manager_features.h"
  #include "components/payments/core/features.h"
  #include "components/performance_manager/public/features.h"
-@@ -5203,11 +5204,16 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
+@@ -5394,11 +5395,16 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
      "force-enterprise-isolated-mode";
  
  // When adding a new choice, add it to the end of the list.

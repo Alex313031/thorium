@@ -1,4 +1,4 @@
-[thorium-browser-bin]
+[thorium-browser-beta-bin]
 source = "regex"
-url = "https://github.com/Alex313031/thorium/releases"
-regex = "thorium-browser_([0-9.]+)_SSE3\\.deb"
+url = "https://api.github.com/repos/gz83/thorium/releases?per_page=100"
+regex = '(?is)"tag_name"\s*:\s*"M([0-9.]+)"(?=(?:(?!"tag_name").)*"name"\s*:\s*"[^"]*Beta[^"]*")(?!(?:(?!"tag_name").)*"name"\s*:\s*"[^"]*Alpha)(?=(?:(?!"tag_name").)*"draft"\s*:\s*false)(?=(?:(?!"tag_name").)*thorium-browser_\1_i386[.]deb)(?=(?:(?!"tag_name").)*thorium-browser_\1_arm64[.]deb)(?=(?:(?!"tag_name").)*thorium-browser_\1_SSE3[.]deb)'

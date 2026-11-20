@@ -1,0 +1,246 @@
+diff --git a/chrome/browser/ui/views/extensions/BUILD.gn b/chrome/browser/ui/views/extensions/BUILD.gn
+index e26e7dc48bf38..64aad3dd1bebb 100644
+--- a/chrome/browser/ui/views/extensions/BUILD.gn
++++ b/chrome/browser/ui/views/extensions/BUILD.gn
+@@ -108,6 +108,22 @@ source_set("extensions_menu_entry_view") {
+   ]
+ }
+ 
++source_set("extensions_menu_scroll_view") {
++  public = [ "extensions_menu_scroll_view.h" ]
++  sources = [ "extensions_menu_scroll_view.cc" ]
++  public_deps = [
++    "//base",
++    "//ui/base/metadata",
++    "//ui/views",
++  ]
++  if (is_win) {
++    deps = [
++      "//ui/color:color_headers",
++      "//ui/native_theme",
++    ]
++  }
++}
++
+ source_set("extensions_menu_main_page_view") {
+   public = [ "extensions_menu_main_page_view.h" ]
+   sources = [ "extensions_menu_main_page_view.cc" ]
+@@ -120,6 +136,7 @@ source_set("extensions_menu_main_page_view") {
+     "//ui/views",
+   ]
+   deps = [
++    ":extensions_menu_scroll_view",
+     "//chrome/app:generated_resources",
+     "//chrome/browser/ui:browser_element_identifiers",
+     "//chrome/browser/ui:chrome_pages",
+@@ -683,6 +700,7 @@ source_set("extensions_menu_view") {
+     ":extension_action_delegate_desktop",
+     ":extensions_container_views",
+     ":extensions_menu_item_view",
++    ":extensions_menu_scroll_view",
+     "//chrome/app:generated_resources",
+     "//chrome/browser/ui:chrome_pages",
+     "//chrome/browser/ui/browser_window",
+diff --git a/chrome/browser/ui/views/extensions/extensions_menu_main_page_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_main_page_view.cc
+index 7a87e5399382d..4335d28a6dfde 100644
+--- a/chrome/browser/ui/views/extensions/extensions_menu_main_page_view.cc
++++ b/chrome/browser/ui/views/extensions/extensions_menu_main_page_view.cc
+@@ -25,6 +25,7 @@
+ #include "chrome/browser/ui/views/controls/hover_button.h"
+ #include "chrome/browser/ui/views/extensions/extension_view_utils.h"
+ #include "chrome/browser/ui/views/extensions/extensions_menu_entry_view.h"
++#include "chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h"
+ #include "chrome/grit/generated_resources.h"
+ #include "components/vector_icons/vector_icons.h"
+ #include "extensions/common/extension_id.h"
+@@ -648,7 +649,8 @@ ExtensionsMenuMainPageView::CreateContentsBuilder(
+   // TODO(crbug.com/40891805): Consider making the height dynamic.
+   constexpr int kMaxExtensionButtonsHeightDp = 448;
+ 
+-  return views::Builder<views::ScrollView>()
++  return views::Builder<views::ScrollView>(
++             std::make_unique<ExtensionsMenuScrollView>())
+       .ClipHeightTo(0, kMaxExtensionButtonsHeightDp)
+       .SetDrawOverflowIndicator(false)
+       .SetHorizontalScrollBarMode(views::ScrollView::ScrollBarMode::kDisabled)
+diff --git a/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.cc
+new file mode 100644
+index 0000000000000..53f67fd3568e2
+--- /dev/null
++++ b/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.cc
+@@ -0,0 +1,109 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h"
++
++#include "build/build_config.h"
++#include "ui/base/metadata/metadata_impl_macros.h"
++
++#if BUILDFLAG(IS_WIN)
++#include <algorithm>
++#include <memory>
++
++#include "base/functional/bind.h"
++#include "ui/color/color_provider_key.h"
++#include "ui/native_theme/native_theme.h"
++#include "ui/native_theme/os_settings_provider.h"
++#include "ui/views/controls/scrollbar/overlay_scroll_bar.h"
++#include "ui/views/style/platform_style.h"
++
++namespace {
++
++class ExtensionsMenuOverlayScrollBar : public views::OverlayScrollBar {
++  METADATA_HEADER(ExtensionsMenuOverlayScrollBar, views::OverlayScrollBar)
++
++ public:
++  explicit ExtensionsMenuOverlayScrollBar(int vertical_inset)
++      : OverlayScrollBar(views::ScrollBar::Orientation::kVertical),
++        vertical_inset_(std::max(0, vertical_inset)) {}
++
++  gfx::Insets GetInsets() const override {
++    // Keep both ends clear of the bubble's rounded client clip. Insets are
++    // part of the track geometry, so sizing and dragging use the same range.
++    // Preserve space for a minimum-sized thumb in a very short scroll view.
++    const int max_inset =
++        std::max(0, (height() - GetThumb()->GetPreferredSize({}).height()) / 2);
++    return OverlayScrollBar::GetInsets() +
++           gfx::Insets::VH(std::min(vertical_inset_, max_inset), 0);
++  }
++
++ private:
++  const int vertical_inset_;
++};
++
++BEGIN_METADATA(ExtensionsMenuOverlayScrollBar)
++END_METADATA
++
++}  // namespace
++#endif
++
++ExtensionsMenuScrollView::ExtensionsMenuScrollView(int vertical_scrollbar_inset)
++#if BUILDFLAG(IS_WIN)
++    : vertical_scrollbar_inset_(vertical_scrollbar_inset)
++#endif
++{
++  SetHorizontalScrollBarMode(ScrollBarMode::kDisabled);
++  UpdateScrollBar();
++#if BUILDFLAG(IS_WIN)
++  // Observe OS settings directly: the web-content OverlayScrollbar feature can
++  // prevent a change to the OS auto-hide setting from changing NativeTheme.
++  os_settings_subscription_ =
++      ui::OsSettingsProvider::RegisterOsSettingsChangedCallback(
++          base::BindRepeating(
++              [](ExtensionsMenuScrollView* view, bool /*force_notify*/) {
++                view->UpdateScrollBar();
++              },
++              base::Unretained(this)));
++#endif
++}
++
++ExtensionsMenuScrollView::~ExtensionsMenuScrollView() = default;
++
++void ExtensionsMenuScrollView::OnThemeChanged() {
++  views::ScrollView::OnThemeChanged();
++  UpdateScrollBar();
++}
++
++void ExtensionsMenuScrollView::UpdateScrollBar() {
++#if BUILDFLAG(IS_WIN)
++  const auto& settings = ui::OsSettingsProvider::Get();
++  const ui::NativeTheme* theme =
++      GetWidget() ? GetNativeTheme()
++                  : ui::NativeTheme::GetInstanceForNativeUi();
++  const bool use_overlay =
++      settings.PrefersOverlayScrollbars() && !settings.ForcedColorsActive() &&
++      settings.PreferredContrast() !=
++          ui::NativeTheme::PreferredContrast::kMore &&
++      theme->forced_colors() == ui::ColorProviderKey::ForcedColors::kNone &&
++      theme->preferred_contrast() != ui::NativeTheme::PreferredContrast::kMore;
++  if (vertical_scroll_bar()->OverlapsContent() == use_overlay) {
++    return;
++  }
++
++  if (use_overlay) {
++    SetVerticalScrollBar(std::make_unique<ExtensionsMenuOverlayScrollBar>(
++        vertical_scrollbar_inset_));
++  } else {
++    SetVerticalScrollBar(views::PlatformStyle::CreateScrollBar(
++        views::ScrollBar::Orientation::kVertical));
++  }
++  // The ScrollView retains its contents and scroll offset. Recompute layout
++  // because overlay scrollbars do not reserve space beside the viewport.
++  PreferredSizeChanged();
++  SchedulePaint();
++#endif
++}
++
++BEGIN_METADATA(ExtensionsMenuScrollView)
++END_METADATA
+diff --git a/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h b/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h
+new file mode 100644
+index 0000000000000..ff26012b8559b
+--- /dev/null
++++ b/chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h
+@@ -0,0 +1,38 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef CHROME_BROWSER_UI_VIEWS_EXTENSIONS_EXTENSIONS_MENU_SCROLL_VIEW_H_
++#define CHROME_BROWSER_UI_VIEWS_EXTENSIONS_EXTENSIONS_MENU_SCROLL_VIEW_H_
++
++#include "base/callback_list.h"
++#include "build/build_config.h"
++#include "ui/base/metadata/metadata_header_macros.h"
++#include "ui/views/controls/scroll_view.h"
++
++// Vertical scrolling shared by both extensions menu implementations. On
++// Windows, use Views overlay scrollbars when allowed by the OS accessibility
++// settings.
++class ExtensionsMenuScrollView : public views::ScrollView {
++  METADATA_HEADER(ExtensionsMenuScrollView, views::ScrollView)
++
++ public:
++  // Insets only the Windows overlay scrollbar track, leaving the content
++  // viewport unchanged. Used by the legacy menu to clear its client corners.
++  explicit ExtensionsMenuScrollView(int vertical_scrollbar_inset = 0);
++  ~ExtensionsMenuScrollView() override;
++
++  void OnThemeChanged() override;
++
++ private:
++  void UpdateScrollBar();
++
++#if BUILDFLAG(IS_WIN)
++  const int vertical_scrollbar_inset_;
++#endif
++
++  // Destroyed before the ScrollView, so settings callbacks cannot outlive it.
++  base::CallbackListSubscription os_settings_subscription_;
++};
++
++#endif  // CHROME_BROWSER_UI_VIEWS_EXTENSIONS_EXTENSIONS_MENU_SCROLL_VIEW_H_
+diff --git a/chrome/browser/ui/views/extensions/extensions_menu_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_view.cc
+index b4a17dc70aadf..61f1639f44cd7 100644
+--- a/chrome/browser/ui/views/extensions/extensions_menu_view.cc
++++ b/chrome/browser/ui/views/extensions/extensions_menu_view.cc
+@@ -25,6 +25,7 @@
+ #include "chrome/browser/ui/views/extensions/extension_view_utils.h"
+ #include "chrome/browser/ui/views/extensions/extensions_container_views.h"
+ #include "chrome/browser/ui/views/extensions/extensions_menu_item_view.h"
++#include "chrome/browser/ui/views/extensions/extensions_menu_scroll_view.h"
+ #include "chrome/grit/generated_resources.h"
+ #include "components/vector_icons/vector_icons.h"
+ #include "extensions/common/extension_features.h"
+@@ -160,7 +161,8 @@ void ExtensionsMenuView::Populate() {
+   // TODO(pbos): Consider making this dynamic and handled by views. Ideally we
+   // wouldn't ever pop up so that they pop outside the screen.
+   constexpr int kMaxExtensionButtonsHeightDp = 448;
+-  auto scroll_view = std::make_unique<views::ScrollView>();
++  auto scroll_view =
++      std::make_unique<ExtensionsMenuScrollView>(GetCornerRadius());
+   scroll_view_ = scroll_view.get();
+   scroll_view->ClipHeightTo(0, kMaxExtensionButtonsHeightDp);
+   scroll_view->SetDrawOverflowIndicator(false);

@@ -101,13 +101,13 @@ index d196bdbe91c49..fb770ea32dfa2 100644
          kDismissButtonIconSize);
    }
 diff --git a/ash/login/ui/login_expanded_public_account_view.cc b/ash/login/ui/login_expanded_public_account_view.cc
-index 9e5414fee1bdd..8d8c95572feeb 100644
+index ed5e32a65f81a..1178dfa1a6250 100644
 --- a/ash/login/ui/login_expanded_public_account_view.cc
 +++ b/ash/login/ui/login_expanded_public_account_view.cc
 @@ -21,6 +21,7 @@
  #include "ash/strings/grit/ash_strings.h"
  #include "ash/style/ash_color_id.h"
- #include "ash/style/system_shadow.h"
+ #include "ash/style/system_decoration.h"
 +#include "base/command_line.h"
  #include "base/functional/bind.h"
  #include "base/functional/callback.h"
@@ -310,7 +310,7 @@ index cab082f98af7d..bd74b18133840 100644
            static_cast<int>(arrow_x), static_cast<int>(arrow_y));
      }
 diff --git a/chrome/browser/ash/app_list/app_context_menu.cc b/chrome/browser/ash/app_list/app_context_menu.cc
-index bced2d9b91bd6..3b38c5d9f3fe7 100644
+index c9192c835b4d9..5c7eda322dce6 100644
 --- a/chrome/browser/ash/app_list/app_context_menu.cc
 +++ b/chrome/browser/ash/app_list/app_context_menu.cc
 @@ -12,6 +12,7 @@
@@ -318,10 +318,10 @@ index bced2d9b91bd6..3b38c5d9f3fe7 100644
  #include "ash/resources/vector_icons/vector_icons.h"
  #include "ash/strings/grit/ash_strings.h"
 +#include "base/command_line.h"
- #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/apps/app_service/menu_util.h"
  #include "chrome/browser/ash/app_list/app_context_menu_delegate.h"
-@@ -146,7 +147,10 @@ const gfx::VectorIcon& AppContextMenu::GetMenuItemVectorIcon(int command_id,
+ #include "chrome/browser/ash/app_list/app_list_controller_delegate.h"
+@@ -145,7 +146,10 @@ const gfx::VectorIcon& AppContextMenu::GetMenuItemVectorIcon(int command_id,
      case ash::APP_CONTEXT_MENU_NEW_INCOGNITO_WINDOW:
        return features::IsRoundedIconsEnabled()
                   ? views::kIncognitoIcon
@@ -446,7 +446,7 @@ index 8c9a66fd9acae..ffada0122ec4c 100644
        l10n_util::GetStringUTF16(IDS_CHROMEOS_ACC_LEARN_MORE));
  
 diff --git a/chrome/browser/ash/notifications/request_system_proxy_credentials_view.cc b/chrome/browser/ash/notifications/request_system_proxy_credentials_view.cc
-index 3bbec48ae06f2..bcd73ecc26393 100644
+index 3ab78861562ca..523a66fa0be45 100644
 --- a/chrome/browser/ash/notifications/request_system_proxy_credentials_view.cc
 +++ b/chrome/browser/ash/notifications/request_system_proxy_credentials_view.cc
 @@ -9,6 +9,7 @@
@@ -457,7 +457,7 @@ index 3bbec48ae06f2..bcd73ecc26393 100644
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
  #include "base/i18n/number_formatting.h"
-@@ -159,8 +160,12 @@ void RequestSystemProxyCredentialsView::Init() {
+@@ -160,8 +161,12 @@ void RequestSystemProxyCredentialsView::Init() {
        error_container->AddChildView(std::make_unique<views::ImageView>());
    constexpr int kIconSize = 18;
    error_icon->SetImage(ui::ImageModel::FromVectorIcon(
@@ -522,10 +522,18 @@ index 9645fcbe2aa19..e571643e35fd1 100644
      AddItemWithStringIdAndIcon(
          kContextualCueingEditPromptCommand,
 diff --git a/chrome/browser/glic/browser_ui/glic_selection_widget.cc b/chrome/browser/glic/browser_ui/glic_selection_widget.cc
-index 91ca5d087391c..a99d864c631fa 100644
+index 3e80349aad1c1..be4b4b2429ee9 100644
 --- a/chrome/browser/glic/browser_ui/glic_selection_widget.cc
 +++ b/chrome/browser/glic/browser_ui/glic_selection_widget.cc
-@@ -452,9 +452,13 @@ class GlicSelectionContentsView : public views::View,
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ 
++#include "base/command_line.h"
+ #include "base/feature_list.h"
+ #include "base/strings/strcat.h"
+ #include "base/task/single_thread_task_runner.h"
+@@ -246,9 +247,13 @@ class GlicSelectionContentsView : public views::View {
            views::BoxLayout::CrossAxisAlignment::kCenter);
  
        auto close_tooltip = l10n_util::GetStringUTF16(IDS_CLOSE);
@@ -540,7 +548,7 @@ index 91ca5d087391c..a99d864c631fa 100644
 +                     ? vector_icons::kCloseOldIcon
 +                     : vector_icons::kCloseOldThoriumIcon);
        close_btn_ =
-           close_pill_->AddChildView(views::ImageButton::CreateIconButton(
+           close_pill->AddChildView(views::ImageButton::CreateIconButton(
                base::BindRepeating(
 diff --git a/chrome/browser/indigo/indigo_menu_model.cc b/chrome/browser/indigo/indigo_menu_model.cc
 index 84bb332754c40..bb51e07fb1627 100644
@@ -613,7 +621,7 @@ index 04e88e027a85a..5e79b5c8f8427 100644
  <link id="incognitothemecss" rel="stylesheet">
  <script>
 diff --git a/chrome/browser/supervised_user/linux_mac_windows/parent_access_view.cc b/chrome/browser/supervised_user/linux_mac_windows/parent_access_view.cc
-index 4f33ab60642b2..c2f9beb3a156a 100644
+index 0d8e1366cb49b..db3c660a0e2a0 100644
 --- a/chrome/browser/supervised_user/linux_mac_windows/parent_access_view.cc
 +++ b/chrome/browser/supervised_user/linux_mac_windows/parent_access_view.cc
 @@ -7,6 +7,7 @@
@@ -623,8 +631,8 @@ index 4f33ab60642b2..c2f9beb3a156a 100644
 +#include "base/command_line.h"
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
- #include "base/timer/timer.h"
-@@ -309,12 +310,18 @@ void ParentAccessView::DisplayErrorMessage() {
+ #include "base/memory/weak_ptr.h"
+@@ -292,12 +293,18 @@ void ParentAccessView::DisplayErrorMessage() {
        std::make_unique<views::ImageView>(ui::ImageModel::FromVectorIcon(
            features::IsRoundedIconsEnabled()
                ? vector_icons::kErrorIcon
@@ -673,7 +681,7 @@ index e01f5553e6102..b337ccac8e6e4 100644
    arrow_button_->SetImageHorizontalAlignment(
        views::ImageButton::HorizontalAlignment::ALIGN_CENTER);
 diff --git a/chrome/browser/ui/ash/holding_space/holding_space_downloads_delegate.cc b/chrome/browser/ui/ash/holding_space/holding_space_downloads_delegate.cc
-index f04e1bcca67ae..65d635b839474 100644
+index d87ab64715893..e26646041718f 100644
 --- a/chrome/browser/ui/ash/holding_space/holding_space_downloads_delegate.cc
 +++ b/chrome/browser/ui/ash/holding_space/holding_space_downloads_delegate.cc
 @@ -18,6 +18,7 @@
@@ -683,8 +691,8 @@ index f04e1bcca67ae..65d635b839474 100644
 +#include "base/command_line.h"
  #include "base/memory/raw_ptr.h"
  #include "chrome/browser/ash/file_manager/path_util.h"
- #include "chrome/browser/profiles/profile.h"
-@@ -57,7 +58,10 @@ gfx::ImageSkia CreateErrorPlaceholderImageSkia(
+ #include "chrome/browser/ui/ash/holding_space/holding_space_util.h"
+@@ -56,7 +57,10 @@ gfx::ImageSkia CreateErrorPlaceholderImageSkia(
        gfx::CreateVectorIcon(
            ::features::IsRoundedIconsEnabled()
                ? vector_icons::kErrorIcon
@@ -697,7 +705,7 @@ index f04e1bcca67ae..65d635b839474 100644
            cros_styles::ResolveColor(
                color_name,
 diff --git a/chrome/browser/ui/ash/holding_space/holding_space_keyed_service_unittest.cc b/chrome/browser/ui/ash/holding_space/holding_space_keyed_service_unittest.cc
-index 579b00d3fd286..b0b33cbbacf64 100644
+index dedc30fe040a1..89a8aa2158e52 100644
 --- a/chrome/browser/ui/ash/holding_space/holding_space_keyed_service_unittest.cc
 +++ b/chrome/browser/ui/ash/holding_space/holding_space_keyed_service_unittest.cc
 @@ -23,6 +23,7 @@
@@ -708,7 +716,7 @@ index 579b00d3fd286..b0b33cbbacf64 100644
  #include "base/containers/fixed_flat_set.h"
  #include "base/files/file_path.h"
  #include "base/files/file_util.h"
-@@ -2437,7 +2438,11 @@ TEST_F(HoldingSpaceKeyedServiceTest, AddInProgressDownloadItem) {
+@@ -2423,7 +2424,11 @@ TEST_F(HoldingSpaceKeyedServiceTest, AddInProgressDownloadItem) {
                        gfx::CreateVectorIcon(
                            ::features::IsRoundedIconsEnabled()
                                ? vector_icons::kErrorIcon
@@ -721,7 +729,7 @@ index 579b00d3fd286..b0b33cbbacf64 100644
                            kHoldingSpaceIconSize,
                            cros_styles::ResolveColor(
                                cros_styles::ColorName::kIconColorAlert,
-@@ -2478,7 +2483,11 @@ TEST_F(HoldingSpaceKeyedServiceTest, AddInProgressDownloadItem) {
+@@ -2464,7 +2469,11 @@ TEST_F(HoldingSpaceKeyedServiceTest, AddInProgressDownloadItem) {
                        gfx::CreateVectorIcon(
                            ::features::IsRoundedIconsEnabled()
                                ? vector_icons::kErrorIcon
@@ -761,62 +769,8 @@ index 2137b50ea96e3..b9c989dc970ec 100644
            ui::kColorSysOnSurface, kPhoneticsAudioButtonSizeDip));
    phonetics_audio_button_->SetBorder(
        views::CreateEmptyBorder(kPhoneticsAudioButtonBorderDip));
-diff --git a/chrome/browser/ui/ash/quick_answers/ui/rich_answers_definition_view.cc b/chrome/browser/ui/ash/quick_answers/ui/rich_answers_definition_view.cc
-index 013e08040ce96..0082dc543000e 100644
---- a/chrome/browser/ui/ash/quick_answers/ui/rich_answers_definition_view.cc
-+++ b/chrome/browser/ui/ash/quick_answers/ui/rich_answers_definition_view.cc
-@@ -4,6 +4,7 @@
- 
- #include "chrome/browser/ui/ash/quick_answers/ui/rich_answers_definition_view.h"
- 
-+#include "base/command_line.h"
- #include "base/functional/bind.h"
- #include "base/strings/string_util.h"
- #include "chrome/browser/profiles/profile_manager.h"
-@@ -138,8 +139,12 @@ void RichAnswersDefinitionView::AddPhoneticsAudioButtonTo(
-       weak_factory_.GetWeakPtr());
-   ui::ImageModel phonetics_audio_button_closure_image_model =
-       ui::ImageModel::FromVectorIcon(
--          features::IsRoundedIconsEnabled() ? vector_icons::kVolumeUpFilledIcon
--                                            : vector_icons::kVolumeUpOldIcon,
-+          features::IsRoundedIconsEnabled()
-+              ? vector_icons::kVolumeUpFilledIcon
-+              : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                     "disable-thorium-icons")
-+                     ? vector_icons::kVolumeUpOldIcon
-+                     : vector_icons::kVolumeUpOldThoriumIcon),
-           ui::kColorSysOnSurface, kRichAnswersIconSizeDip);
-   views::ImageButton* button_view =
-       container_view->AddChildView(CreateImageButtonView(
-diff --git a/chrome/browser/ui/ash/quick_answers/ui/rich_answers_translation_view.cc b/chrome/browser/ui/ash/quick_answers/ui/rich_answers_translation_view.cc
-index 82abc25c46bfe..b68dd334aa0c2 100644
---- a/chrome/browser/ui/ash/quick_answers/ui/rich_answers_translation_view.cc
-+++ b/chrome/browser/ui/ash/quick_answers/ui/rich_answers_translation_view.cc
-@@ -4,6 +4,7 @@
- 
- #include "chrome/browser/ui/ash/quick_answers/ui/rich_answers_translation_view.h"
- 
-+#include "base/command_line.h"
- #include "base/functional/bind.h"
- #include "base/strings/utf_string_conversions.h"
- #include "chrome/browser/profiles/profile_manager.h"
-@@ -145,8 +146,12 @@ void RichAnswersTranslationView::AddReadAndCopyButtons(
-       weak_factory_.GetWeakPtr(), translation_result_.translated_text,
-       translation_result_.target_locale);
-   ui::ImageModel read_image_model = ui::ImageModel::FromVectorIcon(
--      features::IsRoundedIconsEnabled() ? vector_icons::kVolumeUpFilledIcon
--                                        : vector_icons::kVolumeUpOldIcon,
-+      features::IsRoundedIconsEnabled()
-+          ? vector_icons::kVolumeUpFilledIcon
-+          : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                 "disable-thorium-icons")
-+                 ? vector_icons::kVolumeUpOldIcon
-+                 : vector_icons::kVolumeUpOldThoriumIcon),
-       ui::kColorSysOnSurface,
-       /*icon_size=*/kRichAnswersIconSizeDip);
-   container_view->AddChildView(CreateImageButtonView(
 diff --git a/chrome/browser/ui/ash/shelf/shelf_context_menu.cc b/chrome/browser/ui/ash/shelf/shelf_context_menu.cc
-index d274a83ec2f34..9833ec2a2e2f5 100644
+index d6ccb19396194..70bce25465ff4 100644
 --- a/chrome/browser/ui/ash/shelf/shelf_context_menu.cc
 +++ b/chrome/browser/ui/ash/shelf/shelf_context_menu.cc
 @@ -11,6 +11,7 @@
@@ -825,9 +779,9 @@ index d274a83ec2f34..9833ec2a2e2f5 100644
  #include "ash/strings/grit/ash_strings.h"
 +#include "base/command_line.h"
  #include "base/metrics/user_metrics.h"
- #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/apps/app_service/app_service_proxy.h"
-@@ -243,7 +244,10 @@ const gfx::VectorIcon& ShelfContextMenu::GetCommandIdVectorIcon(
+ #include "chrome/browser/apps/app_service/app_service_proxy_factory.h"
+@@ -242,7 +243,10 @@ const gfx::VectorIcon& ShelfContextMenu::GetCommandIdVectorIcon(
      case ash::APP_CONTEXT_MENU_NEW_INCOGNITO_WINDOW:
        return features::IsRoundedIconsEnabled()
                   ? views::kIncognitoIcon
@@ -840,7 +794,7 @@ index d274a83ec2f34..9833ec2a2e2f5 100644
      case ash::USE_LAUNCH_TYPE_WINDOW:
      case ash::USE_LAUNCH_TYPE_TABBED_WINDOW:
 diff --git a/chrome/browser/ui/browser_actions.cc b/chrome/browser/ui/browser_actions.cc
-index 5f8929f14bc62..027ebc7ec1083 100644
+index cbf4a6b5596c2..a115c68b7b0a2 100644
 --- a/chrome/browser/ui/browser_actions.cc
 +++ b/chrome/browser/ui/browser_actions.cc
 @@ -12,6 +12,7 @@
@@ -848,11 +802,11 @@ index 5f8929f14bc62..027ebc7ec1083 100644
  #include "base/check_deref.h"
  #include "base/check_op.h"
 +#include "base/command_line.h"
+ #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
- #include "base/metrics/histogram_functions.h"
-@@ -886,9 +887,12 @@ void BrowserActions::InitializePageActionIconActions() {
-               l10n_util::GetStringUTF16(IDS_FIND)))
+@@ -990,9 +991,12 @@ void BrowserActions::InitializePageActionIconActions() {
+           .SetText(GetCleanTitleText(l10n_util::GetStringUTF16(IDS_FIND)))
            .SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_FIND))
            .SetImage(ui::ImageModel::FromVectorIcon(
 -              features::IsRoundedIconsEnabled()
@@ -867,7 +821,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
            .SetAccelerator(GetAcceleratorForCommandId(IDC_FIND))
            .Build());
  
-@@ -1047,6 +1051,9 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1151,6 +1155,9 @@ void BrowserActions::InitializeChromeMenuActions() {
    TabStripModel* const tab_strip_model = bwi_->GetTabStripModel();
    BrowserWindowInterface* const bwi = base::to_address(bwi_);
    const bool is_guest_session = profile->IsGuestSession();
@@ -877,7 +831,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
  
    root_action_item_->AddChild(
        ChromeMenuAction(
-@@ -1060,8 +1067,13 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1164,8 +1171,13 @@ void BrowserActions::InitializeChromeMenuActions() {
                profile),
            kActionNewIncognitoWindow, IDS_NEW_INCOGNITO_WINDOW,
            IDS_NEW_INCOGNITO_WINDOW,
@@ -893,7 +847,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
            .SetEnabled(IncognitoModePrefs::IsIncognitoTypeAllowed(
                profile, IncognitoModePrefs::IncognitoModeType::kStandard))
            .SetProperty(actions::kShortTitleTextKey,
-@@ -1324,8 +1336,10 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1440,8 +1452,10 @@ void BrowserActions::InitializeChromeMenuActions() {
                bwi, is_incognito),
            kActionClearBrowsingData, IDS_CLEAR_BROWSING_DATA,
            IDS_CLEAR_BROWSING_DATA,
@@ -906,9 +860,9 @@ index 5f8929f14bc62..027ebc7ec1083 100644
            .SetEnabled(is_incognito ||
                        (!is_guest_session && !profile->IsSystemProfile()))
            .SetAccelerator(GetAcceleratorForCommandId(IDC_CLEAR_BROWSING_DATA))
-@@ -1513,8 +1527,12 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1623,8 +1637,12 @@ void BrowserActions::InitializeChromeMenuActions() {
                l10n_util::GetStringUTF16(IDS_BOOKMARK_THIS_TAB)))
-           .SetTooltipText(BrowserActions::GetCleanTitleAndTooltipText(
+           .SetTooltipText(GetCleanTooltipText(
                l10n_util::GetStringUTF16(IDS_BOOKMARK_THIS_TAB)))
 -          .SetImage(ui::ImageModel::FromVectorIcon(omnibox::kStarIcon,
 -                                                   ui::kColorIcon))
@@ -921,7 +875,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
            .SetAccelerator(GetAcceleratorForCommandId(IDC_BOOKMARK_THIS_TAB))
            .Build());
  
-@@ -1621,8 +1639,11 @@ void BrowserActions::InitializeChromeMenuActions() {
+@@ -1731,8 +1749,11 @@ void BrowserActions::InitializeChromeMenuActions() {
                  },
                  bwi),
              kActionShowChromeLabs, IDS_CHROMELABS, IDS_CHROMELABS,
@@ -935,7 +889,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
              .SetVisible(ShouldShowChromeLabsUI(profile))
              .Build());
    }
-@@ -4420,7 +4441,10 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
+@@ -4536,7 +4557,10 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
            .SetImage(ui::ImageModel::FromVectorIcon(
                features::IsRoundedIconsEnabled()
                    ? vector_icons::kInfoIcon
@@ -947,7 +901,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
            .Build());
  
    root_action_item_->AddChild(
-@@ -4558,19 +4582,23 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
+@@ -4704,19 +4728,23 @@ void BrowserActions::InitializeToolbarAndMiscActions() {
  
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    root_action_item_->AddChild(
@@ -985,7 +939,7 @@ index 5f8929f14bc62..027ebc7ec1083 100644
  #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
  
 diff --git a/chrome/browser/ui/cocoa/touchbar/browser_window_default_touch_bar.mm b/chrome/browser/ui/cocoa/touchbar/browser_window_default_touch_bar.mm
-index ac305c70d807f..85ce7b2571b27 100644
+index 74fff7ebe34ff..3ee1e226c7dee 100644
 --- a/chrome/browser/ui/cocoa/touchbar/browser_window_default_touch_bar.mm
 +++ b/chrome/browser/ui/cocoa/touchbar/browser_window_default_touch_bar.mm
 @@ -6,6 +6,7 @@
@@ -996,7 +950,7 @@ index ac305c70d807f..85ce7b2571b27 100644
  #include "base/functional/bind.h"
  #include "base/mac/mac_util.h"
  #include "base/memory/raw_ptr.h"
-@@ -393,12 +394,16 @@ class TouchBarNotificationBridge : public CommandObserver,
+@@ -394,12 +395,16 @@ class TouchBarNotificationBridge : public CommandObserver,
          setCustomizationLabel:l10n_util::GetNSString(
                                    IDS_TOUCH_BAR_HOME_CUSTOMIZATION_LABEL)];
    } else if ([identifier hasSuffix:kNewTabTouchId]) {
@@ -1019,7 +973,7 @@ index ac305c70d807f..85ce7b2571b27 100644
      [touchBarItem
          setCustomizationLabel:l10n_util::GetNSString(
                                    IDS_TOUCH_BAR_NEW_TAB_CUSTOMIZATION_LABEL)];
-@@ -668,8 +673,12 @@ class TouchBarNotificationBridge : public CommandObserver,
+@@ -669,8 +674,12 @@ class TouchBarNotificationBridge : public CommandObserver,
  
  + (NSImage*)starDefaultIcon {
    static __strong NSImage* starDefaultIcon = CreateNSImageFromIcon(
@@ -1034,7 +988,7 @@ index ac305c70d807f..85ce7b2571b27 100644
        kTouchBarDefaultIconColor);
    return starDefaultIcon;
  }
-@@ -680,10 +689,14 @@ class TouchBarNotificationBridge : public CommandObserver,
+@@ -681,10 +690,14 @@ class TouchBarNotificationBridge : public CommandObserver,
  
  + (NSImage*)starActiveIcon {
    static __strong NSImage* starActiveIcon = []() {
@@ -1054,10 +1008,10 @@ index ac305c70d807f..85ce7b2571b27 100644
    return starActiveIcon;
  }
 diff --git a/chrome/browser/ui/content_settings/content_setting_image_model.cc b/chrome/browser/ui/content_settings/content_setting_image_model.cc
-index fba5177309b77..41fdd8c0f95e4 100644
+index f0c2205da3ba3..2d799ab588d4b 100644
 --- a/chrome/browser/ui/content_settings/content_setting_image_model.cc
 +++ b/chrome/browser/ui/content_settings/content_setting_image_model.cc
-@@ -8,6 +8,7 @@
+@@ -9,6 +9,7 @@
  #include <string>
  #include <utility>
  
@@ -1065,7 +1019,7 @@ index fba5177309b77..41fdd8c0f95e4 100644
  #include "base/feature_list.h"
  #include "base/metrics/field_trial_params.h"
  #include "base/metrics/user_metrics.h"
-@@ -466,6 +467,9 @@ const ContentSettingsImageDetails* GetImageDetails(ContentSettingsType type) {
+@@ -468,6 +469,9 @@ const ContentSettingsImageDetails* GetImageDetails(ContentSettingsType type) {
  void GetIconChromeRefresh(ContentSettingsType type,
                            bool blocked,
                            raw_ptr<const gfx::VectorIcon>* icon) {
@@ -1075,7 +1029,7 @@ index fba5177309b77..41fdd8c0f95e4 100644
    switch (type) {
      case ContentSettingsType::COOKIES:
        *icon = blocked ? &(features::IsRoundedIconsEnabled()
-@@ -496,18 +500,34 @@ void GetIconChromeRefresh(ContentSettingsType type,
+@@ -498,18 +502,34 @@ void GetIconChromeRefresh(ContentSettingsType type,
            blocked
                ? &(features::IsRoundedIconsEnabled()
                        ? vector_icons::kWarningOffIcon
@@ -1140,7 +1094,7 @@ index 29eb774f5c610..a06188f3c2c7b 100644
    } else {
      actions.emplace_back(DownloadCommands::Command::SHOW_IN_FOLDER,
 diff --git a/chrome/browser/ui/extensions/extensions_toolbar_view_model.cc b/chrome/browser/ui/extensions/extensions_toolbar_view_model.cc
-index 7788832d4dca0..7702ad8d24989 100644
+index 962ca7ec2112d..859a84729be88 100644
 --- a/chrome/browser/ui/extensions/extensions_toolbar_view_model.cc
 +++ b/chrome/browser/ui/extensions/extensions_toolbar_view_model.cc
 @@ -4,6 +4,7 @@
@@ -1170,7 +1124,7 @@ index 7788832d4dca0..7702ad8d24989 100644
        return features::IsRoundedIconsEnabled()
                   ? vector_icons::kChromeExtensionOffIcon
 diff --git a/chrome/browser/ui/extensions/reload_page_dialog_controller.cc b/chrome/browser/ui/extensions/reload_page_dialog_controller.cc
-index f7d3b3a2f932e..760970f3cdee7 100644
+index 100928156cd50..e295362803f77 100644
 --- a/chrome/browser/ui/extensions/reload_page_dialog_controller.cc
 +++ b/chrome/browser/ui/extensions/reload_page_dialog_controller.cc
 @@ -5,6 +5,7 @@
@@ -1236,7 +1190,7 @@ index 069ed1bddbb46..7759b43a1b6fe 100644
  
  // GlobalErrorWithStandardBubble ---------------------------------------------
 diff --git a/chrome/browser/ui/infobars/browser_infobar_registry.cc b/chrome/browser/ui/infobars/browser_infobar_registry.cc
-index ebce29d5f03e7..2e88f0da05425 100644
+index f581cb7b684cc..c0974327fee9f 100644
 --- a/chrome/browser/ui/infobars/browser_infobar_registry.cc
 +++ b/chrome/browser/ui/infobars/browser_infobar_registry.cc
 @@ -7,6 +7,7 @@
@@ -1245,9 +1199,9 @@ index ebce29d5f03e7..2e88f0da05425 100644
  #include "base/check.h"
 +#include "base/command_line.h"
  #include "base/functional/bind.h"
+ #include "base/location.h"
  #include "base/strings/utf_string_conversions.h"
- #include "build/branding_buildflags.h"
-@@ -418,7 +419,10 @@ void RegisterInfoBars() {
+@@ -538,7 +539,10 @@ void RegisterInfoBars() {
                  IDS_OSCRYPTASYNC_AVAILABILITY_INFOBAR_MESSAGE))
              .SetIcon(features::IsRoundedIconsEnabled()
                           ? vector_icons::kErrorFilledIcon
@@ -1260,7 +1214,7 @@ index ebce29d5f03e7..2e88f0da05425 100644
              .SetPriority(InfoBarDelegate::InfobarPriority::kCriticalSecurity)
              .SetExpireOnNavigation(false)
 diff --git a/chrome/browser/ui/lens/lens_overlay_side_panel_coordinator.cc b/chrome/browser/ui/lens/lens_overlay_side_panel_coordinator.cc
-index 57a5c41e4b4fa..4e01f52e632d8 100644
+index 9d9b3e84b8b65..8e2a5ba9b4337 100644
 --- a/chrome/browser/ui/lens/lens_overlay_side_panel_coordinator.cc
 +++ b/chrome/browser/ui/lens/lens_overlay_side_panel_coordinator.cc
 @@ -6,6 +6,7 @@
@@ -1292,7 +1246,7 @@ index 57a5c41e4b4fa..4e01f52e632d8 100644
    if (!lens::features::IsLensSearchSidePanelNewFeedbackEnabled()) {
      menu_model->AddItemWithIcon(
 diff --git a/chrome/browser/ui/lens/lens_preselection_bubble.cc b/chrome/browser/ui/lens/lens_preselection_bubble.cc
-index 4805c2e3c3a2d..3ca66b88f9a44 100644
+index 77b557f3eb55c..cae3c06d11678 100644
 --- a/chrome/browser/ui/lens/lens_preselection_bubble.cc
 +++ b/chrome/browser/ui/lens/lens_preselection_bubble.cc
 @@ -6,6 +6,7 @@
@@ -1303,7 +1257,7 @@ index 4805c2e3c3a2d..3ca66b88f9a44 100644
  #include "base/strings/utf_string_conversions.h"
  #include "base/time/time.h"
  #include "build/branding_buildflags.h"
-@@ -114,7 +115,10 @@ void LensPreselectionBubble::Init() {
+@@ -113,7 +114,10 @@ void LensPreselectionBubble::Init() {
    if (offline_) {
      icon = &(::features::IsRoundedIconsEnabled()
                   ? vector_icons::kErrorIcon
@@ -1316,7 +1270,7 @@ index 4805c2e3c3a2d..3ca66b88f9a44 100644
      icon = icon_;
    }
 diff --git a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
-index a963ba99c7312..c4189de4f2426 100644
+index dbbaff768edd7..d0accffe90914 100644
 --- a/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
 +++ b/chrome/browser/ui/omnibox/omnibox_pedal_implementations.cc
 @@ -4,6 +4,7 @@
@@ -1326,8 +1280,8 @@ index a963ba99c7312..c4189de4f2426 100644
 +#include "base/command_line.h"
  #include "base/feature_list.h"
  #include "base/metrics/histogram_functions.h"
- #include "base/strings/utf_string_conversions.h"
-@@ -1333,8 +1334,15 @@ class OmniboxPedalCloseIncognitoWindows : public OmniboxPedal {
+ #include "base/strings/strcat.h"
+@@ -1335,8 +1336,15 @@ class OmniboxPedalCloseIncognitoWindows : public OmniboxPedal {
              GURL()) {}
  
    const gfx::VectorIcon& GetVectorIcon() const override {
@@ -1402,7 +1356,7 @@ index ec88c66c8f4f0..4cb5038d98328 100644
  
  std::u16string OSCryptAsyncAvailabilityInfoBarDelegate::GetMessageText() const {
 diff --git a/chrome/browser/ui/tabs/alert/tab_alert_icon.cc b/chrome/browser/ui/tabs/alert/tab_alert_icon.cc
-index 8e4e2c01a2336..56ac7abc211c8 100644
+index 2700275175582..f1f0a40b7f3a5 100644
 --- a/chrome/browser/ui/tabs/alert/tab_alert_icon.cc
 +++ b/chrome/browser/ui/tabs/alert/tab_alert_icon.cc
 @@ -4,6 +4,7 @@
@@ -1413,7 +1367,7 @@ index 8e4e2c01a2336..56ac7abc211c8 100644
  #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/glic/browser_ui/glic_vector_icon_manager.h"
  #include "chrome/browser/ui/color/chrome_color_id.h"
-@@ -66,15 +67,24 @@ ui::ColorId GetAlertIndicatorColor(TabAlert state,
+@@ -67,15 +68,24 @@ ui::ColorId GetAlertIndicatorColor(TabAlert state,
  }
  
  const gfx::VectorIcon& GetAlertIcon(TabAlert alert_state) {
@@ -1442,11 +1396,11 @@ index 8e4e2c01a2336..56ac7abc211c8 100644
      case TabAlert::kAudioRecording:
      case TabAlert::kVideoRecording:
 diff --git a/chrome/browser/ui/tabs/tab_menu_model.cc b/chrome/browser/ui/tabs/tab_menu_model.cc
-index 04698435ceec5..8bdef90dc40e4 100644
+index dd307ca2374dc..733674956dbd3 100644
 --- a/chrome/browser/ui/tabs/tab_menu_model.cc
 +++ b/chrome/browser/ui/tabs/tab_menu_model.cc
-@@ -537,15 +537,24 @@ void TabMenuModel::Build(int index) {
-                           IDS_TAB_CXMENU_SOUND_UNMUTE_SITE, num_tabs));
+@@ -584,15 +584,24 @@ void TabMenuModel::Build(int index) {
+   }
  
    if (features::IsMenuSimplificationEnabled()) {
 +    static const bool disable_thorium_icons =
@@ -1476,7 +1430,7 @@ index 04698435ceec5..8bdef90dc40e4 100644
    }
  
 diff --git a/chrome/browser/ui/toasts/toast_service.cc b/chrome/browser/ui/toasts/toast_service.cc
-index 9b2b675d3188c..931ac7d77dc2a 100644
+index 0479210e7ec60..29a3c36c84d1a 100644
 --- a/chrome/browser/ui/toasts/toast_service.cc
 +++ b/chrome/browser/ui/toasts/toast_service.cc
 @@ -6,6 +6,7 @@
@@ -1487,7 +1441,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "build/branding_buildflags.h"
-@@ -205,7 +206,12 @@ void ToastService::RegisterToasts(
+@@ -201,7 +202,12 @@ void ToastService::RegisterToasts() {
      toast_registry_->RegisterToast(
          ToastId::kSyncEsbOff,
          ToastSpecification::Builder(
@@ -1501,7 +1455,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
              IDS_SETTINGS_SAFEBROWSING_ENHANCED_OFF_TOAST_MESSAGE)
              .AddActionButton(
                  IDS_SETTINGS_SAFEBROWSING_TURN_ON_ENHANCED_TOAST_BUTTON,
-@@ -358,17 +364,26 @@ void ToastService::RegisterToasts(
+@@ -346,17 +352,26 @@ void ToastService::RegisterToasts() {
  
    toast_registry_->RegisterToast(
        ToastId::kGlicShareImageFailed,
@@ -1533,7 +1487,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
            IDS_COPIED_TO_CLIPBOARD_TOAST_BODY)
            .Build());
  
-@@ -436,7 +451,12 @@ void ToastService::RegisterToasts(
+@@ -419,7 +434,12 @@ void ToastService::RegisterToasts() {
    toast_registry_->RegisterToast(
        ToastId::kRecordReplay,
        ToastSpecification::Builder(
@@ -1547,7 +1501,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
            .Build());
  
    toast_registry_->RegisterToast(
-@@ -500,7 +520,10 @@ void ToastService::RegisterToasts(
+@@ -482,7 +502,10 @@ void ToastService::RegisterToasts() {
          ToastSpecification::Builder(
              features::IsRoundedIconsEnabled()
                  ? vector_icons::kInfoIcon
@@ -1559,7 +1513,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
              IDS_AUTOFILL_AT_MEMORY_FETCH_ERROR_NOTIFICATION)
              .AddGlobalScoped()
              .Build());
-@@ -604,18 +627,26 @@ void ToastService::RegisterToasts(
+@@ -582,18 +605,26 @@ void ToastService::RegisterToasts() {
  
    toast_registry_->RegisterToast(
        ToastId::kSendTabToSelfFailure,
@@ -1592,7 +1546,7 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
            IDS_SEND_TAB_TO_SELF_POST_SEND_NO_INTERNET_TOAST)
            .AddCloseButton()
            .Build());
-@@ -644,10 +675,14 @@ void ToastService::RegisterToasts(
+@@ -622,10 +653,14 @@ void ToastService::RegisterToasts() {
    if (base::FeatureList::IsEnabled(features::kIndigo)) {
      toast_registry_->RegisterToast(
          ToastId::kIndigoInvokeError,
@@ -1610,8 +1564,8 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
 +            IDS_INDIGO_INVOKE_ERROR_TOAST_BODY)
              .AddActionButton(
                  IDS_INDIGO_INVOKE_ERROR_TOAST_TRY_AGAIN_BUTTON,
-                 base::BindRepeating(
-@@ -666,10 +701,14 @@ void ToastService::RegisterToasts(
+                 base::BindRepeating([](BrowserWindowInterface* window) {
+@@ -641,10 +676,14 @@ void ToastService::RegisterToasts() {
              .Build());
      toast_registry_->RegisterToast(
          ToastId::kIndigoDeleteError,
@@ -1629,8 +1583,8 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
 +            IDS_INDIGO_DELETE_ERROR_TOAST_BODY)
              .AddActionButton(
                  IDS_INDIGO_DELETE_ERROR_TOAST_TRY_AGAIN_BUTTON,
-                 base::BindRepeating(
-@@ -779,10 +818,14 @@ void ToastService::RegisterToasts(
+                 base::BindRepeating([](BrowserWindowInterface* window) {
+@@ -755,10 +794,14 @@ void ToastService::RegisterToasts() {
    if (base::FeatureList::IsEnabled(dictation::kDictation)) {
      toast_registry_->RegisterToast(
          ToastId::kDictationError,
@@ -1650,10 +1604,10 @@ index 9b2b675d3188c..931ac7d77dc2a 100644
      toast_registry_->RegisterToast(
          ToastId::kDictationNoMicrophoneError,
 diff --git a/chrome/browser/ui/toolbar/app_menu_model.cc b/chrome/browser/ui/toolbar/app_menu_model.cc
-index 81d940b0c57b4..17a4ad2af1b0b 100644
+index 76f02d993c7f1..7b00028e9ea84 100644
 --- a/chrome/browser/ui/toolbar/app_menu_model.cc
 +++ b/chrome/browser/ui/toolbar/app_menu_model.cc
-@@ -354,16 +354,24 @@ SigninSectionInfo ComputeSigninSectionInfo(Profile* profile) {
+@@ -371,16 +371,24 @@ SigninSectionInfo ComputeSigninSectionInfo(Profile* profile) {
          case syncer::SyncService::UserActionableError::kNeedsClientUpgrade:
            info.command_id = IDC_UPGRADE_DIALOG;
            info.has_actionable_error = true;
@@ -1684,7 +1638,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
            break;
          case syncer::SyncService::UserActionableError::
              kNeedsSettingsConfirmation:
-@@ -371,9 +379,13 @@ SigninSectionInfo ComputeSigninSectionInfo(Profile* profile) {
+@@ -388,9 +396,13 @@ SigninSectionInfo ComputeSigninSectionInfo(Profile* profile) {
            // Only shown for "Sync-the-feature".
            info.command_id = IDC_SHOW_SYNC_SETTINGS;
            info.has_actionable_error = true;
@@ -1701,7 +1655,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
            break;
          case syncer::SyncService::UserActionableError::kBookmarksLimitExceeded:
            // For this specific error (as opposed to all others), there is no
-@@ -686,13 +698,18 @@ void ProfileSubMenuModel::BuildCustomizeProfileRow(Profile* profile) {
+@@ -703,13 +715,18 @@ void ProfileSubMenuModel::BuildCustomizeProfileRow(Profile* profile) {
  }
  
  void ProfileSubMenuModel::BuildCloseProfileRow(Profile* profile) {
@@ -1723,7 +1677,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
                        ui::kColorMenuIcon, kDefaultIconSize));
  }
  
-@@ -1002,8 +1019,12 @@ void HelpMenuModel::Build(BrowserWindowInterface* browser) {
+@@ -987,8 +1004,12 @@ void HelpMenuModel::Build(BrowserWindowInterface* browser) {
      if (feedback::ReportUnsafeSiteDialog::IsEnabled(*browser->GetProfile())) {
        AddItemWithStringIdAndVectorIcon(
            this, IDC_REPORT_UNSAFE_SITE, IDS_REPORT_UNSAFE_SITE,
@@ -1756,17 +1710,17 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
    SetElementIdentifierAt(
        GetIndexOfCommandId(IDC_EXTENSIONS_SUBMENU_MANAGE_EXTENSIONS).value(),
        kManageExtensionsMenuItem);
-@@ -2090,6 +2116,9 @@ void AppMenuModel::Build() {
+@@ -2125,6 +2151,9 @@ void AppMenuModel::Build() {
    // Build (and, by extension, Init) should only be called once.
-   DCHECK_EQ(0u, GetItemCount());
+   CHECK_EQ(0u, GetItemCount(), base::NotFatalUntil::M162);
  
 +  static const bool disable_thorium_icons =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch(
 +          "disable-thorium-icons");
+   bool has_scheduled_restart_item = false;
    if (app_menu_icon_controller_ &&
        app_menu_icon_controller_->GetTypeAndSeverity().type ==
-           AppMenuIconController::IconType::kUpgradeNotification) {
-@@ -2097,7 +2126,10 @@ void AppMenuModel::Build() {
+@@ -2133,7 +2162,10 @@ void AppMenuModel::Build() {
      const auto update_icon = ui::ImageModel::FromVectorIcon(
          features::IsRoundedIconsEnabled()
              ? kRocketLaunchIcon
@@ -1778,7 +1732,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
          ui::kColorMenuIconOnEmphasizedBackground, kDefaultIconSize);
      if (browser_defaults::kShowUpgradeMenuItem) {
        AddItemWithIcon(IDC_UPGRADE_DIALOG, GetUpgradeDialogTitleText(),
-@@ -2131,8 +2163,12 @@ void AppMenuModel::Build() {
+@@ -2168,8 +2200,12 @@ void AppMenuModel::Build() {
    if (!browser_->GetProfile()->IsGuestSession()) {
      AddItemWithStringIdAndVectorIcon(
          this, IDC_NEW_INCOGNITO_WINDOW, IDS_NEW_INCOGNITO_WINDOW,
@@ -1793,8 +1747,8 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
      SetElementIdentifierAt(
          GetIndexOfCommandId(IDC_NEW_INCOGNITO_WINDOW).value(),
          kIncognitoMenuItem);
-@@ -2235,9 +2271,13 @@ void AppMenuModel::Build() {
-       !extensions::ui_util::HasManageableExtensions(browser_->GetProfile())) {
+@@ -2305,9 +2341,13 @@ void AppMenuModel::Build() {
+                  browser_->GetProfile())) {
      AddItemWithStringIdAndVectorIcon(
          this, IDC_FIND_EXTENSIONS, IDS_FIND_EXTENSIONS,
 -        features::IsRoundedIconsEnabled()
@@ -1810,7 +1764,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
      SetElementIdentifierAt(GetIndexOfCommandId(IDC_FIND_EXTENSIONS).value(),
                             ExtensionsMenuModel::kVisitChromeWebStoreMenuItem);
    } else {
-@@ -2245,9 +2285,13 @@ void AppMenuModel::Build() {
+@@ -2315,9 +2355,13 @@ void AppMenuModel::Build() {
      AddSubMenuWithStringIdAndVectorIcon(
          this, kExtensionsSubmenuPlaceholder, IDS_EXTENSIONS_SUBMENU,
          sub_menus_.back().get(),
@@ -1827,7 +1781,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
      SetElementIdentifierAt(
          GetIndexOfCommandId(kExtensionsSubmenuPlaceholder).value(),
          kExtensionsMenuItem);
-@@ -2270,7 +2314,10 @@ void AppMenuModel::Build() {
+@@ -2325,7 +2369,10 @@ void AppMenuModel::Build() {
  
    AddItemWithStringIdAndVectorIcon(
        this, IDC_CLEAR_BROWSING_DATA, IDS_CLEAR_BROWSING_DATA,
@@ -1840,7 +1794,7 @@ index 81d940b0c57b4..17a4ad2af1b0b 100644
                           kClearBrowsingDataMenuItem);
  
 diff --git a/chrome/browser/ui/views/app_menu/profile_dynamic_menu.cc b/chrome/browser/ui/views/app_menu/profile_dynamic_menu.cc
-index 6a7c2b6511ee4..73b9947d40aa3 100644
+index 1c0355fb3be06..07e3774c370e4 100644
 --- a/chrome/browser/ui/views/app_menu/profile_dynamic_menu.cc
 +++ b/chrome/browser/ui/views/app_menu/profile_dynamic_menu.cc
 @@ -9,6 +9,7 @@
@@ -1851,7 +1805,7 @@ index 6a7c2b6511ee4..73b9947d40aa3 100644
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -277,14 +278,20 @@ bool ProfileDynamicMenu::BuildSyncSectionImpl(actions::BaseAction* parent_item,
+@@ -275,14 +276,20 @@ bool ProfileDynamicMenu::BuildSyncSectionImpl(actions::BaseAction* parent_item,
            action_id = kActionUpgradeDialog;
            icon = &(features::IsRoundedIconsEnabled()
                         ? vector_icons::kErrorIcon
@@ -1874,7 +1828,7 @@ index 6a7c2b6511ee4..73b9947d40aa3 100644
            break;
          case syncer::SyncService::UserActionableError::
              kNeedsSettingsConfirmation:
-@@ -293,7 +300,10 @@ bool ProfileDynamicMenu::BuildSyncSectionImpl(actions::BaseAction* parent_item,
+@@ -291,7 +298,10 @@ bool ProfileDynamicMenu::BuildSyncSectionImpl(actions::BaseAction* parent_item,
            action_id = kActionShowSyncSettings;
            icon = &(features::IsRoundedIconsEnabled()
                         ? vector_icons::kErrorIcon
@@ -1887,7 +1841,7 @@ index 6a7c2b6511ee4..73b9947d40aa3 100644
          case syncer::SyncService::UserActionableError::kBookmarksLimitExceeded:
            return true;
 diff --git a/chrome/browser/ui/views/app_menu/tab_group_dynamic_menu.cc b/chrome/browser/ui/views/app_menu/tab_group_dynamic_menu.cc
-index 3864eb9a90672..9a293383e7510 100644
+index e8f8d05b36233..1a83bbf36f0ae 100644
 --- a/chrome/browser/ui/views/app_menu/tab_group_dynamic_menu.cc
 +++ b/chrome/browser/ui/views/app_menu/tab_group_dynamic_menu.cc
 @@ -10,6 +10,7 @@
@@ -1898,7 +1852,7 @@ index 3864eb9a90672..9a293383e7510 100644
  #include "base/functional/bind.h"
  #include "base/uuid.h"
  #include "chrome/app/vector_icons/vector_icons.h"
-@@ -315,8 +316,12 @@ void TabGroupDynamicMenu::BuildTabGroupCommands(
+@@ -323,8 +324,12 @@ void TabGroupDynamicMenu::BuildTabGroupCommands(
            .SetText(l10n_util::GetStringUTF16(
                IDS_TAB_GROUP_HEADER_CXMENU_DELETE_GROUP))
            .SetImage(ui::ImageModel::FromVectorIcon(
@@ -1952,7 +1906,7 @@ index 39d5208306065..53ff561681e94 100644
    if (controller_) {
      auto* label = AddChildView(std::make_unique<views::Label>(
 diff --git a/chrome/browser/ui/views/autofill/payments/card_unmask_prompt_views.cc b/chrome/browser/ui/views/autofill/payments/card_unmask_prompt_views.cc
-index 8d7866fc4e092..c93f2fcaddc96 100644
+index d9fb1bee8f2d9..cf22d5a362888 100644
 --- a/chrome/browser/ui/views/autofill/payments/card_unmask_prompt_views.cc
 +++ b/chrome/browser/ui/views/autofill/payments/card_unmask_prompt_views.cc
 @@ -4,6 +4,7 @@
@@ -2011,7 +1965,7 @@ index 8d7866fc4e092..c93f2fcaddc96 100644
    auto error_label = std::make_unique<views::Label>(
        std::u16string(), ChromeTextContext::CONTEXT_DIALOG_BODY_TEXT_SMALL,
 diff --git a/chrome/browser/ui/views/autofill/popup/popup_cell_utils.cc b/chrome/browser/ui/views/autofill/popup/popup_cell_utils.cc
-index 1c04fa2633f98..4a59a1f8f2f84 100644
+index dbb35fb4507a4..f15dfa96c497a 100644
 --- a/chrome/browser/ui/views/autofill/popup/popup_cell_utils.cc
 +++ b/chrome/browser/ui/views/autofill/popup/popup_cell_utils.cc
 @@ -12,6 +12,7 @@
@@ -2022,7 +1976,7 @@ index 1c04fa2633f98..4a59a1f8f2f84 100644
  #include "base/check.h"
  #include "base/check_op.h"
  #include "base/metrics/histogram_functions.h"
-@@ -525,13 +526,22 @@ std::optional<ui::ImageModel> GetIconImageModelFromIcon(Suggestion::Icon icon) {
+@@ -521,13 +522,22 @@ std::optional<ui::ImageModel> GetIconImageModelFromIcon(Suggestion::Icon icon) {
                                            : vector_icons::kCalendarTodayOldIcon,
                                        kIconSize);
      case Suggestion::Icon::kError:
@@ -2050,7 +2004,7 @@ index 1c04fa2633f98..4a59a1f8f2f84 100644
            kIconSize);
      case Suggestion::Icon::kFlight:
        return ImageModelFromVectorIcon(::features::IsRoundedIconsEnabled()
-@@ -634,10 +644,14 @@ std::optional<ui::ImageModel> GetIconImageModelFromIcon(Suggestion::Icon icon) {
+@@ -631,10 +641,14 @@ std::optional<ui::ImageModel> GetIconImageModelFromIcon(Suggestion::Icon icon) {
                                            : vector_icons::kPersonCheckOldIcon,
                                        kPersonCheckIconSize);
      case Suggestion::Icon::kQuestionMark:
@@ -2070,7 +2024,7 @@ index 1c04fa2633f98..4a59a1f8f2f84 100644
        return ImageModelFromVectorIcon(
            ::features::IsRoundedIconsEnabled()
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_page_action_controller.cc b/chrome/browser/ui/views/bookmarks/bookmark_page_action_controller.cc
-index ffe4536ee19f1..aa43c30746f93 100644
+index d8a3ab6a4b8d3..44ad39c99d864 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_page_action_controller.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_page_action_controller.cc
 @@ -4,6 +4,7 @@
@@ -2079,9 +2033,9 @@ index ffe4536ee19f1..aa43c30746f93 100644
  
 +#include "base/command_line.h"
  #include "base/functional/bind.h"
- #include "base/metrics/histogram_macros.h"
  #include "chrome/browser/defaults.h"
-@@ -144,12 +145,22 @@ void BookmarkPageActionController::SetStarred(bool starred) {
+ #include "chrome/browser/ui/actions/chrome_action_id.h"
+@@ -121,12 +122,22 @@ void BookmarkPageActionController::SetStarred(bool starred) {
    page_action_controller_->OverrideImage(
        kActionBookmarkThisTab,
        ui::ImageModel::FromVectorIcon(
@@ -2110,7 +2064,7 @@ index ffe4536ee19f1..aa43c30746f93 100644
                : page_actions::PageActionColorSource::kForeground,
        features::IsToolbarGlowUpEnabled()
 diff --git a/chrome/browser/ui/views/bookmarks/saved_tab_groups/saved_tab_group_tabs_menu_model.cc b/chrome/browser/ui/views/bookmarks/saved_tab_groups/saved_tab_group_tabs_menu_model.cc
-index 61788280574b2..cc90f1ab44dee 100644
+index f0f9ad948e58f..14eaedb065fa2 100644
 --- a/chrome/browser/ui/views/bookmarks/saved_tab_groups/saved_tab_group_tabs_menu_model.cc
 +++ b/chrome/browser/ui/views/bookmarks/saved_tab_groups/saved_tab_group_tabs_menu_model.cc
 @@ -6,6 +6,7 @@
@@ -2121,26 +2075,7 @@ index 61788280574b2..cc90f1ab44dee 100644
  #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/favicon/favicon_service_factory.h"
  #include "chrome/browser/favicon/favicon_utils.h"
-@@ -162,10 +163,14 @@ void STGTabsMenuModel::Build(
-     // Add item: delete group.
-     AddItemWithStringIdAndIcon(
-         latest_command_id, IDS_TAB_GROUP_HEADER_CXMENU_DELETE_GROUP,
--        ui::ImageModel::FromVectorIcon(features::IsRoundedIconsEnabled()
--                                           ? kTabCloseIcon
--                                           : kCloseGroupRefreshOldIcon,
--                                       ui::kColorMenuIcon, kUIUpdateIconSize));
-+        ui::ImageModel::FromVectorIcon(
-+            features::IsRoundedIconsEnabled()
-+                ? kTabCloseIcon
-+                : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                       "disable-thorium-icons")
-+                       ? kCloseGroupRefreshOldIcon
-+                       : kCloseGroupRefreshOldThoriumIcon),
-+            ui::kColorMenuIcon, kUIUpdateIconSize));
-     SetElementIdentifierAt(GetIndexOfCommandId(latest_command_id).value(),
-                            kDeleteGroupMenuItem);
-     command_id_to_action_.emplace(
-@@ -176,10 +181,14 @@ void STGTabsMenuModel::Build(
+@@ -183,10 +184,14 @@ void STGTabsMenuModel::Build(
      // Add item: leave group.
      AddItemWithStringIdAndIcon(
          latest_command_id, IDS_DATA_SHARING_LEAVE_GROUP,
@@ -2160,7 +2095,7 @@ index 61788280574b2..cc90f1ab44dee 100644
                             kLeaveGroupMenuItem);
      command_id_to_action_.emplace(
 diff --git a/chrome/browser/ui/views/confirm_bubble_views.cc b/chrome/browser/ui/views/confirm_bubble_views.cc
-index aa2ebbb27f003..3c519439e75b1 100644
+index a875b80c9f0c9..b8a9c52b098c7 100644
 --- a/chrome/browser/ui/views/confirm_bubble_views.cc
 +++ b/chrome/browser/ui/views/confirm_bubble_views.cc
 @@ -6,6 +6,7 @@
@@ -2184,7 +2119,7 @@ index aa2ebbb27f003..3c519439e75b1 100644
  
    set_margins(ChromeLayoutProvider::Get()->GetDialogInsetsForContentType(
 diff --git a/chrome/browser/ui/views/content_setting_bubble_contents.cc b/chrome/browser/ui/views/content_setting_bubble_contents.cc
-index d78ca9ed78f9e..9848f605bc52d 100644
+index 9150aa2584d27..e9264c91cb666 100644
 --- a/chrome/browser/ui/views/content_setting_bubble_contents.cc
 +++ b/chrome/browser/ui/views/content_setting_bubble_contents.cc
 @@ -9,6 +9,7 @@
@@ -2262,7 +2197,7 @@ index a96c8428a8608..178f2e77e3bc7 100644
        GetLayoutConstant(LayoutConstant::kPageInfoIconSize)));
  
 diff --git a/chrome/browser/ui/views/desktop_capture/share_this_tab_dialog_views.cc b/chrome/browser/ui/views/desktop_capture/share_this_tab_dialog_views.cc
-index 3c2201b0ed984..0e2d1ed1152df 100644
+index 4dd43efcd9a95..f9c11906ff1d0 100644
 --- a/chrome/browser/ui/views/desktop_capture/share_this_tab_dialog_views.cc
 +++ b/chrome/browser/ui/views/desktop_capture/share_this_tab_dialog_views.cc
 @@ -341,8 +341,12 @@ void ShareThisTabDialogView::SetupAudioToggle() {
@@ -2281,7 +2216,7 @@ index 3c2201b0ed984..0e2d1ed1152df 100644
  
    views::Label* audio_toggle_label =
 diff --git a/chrome/browser/ui/views/device_chooser_content_view.cc b/chrome/browser/ui/views/device_chooser_content_view.cc
-index 06286928678de..54dde0b537504 100644
+index 19f8ec1310c50..d35be81a0856c 100644
 --- a/chrome/browser/ui/views/device_chooser_content_view.cc
 +++ b/chrome/browser/ui/views/device_chooser_content_view.cc
 @@ -7,6 +7,7 @@
@@ -2292,7 +2227,7 @@ index 06286928678de..54dde0b537504 100644
  #include "base/functional/bind.h"
  #include "base/numerics/safe_conversions.h"
  #include "base/strings/strcat.h"
-@@ -298,8 +299,12 @@ std::unique_ptr<views::View> DeviceChooserContentView::CreateExtraView() {
+@@ -300,8 +301,12 @@ std::unique_ptr<views::View> DeviceChooserContentView::CreateExtraView() {
      help_button = views::ImageButton::CreateIconButton(
          base::BindRepeating(&permissions::ChooserController::OpenHelpCenterUrl,
                              base::Unretained(chooser_controller_.get())),
@@ -2308,7 +2243,7 @@ index 06286928678de..54dde0b537504 100644
          views::ImageButton::MaterialIconStyle::kLarge,
          views::LayoutProvider::Get()->GetInsetsMetric(
 diff --git a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
-index 5949c0061d4fe..f6e400ea86d96 100644
+index 877765717be22..49cbd4089f3f1 100644
 --- a/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
 +++ b/chrome/browser/ui/views/download/bubble/download_bubble_row_view.cc
 @@ -7,6 +7,7 @@
@@ -2360,7 +2295,7 @@ index a3e10825eb48d..cac148d6548a3 100644
                          cp->GetColor(kColorDownloadShelfButtonIconDisabled)));
  }
 diff --git a/chrome/browser/ui/views/extensions/extensions_menu_entry_view.cc b/chrome/browser/ui/views/extensions/extensions_menu_entry_view.cc
-index d88007672d8be..251905a2fe327 100644
+index 664839c50ab52..3d9687148ae8a 100644
 --- a/chrome/browser/ui/views/extensions/extensions_menu_entry_view.cc
 +++ b/chrome/browser/ui/views/extensions/extensions_menu_entry_view.cc
 @@ -4,6 +4,7 @@
@@ -2471,7 +2406,7 @@ index 1a2736bc3f4a8..b78dff47a01f4 100644
  
    if (allow_pinning) {
 diff --git a/chrome/browser/ui/views/find_bar_view.cc b/chrome/browser/ui/views/find_bar_view.cc
-index 3bbe546c03eea..822ca412a9b9b 100644
+index 52005135b6fc2..efc3bd677da00 100644
 --- a/chrome/browser/ui/views/find_bar_view.cc
 +++ b/chrome/browser/ui/views/find_bar_view.cc
 @@ -8,6 +8,7 @@
@@ -2524,7 +2459,7 @@ index 3bbe546c03eea..822ca412a9b9b 100644
  
    SetOrientation(views::BoxLayout::Orientation::kVertical);
 diff --git a/chrome/browser/ui/views/frame/picture_in_picture_browser_frame_view.cc b/chrome/browser/ui/views/frame/picture_in_picture_browser_frame_view.cc
-index 59bdfa1e11809..d8100bdfb05a7 100644
+index 454bc05a5dc13..208a3cedb6097 100644
 --- a/chrome/browser/ui/views/frame/picture_in_picture_browser_frame_view.cc
 +++ b/chrome/browser/ui/views/frame/picture_in_picture_browser_frame_view.cc
 @@ -6,6 +6,7 @@
@@ -2535,7 +2470,7 @@ index 59bdfa1e11809..d8100bdfb05a7 100644
  #include "base/containers/to_vector.h"
  #include "base/memory/raw_ptr.h"
  #include "base/metrics/histogram_functions.h"
-@@ -95,9 +96,16 @@ class BackToTabButton : public OverlayWindowImageButton {
+@@ -94,9 +95,16 @@ class BackToTabButton : public OverlayWindowImageButton {
   public:
    explicit BackToTabButton(PressedCallback callback)
        : OverlayWindowImageButton(std::move(callback)) {
@@ -2556,10 +2491,10 @@ index 59bdfa1e11809..d8100bdfb05a7 100644
                    ui::ImageModel::FromVectorIcon(
                        *icon, kColorPipWindowForeground, kBackToTabImageSize));
 diff --git a/chrome/browser/ui/views/frame/system_menu_model_builder.cc b/chrome/browser/ui/views/frame/system_menu_model_builder.cc
-index 20c579d108dd5..262ffee1afd62 100644
+index 1c5647608daaf..04c18c91b762b 100644
 --- a/chrome/browser/ui/views/frame/system_menu_model_builder.cc
 +++ b/chrome/browser/ui/views/frame/system_menu_model_builder.cc
-@@ -288,8 +288,12 @@ void SystemMenuModelBuilder::BuildSystemMenuForBrowserWindow(
+@@ -296,8 +296,12 @@ void SystemMenuModelBuilder::BuildSystemMenuForBrowserWindow(
  #if BUILDFLAG(IS_WIN)
    if (features::IsMenuSimplificationEnabled()) {
      model->AddSeparator(ui::NORMAL_SEPARATOR);
@@ -2575,7 +2510,7 @@ index 20c579d108dd5..262ffee1afd62 100644
  #endif  // BUILDFLAG(IS_WIN)
  
 diff --git a/chrome/browser/ui/views/global_media_controls/media_item_ui_helper.cc b/chrome/browser/ui/views/global_media_controls/media_item_ui_helper.cc
-index 840a843d409d0..ac31e50e4922b 100644
+index 38921ca79ba37..b11411d51e629 100644
 --- a/chrome/browser/ui/views/global_media_controls/media_item_ui_helper.cc
 +++ b/chrome/browser/ui/views/global_media_controls/media_item_ui_helper.cc
 @@ -4,6 +4,7 @@
@@ -2586,7 +2521,7 @@ index 840a843d409d0..ac31e50e4922b 100644
  #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/media/router/media_router_feature.h"
  #include "chrome/browser/profiles/profile.h"
-@@ -315,7 +316,12 @@ const gfx::VectorIcon& GetVectorIcon(
+@@ -311,7 +312,12 @@ const gfx::VectorIcon& GetVectorIcon(
      global_media_controls::mojom::IconType icon) {
    switch (icon) {
      case global_media_controls::mojom::IconType::kInfo:
@@ -2632,7 +2567,7 @@ index 5f4de409c25a0..63acfc50839df 100644
        l10n_util::GetStringUTF16(IDS_GLOBAL_MEDIA_CONTROLS_ICON_TOOLTIP_TEXT));
    GetViewAccessibility().SetHasPopup(ax::mojom::HasPopup::kDialog);
 diff --git a/chrome/browser/ui/views/indigo/indigo_toolbar.cc b/chrome/browser/ui/views/indigo/indigo_toolbar.cc
-index 5c70dc16ff6b2..4846867119beb 100644
+index 6b266f9cf5183..b3c248147b88d 100644
 --- a/chrome/browser/ui/views/indigo/indigo_toolbar.cc
 +++ b/chrome/browser/ui/views/indigo/indigo_toolbar.cc
 @@ -8,6 +8,7 @@
@@ -2669,7 +2604,7 @@ index 5c70dc16ff6b2..4846867119beb 100644
                            .SetAccessibleName(l10n_util::GetStringUTF16(
                                IDS_INDIGO_TOOLBAR_CLOSE_ACCESSIBLE_NAME))
 diff --git a/chrome/browser/ui/views/infobars/infobar_view_unittest.cc b/chrome/browser/ui/views/infobars/infobar_view_unittest.cc
-index d42b44fe95026..38300b54eba87 100644
+index faf15f6c4da66..26ccd212ae87b 100644
 --- a/chrome/browser/ui/views/infobars/infobar_view_unittest.cc
 +++ b/chrome/browser/ui/views/infobars/infobar_view_unittest.cc
 @@ -9,6 +9,7 @@
@@ -2680,7 +2615,7 @@ index d42b44fe95026..38300b54eba87 100644
  #include "base/memory/raw_ptr.h"
  #include "chrome/browser/ui/views/chrome_layout_provider.h"
  #include "chrome/browser/ui/views/infobars/confirm_infobar.h"
-@@ -36,8 +37,12 @@ class TestInfoBarDelegateWithIcon : public infobars::InfoBarDelegate {
+@@ -37,8 +38,12 @@ class TestInfoBarDelegateWithIcon : public infobars::InfoBarDelegate {
    }
  
    const gfx::VectorIcon& GetVectorIcon() const override {
@@ -2723,10 +2658,10 @@ index da5d3434deac4..56dfb33a91932 100644
        {foreground_color, foreground_disabled_color});
  
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index 34f8790ee6105..95de68ed61edf 100644
+index 065087696821f..0bb4cc3a7a918 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-@@ -1606,12 +1606,19 @@ void LocationBarView::RefreshPageActionContainerViewAndIconsVisibility(
+@@ -1607,12 +1607,19 @@ void LocationBarView::RefreshPageActionContainerViewAndIconsVisibility(
  
  void LocationBarView::RefreshClearAllButtonIcon() {
    const bool touch_ui = ui::TouchUiController::Get()->touch_ui();
@@ -2780,7 +2715,7 @@ index 7de50b8b0fc55..0354fe32f34a3 100644
  
    gfx::ImageSkia target_16 =
 diff --git a/chrome/browser/ui/views/media_router/cast_dialog_no_sinks_view.cc b/chrome/browser/ui/views/media_router/cast_dialog_no_sinks_view.cc
-index 51327cd87563b..d4fee446d0cc7 100644
+index 9c31f7e59aa5e..9e0ec7fc0fbbc 100644
 --- a/chrome/browser/ui/views/media_router/cast_dialog_no_sinks_view.cc
 +++ b/chrome/browser/ui/views/media_router/cast_dialog_no_sinks_view.cc
 @@ -8,6 +8,7 @@
@@ -2820,7 +2755,7 @@ index 51327cd87563b..d4fee446d0cc7 100644
    icon->SetBorder(views::CreateEmptyBorder(kPrimaryIconBorder));
    auto a11y_text = l10n_util::GetStringUTF16(
 diff --git a/chrome/browser/ui/views/media_router/cast_dialog_sink_button.cc b/chrome/browser/ui/views/media_router/cast_dialog_sink_button.cc
-index 07d98c5bfd2a9..c9f6d8f3e385a 100644
+index 4e8832b0af812..4703864e50791 100644
 --- a/chrome/browser/ui/views/media_router/cast_dialog_sink_button.cc
 +++ b/chrome/browser/ui/views/media_router/cast_dialog_sink_button.cc
 @@ -7,6 +7,7 @@
@@ -2872,7 +2807,7 @@ index 07d98c5bfd2a9..c9f6d8f3e385a 100644
  
  BEGIN_METADATA(CastDialogSinkButton)
 diff --git a/chrome/browser/ui/views/omnibox/omnibox_result_view.cc b/chrome/browser/ui/views/omnibox/omnibox_result_view.cc
-index 65eba79e0de39..9da449bd0e4a6 100644
+index a722105773ec7..bc3833b31059e 100644
 --- a/chrome/browser/ui/views/omnibox/omnibox_result_view.cc
 +++ b/chrome/browser/ui/views/omnibox/omnibox_result_view.cc
 @@ -9,6 +9,7 @@
@@ -2999,10 +2934,10 @@ index 919aaeb4140e6..cf310d5e0ea42 100644
                /*icon_size=*/16))
            .SetActionId(kTestPageActionId)
 diff --git a/chrome/browser/ui/views/page_action/page_action_view_unittest.cc b/chrome/browser/ui/views/page_action/page_action_view_unittest.cc
-index a98f891117239..c94b645dd36c9 100644
+index 7341e180c8af2..d546ccccac4fb 100644
 --- a/chrome/browser/ui/views/page_action/page_action_view_unittest.cc
 +++ b/chrome/browser/ui/views/page_action/page_action_view_unittest.cc
-@@ -8,6 +8,7 @@
+@@ -9,6 +9,7 @@
  #include <string>
  #include <vector>
  
@@ -3010,7 +2945,7 @@ index a98f891117239..c94b645dd36c9 100644
  #include "base/functional/bind.h"
  #include "base/run_loop.h"
  #include "base/scoped_observation.h"
-@@ -105,8 +106,12 @@ class PageActionViewWithControllerTest : public ChromeViewsTestBase {
+@@ -111,8 +112,12 @@ class PageActionViewWithControllerTest : public ChromeViewsTestBase {
      ChromeViewsTestBase::SetUp();
      // Use any arbitrary vector icon.
      auto image = ui::ImageModel::FromVectorIcon(
@@ -3025,7 +2960,7 @@ index a98f891117239..c94b645dd36c9 100644
          ui::kColorSysPrimary, kDefaultIconSize);
      action_item_ = actions::ActionManager::Get().AddAction(
          actions::ActionItem::Builder()
-@@ -231,8 +236,12 @@ class PageActionViewTest : public ChromeViewsTestBase {
+@@ -261,8 +266,12 @@ class PageActionViewTest : public ChromeViewsTestBase {
    // Mock model and associated placeholder data.
    testing::NiceMock<MockPageActionModel> mock_model_;
    const ui::ImageModel mock_image_ = ui::ImageModel::FromVectorIcon(
@@ -3040,7 +2975,7 @@ index a98f891117239..c94b645dd36c9 100644
        ui::kColorSysPrimary,
        kDefaultIconSize);
    std::u16string mock_string_ = kTestText;
-@@ -536,8 +545,12 @@ TEST_F(PageActionViewTest, OnThemeChangedUpdatesIconImage) {
+@@ -642,8 +651,12 @@ TEST_F(PageActionViewTest, OnThemeChangedUpdatesIconImage) {
    // If the default size is the intended icon size, this test is useless.
    const int kOriginalIconSize = view_icon_size() + 1;
    auto icon_image = ui::ImageModel::FromVectorIcon(
@@ -3055,7 +2990,7 @@ index a98f891117239..c94b645dd36c9 100644
        ui::kColorSysPrimary, kOriginalIconSize);
    EXPECT_CALL(*model(), GetImage()).WillRepeatedly(ReturnRef(icon_image));
  
-@@ -591,8 +604,12 @@ TEST_F(PageActionViewTest, ChipCornerRadiiConsistentForVectorAndBitmapIcons) {
+@@ -697,8 +710,12 @@ TEST_F(PageActionViewTest, ChipCornerRadiiConsistentForVectorAndBitmapIcons) {
        ui::ImageModel::FromImage(gfx::Image::CreateFrom1xBitmap(bitmap));
  
    const ui::ImageModel vector_image = ui::ImageModel::FromVectorIcon(
@@ -3071,7 +3006,7 @@ index a98f891117239..c94b645dd36c9 100644
  
    EXPECT_CALL(*model(), ShouldShowSuggestionChip())
 diff --git a/chrome/browser/ui/views/page_info/chosen_object_view.cc b/chrome/browser/ui/views/page_info/chosen_object_view.cc
-index d042043be2010..38d9dbb0d7843 100644
+index c9c66bac3fb59..3be08a2d7893b 100644
 --- a/chrome/browser/ui/views/page_info/chosen_object_view.cc
 +++ b/chrome/browser/ui/views/page_info/chosen_object_view.cc
 @@ -8,6 +8,7 @@
@@ -3098,7 +3033,7 @@ index d042043be2010..38d9dbb0d7843 100644
         kColorPageInfoChosenObjectDeleteButtonIconDisabled});
  
 diff --git a/chrome/browser/ui/views/page_info/page_info_main_view.cc b/chrome/browser/ui/views/page_info/page_info_main_view.cc
-index 2c44be691f580..c33a972a285ad 100644
+index b02babc4a946f..3407f54d16087 100644
 --- a/chrome/browser/ui/views/page_info/page_info_main_view.cc
 +++ b/chrome/browser/ui/views/page_info/page_info_main_view.cc
 @@ -7,6 +7,7 @@
@@ -3106,9 +3041,9 @@ index 2c44be691f580..c33a972a285ad 100644
  #include <optional>
  
 +#include "base/command_line.h"
- #include "base/feature_list.h"
  #include "base/i18n/message_formatter.h"
  #include "base/strings/utf_string_conversions.h"
+ #include "build/build_config.h"
 @@ -262,9 +263,14 @@ void PageInfoMainView::SetCookieInfo(const CookiesInfo& cookie_info) {
            base::BindRepeating(&PageInfoNavigationHandler::OpenCookiesPage,
                                base::Unretained(navigation_handler_)),
@@ -3152,7 +3087,7 @@ index 4e8d3186032b1..3d4501b7ff80c 100644
      }
      security_view_->SetSummary(security_description->summary, STYLE_RED);
 diff --git a/chrome/browser/ui/views/page_info/page_info_view_factory.cc b/chrome/browser/ui/views/page_info/page_info_view_factory.cc
-index 961275c09b13b..3f7e958f45dcc 100644
+index 7dd5be7217d5f..cc0f59ad36847 100644
 --- a/chrome/browser/ui/views/page_info/page_info_view_factory.cc
 +++ b/chrome/browser/ui/views/page_info/page_info_view_factory.cc
 @@ -7,6 +7,7 @@
@@ -3161,9 +3096,9 @@ index 961275c09b13b..3f7e958f45dcc 100644
  
 +#include "base/command_line.h"
  #include "base/memory/raw_ptr.h"
- #include "build/branding_buildflags.h"
  #include "build/build_config.h"
-@@ -293,6 +294,9 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
+ #include "chrome/app/vector_icons/vector_icons.h"
+@@ -296,6 +297,9 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
            ? std::get<ContentSetting>(setting) == CONTENT_SETTING_BLOCK ||
                  std::get<ContentSetting>(setting) == CONTENT_SETTING_ASK
            : info->delegate().IsBlocked(setting);
@@ -3173,7 +3108,7 @@ index 961275c09b13b..3f7e958f45dcc 100644
  
    // TODO(crbug.com/335848275): Migrate the icons in 2 steps.
    // 1 - Copy contents of refresh icons into current non-refresh icons.
-@@ -434,11 +438,17 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
+@@ -437,11 +441,17 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
      case ContentSettingsType::SOUND:
        icon = show_blocked_badge
                   ? &(features::IsRoundedIconsEnabled()
@@ -3194,7 +3129,7 @@ index 961275c09b13b..3f7e958f45dcc 100644
        break;
      case ContentSettingsType::CLIPBOARD_READ_WRITE:
        icon = show_blocked_badge ? &(features::IsRoundedIconsEnabled()
-@@ -711,7 +721,10 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
+@@ -714,7 +724,10 @@ const ui::ImageModel PageInfoViewFactory::GetPermissionIcon(
      case ContentSettingsType::SOUND:
        icon = &(features::IsRoundedIconsEnabled()
                     ? vector_icons::kVolumeUpFilledIcon
@@ -3206,7 +3141,7 @@ index 961275c09b13b..3f7e958f45dcc 100644
        break;
      case ContentSettingsType::CLIPBOARD_READ_WRITE:
        icon = &(features::IsRoundedIconsEnabled()
-@@ -901,12 +914,22 @@ const ui::ImageModel PageInfoViewFactory::GetConnectionSecureIcon() {
+@@ -904,12 +917,22 @@ const ui::ImageModel PageInfoViewFactory::GetConnectionSecureIcon() {
  const ui::ImageModel PageInfoViewFactory::GetOpenSubpageIcon() {
    // GetIconSize() does not work for subpage icons because the default size of
    // features::IsRoundedIconsEnabled() ? vector_icons::kArrowRightFlippableIcon
@@ -3283,7 +3218,7 @@ index 5ac1aad3dd530..63b2e8701dcfc 100644
              /*state_icon=*/store_icon);
  
 diff --git a/chrome/browser/ui/views/passwords/views_utils.cc b/chrome/browser/ui/views/passwords/views_utils.cc
-index 6c16b98c551de..136bcb1bd1547 100644
+index 54dfb1d1ad6a0..5443ba2dfe196 100644
 --- a/chrome/browser/ui/views/passwords/views_utils.cc
 +++ b/chrome/browser/ui/views/passwords/views_utils.cc
 @@ -9,6 +9,7 @@
@@ -3307,7 +3242,7 @@ index 6c16b98c551de..136bcb1bd1547 100644
    const int title_width =
        layout_provider->GetDistanceMetric(
 diff --git a/chrome/browser/ui/views/payments/error_message_view_controller.cc b/chrome/browser/ui/views/payments/error_message_view_controller.cc
-index c0b250748e92f..b3c32260ebf25 100644
+index 72e47e0c8a359..0813f941efbc7 100644
 --- a/chrome/browser/ui/views/payments/error_message_view_controller.cc
 +++ b/chrome/browser/ui/views/payments/error_message_view_controller.cc
 @@ -6,6 +6,7 @@
@@ -3318,7 +3253,7 @@ index c0b250748e92f..b3c32260ebf25 100644
  #include "chrome/browser/ui/views/payments/payment_request_views_util.h"
  #include "components/payments/content/payment_app.h"
  #include "components/payments/content/payment_request_state.h"
-@@ -139,7 +140,10 @@ void ErrorMessageViewController::FillContentView(views::View* content_view) {
+@@ -131,7 +132,10 @@ void ErrorMessageViewController::FillContentView(views::View* content_view) {
          std::make_unique<views::ImageView>(ui::ImageModel::FromVectorIcon(
              ::features::IsRoundedIconsEnabled()
                  ? vector_icons::kErrorIcon
@@ -3331,7 +3266,7 @@ index c0b250748e92f..b3c32260ebf25 100644
      content_view->AddChildView(std::move(error_icon));
  
 diff --git a/chrome/browser/ui/views/payments/payment_handler_header_view_util.cc b/chrome/browser/ui/views/payments/payment_handler_header_view_util.cc
-index 061a3c5885075..14faaf40110d8 100644
+index 44d527e3d0c24..f7b9c18b34c45 100644
 --- a/chrome/browser/ui/views/payments/payment_handler_header_view_util.cc
 +++ b/chrome/browser/ui/views/payments/payment_handler_header_view_util.cc
 @@ -7,6 +7,7 @@
@@ -3364,7 +3299,7 @@ index 061a3c5885075..14faaf40110d8 100644
  
  base::WeakPtr<PaymentHandlerCloseButton>
 diff --git a/chrome/browser/ui/views/payments/payment_request_sheet_controller.cc b/chrome/browser/ui/views/payments/payment_request_sheet_controller.cc
-index 95b966d0c571b..a5f42c8ea9b76 100644
+index 43bfef0be0574..26f52cc8c62dc 100644
 --- a/chrome/browser/ui/views/payments/payment_request_sheet_controller.cc
 +++ b/chrome/browser/ui/views/payments/payment_request_sheet_controller.cc
 @@ -6,6 +6,7 @@
@@ -3375,7 +3310,7 @@ index 95b966d0c571b..a5f42c8ea9b76 100644
  #include "base/functional/bind.h"
  #include "base/memory/raw_ptr.h"
  #include "build/build_config.h"
-@@ -246,8 +247,12 @@ class PaymentRequestBackArrowButton : public views::ImageButton {
+@@ -247,8 +248,12 @@ class PaymentRequestBackArrowButton : public views::ImageButton {
      ConfigureVectorImageButton(this);
      views::SetImageFromVectorIconWithColor(
          this,
@@ -3391,7 +3326,7 @@ index 95b966d0c571b..a5f42c8ea9b76 100644
           kColorPaymentsRequestBackArrowButtonIconDisabled});
      constexpr int kBackArrowSize = 16;
 diff --git a/chrome/browser/ui/views/payments/payment_request_views_util.cc b/chrome/browser/ui/views/payments/payment_request_views_util.cc
-index d3c41bffbba93..6229665fcc081 100644
+index e3b6790b89f29..37388be3d3f23 100644
 --- a/chrome/browser/ui/views/payments/payment_request_views_util.cc
 +++ b/chrome/browser/ui/views/payments/payment_request_views_util.cc
 @@ -7,6 +7,7 @@
@@ -3402,7 +3337,7 @@ index d3c41bffbba93..6229665fcc081 100644
  #include "base/strings/utf_string_conversions.h"
  #include "chrome/browser/ui/views/chrome_typography.h"
  #include "chrome/browser/ui/views/payments/payment_request_dialog_view_ids.h"
-@@ -439,8 +440,12 @@ std::unique_ptr<views::View> CreateWarningView(const std::u16string& message,
+@@ -412,8 +413,12 @@ std::unique_ptr<views::View> CreateWarningView(const std::u16string& message,
      auto warning_icon = std::make_unique<views::ImageView>();
      warning_icon->SetCanProcessEventsWithinSubtree(false);
      warning_icon->SetImage(ui::ImageModel::FromVectorIcon(
@@ -3416,9 +3351,9 @@ index d3c41bffbba93..6229665fcc081 100644
 +                   : vector_icons::kWarningOldThoriumIcon),
          ui::kColorAlertHighSeverity, 16));
      header_view->AddChildView(std::move(warning_icon));
-     label->set_enabled_color_id(ui::kColorAlertHighSeverity);
+     label->SetEnabledColor(ui::kColorAlertHighSeverity);
 diff --git a/chrome/browser/ui/views/payments/payment_sheet_view_controller.cc b/chrome/browser/ui/views/payments/payment_sheet_view_controller.cc
-index b4b340548d300..e8f0a6331b210 100644
+index eea408cd6af19..4998192d5ed19 100644
 --- a/chrome/browser/ui/views/payments/payment_sheet_view_controller.cc
 +++ b/chrome/browser/ui/views/payments/payment_sheet_view_controller.cc
 @@ -11,6 +11,7 @@
@@ -3429,7 +3364,7 @@ index b4b340548d300..e8f0a6331b210 100644
  #include "base/functional/bind.h"
  #include "base/functional/callback.h"
  #include "base/i18n/message_formatter.h"
-@@ -289,12 +290,18 @@ class PaymentSheetRowBuilder {
+@@ -290,12 +291,18 @@ class PaymentSheetRowBuilder {
          std::make_unique<views::ImageView>(ui::ImageModel::FromVectorIcon(
              features::IsRoundedIconsEnabled()
                  ? vector_icons::kArrowRightFlippableIcon
@@ -3451,7 +3386,7 @@ index b4b340548d300..e8f0a6331b210 100644
      std::unique_ptr<PaymentRequestRowView> section = CreatePaymentSheetRow(
          GetPressedCallback(), section_name_, accessible_content_,
 diff --git a/chrome/browser/ui/views/picture_in_picture/document_pip_frame_view.cc b/chrome/browser/ui/views/picture_in_picture/document_pip_frame_view.cc
-index b8e190771b800..4e6c9a6ac245d 100644
+index 8d69acddbc04d..1e7d28757daff 100644
 --- a/chrome/browser/ui/views/picture_in_picture/document_pip_frame_view.cc
 +++ b/chrome/browser/ui/views/picture_in_picture/document_pip_frame_view.cc
 @@ -8,6 +8,7 @@
@@ -3462,7 +3397,7 @@ index b8e190771b800..4e6c9a6ac245d 100644
  #include "base/check.h"
  #include "base/check_deref.h"
  #include "base/feature_list.h"
-@@ -388,9 +389,16 @@ DocumentPipFrameView::DocumentPipFrameView(DocumentPipHost* host)
+@@ -435,9 +436,16 @@ DocumentPipFrameView::DocumentPipFrameView(DocumentPipHost* host)
          frame_view->GetWidget()->Close();
        }
      };
@@ -3561,7 +3496,7 @@ index 727814cdc1bb8..35a5894fa9922 100644
  }
  
 diff --git a/chrome/browser/ui/views/profiles/profile_menu_view.cc b/chrome/browser/ui/views/profiles/profile_menu_view.cc
-index cea4723584608..676f55501394c 100644
+index 246f3ff3cf207..1a98290a09a3e 100644
 --- a/chrome/browser/ui/views/profiles/profile_menu_view.cc
 +++ b/chrome/browser/ui/views/profiles/profile_menu_view.cc
 @@ -9,6 +9,7 @@
@@ -3572,7 +3507,7 @@ index cea4723584608..676f55501394c 100644
  #include "ash/constants/web_app_id_constants.h"
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
-@@ -1167,12 +1168,17 @@ void ProfileMenuView::MaybeBuildCloseBrowsersButton() {
+@@ -1149,12 +1150,17 @@ void ProfileMenuView::MaybeBuildCloseBrowsersButton() {
      }
    }
  
@@ -3656,18 +3591,18 @@ index 5d392b66a1500..0cbe4a98121cb 100644
    const int unrelated_vertical_spacing =
        provider->GetDistanceMetric(views::DISTANCE_UNRELATED_CONTROL_VERTICAL);
 diff --git a/chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_controller_browsertest.cc b/chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_controller_browsertest.cc
-index 2580c1a4fb236..d410e801846df 100644
+index 9414274b272b6..57a4beb60e604 100644
 --- a/chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_controller_browsertest.cc
 +++ b/chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_controller_browsertest.cc
-@@ -6,6 +6,7 @@
+@@ -4,6 +4,7 @@
  
- #include <tuple>
+ #include "chrome/browser/ui/views/send_tab_to_self/send_tab_to_self_bubble_controller.h"
  
 +#include "base/command_line.h"
  #include "base/notreached.h"
  #include "base/scoped_observation.h"
- #include "base/strings/stringprintf.h"
-@@ -362,9 +363,13 @@ IN_PROC_BROWSER_TEST_F(SendTabToSelfPostSendToastBrowserTest,
+ #include "base/test/metrics/histogram_tester.h"
+@@ -376,9 +377,13 @@ IN_PROC_BROWSER_TEST_F(SendTabToSelfBubbleControllerBrowserTest,
    EXPECT_EQ(future.Get(), nullptr);
  
    // Verify that the failure toast is shown.
@@ -3709,7 +3644,7 @@ index 0a78303797625..82073156c3f2d 100644
                .SetAccessibleName(l10n_util::GetStringUTF16(IDS_ACCNAME_BACK))
                .CustomConfigure(base::BindOnce([](views::ImageButton* view) {
 diff --git a/chrome/browser/ui/views/site_data/site_data_row_view.cc b/chrome/browser/ui/views/site_data/site_data_row_view.cc
-index 40125280f6350..aeb93bc47e9f7 100644
+index a3469378405dd..d33a93779a0e5 100644
 --- a/chrome/browser/ui/views/site_data/site_data_row_view.cc
 +++ b/chrome/browser/ui/views/site_data/site_data_row_view.cc
 @@ -4,6 +4,7 @@
@@ -3749,7 +3684,7 @@ index 40125280f6350..aeb93bc47e9f7 100644
    menu_button_->SetTooltipText(l10n_util::GetStringFUTF16(
        IDS_PAGE_SPECIFIC_SITE_DATA_DIALOG_CONTEXT_MENU_TOOLTIP,
 diff --git a/chrome/browser/ui/views/tabs/groups/recent_activity_bubble_dialog_view.cc b/chrome/browser/ui/views/tabs/groups/recent_activity_bubble_dialog_view.cc
-index 114d54e31274d..dd47cf5a76874 100644
+index 041c5e16ad2eb..7de40348d8a4f 100644
 --- a/chrome/browser/ui/views/tabs/groups/recent_activity_bubble_dialog_view.cc
 +++ b/chrome/browser/ui/views/tabs/groups/recent_activity_bubble_dialog_view.cc
 @@ -6,6 +6,7 @@
@@ -3760,7 +3695,7 @@ index 114d54e31274d..dd47cf5a76874 100644
  #include "base/i18n/message_formatter.h"
  #include "base/i18n/rtl.h"
  #include "base/strings/string_util.h"
-@@ -394,7 +395,12 @@ std::unique_ptr<views::Button>
+@@ -396,7 +397,12 @@ std::unique_ptr<views::Button>
  RecentActivityBubbleDialogView::CreateOptionsMenuButton() {
    auto menu_button = views::CreateVectorImageButtonWithNativeTheme(
        views::Button::PressedCallback(),
@@ -3775,7 +3710,7 @@ index 114d54e31274d..dd47cf5a76874 100644
        &RecentActivityBubbleDialogView::ShowOptionsMenu, base::Unretained(this),
        base::Unretained(menu_button.get())));
 diff --git a/chrome/browser/ui/views/tabs/groups/tab_group_editor_bubble_view.cc b/chrome/browser/ui/views/tabs/groups/tab_group_editor_bubble_view.cc
-index 244a1b4b9ce54..43712a3eabd44 100644
+index 35b2167b99ca2..e5f9d54c60046 100644
 --- a/chrome/browser/ui/views/tabs/groups/tab_group_editor_bubble_view.cc
 +++ b/chrome/browser/ui/views/tabs/groups/tab_group_editor_bubble_view.cc
 @@ -11,6 +11,7 @@
@@ -3786,7 +3721,7 @@ index 244a1b4b9ce54..43712a3eabd44 100644
  #include "base/containers/flat_map.h"
  #include "base/containers/span.h"
  #include "base/feature_list.h"
-@@ -833,10 +834,14 @@ TabGroupEditorBubbleView::BuildNewTabInGroupButton() {
+@@ -836,10 +837,14 @@ TabGroupEditorBubbleView::BuildNewTabInGroupButton() {
        l10n_util::GetStringUTF16(IDS_TAB_GROUP_HEADER_CXMENU_NEW_TAB_IN_GROUP),
        base::BindRepeating(&TabGroupEditorBubbleView::NewTabInGroupPressed,
                            base::Unretained(this)),
@@ -3805,7 +3740,7 @@ index 244a1b4b9ce54..43712a3eabd44 100644
        GetAcceleratorText(IDC_ADD_NEW_TAB_TO_GROUP, browser_));
  
    menu_item->SetProperty(views::kElementIdentifierKey,
-@@ -875,10 +880,14 @@ TabGroupEditorBubbleView::BuildCloseGroupButton() {
+@@ -878,10 +883,14 @@ TabGroupEditorBubbleView::BuildCloseGroupButton() {
        TAB_GROUP_HEADER_CXMENU_CLOSE_GROUP, GetTextForCloseButton(),
        base::BindRepeating(&TabGroupEditorBubbleView::CloseGroupPressed,
                            base::Unretained(this)),
@@ -3825,7 +3760,7 @@ index 244a1b4b9ce54..43712a3eabd44 100644
  
    menu_item->SetProperty(views::kElementIdentifierKey,
 diff --git a/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_bubble_view.cc b/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_bubble_view.cc
-index dc571ae36e3b9..f4e10f855c429 100644
+index e582c70239cba..f4cc9ebc5ca4c 100644
 --- a/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_bubble_view.cc
 +++ b/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_bubble_view.cc
 @@ -10,6 +10,7 @@
@@ -3892,7 +3827,7 @@ index c7d7ce56e5517..4bf8876ecd2c7 100644
      views::SetImageFromVectorIconWithColor(
          options_button_, icon, icon_size,
 diff --git a/chrome/browser/ui/views/toolbar/back_forward_button.cc b/chrome/browser/ui/views/toolbar/back_forward_button.cc
-index 5fd525293c5d7..d550499aac019 100644
+index a1fe0c29476f0..53f81190c0eb6 100644
 --- a/chrome/browser/ui/views/toolbar/back_forward_button.cc
 +++ b/chrome/browser/ui/views/toolbar/back_forward_button.cc
 @@ -4,6 +4,7 @@
@@ -3977,7 +3912,7 @@ index e0a1557cae79c..46da997bc0105 100644
    for (auto state : kButtonStates) {
      SkColor icon_color = GetForegroundColor(state);
 diff --git a/chrome/browser/ui/views/toolbar/home_button.cc b/chrome/browser/ui/views/toolbar/home_button.cc
-index da4da97cd119f..429b99f03a320 100644
+index ec1753373cff4..e453191a2d955 100644
 --- a/chrome/browser/ui/views/toolbar/home_button.cc
 +++ b/chrome/browser/ui/views/toolbar/home_button.cc
 @@ -1,4 +1,4 @@
@@ -4011,7 +3946,7 @@ index da4da97cd119f..429b99f03a320 100644
                                                     : kNavigateHomeTouchOldIcon);
    SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_HOME));
 diff --git a/chrome/browser/ui/views/toolbar/overflow_menu.cc b/chrome/browser/ui/views/toolbar/overflow_menu.cc
-index 6770670a4a99b..7d253cfd33afe 100644
+index 50cbbaf4d2f84..f21aadbed9dca 100644
 --- a/chrome/browser/ui/views/toolbar/overflow_menu.cc
 +++ b/chrome/browser/ui/views/toolbar/overflow_menu.cc
 @@ -9,6 +9,7 @@
@@ -4122,7 +4057,7 @@ index 3770de967059f..4075795668b11 100644
    // Add two child actions
    action_item()->AddChild(actions::ActionItem::Builder()
 diff --git a/chrome/browser/ui/views/toolbar/reload_button.cc b/chrome/browser/ui/views/toolbar/reload_button.cc
-index a86b7baa53a5d..c954e56d4f9a8 100644
+index 106398ee26247..fc7e3975e7765 100644
 --- a/chrome/browser/ui/views/toolbar/reload_button.cc
 +++ b/chrome/browser/ui/views/toolbar/reload_button.cc
 @@ -1,4 +1,4 @@
@@ -4139,7 +4074,7 @@ index a86b7baa53a5d..c954e56d4f9a8 100644
  #include "base/strings/utf_string_conversions.h"
  #include "build/build_config.h"
  #include "chrome/app/chrome_command_ids.h"
-@@ -67,16 +68,28 @@ ReloadButton::ReloadButton(
+@@ -68,16 +69,28 @@ ReloadButton::ReloadButton(
        command_updater_(command_updater),
        reload_icon_(features::IsRoundedIconsEnabled()
                         ? vector_icons::kRefreshIcon
@@ -4204,7 +4139,7 @@ index 3b4111828514a..0147c1a663f2c 100644
    toolbar_button->GetActionViewInterface()->ActionItemChangedImpl(
        action_item.get());
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_controller_unittest.cc b/chrome/browser/ui/views/toolbar/toolbar_controller_unittest.cc
-index 6a64dc7ff094c..4a0104e369b53 100644
+index d46a987e8000d..227f1cc9c8f04 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_controller_unittest.cc
 +++ b/chrome/browser/ui/views/toolbar/toolbar_controller_unittest.cc
 @@ -9,6 +9,7 @@
@@ -4493,7 +4428,7 @@ index 6a64dc7ff094c..4a0104e369b53 100644
        false);
  
 diff --git a/chrome/browser/ui/views/translate/partial_translate_bubble_view.cc b/chrome/browser/ui/views/translate/partial_translate_bubble_view.cc
-index 195ea25b19f8c..2c6d8e519700d 100644
+index 613c1021a1b2b..3029bc1d99445 100644
 --- a/chrome/browser/ui/views/translate/partial_translate_bubble_view.cc
 +++ b/chrome/browser/ui/views/translate/partial_translate_bubble_view.cc
 @@ -12,6 +12,7 @@
@@ -4522,7 +4457,7 @@ index 195ea25b19f8c..2c6d8e519700d 100644
        &PartialTranslateBubbleView::ShowOptionsMenu, base::Unretained(this),
        base::Unretained(tab_translate_options_button.get())));
 diff --git a/chrome/browser/ui/views/translate/translate_bubble_view.cc b/chrome/browser/ui/views/translate/translate_bubble_view.cc
-index 46a70ad6e29e4..dbb457b08df25 100644
+index ff78994535224..dd600595b005a 100644
 --- a/chrome/browser/ui/views/translate/translate_bubble_view.cc
 +++ b/chrome/browser/ui/views/translate/translate_bubble_view.cc
 @@ -13,6 +13,7 @@
@@ -4533,7 +4468,7 @@ index 46a70ad6e29e4..dbb457b08df25 100644
  #include "base/i18n/string_compare.h"
  #include "base/memory/singleton.h"
  #include "base/metrics/field_trial_params.h"
-@@ -1081,9 +1082,13 @@ std::unique_ptr<views::Button> TranslateBubbleView::CreateOptionsMenuButton() {
+@@ -1115,9 +1116,13 @@ std::unique_ptr<views::Button> TranslateBubbleView::CreateOptionsMenuButton() {
    // Three dots options menu button
    auto tab_translate_options_button =
        views::CreateVectorImageButtonWithNativeTheme(
@@ -4551,7 +4486,7 @@ index 46a70ad6e29e4..dbb457b08df25 100644
        &TranslateBubbleView::ShowOptionsMenu, base::Unretained(this),
        base::Unretained(tab_translate_options_button.get())));
 diff --git a/chrome/browser/ui/views/web_apps/deprecated_apps_dialog_view.cc b/chrome/browser/ui/views/web_apps/deprecated_apps_dialog_view.cc
-index f991f789f6264..78abc1befc2cb 100644
+index eefa713276833..f8ccde3329bcf 100644
 --- a/chrome/browser/ui/views/web_apps/deprecated_apps_dialog_view.cc
 +++ b/chrome/browser/ui/views/web_apps/deprecated_apps_dialog_view.cc
 @@ -6,6 +6,7 @@
@@ -4564,7 +4499,7 @@ index f991f789f6264..78abc1befc2cb 100644
  #include "build/build_config.h"
 @@ -63,8 +64,12 @@ class DeprecatedAppsDialogView::DeprecatedAppsTableModel
                ->GetInstalledExtension(app_id);
-       DCHECK(extension);
+       CHECK(extension, base::NotFatalUntil::M162);
        const gfx::ImageSkia default_icon = gfx::CreateVectorIcon(
 -          features::IsRoundedIconsEnabled() ? vector_icons::kExtensionFilledIcon
 -                                            : vector_icons::kExtensionOldIcon,
@@ -4578,7 +4513,7 @@ index f991f789f6264..78abc1befc2cb 100644
  
        auto app_icon = std::make_unique<extensions::IconImage>(
 diff --git a/chrome/browser/ui/views/web_apps/frame_toolbar/web_app_menu_button.cc b/chrome/browser/ui/views/web_apps/frame_toolbar/web_app_menu_button.cc
-index bc9f64e623522..47690700d46f2 100644
+index edc04543652c5..dfcef19d43873 100644
 --- a/chrome/browser/ui/views/web_apps/frame_toolbar/web_app_menu_button.cc
 +++ b/chrome/browser/ui/views/web_apps/frame_toolbar/web_app_menu_button.cc
 @@ -5,6 +5,7 @@
@@ -4589,7 +4524,7 @@ index bc9f64e623522..47690700d46f2 100644
  #include "base/functional/bind.h"
  #include "base/metrics/user_metrics.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -43,10 +44,18 @@ WebAppMenuButton::WebAppMenuButton(BrowserView* browser_view)
+@@ -44,10 +45,18 @@ WebAppMenuButton::WebAppMenuButton(BrowserView* browser_view)
        browser_view_(browser_view) {
    views::SetHitTestComponent(this, static_cast<int>(HTCLIENT));
  
@@ -4613,7 +4548,7 @@ index bc9f64e623522..47690700d46f2 100644
    views::InkDrop::Get(this)->SetMode(views::InkDropHost::InkDropMode::ON);
  
 diff --git a/chrome/browser/ui/views/web_apps/isolated_web_apps/isolated_web_app_installer_view_impl.cc b/chrome/browser/ui/views/web_apps/isolated_web_apps/isolated_web_app_installer_view_impl.cc
-index ce061df37f310..446d023c39103 100644
+index 8e5e654c6331e..ffe6c60246f48 100644
 --- a/chrome/browser/ui/views/web_apps/isolated_web_apps/isolated_web_app_installer_view_impl.cc
 +++ b/chrome/browser/ui/views/web_apps/isolated_web_apps/isolated_web_app_installer_view_impl.cc
 @@ -12,6 +12,7 @@
@@ -4643,79 +4578,21 @@ index ce061df37f310..446d023c39103 100644
              IDS_IWA_INSTALLER_DISABLED_TITLE,
              IDS_IWA_INSTALLER_DISABLED_SUBTITLE,
              IDS_IWA_INSTALLER_DISABLED_CHANGE_PREFERENCE,
-@@ -831,7 +836,10 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
-                 CreateImageModelFromVector(
-                     features::IsRoundedIconsEnabled()
-                         ? vector_icons::kErrorIcon
--                        : vector_icons::kErrorOutlineOldIcon,
-+                        : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                               "disable-thorium-icons")
-+                               ? vector_icons::kErrorOutlineOldIcon
-+                               : vector_icons::kErrorOutlineOldThoriumIcon),
-                     ui::kColorAlertMediumSeverityIcon),
-                 /*ok_label=*/std::nullopt);
-           },
-@@ -852,13 +860,17 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
-                     ui::DialogModelLabel::CreatePlainText(
-                         base::UTF8ToUTF16(installed_version)),
-                 });
--            return ShowChildDialog(title, subtitle,
--                                   CreateImageModelFromVector(
--                                       features::IsRoundedIconsEnabled()
--                                           ? vector_icons::kErrorIcon
--                                           : vector_icons::kErrorOutlineOldIcon,
--                                       ui::kColorAlertMediumSeverityIcon),
--                                   /*ok_label=*/std::nullopt);
-+            return ShowChildDialog(
-+                title, subtitle,
-+                CreateImageModelFromVector(
-+                    features::IsRoundedIconsEnabled()
-+                        ? vector_icons::kErrorIcon
-+                        : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                               "disable-thorium-icons")
-+                               ? vector_icons::kErrorOutlineOldIcon
-+                               : vector_icons::kErrorOutlineOldThoriumIcon),
-+                    ui::kColorAlertMediumSeverityIcon),
-+                /*ok_label=*/std::nullopt);
-           },
-           [this](const IsolatedWebAppInstallerModel::ConfirmInstallationDialog&
-                      confirm_installation_dialog) {
-@@ -882,7 +894,10 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
-                 CreateImageModelFromVector(
-                     features::IsRoundedIconsEnabled()
-                         ? vector_icons::kErrorIcon
--                        : vector_icons::kErrorOutlineOldIcon,
-+                        : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                               "disable-thorium-icons")
-+                               ? vector_icons::kErrorOutlineOldIcon
-+                               : vector_icons::kErrorOutlineOldThoriumIcon),
-                     ui::kColorAlertMediumSeverityIcon),
-                 IDS_IWA_INSTALLER_INSTALL_FAILED_RETRY);
-           },
-@@ -895,7 +910,10 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
-                 CreateImageModelFromVector(
-                     features::IsRoundedIconsEnabled()
-                         ? vector_icons::kErrorIcon
--                        : vector_icons::kErrorOutlineOldIcon,
-+                        : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                               "disable-thorium-icons")
-+                               ? vector_icons::kErrorOutlineOldIcon
-+                               : vector_icons::kErrorOutlineOldThoriumIcon),
-                     ui::kColorAlertMediumSeverityIcon),
-                 std::nullopt);
-           },
-@@ -908,7 +926,10 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
-                 CreateImageModelFromVector(
-                     features::IsRoundedIconsEnabled()
-                         ? vector_icons::kErrorIcon
--                        : vector_icons::kErrorOutlineOldIcon,
-+                        : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                               "disable-thorium-icons")
-+                               ? vector_icons::kErrorOutlineOldIcon
-+                               : vector_icons::kErrorOutlineOldThoriumIcon),
-                     ui::kColorAlertMediumSeverityIcon),
-                 std::nullopt);
-           }},
+@@ -822,8 +827,12 @@ views::Widget* IsolatedWebAppInstallerViewImpl::ShowDialog(
+     const views::DialogDelegate* dialog_delegate) {
+   ApplyDim(dialog_delegate);
+   const ui::ImageModel error_icon = CreateImageModelFromVector(
+-      features::IsRoundedIconsEnabled() ? vector_icons::kErrorIcon
+-                                        : vector_icons::kErrorOutlineOldIcon,
++      features::IsRoundedIconsEnabled()
++          ? vector_icons::kErrorIcon
++          : (base::CommandLine::ForCurrentProcess()->HasSwitch(
++                 "disable-thorium-icons")
++                 ? vector_icons::kErrorOutlineOldIcon
++                 : vector_icons::kErrorOutlineOldThoriumIcon),
+       ui::kColorAlertMediumSeverityIcon);
+   return std::visit(
+       absl::Overload{
 diff --git a/chrome/browser/ui/views/web_apps/web_app_update_review_dialog.cc b/chrome/browser/ui/views/web_apps/web_app_update_review_dialog.cc
 index 0e2efda9cf9e0..3063e4ccf7ab4 100644
 --- a/chrome/browser/ui/views/web_apps/web_app_update_review_dialog.cc
@@ -4859,7 +4736,7 @@ index 0e2efda9cf9e0..3063e4ccf7ab4 100644
    // Add the `ignore` button only if the migration is not forced.
    if (!update.is_forced_migration) {
 diff --git a/chrome/browser/ui/views/webid/account_selection_view_base.cc b/chrome/browser/ui/views/webid/account_selection_view_base.cc
-index 6d0383a4a1e69..10768137a2687 100644
+index fd8327b3bac49..776dd417757e5 100644
 --- a/chrome/browser/ui/views/webid/account_selection_view_base.cc
 +++ b/chrome/browser/ui/views/webid/account_selection_view_base.cc
 @@ -6,6 +6,7 @@
@@ -4870,7 +4747,7 @@ index 6d0383a4a1e69..10768137a2687 100644
  #include "base/debug/dump_without_crashing.h"
  #include "base/i18n/message_formatter.h"
  #include "base/i18n/unicodestring.h"
-@@ -170,8 +171,12 @@ AccountHoverButtonSecondaryView::AccountHoverButtonSecondaryView() {
+@@ -170,8 +171,12 @@ HoverButtonSecondaryView::HoverButtonSecondaryView() {
    std::unique_ptr<views::ImageView> arrow_image_view =
        std::make_unique<views::ImageView>();
    arrow_image_view->SetImage(ui::ImageModel::FromVectorIcon(
@@ -4885,7 +4762,7 @@ index 6d0383a4a1e69..10768137a2687 100644
        ui::kColorIcon, kArrowIconSize));
    arrow_image_view_ = AddChildView(std::move(arrow_image_view));
  }
-@@ -193,8 +198,12 @@ void AccountHoverButtonSecondaryView::SetDisabledOpacity() {
+@@ -193,8 +198,12 @@ void HoverButtonSecondaryView::SetDisabledOpacity() {
    }
  
    arrow_image_view_->SetImage(ui::ImageModel::FromVectorIcon(
@@ -4901,7 +4778,7 @@ index 6d0383a4a1e69..10768137a2687 100644
  }
  
 diff --git a/chrome/browser/ui/web_applications/web_app_menu_model.cc b/chrome/browser/ui/web_applications/web_app_menu_model.cc
-index 796882c3269c0..5c1ed4dccfb77 100644
+index 00b1b4245af67..89ab39592d0e3 100644
 --- a/chrome/browser/ui/web_applications/web_app_menu_model.cc
 +++ b/chrome/browser/ui/web_applications/web_app_menu_model.cc
 @@ -4,6 +4,7 @@
@@ -4912,7 +4789,7 @@ index 796882c3269c0..5c1ed4dccfb77 100644
  #include "base/feature_list.h"
  #include "base/notimplemented.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -140,7 +141,10 @@ void WebAppMenuModel::Build() {
+@@ -141,7 +142,10 @@ void WebAppMenuModel::Build() {
        update_icon = ui::ImageModel::FromVectorIcon(
            features::IsRoundedIconsEnabled()
                ? kRocketLaunchIcon
@@ -4925,10 +4802,10 @@ index 796882c3269c0..5c1ed4dccfb77 100644
      }
      AddItemWithStringIdAndIcon(IDC_WEB_APP_UPGRADE_DIALOG,
 diff --git a/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc b/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
-index dc0975fd520ff..dccb183e4b411 100644
+index 628a00172dff0..2ac2cdfdcde98 100644
 --- a/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
 +++ b/chrome/browser/ui/webui/cr_components/searchbox/searchbox_handler.cc
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  #include "base/base64.h"
  #include "base/base64url.h"
  #include "base/check_op.h"
@@ -4936,7 +4813,7 @@ index dc0975fd520ff..dccb183e4b411 100644
  #include "base/containers/fixed_flat_map.h"
  #include "base/containers/flat_set.h"
  #include "base/feature_list.h"
-@@ -613,9 +614,15 @@ std::string SearchboxHandler::AutocompleteIconToResourceName(
+@@ -697,9 +698,15 @@ std::string SearchboxHandler::VectorIconToResourceName(
                    ? omnibox::kTranslateIcon.name
                    : omnibox::kAnswerTranslationChromeRefreshOldIcon.name)) {
      resource_name = kAnswerTranslationIconResourceName;
@@ -4955,7 +4832,7 @@ index dc0975fd520ff..dccb183e4b411 100644
      resource_name = kBookmarkIconResourceName;
    } else if (icon.name ==
               (features::IsRoundedIconsEnabled()
-@@ -652,9 +659,15 @@ std::string SearchboxHandler::AutocompleteIconToResourceName(
+@@ -736,9 +743,15 @@ std::string SearchboxHandler::VectorIconToResourceName(
                                 ? omnibox::kExtensionFilledIcon.name
                                 : omnibox::kExtensionAppOldIcon.name)) {
      resource_name = kExtensionAppIconResourceName;
@@ -4974,7 +4851,7 @@ index dc0975fd520ff..dccb183e4b411 100644
      resource_name = kIncognitoIconResourceName;
    } else if (icon.name == (features::IsRoundedIconsEnabled()
                                 ? omnibox::kConversionPathIcon.name
-@@ -687,7 +700,11 @@ std::string SearchboxHandler::AutocompleteIconToResourceName(
+@@ -771,7 +784,11 @@ std::string SearchboxHandler::VectorIconToResourceName(
    } else if (icon.name ==
               (features::IsRoundedIconsEnabled()
                    ? omnibox::kStarFilledIcon.name
@@ -4988,41 +4865,28 @@ index dc0975fd520ff..dccb183e4b411 100644
    } else if (icon.name ==
               (features::IsRoundedIconsEnabled()
 diff --git a/chrome/browser/ui/webui/flags/flags_ui.cc b/chrome/browser/ui/webui/flags/flags_ui.cc
-index bbd5bab0b8484..8f61ff3d54450 100644
+index 98805257f8814..a7ddfcbc8e907 100644
 --- a/chrome/browser/ui/webui/flags/flags_ui.cc
 +++ b/chrome/browser/ui/webui/flags/flags_ui.cc
-@@ -125,8 +125,12 @@ void FinishInitialization(base::WeakPtr<FlagsUI> flags_ui,
-         infobars::ContentInfoBarManager::FromWebContents(
-             flags_ui->web_ui()->GetWebContents()),
-         infobars::InfoBarDelegate::BAD_FLAGS_INFOBAR_DELEGATE,
--        &(features::IsRoundedIconsEnabled() ? vector_icons::kWarningFilledIcon
--                                            : vector_icons::kWarningOldIcon),
-+        &(features::IsRoundedIconsEnabled()
-+              ? vector_icons::kWarningFilledIcon
-+              : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                     "disable-thorium-icons")
-+                     ? vector_icons::kWarningOldIcon
-+                     : vector_icons::kWarningOldThoriumIcon)),
-         l10n_util::GetStringUTF16(IDS_FLAGS_IGNORED_DUE_TO_CRASHY_CHROME),
-         /*auto_expire=*/false, /*should_animate=*/true, /*closeable=*/true,
-         /*infobar_priority=*/
-@@ -139,8 +143,12 @@ void FinishInitialization(base::WeakPtr<FlagsUI> flags_ui,
-         infobars::ContentInfoBarManager::FromWebContents(
-             flags_ui->web_ui()->GetWebContents()),
-         infobars::InfoBarDelegate::BAD_FLAGS_INFOBAR_DELEGATE,
--        &(features::IsRoundedIconsEnabled() ? vector_icons::kWarningFilledIcon
--                                            : vector_icons::kWarningOldIcon),
-+        &(features::IsRoundedIconsEnabled()
-+              ? vector_icons::kWarningFilledIcon
-+              : (base::CommandLine::ForCurrentProcess()->HasSwitch(
-+                     "disable-thorium-icons")
-+                     ? vector_icons::kWarningOldIcon
-+                     : vector_icons::kWarningOldThoriumIcon)),
-         l10n_util::GetStringUTF16(IDS_FLAGS_IGNORED_SECONDARY_USERS),
-         /*auto_expire=*/false, /*should_animate=*/true, /*closeable=*/true,
-         /*infobar_priority=*/
+@@ -106,9 +106,13 @@ content::WebUIDataSource* CreateAndAddFlagsUIHTMLSource(Profile* profile) {
+ #if BUILDFLAG(IS_CHROMEOS)
+ void ShowFlagsWarningInfoBar(content::WebContents* web_contents,
+                              int message_id) {
+-  const gfx::VectorIcon& icon = features::IsRoundedIconsEnabled()
+-                                    ? vector_icons::kWarningFilledIcon
+-                                    : vector_icons::kWarningOldIcon;
++  const gfx::VectorIcon& icon =
++      features::IsRoundedIconsEnabled()
++          ? vector_icons::kWarningFilledIcon
++          : (base::CommandLine::ForCurrentProcess()->HasSwitch(
++                 "disable-thorium-icons")
++                 ? vector_icons::kWarningOldIcon
++                 : vector_icons::kWarningOldThoriumIcon);
+   if (infobars::IsInfoBarMigrated(
+           infobars::InfoBarDelegate::BAD_FLAGS_INFOBAR_DELEGATE)) {
+     auto* manager = infobars::BrowserInfoBarManager::From(g_browser_process);
 diff --git a/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc b/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
-index 1a580fc7a5c8d..a4beaa9f7e9f9 100644
+index b89b8a7a65637..eeb53afb23a09 100644
 --- a/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
 +++ b/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
 @@ -7,6 +7,8 @@
@@ -5034,9 +4898,9 @@ index 1a580fc7a5c8d..a4beaa9f7e9f9 100644
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/memory/ref_counted_memory.h"
-@@ -259,6 +261,18 @@ void NTPResourceCache::CreateNewTabIncognitoHTML(
-   DCHECK(!profile_->IsOffTheRecord());
-   DCHECK(profile_->HasAnyOffTheRecordProfile());
+@@ -260,6 +262,18 @@ void NTPResourceCache::CreateNewTabIncognitoHTML(
+   CHECK(!profile_->IsOffTheRecord(), base::NotFatalUntil::M162);
+   CHECK(profile_->HasAnyOffTheRecordProfile(), base::NotFatalUntil::M162);
  
 +  // Keep the SVGs as data URLs, but choose their resources at runtime so the
 +  // icon preference applies to both the page icon and favicon.
@@ -5054,7 +4918,7 @@ index 1a580fc7a5c8d..a4beaa9f7e9f9 100644
        l10n_util::GetStringUTF8(IDS_NEW_TAB_OTR_SUBTITLE_WITH_READING_LIST);
    replacements["incognitoTabHeading"] =
 diff --git a/chrome/browser/ui/webui/theme_source.cc b/chrome/browser/ui/webui/theme_source.cc
-index b76ecf6ba9f00..2199e6730c9f1 100644
+index 4cdcbbd47faf5..f77f5851922f7 100644
 --- a/chrome/browser/ui/webui/theme_source.cc
 +++ b/chrome/browser/ui/webui/theme_source.cc
 @@ -7,6 +7,7 @@
@@ -5065,7 +4929,7 @@ index b76ecf6ba9f00..2199e6730c9f1 100644
  #include "base/functional/bind.h"
  #include "base/logging.h"
  #include "base/memory/ref_counted_memory.h"
-@@ -154,6 +155,20 @@ void ThemeSource::StartDataRequest(
+@@ -160,6 +161,20 @@ void ThemeSource::StartDataRequest(
      resource_id = ResourcesUtil::GetThemeResourceId(parsed_path);
    }
  
@@ -5087,10 +4951,10 @@ index b76ecf6ba9f00..2199e6730c9f1 100644
    // take significant time to serve or, at worst, crash the browser due to OOM.
    // We don't want to clamp to the max scale factor, though, for devices that
 diff --git a/chrome/browser/ui/webui/webui_toolbar/icon_table.cc b/chrome/browser/ui/webui/webui_toolbar/icon_table.cc
-index 9fcfa6a90b405..87287c904d2ad 100644
+index c2dd7fce62c01..d9b5bbf3a1815 100644
 --- a/chrome/browser/ui/webui/webui_toolbar/icon_table.cc
 +++ b/chrome/browser/ui/webui/webui_toolbar/icon_table.cc
-@@ -92,6 +92,7 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+@@ -100,6 +100,7 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
            {{&kIncognitoRefreshMenuOldIcon},
             {"webui-toolbar:incognito", IconType::kIconSet}},
            {{&kInfoIcon}, {"webui-toolbar:info", IconType::kIconSet}},
@@ -5098,16 +4962,16 @@ index 9fcfa6a90b405..87287c904d2ad 100644
            {{&kInstallDesktopChromeRefreshOldIcon},
             {"webui-toolbar:install_desktop", IconType::kIconSet}},
            {{&kLinkChromeRefreshOldIcon},
-@@ -140,6 +141,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+@@ -149,6 +150,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
             {"webui-toolbar:zoom_in", IconType::kIconSet}},
            {{&omnibox::kBookmarkChromeRefreshOldIcon},
             {"webui-toolbar:star", IconType::kIconSet}},
 +          {{&omnibox::kBookmarkChromeRefreshOldThoriumIcon},
 +           {"webui-toolbar:star", IconType::kIconSet}},
+           {{&omnibox::kCalculatorChromeRefreshOldIcon},
+            {"webui-toolbar:equal", IconType::kIconSet}},
            {{&omnibox::kChromeProductIcon},
-            {"webui-toolbar:chrome_product", IconType::kIconSet}},
-           {{&omnibox::kExtensionAppOldIcon},
-@@ -152,6 +155,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+@@ -170,6 +173,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
             {"webui-toolbar:find_in_page", IconType::kIconSet}},
            {{&omnibox::kHttpChromeRefreshOldIcon},
             {"webui-toolbar:info", IconType::kIconSet}},
@@ -5116,8 +4980,8 @@ index 9fcfa6a90b405..87287c904d2ad 100644
            {{&omnibox::kHttpOldIcon},
             {"webui-toolbar:info", IconType::kIconSet}},
            {{&omnibox::kInfoIcon}, {"webui-toolbar:info", IconType::kIconSet}},
-@@ -173,11 +178,17 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
-            {"webui-toolbar:page_info_custom", IconType::kIconSet}},
+@@ -196,11 +201,17 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+           {{&omnibox::kSparkIcon}, {"webui-toolbar:spark", IconType::kIconSet}},
            {{&omnibox::kStarActiveChromeRefreshOldIcon},
             {"webui-toolbar:star_filled", IconType::kIconSet}},
 +          {{&omnibox::kStarActiveChromeRefreshOldThoriumIcon},
@@ -5131,10 +4995,10 @@ index 9fcfa6a90b405..87287c904d2ad 100644
            {{&omnibox::kStarIcon}, {"webui-toolbar:star", IconType::kIconSet}},
 +          {{&omnibox::kStarThoriumIcon},
 +           {"webui-toolbar:star", IconType::kIconSet}},
-           {{&vector_icons::kArrowForwardIcon},
-            {"webui-toolbar:arrow_forward", IconType::kIconSet}},
-           {{&vector_icons::kBusinessChromeRefreshOldIcon},
-@@ -224,6 +235,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+           {{&omnibox::kSubdirectoryArrowRightIcon},
+            {"webui-toolbar:subdirectory_arrow_right", IconType::kIconSet}},
+           {{&omnibox::kSubdirectoryArrowRightOldIcon},
+@@ -255,6 +266,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
             {"webui-toolbar:chrome_extension_off", IconType::kIconSet}},
            {{&vector_icons::kExtensionOldIcon},
             {"webui-toolbar:extension_filled", IconType::kIconSet}},
@@ -5143,7 +5007,7 @@ index 9fcfa6a90b405..87287c904d2ad 100644
            {{&vector_icons::kExtensionOnOldIcon},
             {"webui-toolbar:chrome_extension_check", IconType::kIconSet}},
            {{&vector_icons::kFeedbackIcon},
-@@ -266,6 +279,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
+@@ -305,6 +318,8 @@ const base::flat_map<const gfx::VectorIcon*, IconInfo>& KnownIcons() {
             {"webui-toolbar:no_encryption", IconType::kIconSet}},
            {{&vector_icons::kNotSecureWarningChromeRefreshOldIcon},
             {"webui-toolbar:warning", IconType::kIconSet}},
@@ -5153,7 +5017,7 @@ index 9fcfa6a90b405..87287c904d2ad 100644
             {"webui-toolbar:passkey", IconType::kIconSet}},
            {{&vector_icons::kPasswordManagerIcon},
 diff --git a/chrome/browser/ui/webui/webui_toolbar/icon_table_unittest.cc b/chrome/browser/ui/webui/webui_toolbar/icon_table_unittest.cc
-index cedbb207e7db7..e3809caec7eed 100644
+index 9b0124e7a3bd6..58e95574dbd31 100644
 --- a/chrome/browser/ui/webui/webui_toolbar/icon_table_unittest.cc
 +++ b/chrome/browser/ui/webui/webui_toolbar/icon_table_unittest.cc
 @@ -6,6 +6,7 @@
@@ -5161,10 +5025,10 @@ index cedbb207e7db7..e3809caec7eed 100644
  #include <memory>
  
 +#include "base/command_line.h"
+ #include "build/branding_buildflags.h"
  #include "chrome/app/vector_icons/vector_icons.h"
  #include "chrome/browser/ui/webui/webui_toolbar/webui_toolbar_test_utils.h"
- #include "components/browser_apis/ui_controllers/toolbar/toolbar_ui_api_data_model.mojom.h"
-@@ -500,7 +501,10 @@ TEST_F(IconTableTest, ExtensionIconsAreMapped) {
+@@ -501,7 +502,10 @@ TEST_F(IconTableTest, ExtensionIconsAreMapped) {
        &omnibox::kExtensionFilledIcon,
        &omnibox::kExtensionAppOldIcon,
        &vector_icons::kExtensionFilledIcon,
@@ -5177,7 +5041,7 @@ index cedbb207e7db7..e3809caec7eed 100644
        &vector_icons::kChromeExtensionIcon,
        &vector_icons::kChromeExtensionCheckIcon,
 diff --git a/chrome/browser/ui/webui_browser/webui_browser_page_handler.cc b/chrome/browser/ui/webui_browser/webui_browser_page_handler.cc
-index eb59477933a77..44e284fec3ced 100644
+index 19139d918a759..28387a46d41e0 100644
 --- a/chrome/browser/ui/webui_browser/webui_browser_page_handler.cc
 +++ b/chrome/browser/ui/webui_browser/webui_browser_page_handler.cc
 @@ -4,6 +4,7 @@
@@ -5188,7 +5052,7 @@ index eb59477933a77..44e284fec3ced 100644
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
  #include "base/logging.h"
-@@ -119,9 +120,11 @@ class WebUIBrowserGuestHandler
+@@ -122,9 +123,11 @@ class WebUIBrowserGuestHandler
    void GetSecurityIcon(GetSecurityIconCallback callback) override {
      auto* icon = &LocationBarModel::From(window_->browser())->GetVectorIcon();
      webui_browser::mojom::SecurityIcon icon_type;
@@ -5203,7 +5067,7 @@ index eb59477933a77..44e284fec3ced 100644
        icon_type = webui_browser::mojom::SecurityIcon::HttpChromeRefresh;
      } else if (icon == &(features::IsRoundedIconsEnabled()
                               ? omnibox::kPageInfoCustomIcon
-@@ -132,10 +135,15 @@ class WebUIBrowserGuestHandler
+@@ -135,10 +138,15 @@ class WebUIBrowserGuestHandler
                               ? vector_icons::kNoEncryptionIcon
                               : vector_icons::kNoEncryptionOldIcon)) {
        icon_type = webui_browser::mojom::SecurityIcon::NoEncryption;
@@ -5248,7 +5112,7 @@ index 1c1420d0b2b7a..5a903d49a189c 100644
    scene.AddUiElement(kRoot, std::move(icon));
    base::TimeTicks start_time = gfx::MsToTicks(1);
 diff --git a/components/live_caption/views/caption_bubble.cc b/components/live_caption/views/caption_bubble.cc
-index 8d07473413abe..a124b42ffda98 100644
+index 671d611a8c902..bff20c20861d3 100644
 --- a/components/live_caption/views/caption_bubble.cc
 +++ b/components/live_caption/views/caption_bubble.cc
 @@ -10,6 +10,7 @@
@@ -5322,7 +5186,7 @@ index 8d07473413abe..a124b42ffda98 100644
    views::SetImageFromVectorIconWithColor(
        expand_button_,
 diff --git a/components/omnibox/browser/autocomplete_match.cc b/components/omnibox/browser/autocomplete_match.cc
-index 9d5970d9dae06..0abe8e2e9e574 100644
+index 722130d9d00ac..d544ddf2a25de 100644
 --- a/components/omnibox/browser/autocomplete_match.cc
 +++ b/components/omnibox/browser/autocomplete_match.cc
 @@ -10,6 +10,7 @@
@@ -5333,7 +5197,7 @@ index 9d5970d9dae06..0abe8e2e9e574 100644
  #include "base/check_op.h"
  #include "base/containers/fixed_flat_map.h"
  #include "base/feature_list.h"
-@@ -545,8 +546,14 @@ const gfx::VectorIcon& AutocompleteMatch::GetVectorIcon(
+@@ -542,8 +543,14 @@ const gfx::VectorIcon& AutocompleteMatch::GetVectorIcon(
    if (is_bookmark && type != Type::kHistoryEmbeddingsAnswer &&
        type != Type::kStarterPack) {
      return features::IsRoundedIconsEnabled()
@@ -5509,7 +5373,7 @@ index 3a4b1145fb0e8..252c67545f003 100644
 +                .name);
  }
 diff --git a/components/omnibox/browser/searchbox_utils.cc b/components/omnibox/browser/searchbox_utils.cc
-index 9bd1108722aef..990362ce6f9a8 100644
+index 40cbdc9253e4a..eb184617bb078 100644
 --- a/components/omnibox/browser/searchbox_utils.cc
 +++ b/components/omnibox/browser/searchbox_utils.cc
 @@ -7,6 +7,7 @@
@@ -5520,7 +5384,7 @@ index 9bd1108722aef..990362ce6f9a8 100644
  #include "base/metrics/histogram_functions.h"
  #include "base/metrics/histogram_macros.h"
  #include "base/metrics/user_metrics.h"
-@@ -589,7 +590,10 @@ const gfx::VectorIcon& GetKeywordVectorIcon(const TemplateURL& turl) {
+@@ -592,7 +593,10 @@ const gfx::VectorIcon& GetKeywordVectorIcon(const TemplateURL& turl) {
      case StarterPackId::kBookmarks:
        return features::IsRoundedIconsEnabled()
                   ? omnibox::kStarFilledIcon
@@ -5533,7 +5397,7 @@ index 9bd1108722aef..990362ce6f9a8 100644
        return features::IsRoundedIconsEnabled()
                   ? vector_icons::kHistoryIcon
 diff --git a/components/omnibox/browser/searchbox_utils_unittest.cc b/components/omnibox/browser/searchbox_utils_unittest.cc
-index 8bda2ce222044..3236c1a3cc173 100644
+index bd8330d3b482e..56db7682e69fd 100644
 --- a/components/omnibox/browser/searchbox_utils_unittest.cc
 +++ b/components/omnibox/browser/searchbox_utils_unittest.cc
 @@ -7,6 +7,7 @@
@@ -5544,7 +5408,7 @@ index 8bda2ce222044..3236c1a3cc173 100644
  #include "base/memory/scoped_refptr.h"
  #include "base/test/metrics/histogram_tester.h"
  #include "base/test/scoped_feature_list.h"
-@@ -307,7 +308,11 @@ TEST_F(SearchboxUtilsTest, GetKeywordVectorIcon) {
+@@ -326,7 +327,11 @@ TEST_F(SearchboxUtilsTest, GetKeywordVectorIcon) {
      feature_list.InitAndDisableFeature(features::kRoundedIcons);
      EXPECT_EQ(omnibox::kSearchSparkOldIcon.name,
                GetKeywordVectorIcon(aimode_turl).name);
@@ -5599,7 +5463,7 @@ index cd61a9aca2657..fdf1a88e421e9 100644
  }
  
 diff --git a/content/browser/web_contents/aura/gesture_nav_simple.cc b/content/browser/web_contents/aura/gesture_nav_simple.cc
-index 49acbc8ce9b47..1f3bb17cc54cf 100644
+index d893ffb43d89f..1388ae57a5766 100644
 --- a/content/browser/web_contents/aura/gesture_nav_simple.cc
 +++ b/content/browser/web_contents/aura/gesture_nav_simple.cc
 @@ -6,6 +6,7 @@
@@ -5610,8 +5474,8 @@ index 49acbc8ce9b47..1f3bb17cc54cf 100644
  #include "base/memory/raw_ptr.h"
  #include "base/metrics/user_metrics.h"
  #include "cc/paint/paint_flags.h"
-@@ -227,13 +228,19 @@ Affordance::Affordance(GestureNavSimple* owner,
-             mode_ == OVERSCROLL_SOUTH,
+@@ -198,13 +199,19 @@ Affordance::Affordance(GestureNavSimple* owner,
+   CHECK(mode_ == OVERSCROLL_EAST || mode_ == OVERSCROLL_WEST,
          base::NotFatalUntil::M158);
    if (mode_ == OVERSCROLL_EAST) {
 -    arrow_icon_ =
@@ -5623,7 +5487,7 @@ index 49acbc8ce9b47..1f3bb17cc54cf 100644
 +                               "disable-thorium-icons")
 +                               ? vector_icons::kBackArrowOldIcon
 +                               : vector_icons::kBackArrowOldThoriumIcon));
-   } else if (mode_ == OVERSCROLL_WEST) {
+   } else {
      arrow_icon_ = &(features::IsRoundedIconsEnabled()
                          ? vector_icons::kArrowForwardIcon
 -                        : vector_icons::kForwardArrowOldIcon);
@@ -5631,9 +5495,9 @@ index 49acbc8ce9b47..1f3bb17cc54cf 100644
 +                               "disable-thorium-icons")
 +                               ? vector_icons::kForwardArrowOldIcon
 +                               : vector_icons::kForwardArrowOldThoriumIcon));
-   } else if (mode_ == OVERSCROLL_SOUTH) {
-     arrow_icon_ = &vector_icons::kReloadCustomIcon;
    }
+ 
+   root_layer_.SetBounds(content_bounds);
 diff --git a/content/browser/webui/shared_resources_data_source.cc b/content/browser/webui/shared_resources_data_source.cc
 index 412a077dd22d5..d5733d4ccce67 100644
 --- a/content/browser/webui/shared_resources_data_source.cc
@@ -5754,7 +5618,7 @@ index a7f01025526ec..6a6432203b90a 100644
        </if>
        <if expr="not is_android and not is_ios">
 diff --git a/ui/views/bubble/bubble_frame_view.cc b/ui/views/bubble/bubble_frame_view.cc
-index d576b8a33de6f..d87b414e75792 100644
+index 21637c9103c0a..99e39490ad85d 100644
 --- a/ui/views/bubble/bubble_frame_view.cc
 +++ b/ui/views/bubble/bubble_frame_view.cc
 @@ -7,6 +7,7 @@
@@ -5783,7 +5647,7 @@ index d576b8a33de6f..d87b414e75792 100644
    close_button->GetViewAccessibility().SetName(
        l10n_util::GetStringUTF16(IDS_APP_CLOSE));
 diff --git a/ui/views/bubble/tooltip_icon.cc b/ui/views/bubble/tooltip_icon.cc
-index 4054f728ca21c..bd6bd886f6f3a 100644
+index 5ae21b97c060f..566edded87f23 100644
 --- a/ui/views/bubble/tooltip_icon.cc
 +++ b/ui/views/bubble/tooltip_icon.cc
 @@ -4,6 +4,7 @@
@@ -5794,7 +5658,7 @@ index 4054f728ca21c..bd6bd886f6f3a 100644
  #include "base/observer_list.h"
  #include "base/timer/timer.h"
  #include "build/build_config.h"
-@@ -127,8 +128,12 @@ void TooltipIcon::RemoveObserver(Observer* observer) {
+@@ -126,8 +127,12 @@ void TooltipIcon::RemoveObserver(Observer* observer) {
  
  void TooltipIcon::SetDrawAsHovered(bool hovered) {
    SetImage(ui::ImageModel::FromVectorIcon(
@@ -5806,9 +5670,9 @@ index 4054f728ca21c..bd6bd886f6f3a 100644
 +                 "disable-thorium-icons")
 +                 ? vector_icons::kInfoOutlineOldIcon
 +                 : vector_icons::kInfoOutlineOldThoriumIcon),
-       GetColorProvider()->GetColor(hovered ? ui::kColorHelpIconActive
-                                            : ui::kColorHelpIconInactive),
+       hovered ? ui::kColorHelpIconActive : ui::kColorHelpIconInactive,
        tooltip_icon_size_));
+ }
 diff --git a/ui/views/controls/button/image_button_factory_unittest.cc b/ui/views/controls/button/image_button_factory_unittest.cc
 index 5fdbcc4d373b1..04fd3b3d11dce 100644
 --- a/ui/views/controls/button/image_button_factory_unittest.cc
@@ -5938,21 +5802,21 @@ index 4171cd3e9380a..887f198b5e94f 100644
    SetImageModel(Button::STATE_NORMAL, drop_arrow_image);
  }
 diff --git a/ui/views/controls/menu/menu_item_view.cc b/ui/views/controls/menu/menu_item_view.cc
-index 8c457e3bfbbeb..0af4f54ab26a1 100644
+index 03dba36c5f343..d468b991dc277 100644
 --- a/ui/views/controls/menu/menu_item_view.cc
 +++ b/ui/views/controls/menu/menu_item_view.cc
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  #include <utility>
  
  #include "base/auto_reset.h"
 +#include "base/command_line.h"
- #include "base/containers/adapters.h"
  #include "base/i18n/case_conversion.h"
  #include "base/strings/utf_string_conversions.h"
-@@ -1766,11 +1767,20 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
-   last_paint_as_selected_ = paint_as_selected;
-   const Colors colors = CalculateColors(paint_as_selected);
-   if (submenu_arrow_image_view_) {
+ #include "build/build_config.h"
+@@ -1891,11 +1892,20 @@ void MenuItemView::UpdateSelectionBasedState(bool paint_as_selected) {
+                                    ? *submenu_arrow_color_id_
+                                    : ui::kColorMenuIconDisabled)
+             : ui::ColorVariant(colors.icon_color);
 +    static const bool disable_thorium_icons =
 +        base::CommandLine::ForCurrentProcess()->HasSwitch(
 +            "disable-thorium-icons");
@@ -5972,21 +5836,21 @@ index 8c457e3bfbbeb..0af4f54ab26a1 100644
 +                   : vector_icons::kSubmenuArrowOldThoriumIcon)
 +            : vector_icons::kSubmenuArrowChromeRefreshThoriumIcon;
      submenu_arrow_image_view_->SetImage(
-         ui::ImageModel::FromVectorIcon(submenu_arrow_icon, colors.icon_color));
+         ui::ImageModel::FromVectorIcon(submenu_arrow_icon, arrow_color));
    }
 diff --git a/ui/views/controls/tree/tree_view.cc b/ui/views/controls/tree/tree_view.cc
-index 53c1ebc751ca0..69b4e255d675c 100644
+index 14b431e08a15a..c7700fd87ccd9 100644
 --- a/ui/views/controls/tree/tree_view.cc
 +++ b/ui/views/controls/tree/tree_view.cc
-@@ -7,6 +7,7 @@
- #include <algorithm>
+@@ -8,6 +8,7 @@
+ #include <ranges>
  #include <utility>
  
 +#include "base/command_line.h"
- #include "base/containers/adapters.h"
  #include "base/i18n/rtl.h"
  #include "base/memory/ptr_util.h"
-@@ -1257,8 +1258,12 @@ void TreeView::PaintExpandControl(gfx::Canvas* canvas,
+ #include "build/build_config.h"
+@@ -1256,8 +1257,12 @@ void TreeView::PaintExpandControl(gfx::Canvas* canvas,
                                    const gfx::Rect& node_bounds,
                                    bool expanded) {
    gfx::ImageSkia arrow = gfx::CreateVectorIcon(

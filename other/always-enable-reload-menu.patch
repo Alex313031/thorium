@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/views/toolbar/reload_button.cc b/chrome/browser/ui/views/toolbar/reload_button.cc
-index c954e56d4f9a8..f3c6f713f1956 100644
+index fc7e3975e7765..1b2f1b58488e6 100644
 --- a/chrome/browser/ui/views/toolbar/reload_button.cc
 +++ b/chrome/browser/ui/views/toolbar/reload_button.cc
-@@ -176,7 +176,7 @@ void ReloadButton::UpdateCachedTooltipText() {
+@@ -177,7 +177,7 @@ void ReloadButton::UpdateCachedTooltipText() {
  }
  
  bool ReloadButton::ShouldShowMenu() {
@@ -12,7 +12,7 @@ index c954e56d4f9a8..f3c6f713f1956 100644
  
  void ReloadButton::ShowDropDownMenu(ui::mojom::MenuSourceType source_type) {
 diff --git a/chrome/browser/ui/views/toolbar/webui_reload_control.cc b/chrome/browser/ui/views/toolbar/webui_reload_control.cc
-index f1d6ffd6aa29f..7e1a5149751c7 100644
+index a93c61f24e8c3..5f535d9695b3e 100644
 --- a/chrome/browser/ui/views/toolbar/webui_reload_control.cc
 +++ b/chrome/browser/ui/views/toolbar/webui_reload_control.cc
 @@ -61,7 +61,7 @@ void WebUIReloadControl::SetDevToolsStatus(bool is_dev_tools_connected) {
@@ -24,7 +24,7 @@ index f1d6ffd6aa29f..7e1a5149751c7 100644
      menu_runner_->RunMenuAt(widget, nullptr, screen_rect,
                              views::MenuAnchorPosition::kTopLeft, source);
      UpdateState();
-@@ -103,8 +103,7 @@ void WebUIReloadControl::SetDoubleClickIntervalForTesting(
+@@ -91,8 +91,7 @@ void WebUIReloadControl::SetDoubleClickIntervalForTesting(
  void WebUIReloadControl::UpdateState() {
    auto state = toolbar_ui_api::mojom::ReloadControlState::New();
    state->double_click_interval = double_click_interval_;

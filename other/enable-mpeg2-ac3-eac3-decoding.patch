@@ -26,7 +26,7 @@ index 51734902ee029..2251b80e59319 100644
        return false;
    }
 diff --git a/media/ffmpeg/ffmpeg_common.cc b/media/ffmpeg/ffmpeg_common.cc
-index c84f80be05b28..22ab0ce8130ae 100644
+index 21b7cd434219d..3dcc8ea604e3b 100644
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
 @@ -179,6 +179,12 @@ AVCodecID AudioCodecToCodecID(AudioCodec audio_codec,
@@ -86,7 +86,7 @@ index c84f80be05b28..22ab0ce8130ae 100644
  #endif
  #if BUILDFLAG(ENABLE_PLATFORM_MPEG_H_AUDIO)
    if (codec == AudioCodec::kMpegHAudio)
-@@ -1113,7 +1129,7 @@ int32_t HashCodecName(const char* codec_name) {
+@@ -1111,7 +1127,7 @@ int32_t HashCodecName(const char* codec_name) {
  
  const char* GetAllowedAudioDecoders() {
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
@@ -96,7 +96,7 @@ index c84f80be05b28..22ab0ce8130ae 100644
  #define EXTRA_CODECS
  #endif
 diff --git a/media/filters/ffmpeg_glue.cc b/media/filters/ffmpeg_glue.cc
-index fcacae3add97e..83d1fee3c5901 100644
+index a8fb5de0b5a99..dc3b65dc5727a 100644
 --- a/media/filters/ffmpeg_glue.cc
 +++ b/media/filters/ffmpeg_glue.cc
 @@ -1,4 +1,4 @@
@@ -105,12 +105,12 @@ index fcacae3add97e..83d1fee3c5901 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -90,6 +90,8 @@ static const char* GetAllowedDemuxers() {
-                                                  "flac", "mp3",      "mov"};
+@@ -88,7 +88,7 @@ FFmpegGlue::FFmpegGlue(FFmpegURLProtocol* protocol) {
+   static constexpr const char* kAllowedDemuxers =
+       "ogg,matroska,wav,flac,mp3,mov"
  #if BUILDFLAG(USE_PROPRIETARY_CODECS)
-     allowed_demuxers.push_back("aac");
-+    allowed_demuxers.push_back("ac3");
-+    allowed_demuxers.push_back("eac3");
+-      ",aac"
++      ",aac,ac3,eac3"
  #endif
-     return base::JoinString(allowed_demuxers, ",");
-   }());
+       ;
+ 

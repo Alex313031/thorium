@@ -1,17 +1,17 @@
 diff --git a/chrome/browser/ui/webui/BUILD.gn b/chrome/browser/ui/webui/BUILD.gn
-index 7341632b43d34..3ea8315b937bb 100644
+index 867d0cee383f4..2e86cbe538585 100644
 --- a/chrome/browser/ui/webui/BUILD.gn
 +++ b/chrome/browser/ui/webui/BUILD.gn
-@@ -35,6 +35,7 @@ source_set("configs") {
-     "chrome_untrusted_web_ui_configs.h",
+@@ -38,6 +38,7 @@ source_set("configs") {
+   sources = [
+     "chrome_untrusted_web_ui_configs.cc",
      "chrome_web_ui_configs.cc",
-     "chrome_web_ui_configs.h",
 +    "thorium_easter_eggs.h",
    ]
  
-   configs += [ "//build/config/compiler:wexit_time_destructors" ]
+   deps = [
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
-index 139fecebd5645..0874495a12ed5 100644
+index 105d9e9726a92..e373abe2961dc 100644
 --- a/chrome/browser/ui/webui/chrome_web_ui_configs.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_configs.cc
 @@ -56,6 +56,7 @@
@@ -22,7 +22,7 @@ index 139fecebd5645..0874495a12ed5 100644
  #include "chrome/browser/ui/webui/translate_internals/translate_internals_ui.h"
  #include "chrome/browser/ui/webui/usb_internals/usb_internals_ui.h"
  #include "chrome/browser/ui/webui/version/version_ui.h"
-@@ -323,6 +324,9 @@ void RegisterChromeWebUIConfigs() {
+@@ -330,6 +331,9 @@ void RegisterChromeWebUIConfigs() {
    map.AddWebUIConfig(std::make_unique<SiteEngagementUIConfig>());
    map.AddWebUIConfig(std::make_unique<SuggestInternalsUIConfig>());
    map.AddWebUIConfig(std::make_unique<SyncInternalsUIConfig>());
@@ -33,7 +33,7 @@ index 139fecebd5645..0874495a12ed5 100644
    map.AddWebUIConfig(std::make_unique<UsbInternalsUIConfig>());
    map.AddWebUIConfig(std::make_unique<user_actions_ui::UserActionsUIConfig>());
 diff --git a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
-index 2bfbf5ab97b33..4f8150bfecda4 100644
+index 524089c3d41b1..aa9b95a30bcc3 100644
 --- a/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 +++ b/chrome/browser/ui/webui/chrome_web_ui_controller_factory.cc
 @@ -352,6 +352,9 @@ bool ChromeWebUIControllerFactory::IsWebUIAllowedToMakeNetworkRequests(
@@ -292,10 +292,10 @@ index 0000000000000..e183c1f64b82a
 +
 +#endif  // THORIUM_EASTER_EGGS_H_
 diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_constants.cc
-index 9ca40912a2685..b5c640da7c6d5 100644
+index 6c6f8ffdf7818..5f0c42e3deb74 100644
 --- a/chrome/common/webui_url_constants.cc
 +++ b/chrome/common/webui_url_constants.cc
-@@ -123,6 +123,9 @@ base::span<const base::cstring_view> ChromeURLHosts() {
+@@ -122,6 +122,9 @@ base::span<const base::cstring_view> ChromeURLHosts() {
        kChromeUIAboutHost,
        kChromeUIAccessibilityHost,
        kChromeUIActorInternalsHost,
@@ -306,7 +306,7 @@ index 9ca40912a2685..b5c640da7c6d5 100644
        kChromeUIAppServiceInternalsHost,
  #endif
 diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_constants.h
-index a462094cd3d23..2e444d3009415 100644
+index 889032faeef0b..cd00ece588572 100644
 --- a/chrome/common/webui_url_constants.h
 +++ b/chrome/common/webui_url_constants.h
 @@ -33,6 +33,12 @@ namespace chrome {
@@ -334,10 +334,10 @@ index 5096175e285c1..6d4a41ab2815f 100644
 +    <a href="{{thorium_link}}">here</a>. Chromium source code is available <a href="{{opensource_link}}">here</a>.
  </div>
 diff --git a/tools/licenses/licenses.py b/tools/licenses/licenses.py
-index 07ad95387a8fe..da6578a958eff 100755
+index 2abab0dc55436..cfb08140cae12 100755
 --- a/tools/licenses/licenses.py
 +++ b/tools/licenses/licenses.py
-@@ -1183,6 +1183,8 @@ def GenerateCredits(args, metadatas):
+@@ -1122,6 +1122,8 @@ def GenerateCredits(args, metadatas):
    reciprocal_contents = EvaluateTemplate(
      reciprocal_template,
      {
@@ -347,7 +347,7 @@ index 07ad95387a8fe..da6578a958eff 100755
        'opensource_link': 'https://source.chromium.org/chromium',
      },
 diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
-index e044096934a47..96d660763b45b 100644
+index ebebce61a325e..38715c53f34bd 100644
 --- a/ui/webui/resources/BUILD.gn
 +++ b/ui/webui/resources/BUILD.gn
 @@ -39,6 +39,7 @@ generate_grd("build_grd") {

@@ -114,16 +114,17 @@ other/downloads-page-enhancements.patch
 # 60 - Installer, shell integration, and context-menu behavior.
 other/mini_installer.patch
 other/open_in_same_tab.patch
+other/context-menu-other-search-engines.patch
 other/windows-thorium-flags-conf.patch
 
 # 70 - User-facing flags, defaults, download/security behavior, and ThoriumOS.
 other/add-flag-to-close-window-with-last-tab.patch
 other/add-flag-to-scroll-tabs.patch
-other/enable-ctrl-tab-mru.patch
 other/add-flag-for-double-click-close-tab.patch
 other/add-flag-for-right-click-close-tab.patch
 other/add-flag-for-hover-activate-tab.patch
 other/add-flag-for-open-bookmarks-in-new-tab.patch
+other/multi-column-bookmarks.patch
 other/add-flag-for-open-omnibox-url-in-new-tab.patch
 other/disable-qr-code-generator.patch
 other/hide-cast-context-menu.patch
@@ -162,7 +163,6 @@ other/allow_manifest_v2_extensions.patch
 other/increase-dnr-limits.patch
 other/show-hosted-apps-in-extensions.patch
 other/thorium_webui.patch
-other/keyboard_shortcuts.patch
 other/keep-expired-flags.patch
 other/disable-privacy-sandbox.patch
 other/disable-encryption.patch
@@ -175,9 +175,14 @@ other/android-disable-signin-without-account-manager.patch
 other/android-extensions-support.patch
 other/enable-extension-in-incognito.patch
 other/add-quick-extension-toggle-menu.patch
+other/fix-extensions-menu-scrollbar.patch
 other/enable-android-devtools-frontend.patch
 other/android-extensions-opt-in-ui.patch
 other/developer-crx-installation.patch
+
+# 90 - Windows GDI text rendering and native font fallbacks (default off).
+third_party/skia: other/windows-gdi-font-rendering-skia.patch
+other/windows-gdi-font-rendering.patch
 
 # 95 - Conditional / platform-specific overlays that are still active.
 [raspi] other/linux-widevine-cdm-locations.patch

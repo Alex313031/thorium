@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/extensions/preinstalled_extensions.cc b/chrome/browser/extensions/preinstalled_extensions.cc
-index 0d681e3a260a1..daa3be137f66d 100644
+index f0c36044ef5f5..b079e73c37f2d 100644
 --- a/chrome/browser/extensions/preinstalled_extensions.cc
 +++ b/chrome/browser/extensions/preinstalled_extensions.cc
 @@ -11,14 +11,18 @@
@@ -71,7 +71,7 @@ index 0d681e3a260a1..daa3be137f66d 100644
 -                                 prefs::kPreinstalledExtensions) == "install";
 +      profile_->GetPrefs()->GetString(prefs::kPreinstalledExtensions) ==
 +      "install";
-   DCHECK(!perform_new_installation_);
+   CHECK(!perform_new_installation_, base::NotFatalUntil::M161);
  
    InstallState state =
 @@ -170,12 +191,13 @@ Provider::Provider(Profile* profile,
@@ -92,7 +92,7 @@ index 0d681e3a260a1..daa3be137f66d 100644
 +          download_location,
 +          creation_flags & ~extensions::Extension::FROM_WEBSTORE),
        profile_(profile) {
-   DCHECK(profile);
+   CHECK(profile, base::NotFatalUntil::M161);
    // See SetPrefs() below.
 @@ -185,6 +207,8 @@ Provider::Provider(Profile* profile,
    InitProfileState();
@@ -105,7 +105,7 @@ index 0d681e3a260a1..daa3be137f66d 100644
      // If pre-installed apps aren't enabled for the profile, we short-circuit
 @@ -199,12 +223,22 @@ void Provider::VisitRegisteredExtension() {
  void Provider::SetPrefs(base::DictValue prefs) {
-   DCHECK(preinstalled_extensions_enabled_);
+   CHECK(preinstalled_extensions_enabled_, base::NotFatalUntil::M161);
  
 +  // Locale restrictions apply only to Chromium's store-provided entries.
 +  if (!IsLocaleSupported()) {
@@ -212,10 +212,10 @@ index 399a7f4b8dbb1..4d54d1b78a53d 100644
  
  }  // namespace preinstalled_extensions
 diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.gn
-index 5ded1d6276081..6b70203d21855 100644
+index 058f702e8bf94..b81c11b652940 100644
 --- a/chrome/browser/resources/BUILD.gn
 +++ b/chrome/browser/resources/BUILD.gn
-@@ -244,6 +244,14 @@ if (enable_webui_generate_code_cache) {
+@@ -254,6 +254,14 @@ if (enable_webui_generate_code_cache) {
  }
  
  if (enable_extensions_core) {
@@ -230,7 +230,7 @@ index 5ded1d6276081..6b70203d21855 100644
    grit("component_extension_resources") {
      source = "component_extension_resources.grd"
  
-@@ -278,6 +286,10 @@ if (enable_extensions_core) {
+@@ -288,6 +296,10 @@ if (enable_extensions_core) {
      # Some resources within component_extension_resources.grd are generated at
      # build time so we include them as explicit dependencies here
      deps = [ "//chrome/browser/resources/glic/extension:build_ts" ]

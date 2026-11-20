@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/views/tabs/common/tab_group_header_view.cc b/chrome/browser/ui/views/tabs/common/tab_group_header_view.cc
-index ee897b06f49c1..bfa157a1c2ba6 100644
+index 9e6a5d18dce22..f6aa2b339a844 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_group_header_view.cc
 +++ b/chrome/browser/ui/views/tabs/common/tab_group_header_view.cc
 @@ -4,6 +4,7 @@
@@ -7,10 +7,10 @@ index ee897b06f49c1..bfa157a1c2ba6 100644
  #include "chrome/browser/ui/views/tabs/common/tab_group_header_view.h"
  
 +#include "base/command_line.h"
+ #include "base/i18n/rtl.h"
  #include "base/task/single_thread_task_runner.h"
  #include "build/build_config.h"
- #include "build/buildflag.h"
-@@ -533,7 +534,23 @@ void TabGroupHeaderView::OnDataChanged(
+@@ -572,7 +573,23 @@ void TabGroupHeaderView::OnDataChanged(
  
    UpdateIsCollapsed();
    UpdateAccessibleName();
@@ -36,7 +36,7 @@ index ee897b06f49c1..bfa157a1c2ba6 100644
  
  void TabGroupHeaderView::OnTabCountChanged() {
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view.cc b/chrome/browser/ui/views/tabs/common/tab_view.cc
-index b1dd222cbccc3..5c30f124cb8b6 100644
+index 54a598b76e821..94c285a798fb7 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view.cc
 +++ b/chrome/browser/ui/views/tabs/common/tab_view.cc
 @@ -54,6 +54,7 @@
@@ -47,7 +47,7 @@ index b1dd222cbccc3..5c30f124cb8b6 100644
  #include "chrome/browser/ui/views/tabs/tab/tab_close_button.h"
  #include "chrome/browser/ui/views/tabs/tab/tab_icon.h"
  #include "chrome/browser/ui/views/tabs/tab/tab_title.h"
-@@ -892,6 +893,16 @@ void TabView::PaintChildren(const views::PaintInfo& info) {
+@@ -910,6 +911,16 @@ void TabView::PaintChildren(const views::PaintInfo& info) {
    View::PaintChildren(info);
  }
  
@@ -65,7 +65,7 @@ index b1dd222cbccc3..5c30f124cb8b6 100644
    // Split pinned tabs have a merged background that is rendered in
    // `SplitTabView`.
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view.h b/chrome/browser/ui/views/tabs/common/tab_view.h
-index 1a27579c523a1..19ca7967a4aef 100644
+index bf2a9deaf9e8a..a0853509e1311 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view.h
 +++ b/chrome/browser/ui/views/tabs/common/tab_view.h
 @@ -7,6 +7,7 @@
@@ -84,7 +84,7 @@ index 1a27579c523a1..19ca7967a4aef 100644
  #include "ui/views/context_menu_controller.h"
  #include "ui/views/layout/layout_manager_base.h"
  #include "ui/views/masked_targeter_delegate.h"
-@@ -142,6 +144,7 @@ class TabView : public views::View,
+@@ -143,6 +145,7 @@ class TabView : public views::View,
    void OnMouseExited(const ui::MouseEvent& event) override;
    bool OnMouseDragged(const ui::MouseEvent& event) override;
    void OnGestureEvent(ui::GestureEvent* event) override;
@@ -93,10 +93,10 @@ index 1a27579c523a1..19ca7967a4aef 100644
    void OnPaint(gfx::Canvas* canvas) override;
    void AddedToWidget() override;
 diff --git a/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_controller.cc b/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_controller.cc
-index e9b830d6bc64b..a10a64ea4d428 100644
+index 2358db3c428cb..a4b2019120b23 100644
 --- a/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_controller.cc
 +++ b/chrome/browser/ui/views/tabs/hovercard/tab_hover_card_controller.cc
-@@ -299,6 +299,10 @@ bool TabHoverCardController::IsHoverCardShowingForTab(
+@@ -300,6 +300,10 @@ bool TabHoverCardController::IsHoverCardShowingForTab(
  void TabHoverCardController::UpdateHoverCard(
      HoverCardAnchorTarget* anchor_target,
      TabSlotController::HoverCardUpdateType update_type) {
@@ -108,10 +108,10 @@ index e9b830d6bc64b..a10a64ea4d428 100644
      anchor_target = nullptr;
      update_type = TabSlotController::HoverCardUpdateType::kAnimating;
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
-index 1044fca32f0db..df2eee3d66879 100644
+index c991d5542f695..4d6bf42b26715 100644
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
-@@ -1330,6 +1330,16 @@ float Tab::GetZValue() const {
+@@ -1338,6 +1338,16 @@ float Tab::GetZValue() const {
    return sort_value;
  }
  

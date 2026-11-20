@@ -1,5 +1,5 @@
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index 75d95b11bbc67..022434ba045f6 100644
+index 691ac3301122c..3deb6263bc821 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
 @@ -25,6 +25,9 @@
@@ -13,7 +13,7 @@ index 75d95b11bbc67..022434ba045f6 100644
  // event had no gestures and sends both events together.
  BASE_FEATURE(kSendEmptyGestureScrollUpdate, base::FEATURE_ENABLED_BY_DEFAULT);
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index a3a92c4c4ee9e..d0dcca6226ed4 100644
+index 70db77ed05cda..ae9b41fb526f6 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
 @@ -13,6 +13,9 @@

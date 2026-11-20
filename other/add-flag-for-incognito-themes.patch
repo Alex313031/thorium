@@ -1,22 +1,24 @@
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index 46d6fd134e1af..9caa2b9c27226 100644
+index b38c8ca940137..ca7c40c17bb3b 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -4077,9 +4077,13 @@ GetPreferredColorScheme(const WebPreferences& web_prefs,
+@@ -4111,11 +4111,15 @@ GetPreferredColorScheme(const WebPreferences& web_prefs,
+     preferred_root_scrollbar_color_scheme = preferred_color_scheme;
+   }
  #else  // !BUILDFLAG(IS_ANDROID)
-   Profile* profile =
-       Profile::FromBrowserContext(web_contents->GetBrowserContext());
 +  const bool incognito_follows_browser_theme =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch(
 +          "enable-incognito-themes");
-   if (profile->IsEnterpriseIsolatedModeProfile() && !security_principal.IsWebUI()) {
+   if (profile.IsEnterpriseIsolatedModeProfile() &&
+       !security_principal.IsWebUI()) {
      preferred_color_scheme = blink::mojom::PreferredColorScheme::kLight;
--  } else if (profile->IsIncognitoProfile() && !security_principal.IsWebUI()) {
-+  } else if (profile->IsIncognitoProfile() && !security_principal.IsWebUI() &&
-+             !incognito_follows_browser_theme) {
-     // Incognito contents follow the device color mode.
-     preferred_color_scheme = ToBlinkPreferredColorScheme(
-         ui::NativeTheme::GetInstanceForWeb()->preferred_color_scheme());
+   } else {
+-    if (profile.IsIncognitoProfile() && !security_principal.IsWebUI()) {
++    if (profile.IsIncognitoProfile() && !security_principal.IsWebUI() &&
++        !incognito_follows_browser_theme) {
+       // Incognito contents follow the device color mode by default.
+       preferred_color_scheme = ToBlinkPreferredColorScheme(
+           ui::NativeTheme::GetInstanceForWeb()->preferred_color_scheme());
 diff --git a/chrome/browser/resources/new_tab_page_incognito_guest/incognito_tab.css b/chrome/browser/resources/new_tab_page_incognito_guest/incognito_tab.css
 index 9c5ca7a283cba..0ca655b4a6908 100644
 --- a/chrome/browser/resources/new_tab_page_incognito_guest/incognito_tab.css
@@ -83,10 +85,10 @@ index 6d7b24b67ff1f..ff0250adf59a5 100644
  }
  
 diff --git a/chrome/browser/themes/theme_service.cc b/chrome/browser/themes/theme_service.cc
-index 404b10a09f126..4cbe547b2d153 100644
+index cc3523cb5cdf4..1fb01d38ec37d 100644
 --- a/chrome/browser/themes/theme_service.cc
 +++ b/chrome/browser/themes/theme_service.cc
-@@ -732,7 +732,10 @@ ui::ColorProviderKey ThemeService::GetColorProviderKey(
+@@ -714,7 +714,10 @@ ui::ColorProviderKey ThemeService::GetColorProviderKey(
    DCHECK_EQ(profile->GetOriginalProfile(), profile_);
  
    ui::ColorProviderKey key = base_key;
@@ -99,10 +101,10 @@ index 404b10a09f126..4cbe547b2d153 100644
  
    // color_mode.
 diff --git a/chrome/browser/ui/views/frame/browser_widget.cc b/chrome/browser/ui/views/frame/browser_widget.cc
-index 6a221594b09f0..1ce1e6d742ca4 100644
+index df70a8b38c53c..a3c384510127d 100644
 --- a/chrome/browser/ui/views/frame/browser_widget.cc
 +++ b/chrome/browser/ui/views/frame/browser_widget.cc
-@@ -616,6 +616,11 @@ bool BrowserWidget::RegenerateFrameOnThemeChange(
+@@ -594,6 +594,11 @@ bool BrowserWidget::RegenerateFrameOnThemeChange(
  }
  
  bool BrowserWidget::IsIncognitoBrowser() const {
@@ -115,10 +117,10 @@ index 6a221594b09f0..1ce1e6d742ca4 100644
  }
  
 diff --git a/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc b/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
-index 257e0b54bca7a..1a580fc7a5c8d 100644
+index 440d8dcf67a0e..b89b8a7a65637 100644
 --- a/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
 +++ b/chrome/browser/ui/webui/ntp/ntp_resource_cache.cc
-@@ -453,8 +453,22 @@ void NTPResourceCache::CreateNewTabIncognitoCSS(
+@@ -454,8 +454,22 @@ void NTPResourceCache::CreateNewTabIncognitoCSS(
  
    // Colors.
    const ui::ColorProvider& cp = web_contents->GetColorProvider();

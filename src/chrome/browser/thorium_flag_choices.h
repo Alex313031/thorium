@@ -41,7 +41,7 @@ const FeatureEntry::Choice kAutoplayPolicyChoices[] = {
     {flags_ui::kGenericExperimentChoiceDefault, "", ""},
     {"No User Gesture Required",
      switches::kAutoplayPolicy, "no-user-gesture-required"},
-    {"User Gesture Required",
+    {"User Gesture Required (Per Media Element)",
      switches::kAutoplayPolicy, "user-gesture-required"},
     {"Document User Activation Required",
      switches::kAutoplayPolicy, "document-user-activation-required"},
@@ -66,6 +66,19 @@ const FeatureEntry::Choice kEncryptedClientHelloChoices[] = {
      "encrypted-client-hello", "enabled"},
     {"Disabled",
      "encrypted-client-hello", "disabled"},
+};
+
+const FeatureEntry::Choice kWebRtcIPHandlingPolicyChoices[] = {
+    {flags_ui::kGenericExperimentChoiceDefault, "", ""},
+    {"All interfaces (Chromium default)",
+     switches::kWebRtcIPHandlingPolicy, "default"},
+    {"Default public and private interfaces",
+     switches::kWebRtcIPHandlingPolicy,
+     "default_public_and_private_interfaces"},
+    {"Default public interface only",
+     switches::kWebRtcIPHandlingPolicy, "default_public_interface_only"},
+    {"Disable non-proxied UDP",
+     switches::kWebRtcIPHandlingPolicy, "disable_non_proxied_udp"},
 };
 
 const FeatureEntry::Choice kWebglMSAASampleCountChoices[] = {

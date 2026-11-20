@@ -1,5 +1,5 @@
 diff --git a/ui/views/examples/BUILD.gn b/ui/views/examples/BUILD.gn
-index db6385c2d4761..ee393fe6752a8 100644
+index 828d276b92772..c0e83e60b9629 100644
 --- a/ui/views/examples/BUILD.gn
 +++ b/ui/views/examples/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index db6385c2d4761..ee393fe6752a8 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -443,7 +443,7 @@ component("views_examples_with_content_lib") {
+@@ -442,7 +442,7 @@ component("views_examples_with_content_lib") {
    public_deps = [ ":views_examples_lib" ]
  }
  

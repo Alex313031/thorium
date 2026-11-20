@@ -1,5 +1,5 @@
 diff --git a/ui/base/x/x11_util.cc b/ui/base/x/x11_util.cc
-index cf5b14d73376b..a345171bd9c05 100644
+index b70d8a9fd57ba..beed460f2732f 100644
 --- a/ui/base/x/x11_util.cc
 +++ b/ui/base/x/x11_util.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index cf5b14d73376b..a345171bd9c05 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -365,14 +365,9 @@ bool GetCustomFramePrefDefault() {
+@@ -369,14 +369,9 @@ bool GetCustomFramePrefDefault() {
      return false;
    }
  
@@ -27,7 +27,7 @@ index cf5b14d73376b..a345171bd9c05 100644
  
  bool IsWmTiling(WindowManagerName window_manager) {
 diff --git a/ui/ozone/platform/wayland/ozone_platform_wayland.cc b/ui/ozone/platform/wayland/ozone_platform_wayland.cc
-index 39b1aa814c252..23df506f45c47 100644
+index 9e0af3dfcc8de..998a76d0bf5e5 100644
 --- a/ui/ozone/platform/wayland/ozone_platform_wayland.cc
 +++ b/ui/ozone/platform/wayland/ozone_platform_wayland.cc
 @@ -342,11 +342,10 @@ class OzonePlatformWayland : public OzonePlatform,

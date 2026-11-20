@@ -71,12 +71,12 @@ index 3b41624ed37a0..0bd6fca4ba9ac 100644
  
    override willUpdate(changedProperties: PropertyValues<this>) {
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index 562d8529586fa..723f2e0310971 100644
+index f92a70a676a80..2ae8458d81240 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -48,6 +48,9 @@ BASE_FEATURE(kImportExportFlags, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -46,6 +46,9 @@ BASE_FEATURE(kImportExportFlags, base::FEATURE_DISABLED_BY_DEFAULT);
  
- BASE_FEATURE(kInfoBarInlineLinks, base::FEATURE_ENABLED_BY_DEFAULT);
+ BASE_FEATURE(kInfoBarQueuedCountPill, base::FEATURE_DISABLED_BY_DEFAULT);
  
 +// Shows the full download URL below the source on the downloads page.
 +BASE_FEATURE(kThoriumDownloadsShowFullUrl, base::FEATURE_ENABLED_BY_DEFAULT);
@@ -85,20 +85,20 @@ index 562d8529586fa..723f2e0310971 100644
  // timer also exits tab fullscreen (unless browser fullscreen is underneath)
  // when it fires while Esc is locked via the Keyboard Lock API. When disabled,
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index 6fd5a4ff30629..a2040749b4197 100644
+index 2e0b135ddd81a..8bf00f75bcde6 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -37,6 +37,8 @@ BASE_DECLARE_FEATURE(kImportExportFlags);
- 
- BASE_DECLARE_FEATURE(kInfoBarInlineLinks);
+@@ -42,6 +42,8 @@ BASE_DECLARE_FEATURE(kImportExportFlags);
+ // infobars wait in the prioritization queue.
+ BASE_DECLARE_FEATURE(kInfoBarQueuedCountPill);
  
 +BASE_DECLARE_FEATURE(kThoriumDownloadsShowFullUrl);
 +
  BASE_DECLARE_FEATURE(kKeyboardLockHeldEscExitsTabFullscreen);
  
- // All feature flags associated with Glow Up, apart from those in
+ #if BUILDFLAG(IS_LINUX)
 diff --git a/chrome/browser/ui/webui/downloads/downloads_ui.cc b/chrome/browser/ui/webui/downloads/downloads_ui.cc
-index 8955c4bf86a64..b34529491cc2c 100644
+index 64384e09b78e7..fa177eb0a325b 100644
 --- a/chrome/browser/ui/webui/downloads/downloads_ui.cc
 +++ b/chrome/browser/ui/webui/downloads/downloads_ui.cc
 @@ -7,6 +7,7 @@

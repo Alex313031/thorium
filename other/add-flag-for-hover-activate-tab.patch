@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index 458a5ca4a7688..d913d5499f5a9 100644
+index 53816610b50ca..3f26aa23bb001 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -221,6 +221,16 @@ BASE_FEATURE(kPressAndHoldEscToExitBrowserFullscreen,
+@@ -256,6 +256,16 @@ BASE_FEATURE(kPressAndHoldEscToExitBrowserFullscreen,
  BASE_FEATURE(kRightClickToCloseTab,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -20,10 +20,10 @@ index 458a5ca4a7688..d913d5499f5a9 100644
  // Enables the UI for Process Isolation in chrome://settings/system.
  BASE_FEATURE(kProcessIsolationSettings, base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index efbfa8d91d264..bf436aa2a6083 100644
+index 0bed0e0171447..51737935f8998 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -394,6 +394,9 @@ bool IsTabGroupsFocusFreezingEnabled();
+@@ -411,6 +411,9 @@ bool IsTabGroupsFocusFreezingEnabled();
  // Enables closing tabs with a right click. Shift+right-click opens the menu.
  BASE_DECLARE_FEATURE(kRightClickToCloseTab);
  
@@ -34,10 +34,10 @@ index efbfa8d91d264..bf436aa2a6083 100644
  bool IsTabGroupRibbonEnabled();
  
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view.cc b/chrome/browser/ui/views/tabs/common/tab_view.cc
-index 83798e2f11815..b1dd222cbccc3 100644
+index b538d310fe620..54a598b76e821 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view.cc
 +++ b/chrome/browser/ui/views/tabs/common/tab_view.cc
-@@ -765,6 +765,14 @@ void TabView::OnMouseEntered(const ui::MouseEvent& event) {
+@@ -763,6 +763,14 @@ void TabView::OnMouseEntered(const ui::MouseEvent& event) {
    CHECK(collection_node_);
    UpdateHoverCard(this, TabSlotController::HoverCardUpdateType::kHover);
  
@@ -52,7 +52,7 @@ index 83798e2f11815..b1dd222cbccc3 100644
    // Hover state is handled by the parent if it is split.
    if (split_) {
      return;
-@@ -781,6 +789,8 @@ void TabView::OnMouseEntered(const ui::MouseEvent& event) {
+@@ -779,6 +787,8 @@ void TabView::OnMouseEntered(const ui::MouseEvent& event) {
  void TabView::OnMouseExited(const ui::MouseEvent& event) {
    CHECK(collection_node_);
  
@@ -61,7 +61,7 @@ index 83798e2f11815..b1dd222cbccc3 100644
    // Hover state is handled by the parent if it is split.
    if (split_) {
      return;
-@@ -789,6 +799,20 @@ void TabView::OnMouseExited(const ui::MouseEvent& event) {
+@@ -787,6 +797,20 @@ void TabView::OnMouseExited(const ui::MouseEvent& event) {
    UpdateHovered(false);
  }
  
@@ -83,7 +83,7 @@ index 83798e2f11815..b1dd222cbccc3 100644
    // Protect against key presses when the tab is animating out. Drag events may
    // call this function after the node has been deleted.
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view.h b/chrome/browser/ui/views/tabs/common/tab_view.h
-index 51caf7495fb31..1a27579c523a1 100644
+index 62247bd56e815..bf2a9deaf9e8a 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view.h
 +++ b/chrome/browser/ui/views/tabs/common/tab_view.h
 @@ -12,6 +12,7 @@
@@ -94,7 +94,7 @@ index 51caf7495fb31..1a27579c523a1 100644
  #include "chrome/browser/ui/tabs/tab_data.h"
  #include "chrome/browser/ui/tabs/tab_style.h"
  #include "chrome/browser/ui/tabs/vertical_tab_strip_state_controller.h"
-@@ -190,6 +191,9 @@ class TabView : public views::View,
+@@ -191,6 +192,9 @@ class TabView : public views::View,
    void CloseButtonPressed(const ui::Event& event);
    void RecordMousePressedInTab();
  
@@ -104,7 +104,7 @@ index 51caf7495fb31..1a27579c523a1 100644
    void UpdateHoverCard(HoverCardAnchorTarget* target,
                         int hover_card_update_type);
  
-@@ -247,6 +251,9 @@ class TabView : public views::View,
+@@ -250,6 +254,9 @@ class TabView : public views::View,
    // enabled and the gesture should not open the tab context menu.
    bool suppress_context_menu_ = false;
  
@@ -115,10 +115,10 @@ index 51caf7495fb31..1a27579c523a1 100644
    float hover_opacity_min_;
    float hover_opacity_max_;
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
-index 379c426f2c054..00d067abee2ba 100644
+index c70f7a4504481..5e929dd1b693a 100644
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
-@@ -911,9 +911,19 @@ void Tab::OnMouseMoved(const ui::MouseEvent& event) {
+@@ -919,9 +919,19 @@ void Tab::OnMouseMoved(const ui::MouseEvent& event) {
  
  void Tab::OnMouseEntered(const ui::MouseEvent& event) {
    MaybeUpdateHoverStatus(event);
@@ -138,7 +138,7 @@ index 379c426f2c054..00d067abee2ba 100644
    if (!mouse_hovered_) {
      return;
    }
-@@ -921,6 +931,14 @@ void Tab::OnMouseExited(const ui::MouseEvent& event) {
+@@ -929,6 +939,14 @@ void Tab::OnMouseExited(const ui::MouseEvent& event) {
    controller_->HideHover(this, TabStyle::HideHoverStyle::kGradual);
  }
  

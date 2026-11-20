@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc b/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc
-index a6bd0f07542fd..d5c00ce5df7ee 100644
+index f35b1d243d90b..736a64379d52d 100644
 --- a/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc
 +++ b/chrome/browser/ui/toolbar/chrome_location_bar_model_delegate.cc
 @@ -1,4 +1,4 @@

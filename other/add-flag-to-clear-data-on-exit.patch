@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
-index cbc2f4280a2fa..dda031b0a8060 100644
+index a69dbb8784aab..29ea3f2fe16d1 100644
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
 @@ -63,6 +63,9 @@ BASE_FEATURE(kCertVerificationNetworkTime, base::FEATURE_DISABLED_BY_DEFAULT);
@@ -13,7 +13,7 @@ index cbc2f4280a2fa..dda031b0a8060 100644
  // Enables usage of os_crypt_async::SecretPortalKeyProvider.  Once
  // `kSecretPortalKeyProviderUseForEncryption` is enabled, this flag cannot be
 diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
-index ee4f110e30019..13be0e4968daf 100644
+index 62894e09a6812..de32d40589c39 100644
 --- a/chrome/browser/browser_features.h
 +++ b/chrome/browser/browser_features.h
 @@ -39,6 +39,7 @@ BASE_DECLARE_FEATURE(kBookmarkTriggerForPrefetch);
@@ -25,7 +25,7 @@ index ee4f110e30019..13be0e4968daf 100644
  #if BUILDFLAG(IS_LINUX)
  BASE_DECLARE_FEATURE(kDbusSecretPortal);
 diff --git a/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.cc b/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.cc
-index 3bd4ce172829d..633b3d673c77c 100644
+index 2594391ee96a8..cddd906307bba 100644
 --- a/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.cc
 +++ b/chrome/browser/browsing_data/chrome_browsing_data_lifetime_manager.cc
 @@ -19,6 +19,7 @@
@@ -36,7 +36,7 @@ index 3bd4ce172829d..633b3d673c77c 100644
  #include "chrome/browser/browsing_data/chrome_browsing_data_remover_constants.h"
  #include "chrome/browser/browsing_data/chrome_browsing_data_remover_delegate.h"
  #include "chrome/browser/lifetime/browser_shutdown.h"
-@@ -148,6 +149,21 @@ class BrowsingDataRemoverObserver
+@@ -149,6 +150,21 @@ class BrowsingDataRemoverObserver
  #endif
  };
  
@@ -58,7 +58,7 @@ index 3bd4ce172829d..633b3d673c77c 100644
  uint64_t GetOriginTypeMask(const base::ListValue& data_types) {
    uint64_t result = 0;
    for (const auto& data_type : data_types) {
-@@ -329,9 +345,11 @@ void ChromeBrowsingDataLifetimeManager::ClearBrowsingDataForOnExitPolicy(
+@@ -332,9 +348,11 @@ void ChromeBrowsingDataLifetimeManager::ClearBrowsingDataForOnExitPolicy(
    const base::ListValue& data_types = profile_->GetPrefs()->GetList(
        browsing_data::prefs::kClearBrowsingDataOnExitList);
  
@@ -72,8 +72,8 @@ index 3bd4ce172829d..633b3d673c77c 100644
      profile_->GetPrefs()->SetBoolean(
          browsing_data::prefs::kClearBrowsingDataOnExitDeletionPending, true);
      auto* remover = profile_->GetBrowsingDataRemover();
-@@ -342,8 +360,10 @@ void ChromeBrowsingDataLifetimeManager::ClearBrowsingDataForOnExitPolicy(
-       DCHECK(keep_browser_alive);
+@@ -345,8 +363,10 @@ void ChromeBrowsingDataLifetimeManager::ClearBrowsingDataForOnExitPolicy(
+       CHECK(keep_browser_alive, base::NotFatalUntil::M161);
  #endif
      remover->RemoveAndReply(base::Time(), base::Time::Max(),
 -                            GetRemoveMask(data_types),

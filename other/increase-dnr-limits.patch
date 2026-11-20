@@ -1,8 +1,8 @@
 diff --git a/extensions/common/api/declarative_net_request.webidl b/extensions/common/api/declarative_net_request.webidl
-index 13e9fc03677b4..ef6b963297ccd 100644
+index b015923d268a3..c7cce65350a9c 100644
 --- a/extensions/common/api/declarative_net_request.webidl
 +++ b/extensions/common/api/declarative_net_request.webidl
-@@ -878,28 +878,29 @@ interface DeclarativeNetRequest {
+@@ -885,28 +885,29 @@ interface DeclarativeNetRequest {
    static Promise<TestMatchOutcomeResult> testMatchOutcome(
        TestMatchRequestDetails request);
  
@@ -38,7 +38,7 @@ index 13e9fc03677b4..ef6b963297ccd 100644
  
    // Time interval within which <code>MAX_GETMATCHEDRULES_CALLS_PER_INTERVAL
    // getMatchedRules</code> calls can be made, specified in minutes.
-@@ -910,20 +911,20 @@ interface DeclarativeNetRequest {
+@@ -917,20 +918,20 @@ interface DeclarativeNetRequest {
  
    // The number of times <code>getMatchedRules</code> can be called within a
    // period of <code>GETMATCHEDRULES_QUOTA_INTERVAL</code>.

@@ -1,16 +1,16 @@
 diff --git a/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc b/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
-index ccfc9c792b4c2..109e3b7454aea 100644
+index 535739f80be02..1407eed2b4933 100644
 --- a/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
 +++ b/chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_controller.cc
-@@ -8,6 +8,7 @@
+@@ -12,6 +12,7 @@
  #include "chrome/browser/ui/browser_window/public/browser_window_interface.h"
  #include "chrome/browser/ui/browser_window/public/global_browser_collection.h"
- #include "chrome/browser/ui/qrcode_generator/qrcode_generator_bubble_view.h"
-+#include "chrome/browser/ui/ui_features.h"
  #include "chrome/browser/ui/sharing_hub/sharing_hub_bubble_controller.h"
- #include "chrome/browser/ui/views/qrcode_generator/qrcode_window_controller.h"
++#include "chrome/browser/ui/ui_features.h"
+ #include "chrome/browser/ui/views/frame/toolbar_button_provider.h"
+ #include "chrome/browser/ui/views/qrcode_generator/qrcode_generator_bubble.h"
  #include "chrome/common/pref_names.h"
-@@ -22,10 +23,15 @@ PrefService* GetPrefService() {
+@@ -27,10 +28,15 @@ PrefService* GetPrefService() {
    return g_browser_process ? g_browser_process->local_state() : nullptr;
  }
  
@@ -29,7 +29,7 @@ index ccfc9c792b4c2..109e3b7454aea 100644
  }
  
  }  // namespace
-@@ -42,8 +48,8 @@ bool QRCodeGeneratorBubbleController::IsGeneratorAvailable(const GURL& url) {
+@@ -47,8 +53,8 @@ bool QRCodeGeneratorBubbleController::IsGeneratorAvailable(const GURL& url) {
      return false;
    }
  
@@ -40,7 +40,7 @@ index ccfc9c792b4c2..109e3b7454aea 100644
      return false;
    }
  
-@@ -66,8 +72,8 @@ void QRCodeGeneratorBubbleController::ShowBubble(const GURL& url,
+@@ -71,8 +77,8 @@ void QRCodeGeneratorBubbleController::ShowBubble(const GURL& url,
      return;
    }
  
@@ -51,7 +51,7 @@ index ccfc9c792b4c2..109e3b7454aea 100644
      return;
    }
  
-@@ -134,7 +140,7 @@ void QRCodeGeneratorBubbleController::OnBackButtonPressed() {
+@@ -150,7 +156,7 @@ void QRCodeGeneratorBubbleController::OnBackButtonPressed() {
  }
  
  void QRCodeGeneratorBubbleController::OnPolicyPrefChanged() {
@@ -61,10 +61,10 @@ index ccfc9c792b4c2..109e3b7454aea 100644
    }
  }
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index f509fc2bbe32b..3cf33b0d4c9c1 100644
+index 0ff1cd0b955c6..d86de2eb6865a 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -251,6 +251,10 @@ BASE_FEATURE_PARAM(std::string,
+@@ -289,6 +289,10 @@ BASE_FEATURE_PARAM(std::string,
                     "mode",
                     "foreground");
  
@@ -76,10 +76,10 @@ index f509fc2bbe32b..3cf33b0d4c9c1 100644
  // Enables the UI for Process Isolation in chrome://settings/system.
  BASE_FEATURE(kProcessIsolationSettings, base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/chrome/browser/ui/ui_features.h b/chrome/browser/ui/ui_features.h
-index 3cc7e46d86bd5..d6bbfa6f31836 100644
+index 0e1122aad946c..2990fa2dbbc7f 100644
 --- a/chrome/browser/ui/ui_features.h
 +++ b/chrome/browser/ui/ui_features.h
-@@ -403,6 +403,9 @@ BASE_DECLARE_FEATURE_PARAM(std::string, kOpenBookmarksInNewTabMode);
+@@ -422,6 +422,9 @@ BASE_DECLARE_FEATURE_PARAM(std::string, kOpenBookmarksInNewTabMode);
  BASE_DECLARE_FEATURE(kOpenOmniboxUrlInNewTab);
  BASE_DECLARE_FEATURE_PARAM(std::string, kOpenOmniboxUrlInNewTabMode);
  

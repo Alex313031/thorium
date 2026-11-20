@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view_horizontal_layout.cc b/chrome/browser/ui/views/tabs/common/tab_view_horizontal_layout.cc
-index 5abff59181f11..74c5c42ff03f4 100644
+index 1f74e4994463f..0b3b3c9b555cd 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view_horizontal_layout.cc
 +++ b/chrome/browser/ui/views/tabs/common/tab_view_horizontal_layout.cc
 @@ -4,6 +4,7 @@
@@ -10,7 +10,7 @@ index 5abff59181f11..74c5c42ff03f4 100644
  #include "chrome/browser/glic/browser_ui/tab_underline_view.h"
  #include "chrome/browser/ui/layout_constants.h"
  #include "chrome/browser/ui/ui_features.h"
-@@ -316,6 +317,10 @@ TabViewHorizontalLayout::CalculateChildVisibilities(int width,
+@@ -317,6 +318,10 @@ TabViewHorizontalLayout::CalculateChildVisibilities(int width,
    }
  #endif  // BUILDFLAG(IS_CHROMEOS)
  
@@ -19,10 +19,10 @@ index 5abff59181f11..74c5c42ff03f4 100644
 +          "hide-tab-close-buttons");
 +
    if (TabView().active_) {
-     if (!declutter_eligible) {
-       // Close button is shown on active tabs regardless of the size.
+     const bool active_tab_declutter_eligible =
+         declutter_eligible &&
 diff --git a/chrome/browser/ui/views/tabs/common/tab_view_vertical_layout.cc b/chrome/browser/ui/views/tabs/common/tab_view_vertical_layout.cc
-index 6641560e2f254..9f934b2c9a498 100644
+index d2b935e0c80a1..c3acc5634bf33 100644
 --- a/chrome/browser/ui/views/tabs/common/tab_view_vertical_layout.cc
 +++ b/chrome/browser/ui/views/tabs/common/tab_view_vertical_layout.cc
 @@ -4,6 +4,7 @@
@@ -32,8 +32,8 @@ index 6641560e2f254..9f934b2c9a498 100644
 +#include "base/command_line.h"
  #include "chrome/browser/glic/browser_ui/tab_underline_view.h"
  #include "chrome/browser/ui/layout_constants.h"
- #include "chrome/browser/ui/views/frame/vertical_tab_strip_region_view.h"
-@@ -166,6 +167,11 @@ bool TabViewVerticalLayout::IsChildVisible(const views::View* child_view,
+ #include "chrome/browser/ui/tabs/vertical_tab_strip_state.h"
+@@ -168,6 +169,11 @@ bool TabViewVerticalLayout::IsChildVisible(const views::View* child_view,
    }
  
    if (child_view == TabView().close_button_) {
@@ -46,10 +46,10 @@ index 6641560e2f254..9f934b2c9a498 100644
        return false;
      }
 diff --git a/chrome/browser/ui/views/tabs/tab.cc b/chrome/browser/ui/views/tabs/tab.cc
-index 00d067abee2ba..1044fca32f0db 100644
+index 5e929dd1b693a..c991d5542f695 100644
 --- a/chrome/browser/ui/views/tabs/tab.cc
 +++ b/chrome/browser/ui/views/tabs/tab.cc
-@@ -1457,12 +1457,16 @@ void Tab::UpdateIconVisibility() {
+@@ -1466,12 +1466,16 @@ void Tab::UpdateIconVisibility() {
  #if BUILDFLAG(IS_CHROMEOS)
    // Hide tab close button for OnTask if locked. Only applicable for non-web
    // browser scenarios.
@@ -66,5 +66,5 @@ index 00d067abee2ba..1044fca32f0db 100644
 +          "hide-tab-close-buttons");
 +
    if (IsActive()) {
-     if (!declutter_eligible) {
-       // Close button is shown on active tabs regardless of the size.
+     const bool active_tab_declutter_eligible =
+         declutter_eligible &&

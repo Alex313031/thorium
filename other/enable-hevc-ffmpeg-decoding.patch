@@ -51,7 +51,7 @@ index efc7246c8cd3e..51734902ee029 100644
    }
  #endif  // BUILDFLAG(ENABLE_FFMPEG_VIDEO_DECODERS) &&
 diff --git a/media/ffmpeg/ffmpeg_common.cc b/media/ffmpeg/ffmpeg_common.cc
-index 1eeaafafaf779..c84f80be05b28 100644
+index e4c443001dba3..21b7cd434219d 100644
 --- a/media/ffmpeg/ffmpeg_common.cc
 +++ b/media/ffmpeg/ffmpeg_common.cc
 @@ -1,4 +1,4 @@

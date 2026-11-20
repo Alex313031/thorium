@@ -32,7 +32,7 @@ index 78ba37b940137..0733416f0981c 100644
  GoogleApiKeysInfoBarDelegate::GoogleApiKeysInfoBarDelegate() = default;
  
 diff --git a/chrome/browser/ui/startup/infobar_utils.cc b/chrome/browser/ui/startup/infobar_utils.cc
-index 598e361a29886..71ab56335711c 100644
+index 94d977bdfcc44..af6199c5ea7d4 100644
 --- a/chrome/browser/ui/startup/infobar_utils.cc
 +++ b/chrome/browser/ui/startup/infobar_utils.cc
 @@ -1,4 +1,4 @@

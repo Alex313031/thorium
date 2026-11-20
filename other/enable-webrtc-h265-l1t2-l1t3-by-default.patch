@@ -1,8 +1,8 @@
 diff --git a/media/webrtc/webrtc_features.cc b/media/webrtc/webrtc_features.cc
-index 8115387f9f145..3c745f20e1917 100644
+index 5d5fbceae19aa..d17e8adcabe8e 100644
 --- a/media/webrtc/webrtc_features.cc
 +++ b/media/webrtc/webrtc_features.cc
-@@ -51,12 +51,12 @@ BASE_FEATURE(kWebRtcAllowH265Receive, base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -58,12 +58,12 @@ BASE_FEATURE(kWebRtcAllowH265Receive, base::FEATURE_ENABLED_BY_DEFAULT);
  
  // When enabled, allows H.265 L1T2 to be used for sending WebRTC streams, if the
  // accelerator reports support of encoding in L1T2.

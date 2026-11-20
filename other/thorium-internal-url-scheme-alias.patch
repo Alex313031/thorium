@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index cadfe4ecbe6f4..03fcc5760648e 100644
+index b712a1750e440..c02f7b5cd661c 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -867,6 +867,8 @@ source_set("core") {
+@@ -1037,6 +1037,8 @@ source_set("core") {
      "startup_data.cc",
      "thorium_flag_choices.h",
      "thorium_flag_entries.h",
@@ -12,10 +12,10 @@ index cadfe4ecbe6f4..03fcc5760648e 100644
      "unexpire_flags.h",
      "universal_web_contents_observers.cc",
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
-index aa8b16f4672e9..46d6fd134e1af 100644
+index 565bd580ba617..b38c8ca940137 100644
 --- a/chrome/browser/chrome_content_browser_client.cc
 +++ b/chrome/browser/chrome_content_browser_client.cc
-@@ -194,6 +194,7 @@
+@@ -202,6 +202,7 @@
  #include "chrome/browser/subresource_filter/subresource_filter_navigation_download_policy.h"
  #include "chrome/browser/tab_group_sync/tab_group_sync_utils.h"
  #include "chrome/browser/task_manager/task_manager_interface.h"
@@ -23,7 +23,7 @@ index aa8b16f4672e9..46d6fd134e1af 100644
  #include "chrome/browser/tracing/chrome_tracing_delegate.h"
  #include "chrome/browser/translate/translate_service.h"
  #include "chrome/browser/ui/blocked_content/blocked_window_params.h"
-@@ -5131,6 +5132,8 @@ bool ChromeContentBrowserClient::
+@@ -5227,6 +5228,8 @@ ChromeContentBrowserClient::GetForcedColorsForWebContents(
  
  void ChromeContentBrowserClient::BrowserURLHandlerCreated(
      BrowserURLHandler* handler) {
@@ -33,10 +33,10 @@ index aa8b16f4672e9..46d6fd134e1af 100644
    // URL handlers below. Also register it before the "parts" handlers, so the
    // NTP policy takes precedence over extensions that override the NTP.
 diff --git a/chrome/browser/extensions/extension_tab_util.cc b/chrome/browser/extensions/extension_tab_util.cc
-index dd919b9675f64..7706ae7687f96 100644
+index aeb80f6bc0ae2..41270dca6c036 100644
 --- a/chrome/browser/extensions/extension_tab_util.cc
 +++ b/chrome/browser/extensions/extension_tab_util.cc
-@@ -1100,7 +1100,8 @@ bool ExtensionTabUtil::IsKillURL(const GURL& url) {
+@@ -1102,7 +1102,8 @@ bool ExtensionTabUtil::IsKillURL(const GURL& url) {
      return true;
    }
  
@@ -59,7 +59,7 @@ index 71be10047aec7..537a5167042c9 100644
        url.SchemeIs(content::kViewSourceScheme) ||
        url.SchemeIs(chrome::kChromeNativeScheme) ||
 diff --git a/chrome/browser/profiles/profile_io_data.cc b/chrome/browser/profiles/profile_io_data.cc
-index 080e9b0e43c70..3ffc9b793906c 100644
+index 803c106e13bca..942d9e28b5386 100644
 --- a/chrome/browser/profiles/profile_io_data.cc
 +++ b/chrome/browser/profiles/profile_io_data.cc
 @@ -44,6 +44,7 @@ bool ProfileIOData::IsHandledProtocol(std::string_view scheme) {
@@ -149,10 +149,10 @@ index 90cbf265af08d..1db9738f74b52 100644
    }
  
 diff --git a/components/url_formatter/url_fixer.cc b/components/url_formatter/url_fixer.cc
-index d5d9a14c8d3d5..887085a4f3ee2 100644
+index f707431519954..24a5b69857ec1 100644
 --- a/components/url_formatter/url_fixer.cc
 +++ b/components/url_formatter/url_fixer.cc
-@@ -38,6 +38,7 @@ namespace {
+@@ -39,6 +39,7 @@ namespace {
  
  // Hardcode these constants to avoid dependences on //chrome and //content.
  const char kChromeUIScheme[] = "chrome";
@@ -160,7 +160,7 @@ index d5d9a14c8d3d5..887085a4f3ee2 100644
  const char kDevToolsScheme[] = "devtools";
  const char kChromeUIDefaultHost[] = "version";
  const char kViewSourceScheme[] = "view-source";
-@@ -445,7 +446,8 @@ std::string SegmentURLInternal(std::string* text, url::Parsed* parts) {
+@@ -446,7 +447,8 @@ std::string SegmentURLInternal(std::string* text, url::Parsed* parts) {
        (*text)[semicolon] = ':';
        if (GetValidScheme(*text, &parts->scheme, &scheme) &&
            (url::IsStandard(scheme) || scheme == url::kAboutScheme ||
@@ -170,7 +170,7 @@ index d5d9a14c8d3d5..887085a4f3ee2 100644
          found_scheme = true;
        } else {
          (*text)[semicolon] = ';';
-@@ -458,10 +460,11 @@ std::string SegmentURLInternal(std::string* text, url::Parsed* parts) {
+@@ -459,10 +461,11 @@ std::string SegmentURLInternal(std::string* text, url::Parsed* parts) {
      }
    }
  
@@ -184,7 +184,7 @@ index d5d9a14c8d3d5..887085a4f3ee2 100644
      return scheme;
    }
  
-@@ -613,12 +616,15 @@ GURL FixupURLInternal(const std::string& text,
+@@ -614,12 +617,15 @@ GURL FixupURLInternal(const std::string& text,
    }
  
    // For some schemes whose layouts we understand, we rebuild the URL.
@@ -205,7 +205,7 @@ index d5d9a14c8d3d5..887085a4f3ee2 100644
      url.append(url::kStandardSchemeSeparator);
  
      // We need to check whether the |username| is valid because it is our
-@@ -741,7 +747,11 @@ bool IsEquivalentScheme(const std::string& scheme1,
+@@ -742,7 +748,11 @@ bool IsEquivalentScheme(const std::string& scheme1,
                          const std::string& scheme2) {
    return scheme1 == scheme2 ||
           (scheme1 == url::kAboutScheme && scheme2 == kChromeUIScheme) ||
@@ -366,10 +366,10 @@ index d1c01e0bada6d..ae426f648dab2 100644
    typedef std::pair<URLHandler, URLHandler> HandlerPair;
    std::vector<HandlerPair> url_handlers_;
 diff --git a/content/browser/renderer_host/navigation_controller_impl.cc b/content/browser/renderer_host/navigation_controller_impl.cc
-index 9a10bfdef7e09..f1a2385b05323 100644
+index cf5e166fd1c0a..a299673155c6b 100644
 --- a/content/browser/renderer_host/navigation_controller_impl.cc
 +++ b/content/browser/renderer_host/navigation_controller_impl.cc
-@@ -457,9 +457,9 @@ void RewriteUrlForNavigation(const GURL& original_url,
+@@ -456,9 +456,9 @@ void RewriteUrlForNavigation(const GURL& original_url,
    // remove "view-source:" from the beginning of the URL to get the URL that
    // will actually be loaded. This real URL won't be shown to the user, just
    // used internally.
@@ -383,10 +383,10 @@ index 9a10bfdef7e09..f1a2385b05323 100644
  
  #if DCHECK_IS_ON()
 diff --git a/content/common/url_schemes.cc b/content/common/url_schemes.cc
-index f2eab738b0381..f3ec4c1ec5472 100644
+index 072f185a1341b..184abbc127ddc 100644
 --- a/content/common/url_schemes.cc
 +++ b/content/common/url_schemes.cc
-@@ -69,6 +69,7 @@ void RegisterContentSchemes(bool should_lock_registry) {
+@@ -70,6 +70,7 @@ void RegisterContentSchemes(bool should_lock_registry) {
  
    url::AddStandardScheme(kChromeDevToolsScheme, url::SCHEME_WITH_HOST);
    url::AddStandardScheme(kChromeUIScheme, url::SCHEME_WITH_HOST);

@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/layout_constants.cc b/chrome/browser/ui/layout_constants.cc
-index e5183b921b313..f9f3b4c22d988 100644
+index 040f019c5086f..2e0445c976fdf 100644
 --- a/chrome/browser/ui/layout_constants.cc
 +++ b/chrome/browser/ui/layout_constants.cc
 @@ -4,6 +4,7 @@
@@ -28,19 +28,48 @@ index e5183b921b313..f9f3b4c22d988 100644
      case LayoutConstant::kLocationBarChipIconSize:
        return 16;
      case LayoutConstant::kLocationBarChipPadding:
+diff --git a/chrome/browser/ui/views/chrome_layout_provider.cc b/chrome/browser/ui/views/chrome_layout_provider.cc
+index 0d14f7a3ae287..3365d824fdeed 100644
+--- a/chrome/browser/ui/views/chrome_layout_provider.cc
++++ b/chrome/browser/ui/views/chrome_layout_provider.cc
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ 
++#include "base/command_line.h"
+ #include "base/containers/fixed_flat_map.h"
+ #include "base/feature_list.h"
+ #include "chrome/browser/ui/ui_features.h"
+@@ -362,13 +363,15 @@ int ChromeLayoutProvider::GetCornerRadiusMetric(views::ShapeContextToken token,
+     return LayoutProvider::GetCornerRadiusMetric(token, size);
+   }
+ 
++  static const bool classic_omnibox =
++      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
+   if (features::IsThorium2024()) {
+     switch (token) {
+       case ChromeShapeContextTokens::kExtensionsMenuButtonRadius:
+       case ChromeShapeContextTokens::kFindBarViewRadius:
+         return GetCornerRadiusMetric(views::Emphasis::kMedium, size);
+       case ChromeShapeContextTokens::kOmniboxExpandedRadius:
+-        return 16;
++        return classic_omnibox ? 8 : 16;
+       default:
+         break;
+     }
 diff --git a/chrome/browser/ui/views/location_bar/location_bar_view.cc b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-index 0cda2d7d04149..34f8790ee6105 100644
+index 60d0cb72b14d9..065087696821f 100644
 --- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
 +++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
-@@ -10,6 +10,7 @@
- #include <string_view>
+@@ -11,6 +11,7 @@
  #include <utility>
  
+ #include "base/auto_reset.h"
 +#include "base/command_line.h"
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
-@@ -266,7 +267,11 @@ LocationBarView::LocationBarView(BrowserWindowInterface* browser,
+@@ -265,7 +266,11 @@ LocationBarView::LocationBarView(BrowserWindowInterface* browser,
            }));
        views::FocusRing::Get(this)->SetOutsetFocusRingDisabled(true);
      }
@@ -53,7 +82,7 @@ index 0cda2d7d04149..34f8790ee6105 100644
  
  #if BUILDFLAG(OS_LEVEL_GEOLOCATION_PERMISSION_SUPPORTED)
      if (features::IsOsLevelGeolocationPermissionSupportEnabled()) {
-@@ -541,6 +546,11 @@ bool LocationBarView::IsInitialized() const {
+@@ -542,6 +547,11 @@ bool LocationBarView::IsInitialized() const {
  }
  
  int LocationBarView::GetBorderRadius() const {
@@ -65,7 +94,7 @@ index 0cda2d7d04149..34f8790ee6105 100644
    return ComputeBorderRadius(size());
  }
  
-@@ -1449,6 +1459,12 @@ void LocationBarView::RefreshBackground() {
+@@ -1453,6 +1463,12 @@ void LocationBarView::RefreshBackground() {
    }
  
    SkColor border_color = SK_ColorTRANSPARENT;
@@ -102,33 +131,3 @@ index 295a5d18fa4b4..d8936a48a6f8e 100644
  
      auto* const ink_drop = views::InkDrop::Get(this);
      SetAnimationDuration(base::TimeDelta());
-diff --git a/ui/views/layout/layout_provider.cc b/ui/views/layout/layout_provider.cc
-index faa41ea3b6709..804a78485c98b 100644
---- a/ui/views/layout/layout_provider.cc
-+++ b/ui/views/layout/layout_provider.cc
-@@ -6,6 +6,7 @@
- 
- #include <algorithm>
- 
-+#include "base/command_line.h"
- #include "base/containers/fixed_flat_map.h"
- #include "base/logging.h"
- #include "ui/base/ui_base_features.h"
-@@ -227,6 +228,8 @@ ShapeSysTokens GetShapeSysToken(ShapeContextTokens id) {
- 
- int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
-                                           const gfx::Size& size) const {
-+  static const bool classic_omnibox =
-+      base::CommandLine::ForCurrentProcess()->HasSwitch("classic-omnibox");
-   if (features::IsThorium2024()) {
-     switch (id) {
-       case ShapeContextTokens::kBadgeRadius:
-@@ -243,7 +246,7 @@ int LayoutProvider::GetCornerRadiusMetric(ShapeContextTokens id,
-       case ShapeContextTokens::kMenuTouchRadius:
-         return GetCornerRadiusMetric(Emphasis::kHigh);
-       case ShapeContextTokens::kOmniboxExpandedRadius:
--        return 16;
-+        return classic_omnibox ? 8 : 16;
-       case ShapeContextTokens::kTextfieldRadius:
-         return 4;
-       case ShapeContextTokens::kContentSeparatorRadius:

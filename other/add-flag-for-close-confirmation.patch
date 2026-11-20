@@ -1,8 +1,8 @@
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
-index ec3a10b9cb0de..88dbeebd0909e 100644
+index 181c091d07350..eb07d4238941f 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -15400,6 +15400,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
+@@ -15624,6 +15624,10 @@ Please help our engineers fix this problem. Tell us what happened right before y
          </message>
        </if>
  
@@ -14,7 +14,7 @@ index ec3a10b9cb0de..88dbeebd0909e 100644
          <message name="IDS_RESTORE_WINDOW_MENU_WIN" desc="The Windows browser window menu item text for restoring the window.">
            &amp;Restore
 diff --git a/chrome/browser/ui/unload_controller.cc b/chrome/browser/ui/unload_controller.cc
-index fb499c2360cea..dcb0017f0207d 100644
+index 9cefffb0e2bf7..9dc17f961b3a5 100644
 --- a/chrome/browser/ui/unload_controller.cc
 +++ b/chrome/browser/ui/unload_controller.cc
 @@ -5,7 +5,9 @@
@@ -39,7 +39,7 @@ index fb499c2360cea..dcb0017f0207d 100644
  #include "chrome/common/chrome_features.h"
 +#include "chrome/grit/generated_resources.h"
  #include "components/keep_alive_registry/keep_alive_registry.h"
- #include "components/performance_manager/public/execution_context_priority/execution_context_priority.h"
+ #include "components/performance_manager/public/priority/priority.h"
  #include "components/sessions/core/session_id.h"
 @@ -48,6 +52,8 @@
  #include "content/public/browser/render_view_host.h"
@@ -50,7 +50,7 @@ index fb499c2360cea..dcb0017f0207d 100644
  
  #if BUILDFLAG(ENABLE_EXTENSIONS)
  #include "chrome/browser/profiles/profile.h"
-@@ -524,6 +530,8 @@ bool UnloadController::RunBeforeUnloadForShutdown(
+@@ -540,6 +546,8 @@ bool UnloadController::RunBeforeUnloadForShutdown(
  void UnloadController::ResetBeforeUnloadForShutdown() {
    cancel_download_confirmation_state_ =
        CancelDownloadConfirmationState::kNotPrompted;
@@ -59,7 +59,7 @@ index fb499c2360cea..dcb0017f0207d 100644
    if (state_ != State::kRunningBeforeUnloadForShutdown &&
        state_ != State::kBeforeUnloadConfirmed) {
      return;
-@@ -963,10 +971,12 @@ UnloadController::MaybeWarnBeforeClosing(
+@@ -979,10 +987,12 @@ UnloadController::MaybeWarnBeforeClosing(
      return WarnBeforeClosingResult::kOkToClose;
    }
  
@@ -76,7 +76,7 @@ index fb499c2360cea..dcb0017f0207d 100644
    }
  
    DCHECK(!warn_before_closing_callback_)
-@@ -1064,6 +1074,67 @@ bool UnloadController::CanCloseWithInProgressDownloads() {
+@@ -1080,6 +1090,67 @@ bool UnloadController::CanCloseWithInProgressDownloads() {
    return false;
  }
  
@@ -144,7 +144,7 @@ index fb499c2360cea..dcb0017f0207d 100644
  base::WeakPtr<UnloadController> UnloadController::GetWeakPtr() {
    return weak_factory_.GetWeakPtr();
  }
-@@ -1095,6 +1166,21 @@ void UnloadController::InProgressDownloadResponse(bool cancel_downloads) {
+@@ -1111,6 +1182,21 @@ void UnloadController::InProgressDownloadResponse(bool cancel_downloads) {
    chrome::ShowDownloads(browser_);
  }
  
@@ -167,7 +167,7 @@ index fb499c2360cea..dcb0017f0207d 100644
    switch (result) {
      case WarnBeforeClosingResult::kOkToClose:
 diff --git a/chrome/browser/ui/unload_controller.h b/chrome/browser/ui/unload_controller.h
-index 6d0ba47ebd981..4e63f664cf923 100644
+index 05bde7e64ff38..0299f34fdc834 100644
 --- a/chrome/browser/ui/unload_controller.h
 +++ b/chrome/browser/ui/unload_controller.h
 @@ -16,6 +16,7 @@
@@ -178,7 +178,7 @@ index 6d0ba47ebd981..4e63f664cf923 100644
  #include "chrome/browser/ui/tabs/tab_strip_model_observer.h"
  #include "ui/base/unowned_user_data/scoped_unowned_user_data.h"
  
-@@ -260,6 +261,9 @@ class UnloadController : public WebContentsCollection::Observer,
+@@ -267,6 +268,9 @@ class UnloadController : public WebContentsCollection::Observer,
    // Returns true if the window can close, false otherwise.
    bool CanCloseWithInProgressDownloads();
  
@@ -188,7 +188,7 @@ index 6d0ba47ebd981..4e63f664cf923 100644
    base::WeakPtr<UnloadController> GetWeakPtr();
  
   private:
-@@ -279,6 +283,8 @@ class UnloadController : public WebContentsCollection::Observer,
+@@ -286,6 +290,8 @@ class UnloadController : public WebContentsCollection::Observer,
    // downloads running.
    void InProgressDownloadResponse(bool cancel_downloads);
  
@@ -197,7 +197,7 @@ index 6d0ba47ebd981..4e63f664cf923 100644
   private:
    void RenderProcessGone(content::WebContents* web_contents,
                           base::TerminationStatus status) override;
-@@ -433,6 +439,9 @@ class UnloadController : public WebContentsCollection::Observer,
+@@ -440,6 +446,9 @@ class UnloadController : public WebContentsCollection::Observer,
    CancelDownloadConfirmationState cancel_download_confirmation_state_ =
        CancelDownloadConfirmationState::kNotPrompted;
  

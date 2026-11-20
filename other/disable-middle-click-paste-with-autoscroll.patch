@@ -1,16 +1,16 @@
 diff --git a/chrome/browser/renderer_preferences_util.cc b/chrome/browser/renderer_preferences_util.cc
-index d2e550883598e..d9d76ad1ee924 100644
+index a67516a66fd64..18f118d5692f9 100644
 --- a/chrome/browser/renderer_preferences_util.cc
 +++ b/chrome/browser/renderer_preferences_util.cc
-@@ -38,6 +38,7 @@
- #include "third_party/skia/include/core/SkColor.h"
+@@ -39,6 +39,7 @@
  #include "ui/accessibility/platform/ax_platform.h"
+ #include "ui/base/accelerators/accelerator.h"
  #include "ui/base/accelerators/command.h"
 +#include "ui/base/clipboard/clipboard.h"
  #include "ui/base/ui_base_features.h"
+ #include "ui/events/keycodes/keyboard_codes.h"
  #include "ui/native_theme/native_theme.h"
- 
-@@ -147,8 +148,9 @@ void UpdateFromSystemSettings(blink::RendererPreferences* prefs,
+@@ -149,8 +150,9 @@ void UpdateFromSystemSettings(blink::RendererPreferences* prefs,
  #endif  // BUILDFLAG(USE_AURA)
  
  #if BUILDFLAG(IS_LINUX)
@@ -23,10 +23,10 @@ index d2e550883598e..d9d76ad1ee924 100644
  #endif
    prefs->caret_blink_interval =
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
-index 0fd4c8e169d19..85fb2bac0e822 100644
+index 8feb0f3f23a8f..9a38b1cddac85 100644
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1419,7 +1419,8 @@ void NewTabToRight(BrowserWindowInterface* browser) {
+@@ -1415,7 +1415,8 @@ void NewTabToRight(BrowserWindowInterface* browser) {
  void NewTabFromClipboardURL(BrowserWindowInterface* browser) {
  #if BUILDFLAG(IS_LINUX)
    if (ui::Clipboard::IsSupportedClipboardBuffer(
@@ -37,7 +37,7 @@ index 0fd4c8e169d19..85fb2bac0e822 100644
      CHECK(clipboard)
          << "Clipboard instance is not available, cannot proceed with "
 diff --git a/third_party/blink/renderer/core/editing/selection_controller.cc b/third_party/blink/renderer/core/editing/selection_controller.cc
-index 05150791539c4..b07c21a2655e4 100644
+index e131df5fed5ac..1b0fe0da098ff 100644
 --- a/third_party/blink/renderer/core/editing/selection_controller.cc
 +++ b/third_party/blink/renderer/core/editing/selection_controller.cc
 @@ -62,6 +62,7 @@
@@ -48,7 +48,7 @@ index 05150791539c4..b07c21a2655e4 100644
  #include "third_party/blink/renderer/core/paint/paint_layer.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
  #include "ui/base/mojom/menu_source_type.mojom-blink.h"
-@@ -1325,6 +1326,13 @@ bool SelectionController::HandlePasteGlobalSelection(
+@@ -1331,6 +1332,13 @@ bool SelectionController::HandlePasteGlobalSelection(
    if (!frame_->GetPage())
      return false;
  

@@ -33,10 +33,10 @@ index d36ca640be62c..a47b93bc135ad 100644
 -<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="#5F6368"><circle cx="5.44" cy="10.371" r="1.411"/><path d="M8 0C3.578 0 0 3.578 0 8c0 4.422 3.578 8 8 8 4.422 0 8-3.578 8-8 0-4.422-3.578-8-8-8zM6.095 3.28a.557.557 0 0 1 .705-.335l1.178.393 1.171-.393a.573.573 0 0 1 .706.335l1.287 3.433H4.815l1.28-3.433zm4.414 9.062a1.97 1.97 0 0 1-1.956-1.804c-.546-.349-.99-.13-1.164-.014a1.96 1.96 0 0 1-1.956 1.81 1.977 1.977 0 0 1-1.971-1.97c0-1.084.887-1.971 1.97-1.971.932 0 1.71.647 1.913 1.52a1.547 1.547 0 0 1 1.237.007 1.97 1.97 0 0 1 1.913-1.527c1.083 0 1.97.887 1.97 1.97a1.948 1.948 0 0 1-1.956 1.979zm2.538-4.502H2.91v-.567h10.138v.567z"/><circle cx="10.509" cy="10.371" r="1.411"/></g></svg>
 \ No newline at end of file
 +<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="#E51C23"><circle cx="5.44" cy="10.371" r="1.411"/><path d="M8 0C3.578 0 0 3.578 0 8c0 4.422 3.578 8 8 8 4.422 0 8-3.578 8-8 0-4.422-3.578-8-8-8zM6.095 3.28a.557.557 0 0 1 .705-.335l1.178.393 1.171-.393a.573.573 0 0 1 .706.335l1.287 3.433H4.815l1.28-3.433zm4.414 9.062a1.97 1.97 0 0 1-1.956-1.804c-.546-.349-.99-.13-1.164-.014a1.96 1.96 0 0 1-1.956 1.81 1.977 1.977 0 0 1-1.971-1.97c0-1.084.887-1.971 1.97-1.971.932 0 1.71.647 1.913 1.52a1.547 1.547 0 0 1 1.237.007 1.97 1.97 0 0 1 1.913-1.527c1.083 0 1.97.887 1.97 1.97a1.948 1.948 0 0 1-1.956 1.979zm2.538-4.502H2.91v-.567h10.138v.567z"/><circle cx="10.509" cy="10.371" r="1.411"/></g></svg>
-diff --git a/chrome/browser/resources/omnibox/icon_tabs.svg b/chrome/browser/resources/omnibox/icon_tabs.svg
+diff --git a/chrome/browser/resources/omnibox_internals/icon_tabs.svg b/chrome/browser/resources/omnibox_internals/icon_tabs.svg
 index ad673608b6821..31cfb0307f2a0 100644
---- a/chrome/browser/resources/omnibox/icon_tabs.svg
-+++ b/chrome/browser/resources/omnibox/icon_tabs.svg
+--- a/chrome/browser/resources/omnibox_internals/icon_tabs.svg
++++ b/chrome/browser/resources/omnibox_internals/icon_tabs.svg
 @@ -1 +1 @@
 -<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0V0z"/><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 4h5v16H6V4zm5 7h7v9h-7v-9z" fill="#000"/></g></svg>
 \ No newline at end of file

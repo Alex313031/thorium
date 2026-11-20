@@ -18,7 +18,7 @@ from chromium_sync import CheckoutError, prepare_dependencies, prepare_git_check
 
 
 EXIT_FAILURE = 111
-THORIUM_VERSION = "156.0.8078.80"
+THORIUM_VERSION = "158.0.8127.41"
 
 
 class VersionError(RuntimeError):

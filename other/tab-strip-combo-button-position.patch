@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/tabs/BUILD.gn b/chrome/browser/ui/tabs/BUILD.gn
-index fa77a939373e4..4ed7da8ca9f55 100644
+index d747eb7206843..bf88dff65dd1a 100644
 --- a/chrome/browser/ui/tabs/BUILD.gn
 +++ b/chrome/browser/ui/tabs/BUILD.gn
-@@ -102,7 +102,10 @@ if (!is_android) {
+@@ -109,7 +109,10 @@ if (!is_android) {
        "features.h",
      ]
      public_deps = [ "//base" ]
@@ -15,7 +15,7 @@ index fa77a939373e4..4ed7da8ca9f55 100644
  
    source_set("tab_menu") {
 diff --git a/chrome/browser/ui/tabs/features.cc b/chrome/browser/ui/tabs/features.cc
-index 6aac05299cda8..6438357d118c8 100644
+index 018bddda69dc2..95f07232b6ba3 100644
 --- a/chrome/browser/ui/tabs/features.cc
 +++ b/chrome/browser/ui/tabs/features.cc
 @@ -6,6 +6,7 @@
@@ -28,7 +28,7 @@ index 6aac05299cda8..6438357d118c8 100644
  
 @@ -30,6 +31,9 @@ BASE_FEATURE_PARAM(bool,
  
- BASE_FEATURE(kTabSearchCjkWordBoundary, base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kTabSearchCjkWordBoundary, base::FEATURE_ENABLED_BY_DEFAULT);
  
 +BASE_FEATURE(kThoriumLeftAlignedTabStripComboButton,
 +             base::FEATURE_DISABLED_BY_DEFAULT);
@@ -36,7 +36,7 @@ index 6aac05299cda8..6438357d118c8 100644
  BASE_FEATURE(kTabSearchPerformanceImprovements,
               base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kVerticalTabsNewBadge, base::FEATURE_ENABLED_BY_DEFAULT);
-@@ -96,6 +100,14 @@ BASE_FEATURE(kNewHorizontalPinnedTabStyling, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -42,6 +46,14 @@ BASE_FEATURE(kNewHorizontalPinnedTabStyling, base::FEATURE_DISABLED_BY_DEFAULT);
  // newly opened tab to close that tab and return focus to the opener tab.
  BASE_FEATURE(kBackToOpener, base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -52,7 +52,7 @@ index 6aac05299cda8..6438357d118c8 100644
    return base::FeatureList::IsEnabled(kSplitViewHorizontal) &&
           !kSplitViewHorizontalDirectAccess.Get();
 diff --git a/chrome/browser/ui/tabs/features.h b/chrome/browser/ui/tabs/features.h
-index 2eee247ee4b46..5e9c718f446c9 100644
+index a2a19b1700d07..42e18b4bae0f9 100644
 --- a/chrome/browser/ui/tabs/features.h
 +++ b/chrome/browser/ui/tabs/features.h
 @@ -31,6 +31,10 @@ BASE_DECLARE_FEATURE_PARAM(bool, kSplitViewHorizontalDirectTabAccess);
@@ -66,7 +66,7 @@ index 2eee247ee4b46..5e9c718f446c9 100644
  // Enables performance optimizations for Tab Search when large numbers of tabs
  // are open, including asynchronous favicon loading and de-duplicated profile
  // data push on bubble show.
-@@ -87,6 +91,10 @@ BASE_DECLARE_FEATURE(kTabStripUnification);
+@@ -43,6 +47,10 @@ BASE_DECLARE_FEATURE(kTabStripUnification);
  
  BASE_DECLARE_FEATURE(kNewHorizontalPinnedTabStyling);
  
@@ -78,10 +78,10 @@ index 2eee247ee4b46..5e9c718f446c9 100644
  
  bool IsSplitViewHorizontalDirectAccessEnabledForTab();
 diff --git a/chrome/browser/ui/tabs/tab_strip_prefs.cc b/chrome/browser/ui/tabs/tab_strip_prefs.cc
-index ca0afc6fd02f5..b2d601ebffc35 100644
+index 9a855747c23c7..02d02dbf4decb 100644
 --- a/chrome/browser/ui/tabs/tab_strip_prefs.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_prefs.cc
-@@ -55,7 +55,9 @@ TabSearchPosition GetTabSearchPosition(
+@@ -56,7 +56,9 @@ TabSearchPosition GetTabSearchPosition(
        return TabSearchPosition::kVerticalTabstrip;
      }
    }
@@ -93,7 +93,7 @@ index ca0afc6fd02f5..b2d601ebffc35 100644
  
  }  // namespace tabs
 diff --git a/chrome/browser/ui/tabs/tab_strip_prefs.h b/chrome/browser/ui/tabs/tab_strip_prefs.h
-index ca6b54f1c52c0..50ed4f16c3b74 100644
+index 938648e706934..e151de1e69634 100644
 --- a/chrome/browser/ui/tabs/tab_strip_prefs.h
 +++ b/chrome/browser/ui/tabs/tab_strip_prefs.h
 @@ -16,6 +16,7 @@ namespace tabs {
@@ -105,7 +105,7 @@ index ca6b54f1c52c0..50ed4f16c3b74 100644
  };
  
 diff --git a/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.cc b/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.cc
-index d86ea93f7dd14..12f3e94602ca7 100644
+index 1e8642e4cdf1e..0ebb361c5741f 100644
 --- a/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.cc
 +++ b/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.cc
 @@ -158,6 +158,8 @@ std::unique_ptr<TabStrip> CreateTabStrip(
@@ -117,7 +117,7 @@ index d86ea93f7dd14..12f3e94602ca7 100644
        action_view_controller_(std::make_unique<views::ActionViewController>()) {
    views::SetCascadingColorProviderColor(
        this, views::kCascadingBackgroundColor,
-@@ -168,13 +170,17 @@ HorizontalTabStripRegionViewOld::HorizontalTabStripRegionViewOld(
+@@ -168,16 +170,22 @@ HorizontalTabStripRegionViewOld::HorizontalTabStripRegionViewOld(
  
    BrowserWindowInterface* const browser = browser_view->browser();
  
@@ -128,19 +128,27 @@ index d86ea93f7dd14..12f3e94602ca7 100644
 -        browser, TabStripComboButton::Context::kHorizontalTabStrip));
 -    combo_button_->SetProperty(views::kCrossAxisAlignmentKey,
 -                               views::LayoutAlignment::kCenter);
--    combo_button_->MaybeShowIPH();
+-    // Set ignore layout here before Layout() runs so that the layout manager
+-    // does not set visibility of the combo button to false. This can happen
+-    // when it reports a preferred size of 0. See b/567198990.
+-    combo_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
 +    combo_button = std::make_unique<TabStripComboButton>(
 +        browser, TabStripComboButton::Context::kHorizontalTabStrip);
 +    combo_button->SetProperty(views::kCrossAxisAlignmentKey,
 +                              views::LayoutAlignment::kCenter);
++    // Leading buttons overlap the strip and must be excluded from layout
++    // before the first layout pass, even when their preferred size is zero.
++    // Trailing buttons participate in FlexLayout normally.
++    combo_button->SetProperty(views::kViewIgnoredByLayoutKey,
++                              render_combo_button_before_tab_strip_);
 +  }
 +
 +  if (combo_button && render_combo_button_before_tab_strip_) {
 +    combo_button_ = AddChildView(std::move(combo_button));
    }
  
-   if (base::FeatureList::IsEnabled(features::kTabGroupsFocusing)) {
-@@ -264,10 +270,20 @@ HorizontalTabStripRegionViewOld::HorizontalTabStripRegionViewOld(
+ 
+@@ -244,6 +252,13 @@ HorizontalTabStripRegionViewOld::HorizontalTabStripRegionViewOld(
  
    SetProperty(views::kElementIdentifierKey, kTabStripRegionElementId);
  
@@ -154,14 +162,7 @@ index d86ea93f7dd14..12f3e94602ca7 100644
    if (tab_strip_action_container) {
      tab_strip_action_container_ =
          AddChildView(std::move(tab_strip_action_container));
-   }
-+  if (combo_button_) {
-+    combo_button_->MaybeShowIPH();
-+  }
-   UpdateTabStripMargin();
- }
- 
-@@ -355,9 +371,9 @@ views::View::Views HorizontalTabStripRegionViewOld::GetChildrenInZOrder() {
+@@ -328,9 +343,9 @@ views::View::Views HorizontalTabStripRegionViewOld::GetChildrenInZOrder() {
    return children;
  }
  
@@ -174,16 +175,16 @@ index d86ea93f7dd14..12f3e94602ca7 100644
  void HorizontalTabStripRegionViewOld::Layout(PassKey) {
    if (!tab_strip_set_) {
      return;
-@@ -373,7 +389,7 @@ void HorizontalTabStripRegionViewOld::Layout(PassKey) {
-                       GetLayoutConstant(LayoutConstant::kTabStripPadding);
-   }
+@@ -339,7 +354,7 @@ void HorizontalTabStripRegionViewOld::Layout(PassKey) {
+   UpdateTabStripMargin();
+   LayoutSuperclass<views::AccessiblePaneView>(this);
  
 -  if (combo_button_) {
 +  if (combo_button_ && render_combo_button_before_tab_strip_) {
-     AdjustViewBoundsRect(combo_button_, leading_offset);
+     AdjustViewBoundsRect(combo_button_, 0);
    }
  
-@@ -598,7 +614,8 @@ HorizontalTabStripRegionViewOld::GetExpandOnHoverLock(
+@@ -559,7 +574,8 @@ HorizontalTabStripRegionViewOld::GetExpandOnHoverLock(
  }
  
  bool HorizontalTabStripRegionViewOld::HasLeadingButtons() const {
@@ -193,9 +194,9 @@ index d86ea93f7dd14..12f3e94602ca7 100644
        ((combo_button_->start_button() &&
          combo_button_->start_button()->GetVisible()) ||
         (combo_button_->end_button() &&
-@@ -691,10 +708,11 @@ void HorizontalTabStripRegionViewOld::UpdateTabStripMargin() {
-         GetLayoutConstant(LayoutConstant::kTabStripPadding);
-   }
+@@ -637,10 +653,11 @@ void HorizontalTabStripRegionViewOld::UpdateTabStripMargin() {
+   std::optional<int> tab_strip_left_margin;
+   int current_leading_width = 0;
  
 -  if (combo_button_ && ((combo_button_->start_button() &&
 -                         combo_button_->start_button()->GetVisible()) ||
@@ -208,8 +209,44 @@ index d86ea93f7dd14..12f3e94602ca7 100644
 +        combo_button_->end_button()->GetVisible()))) {
      combo_button_->SetPaintToLayer();
      combo_button_->layer()->SetFillsBoundsOpaquely(false);
-     combo_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
-@@ -1045,7 +1063,8 @@ void HorizontalTabStripRegionViewNew::AddTabStripView(
+     current_leading_width +=
+@@ -730,7 +747,15 @@ HorizontalTabStripRegionViewNew::HorizontalTabStripRegionViewNew(
+     // Set ignore layout here before Layout() runs so that the layout manager
+     // does not set visibility of the combo button to false. This can happen
+     // when it reports a preferred size of 0. See b/567198990.
+-    combo_button_->SetProperty(views::kViewIgnoredByLayoutKey, true);
++    combo_button_->SetProperty(
++        views::kViewIgnoredByLayoutKey,
++        tabs::IsTabStripComboButtonBeforeTabStrip());
++    if (!tabs::IsTabStripComboButtonBeforeTabStrip()) {
++      combo_button_->SetProperty(
++          views::kMarginsKey,
++          gfx::Insets::TLBR(0, 0, 0,
++                            GetLayoutConstant(LayoutConstant::kTabStripPadding)));
++    }
+ 
+     if (glic::GlicEnabling::IsProfileEligible(browser_view->GetProfile())) {
+       tab_strip_action_container =
+@@ -829,7 +854,8 @@ void HorizontalTabStripRegionViewNew::ChildPreferredSizeChanged(
+ }
+ 
+ bool HorizontalTabStripRegionViewNew::HasLeadingButtons() const {
+-  if (combo_button_ && combo_button_->GetVisible() &&
++  if (tabs::IsTabStripComboButtonBeforeTabStrip() && combo_button_ &&
++      combo_button_->GetVisible() &&
+       ((combo_button_->start_button() &&
+         combo_button_->start_button()->GetVisible()) ||
+        (combo_button_->end_button() &&
+@@ -843,7 +869,7 @@ void HorizontalTabStripRegionViewNew::Layout(PassKey) {
+   UpdateTabStripMargin();
+   LayoutSuperclass<BaseTabStripRegionView>(this);
+ 
+-  if (combo_button_) {
++  if (combo_button_ && tabs::IsTabStripComboButtonBeforeTabStrip()) {
+     AdjustViewBoundsRect(combo_button_, 0);
+   }
+ }
+@@ -994,7 +1020,8 @@ void HorizontalTabStripRegionViewNew::AddTabStripView(
        views::kFlexBehaviorKey,
        views::FlexSpecification(views::MinimumFlexSizeRule::kScaleToZero,
                                 views::MaximumFlexSizeRule::kPreferred));
@@ -219,16 +256,32 @@ index d86ea93f7dd14..12f3e94602ca7 100644
    AddChildViewAt(std::move(view), index);
    UpdateTabStripMargin();
  }
+@@ -1033,10 +1060,11 @@ void HorizontalTabStripRegionViewNew::UpdateTabStripMargin() {
+   std::optional<int> tab_strip_left_margin;
+   int current_leading_width = 0;
+ 
+-  if (combo_button_ && ((combo_button_->start_button() &&
+-                         combo_button_->start_button()->GetVisible()) ||
+-                        (combo_button_->end_button() &&
+-                         combo_button_->end_button()->GetVisible()))) {
++  if (tabs::IsTabStripComboButtonBeforeTabStrip() && combo_button_ &&
++      ((combo_button_->start_button() &&
++        combo_button_->start_button()->GetVisible()) ||
++       (combo_button_->end_button() &&
++        combo_button_->end_button()->GetVisible()))) {
+     combo_button_->SetPaintToLayer();
+     combo_button_->layer()->SetFillsBoundsOpaquely(false);
+     current_leading_width +=
 diff --git a/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.h b/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.h
-index 474306dd40056..f026830aa8fa9 100644
+index 4b5fedc04f20b..9e3d72550395e 100644
 --- a/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.h
 +++ b/chrome/browser/ui/views/frame/horizontal_tab_strip_region_view.h
-@@ -135,6 +135,8 @@ class HorizontalTabStripRegionViewOld : public TabStripRegionView {
+@@ -131,6 +131,8 @@ class HorizontalTabStripRegionViewOld : public TabStripRegionView {
+   raw_ptr<TabStripComboButton> combo_button_ = nullptr;
    raw_ptr<views::Button> new_tab_button_ = nullptr;
-   raw_ptr<TabStripControlButton> unfocus_button_ = nullptr;
  
 +  const bool render_combo_button_before_tab_strip_;
 +
    std::unique_ptr<views::ActionViewController> action_view_controller_;
-   base::CallbackListSubscription unfocus_button_subscription_;
  
+   const base::CallbackListSubscription subscription_ =

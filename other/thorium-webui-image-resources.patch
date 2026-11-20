@@ -1,5 +1,5 @@
 diff --git a/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn b/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn
-index 1854c30c5e746..d71edf88f5d20 100644
+index 891593dddd435..432a3999e8e5a 100644
 --- a/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn
 +++ b/ui/webui/resources/cr_components/searchbox/icons/BUILD.gn
 @@ -10,6 +10,11 @@ generate_grd("build_grdp") {

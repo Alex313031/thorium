@@ -1,0 +1,601 @@
+diff --git a/chrome/app/chrome_command_ids.h b/chrome/app/chrome_command_ids.h
+index 2ffedc1aad1f2..f1e23858b6520 100644
+--- a/chrome/app/chrome_command_ids.h
++++ b/chrome/app/chrome_command_ids.h
+@@ -562,6 +562,11 @@
+ #define IDC_ASK_GOOGLE_ABOUT_THIS_PAGE 54035
+ 
+ 
++// Thorium selection search. Keep dynamic entries within the native menu range.
++#define IDC_CONTENT_CONTEXT_SEARCH_WITH 54100
++#define IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST 54101
++#define IDC_CONTENT_CONTEXT_SEARCH_ENGINE_LAST 55100
++
+ // NOTE: The last valid command value is 57343 (0xDFFF)
+ // See http://msdn.microsoft.com/en-us/library/t2zechd4(VS.71).aspx
+ 
+diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
+index 80eef5ec1e773..592a30f498e7f 100644
+--- a/chrome/app/generated_resources.grd
++++ b/chrome/app/generated_resources.grd
+@@ -1054,6 +1054,9 @@ are declared in tools/grit/grit_args.gni.
+           <message name="IDS_CONTENT_CONTEXT_SEARCHWEBFOR" desc="The name of the Search the Web for “string” command in the content area context menu">
+             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for “<ph name="SEARCH_TERMS">$2<ex>flowers</ex></ph>”
+           </message>
++          <message name="IDS_CONTENT_CONTEXT_SEARCH_WITH" desc="Submenu below the default text-search command, listing other configured search engines and active site searches.">
++            Search with another search engine
++          </message>
+           <message name="IDS_CONTENT_CONTEXT_SEARCHWEBFORNEWTAB" desc="The name of the Search the Web for “string” in New Tab command in the content area context menu">
+             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for “<ph name="SEARCH_TERMS">$2<ex>flowers</ex></ph>” in new tab
+           </message>
+@@ -1416,6 +1419,9 @@ are declared in tools/grit/grit_args.gni.
+           <message name="IDS_CONTENT_CONTEXT_SEARCHWEBFOR" desc="In Title Case: The name of the Search the Web for “string” command in the content area context menu">
+             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for “<ph name="SEARCH_TERMS">$2<ex>flowers</ex></ph>”
+           </message>
++          <message name="IDS_CONTENT_CONTEXT_SEARCH_WITH" desc="Submenu below the default text-search command, listing other configured search engines and active site searches.">
++            Search with another search engine
++          </message>
+           <message name="IDS_CONTENT_CONTEXT_SEARCHWEBFORNEWTAB" desc="In Title Case: The name of the Search the Web for “string” in New Tab command in the content area context menu">
+             &amp;Search <ph name="SEARCH_ENGINE">$1<ex>Google</ex></ph> for “<ph name="SEARCH_TERMS">$2<ex>flowers</ex></ph>” in New Tab
+           </message>
+diff --git a/chrome/browser/renderer_context_menu/BUILD.gn b/chrome/browser/renderer_context_menu/BUILD.gn
+index fe5a6b11df6f4..0b5dd023f0d56 100644
+--- a/chrome/browser/renderer_context_menu/BUILD.gn
++++ b/chrome/browser/renderer_context_menu/BUILD.gn
+@@ -45,6 +45,7 @@ source_set("renderer_context_menu") {
+       "//components/custom_handlers",
+       "//components/lens:buildflags",
+       "//components/renderer_context_menu",
++      "//components/search_engines",
+       "//components/supervised_user/core/browser",
+       "//content/public/browser",
+       "//content/public/common:buildflags",
+diff --git a/chrome/browser/renderer_context_menu/render_view_context_menu.cc b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
+index ed49f43cd864b..89428981403e9 100644
+--- a/chrome/browser/renderer_context_menu/render_view_context_menu.cc
++++ b/chrome/browser/renderer_context_menu/render_view_context_menu.cc
+@@ -8,16 +8,19 @@
+ 
+ #include <algorithm>
+ #include <cstdio>
++#include <functional>
+ #include <memory>
+ #include <optional>
+ #include <set>
+ #include <string>
+ #include <string_view>
++#include <unordered_map>
+ #include <utility>
+ 
+ #include "base/check.h"
+ #include "base/command_line.h"
+ #include "base/containers/fixed_flat_map.h"
++#include "base/containers/span.h"
+ #include "base/feature_list.h"
+ #include "base/functional/bind.h"
+ #include "base/functional/callback.h"
+@@ -212,6 +215,7 @@
+ #include "components/search_engines/search_engines_pref_names.h"
+ #include "components/search_engines/template_url.h"
+ #include "components/search_engines/template_url_service.h"
++#include "components/search_engines/ui_utils.h"
+ #include "components/send_tab_to_self/features.h"
+ #include "components/send_tab_to_self/metrics_util.h"
+ #include "components/services/app_service/public/cpp/app_launch_params.h"
+@@ -264,6 +268,7 @@
+ #include "services/metrics/public/cpp/ukm_builders.h"
+ #include "services/metrics/public/cpp/ukm_recorder.h"
+ #include "services/network/public/cpp/constants.h"
++#include "services/network/public/cpp/resource_request_body.h"
+ #include "services/service_manager/public/cpp/interface_provider.h"
+ #include "third_party/blink/public/common/associated_interfaces/associated_interface_provider.h"
+ #include "third_party/blink/public/common/context_menu_data/context_menu_data.h"
+@@ -687,13 +692,15 @@ int UmaEnumForCommand(int key, UmaEnumIdLookupType type) {
+        {IDC_CONTENT_CONTEXT_GLIC_SMART_SUGGESTION, 172},
+        {IDC_CONTENT_CONTEXT_INDIGO, 173},
+        {IDC_CONTENT_CONTEXT_OPENLINKSAMETAB, 174},
++       {IDC_CONTENT_CONTEXT_SEARCH_WITH, 175},
++       {IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST, 176},
+        // To add new items:
+        //   - Add one more line above this comment block, using the UMA value
+        //     from the line below this comment block.
+        //   - Increment the UMA value in that latter line.
+        //   - Add the new item to the RenderViewContextMenuItem enum in
+        //     tools/metrics/histograms/metadata/ui/enums.xml.
+-       {kUmaMaxValueKey, 175}});
++       {kUmaMaxValueKey, 177}});
+   // LINT.ThenChange(//tools/metrics/histograms/metadata/ui/enums.xml:RenderViewContextMenuItem)
+ 
+   // LINT.IfChange(ContextMenuOptionDesktop)
+@@ -737,13 +744,14 @@ int UmaEnumForCommand(int key, UmaEnumIdLookupType type) {
+        {IDC_CONTENT_CONTEXT_ASK_GOOGLE_ABOUT_THIS_PAGE, 35},
+        {IDC_CONTENT_CONTEXT_INDIGO, 36},
+        {IDC_CONTENT_CONTEXT_OPENLINKSAMETAB, 37},
++       {IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST, 38},
+        // To add new items:
+        //   - Add one more line above this comment block, using the UMA value
+        //     from the line below this comment block.
+        //   - Increment the UMA value in that latter line.
+        //   - Add the new item to the ContextMenuOptionDesktop enum in
+        //     tools/metrics/histograms/metadata/ui/enums.xml.
+-       {kUmaMaxValueKey, 38}});
++       {kUmaMaxValueKey, 39}});
+   // LINT.ThenChange(//tools/metrics/histograms/metadata/ui/enums.xml:ContextMenuOptionDesktop)
+ 
+   switch (type) {
+@@ -763,11 +771,33 @@ int GetUmaValueMax(UmaEnumIdLookupType type) {
+   return UmaEnumForCommand(kUmaMaxValueKey, type);
+ }
+ 
++bool IsOtherSearchEngineCommand(int id) {
++  return id >= IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST &&
++         id <= IDC_CONTENT_CONTEXT_SEARCH_ENGINE_LAST;
++}
++
++bool IsOtherSearchEngine(const TemplateURL* engine,
++                         const TemplateURLService& service) {
++  return engine && engine != service.GetDefaultSearchProvider() &&
++         engine->type() != TemplateURL::OMNIBOX_API_EXTENSION &&
++         engine->starter_pack_id() ==
++             template_url_starter_pack_data::StarterPackId::kNone &&
++         engine->id() != kInvalidTemplateURLID &&
++         (service.ShowInDefaultList(engine) ||
++          service.ShowInActivesList(engine)) &&
++         !service.HiddenFromLists(engine) &&
++         engine->url_ref().SupportsReplacement(service.search_terms_data());
++}
++
+ // Collapses large ranges of ids before looking for UMA enum.
+ int CollapseCommandsForUMA(int id) {
+   DCHECK(!RenderViewContextMenu::IsContentCustomCommandId(id));
+   DCHECK(!ContextMenuMatcher::IsExtensionsCustomCommandId(id));
+ 
++  if (IsOtherSearchEngineCommand(id)) {
++    return IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST;
++  }
++
+   if (id >= IDC_CONTENT_CONTEXT_PROTOCOL_HANDLER_FIRST &&
+       id <= IDC_CONTENT_CONTEXT_PROTOCOL_HANDLER_LAST) {
+     return IDC_CONTENT_CONTEXT_PROTOCOL_HANDLER_FIRST;
+@@ -1167,6 +1197,12 @@ RenderViewContextMenu::~RenderViewContextMenu() = default;
+ 
+ void RenderViewContextMenu::MenuClosed(ui::SimpleMenuModel* source) {
+   if (source == &menu_model_) {
++    // The tab can retain this menu after it closes. Stop observing and release
++    // the search snapshots so later browsing does not keep revalidating them.
++    // SimpleMenuModel delivers MenuClosed after the chosen command executes.
++    search_engine_observation_.Reset();
++    other_search_engines_valid_ = false;
++    std::vector<OtherSearchEngine>().swap(other_search_engines_);
+     if (glic_item_shown_) {
+       RecordGlicWebContentsContextMenuResult(
+           GetGlicWebContentsContextToken(params_), glic_item_executed_);
+@@ -3090,6 +3126,7 @@ void RenderViewContextMenu::AppendSearchProvider() {
+                     : vector_icons::kSearchChromeRefreshOldIcon,
+                 ui::kColorMenuIcon, kTabMenuIconSize));
+       }
++      AppendOtherSearchEngines();
+     }
+   } else {
+     if ((selection_navigation_url_ != params_.link_url) &&
+@@ -3103,6 +3140,221 @@ void RenderViewContextMenu::AppendSearchProvider() {
+   }
+ }
+ 
++void RenderViewContextMenu::ExecSearchWeb(
++    content::OpenURLParams open_url_params) {
++  enterprise_data_protection::ShouldAllowSearchWith(
++      GetWebContentsForDataControls(), params_.selection_text.size(),
++      base::BindOnce(
++          [](base::WeakPtr<content::WebContents> web_contents,
++             std::u16string selection_text, content::OpenURLParams params) {
++            if (!web_contents) {
++              return;
++            }
++            if (contextual_tasks::IsABASearchJourneysEnabled()) {
++              if (auto* tracker =
++                      contextual_tasks::SearchJourneyTrackerFactory::
++                          GetForProfile(Profile::FromBrowserContext(
++                              web_contents->GetBrowserContext()))) {
++                const SessionID tab_id =
++                    sessions::SessionTabHelper::IdForTab(web_contents.get());
++                if (content::NavigationEntry* entry =
++                        web_contents->GetController().GetLastCommittedEntry()) {
++                  tracker->OnContextMenuSearchRecorded(
++                      tab_id, entry->GetUniqueID(), selection_text);
++                }
++              }
++            }
++            web_contents->OpenURL(
++                params,
++                page_load_metrics::NavigationInitiatorHolder::AttacherCallback(
++                    chrome_navigation_initiator::kContextMenuSearch));
++          },
++          source_web_contents_->GetWeakPtr(), params_.selection_text,
++          std::move(open_url_params)));
++}
++
++void RenderViewContextMenu::AppendOtherSearchEngines() {
++  if (other_search_engines_submenu_ ||
++      !params_.properties.contains(
++          prefs::kDefaultSearchProviderContextMenuAccessAllowed)) {
++    return;
++  }
++  auto* service = TemplateURLServiceFactory::GetForProfile(GetProfile());
++  if (!service || !service->loaded()) {
++    return;
++  }
++
++  auto engines = service->GetTemplateURLs();
++  // Most automatically discovered site searches are inactive. Do not run
++  // locale-aware sorting or URL substitution on those entries.
++  std::erase_if(engines, [service](const TemplateURL* engine) {
++    return !IsOtherSearchEngine(engine, *service);
++  });
++  if (engines.empty()) {
++    return;
++  }
++  // Keep the settings page's main engines first, then active site searches.
++  const auto sites_begin = std::stable_partition(
++      engines.begin(), engines.end(), [service](const TemplateURL* engine) {
++        return service->ShowInDefaultList(engine);
++      });
++  if (engines.end() - sites_begin > 1) {
++    const internal::OrderTemplateUrlsByManagedAndAlphabetically compare;
++    // Copying this comparator clones its ICU collator. Reuse one instance
++    // throughout sorting, including when ICU initialization fails.
++    std::sort(sites_begin, engines.end(), std::cref(compare));
++  }
++#if BUILDFLAG(IS_CHROMEOS)
++  const TemplateURLRef::SearchTermsArgs menu_search_terms(
++      params_.selection_text);
++#else
++  // Validate the template using a short probe. Encoding a potentially large
++  // selection for every engine would delay opening the menu on the UI thread.
++  const TemplateURLRef::SearchTermsArgs menu_search_terms(u"x");
++#endif
++  for (const TemplateURL* engine : engines) {
++    const int command_id = IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST +
++                           static_cast<int>(other_search_engines_.size());
++    if (command_id > IDC_CONTENT_CONTEXT_SEARCH_ENGINE_LAST) {
++      break;
++    }
++    GURL url(engine->url_ref().ReplaceSearchTerms(
++        menu_search_terms, service->search_terms_data()));
++    if (!url.is_valid() || !url.SchemeIsHTTPOrHTTPS()) {
++      continue;
++    }
++    if (!other_search_engines_submenu_) {
++      other_search_engines_submenu_ =
++          std::make_unique<ui::SimpleMenuModel>(this);
++      other_search_engines_.reserve(std::min(
++          engines.size(),
++          static_cast<size_t>(IDC_CONTENT_CONTEXT_SEARCH_ENGINE_LAST -
++                              IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST + 1)));
++    }
++    std::u16string name = engine->short_name();
++    EscapeAmpersands(&name);
++    other_search_engines_submenu_->AddItem(command_id, name);
++    OtherSearchEngine entry;
++    entry.id = engine->id();
++    entry.keyword = engine->keyword();
++    entry.short_name = engine->short_name();
++    entry.url = engine->url();
++    entry.post_params = engine->search_url_post_params();
++    entry.input_encodings = engine->input_encodings();
++#if BUILDFLAG(IS_CHROMEOS)
++    entry.search_url = std::move(url);
++#endif
++    other_search_engines_.push_back(std::move(entry));
++  }
++
++  if (other_search_engines_.size() > 1) {
++    // Names need not be unique in settings. Count only displayed entries, and
++    // disambiguate duplicates using their keywords before exposing the menu.
++    // The snapshots are now complete, so these string views remain valid.
++    std::unordered_map<std::u16string_view, size_t> name_counts;
++    name_counts.reserve(other_search_engines_.size());
++    for (const auto& entry : other_search_engines_) {
++      ++name_counts[entry.short_name];
++    }
++    for (size_t index = 0; index < other_search_engines_.size(); ++index) {
++      const auto& entry = other_search_engines_[index];
++      if (name_counts.at(entry.short_name) > 1) {
++        std::u16string name =
++            base::StrCat({entry.short_name, u" (", entry.keyword, u")"});
++        EscapeAmpersands(&name);
++        other_search_engines_submenu_->SetLabel(index, name);
++      }
++    }
++  }
++
++  if (other_search_engines_submenu_) {
++    other_search_engines_valid_ = true;
++    search_engine_observation_.Observe(service);
++    menu_model_.AddSubMenuWithStringId(IDC_CONTENT_CONTEXT_SEARCH_WITH,
++                                       IDS_CONTENT_CONTEXT_SEARCH_WITH,
++                                       other_search_engines_submenu_.get());
++  }
++}
++
++void RenderViewContextMenu::OnTemplateURLServiceChanged() {
++  // Notifications also include visits and automatically discovered engines.
++  // Those must not disable an otherwise unchanged, open submenu. Revalidate
++  // the saved entries without sorting or encoding the selection again.
++  for (size_t index = 0; index < other_search_engines_.size(); ++index) {
++    if (!GetOtherSearchEngine(IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST +
++                              static_cast<int>(index))) {
++      other_search_engines_[index].enabled = false;
++    }
++  }
++}
++
++void RenderViewContextMenu::OnTemplateURLServiceShuttingDown() {
++  other_search_engines_valid_ = false;
++  search_engine_observation_.Reset();
++}
++
++const TemplateURL* RenderViewContextMenu::GetOtherSearchEngine(
++    int command_id) const {
++  if (!IsOtherSearchEngineCommand(command_id) || !other_search_engines_valid_) {
++    return nullptr;
++  }
++  const size_t index = command_id - IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST;
++  if (index >= other_search_engines_.size()) {
++    return nullptr;
++  }
++  auto* service = search_engine_observation_.GetSource();
++  if (!service || !service->loaded()) {
++    return nullptr;
++  }
++  const auto& entry = other_search_engines_[index];
++  if (!entry.enabled) {
++    return nullptr;
++  }
++  // Legacy configurations can have duplicate sync GUIDs. The local ID remains
++  // stable while this service is alive, including across visit-time updates.
++  const TemplateURL* engine = service->GetTemplateURLForId(entry.id);
++  if (!IsOtherSearchEngine(engine, *service) ||
++      engine->keyword() != entry.keyword ||
++      engine->short_name() != entry.short_name || engine->url() != entry.url ||
++      engine->search_url_post_params() != entry.post_params ||
++      engine->input_encodings() != entry.input_encodings) {
++    return nullptr;
++  }
++  return engine;
++}
++
++std::optional<content::OpenURLParams>
++RenderViewContextMenu::GetOtherSearchEngineParams(int command_id,
++                                                  int event_flags) {
++  const TemplateURL* engine = GetOtherSearchEngine(command_id);
++  if (!engine || !IsCommandIdEnabled(command_id)) {
++    return std::nullopt;
++  }
++  auto* service = TemplateURLServiceFactory::GetForProfile(GetProfile());
++  TemplateURLRef::PostContent post_content;
++  const GURL url(engine->url_ref().ReplaceSearchTerms(
++      TemplateURLRef::SearchTermsArgs(params_.selection_text),
++      service->search_terms_data(), &post_content));
++  if (!url.is_valid() || !url.SchemeIsHTTPOrHTTPS() ||
++      !IsOpenLinkAllowedByDlp(url)) {
++    return std::nullopt;
++  }
++  const bool is_post = !post_content.first.empty();
++  auto open_params = GetOpenURLParamsWithExtraHeaders(
++      url, /*referring_url=*/GURL(), /*initiator=*/{},
++      ui::DispositionFromEventFlags(event_flags,
++                                    WindowOpenDisposition::kNewForegroundTab),
++      ui::PAGE_TRANSITION_LINK,
++      is_post ? base::StrCat({"Content-Type: ", post_content.first, "\r\n"})
++              : std::string(),
++      /*started_from_context_menu=*/true);
++  if (is_post) {
++    open_params.post_data = network::ResourceRequestBody::CreateFromCopyOfBytes(
++        base::as_byte_span(post_content.second));
++  }
++  return open_params;
++}
++
+ void RenderViewContextMenu::AppendSpellingAndSearchSuggestionItems() {
+   const bool use_spelling = !IsRunningInForcedAppMode();
+   if (use_spelling) {
+@@ -3577,6 +3829,36 @@ bool RenderViewContextMenu::IsCommandIdEnabled(int id) const {
+   bool isolated_mode_enabled =
+       enterprise_isolated_mode::IsolatedModeReplacesIncognito(GetProfile());
+ 
++  if (IsOtherSearchEngineCommand(id) || id == IDC_CONTENT_CONTEXT_SEARCH_WITH) {
++    if (!navigation_allowed || !other_search_engines_valid_ ||
++        !prefs->GetBoolean(
++            prefs::kDefaultSearchProviderContextMenuAccessAllowed) ||
++        !IsSearchAllowedByPolicy()) {
++      return false;
++    }
++    if (id == IDC_CONTENT_CONTEXT_SEARCH_WITH) {
++#if BUILDFLAG(IS_CHROMEOS)
++      return std::ranges::any_of(
++          other_search_engines_, [this](const OtherSearchEngine& entry) {
++            return entry.enabled && IsOpenLinkAllowedByDlp(entry.search_url);
++          });
++#else
++      return std::ranges::any_of(other_search_engines_,
++                                 &OtherSearchEngine::enabled);
++#endif
++    }
++    const size_t index = id - IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST;
++    if (index >= other_search_engines_.size() ||
++        !other_search_engines_[index].enabled) {
++      return false;
++    }
++#if BUILDFLAG(IS_CHROMEOS)
++    return IsOpenLinkAllowedByDlp(other_search_engines_[index].search_url);
++#else
++    return true;
++#endif
++  }
++
+   switch (id) {
+     case IDC_BACK:
+       return embedder_web_contents_->GetController().CanGoBack();
+@@ -3922,6 +4204,14 @@ void RenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
+   }
+   command_executed_ = true;
+ 
++  if (IsOtherSearchEngineCommand(id)) {
++    auto open_params = GetOtherSearchEngineParams(id, event_flags);
++    if (open_params) {
++      ExecSearchWeb(std::move(*open_params));
++    }
++    return;
++  }
++
+   // Process extension menu items.
+   if (ContextMenuMatcher::IsExtensionsCustomCommandId(id)) {
+     RenderFrameHost* render_frame_host = GetRenderFrameHost();
+@@ -4387,38 +4677,7 @@ void RenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
+           /*initiator=*/{}, disposition, ui::PAGE_TRANSITION_LINK,
+           /*extra_headers=*/std::string(), /*started_from_context_menu=*/true);
+ 
+-      enterprise_data_protection::ShouldAllowSearchWith(
+-          GetWebContentsForDataControls(), params_.selection_text.size(),
+-          base::BindOnce(
+-              [](base::WeakPtr<content::WebContents> web_contents,
+-                 std::u16string selection_text, content::OpenURLParams params) {
+-                if (!web_contents) {
+-                  return;
+-                }
+-                if (contextual_tasks::IsABASearchJourneysEnabled()) {
+-                  if (auto* tracker =
+-                          contextual_tasks::SearchJourneyTrackerFactory::
+-                              GetForProfile(Profile::FromBrowserContext(
+-                                  web_contents->GetBrowserContext()))) {
+-                    const SessionID tab_id =
+-                        sessions::SessionTabHelper::IdForTab(
+-                            web_contents.get());
+-                    if (content::NavigationEntry* entry =
+-                            web_contents->GetController()
+-                                .GetLastCommittedEntry()) {
+-                      tracker->OnContextMenuSearchRecorded(
+-                          tab_id, entry->GetUniqueID(), selection_text);
+-                    }
+-                  }
+-                }
+-                web_contents->OpenURL(
+-                    params,
+-                    page_load_metrics::NavigationInitiatorHolder::
+-                        AttacherCallback(
+-                            chrome_navigation_initiator::kContextMenuSearch));
+-              },
+-              source_web_contents_->GetWeakPtr(), params_.selection_text,
+-              std::move(open_url_params)));
++      ExecSearchWeb(std::move(open_url_params));
+       break;
+     }
+     case IDC_CONTENT_CONTEXT_GOTOURL: {
+diff --git a/chrome/browser/renderer_context_menu/render_view_context_menu.h b/chrome/browser/renderer_context_menu/render_view_context_menu.h
+index 545bcad55239a..2b6327f3130a1 100644
+--- a/chrome/browser/renderer_context_menu/render_view_context_menu.h
++++ b/chrome/browser/renderer_context_menu/render_view_context_menu.h
+@@ -27,8 +27,11 @@
+ #include "components/renderer_context_menu/render_view_context_menu_base.h"
+ #include "components/renderer_context_menu/render_view_context_menu_observer.h"
+ #include "components/renderer_context_menu/render_view_context_menu_proxy.h"
++#include "components/search_engines/template_url_id.h"
++#include "components/search_engines/template_url_service_observer.h"
+ #include "components/supervised_user/core/browser/supervised_user_url_filtering_service.h"
+ #include "content/public/browser/context_menu_params.h"
++#include "content/public/browser/page_navigator.h"
+ #include "content/public/browser/weak_document_ptr.h"
+ #include "content/public/common/buildflags.h"
+ #include "extensions/buildflags/buildflags.h"
+@@ -62,6 +65,7 @@ class ReadWriteCardObserver;
+ class SpellingMenuObserver;
+ class SpellingOptionsSubMenuObserver;
+ class TemplateURL;
++class TemplateURLService;
+ class ToastController;
+ 
+ namespace content {
+@@ -118,7 +122,8 @@ enum class SplitTabLayout;
+ 
+ class RenderViewContextMenu
+     : public RenderViewContextMenuBase,
+-      public custom_handlers::ProtocolHandlerRegistry::Observer {
++      public custom_handlers::ProtocolHandlerRegistry::Observer,
++      public TemplateURLServiceObserver {
+  public:
+   DECLARE_CLASS_ELEMENT_IDENTIFIER_VALUE(kExitFullscreenMenuItem);
+   DECLARE_CLASS_ELEMENT_IDENTIFIER_VALUE(kComposeMenuItem);
+@@ -373,6 +378,12 @@ class RenderViewContextMenu
+   bool AppendAccessibilityLabelsItems();
+   void AppendDictationItems();
+   void AppendSearchProvider();
++  void AppendOtherSearchEngines();
++  const TemplateURL* GetOtherSearchEngine(int command_id) const;
++  std::optional<content::OpenURLParams> GetOtherSearchEngineParams(
++      int command_id,
++      int event_flags);
++  void ExecSearchWeb(content::OpenURLParams open_url_params);
+ #if BUILDFLAG(ENABLE_EXTENSIONS)
+   void AppendCurrentExtensionItems();
+ #endif
+@@ -500,6 +511,10 @@ class RenderViewContextMenu
+   // ProtocolHandlerRegistry::Observer:
+   void OnProtocolHandlerRegistryChanged() override;
+ 
++  // TemplateURLServiceObserver:
++  void OnTemplateURLServiceChanged() override;
++  void OnTemplateURLServiceShuttingDown() override;
++
+   // Whether or not translation on this page can be triggered. This method
+   // checks multiple criteria, e.g. whether translation is disabled by a policy
+   // or whether the current page can be translated.
+@@ -553,6 +568,27 @@ class RenderViewContextMenu
+   // a text selection.
+   GURL selection_navigation_url_;
+ 
++  std::unique_ptr<ui::SimpleMenuModel> other_search_engines_submenu_;
++  struct OtherSearchEngine {
++    TemplateURLID id;
++    std::u16string keyword;
++    std::u16string short_name;
++    std::string url;
++    std::string post_params;
++    std::vector<std::string> input_encodings;
++    bool enabled = true;
++#if BUILDFLAG(IS_CHROMEOS)
++    // ChromeOS DLP needs the exact destination when checking enabled state.
++    GURL search_url;
++#endif
++  };
++  // Keep the fields used by this menu, not engine pointers or visit statistics.
++  // Changes invalidate only the affected entries until the next menu opening.
++  std::vector<OtherSearchEngine> other_search_engines_;
++  bool other_search_engines_valid_ = false;
++  base::ScopedObservation<TemplateURLService, TemplateURLServiceObserver>
++      search_engine_observation_{this};
++
+   // URL of current page and current main frame url
+   GURL current_url_;
+   GURL main_frame_url_;
+diff --git a/tools/metrics/histograms/metadata/ui/enums.xml b/tools/metrics/histograms/metadata/ui/enums.xml
+index 8fd509761c46c..5a9c0365c5464 100644
+--- a/tools/metrics/histograms/metadata/ui/enums.xml
++++ b/tools/metrics/histograms/metadata/ui/enums.xml
+@@ -83,6 +83,7 @@ chromium-metrics-reviews@google.com.
+   <int value="35" label="Ask Google about this page"/>
+   <int value="36" label="Try it on (Indigo)"/>
+   <int value="37" label="Open link in this tab"/>
++  <int value="38" label="Search with another search engine"/>
+ </enum>
+ 
+ <!-- LINT.ThenChange(//chrome/browser/renderer_context_menu/render_view_context_menu.cc:ContextMenuOptionDesktop) -->
+@@ -454,6 +455,8 @@ chromium-metrics-reviews@google.com.
+   <int value="172" label="IDC_CONTENT_CONTEXT_GLIC_SMART_SUGGESTION"/>
+   <int value="173" label="IDC_CONTENT_CONTEXT_INDIGO"/>
+   <int value="174" label="IDC_CONTENT_CONTEXT_OPENLINKSAMETAB"/>
++  <int value="175" label="IDC_CONTENT_CONTEXT_SEARCH_WITH"/>
++  <int value="176" label="IDC_CONTENT_CONTEXT_SEARCH_ENGINE_FIRST"/>
+ </enum>
+ 
+ <!-- LINT.ThenChange(//chrome/browser/renderer_context_menu/render_view_context_menu.cc:RenderViewContextMenuItem) -->

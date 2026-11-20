@@ -1,5 +1,5 @@
 diff --git a/ui/gtk/native_theme_gtk.cc b/ui/gtk/native_theme_gtk.cc
-index 0d80a442fd5ee..a1f0d09f6c32e 100644
+index 184a8ba4f1965..93e2c49329e87 100644
 --- a/ui/gtk/native_theme_gtk.cc
 +++ b/ui/gtk/native_theme_gtk.cc
 @@ -1,4 +1,4 @@
@@ -86,7 +86,7 @@ index 0d80a442fd5ee..a1f0d09f6c32e 100644
  
  NativeThemeGtk::~NativeThemeGtk() = default;
 diff --git a/ui/gtk/native_theme_gtk.h b/ui/gtk/native_theme_gtk.h
-index 34b2acb5146fa..5384302cdf858 100644
+index 360cbe37967b3..0b4cb09b9fdcc 100644
 --- a/ui/gtk/native_theme_gtk.h
 +++ b/ui/gtk/native_theme_gtk.h
 @@ -1,4 +1,4 @@
@@ -95,14 +95,11 @@ index 34b2acb5146fa..5384302cdf858 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -41,6 +41,10 @@ class NativeThemeGtk : public ui::NativeThemeBase {
-       const gfx::Rect& rect,
-       const FrameTopAreaExtraParams& extra_params) const override;
- 
-+ protected:
-+  // ui::NativeTheme:
+@@ -45,6 +45,7 @@ class COMPONENT_EXPORT(GTK) NativeThemeGtk : public ui::NativeThemeBase {
+  protected:
+   // ui::NativeTheme:
+   PreferredColorScheme CalculatePreferredColorScheme() const override;
 +  void OnToolkitSettingsChanged(bool force_notify) override;
-+
+ 
   private:
    friend class base::NoDestructor<NativeThemeGtk>;
- 

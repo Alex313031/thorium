@@ -1,8 +1,8 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-index 3eac3fd3878f6..6433d2c2dc6d6 100644
+index 0a9639c6bc135..d1b983a79b9a3 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-@@ -81,7 +81,6 @@ import org.chromium.chrome.browser.share.qrcode.QrCodeCoordinator;
+@@ -85,7 +85,6 @@ import org.chromium.chrome.browser.share.qrcode.QrCodeCoordinator;
  import org.chromium.chrome.browser.share.send_tab_to_self.SendTabToSelfAndroidBridge;
  import org.chromium.chrome.browser.tab.Tab;
  import org.chromium.chrome.browser.tab.TabContextMenuItemDelegate;
@@ -10,7 +10,7 @@ index 3eac3fd3878f6..6433d2c2dc6d6 100644
  import org.chromium.chrome.browser.translate.TranslateBridge;
  import org.chromium.chrome.browser.translate.TranslateUtils;
  import org.chromium.chrome.browser.ui.lens.LensOverlayCoordinator;
-@@ -113,7 +112,6 @@ import org.chromium.ui.listmenu.ListMenuSubmenuItemProperties;
+@@ -118,7 +117,6 @@ import org.chromium.ui.listmenu.ListMenuSubmenuItemProperties;
  import org.chromium.ui.modelutil.MVCListAdapter.ListItem;
  import org.chromium.ui.modelutil.MVCListAdapter.ModelList;
  import org.chromium.ui.modelutil.PropertyModel;
@@ -18,17 +18,20 @@ index 3eac3fd3878f6..6433d2c2dc6d6 100644
  import org.chromium.ui.widget.Toast;
  import org.chromium.url.GURL;
  
-@@ -467,13 +465,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -481,16 +479,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
  
      @VisibleForTesting
      boolean shouldShowEmptySpaceContextMenu() {
--        // Enable empty space context menu from mouse-right click on all device form factors.
+-        // Enable empty space context menu from mouse-right click on all device form factors, and
+-        // from keyboard when keyboard context menu support is enabled.
 -        // Limit long press (touch) as trigger only when desktop agent is used, because
 -        //   * some phones always identify as having a touchpad (crbug.com/429262357), and
 -        //   * known web compatibility issue on tablet devices (crbug.com/45188879).
 -        return (mParams.getSourceType() == MenuSourceType.MOUSE
--                || (TabUtils.isUsingDesktopUserAgent(mItemDelegate.getWebContents())
--                        && mParams.getSourceType() == MenuSourceType.LONG_PRESS));
+-                || (mParams.getSourceType() == MenuSourceType.KEYBOARD
+-                        && ContentFeatureMap.isEnabled(BlinkFeatures.ANDROID_KEYBOARD_CONTEXT_MENU))
+-                || (mParams.getSourceType() == MenuSourceType.LONG_PRESS
+-                        && TabUtils.isUsingDesktopUserAgent(mItemDelegate.getWebContents())));
 +        return true;
      }
  
@@ -49,10 +52,10 @@ index 91b71ae48ec56..f560765b83bcb 100644
          if ((readAloudController != null && readAloudController.isReadable(currentTab))
                  || shouldShowReaderModeItem(currentTab)
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
-index d52212439572a..a90cf7f609fad 100644
+index 5750bbe7d3d17..9b724efb9233d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
-@@ -496,6 +496,11 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -503,6 +503,11 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
              modelList.add(buildReaderModeItem(currentTab, shouldShowIconBeforeItem));
          }
  
@@ -65,10 +68,10 @@ index d52212439572a..a90cf7f609fad 100644
          if (shouldShowOpenWithItem(currentTab)) {
              modelList.add(buildOpenWithItem(currentTab, shouldShowIconBeforeItem));
 diff --git a/chrome/browser/devtools/android/java/src/org/chromium/chrome/browser/devtools/DevToolsWindowAndroid.java b/chrome/browser/devtools/android/java/src/org/chromium/chrome/browser/devtools/DevToolsWindowAndroid.java
-index c96056e2843a4..0e634a6a66b4b 100644
+index e1c0cdadf5ba5..4022fc52f77f1 100644
 --- a/chrome/browser/devtools/android/java/src/org/chromium/chrome/browser/devtools/DevToolsWindowAndroid.java
 +++ b/chrome/browser/devtools/android/java/src/org/chromium/chrome/browser/devtools/DevToolsWindowAndroid.java
-@@ -14,7 +14,6 @@ import org.chromium.chrome.browser.profiles.Profile;
+@@ -16,7 +16,6 @@ import org.chromium.chrome.browser.ui.browser_window.ChromeAndroidTask.NativeBro
  import org.chromium.content_public.browser.ContentFeatureList;
  import org.chromium.content_public.browser.ContentFeatureMap;
  import org.chromium.content_public.browser.WebContents;
@@ -76,7 +79,7 @@ index c96056e2843a4..0e634a6a66b4b 100644
  
  /** DevToolsWindowAndroid provides an interface to control DevTools windows. */
  @NullMarked
-@@ -24,8 +23,7 @@ public class DevToolsWindowAndroid {
+@@ -26,8 +25,7 @@ public class DevToolsWindowAndroid {
      private DevToolsWindowAndroid() {}
  
      public static boolean isDevToolsAvailable(Context context) {
@@ -112,10 +115,10 @@ index 40c7c3a8c0f5f..b938d81f6934a 100644
  
      /** Launches the task manager. */
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
-index bf40f7a4110f7..3a66dc22bee2e 100644
+index ccc1fd856d09c..d8a858c5a1c23 100644
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -42,7 +42,13 @@ BASE_FEATURE(kAperitifHelpers, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -37,7 +37,13 @@ BASE_FEATURE(kAperitifHelpers, base::FEATURE_ENABLED_BY_DEFAULT);
  #endif
  
  // DevTools frontend for Android.
@@ -131,7 +134,7 @@ index bf40f7a4110f7..3a66dc22bee2e 100644
  // Enables media to continue playing in the background.
  BASE_FEATURE(kAndroidEnableBackgroundMediaLargeFormFactors,
 diff --git a/ui/android/java/src/org/chromium/ui/hierarchicalmenu/HierarchicalMenuController.java b/ui/android/java/src/org/chromium/ui/hierarchicalmenu/HierarchicalMenuController.java
-index 9087b25f24bdf..3c6850f7b466e 100644
+index a45d2815318e6..acab632d702c0 100644
 --- a/ui/android/java/src/org/chromium/ui/hierarchicalmenu/HierarchicalMenuController.java
 +++ b/ui/android/java/src/org/chromium/ui/hierarchicalmenu/HierarchicalMenuController.java
 @@ -36,7 +36,6 @@ import org.chromium.base.supplier.SettableNonNullObservableSupplier;
@@ -139,10 +142,10 @@ index 9087b25f24bdf..3c6850f7b466e 100644
  import org.chromium.build.annotations.Nullable;
  import org.chromium.ui.R;
 -import org.chromium.ui.base.DeviceInput;
+ import org.chromium.ui.base.UiAndroidFeatureList;
  import org.chromium.ui.display.DisplayAndroidManager;
  import org.chromium.ui.hierarchicalmenu.FlyoutController.FlyoutHandler;
- import org.chromium.ui.modelutil.ListObservable;
-@@ -302,10 +301,6 @@ public class HierarchicalMenuController<T> {
+@@ -309,10 +308,6 @@ public class HierarchicalMenuController<T> {
              return true;
          }
  

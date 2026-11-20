@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/shell_integration_linux.cc b/chrome/browser/shell_integration_linux.cc
-index bc6dc20d5baff..5c864b0f5d246 100644
+index 1a0f12ac33f9a..4d0ae785238d7 100644
 --- a/chrome/browser/shell_integration_linux.cc
 +++ b/chrome/browser/shell_integration_linux.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index bc6dc20d5baff..5c864b0f5d246 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -471,7 +471,7 @@ std::string GetIconName() {
+@@ -581,7 +581,7 @@ std::string GetIconName() {
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
    return "google-chrome";
  #else  // BUILDFLAG(CHROMIUM_BRANDING)

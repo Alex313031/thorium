@@ -1,5 +1,5 @@
 diff --git a/components/webui/flags/flags_state.cc b/components/webui/flags/flags_state.cc
-index 6eff2e51a48fc..c4d57e0797f8a 100644
+index 7cdbff36d7abf..94a5aad8e9b75 100644
 --- a/components/webui/flags/flags_state.cc
 +++ b/components/webui/flags/flags_state.cc
 @@ -1,4 +1,4 @@
@@ -16,7 +16,7 @@ index 6eff2e51a48fc..c4d57e0797f8a 100644
  #include "components/variations/field_trial_config/field_trial_util.h"
  #include "components/variations/variations_associated_data.h"
  #include "components/variations/variations_switches.h"
-@@ -702,14 +703,19 @@ void FlagsState::GetFlagFeatureEntries(
+@@ -703,14 +704,19 @@ void FlagsState::GetFlagFeatureEntries(
    int current_platform = GetCurrentPlatform();
  
    for (const FeatureEntry& entry : feature_entries_) {
@@ -38,7 +38,7 @@ index 6eff2e51a48fc..c4d57e0797f8a 100644
  
      base::ListValue supported_platforms;
      AddOsStrings(entry.supported_platforms, &supported_platforms);
-@@ -1121,7 +1127,9 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
+@@ -1122,7 +1128,9 @@ bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
        continue;
      }
      if (delegate_ && delegate_->ShouldExcludeFlag(storage, entry)) {

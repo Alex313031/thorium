@@ -1,5 +1,5 @@
 diff --git a/ui/views/BUILD.gn b/ui/views/BUILD.gn
-index 968bd702e654a..503fa22b7661f 100644
+index a07afd253b13b..1d1825931e0e0 100644
 --- a/ui/views/BUILD.gn
 +++ b/ui/views/BUILD.gn
 @@ -86,6 +86,13 @@ aggregate_vector_icons("views_vector_icons") {

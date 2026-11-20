@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/browser_commands.cc b/chrome/browser/ui/browser_commands.cc
-index 85fb2bac0e822..80e2185502d5d 100644
+index 9a38b1cddac85..f83b4e6aef22e 100644
 --- a/chrome/browser/ui/browser_commands.cc
 +++ b/chrome/browser/ui/browser_commands.cc
-@@ -1462,6 +1462,25 @@ void CloseTab(BrowserWindowInterface* browser) {
+@@ -1458,6 +1458,25 @@ void CloseTab(BrowserWindowInterface* browser) {
      return;
    }
  
@@ -29,7 +29,7 @@ index 85fb2bac0e822..80e2185502d5d 100644
    // decide if just the active tab in the split is closed instead of all tabs in
    // the split.
 diff --git a/chrome/browser/ui/tabs/tab_strip_model.cc b/chrome/browser/ui/tabs/tab_strip_model.cc
-index 8d900698a7fff..786f15b8a346f 100644
+index 6c5dd383ed745..86f7efb5d844b 100644
 --- a/chrome/browser/ui/tabs/tab_strip_model.cc
 +++ b/chrome/browser/ui/tabs/tab_strip_model.cc
 @@ -19,6 +19,7 @@
@@ -40,7 +40,7 @@ index 8d900698a7fff..786f15b8a346f 100644
  #include "base/containers/flat_map.h"
  #include "base/containers/span.h"
  #include "base/dcheck_is_on.h"
-@@ -4021,6 +4022,13 @@ void TabStripModel::CloseTabs(base::span<content::WebContents* const> items,
+@@ -4110,6 +4111,13 @@ void TabStripModel::CloseTabs(base::span<content::WebContents* const> items,
    }
  
    const bool closing_all = static_cast<int>(filtered_items.size()) == count();

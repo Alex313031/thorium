@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ssl/ssl_config_service_manager.cc b/chrome/browser/ssl/ssl_config_service_manager.cc
-index a3c6c3ece0fc6..20d127998222f 100644
+index f7deb251c1967..5af2f157947ab 100644
 --- a/chrome/browser/ssl/ssl_config_service_manager.cc
 +++ b/chrome/browser/ssl/ssl_config_service_manager.cc
 @@ -10,6 +10,7 @@
@@ -10,7 +10,7 @@ index a3c6c3ece0fc6..20d127998222f 100644
  #include "base/containers/extend.h"
  #include "base/containers/to_vector.h"
  #include "base/feature_list.h"
-@@ -306,6 +307,18 @@ network::mojom::SSLConfigPtr SSLConfigServiceManager::GetNewSSLConfig() const {
+@@ -307,6 +308,18 @@ network::mojom::SSLConfigPtr SSLConfigServiceManager::GetNewSSLConfig() const {
  
    config->ech_enabled = ech_enabled_.GetValue();
  

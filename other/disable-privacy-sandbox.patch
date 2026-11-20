@@ -1,8 +1,8 @@
 diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
-index b3e9e96874fff..d472c97eb84c2 100644
+index fab9fe5f7d94f..55328421363dc 100644
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1400,7 +1400,6 @@ if (is_win) {
+@@ -1411,7 +1411,6 @@ if (is_win) {
        ":widevine_cdm_library",
        "//chrome/browser/resources/media/mei_preload:component_bundle",
        "//chrome/browser/web_applications/isolated_web_apps/key_distribution/preload:component_bundle",
@@ -11,10 +11,10 @@ index b3e9e96874fff..d472c97eb84c2 100644
  
      if (is_chrome_branded) {
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
-index 92faf6c6420d7..14fd6a17f2cd0 100644
+index e673d9d67b377..666e911d96623 100644
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
-@@ -1845,7 +1845,6 @@ if (_is_default_toolchain) {
+@@ -1861,7 +1861,6 @@ if (_is_default_toolchain) {
    java_group("chrome_public_non_pak_assets") {
      deps = [
        "//chrome/android/webapk/libs/runtime_library:runtime_library_assets",
@@ -23,10 +23,10 @@ index 92faf6c6420d7..14fd6a17f2cd0 100644
    }
  
 diff --git a/chrome/browser/component_updater/registration.cc b/chrome/browser/component_updater/registration.cc
-index 9cf5a226c7f74..395f9abe18e47 100644
+index 6a083ad696130..9863adfac544f 100644
 --- a/chrome/browser/component_updater/registration.cc
 +++ b/chrome/browser/component_updater/registration.cc
-@@ -27,7 +27,6 @@
+@@ -26,7 +26,6 @@
  #include "chrome/browser/component_updater/mei_preload_component_installer.h"
  #include "chrome/browser/component_updater/pki_metadata_component_installer.h"
  #include "chrome/browser/component_updater/platform_runtime_component_installer.h"
@@ -35,9 +35,9 @@ index 9cf5a226c7f74..395f9abe18e47 100644
  #include "chrome/browser/component_updater/ssl_error_assistant_component_installer.h"
  #include "chrome/browser/component_updater/subresource_filter_component_installer.h"
 @@ -159,7 +158,6 @@ void RegisterComponentsForUpdate() {
+   RegisterOptimizationHintsComponent(cus);
    RegisterTrustTokenKeyCommitmentsComponentIfTrustTokensEnabled(cus);
    RegisterPrivateVerificationTokensComponentIfEnabled(cus);
-   RegisterFirstPartySetsComponent(cus);
 -  RegisterPrivacySandboxAttestationsComponent(cus);
    RegisterActorSafetyListsComponent(cus, base::OnceClosure());
    if (history_embeddings::IsHistoryEmbeddingsFeatureEnabled()) {
@@ -56,10 +56,10 @@ index 11ff98e135767..04eaa94b10729 100644
  
  BASE_FEATURE(kRelatedWebsiteSetsUi, base::FEATURE_DISABLED_BY_DEFAULT);
 diff --git a/content/common/features.cc b/content/common/features.cc
-index 27f7314ba2503..236d7702da53f 100644
+index 2acc7fbf93ae5..b7aeef3e91885 100644
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -604,7 +604,7 @@ BASE_FEATURE(kPriorityOverridePendingViews, base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -630,7 +630,7 @@ BASE_FEATURE(kPriorityOverridePendingViews, base::FEATURE_ENABLED_BY_DEFAULT);
  // Enables exposure of the core milestone 1 (M1) APIs in the renderer without an
  // origin trial token: Attribution Reporting, FLEDGE, Topics.
  BASE_FEATURE(kPrivacySandboxAdsAPIsM1Override,
@@ -69,10 +69,10 @@ index 27f7314ba2503..236d7702da53f 100644
  #if BUILDFLAG(IS_ANDROID)
  // When disabled("legacy behavior") it resets ongoing gestures when window loses
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
-index 248061c9a678d..6aa5d49158ea8 100644
+index a97287c800192..25fa9967dfc0b 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -129,7 +129,7 @@ BASE_FEATURE(kAllowDatapipeDrainedAsBytesConsumerInBFCache,
+@@ -134,7 +134,7 @@ BASE_FEATURE(kAllowDatapipeDrainedAsBytesConsumerInBFCache,
  
  // Enables URN URLs like those produced by Protected Audience auctions to be
  // displayed by iframes (instead of requiring fenced frames).

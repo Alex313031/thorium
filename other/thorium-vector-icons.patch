@@ -1,5 +1,5 @@
 diff --git a/components/omnibox/browser/BUILD.gn b/components/omnibox/browser/BUILD.gn
-index 33ab904305800..443aae5cd4ae8 100644
+index f7aaba4a989da..1946a91076f79 100644
 --- a/components/omnibox/browser/BUILD.gn
 +++ b/components/omnibox/browser/BUILD.gn
 @@ -114,6 +114,22 @@ aggregate_vector_icons("omnibox_vector_icons") {
@@ -26,7 +26,7 @@ index 33ab904305800..443aae5cd4ae8 100644
      sources += [
        "ios_share.icon",
 diff --git a/components/vector_icons/BUILD.gn b/components/vector_icons/BUILD.gn
-index d31061cafcb04..542dec25eccd7 100644
+index 23cdbe1d87b4e..d968b46b317da 100644
 --- a/components/vector_icons/BUILD.gn
 +++ b/components/vector_icons/BUILD.gn
 @@ -1,4 +1,4 @@

@@ -729,7 +729,7 @@ index 4b6ea67c64bbc..3f7e6f7dca019 100644
    </web-browsers>
  </default-apps>
 diff --git a/chrome/installer/linux/common/desktop.template b/chrome/installer/linux/common/desktop.template
-index 48902a2279194..8e4f5948f852f 100644
+index 48902a2279194..046a705a153d7 100644
 --- a/chrome/installer/linux/common/desktop.template
 +++ b/chrome/installer/linux/common/desktop.template
 @@ -1,6 +1,6 @@
@@ -740,7 +740,7 @@ index 48902a2279194..8e4f5948f852f 100644
  # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
  # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
  GenericName=Web Browser
-@@ -105,16 +105,17 @@ Comment[vi]=Truy cập Internet
+@@ -105,16 +105,18 @@ Comment[vi]=Truy cập Internet
  Comment[zh_CN]=访问互联网
  Comment[zh_HK]=連線到網際網路
  Comment[zh_TW]=連線到網際網路
@@ -761,10 +761,11 @@ index 48902a2279194..8e4f5948f852f 100644
 -@@extra_desktop_entries
 +MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 +Actions=new-window;new-private-window;temp-profile;content-shell;safe-mode;dark-mode;
++@@EXTRA_DESKTOP_ENTRIES@@
  
  [Desktop Action new-window]
  Name=New Window
-@@ -168,7 +169,7 @@ Name[uk]=Нове вікно
+@@ -168,7 +170,7 @@ Name[uk]=Нове вікно
  Name[vi]=Cửa sổ Mới
  Name[zh_CN]=新建窗口
  Name[zh_TW]=開新視窗
@@ -773,7 +774,7 @@ index 48902a2279194..8e4f5948f852f 100644
  
  [Desktop Action new-private-window]
  Name=New Incognito Window
-@@ -220,4 +221,54 @@ Name[uk]=Нове вікно в режимі анонімного перегля
+@@ -220,4 +222,54 @@ Name[uk]=Нове вікно в режимі анонімного перегля
  Name[vi]=Cửa sổ ẩn danh mới
  Name[zh_CN]=新建隐身窗口
  Name[zh_TW]=新增無痕式視窗
@@ -830,10 +831,10 @@ index 48902a2279194..8e4f5948f852f 100644
 +Name=Open in Dark Mode
 +Exec=/usr/bin/@@USR_BIN_SYMLINK_NAME@@ --force-dark-mode %U
 diff --git a/chrome/installer/linux/common/installer.py b/chrome/installer/linux/common/installer.py
-index a665f75dc61af..2183613ce354b 100644
+index b2b6f8c06d07c..2183613ce354b 100644
 --- a/chrome/installer/linux/common/installer.py
 +++ b/chrome/installer/linux/common/installer.py
-@@ -1,116 +1,19 @@
+@@ -1,115 +1,19 @@
 -# Copyright 2025 The Chromium Authors
 +# Copyright 2026 The Chromium Authors and Alex313031
  # Use of this source code is governed by a BSD-style license that can be
@@ -843,7 +844,6 @@ index a665f75dc61af..2183613ce354b 100644
 -import dataclasses
  import datetime
 -import enum
--import glob
 -import hashlib
  import logging
  import os
@@ -952,7 +952,7 @@ index a665f75dc61af..2183613ce354b 100644
      logging.info(" ".join(cmd))
  
      if os.environ.get("VERBOSE"):
-@@ -137,9 +40,7 @@ def run_command(
+@@ -136,9 +40,7 @@ def run_command(
              sys.exit(proc.returncode)
  
  
@@ -963,7 +963,7 @@ index a665f75dc61af..2183613ce354b 100644
      expected = set(expected_deps)
      actual = set(actual_deps)
  
-@@ -157,22 +58,14 @@ def verify_package_deps(
+@@ -156,22 +58,14 @@ def verify_package_deps(
      sys.exit(1)
  
  
@@ -991,7 +991,7 @@ index a665f75dc61af..2183613ce354b 100644
      elif channel == "canary":
          return "canary", "N/A"
      else:
-@@ -182,25 +75,20 @@ def normalize_channel(channel: str) -> tuple[str, str]:
+@@ -181,25 +75,20 @@ def normalize_channel(channel: str) -> tuple[str, str]:
          sys.exit(1)
  
  
@@ -1024,7 +1024,7 @@ index a665f75dc61af..2183613ce354b 100644
  
      run_command(
          [
-@@ -210,14 +98,11 @@ def gen_changelog(
+@@ -209,14 +98,11 @@ def gen_changelog(
              "-m",
              "--changelog",
              str(deb_changelog),
@@ -1041,7 +1041,7 @@ index a665f75dc61af..2183613ce354b 100644
      gzlog_dir.mkdir(parents=True, exist_ok=True)
      gzlog = gzlog_dir / "changelog.gz"
  
-@@ -235,13 +120,7 @@ def gen_changelog(
+@@ -234,13 +120,7 @@ def gen_changelog(
      gzlog.chmod(0o644)
  
  
@@ -1056,7 +1056,7 @@ index a665f75dc61af..2183613ce354b 100644
      input_file = pathlib.Path(input_file)
      if input_file in include_stack:
          print(
-@@ -277,532 +156,442 @@ def _process_template_includes(
+@@ -276,532 +156,442 @@ def _process_template_includes(
      return "".join(output_lines)
  
  
@@ -1976,7 +1976,7 @@ index a665f75dc61af..2183613ce354b 100644
          icon_suffix = ""
          if self.branding == "google_chrome":
              if self.channel == "beta":
-@@ -817,127 +606,107 @@ class InstallerConfig:
+@@ -816,127 +606,107 @@ class InstallerConfig:
          for size in icon_sizes:
              logo = f"product_logo_{size}{icon_suffix}.png"
              logo_resources_png.append(logo)
@@ -2183,7 +2183,7 @@ index a665f75dc61af..2183613ce354b 100644
              "NoDisplay=true prevents\n"
              "# duplicate menu entries. This is required to match "
              "the application ID\n"
-@@ -947,229 +716,64 @@ class InstallerConfig:
+@@ -946,229 +716,64 @@ class InstallerConfig:
              "browser settings.\n"
              "NoDisplay=true\n"
          )
@@ -2456,7 +2456,7 @@ index a665f75dc61af..2183613ce354b 100644
          dest.parent.mkdir(parents=True, exist_ok=True)
  
          shutil.copy(src, dest)
-@@ -1178,12 +782,12 @@ class Installer:
+@@ -1177,12 +782,12 @@ class Installer:
          if mode is not None:
              dest.chmod(mode)
  
@@ -2471,7 +2471,7 @@ index a665f75dc61af..2183613ce354b 100644
              for f in files:
                  path = pathlib.Path(root) / f
                  if path.is_symlink():
-@@ -1200,13 +804,13 @@ class Installer:
+@@ -1199,13 +804,13 @@ class Installer:
  
                  if "ELF" in output:
                      # Check if outside install dir
@@ -2487,7 +2487,7 @@ index a665f75dc61af..2183613ce354b 100644
                          # Check RPATH
                          try:
                              readelf_out = subprocess.check_output(
-@@ -1226,10 +830,9 @@ class Installer:
+@@ -1225,10 +830,9 @@ class Installer:
  
          if rpath_bins:
              print(
@@ -2499,7 +2499,7 @@ index a665f75dc61af..2183613ce354b 100644
  
          if elf_outside:
              print(
-@@ -1239,10 +842,10 @@ class Installer:
+@@ -1238,10 +842,10 @@ class Installer:
              )
              sys.exit(1)
  
@@ -2512,7 +2512,7 @@ index a665f75dc61af..2183613ce354b 100644
              # On Cog, permission is always 0664 or 0775
              if os.getcwd().startswith("/google/cog/cloud/"):
                  on_cog = True
-@@ -1251,11 +854,7 @@ class Installer:
+@@ -1250,11 +854,7 @@ class Installer:
                      file=sys.stderr,
                  )
  
@@ -2525,7 +2525,7 @@ index a665f75dc61af..2183613ce354b 100644
              # We iterate everything.
              for item in dirs + files:
                  path = pathlib.Path(root) / item
-@@ -1263,16 +862,14 @@ class Installer:
+@@ -1262,16 +862,14 @@ class Installer:
                  actual_perms = stat.S_IMODE(st.st_mode)
  
                  base_name = item
@@ -2545,7 +2545,7 @@ index a665f75dc61af..2183613ce354b 100644
                      else:
                          expect_exists = path.parent / target
  
-@@ -1294,26 +891,26 @@ class Installer:
+@@ -1293,26 +891,26 @@ class Installer:
                      file_type = ""
  
                  if base_name == "chrome-management-service":
@@ -2580,7 +2580,7 @@ index a665f75dc61af..2183613ce354b 100644
                              relaxed_expected_perms = 0o775
  
                          if relaxed_expected_perms == actual_perms:
-@@ -1329,83 +926,3 @@ class Installer:
+@@ -1328,83 +926,3 @@ class Installer:
                          msg += f", but they were {oct(actual_perms)}"
                          print(msg, file=sys.stderr)
                          sys.exit(1)
@@ -3844,7 +3844,7 @@ index 5a0ccc54a2db1..6aa8f4dbb9c1b 100755
 -update-alternatives --remove @@package_orig /usr/bin/@@usr_bin_symlink_name
 +# End
 diff --git a/chrome/installer/linux/rpm/build.py b/chrome/installer/linux/rpm/build.py
-index c66d3309dbf6c..53f0459d9e510 100755
+index 43237aaad4772..53f0459d9e510 100755
 --- a/chrome/installer/linux/rpm/build.py
 +++ b/chrome/installer/linux/rpm/build.py
 @@ -1,5 +1,5 @@
@@ -3854,13 +3854,11 @@ index c66d3309dbf6c..53f0459d9e510 100755
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -11,53 +11,126 @@ import re
- import shutil
+@@ -12,51 +12,125 @@ import shutil
  import subprocess
  import sys
--import time
--
  
+-
  sys.path.append(os.path.join(os.path.dirname(__file__), "../common"))
  import installer
  
@@ -4007,7 +4005,7 @@ index c66d3309dbf6c..53f0459d9e510 100755
          additional_deps.append("rpmlib(PayloadIsXz) <= 5.2-1")
  
      all_deps = depends.split(",") + additional_deps
-@@ -69,9 +142,10 @@ def verify_package(
+@@ -68,9 +142,10 @@ def verify_package(
      installer.verify_package_deps(expected_depends, actual_depends)
  
  
@@ -4019,7 +4017,7 @@ index c66d3309dbf6c..53f0459d9e510 100755
  
      log_level = logging.INFO if os.environ.get("VERBOSE") else logging.ERROR
      logging.basicConfig(level=log_level, format="%(message)s")
-@@ -80,98 +154,139 @@ def main() -> None:
+@@ -79,98 +154,139 @@ def main() -> None:
      output_dir = pathlib.Path(args.output_dir).absolute()
      channel = args.channel
  

@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/startup/default_browser_prompt/default_browser_prompt.cc b/chrome/browser/ui/startup/default_browser_prompt/default_browser_prompt.cc
-index 8e37dc9050a71..756c7c25ecfcc 100644
+index c8fe219e14274..756c7c25ecfcc 100644
 --- a/chrome/browser/ui/startup/default_browser_prompt/default_browser_prompt.cc
 +++ b/chrome/browser/ui/startup/default_browser_prompt/default_browser_prompt.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 8e37dc9050a71..756c7c25ecfcc 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -36,60 +36,12 @@
+@@ -36,61 +36,12 @@
  #include "content/public/browser/visibility.h"
  #include "content/public/browser/web_contents.h"
  
@@ -21,7 +21,8 @@ index 8e37dc9050a71..756c7c25ecfcc 100644
 -      g_browser_process->local_state()->GetString(
 -          prefs::kBrowserSuppressDefaultBrowserPrompt);
 -  const base::Version disable_version(disable_version_string);
--  DCHECK(disable_version_string.empty() || disable_version.IsValid());
+-  CHECK(disable_version_string.empty() || disable_version.IsValid(),
+-        base::NotFatalUntil::M162);
 -  return !(disable_version.IsValid() &&
 -           disable_version == version_info::GetVersion());
 -}

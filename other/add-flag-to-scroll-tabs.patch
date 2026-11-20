@@ -1,8 +1,8 @@
 diff --git a/chrome/app/chrome_main_delegate.cc b/chrome/app/chrome_main_delegate.cc
-index c9f7341082400..7f68151ec5feb 100644
+index c52c98e5c0b79..becb7edf19813 100644
 --- a/chrome/app/chrome_main_delegate.cc
 +++ b/chrome/app/chrome_main_delegate.cc
-@@ -831,6 +831,15 @@ void InitLogging(const std::string& process_type) {
+@@ -843,6 +843,15 @@ void InitLogging(const std::string& process_type) {
                   << chrome::kChromeVersion << " (not a warning)";
      LOG(WARNING) << "In Loving Memory of Linda Louise Frick: Grandma, Mother, and Sister.";
    }
@@ -19,7 +19,7 @@ index c9f7341082400..7f68151ec5feb 100644
  #endif  // !BUILDFLAG(IS_ANDROID)
  
 diff --git a/chrome/browser/ui/views/frame/browser_root_view.cc b/chrome/browser/ui/views/frame/browser_root_view.cc
-index 0b23cfc9f5d6f..ad3d6a0a45a35 100644
+index 6bedb648f178b..394d4fe8c64aa 100644
 --- a/chrome/browser/ui/views/frame/browser_root_view.cc
 +++ b/chrome/browser/ui/views/frame/browser_root_view.cc
 @@ -12,6 +12,7 @@
@@ -30,7 +30,7 @@ index 0b23cfc9f5d6f..ad3d6a0a45a35 100644
  #include "base/feature_list.h"
  #include "base/functional/bind.h"
  #include "base/functional/callback_helpers.h"
-@@ -170,6 +171,19 @@ DragOperation GetDropEffect(const ui::DropTargetEvent& event) {
+@@ -171,6 +172,19 @@ DragOperation GetDropEffect(const ui::DropTargetEvent& event) {
    return DragOperation::kMove;
  }
  
@@ -50,7 +50,7 @@ index 0b23cfc9f5d6f..ad3d6a0a45a35 100644
  }  // namespace
  
  BrowserRootView::DropInfo::DropInfo() = default;
-@@ -182,7 +196,9 @@ BrowserRootView::DropInfo::~DropInfo() {
+@@ -183,7 +197,9 @@ BrowserRootView::DropInfo::~DropInfo() {
  
  BrowserRootView::BrowserRootView(BrowserView* browser_view,
                                   views::Widget* widget)
@@ -61,7 +61,7 @@ index 0b23cfc9f5d6f..ad3d6a0a45a35 100644
  
  BrowserRootView::~BrowserRootView() {
    // It's possible to destroy the browser while a drop is active.  In this case,
-@@ -324,7 +340,7 @@ bool BrowserRootView::OnMouseWheel(const ui::MouseWheelEvent& event) {
+@@ -325,7 +341,7 @@ bool BrowserRootView::OnMouseWheel(const ui::MouseWheelEvent& event) {
  
    // Scroll-event-changes-tab is incompatible with vertical tabstrip, so
    // disable it if the latter feature is enabled.

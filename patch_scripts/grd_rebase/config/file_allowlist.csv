@@ -19,7 +19,6 @@
 "components/new_or_sad_tab_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements and sad-tab special text."
 "components/page_info_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements; auto-discover plain branding replacements, with special cases in message_allowlist.csv."
 "components/reset_password_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements; auto-discover plain branding replacements, with special cases in message_allowlist.csv."
-"components/resources/search_engine_choice_scaled_resources.grdp","False","True","structural_resource","Patch-owned commented resource include; excluded from string sync."
 "components/security_interstitials_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements; auto-discover plain branding replacements, with special cases in message_allowlist.csv."
 "components/ssl_errors_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements; auto-discover plain branding replacements, with special cases in message_allowlist.csv."
 "components/version_ui_strings.grdp","True","False","overlay_text_sync","Reviewed overlay-owned replacements with license-specific translation handling."
@@ -28,3 +27,4 @@
 "ash/webui/help_app_ui/resources/help_app_resources.grd","False","True","structural_resource","Reviewed patch-owned Help App resource registration; excluded from branding text sync."
 "chrome/browser/resources/component_extension_resources.grd","False","True","structural_resource","Auto-detected from current patch series."
 "chrome/app/theme/webui_theme_resources.grd","False","True","structural_resource","Auto-detected from current patch series."
+"chrome/browser/browser_resources.grd","False","True","structural_resource","Auto-detected from current patch series."

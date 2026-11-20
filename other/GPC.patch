@@ -1,8 +1,8 @@
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
-index 5b0fcb902432b..6bcf4fd741992 100644
+index c4151fe109929..c55f0fc5990e8 100644
 --- a/chrome/android/chrome_java_resources.gni
 +++ b/chrome/android/chrome_java_resources.gni
-@@ -669,6 +669,7 @@ chrome_java_resources = [
+@@ -652,6 +652,7 @@ chrome_java_resources = [
    "java/res/xml/developer_preferences.xml",
    "java/res/xml/do_not_track_preferences.xml",
    "java/res/xml/google_services_preferences.xml",
@@ -11,10 +11,10 @@ index 5b0fcb902432b..6bcf4fd741992 100644
    "java/res/xml/legal_information_preferences.xml",
    "java/res/xml/main_preferences.xml",
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
-index 74208304beac3..e5da9598d01e3 100644
+index 21b0b69ba1b23..3d36abc130e39 100644
 --- a/chrome/android/chrome_java_sources.gni
 +++ b/chrome/android/chrome_java_sources.gni
-@@ -1036,6 +1036,7 @@ chrome_java_sources = [
+@@ -1015,6 +1015,7 @@ chrome_java_sources = [
    "java/src/org/chromium/chrome/browser/policy/PolicyAuditor.java",
    "java/src/org/chromium/chrome/browser/policy/PolicyAuditorBridge.java",
    "java/src/org/chromium/chrome/browser/privacy/settings/DoNotTrackSettings.java",
@@ -149,10 +149,10 @@ index 512f512a828d6..e4a2aeba0f2ee 100644
          if (preloadPagesPreference != null) {
              preloadPagesPreference.setSummary(
 diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
-index 8c079eb0a703e..2fca7d103de87 100644
+index e1bf5d14c9fc2..1391c752df479 100644
 --- a/chrome/app/settings_strings.grdp
 +++ b/chrome/app/settings_strings.grdp
-@@ -1775,6 +1775,18 @@
+@@ -1794,6 +1794,18 @@
      <message name="IDS_SETTINGS_UNIVERSAL_OPT_OUT_SUB_LABEL" desc="Subtitle of a setting. It appears below the title: ‘Send an opt-out request to sites regarding use of your data’. Users choose whether they want to send a request to sites about how to treat their user data. This string explains that sites may not respond to the user’s request even when this toggle is on; and, even when they do respond, sites may handle opt-out requests differently based on regional laws. On desktop computers, this string appears in the ‘Site requests’ section of the ‘Third-party cookies and site data’ page. On mobile devices, this string appears on its own subpage. The tone should be informative.">
        The sites you visit, including Google, are responsible for determining how they respond to this request. Depending on the laws in your region, sites may respond by limiting the sale and sharing of your data or its use for personalized ads.
      </message>
@@ -172,10 +172,10 @@ index 8c079eb0a703e..2fca7d103de87 100644
        Controls what information sites can use and show (location, camera, pop-ups, and more)
      </message>
 diff --git a/chrome/browser/extensions/api/settings_private/prefs_util.cc b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-index 618a67dabc0fd..652790adcc71f 100644
+index 98d7b6df1cd57..02f602cf5acea 100644
 --- a/chrome/browser/extensions/api/settings_private/prefs_util.cc
 +++ b/chrome/browser/extensions/api/settings_private/prefs_util.cc
-@@ -485,6 +485,7 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
+@@ -491,6 +491,7 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
    (*s_allowlist)[::prefs::kEnableDoNotTrack] = settings_api::PrefType::kBoolean;
    (*s_allowlist)[universal_optout::prefs::kUniversalOptOutEnabled] =
        settings_api::PrefType::kBoolean;
@@ -184,7 +184,7 @@ index 618a67dabc0fd..652790adcc71f 100644
    // Sync and personalization page.
    (*s_allowlist)[::prefs::kSearchSuggestEnabled] =
 diff --git a/chrome/browser/renderer_preferences_util.cc b/chrome/browser/renderer_preferences_util.cc
-index 680a3df2d51cd..d2e550883598e 100644
+index 1186e590803cb..a67516a66fd64 100644
 --- a/chrome/browser/renderer_preferences_util.cc
 +++ b/chrome/browser/renderer_preferences_util.cc
 @@ -26,6 +26,7 @@
@@ -195,7 +195,7 @@ index 680a3df2d51cd..d2e550883598e 100644
  #include "components/universal_optout/features.h"
  #include "components/universal_optout/prefs.h"
  #include "content/public/browser/renderer_preferences_util.h"
-@@ -155,6 +156,7 @@ void UpdateFromSystemSettings(blink::RendererPreferences* prefs,
+@@ -157,6 +158,7 @@ void UpdateFromSystemSettings(blink::RendererPreferences* prefs,
    prefs->enable_referrers = pref_service->GetBoolean(prefs::kEnableReferrers);
    prefs->enable_do_not_track =
        pref_service->GetBoolean(prefs::kEnableDoNotTrack);
@@ -204,108 +204,139 @@ index 680a3df2d51cd..d2e550883598e 100644
    // kGlobalPrivacyControlDevToolsOverridest.
    if (base::FeatureList::IsEnabled(
 diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resources/settings/BUILD.gn
-index 1795e894fc56d..41aaa730f474a 100644
+index 480df5a9f2669..76893e1ef19c1 100644
 --- a/chrome/browser/resources/settings/BUILD.gn
 +++ b/chrome/browser/resources/settings/BUILD.gn
-@@ -73,6 +73,7 @@ build_webui("build") {
-     "controls/settings_radio_group.ts",
-     "controls/settings_toggle_button.ts",
-     "privacy_page/cookies_page.ts",
+@@ -360,6 +360,8 @@ build_webui("build") {
+     "people_page/sync_page.ts",
+     "privacy_page/do_not_track_toggle.html.ts",
+     "privacy_page/do_not_track_toggle.ts",
++    "privacy_page/gpc_toggle.html.ts",
 +    "privacy_page/gpc_toggle.ts",
-     "privacy_page/personalization_options.ts",
-     "privacy_page/privacy_page.ts",
-     "privacy_page/privacy_page_index.ts",
+     "privacy_page/hats_browser_proxy.ts",
+     "privacy_page/privacy_guide/constants.ts",
+     "privacy_page/privacy_guide/privacy_guide_availability_mixin.ts",
+@@ -663,6 +665,7 @@ build_webui("build") {
+     "performance_page/tab_discard/exception_tabbed_add_dialog.css",
+     "privacy_page/cookies_page.css",
+     "privacy_page/do_not_track_toggle.css",
++    "privacy_page/gpc_toggle.css",
+     "privacy_page/personalization_options.css",
+     "privacy_page/privacy_guide/privacy_guide_completion_fragment.css",
+     "privacy_page/privacy_guide/privacy_guide_dialog.css",
 diff --git a/chrome/browser/resources/settings/privacy_page/cookies_page.html b/chrome/browser/resources/settings/privacy_page/cookies_page.html
-index db0e0e7f6dabb..17b5f736acc6e 100644
+index 828a99142417f..3ca7e8b24b1bf 100644
 --- a/chrome/browser/resources/settings/privacy_page/cookies_page.html
 +++ b/chrome/browser/resources/settings/privacy_page/cookies_page.html
-@@ -229,6 +229,8 @@
+@@ -160,6 +160,7 @@ import {ThirdPartyCookieBlockingSetting} from '../site_settings/site_settings_br
            learn-more-url="$i18n{universalOptOutLearnMoreURL}">
        </settings-toggle-button>
-     </template>
-+    <settings-gpc-toggle id="gpc" prefs="{{prefs}}">
-+    </settings-gpc-toggle>
+     ` : ''}
++    <settings-gpc-toggle id="gpc"></settings-gpc-toggle>
      <cr-link-row id="siteDataTrigger" class="hr"
-         on-click="onSiteDataClick_" label="$i18n{cookiePageAllSitesLink}"
+         @click="${this.onSiteDataClick_}" label="$i18n{cookiePageAllSitesLink}"
          role-description="$i18n{subpageArrowRoleDescription}">
 diff --git a/chrome/browser/resources/settings/privacy_page/cookies_page.ts b/chrome/browser/resources/settings/privacy_page/cookies_page.ts
-index 55e4a4be4331c..cd2434575eb85 100644
+index 2aae884bef00b..1de43cba7c468 100644
 --- a/chrome/browser/resources/settings/privacy_page/cookies_page.ts
 +++ b/chrome/browser/resources/settings/privacy_page/cookies_page.ts
-@@ -23,6 +23,7 @@ import '../settings_page/settings_subpage.js';
- import '../settings_shared.css.js';
+@@ -21,6 +21,7 @@ import '../privacy_icons.html.js';
+ import '../settings_page/settings_subpage.js';
  import '../site_settings/site_list.js';
  import './do_not_track_toggle.js';
 +import './gpc_toggle.js';
  
- import {PrefsMixin} from '/shared/settings/prefs/prefs_mixin.js';
- import {I18nMixin} from 'chrome://resources/cr_elements/i18n_mixin.js';
-diff --git a/chrome/browser/resources/settings/privacy_page/gpc_toggle.html b/chrome/browser/resources/settings/privacy_page/gpc_toggle.html
+ import {I18nMixinLit} from 'chrome://resources/cr_elements/i18n_mixin_lit.js';
+ import {WebUiListenerMixinLit} from 'chrome://resources/cr_elements/web_ui_listener_mixin_lit.js';
+diff --git a/chrome/browser/resources/settings/privacy_page/gpc_toggle.css b/chrome/browser/resources/settings/privacy_page/gpc_toggle.css
 new file mode 100644
-index 0000000000000..a0831ead976a6
+index 0000000000000..b65f3a7aa9dfe
 --- /dev/null
-+++ b/chrome/browser/resources/settings/privacy_page/gpc_toggle.html
-@@ -0,0 +1,39 @@
-+    <style include="settings-shared">
-+      .toggle {
-+        padding: 0 var(--cr-section-padding);
-+        margin-bottom: var(--cr-section-vertical-padding);
-+      }
-+    </style>
-+    <settings-toggle-button id="toggle" class="toggle"
-+      label="$i18n{gpc}"
-+      pref="{{prefs.enable_gpc}}"
-+      on-settings-boolean-control-change="onToggleChange_"
-+      sub-label="$i18n{trackingProtectionDoNotTrackToggleSubLabel}"
-+      icon="settings:forward"
-+      no-set-pref>
-+    </settings-toggle-button>
-+    <template is="dom-if" if="[[showDialog_]]"
-+        on-dom-change="onDomChange_" restamp>
-+      <cr-dialog id="confirmDialog"
-+          close-text="$i18n{close}" on-cancel="onDialogCancel_"
-+          on-close="onDialogClosed_">
-+        <div slot="title">$i18n{gpcDialogTitle}</div>
-+        <div slot="body">$i18n{gpcDialogMessage}
-+          <a href="https://globalprivacycontrol.org" target="_blank"
-+              aria-description="$i18n{opensInNewTab}"
-+              aria-label="$i18n{gpcLearnMoreAccessibilityLabel}">
-+            $i18n{learnMore}
-+          </a>
-+        </div>
-+        <div slot="button-container">
-+          <cr-button class="cancel-button"
-+              on-click="onDialogCancel_">
-+            $i18n{cancel}
-+          </cr-button>
-+          <cr-button class="action-button"
-+              on-click="onDialogConfirm_">
-+            $i18n{confirm}
-+          </cr-button>
-+        </div>
-+      </cr-dialog>
-+    </template>
++++ b/chrome/browser/resources/settings/privacy_page/gpc_toggle.css
+@@ -0,0 +1,14 @@
++/* Copyright 2026 The Chromium Authors
++ * Use of this source code is governed by a BSD-style license that can be
++ * found in the LICENSE file. */
++
++/* #css_wrapper_metadata_start
++ * #type=style-lit
++ * #import=../settings_shared_lit.css.js
++ * #include=settings-shared-lit
++ * #css_wrapper_metadata_end */
++
++.toggle {
++  padding: 0 var(--cr-section-padding);
++  margin-bottom: var(--cr-section-vertical-padding);
++}
+diff --git a/chrome/browser/resources/settings/privacy_page/gpc_toggle.html.ts b/chrome/browser/resources/settings/privacy_page/gpc_toggle.html.ts
+new file mode 100644
+index 0000000000000..a9b9dd85b5c2a
+--- /dev/null
++++ b/chrome/browser/resources/settings/privacy_page/gpc_toggle.html.ts
+@@ -0,0 +1,41 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++import {html} from 'chrome://resources/lit/v3_0/lit.rollup.js';
++
++import type {SettingsGpcToggleElement} from './gpc_toggle.js';
++
++export function getHtml(this: SettingsGpcToggleElement) {
++  return html`<!--_html_template_start_-->
++<settings-toggle-button id="toggle" class="toggle"
++    label="$i18n{gpc}"
++    pref-key="enable_gpc"
++    @settings-boolean-control-change="${this.onSettingsBooleanControlChange_}"
++    sub-label="$i18n{trackingProtectionDoNotTrackToggleSubLabel}"
++    icon="settings:forward"
++    no-set-pref>
++</settings-toggle-button>
++${this.showDialog_ ? html`
++  <cr-dialog id="confirmDialog"
++      close-text="$i18n{close}" @cancel="${this.onDialogCancel_}"
++      @close="${this.onDialogClose_}" show-on-attach>
++    <div slot="title">$i18n{gpcDialogTitle}</div>
++    <div slot="body">$i18n{gpcDialogMessage}
++      <a href="https://globalprivacycontrol.org" target="_blank"
++          aria-description="$i18n{opensInNewTab}"
++          aria-label="$i18n{gpcLearnMoreAccessibilityLabel}">
++        $i18n{learnMore}
++      </a>
++    </div>
++    <div slot="button-container">
++      <cr-button class="cancel-button" @click="${this.onCancelClick_}">
++        $i18n{cancel}
++      </cr-button>
++      <cr-button class="action-button" @click="${this.onConfirmClick_}">
++        $i18n{confirm}
++      </cr-button>
++    </div>
++  </cr-dialog>` : ''}
++<!--_html_template_end_-->`;
++}
 diff --git a/chrome/browser/resources/settings/privacy_page/gpc_toggle.ts b/chrome/browser/resources/settings/privacy_page/gpc_toggle.ts
 new file mode 100644
-index 0000000000000..d4c2ddde9d163
+index 0000000000000..4d0b1876ac6e8
 --- /dev/null
 +++ b/chrome/browser/resources/settings/privacy_page/gpc_toggle.ts
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,100 @@
 +// Copyright 2020 The Chromium Authors
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
 +
 +import 'chrome://resources/cr_elements/cr_button/cr_button.js';
 +import 'chrome://resources/cr_elements/cr_dialog/cr_dialog.js';
-+import '../settings_shared.css.js';
 +import '../controls/settings_toggle_button.js';
++import '../icons.html.js';
 +
 +import {focusWithoutInk} from 'chrome://resources/js/focus_without_ink.js';
-+import {PolymerElement} from 'chrome://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
++import {CrLitElement} from 'chrome://resources/lit/v3_0/lit.rollup.js';
 +
 +import type {SettingsToggleButtonElement} from '../controls/settings_toggle_button.js';
 +
-+import {getTemplate} from './gpc_toggle.html.js';
++import {getCss} from './gpc_toggle.css.js';
++import {getHtml} from './gpc_toggle.html.js';
 +
 +export interface SettingsGpcToggleElement {
 +  $: {
@@ -313,46 +344,32 @@ index 0000000000000..d4c2ddde9d163
 +  };
 +}
 +
-+export class SettingsGpcToggleElement extends PolymerElement {
++export class SettingsGpcToggleElement extends CrLitElement {
 +  static get is() {
 +    return 'settings-gpc-toggle';
 +  }
 +
-+  static get template() {
-+    return getTemplate();
++  static override get styles() {
++    return getCss();
 +  }
 +
-+  static get properties() {
-+    return {
-+      /**
-+       * Preferences state.
-+       */
-+      prefs: {
-+        type: Object,
-+        notify: true,
-+      },
++  override render() {
++    return getHtml.bind(this)();
++  }
 +
-+      showDialog_: {
-+        type: Boolean,
-+        value: false,
-+      },
++  static override get properties() {
++    return {
++      showDialog_: {type: Boolean},
 +    };
 +  }
 +
-+  declare prefs: {enable_gpc: chrome.settingsPrivate.PrefObject};
-+  declare private showDialog_: boolean;
-+
-+  private onDomChange_() {
-+    if (this.showDialog_) {
-+      this.shadowRoot!.querySelector('cr-dialog')!.showModal();
-+    }
-+  }
++  protected accessor showDialog_: boolean = false;
 +
 +  /**
-+   * Handles the change event for the do-not-track toggle. Shows a
++   * Handles the change event for the Global Privacy Control toggle. Shows a
 +   * confirmation dialog when enabling the setting.
 +   */
-+  private onToggleChange_(event: Event) {
++  protected onSettingsBooleanControlChange_(event: Event) {
 +    const target = event.target as SettingsToggleButtonElement;
 +    if (!target.checked) {
 +      // Always allow disabling the pref.
@@ -364,34 +381,35 @@ index 0000000000000..d4c2ddde9d163
 +  }
 +
 +  private closeDialog_() {
-+    this.shadowRoot!.querySelector('cr-dialog')!.close();
++    this.shadowRoot.querySelector('cr-dialog')!.close();
 +    this.showDialog_ = false;
 +  }
 +
-+  private onDialogClosed_() {
-+    focusWithoutInk(this.toggle_);
++  protected onDialogClose_() {
++    focusWithoutInk(this.$.toggle);
 +  }
 +
 +  /**
-+   * Handles the shared proxy confirmation dialog 'Confirm' button.
++   * Handles the GPC confirmation dialog 'Confirm' button.
 +   */
-+  private onDialogConfirm_() {
-+    this.toggle_.sendPrefChange();
++  protected onConfirmClick_() {
++    this.$.toggle.sendPrefChange();
 +    this.closeDialog_();
 +  }
 +
 +  /**
-+   * Handles the shared proxy confirmation dialog 'Cancel' button or a cancel
-+   * event.
++   * Handles the GPC confirmation dialog 'Cancel' button.
 +   */
-+  private onDialogCancel_() {
-+    this.toggle_.resetToPrefValue();
++  protected onCancelClick_() {
++    this.$.toggle.resetToPrefValue();
 +    this.closeDialog_();
 +  }
 +
-+  private get toggle_(): SettingsToggleButtonElement {
-+    return this.shadowRoot!.querySelector<SettingsToggleButtonElement>(
-+        '#toggle')!;
++  /**
++   * Handles the GPC confirmation dialog cancel event.
++   */
++  protected onDialogCancel_() {
++    this.onCancelClick_();
 +  }
 +}
 +
@@ -402,12 +420,12 @@ index 0000000000000..d4c2ddde9d163
 +}
 +
 +customElements.define(
-+  SettingsGpcToggleElement.is, SettingsGpcToggleElement);
++    SettingsGpcToggleElement.is, SettingsGpcToggleElement);
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-index 3cddab43196fb..96b05bd78b7a6 100644
+index 147bfb57ce389..bd911d0288096 100644
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-@@ -1076,6 +1076,12 @@ For example, some websites may respond to this request by showing you ads that a
+@@ -1148,6 +1148,12 @@ For example, some websites may respond to this request by showing you ads that a
        <message name="IDS_UNIVERSAL_OPT_OUT_INFO_TEXT" desc="Subtitle of a setting. It appears below the title: ‘Send an opt-out request to sites regarding use of your data’. Users choose whether they want to send a request to sites about how to treat their user data. This string explains that sites may not respond to the user’s request even when this toggle is on; and, even when they do respond, sites may handle opt-out requests differently based on regional laws. This string appears on its own subpage. The tone should be informative. Clicking on Learn more link opens a help center article, the link tag should not be translated but the 'learn more' text inside the link tag should be translated.">
          The sites you visit, including Google, are responsible for determining how they respond to this request. Depending on the laws in your region, sites may respond by limiting the sale and sharing of your data or its use for personalized ads. <ph name="BEGIN_LINK">&lt;link&gt;</ph>Learn more<ph name="END_LINK">&lt;/link&gt;</ph>
        </message>
@@ -421,7 +439,7 @@ index 3cddab43196fb..96b05bd78b7a6 100644
          Access payment methods
        </message>
 diff --git a/chrome/browser/ui/prefs/pref_watcher.cc b/chrome/browser/ui/prefs/pref_watcher.cc
-index 1974afa754a81..59a1c33c998cb 100644
+index 27243c7416d8d..8be52f1d325b3 100644
 --- a/chrome/browser/ui/prefs/pref_watcher.cc
 +++ b/chrome/browser/ui/prefs/pref_watcher.cc
 @@ -24,6 +24,7 @@
@@ -441,10 +459,10 @@ index 1974afa754a81..59a1c33c998cb 100644
        universal_optout::prefs::kUniversalOptOutEnabled, renderer_callback);
    profile_pref_change_registrar_.Add(autofill::prefs::kAutofillAtMemoryShortcut,
 diff --git a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-index 01763a850c07b..04b75b597409b 100644
+index 0bdda85eaadb1..d70b5556f7571 100644
 --- a/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
 +++ b/chrome/browser/ui/webui/settings/settings_localized_strings_provider.cc
-@@ -2627,6 +2627,11 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
+@@ -2640,6 +2640,11 @@ void AddPrivacyStrings(content::WebUIDataSource* html_source,
        {"doNotTrackDialogMessage", IDS_SETTINGS_ENABLE_DO_NOT_TRACK_DIALOG_TEXT},
        {"doNotTrackDialogLearnMoreA11yLabel",
         IDS_SETTINGS_ENABLE_DO_NOT_TRACK_DIALOG_LEARN_MORE_ACCESSIBILITY_LABEL},
@@ -482,21 +500,21 @@ index 13ae1e0ea0320..36b4b5cb65829 100644
  
  namespace privacy_sandbox {
 diff --git a/third_party/blink/common/global_privacy_control/global_privacy_control_util.cc b/third_party/blink/common/global_privacy_control/global_privacy_control_util.cc
-index 01007b64935df..b2f4c0fe405ea 100644
+index 0cce5820f459e..a192b79c2072d 100644
 --- a/third_party/blink/common/global_privacy_control/global_privacy_control_util.cc
 +++ b/third_party/blink/common/global_privacy_control/global_privacy_control_util.cc
-@@ -30,6 +30,9 @@ bool IsGlobalPrivacyControlFeatureEnabled() {
+@@ -29,6 +29,9 @@ bool IsGlobalPrivacyControlFeatureEnabled() {
  
  bool IsGlobalPrivacyControlFeatureAndSettingEnabled(
      const RendererPreferences& renderer_preferences) {
 +  if (renderer_preferences.enable_gpc) {
 +    return true;
 +  }
-   // TODO(crbug.com/40745270): `kGlobalPrivacyControlForce` currently enables
-   // this but it should be removed once we have a real setting to test.
+   // `kGlobalPrivacyControlForce` is kept for testing.
    if (base::FeatureList::IsEnabled(features::kGlobalPrivacyControlForce)) {
+     return true;
 diff --git a/third_party/blink/common/renderer_preferences/renderer_preferences_mojom_traits.cc b/third_party/blink/common/renderer_preferences/renderer_preferences_mojom_traits.cc
-index 2855559ce5567..722d729f15415 100644
+index 63d141c84161c..0cc6f82c6d9d5 100644
 --- a/third_party/blink/common/renderer_preferences/renderer_preferences_mojom_traits.cc
 +++ b/third_party/blink/common/renderer_preferences/renderer_preferences_mojom_traits.cc
 @@ -55,6 +55,7 @@ bool StructTraits<blink::mojom::RendererPreferencesDataView,
@@ -508,7 +526,7 @@ index 2855559ce5567..722d729f15415 100644
  
    if (!data.ReadWebrtcIpHandlingPolicy(&out->webrtc_ip_handling_policy))
 diff --git a/third_party/blink/public/common/renderer_preferences/renderer_preferences.h b/third_party/blink/public/common/renderer_preferences/renderer_preferences.h
-index 1d2053b4ca19d..957fd0f835b2b 100644
+index 0fdf8029f8285..6c6782ee9dfd8 100644
 --- a/third_party/blink/public/common/renderer_preferences/renderer_preferences.h
 +++ b/third_party/blink/public/common/renderer_preferences/renderer_preferences.h
 @@ -53,6 +53,7 @@ struct BLINK_COMMON_EXPORT RendererPreferences {
@@ -520,7 +538,7 @@ index 1d2053b4ca19d..957fd0f835b2b 100644
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || \
      BUILDFLAG(IS_WIN)
 diff --git a/third_party/blink/public/common/renderer_preferences/renderer_preferences_mojom_traits.h b/third_party/blink/public/common/renderer_preferences/renderer_preferences_mojom_traits.h
-index 34defa989dfe2..16fae81cce158 100644
+index 3851a3a49ac46..04ac02e03077e 100644
 --- a/third_party/blink/public/common/renderer_preferences/renderer_preferences_mojom_traits.h
 +++ b/third_party/blink/public/common/renderer_preferences/renderer_preferences_mojom_traits.h
 @@ -125,6 +125,11 @@ struct BLINK_COMMON_EXPORT
@@ -536,7 +554,7 @@ index 34defa989dfe2..16fae81cce158 100644
        const ::blink::RendererPreferences& data) {
      return data.enable_encrypted_media;
 diff --git a/third_party/blink/public/mojom/renderer_preferences.mojom b/third_party/blink/public/mojom/renderer_preferences.mojom
-index c147ff6f38d3b..fa6b8b1eea795 100644
+index 88f561eac907e..b113e2f2d642e 100644
 --- a/third_party/blink/public/mojom/renderer_preferences.mojom
 +++ b/third_party/blink/public/mojom/renderer_preferences.mojom
 @@ -89,6 +89,8 @@ struct RendererPreferences {
@@ -549,14 +567,14 @@ index c147ff6f38d3b..fa6b8b1eea795 100644
    // the use of Clear Key key system which is always allowed as required by the
    // spec.
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index fa8e2fcea7d93..78a66e51ba02d 100644
+index 5730001e65b1f..2b90f91b2e079 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -3496,6 +3496,7 @@
+@@ -3656,6 +3656,7 @@
      },
      {
        name: "GlobalPrivacyControl",
 +      status: "stable",
        implied_by: [
-         "GlobalPrivacyControlForce",
-         "GlobalPrivacyControlTest"
+         "GlobalPrivacyControlApi",
+         "GlobalPrivacyControlForce"

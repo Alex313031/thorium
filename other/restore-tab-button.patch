@@ -1,8 +1,8 @@
 diff --git a/chrome/app/generated_resources.grd b/chrome/app/generated_resources.grd
-index 88dbeebd0909e..5faf6bb0d0174 100644
+index eb07d4238941f..974dfa77b918c 100644
 --- a/chrome/app/generated_resources.grd
 +++ b/chrome/app/generated_resources.grd
-@@ -10263,6 +10263,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
+@@ -10349,6 +10349,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
        <message name="IDS_TOOLTIP_STOP" desc="The tooltip for the stop button">
          Stop loading this page
        </message>
@@ -12,7 +12,7 @@ index 88dbeebd0909e..5faf6bb0d0174 100644
        <message name="IDS_TOOLTIP_EXTENSIONS_BUTTON" desc="The tooltip for the extensions button">
          Extensions
        </message>
-@@ -11004,6 +11007,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
+@@ -11123,6 +11126,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
        <message name="IDS_ACCNAME_RELOAD" desc="The accessible name for the reload/stop button.">
          Reload
        </message>
@@ -35,10 +35,10 @@ index 7d5cc80a558e3..0b1df97785136 100644
    VIEW_ID_EXTENSIONS_MENU_BUTTON,
    VIEW_ID_APP_MENU,
 diff --git a/chrome/browser/ui/views/toolbar/BUILD.gn b/chrome/browser/ui/views/toolbar/BUILD.gn
-index 21df5f091c8e7..c602cee2b3c45 100644
+index fcc7a5305173d..e4696aab4ad81 100644
 --- a/chrome/browser/ui/views/toolbar/BUILD.gn
 +++ b/chrome/browser/ui/views/toolbar/BUILD.gn
-@@ -28,6 +28,7 @@ source_set("toolbar") {
+@@ -29,6 +29,7 @@ source_set("toolbar") {
      "pinned_toolbar_actions_container_layout.h",
      "pinned_toolbar_button_status_indicator.h",
      "reload_button.h",
@@ -46,7 +46,7 @@ index 21df5f091c8e7..c602cee2b3c45 100644
      "reload_control.h",
      "split_tabs_button.h",
      "toolbar_action_hover_card_bubble_view.h",
-@@ -184,6 +185,7 @@ source_set("impl") {
+@@ -187,6 +188,7 @@ source_set("impl") {
      "pinned_toolbar_actions_container_layout.cc",
      "pinned_toolbar_button_status_indicator.cc",
      "reload_button.cc",
@@ -170,10 +170,10 @@ index 0000000000000..f9c5e97781b98
 +
 +#endif  // CHROME_BROWSER_UI_VIEWS_TOOLBAR_RESTORE_TAB_BUTTON_H_
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_view.cc b/chrome/browser/ui/views/toolbar/toolbar_view.cc
-index f9bb38f923745..ae94b724dfd34 100644
+index 7f404c6864ec9..bcf60bdb07a28 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_view.cc
 +++ b/chrome/browser/ui/views/toolbar/toolbar_view.cc
-@@ -108,6 +108,7 @@
+@@ -109,6 +109,7 @@
  #include "chrome/browser/ui/views/toolbar/overflow_menu.h"
  #include "chrome/browser/ui/views/toolbar/pinned_toolbar_actions_container.h"
  #include "chrome/browser/ui/views/toolbar/reload_button.h"
@@ -181,7 +181,7 @@ index f9bb38f923745..ae94b724dfd34 100644
  #include "chrome/browser/ui/views/toolbar/split_tabs_button.h"
  #include "chrome/browser/ui/views/toolbar/toolbar_button.h"
  #include "chrome/browser/ui/views/toolbar/toolbar_controller.h"
-@@ -463,6 +464,15 @@ void ToolbarView::Init() {
+@@ -458,6 +459,15 @@ void ToolbarView::Init() {
          browser_, base::BindRepeating(callback, browser_, IDC_HOME)));
    }
  
@@ -197,7 +197,7 @@ index f9bb38f923745..ae94b724dfd34 100644
    if (!features::IsWebUISplitTabsButtonEnabled()) {
      split_tabs_ =
          AddChildView(std::make_unique<SplitTabsToolbarButton>(browser_));
-@@ -1625,6 +1635,13 @@ void ToolbarView::InitLayout() {
+@@ -1626,6 +1636,13 @@ void ToolbarView::InitLayout() {
              0, GetLayoutConstant(LayoutConstant::kToolbarDividerSpacing)));
    }
  
@@ -212,7 +212,7 @@ index f9bb38f923745..ae94b724dfd34 100644
        base::FeatureList::IsEnabled(features::kToolbarGlicButtonResizing)) {
      glic_button_view_->SetProperty(
 diff --git a/chrome/browser/ui/views/toolbar/toolbar_view.h b/chrome/browser/ui/views/toolbar/toolbar_view.h
-index 50e546251e9f8..25e05bd1dab99 100644
+index e38c93e2c6631..7cacff77b8686 100644
 --- a/chrome/browser/ui/views/toolbar/toolbar_view.h
 +++ b/chrome/browser/ui/views/toolbar/toolbar_view.h
 @@ -58,6 +58,7 @@ class HomeButton;
@@ -223,23 +223,23 @@ index 50e546251e9f8..25e05bd1dab99 100644
  class WebUIToolbarWebView;
  class PinnedToolbarActionsContainer;
  class ToolbarButton;
-@@ -186,6 +187,7 @@ class ToolbarView : public views::AccessiblePaneView,
-   ToolbarButton* forward_button() const { return forward_; }
+@@ -189,6 +190,7 @@ class ToolbarView : public views::AccessiblePaneView,
+   // features::IsWebUIExtensionsContainerEnabled()).
    ExtensionsToolbarButton* GetExtensionsButton() const;
    ReloadButton* reload_button() const { return reload_; }
 +  RestoreTabButton* restore_tab_button() const { return restore_; }
    LocationBarView* location_bar_view() const { return location_bar_view_; }
    LocationBar* location_bar() const { return location_bar_; }
    CustomTabBarView* custom_tab_bar() { return custom_tab_bar_; }
-@@ -413,6 +415,7 @@ class ToolbarView : public views::AccessiblePaneView,
+@@ -412,6 +414,7 @@ class ToolbarView : public views::AccessiblePaneView,
    raw_ptr<ToolbarButton> back_ = nullptr;
    raw_ptr<ToolbarButton> forward_ = nullptr;
    raw_ptr<ReloadButton> reload_ = nullptr;
 +  raw_ptr<RestoreTabButton> restore_ = nullptr;
    raw_ptr<WebUIToolbarWebView> toolbar_webview_ = nullptr;
-   std::unique_ptr<WebUIToolbarWebView> detached_toolbar_webview_;
    raw_ptr<HomeButton> home_ = nullptr;
-@@ -424,6 +427,7 @@ class ToolbarView : public views::AccessiblePaneView,
+   raw_ptr<SplitTabsToolbarButton> split_tabs_ = nullptr;
+@@ -422,6 +425,7 @@ class ToolbarView : public views::AccessiblePaneView,
    raw_ptr<LocationBar> location_bar_ = nullptr;
    raw_ptr<ExtensionsToolbarDesktop> extensions_container_ = nullptr;
    raw_ptr<ToolbarDivider> toolbar_divider_ = nullptr;
@@ -248,10 +248,10 @@ index 50e546251e9f8..25e05bd1dab99 100644
    raw_ptr<PerformanceInterventionButton> performance_intervention_button_ =
        nullptr;
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index f553bc885b7fd..706b3b9995a1f 100644
+index 564c9e8bbc2fd..3c9786a199e9c 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -424,6 +424,14 @@ bool IsThorium2024() {
+@@ -421,6 +421,14 @@ bool IsThorium2024() {
    return base::FeatureList::IsEnabled(kThorium2024) || th24_flag;
  }
  
@@ -267,10 +267,10 @@ index f553bc885b7fd..706b3b9995a1f 100644
  
  #if BUILDFLAG(IS_WIN)
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index fc25496c8e83c..64d6d62b73e56 100644
+index 4cd36f20d8047..e667d274036d1 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -254,6 +254,10 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsVariableRefreshRateAlwaysOn();
+@@ -252,6 +252,10 @@ COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsVariableRefreshRateAlwaysOn();
  COMPONENT_EXPORT(UI_BASE_FEATURES) BASE_DECLARE_FEATURE(kThorium2024);
  COMPONENT_EXPORT(UI_BASE_FEATURES) bool IsThorium2024();
  

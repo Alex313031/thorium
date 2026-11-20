@@ -1,8 +1,8 @@
 diff --git a/ash/webui/help_app_ui/help_app_untrusted_ui.cc b/ash/webui/help_app_ui/help_app_untrusted_ui.cc
-index a7f8f9d9ea9f0..470989e84aa64 100644
+index 64c1603638f05..f0f6f16b4f69b 100644
 --- a/ash/webui/help_app_ui/help_app_untrusted_ui.cc
 +++ b/ash/webui/help_app_ui/help_app_untrusted_ui.cc
-@@ -32,6 +32,8 @@ void CreateAndAddHelpAppUntrustedDataSource(
+@@ -34,6 +34,8 @@ void CreateAndAddHelpAppUntrustedDataSource(
    source->SetDefaultResource(IDR_HELP_APP_APP_HTML);
    source->AddResourcePath("app_bin.js", IDR_HELP_APP_APP_BIN_JS);
    source->AddResourcePath("receiver.js", IDR_HELP_APP_RECEIVER_JS);

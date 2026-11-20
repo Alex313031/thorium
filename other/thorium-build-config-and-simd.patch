@@ -1,5 +1,5 @@
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index bc4236a4e7080..441163edcfdab 100644
+index 179b9b729ed45..c75cd5c0e29ab 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
 @@ -1,4 +1,4 @@
@@ -33,7 +33,7 @@ index bc4236a4e7080..441163edcfdab 100644
  assert(!(is_debug && is_official_build), "Can't do official debug builds")
  assert(!(current_os == "ios" && is_component_build),
         "Can't use component build on iOS")
-@@ -225,7 +243,13 @@ if (host_toolchain == "") {
+@@ -223,7 +241,13 @@ if (host_toolchain == "") {
    # no toolchain omitted host_toolchain from its toolchain_args().
  
    if (host_os == "linux") {
@@ -48,7 +48,7 @@ index bc4236a4e7080..441163edcfdab 100644
        host_toolchain = "//build/toolchain/linux:clang_$host_cpu"
      } else if (is_clang) {
        host_toolchain = "//build/toolchain/linux:clang_$host_cpu"
-@@ -445,6 +469,9 @@ if (current_os == "zos") {
+@@ -444,6 +468,9 @@ if (current_os == "zos") {
    default_compiler_configs += [ "//build/config/zos:compiler" ]
  }
  
@@ -59,7 +59,7 @@ index bc4236a4e7080..441163edcfdab 100644
  set_defaults("static_library") {
    configs = default_compiler_configs
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index c106acfca9f33..aa30b9a92cb1c 100644
+index c267546ebd519..5a175d571fe90 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -76,7 +76,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
  import("//build/config/coverage/coverage.gni")
  import("//build/config/cronet/config.gni")
  import("//build/config/dcheck_always_on.gni")
-@@ -539,10 +540,10 @@ config("compiler") {
+@@ -545,10 +546,10 @@ config("compiler") {
    # Linux/Android/Fuchsia common flags setup.
    # ---------------------------------
    if (is_linux || is_chromeos || is_android || is_fuchsia) {
@@ -91,19 +91,18 @@ index c106acfca9f33..aa30b9a92cb1c 100644
  
      if (!is_clang) {
        # Use pipes for communicating between sub-processes. Faster.
-@@ -664,7 +665,10 @@ config("compiler") {
+@@ -670,7 +671,9 @@ config("compiler") {
      }
  
      # TODO(crbug.com/40192287): Investigate why/if this should be needed.
 -    if (is_win) {
 +    if (thorium_x86_numeric_cflags != []) {
 +      cflags += thorium_x86_numeric_cflags
-+      rustflags += thorium_x86_numeric_rustflags
 +    } else if (is_win) {
        cflags += [ "/clang:-ffp-contract=off" ]
      } else {
        cflags += [ "-ffp-contract=off" ]
-@@ -817,6 +821,10 @@ config("compiler") {
+@@ -823,6 +826,10 @@ config("compiler") {
      # [1]: https://pinpoint-dot-chromeperf.appspot.com/job/11984a18be0000
      # [2]: https://ci.chromium.org/ui/p/chromium/builders/try/android-binary-size/1848442
      import_instr_limit = 30
@@ -114,7 +113,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
  
      if (is_win) {
        ldflags += [
-@@ -1276,14 +1284,45 @@ config("disallow_unstable_features") {
+@@ -1282,14 +1289,45 @@ config("disallow_unstable_features") {
    rustflags = [ "-Zallow-features=" ]
  }
  
@@ -162,7 +161,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
      } else {
        ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
      }
-@@ -1318,7 +1357,59 @@ config("thinlto_optimize_max") {
+@@ -1324,7 +1362,59 @@ config("thinlto_optimize_max") {
      }
  
      if (is_win) {
@@ -222,7 +221,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
      } else {
        ldflags = [ "-Wl,--lto-O" + lto_opt_level ]
      }
-@@ -1355,7 +1446,10 @@ config("compiler_cpu_abi") {
+@@ -1361,7 +1451,10 @@ config("compiler_cpu_abi") {
  # for particular Chromium code or for working around particular
  # compiler bugs (or the combination of the two).
  config("compiler_codegen") {
@@ -234,7 +233,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
    cflags = []
    ldflags = []
  
-@@ -2501,6 +2595,31 @@ config("no_incompatible_pointer_warnings") {
+@@ -2519,6 +2612,31 @@ config("no_incompatible_pointer_warnings") {
    }
  }
  
@@ -266,7 +265,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
  # Optimization -----------------------------------------------------------------
  #
  # The BUILDCONFIG file sets the "default_optimization" config on targets by
-@@ -2651,11 +2770,16 @@ config("default_stack_frames") {
+@@ -2669,11 +2787,16 @@ config("default_stack_frames") {
  config("optimize") {
    if (is_win) {
      # clang-cl's /O2 corresponds to clang's -O3, and really want -O2 for
@@ -288,7 +287,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
  
      # The `-O3` for clang turns on extra optimizations compared to the standard
      # `-O2`. But for rust, `-Copt-level=3` is the default and is thus reliable
-@@ -2685,6 +2809,9 @@ config("optimize") {
+@@ -2703,6 +2826,9 @@ config("optimize") {
      # Similar to clang, we optimize with `-Copt-level=s` to keep loop
      # vectorization while otherwise optimizing for size.
      rustflags = [ "-Copt-level=s" ]
@@ -298,7 +297,7 @@ index c106acfca9f33..aa30b9a92cb1c 100644
    } else {
      cflags = [ "-O2" ] + common_optimize_on_cflags
  
-@@ -2737,9 +2864,18 @@ config("optimize_max") {
+@@ -2755,9 +2881,18 @@ config("optimize_max") {
    if (is_win) {
      # Favor speed over size, /O2 must be before the common flags.
      # /O2 implies /Ot, /Oi, and /GF.
@@ -344,10 +343,10 @@ index ae62bab587e7d..bbeb916437ad8 100644
        cpu_abi_cflags += [ "--target=arm-linux-gnueabihf" ]
 diff --git a/build/config/compiler_opt.gni b/build/config/compiler_opt.gni
 new file mode 100644
-index 0000000000000..cffe8c6058e37
+index 0000000000000..3da6b718c9c66
 --- /dev/null
 +++ b/build/config/compiler_opt.gni
-@@ -0,0 +1,215 @@
+@@ -0,0 +1,213 @@
 +# Copyright 2026 Alex313031
 +# Use of this source code is governed by a BSD-style license that can be
 +# found in the LICENSE file.
@@ -389,7 +388,6 @@ index 0000000000000..cffe8c6058e37
 +thorium_x86_tune_cflags = []
 +thorium_x86_tune_rustflags = []
 +thorium_x86_numeric_cflags = []
-+thorium_x86_numeric_rustflags = []
 +
 +# Required CPU capabilities encoded for lightweight runtime guards. Bit layout
 +# is documented at the consumers; zero means no Thorium x86 ISA requirement.
@@ -514,6 +512,7 @@ index 0000000000000..cffe8c6058e37
 +    ]
 +  }
 +
++  # Float contraction policy is Clang-only; keep Rust's default semantics.
 +  _thorium_fp_contract = "off"
 +  if (thorium_x86_profile == "avx2_fma" ||
 +      thorium_x86_profile == "avx512_skx") {
@@ -525,8 +524,6 @@ index 0000000000000..cffe8c6058e37
 +  } else {
 +    thorium_x86_numeric_cflags = [ "-ffp-contract=" + _thorium_fp_contract ]
 +  }
-+  thorium_x86_numeric_rustflags =
-+      [ "-Cllvm-args=-fp-contract=" + _thorium_fp_contract ]
 +}
 +
 +if (_thorium_x86_apply_profile) {

@@ -200,7 +200,7 @@ index 00e0ed6c6225b..d8a8eff069b9c 100644
  
    base::WeakPtrFactory<BaseFile> weak_factory_{this};
 diff --git a/content/browser/BUILD.gn b/content/browser/BUILD.gn
-index 3162721b67d5b..728a29ad5bc9f 100644
+index 5beda3489b369..a8418a2032eaf 100644
 --- a/content/browser/BUILD.gn
 +++ b/content/browser/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -209,7 +209,7 @@ index 3162721b67d5b..728a29ad5bc9f 100644
  # Use of this source code is governed by a BSD-style license that can be
  # found in the LICENSE file.
  
-@@ -178,7 +178,6 @@ source_set("browser") {
+@@ -190,7 +190,6 @@ source_set("browser") {
      "//components/power_monitor",
      "//components/schema_org/common:mojom",
      "//components/services/filesystem:lib",
@@ -218,7 +218,7 @@ index 3162721b67d5b..728a29ad5bc9f 100644
      "//components/services/storage:filesystem_proxy_factory",
      "//components/services/storage/dom_storage/leveldb:local_storage_proto",
 diff --git a/content/browser/file_system_access/file_system_access_safe_move_helper.cc b/content/browser/file_system_access/file_system_access_safe_move_helper.cc
-index d8ce931231009..3bbc9037f7407 100644
+index 1de9bbd82f7c6..85c08512538d0 100644
 --- a/content/browser/file_system_access/file_system_access_safe_move_helper.cc
 +++ b/content/browser/file_system_access/file_system_access_safe_move_helper.cc
 @@ -1,4 +1,4 @@
@@ -235,15 +235,15 @@ index d8ce931231009..3bbc9037f7407 100644
  #include "content/browser/file_system_access/features.h"
  #include "content/browser/file_system_access/file_system_access_error.h"
  #include "content/public/browser/content_browser_client.h"
-@@ -23,7 +22,6 @@
- #include "content/public/browser/render_frame_host.h"
+@@ -24,7 +23,6 @@
+ #include "content/public/browser/web_contents.h"
  #include "content/public/common/content_client.h"
  #include "crypto/hash.h"
 -#include "mojo/public/cpp/bindings/callback_helpers.h"
  #include "net/base/io_buffer.h"
  #include "net/base/net_errors.h"
  #include "storage/browser/file_system/copy_or_move_hook_delegate.h"
-@@ -284,22 +282,9 @@ void FileSystemAccessSafeMoveHelper::DidAfterWriteCheck(
+@@ -295,22 +293,9 @@ void FileSystemAccessSafeMoveHelper::DidAfterWriteCheck(
    // not exist anymore. In case of error, the source file URL will point to a
    // valid filesystem location.
    base::OnceCallback<void(base::File::Error)> result_callback;
@@ -269,7 +269,7 @@ index d8ce931231009..3bbc9037f7407 100644
    manager_->DoFileSystemOperation(
        FROM_HERE, &storage::FileSystemOperationRunner::Move,
        std::move(result_callback), source_url(), dest_url(), options_,
-@@ -316,7 +301,6 @@ void FileSystemAccessSafeMoveHelper::DidFileSkipQuarantine(
+@@ -327,7 +312,6 @@ void FileSystemAccessSafeMoveHelper::DidFileSkipQuarantine(
  void FileSystemAccessSafeMoveHelper::DidFileDoQuarantine(
      const storage::FileSystemURL& target_url,
      const GURL& referrer_url,
@@ -277,7 +277,7 @@ index d8ce931231009..3bbc9037f7407 100644
      base::File::Error result) {
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
  
-@@ -347,40 +331,9 @@ void FileSystemAccessSafeMoveHelper::DidFileDoQuarantine(
+@@ -358,40 +342,9 @@ void FileSystemAccessSafeMoveHelper::DidFileDoQuarantine(
        referrer_url.is_valid() && referrer_url.SchemeIsHTTPOrHTTPS()
            ? referrer_url
            : GURL();
@@ -319,7 +319,7 @@ index d8ce931231009..3bbc9037f7407 100644
    DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
  
 diff --git a/content/browser/file_system_access/file_system_access_safe_move_helper.h b/content/browser/file_system_access/file_system_access_safe_move_helper.h
-index 84c4a30801ab9..1d5528b755588 100644
+index bcb0d76a52537..e41d1b4dba688 100644
 --- a/content/browser/file_system_access/file_system_access_safe_move_helper.h
 +++ b/content/browser/file_system_access/file_system_access_safe_move_helper.h
 @@ -1,4 +1,4 @@
@@ -328,7 +328,7 @@ index 84c4a30801ab9..1d5528b755588 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -69,10 +69,8 @@ class CONTENT_EXPORT FileSystemAccessSafeMoveHelper {
+@@ -72,10 +72,8 @@ class CONTENT_EXPORT FileSystemAccessSafeMoveHelper {
    void DidFileDoQuarantine(
        const storage::FileSystemURL& target_url,
        const GURL& referrer_url,

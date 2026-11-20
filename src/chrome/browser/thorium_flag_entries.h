@@ -112,7 +112,7 @@
     {"custom-tab-width",
      "Custom Tab Width",
      "Allows setting the default tab width, in DIP. Normally 1 DIP = 1 Pixel, and the standard width for tabs is 240.",
-     kOsAll, MULTI_VALUE_TYPE(kCustomTabWidthChoices)},
+     kOsDesktop, MULTI_VALUE_TYPE(kCustomTabWidthChoices)},
     {"disable-thorium-dns-config",
      "Disable Thorium Secure DNS Fallback",
      "Disables Thorium's fallback that keeps explicitly configured Secure DNS-over-HTTPS available when the platform DNS configuration is unavailable. "
@@ -122,6 +122,13 @@
      "Encrypted ClientHello",
      "Controls whether Thorium allows TLS Encrypted ClientHello. Enabled still requires server support and usable HTTPS/SVCB DNS records.",
      kOsAll, MULTI_VALUE_TYPE(kEncryptedClientHelloChoices)},
+    {"webrtc-ip-handling-policy",
+     "WebRTC IP Handling Policy",
+     "Controls which network interfaces WebRTC can use. Default follows your "
+     "current settings; Thorium uses the default public and private interfaces "
+     "unless overridden. Enterprise policies and extension settings take "
+     "precedence over this flag. Restart required.",
+     kOsAll, MULTI_VALUE_TYPE(kWebRtcIPHandlingPolicyChoices)},
 
 #if !BUILDFLAG(IS_ANDROID)
     {"show-component-extension-options",
@@ -168,9 +175,9 @@
 
     {"autoplay-policy",
      "Configure AutoPlay Policy",
-     "Allows setting the AutoPlay policy. `No User Gesture Required` enables AutoPlay. `Document User Activation Required` disables AutoPlay, "
-     "and forces all sites to require a click to initiate media playback; this is the default if unset. `User Gesture Required` blocks "
-     "most AutoPlay annoyances, while still allowing some (i.e. WebAudio) to continue.",
+     "Controls the autoplay policy for HTML audio and video elements. "
+     "On desktop, Web Audio contexts bypass autoplay user-gesture checks "
+     "regardless of this setting.",
      kOsDesktop, MULTI_VALUE_TYPE(kAutoplayPolicyChoices)},
     {"allow-insecure-downloads",
      "Allow Insecure Downloads",
@@ -255,10 +262,6 @@
      "Note that this flag does not ensure that a GPU context will never be lost in any situation, like say, a GPU reset. "
      "Useful for fixing blank or pink screens/videos upon system resume, etc.",
      kOsDesktop, SINGLE_VALUE_TYPE(switches::kGpuNoContextLost)},
-    {"enable-ui-devtools",
-     "Enable Native UI Inspection in DevTools",
-     "Enables inspection of native UI elements in devtools. Inspect at `chrome://inspect/#native-ui`",
-     kOsAll, SINGLE_VALUE_TYPE(ui_devtools::switches::kEnableUiDevTools)},
     {"tab-hover-cards",
      "Tab Hover Cards",
      "Allows removing the tab hover cards or using a tooltip as a replacement.",
@@ -289,6 +292,11 @@
      FEATURE_WITH_PARAMS_VALUE_TYPE(features::kOpenBookmarksInNewTab,
                                     kOpenBookmarksInNewTabVariations,
                                     "OpenBookmarksInNewTab")},
+    {"multi-column-bookmarks",
+     "Multi-column Bookmarks",
+     "Displays long bookmark folder menus in columns within the screen work area. "
+     "Menus scroll vertically when all available columns are full. Restart required.",
+     kOsDesktop, FEATURE_VALUE_TYPE(features::kMultiColumnBookmarks)},
     {"open-omnibox-url-in-new-tab",
      "Open Omnibox URLs in New Tab",
      "Opens navigations from the address bar in a foreground or background new tab instead of the current tab.",

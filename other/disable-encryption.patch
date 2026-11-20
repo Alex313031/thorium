@@ -192,7 +192,7 @@ index d59df0d9103fe..d00feb7f41264 100644
    DWORD computer_name_size = std::size(computer_name);
  
 diff --git a/services/preferences/tracked/tracked_split_preference.cc b/services/preferences/tracked/tracked_split_preference.cc
-index 18c809334f24c..92f5b9e115ce4 100644
+index fe2b1b060cb38..1019127fb1ea4 100644
 --- a/services/preferences/tracked/tracked_split_preference.cc
 +++ b/services/preferences/tracked/tracked_split_preference.cc
 @@ -1,4 +1,4 @@

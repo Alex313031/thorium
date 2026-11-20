@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
-index 285232a634e1f..28179ae8bb859 100644
+index 9573090c18421..a01f0ac4d26da 100644
 --- a/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
 +++ b/chrome/browser/ui/bookmarks/recently_used_folders_combo_model.cc
 @@ -66,9 +66,7 @@ RecentlyUsedFoldersComboModel::RecentlyUsedFoldersComboModel(

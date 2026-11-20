@@ -1,5 +1,5 @@
 diff --git a/chrome/BUILD.gn b/chrome/BUILD.gn
-index 69e963f8b0994..b3e9e96874fff 100644
+index 00122bff1d46b..fab9fe5f7d94f 100644
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -39,15 +39,7 @@ index 69e963f8b0994..b3e9e96874fff 100644
    }
  
    executable("chrome_initial") {
-@@ -1114,6 +1116,7 @@ if (is_win) {
-       }
-       if (!use_v8_context_snapshot || include_both_v8_snapshots) {
-         sources += [ "$root_out_dir/snapshot_blob.bin" ]
-+        public_deps += [ "//v8:run_mksnapshot_default" ]
-       }
-     }
-   }
-@@ -1892,7 +1895,11 @@ if (is_linux || is_chromeos) {
+@@ -1903,7 +1905,11 @@ if (is_linux || is_chromeos) {
      }
  
      extract_symbols("chrome_symbols") {

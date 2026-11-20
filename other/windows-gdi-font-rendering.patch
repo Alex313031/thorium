@@ -1,0 +1,1753 @@
+diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
+index 8dcd2d048004e..19ee221bab567 100644
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -8584,6 +8584,12 @@ const FeatureEntry kFeatureEntries[] = {
+      flag_descriptions::kForceHighPerformanceGPUDescription, kOsWin,
+      SINGLE_VALUE_TYPE(switches::kForceHighPerformanceGPU)},
+ 
++#if BUILDFLAG(IS_WIN)
++    {"force-gdi", flag_descriptions::kForceGdiName,
++     flag_descriptions::kForceGdiDescription, kOsWin,
++     SINGLE_VALUE_TYPE(sandbox::policy::switches::kDisableDirectWrite)},
++#endif  // BUILDFLAG(IS_WIN)
++
+     {"enable-webgpu-developer-features",
+      flag_descriptions::kWebGpuDeveloperFeaturesName,
+      flag_descriptions::kWebGpuDeveloperFeaturesDescription, kOsAll,
+diff --git a/chrome/browser/chrome_browser_main_win.cc b/chrome/browser/chrome_browser_main_win.cc
+index 77844751fad6d..5c794363e9a9d 100644
+--- a/chrome/browser/chrome_browser_main_win.cc
++++ b/chrome/browser/chrome_browser_main_win.cc
+@@ -444,9 +444,15 @@ void MaybeBlockDynamicCodeForBrowserProcess() {
+ 
+   bool block_dynamic_code =
+       base::FeatureList::IsEnabled(features::kBrowserDynamicCodeDisabled);
++  // In GDI font mode, font hookers such as MacType patch code in the browser
++  // process to inject themselves into child processes.
++  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
++          sandbox::policy::switches::kDisableDirectWrite)) {
++    block_dynamic_code = false;
++  }
+ 
+   PrefService* local_state = g_browser_process->local_state();
+-  // Policy intentionally takes precedence over the feature.
++  // Policy intentionally takes precedence over the feature and GDI font mode.
+   if (local_state->IsManagedPreference(prefs::kDynamicCodeSettings) &&
+       local_state->GetInteger(prefs::kDynamicCodeSettings) ==
+           /*EnabledForBrowser=*/1) {
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+index aa2eb99269768..b3f316ef35ffd 100644
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -5540,7 +5540,10 @@ bool ChromeContentBrowserClient::PreSpawnChild(
+ 
+   switch (sandbox_type) {
+     case sandbox::mojom::Sandbox::kRenderer:
+-      enforce_code_integrity = true;
++      // GDI text rendering exists so that GDI hooks such as MacType can draw
++      // web content; their DLLs are not Microsoft-signed.
++      enforce_code_integrity =
++          !(flags & ChildSpawnFlags::kChildSpawnFlagGdiFonts);
+       break;
+     case sandbox::mojom::Sandbox::kNetwork:
+       enforce_code_integrity = base::FeatureList::IsEnabled(
+diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
+index 6700afb2c60a2..a984150c64b1c 100644
+--- a/chrome/browser/flag-metadata.json
++++ b/chrome/browser/flag-metadata.json
+@@ -5396,6 +5396,11 @@
+     "owners": [ "zmin@chromium.org", "krakhotin@google.com" ],
+     "expiry_milestone": 161
+   },
++  {
++    "name": "force-gdi",
++    "owners": [ "//skia/OWNERS" ],
++    "expiry_milestone": -1
++  },
+   {
+     "name": "force-high-performance-gpu",
+     "owners": [ "petermcneeley@google.com", "fbeaufort@google.com"],
+diff --git a/chrome/browser/flag_descriptions.h b/chrome/browser/flag_descriptions.h
+index adab50a4f263f..81b6268d822b2 100644
+--- a/chrome/browser/flag_descriptions.h
++++ b/chrome/browser/flag_descriptions.h
+@@ -4911,6 +4911,13 @@ inline constexpr char kForceHighPerformanceGPUDescription[] =
+     "Forces use of high performance GPU if available. Warning: this flag may "
+     "increase power consumption leading to shorter battery time.";
+ 
++inline constexpr char kForceGdiName[] = "Force GDI font rendering";
++inline constexpr char kForceGdiDescription[] =
++    "Draws web page and browser UI text with GDI instead of DirectWrite, so "
++    "GDI font renderers such as MacType apply. Weakens security: renderers "
++    "(except PDF) run without win32k lockdown and may load non-Microsoft DLLs "
++    "and non-system fonts, and the browser process allows dynamic code.";
++
+ inline constexpr char kUiPartialSwapName[] = "Partial swap";
+ inline constexpr char kUiPartialSwapDescription[] =
+     "Sets partial swap behavior.";
+diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content/browser/renderer_host/render_process_host_impl.cc
+index 6c740514d17a1..bbf82ca339dee 100644
+--- a/content/browser/renderer_host/render_process_host_impl.cc
++++ b/content/browser/renderer_host/render_process_host_impl.cc
+@@ -3838,6 +3838,16 @@ void RenderProcessHostImpl::AppendRendererCommandLine(
+       *base::CommandLine::ForCurrentProcess();
+   PropagateBrowserCommandLineToRenderer(browser_command_line, command_line);
+ 
++#if BUILDFLAG(IS_WIN)
++  // GDI text rendering, and the sandbox relaxations it needs, exist for GDI
++  // hooks such as MacType. PDFium rasterizes its own glyphs, so PDF renderers
++  // keep DirectWrite and the full sandbox.
++  if (!IsPdf() && browser_command_line.HasSwitch(
++                      sandbox::policy::switches::kDisableDirectWrite)) {
++    command_line->AppendSwitch(sandbox::policy::switches::kDisableDirectWrite);
++  }
++#endif
++
+   // Pass on the browser locale.
+   const std::string locale =
+       GetContentClient()->browser()->GetApplicationLocale();
+diff --git a/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc b/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc
+index abbae93de0a9f..24beecd221ee3 100644
+--- a/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc
++++ b/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc
+@@ -21,6 +21,7 @@
+ #include "base/time/time.h"
+ #include "base/win/nt_status.h"
+ #include "sandbox/policy/features.h"
++#include "sandbox/policy/switches.h"
+ #include "sandbox/policy/win/sandbox_win.h"
+ #include "sandbox/win/src/sandbox_policy_base.h"
+ #include "sandbox/win/src/security_level.h"
+@@ -68,6 +69,9 @@ RendererSandboxedProcessLauncherDelegateWin::
+           GetContentClient()->browser()->IsAppContainerDisabled(
+               sandbox::mojom::Sandbox::kRenderer)),
+       is_pdf_renderer_(is_pdf_renderer),
++      uses_gdi_fonts_(
++          !is_pdf_renderer &&
++          cmd_line.HasSwitch(sandbox::policy::switches::kDisableDirectWrite)),
+       restrict_core_sharing_(
+           GetContentClient()->browser()->ShouldRestrictCoreSharingOnRenderer()),
+       sandbox_policy_extension_(
+@@ -116,6 +120,9 @@ std::string RendererSandboxedProcessLauncherDelegateWin::GetSandboxTag() {
+       is_pdf_renderer_
+           ? "renderer-pdfium"
+           : (dynamic_code_can_be_disabled_ ? "renderer-jitless" : "renderer");
++  if (uses_gdi_fonts_) {
++    base::StrAppend(&prefix, {"-gdi"});
++  }
+   if (sandbox_policy_extension_.has_value() &&
+       !sandbox_policy_extension_->tag_suffix.empty()) {
+     base::StrAppend(&prefix, {"-", sandbox_policy_extension_->tag_suffix});
+@@ -156,7 +163,9 @@ bool RendererSandboxedProcessLauncherDelegateWin::InitializeConfig(
+   config->SetFilterEnvironment(/*filter=*/true);
+ 
+   ContentBrowserClient::ChildSpawnFlags flags(
+-      ContentBrowserClient::ChildSpawnFlags::kChildSpawnFlagNone);
++      uses_gdi_fonts_
++          ? ContentBrowserClient::ChildSpawnFlags::kChildSpawnFlagGdiFonts
++          : ContentBrowserClient::ChildSpawnFlags::kChildSpawnFlagNone);
+   if (!GetContentClient()->browser()->PreSpawnChild(
+           config, sandbox::mojom::Sandbox::kRenderer, flags)) {
+     return false;
+@@ -164,7 +173,8 @@ bool RendererSandboxedProcessLauncherDelegateWin::InitializeConfig(
+ 
+   // AllowExtraDll() requires MITIGATION_FORCE_MS_SIGNED_BINS to be enabled on
+   // `config` first, which the embedder configures in PreSpawnChild().
+-  if (sandbox_policy_extension_.has_value()) {
++  // GDI mode has no startup signing restriction, so no DLL exception is needed.
++  if (sandbox_policy_extension_.has_value() && !uses_gdi_fonts_) {
+     sandbox::ResultCode result =
+         config->AllowExtraDll(sandbox_policy_extension_->extra_dll.value());
+     if (result != sandbox::SBOX_ALL_OK) {
+diff --git a/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.h b/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.h
+index 99a9fda1bc8c3..0fcd492ae68a2 100644
+--- a/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.h
++++ b/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.h
+@@ -63,6 +63,7 @@ class CONTENT_EXPORT RendererSandboxedProcessLauncherDelegateWin
+  private:
+   const bool renderer_app_container_disabled_;
+   const bool is_pdf_renderer_ = false;
++  const bool uses_gdi_fonts_ = false;
+   const bool restrict_core_sharing_ = false;
+   bool dynamic_code_can_be_disabled_ = false;
+   // The sandbox policy extension captured on the UI thread at construction.
+diff --git a/content/public/browser/content_browser_client.h b/content/public/browser/content_browser_client.h
+index afb78e0cca326..903546ad0b09d 100644
+--- a/content/public/browser/content_browser_client.h
++++ b/content/public/browser/content_browser_client.h
+@@ -1680,6 +1680,9 @@ class CONTENT_EXPORT ContentBrowserClient {
+   // Defines flags that can be passed to PreSpawnChild.
+   enum ChildSpawnFlags {
+     kChildSpawnFlagNone = 0,
++    // The renderer draws text with GDI (--disable-direct-write), so GDI hooks
++    // such as MacType, which are not Microsoft-signed, must be able to load.
++    kChildSpawnFlagGdiFonts = 1 << 0,
+   };
+ 
+   // Defines flags that can be passed to GetAppContainerSidForSandboxType.
+diff --git a/content/renderer/BUILD.gn b/content/renderer/BUILD.gn
+index cf78814644054..b098638b42023 100644
+--- a/content/renderer/BUILD.gn
++++ b/content/renderer/BUILD.gn
+@@ -207,7 +207,11 @@ target(link_target_type, "renderer") {
+   }
+ 
+   if (is_win) {
+-    sources += [ "renderer_main_platform_delegate_win.cc" ]
++    sources += [
++      "gdi_font_manager_win.cc",
++      "gdi_font_manager_win.h",
++      "renderer_main_platform_delegate_win.cc",
++    ]
+   }
+ 
+   if (enable_cast_renderer) {
+diff --git a/content/renderer/gdi_font_manager_win.cc b/content/renderer/gdi_font_manager_win.cc
+new file mode 100644
+index 0000000000000..400cd29f0206b
+--- /dev/null
++++ b/content/renderer/gdi_font_manager_win.cc
+@@ -0,0 +1,83 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "content/renderer/gdi_font_manager_win.h"
++
++#include <windows.h>
++
++#include <string>
++#include <tuple>
++
++#include "base/containers/flat_set.h"
++#include "base/no_destructor.h"
++#include "content/child/font_data/font_data_manager.h"
++#include "content/public/child/child_thread.h"
++#include "skia/ext/font_utils.h"
++#include "third_party/skia/include/core/SkFontMgr.h"
++#include "third_party/skia/include/ports/SkTypeface_win.h"
++#include "ui/gfx/win/gdi_font_manager.h"
++
++namespace content {
++
++namespace {
++
++int CALLBACK OnFontFamily(const LOGFONT*,
++                          const TEXTMETRIC*,
++                          DWORD,
++                          LPARAM found) {
++  *reinterpret_cast<bool*>(found) = true;
++  return 0;
++}
++
++// Fonts added with AddFontMemResourceEx (web fonts) are private to this
++// process and don't enumerate; the browser can't load those for us.
++bool IsSystemFont(const LOGFONT& log_font) {
++  // EnumFontFamiliesEx reads only the face name, charset and pitch fields.
++  LOGFONT query = log_font;
++  query.lfCharSet = DEFAULT_CHARSET;
++  query.lfPitchAndFamily = 0;
++  bool found = false;
++  HDC dc = ::CreateCompatibleDC(nullptr);
++  ::EnumFontFamiliesExW(dc, &query, OnFontFamily,
++                        reinterpret_cast<LPARAM>(&found), 0);
++  ::DeleteDC(dc);
++  return found;
++}
++
++// Skia calls this when a GDI call on a font fails, which under the lowered
++// token can mean GDI could not read the font file; the browser then loads the
++// font on our behalf. Skia also calls it for harmless failures such as a
++// missing table, so ask once per face and style: the request is a sync IPC
++// and the browser keeps what it loads. Only the main thread has a
++// ChildThread; other threads skip this and Skia retries without it.
++void EnsureLogFontAccessible(const LOGFONT& log_font) {
++  ChildThread* child_thread = ChildThread::Get();
++  if (!child_thread) {
++    return;
++  }
++  static base::NoDestructor<
++      base::flat_set<std::tuple<std::wstring, LONG, BYTE>>>
++      requested;
++  if (!requested
++           ->emplace(log_font.lfFaceName, log_font.lfWeight, log_font.lfItalic)
++           .second ||
++      !IsSystemFont(log_font)) {
++    return;
++  }
++  child_thread->PreCacheFont(log_font);
++}
++
++}  // namespace
++
++void InstallGdiFontManager() {
++  SkTypeface_SetEnsureLOGFONTAccessibleProc(EnsureLogFontAccessible);
++  // The DirectWrite-based FontDataManager handles fallback and color fonts,
++  // and picks the installed fonts pages ask for, as in other browsers (the
++  // system's GDI font settings are for its own UI, not for web pages).
++  skia::OverrideDefaultSkFontMgr(gfx::win::CreateGdiFontManager(
++      sk_make_sp<font_data_service::FontDataManager>(),
++      /*fonts_like_directwrite=*/true));
++}
++
++}  // namespace content
+diff --git a/content/renderer/gdi_font_manager_win.h b/content/renderer/gdi_font_manager_win.h
+new file mode 100644
+index 0000000000000..bba710a04cf82
+--- /dev/null
++++ b/content/renderer/gdi_font_manager_win.h
+@@ -0,0 +1,18 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef CONTENT_RENDERER_GDI_FONT_MANAGER_WIN_H_
++#define CONTENT_RENDERER_GDI_FONT_MANAGER_WIN_H_
++
++namespace content {
++
++// Makes GDI the renderer's default font manager, so web content text is drawn
++// through GDI and picked up by GDI hooks such as MacType. Used with
++// --disable-direct-write. Must run before anything uses the default
++// SkFontMgr.
++void InstallGdiFontManager();
++
++}  // namespace content
++
++#endif  // CONTENT_RENDERER_GDI_FONT_MANAGER_WIN_H_
+diff --git a/content/renderer/renderer_blink_platform_impl.cc b/content/renderer/renderer_blink_platform_impl.cc
+index a5041175f17b8..b63f448be68bb 100644
+--- a/content/renderer/renderer_blink_platform_impl.cc
++++ b/content/renderer/renderer_blink_platform_impl.cc
+@@ -121,6 +121,8 @@
+ 
+ #if BUILDFLAG(IS_WIN)
+ #include "content/child/child_process_sandbox_support_impl_win.h"
++#include "content/renderer/gdi_font_manager_win.h"
++#include "sandbox/policy/switches.h"
+ #include "third_party/blink/public/web/win/web_font_rendering.h"
+ #endif
+ 
+@@ -219,10 +221,21 @@ RendererBlinkPlatformImpl::RendererBlinkPlatformImpl(
+ #endif
+ 
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
++    bool use_gdi_fonts = false;
++#if BUILDFLAG(IS_WIN)
++    use_gdi_fonts =
++        sandboxEnabled() && base::CommandLine::ForCurrentProcess()->HasSwitch(
++                                sandbox::policy::switches::kDisableDirectWrite);
++    if (use_gdi_fonts) {
++      InstallGdiFontManager();
++      blink::WebFontRendering::SetGdiFontRendering(true);
++    }
++#endif
+     // Create a FontDataManager if it's enabled, and if we're not in a
+     // single-process environment. In single process, the SkFontMgr is already
+     // installed by browser process code at this point.
+-    if (features::IsFontDataServiceEnabled() && sandboxEnabled()) {
++    if (!use_gdi_fonts && features::IsFontDataServiceEnabled() &&
++        sandboxEnabled()) {
+       font_data_service::FontDataManager::CreateAndInitialize();
+     }
+ #endif
+diff --git a/content/renderer/renderer_main_platform_delegate_win.cc b/content/renderer/renderer_main_platform_delegate_win.cc
+index f5d81225df850..c5378280c4e54 100644
+--- a/content/renderer/renderer_main_platform_delegate_win.cc
++++ b/content/renderer/renderer_main_platform_delegate_win.cc
+@@ -55,6 +55,15 @@ void RendererMainPlatformDelegate::PlatformInitialize() {
+     // cached and there's no more need to access the registry. If the sandbox
+     // is disabled, we don't have to make this dummy call.
+     std::unique_ptr<icu::TimeZone> zone(icu::TimeZone::createDefault());
++
++    // Skia's GDI typefaces use usp10.dll, and memory fonts call CoCreateGuid
++    // from ole32.dll to generate private family names. Both DLLs are
++    // delay-loaded and must be loaded before the token is lowered.
++    if (command_line.HasSwitch(
++            sandbox::policy::switches::kDisableDirectWrite)) {
++      ::LoadLibraryW(L"usp10.dll");
++      ::LoadLibraryW(L"ole32.dll");
++    }
+   }
+ 
+   // Fallback to only DWrite if running in single process mode, since there can
+diff --git a/sandbox/policy/switches.cc b/sandbox/policy/switches.cc
+index 700387e3e048a..9849d9f32901e 100644
+--- a/sandbox/policy/switches.cc
++++ b/sandbox/policy/switches.cc
+@@ -58,6 +58,12 @@ const char kAllowThirdPartyModules[] = "allow-third-party-modules";
+ // compositing.
+ const char kAddXrAppContainerCaps[] = "add-xr-appcontainer-caps";
+ 
++// Renders web content text with GDI instead of DirectWrite, so that GDI text
++// renderers such as MacType apply. GDI does not work under win32k lockdown, so
++// this also relaxes the sandbox of renderers other than PDF ones: no win32k
++// lockdown, non-system fonts and non-Microsoft DLLs may load.
++const char kDisableDirectWrite[] = "disable-direct-write";
++
+ #endif
+ 
+ #if BUILDFLAG(IS_MAC)
+diff --git a/sandbox/policy/switches.h b/sandbox/policy/switches.h
+index 50b1850c566ed..aad0116d9c499 100644
+--- a/sandbox/policy/switches.h
++++ b/sandbox/policy/switches.h
+@@ -31,6 +31,7 @@ SANDBOX_POLICY_EXPORT extern const char kNoZygoteSandbox[];
+ #if BUILDFLAG(IS_WIN)
+ SANDBOX_POLICY_EXPORT extern const char kAllowThirdPartyModules[];
+ SANDBOX_POLICY_EXPORT extern const char kAddXrAppContainerCaps[];
++SANDBOX_POLICY_EXPORT extern const char kDisableDirectWrite[];
+ #endif
+ #if BUILDFLAG(IS_MAC)
+ SANDBOX_POLICY_EXPORT extern const char kEnableSandboxLogging[];
+diff --git a/sandbox/policy/win/sandbox_win.cc b/sandbox/policy/win/sandbox_win.cc
+index b6eccdade4f4d..83669d6682cbc 100644
+--- a/sandbox/policy/win/sandbox_win.cc
++++ b/sandbox/policy/win/sandbox_win.cc
+@@ -209,6 +209,14 @@ ResultCode AddGenericConfig(sandbox::TargetConfig* config) {
+   return SBOX_ALL_OK;
+ }
+ 
++// Renderers that draw text with GDI (--disable-direct-write) need win32k and
++// must be allowed to load non-system fonts (web fonts, per-user fonts).
++bool IsGdiFontRenderer(const base::CommandLine& cmd_line,
++                       Sandbox sandbox_type) {
++  return sandbox_type == Sandbox::kRenderer &&
++         cmd_line.HasSwitch(switches::kDisableDirectWrite);
++}
++
+ ResultCode AddDefaultConfigForSandboxedProcess(TargetConfig* config) {
+   // Prevents the renderers from manipulating low-integrity processes.
+   config->SetDelayedIntegrityLevel(INTEGRITY_LEVEL_UNTRUSTED);
+@@ -484,6 +492,10 @@ ResultCode GenerateConfigForSandboxedProcess(const base::CommandLine& cmd_line,
+         MITIGATION_RESTRICT_INDIRECT_BRANCH_PREDICTION |
+         MITIGATION_KTM_COMPONENT | MITIGATION_FSCTL_DISABLED;
+ 
++    if (IsGdiFontRenderer(cmd_line, sandbox_type)) {
++      mitigations &= ~MITIGATION_NONSYSTEM_FONT_DISABLE;
++    }
++
+     // CET is enabled with the CETCOMPAT bit on chrome.exe so must be
+     // disabled for processes we know are not compatible.
+     if (!delegate->CetCompatible()) {
+@@ -546,9 +558,11 @@ ResultCode GenerateConfigForSandboxedProcess(const base::CommandLine& cmd_line,
+     // TODO(crbug.com/40088338) Remove if we can reliably not load
+     // cryptbase.dll.
+     config->AddKernelObjectToClose(HandleToClose::kKsecDD);
+-    if (const auto result = SandboxWin::AddWin32kLockdownPolicy(config);
+-        result != SBOX_ALL_OK) {
+-      return result;
++    if (!IsGdiFontRenderer(cmd_line, sandbox_type)) {
++      if (const auto result = SandboxWin::AddWin32kLockdownPolicy(config);
++          result != SBOX_ALL_OK) {
++        return result;
++      }
+     }
+   }
+ 
+diff --git a/skia/BUILD.gn b/skia/BUILD.gn
+index 7ccfea6d63498..472cd2e920158 100644
+--- a/skia/BUILD.gn
++++ b/skia/BUILD.gn
+@@ -449,6 +449,10 @@ component("skia") {
+     # See SK_TYPEFACE_FACTORY_DIRECTWRITE
+     sources += skia_ports_windows_fonts_sources
+     sources += skia_ports_windows_sources
++
++    # GDI font manager, used by renderers with --disable-direct-write.
++    sources += [ "//third_party/skia/src/ports/SkFontHost_win.cpp" ]
++    libs += [ "usp10.lib" ]
+   } else {
+     sources += [ "//third_party/skia/src/ports/SkOSFile_posix.cpp" ]
+   }
+diff --git a/third_party/blink/public/web/win/web_font_rendering.h b/third_party/blink/public/web/win/web_font_rendering.h
+index 312292d366a5c..8a53f2d8f6339 100644
+--- a/third_party/blink/public/web/win/web_font_rendering.h
++++ b/third_party/blink/public/web/win/web_font_rendering.h
+@@ -31,6 +31,8 @@ class BLINK_EXPORT WebFontRendering {
+                                    int32_t font_height);
+   static void SetAntialiasedTextEnabled(bool);
+   static void SetLCDTextEnabled(bool);
++  // The default font manager draws through GDI (--disable-direct-write).
++  static void SetGdiFontRendering(bool);
+ };
+ 
+ }  // namespace blink
+diff --git a/third_party/blink/renderer/core/layout/web_font_rendering_win.cc b/third_party/blink/renderer/core/layout/web_font_rendering_win.cc
+index effd9af3017ef..fc5e4d0ac8e75 100644
+--- a/third_party/blink/renderer/core/layout/web_font_rendering_win.cc
++++ b/third_party/blink/renderer/core/layout/web_font_rendering_win.cc
+@@ -53,4 +53,9 @@ void WebFontRendering::SetLCDTextEnabled(bool enabled) {
+   FontCache::SetLcdTextEnabled(enabled);
+ }
+ 
++// static
++void WebFontRendering::SetGdiFontRendering(bool enabled) {
++  FontCache::SetGdiFontRendering(enabled);
++}
++
+ }  // namespace blink
+diff --git a/third_party/blink/renderer/platform/fonts/bitmap_glyphs_block_list.cc b/third_party/blink/renderer/platform/fonts/bitmap_glyphs_block_list.cc
+index 554009046a674..4c87ad7741240 100644
+--- a/third_party/blink/renderer/platform/fonts/bitmap_glyphs_block_list.cc
++++ b/third_party/blink/renderer/platform/fonts/bitmap_glyphs_block_list.cc
+@@ -4,6 +4,8 @@
+ 
+ #include "third_party/blink/renderer/platform/fonts/bitmap_glyphs_block_list.h"
+ 
++#include <string_view>
++
+ #include "third_party/skia/include/core/SkTypeface.h"
+ 
+ namespace blink {
+@@ -22,8 +24,9 @@ constexpr const char* kBitmapGlyphsBlockList[] = {"Calibri", "Courier New"};
+ bool ShouldAvoidEmbeddedBitmapsForTypeface(const SkTypeface& typeface) {
+   SkString font_family_name;
+   typeface.getFamilyName(&font_family_name);
+-  return font_family_name.equals(kBitmapGlyphsBlockList[0]) ||
+-         font_family_name.equals(kBitmapGlyphsBlockList[1]);
++  const std::string_view family(font_family_name.c_str());
++  return family == kBitmapGlyphsBlockList[0] ||
++         family == kBitmapGlyphsBlockList[1];
+ }
+ 
+ }  // namespace blink
+diff --git a/third_party/blink/renderer/platform/fonts/font_cache.cc b/third_party/blink/renderer/platform/fonts/font_cache.cc
+index 07c2f084f92f7..03a0a69c4d2a1 100644
+--- a/third_party/blink/renderer/platform/fonts/font_cache.cc
++++ b/third_party/blink/renderer/platform/fonts/font_cache.cc
+@@ -94,6 +94,7 @@ float FontCache::device_scale_factor_ = 1.0;
+ #if BUILDFLAG(IS_WIN)
+ bool FontCache::antialiased_text_enabled_ = false;
+ bool FontCache::lcd_text_enabled_ = false;
++bool FontCache::gdi_font_rendering_ = false;
+ #endif  // BUILDFLAG(IS_WIN)
+ 
+ #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+diff --git a/third_party/blink/renderer/platform/fonts/font_cache.h b/third_party/blink/renderer/platform/fonts/font_cache.h
+index 4fbd87e5c5f6b..7822d654668eb 100644
+--- a/third_party/blink/renderer/platform/fonts/font_cache.h
++++ b/third_party/blink/renderer/platform/fonts/font_cache.h
+@@ -181,6 +181,10 @@ class PLATFORM_EXPORT FontCache final {
+     antialiased_text_enabled_ = enabled;
+   }
+   static void SetLcdTextEnabled(bool enabled) { lcd_text_enabled_ = enabled; }
++  static bool GdiFontRendering() { return gdi_font_rendering_; }
++  static void SetGdiFontRendering(bool enabled) {
++    gdi_font_rendering_ = enabled;
++  }
+   // Functions to cache and retrieve the system font metrics.
+   static void SetMenuFontMetrics(const AtomicString& family_name,
+                                  int32_t font_height);
+@@ -319,6 +323,7 @@ class PLATFORM_EXPORT FontCache final {
+ #if BUILDFLAG(IS_WIN)
+   static bool antialiased_text_enabled_;
+   static bool lcd_text_enabled_;
++  static bool gdi_font_rendering_;
+   // The system font metrics cache.
+   static AtomicString* menu_font_family_name_;
+   static int32_t menu_font_height_;
+diff --git a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
+index db0a6ee64b1be..635030821fce7 100644
+--- a/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
++++ b/third_party/blink/renderer/platform/fonts/web_font_typeface_factory.cc
+@@ -72,11 +72,18 @@ sk_sp<SkTypeface> MakeVariationsTypeface(
+     sk_sp<SkData> data,
+     const WebFontTypefaceFactory::FontInstantiator& instantiator) {
+ #if BUILDFLAG(IS_WIN)
+-  if (DWriteVersionSupportsVariations()) {
++  if (!FontCache::GdiFontRendering() && DWriteVersionSupportsVariations()) {
+     return instantiator.make_system(data);
+-  } else {
+-    return instantiator.make_fallback(data);
+   }
++  // In GDI mode (--disable-direct-write) the system font manager draws through
++  // GDI, so GDI hooks such as MacType apply. GDI only draws a font's default
++  // instance, so Skia's GDI port hands it a static copy of each instance.
++  if (FontCache::GdiFontRendering()) {
++    if (sk_sp<SkTypeface> typeface = instantiator.make_system(data)) {
++      return typeface;
++    }
++  }
++  return instantiator.make_fallback(data);
+ #else
+   return instantiator.make_system(data);
+ #endif
+@@ -98,11 +105,13 @@ sk_sp<SkTypeface> MakeSbixTypeface(
+ sk_sp<SkTypeface> MakeColrV0Typeface(
+     sk_sp<SkData> data,
+     const WebFontTypefaceFactory::FontInstantiator& instantiator) {
+-  if (IsWin()) {
+-    // On Windows Skia's DirectWrite
+-    // backend handles COLRv0.
++#if BUILDFLAG(IS_WIN)
++  // On Windows Skia's DirectWrite backend handles COLRv0. GDI draws color
++  // glyphs as their plain (often empty) outlines, so GDI mode uses Fontations.
++  if (!FontCache::GdiFontRendering()) {
+     return instantiator.make_system(data);
+   }
++#endif
+   return instantiator.make_fontations(data);
+ }
+ 
+@@ -110,7 +119,7 @@ sk_sp<SkTypeface> MakeColrV0VariationsTypeface(
+     sk_sp<SkData> data,
+     const WebFontTypefaceFactory::FontInstantiator& instantiator) {
+ #if BUILDFLAG(IS_WIN)
+-  if (DWriteVersionSupportsVariations()) {
++  if (!FontCache::GdiFontRendering() && DWriteVersionSupportsVariations()) {
+     return instantiator.make_system(data);
+   }
+ #endif
+diff --git a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
+index 6d441c0b33384..183b747e25c94 100644
+--- a/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
++++ b/third_party/blink/renderer/platform/fonts/win/font_cache_skia_win.cc
+@@ -244,6 +244,26 @@ const SimpleFontData* FontCache::GetDWriteFallbackFamily(
+ 
+   SkString skia_family;
+   typeface->getFamilyName(&skia_family);
++  if (GdiFontRendering()) {
++    // Keep the exact face returned by the hybrid manager, including its native
++    // fallback. Reopening by family can select the failing GDI face again.
++    const bool synthetic_bold = font_description.Weight() >= kBoldThreshold &&
++                                !typeface->isBold() &&
++                                font_description.SyntheticBoldAllowed();
++    const bool synthetic_italic =
++        font_description.Style() > kNormalSlopeValue && !typeface->isItalic() &&
++        font_description.SyntheticItalicAllowed();
++    const bool avoid_bitmaps = ShouldAvoidEmbeddedBitmapsForTypeface(*typeface);
++    auto* data = MakeGarbageCollected<FontPlatformData>(
++        std::move(typeface), skia_family.c_str(),
++        font_description.EffectiveFontSize(), synthetic_bold, synthetic_italic,
++        font_description.TextRendering(), ResolvedFontFeatures(),
++        font_description.Orientation());
++    data->SetAvoidEmbeddedBitmaps(avoid_bitmaps);
++    return data->FontContainsCharacter(codepoint)
++               ? FontDataFromFontPlatformData(data)
++               : nullptr;
++  }
+   FontDescription fallback_updated_font_description(font_description);
+   fallback_updated_font_description.UpdateFromSkiaFontStyle(
+       typeface->fontStyle());
+diff --git a/third_party/harfbuzz/BUILD.gn b/third_party/harfbuzz/BUILD.gn
+index 47d7e7826d889..91d98eb0a713f 100644
+--- a/third_party/harfbuzz/BUILD.gn
++++ b/third_party/harfbuzz/BUILD.gn
+@@ -486,8 +486,8 @@ if (use_system_harfbuzz) {
+       # Size reductions by disabling parts that we do not currently require:
+ 
+       # SkPDF needs subsetting but does not require subsetting of layout or CFF
+-      # tables.
+-      "HB_NO_SUBSET_LAYOUT",
++      # tables. Layout subsetting stays on: Skia's GDI port makes static
++      # instances of variable web fonts, which need their GSUB/GPOS/GDEF.
+       "HB_NO_SUBSET_CFF",
+ 
+       # Fallback shaper not required, we only use the HarfBuzz internal OT
+diff --git a/ui/gfx/BUILD.gn b/ui/gfx/BUILD.gn
+index 24bc26eb55c2e..03b072e8ba448 100644
+--- a/ui/gfx/BUILD.gn
++++ b/ui/gfx/BUILD.gn
+@@ -328,6 +328,8 @@ component("gfx") {
+       "win/d3d_shared_fence.h",
+       "win/direct_write.cc",
+       "win/direct_write.h",
++      "win/gdi_font_manager.cc",
++      "win/gdi_font_manager.h",
+       "win/gdi_util.cc",
+       "win/gdi_util.h",
+       "win/get_elevation_icon.cc",
+diff --git a/ui/gfx/font_fallback_skia_impl.cc b/ui/gfx/font_fallback_skia_impl.cc
+index 72c1c2449fd4b..2ce92395425d2 100644
+--- a/ui/gfx/font_fallback_skia_impl.cc
++++ b/ui/gfx/font_fallback_skia_impl.cc
+@@ -15,11 +15,11 @@
+ #include "base/i18n/icubridge/icu_bridge.h"
+ #include "base/i18n/icubridge/normalizer.h"
+ #include "base/strings/utf_string_conversion_utils.h"
+-#include "skia/ext/font_utils.h"
+ #include "third_party/icu/source/common/unicode/uchar.h"
+ #include "third_party/icu/source/common/unicode/utf16.h"
+ #include "third_party/skia/include/core/SkFontMgr.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
++#include "ui/gfx/font_util.h"
+ 
+ namespace gfx {
+ 
+@@ -128,7 +128,7 @@ sk_sp<SkTypeface> GetSkiaFallbackTypeface(const Font& template_font,
+   if (text.empty())
+     return nullptr;
+ 
+-  sk_sp<SkFontMgr> font_mgr(skia::DefaultFontMgr());
++  sk_sp<SkFontMgr> font_mgr(GetUIFontMgr());
+ 
+   const char* bcp47_locales[] = {locale.c_str()};
+   int num_locales = locale.empty() ? 0 : 1;
+diff --git a/ui/gfx/font_list.cc b/ui/gfx/font_list.cc
+index 56a0032611a79..67c752327b71d 100644
+--- a/ui/gfx/font_list.cc
++++ b/ui/gfx/font_list.cc
+@@ -12,10 +12,10 @@
+ #include "base/strings/string_split.h"
+ #include "base/strings/string_util.h"
+ #include "build/build_config.h"
+-#include "skia/ext/font_utils.h"
+ #include "third_party/skia/include/core/SkFontMgr.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
+ #include "ui/gfx/font_list_impl.h"
++#include "ui/gfx/font_util.h"
+ 
+ #if BUILDFLAG(IS_MAC)
+ #include "third_party/abseil-cpp/absl/container/flat_hash_set.h"
+@@ -250,7 +250,7 @@ std::string FontList::FirstAvailableOrFirst(std::string_view font_name_list) {
+     return std::string();
+   if (families.size() == 1)
+     return std::string(families[0]);
+-  sk_sp<SkFontMgr> fm(skia::DefaultFontMgr());
++  sk_sp<SkFontMgr> fm(GetUIFontMgr());
+ #if BUILDFLAG(IS_MAC)
+   // We'd like to avoid SkFontMgr::matchFamilyStyle(), which opens a font
+   // download dialog for available-but-not-installed fonts.
+diff --git a/ui/gfx/font_util.cc b/ui/gfx/font_util.cc
+index 064d888165db7..60080f7e608f5 100644
+--- a/ui/gfx/font_util.cc
++++ b/ui/gfx/font_util.cc
+@@ -6,6 +6,7 @@
+ 
+ #include "build/build_config.h"
+ #include "skia/ext/font_utils.h"
++#include "third_party/skia/include/core/SkFontMgr.h"
+ 
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ #include <fontconfig/fontconfig.h>
+@@ -48,4 +49,13 @@ void InitializeFonts() {
+   skia::InitializeFontRendering();
+ }
+ 
++sk_sp<SkFontMgr> GetUIFontMgr() {
++#if BUILDFLAG(IS_WIN)
++  if (sk_sp<SkFontMgr> gdi = win::GetGdiUIFontMgr()) {
++    return gdi;
++  }
++#endif  // BUILDFLAG(IS_WIN)
++  return skia::DefaultFontMgr();
++}
++
+ }  // namespace gfx
+diff --git a/ui/gfx/font_util.h b/ui/gfx/font_util.h
+index 2083907573ff5..73a6b01fd16ec 100644
+--- a/ui/gfx/font_util.h
++++ b/ui/gfx/font_util.h
+@@ -6,12 +6,19 @@
+ #define UI_GFX_FONT_UTIL_H_
+ 
+ #include "base/component_export.h"
++#include "third_party/skia/include/core/SkRefCnt.h"
++
++class SkFontMgr;
+ 
+ namespace gfx {
+ 
+ // Initialize the library fonts.
+ COMPONENT_EXPORT(GFX) void InitializeFonts();
+ 
++// Returns the font manager for UI text. This is the default Skia font manager,
++// except on Windows with --disable-direct-write, where UI text uses GDI.
++COMPONENT_EXPORT(GFX) sk_sp<SkFontMgr> GetUIFontMgr();
++
+ }  // namespace gfx
+ 
+ #endif  // UI_GFX_FONT_UTIL_H_
+diff --git a/ui/gfx/platform_font_skia.cc b/ui/gfx/platform_font_skia.cc
+index 43f6329347514..3e68f2ad47350 100644
+--- a/ui/gfx/platform_font_skia.cc
++++ b/ui/gfx/platform_font_skia.cc
+@@ -16,6 +16,7 @@
+ #include "skia/ext/font_utils.h"
+ #include "third_party/skia/include/core/SkFont.h"
+ #include "third_party/skia/include/core/SkFontMetrics.h"
++#include "third_party/skia/include/core/SkFontMgr.h"
+ #include "third_party/skia/include/core/SkFontStyle.h"
+ #include "third_party/skia/include/core/SkString.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
+@@ -23,10 +24,12 @@
+ #include "ui/gfx/font.h"
+ #include "ui/gfx/font_list.h"
+ #include "ui/gfx/font_render_params.h"
++#include "ui/gfx/font_util.h"
+ #include "ui/gfx/text_utils.h"
+ 
+ #if BUILDFLAG(IS_WIN)
+ #include "ui/gfx/system_fonts_win.h"
++#include "ui/gfx/win/direct_write.h"
+ #endif
+ 
+ #if BUILDFLAG(IS_LINUX)
+@@ -73,7 +76,7 @@ sk_sp<SkTypeface> CreateSkTypeface(bool italic,
+   {
+     TRACE_EVENT1(TRACE_DISABLED_BY_DEFAULT("fonts"),
+                  "skia::MakeTypefaceFromName", "family", *family);
+-    typeface = skia::MakeTypefaceFromName(family->c_str(), sk_style);
++    typeface = GetUIFontMgr()->legacyMakeTypeface(family->c_str(), sk_style);
+   }
+   if (!typeface) {
+     TRACE_EVENT1(TRACE_DISABLED_BY_DEFAULT("fonts"),
+@@ -81,7 +84,8 @@ sk_sp<SkTypeface> CreateSkTypeface(bool italic,
+                  kFallbackFontFamilyName);
+     // A non-scalable font such as .pcf is specified. Fall back to a default
+     // scalable font.
+-    typeface = skia::MakeTypefaceFromName(kFallbackFontFamilyName, sk_style);
++    typeface =
++        GetUIFontMgr()->legacyMakeTypeface(kFallbackFontFamilyName, sk_style);
+     if (!typeface) {
+       *out_success = false;
+       return nullptr;
+@@ -92,6 +96,17 @@ sk_sp<SkTypeface> CreateSkTypeface(bool italic,
+   return typeface;
+ }
+ 
++// GDI glyph masks use integer device positions. RenderText keeps fractional
++// layout advances separately so device scaling does not round widths twice.
++FontRenderParams AdjustRenderParamsForUIFontMgr(FontRenderParams params) {
++#if BUILDFLAG(IS_WIN)
++  if (win::GetGdiUIFontMgr()) {
++    params.subpixel_positioning = false;
++  }
++#endif
++  return params;
++}
++
+ }  // namespace
+ 
+ std::string* PlatformFontSkia::default_font_description_ = NULL;
+@@ -348,7 +363,8 @@ const FontRenderParams& PlatformFontSkia::GetFontRenderParams() {
+     query.style = style_;
+     query.weight = weight_;
+     query.device_scale_factor = current_scale_factor;
+-    font_render_params_ = gfx::GetFontRenderParams(query, nullptr);
++    font_render_params_ = AdjustRenderParamsForUIFontMgr(
++        gfx::GetFontRenderParams(query, nullptr));
+     device_scale_factor_ = current_scale_factor;
+ #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+     subpixel_rendering_enabled_ = current_subpixel_rendering_enabled;
+@@ -407,7 +423,7 @@ void PlatformFontSkia::InitFromDetails(sk_sp<SkTypeface> typeface,
+   subpixel_rendering_enabled_ =
+       gfx::GetFontRenderParamsSubpixelRenderingEnabled();
+ #endif
+-  font_render_params_ = render_params;
++  font_render_params_ = AdjustRenderParamsForUIFontMgr(render_params);
+ }
+ 
+ void PlatformFontSkia::InitFromPlatformFont(const PlatformFontSkia* other) {
+@@ -450,6 +466,13 @@ void PlatformFontSkia::ComputeMetricsIfNecessary() {
+       font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
+     }
+ 
++#if BUILDFLAG(IS_WIN)
++    if (win::GetGdiUIFontMgr()) {
++      // Match the advances used by HarfBuzz when estimating UI text widths.
++      font.setLinearMetrics(true);
++    }
++#endif
++
+     font.setEmbolden(weight_ >= Font::Weight::BOLD && !typeface_->isBold());
+     font.setSkewX((Font::ITALIC & style_) && !typeface_->isItalic()
+                       ? -SK_Scalar1 / 4
+diff --git a/ui/gfx/render_text.cc b/ui/gfx/render_text.cc
+index fcbc710b74f28..6a9868ad103fa 100644
+--- a/ui/gfx/render_text.cc
++++ b/ui/gfx/render_text.cc
+@@ -47,6 +47,11 @@
+ #include "ui/gfx/text_utils.h"
+ #include "ui/gfx/utf16_indexing.h"
+ 
++#if BUILDFLAG(IS_WIN)
++#include "third_party/skia/include/core/SkFontMgr.h"
++#include "ui/gfx/win/direct_write.h"
++#endif
++
+ namespace gfx {
+ 
+ namespace {
+@@ -507,6 +512,15 @@ void ApplyRenderParams(const FontRenderParams& params,
+   font->setSubpixel(params.subpixel_positioning);
+   font->setForceAutoHinting(params.autohinter);
+   font->setHinting(FontRenderParamsHintingToSkFontHinting(params.hinting));
++
++#if BUILDFLAG(IS_WIN)
++  if (win::GetGdiUIFontMgr()) {
++    // Keep advances scalable across device scale factors while GDI glyph masks
++    // remain aligned to whole device pixels.
++    font->setLinearMetrics(true);
++    font->setSubpixel(false);
++  }
++#endif
+ }
+ 
+ }  // namespace internal
+diff --git a/ui/gfx/render_text_harfbuzz.cc b/ui/gfx/render_text_harfbuzz.cc
+index 8a6d4e8209dbe..ba402aa6f45fc 100644
+--- a/ui/gfx/render_text_harfbuzz.cc
++++ b/ui/gfx/render_text_harfbuzz.cc
+@@ -41,6 +41,7 @@
+ #include "third_party/icu/source/common/unicode/utf16.h"
+ #include "third_party/skia/include/core/SkColor.h"
+ #include "third_party/skia/include/core/SkFontMetrics.h"
++#include "third_party/skia/include/core/SkFontMgr.h"
+ #include "third_party/skia/include/core/SkString.h"
+ #include "third_party/skia/include/core/SkTypeface.h"
+ #include "ui/gfx/bidi_line_iterator.h"
+@@ -49,6 +50,7 @@
+ #include "ui/gfx/font.h"
+ #include "ui/gfx/font_fallback.h"
+ #include "ui/gfx/font_render_params.h"
++#include "ui/gfx/font_util.h"
+ #include "ui/gfx/harfbuzz_font_skia.h"
+ #include "ui/gfx/platform_font.h"
+ #include "ui/gfx/range/range_f.h"
+@@ -67,6 +69,10 @@
+ #include "base/i18n/android_locale.h"
+ #endif  // BUILDFLAG(IS_ANDROID)
+ 
++#if BUILDFLAG(IS_WIN)
++#include "ui/gfx/win/direct_write.h"
++#endif
++
+ #include <hb.h>
+ 
+ namespace gfx {
+@@ -982,7 +988,8 @@ sk_sp<SkTypeface> CreateSkiaTypeface(const Font& font,
+   SkFontStyle skia_style(
+       static_cast<int>(weight), SkFontStyle::kNormal_Width,
+       italic ? SkFontStyle::kItalic_Slant : SkFontStyle::kUpright_Slant);
+-  return skia::MakeTypefaceFromName(font.GetFontName().c_str(), skia_style);
++  return GetUIFontMgr()->legacyMakeTypeface(font.GetFontName().c_str(),
++                                            skia_style);
+ #endif
+ }
+ 
+@@ -1494,6 +1501,15 @@ void ShapeRunWithFont(const ShapeRunWithFontInput& in,
+   out->positions.resize(out->glyph_count);
+   out->width = 0.0f;
+ 
++  bool round_advances = !in.render_params.subpixel_positioning;
++#if BUILDFLAG(IS_WIN)
++  if (win::GetGdiUIFontMgr()) {
++    // GDI masks snap to device pixels during rasterization. Rounding here
++    // would quantize linear advances and kerning in logical pixels first.
++    round_advances = false;
++  }
++#endif
++
+   // Font on MAC like ".SF NS Text" may have a negative x_offset. Positive
+   // x_offset are also found on Windows (e.g. "Segoe UI"). It requires tests
+   // relying on the behavior of |glyph_width_for_test_| to also be given a zero
+@@ -1531,14 +1547,10 @@ void ShapeRunWithFont(const ShapeRunWithFontInput& in,
+     if (in.obscured)
+       out->width += in.obscured_glyph_spacing;
+ 
+-    // When subpixel positioning is not enabled, glyph width is rounded to avoid
+-    // fractional width. Disable this conversion when a glyph width is provided
+-    // for testing. Using an integral glyph width has the same behavior as
+-    // disabling the subpixel positioning.
++    // Round advances for integer layout, except when an explicit glyph width
++    // is supplied for testing.
+     const bool force_subpixel_for_test = in.glyph_width_for_test != 0;
+-
+-    // Round run widths if subpixel positioning is off to match native behavior.
+-    if (!in.render_params.subpixel_positioning && !force_subpixel_for_test)
++    if (round_advances && !force_subpixel_for_test)
+       out->width = std::round(out->width);
+   }
+ 
+diff --git a/ui/gfx/switches.cc b/ui/gfx/switches.cc
+index d5b75df72307a..39a024b34b26a 100644
+--- a/ui/gfx/switches.cc
++++ b/ui/gfx/switches.cc
+@@ -44,6 +44,13 @@ const char kX11Display[] = "display";
+ const char kNoXshm[] = "no-xshm";
+ #endif  // BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS)
+ 
++#if BUILDFLAG(IS_WIN)
++// Draws UI text through GDI instead of DirectWrite. Same switch as
++// sandbox::policy::switches::kDisableDirectWrite, which does it for web
++// content.
++const char kDisableDirectWrite[] = "disable-direct-write";
++#endif  // BUILDFLAG(IS_WIN)
++
+ }  // namespace switches
+ 
+ namespace features {
+diff --git a/ui/gfx/switches.h b/ui/gfx/switches.h
+index 83460ba044612..07f193dbd4c3e 100644
+--- a/ui/gfx/switches.h
++++ b/ui/gfx/switches.h
+@@ -24,6 +24,10 @@ GFX_SWITCHES_EXPORT extern const char kX11Display[];
+ GFX_SWITCHES_EXPORT extern const char kNoXshm[];
+ #endif
+ 
++#if BUILDFLAG(IS_WIN)
++GFX_SWITCHES_EXPORT extern const char kDisableDirectWrite[];
++#endif
++
+ }  // namespace switches
+ 
+ namespace features {
+diff --git a/ui/gfx/win/direct_write.cc b/ui/gfx/win/direct_write.cc
+index 83a95525a4db9..140f4caaf08e6 100644
+--- a/ui/gfx/win/direct_write.cc
++++ b/ui/gfx/win/direct_write.cc
+@@ -13,6 +13,7 @@
+ #include <string>
+ #include <string_view>
+ 
++#include "base/command_line.h"
+ #include "base/debug/alias.h"
+ #include "base/notreached.h"
+ #include "base/strings/utf_string_conversions.h"
+@@ -20,6 +21,8 @@
+ #include "skia/ext/font_utils.h"
+ #include "third_party/skia/include/core/SkFontMgr.h"
+ #include "third_party/skia/include/ports/SkTypeface_win.h"
++#include "ui/gfx/switches.h"
++#include "ui/gfx/win/gdi_font_manager.h"
+ 
+ namespace gfx {
+ namespace win {
+@@ -29,6 +32,10 @@ namespace {
+ // Pointer to the global IDWriteFactory interface.
+ IDWriteFactory* g_direct_write_factory = nullptr;
+ 
++// GDI font manager for UI text, set with --disable-direct-write. Leaked at
++// shutdown.
++SkFontMgr* g_gdi_ui_font_mgr = nullptr;
++
+ // Used in tests to allow a known font to masquerade as a locally installed
+ // font. Usually this is the Ahem.ttf font. Leaked at shutdown.
+ std::vector<base::FilePath>* g_sideloaded_fonts = nullptr;
+@@ -167,6 +174,15 @@ void InitializeDirectWrite() {
+       factory.Get(), should_use_collection ? collection.Get() : nullptr);
+   CHECK(!!direct_write_font_mgr);
+ 
++  // UI text goes through GDI so font hookers such as MacType apply to it.
++  // DirectWrite stays the default font manager for everything else, such as
++  // serving font data to renderers and printing.
++  if (base::CommandLine::InitializedForCurrentProcess() &&
++      base::CommandLine::ForCurrentProcess()->HasSwitch(
++          switches::kDisableDirectWrite)) {
++    g_gdi_ui_font_mgr = CreateGdiFontManager(direct_write_font_mgr).release();
++  }
++
+   // Override the default skia font manager. This must be called before any
+   // use of the skia font manager is done (e.g. before any call to
+   // skia::DefaultFontMgr()).
+@@ -182,6 +198,10 @@ IDWriteFactory* GetDirectWriteFactory() {
+   return g_direct_write_factory;
+ }
+ 
++sk_sp<SkFontMgr> GetGdiUIFontMgr() {
++  return sk_ref_sp(g_gdi_ui_font_mgr);
++}
++
+ std::optional<std::string> RetrieveLocalizedString(
+     IDWriteLocalizedStrings* names,
+     const std::string& locale) {
+diff --git a/ui/gfx/win/direct_write.h b/ui/gfx/win/direct_write.h
+index 7d3911af5ce21..e4c2a3e7c1e74 100644
+--- a/ui/gfx/win/direct_write.h
++++ b/ui/gfx/win/direct_write.h
+@@ -13,6 +13,9 @@
+ 
+ #include "base/component_export.h"
+ #include "base/files/file_path.h"
++#include "third_party/skia/include/core/SkRefCnt.h"
++
++class SkFontMgr;
+ 
+ namespace gfx {
+ namespace win {
+@@ -30,6 +33,10 @@ COMPONENT_EXPORT(GFX) void CreateDWriteFactory(IDWriteFactory** factory);
+ // Returns the global DirectWrite factory.
+ COMPONENT_EXPORT(GFX) IDWriteFactory* GetDirectWriteFactory();
+ 
++// Returns the GDI font manager for UI text, or null unless
++// --disable-direct-write was passed to InitializeDirectWrite()'s process.
++COMPONENT_EXPORT(GFX) sk_sp<SkFontMgr> GetGdiUIFontMgr();
++
+ // Retrieves the localized string for a given locale. If locale is empty,
+ // retrieves the first element of |names|.
+ COMPONENT_EXPORT(GFX)
+diff --git a/ui/gfx/win/gdi_font_manager.cc b/ui/gfx/win/gdi_font_manager.cc
+new file mode 100644
+index 0000000000000..d1be7718b9d47
+--- /dev/null
++++ b/ui/gfx/win/gdi_font_manager.cc
+@@ -0,0 +1,625 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#include "ui/gfx/win/gdi_font_manager.h"
++
++#include <algorithm>
++#include <array>
++#include <memory>
++#include <optional>
++#include <string>
++#include <utility>
++#include <vector>
++
++#include "base/compiler_specific.h"
++#include "base/containers/span.h"
++#include "base/strings/strcat.h"
++#include "base/strings/string_number_conversions.h"
++#include "base/strings/string_util.h"
++#include "base/strings/utf_string_conversions.h"
++#include "base/synchronization/lock.h"
++#include "base/thread_annotations.h"
++#include "third_party/abseil-cpp/absl/container/flat_hash_map.h"
++#include "third_party/skia/include/core/SkData.h"
++#include "third_party/skia/include/core/SkFontArguments.h"
++#include "third_party/skia/include/core/SkFontMgr.h"
++#include "third_party/skia/include/core/SkFontParameters.h"
++#include "third_party/skia/include/core/SkFontStyle.h"
++#include "third_party/skia/include/core/SkStream.h"
++#include "third_party/skia/include/core/SkString.h"
++#include "third_party/skia/include/core/SkTypeface.h"
++#include "third_party/skia/include/ports/SkTypeface_fontations.h"
++#include "third_party/skia/include/ports/SkTypeface_win.h"
++
++namespace gfx {
++namespace win {
++
++namespace {
++
++using Coordinate = SkFontArguments::VariationPosition::Coordinate;
++
++constexpr SkFontTableTag kColorTables[] = {
++    SkSetFourByteTag('C', 'O', 'L', 'R'),
++    SkSetFourByteTag('C', 'B', 'D', 'T'),
++    SkSetFourByteTag('s', 'b', 'i', 'x'),
++    SkSetFourByteTag('S', 'V', 'G', ' '),
++};
++
++constexpr SkFontTableTag kHeadTag = SkSetFourByteTag('h', 'e', 'a', 'd');
++constexpr SkFontTableTag kHheaTag = SkSetFourByteTag('h', 'h', 'e', 'a');
++constexpr SkFontTableTag kNameTag = SkSetFourByteTag('n', 'a', 'm', 'e');
++constexpr SkFontTableTag kOS2Tag = SkSetFourByteTag('O', 'S', '/', '2');
++
++constexpr SkFontTableTag kNativeOutlineTables[] = {
++    SkSetFourByteTag('C', 'F', 'F', '2'),
++};
++
++// Reads the font's table directory instead of probing for each table: a
++// missing table makes GDI's GetFontData fail, and on failure Skia calls the
++// ensure-accessible hook, which in renderers is a sync IPC to the browser.
++bool HasAnyTable(const SkTypeface& typeface,
++                 base::span<const SkFontTableTag> wanted) {
++  const int count = typeface.countTables();
++  if (count <= 0) {
++    return false;
++  }
++  std::vector<SkFontTableTag> tags(count);
++  tags.resize(std::clamp(typeface.readTableTags(tags), 0, count));
++  return std::ranges::any_of(tags, [wanted](SkFontTableTag tag) {
++    return std::ranges::find(wanted, tag) != wanted.end();
++  });
++}
++
++bool NeedsNativeRasterizer(const SkTypeface& face) {
++  if (HasAnyTable(face, kColorTables) ||
++      HasAnyTable(face, kNativeOutlineTables)) {
++    return true;
++  }
++  std::array<uint8_t, 4> version;
++  return face.getTableData(SkSetFourByteTag('a', 'v', 'a', 'r'), 0,
++                           version.size(), version.data()) == version.size() &&
++         ((version[0] << 8) | version[1]) >= 2;
++}
++
++uint16_t ReadU16(base::span<const uint8_t> data, size_t offset) {
++  return static_cast<uint16_t>((data[offset] << 8) | data[offset + 1]);
++}
++
++// Identifies a face by the start of its head, hhea and OS/2 tables (checksum,
++// dates, metrics), to tell whether GDI opened the face DirectWrite picked.
++// Empty if a table can't be read.
++std::string FaceKey(const SkTypeface& typeface) {
++  std::string key;
++  for (SkFontTableTag tag : {kHeadTag, kHheaTag, kOS2Tag}) {
++    std::array<char, 96> bytes;
++    const size_t size =
++        typeface.getTableData(tag, 0, bytes.size(), bytes.data());
++    if (size == 0) {
++      return std::string();
++    }
++    key.append(bytes.data(), size);
++    key.push_back('|');
++  }
++  return key;
++}
++
++// Whether Blink will take `typeface` for `family`: it compares the family
++// names the typeface lists. (Its other check, getFamilyName(), never matches
++// for GDI typefaces, whose names keep a terminating NUL.)
++bool ListsFamily(const SkTypeface& typeface, const char family[]) {
++  sk_sp<SkTypeface::LocalizedStrings> names{
++      typeface.createFamilyNameIterator()};
++  SkTypeface::LocalizedString name;
++  while (names && names->next(&name)) {
++    if (base::EqualsCaseInsensitiveASCII(name.fString.c_str(), family)) {
++      return true;
++    }
++  }
++  return false;
++}
++
++// How GDI names a face: its legacy (name ID 1) family, in which it is the
++// regular, bold, italic or bold italic member (OS/2 fsSelection). GDI families
++// group faces this way, so e.g. a semibold face is a family of its own.
++struct GdiFace {
++  std::string family;
++  SkFontStyle style;
++};
++
++std::optional<GdiFace> GetGdiFace(const SkTypeface& typeface) {
++  const sk_sp<SkData> name = typeface.copyTableData(kNameTag);
++  std::array<uint8_t, 64> os2;
++  if (!name || name->size() < 6 ||
++      typeface.getTableData(kOS2Tag, 0, os2.size(), os2.data()) != os2.size()) {
++    return std::nullopt;
++  }
++  // SAFETY: SkData holds size() bytes.
++  const base::span<const uint8_t> table =
++      UNSAFE_BUFFERS(base::span(name->bytes(), name->size()));
++  const size_t count = ReadU16(table, 2);
++  const size_t storage = ReadU16(table, 4);
++  std::optional<std::u16string> family;
++  for (size_t i = 0; i < count; ++i) {
++    const size_t record = 6 + 12 * i;
++    if (record + 12 > table.size()) {
++      break;
++    }
++    const uint16_t platform = ReadU16(table, record);
++    const uint16_t encoding = ReadU16(table, record + 2);
++    const uint16_t language = ReadU16(table, record + 4);
++    const uint16_t name_id = ReadU16(table, record + 6);
++    const size_t length = ReadU16(table, record + 8);
++    const size_t start = storage + ReadU16(table, record + 10);
++    // Windows platform, Unicode, family name.
++    if (platform != 3 || (encoding != 1 && encoding != 10) || name_id != 1 ||
++        start + length > table.size()) {
++      continue;
++    }
++    std::u16string value;
++    for (size_t j = 0; j + 1 < length; j += 2) {
++      value.push_back(ReadU16(table, start + j));
++    }
++    if (language == 0x0409) {  // English (United States)
++      family = std::move(value);
++      break;
++    }
++    if (!family) {
++      family = std::move(value);
++    }
++  }
++  if (!family || family->empty()) {
++    return std::nullopt;
++  }
++  const uint16_t selection = ReadU16(os2, 62);
++  return GdiFace{
++      base::UTF16ToUTF8(*family),
++      SkFontStyle((selection & (1 << 5)) ? SkFontStyle::kBold_Weight
++                                         : SkFontStyle::kNormal_Weight,
++                  SkFontStyle::kNormal_Width,
++                  (selection & 1) ? SkFontStyle::kItalic_Slant
++                                  : SkFontStyle::kUpright_Slant)};
++}
++
++// The variation position of a variable font's face when it isn't the default
++// instance (e.g. a named instance such as Bahnschrift Light), else empty. GDI
++// draws only the default instance.
++std::vector<Coordinate> NonDefaultVariation(const SkTypeface& typeface) {
++  const int count = typeface.getVariationDesignPosition({});
++  const int axis_count = typeface.getVariationDesignParameters({});
++  if (count <= 0 || axis_count <= 0) {
++    return {};
++  }
++  std::vector<Coordinate> position(count);
++  std::vector<SkFontParameters::Variation::Axis> axes(axis_count);
++  if (typeface.getVariationDesignPosition(position) != count ||
++      typeface.getVariationDesignParameters(axes) != axis_count) {
++    return {};
++  }
++  for (const Coordinate& coordinate : position) {
++    for (const SkFontParameters::Variation::Axis& axis : axes) {
++      if (axis.tag == coordinate.axis && coordinate.value != axis.def) {
++        return position;
++      }
++    }
++  }
++  return {};
++}
++
++// Loads a face's font data into GDI under a private name (for a variable font
++// instance, a static copy of it). The typeface lists the face's own family
++// names first and the requested name after them, since Blink checks the
++// request against that list. Skia extracts the selected TTC face before
++// renaming it, keeping its glyph indices and layout tables intact.
++sk_sp<SkTypeface> LoadIntoGdi(const SkTypeface& face,
++                              const char requested_family[],
++                              const std::vector<Coordinate>& variation) {
++  int ttc_index = 0;
++  std::unique_ptr<SkStreamAsset> stream = face.openStream(&ttc_index);
++  if (!stream || !stream->rewind()) {
++    return nullptr;
++  }
++  sk_sp<SkData> data =
++      SkData::MakeFromStream(stream.get(), stream->getLength());
++
++  std::vector<SkString> names;
++  auto add_name = [&names](const SkString& name) {
++    if (!name.isEmpty() &&
++        std::ranges::none_of(names, [&name](const SkString& known) {
++          return base::EqualsCaseInsensitiveASCII(known.c_str(), name.c_str());
++        })) {
++      names.push_back(name);
++    }
++  };
++  SkString own_family;
++  face.getFamilyName(&own_family);
++  add_name(own_family);
++  if (sk_sp<SkTypeface::LocalizedStrings> family_names{
++          face.createFamilyNameIterator()}) {
++    SkTypeface::LocalizedString name;
++    while (family_names->next(&name)) {
++      add_name(name.fString);
++    }
++  }
++  if (requested_family) {
++    add_name(SkString(requested_family));
++  }
++  return SkCreateGdiTypefaceFromData(
++      std::move(data), ttc_index, names.data(), static_cast<int>(names.size()),
++      {variation.data(), static_cast<int>(variation.size())});
++}
++
++class GdiFontManager final : public SkFontMgr {
++ public:
++  GdiFontManager(sk_sp<SkFontMgr> gdi,
++                 sk_sp<SkFontMgr> dwrite,
++                 bool fonts_like_directwrite)
++      : gdi_(std::move(gdi)),
++        dwrite_(std::move(dwrite)),
++        fonts_like_directwrite_(fonts_like_directwrite) {}
++
++  ~GdiFontManager() override {
++    base::AutoLock lock(lock_);
++    for (WeakTypefaces* typefaces : {&chosen_, &loaded_}) {
++      for (auto& [key, typeface] : *typefaces) {
++        typeface->weak_unref();
++      }
++    }
++  }
++
++ protected:
++  int onCountFamilies() const override { return gdi_->countFamilies(); }
++
++  void onGetFamilyName(int index, SkString* family_name) const override {
++    gdi_->getFamilyName(index, family_name);
++  }
++
++  sk_sp<SkFontStyleSet> onCreateStyleSet(int index) const override {
++    return gdi_->createStyleSet(index);
++  }
++
++  sk_sp<SkFontStyleSet> onMatchFamily(const char family_name[]) const override {
++    return gdi_->matchFamily(family_name);
++  }
++
++  sk_sp<SkTypeface> onMatchFamilyStyle(
++      const char family_name[],
++      const SkFontStyle& style) const override {
++    sk_sp<SkTypeface> typeface = MatchGdiFamilyStyle(family_name, style);
++    if (fonts_like_directwrite_ && family_name) {
++      if (sk_sp<SkTypeface> face =
++              dwrite_->matchFamilyStyle(family_name, style)) {
++        return GdiTypefaceForFace(std::move(face), family_name, style,
++                                  std::move(typeface));
++      }
++      // DirectWrite doesn't know the font (e.g. bitmap .fon fonts).
++      return typeface;
++    }
++    if (typeface && IsColorFont(*typeface)) {
++      if (sk_sp<SkTypeface> color =
++              dwrite_->matchFamilyStyle(family_name, style)) {
++        return color;
++      }
++    }
++    return typeface;
++  }
++
++  // GDI has no per-character fallback, so DirectWrite picks the font and the
++  // same family is then opened through GDI. Keep the original native face
++  // when GDI cannot render the character.
++  sk_sp<SkTypeface> onMatchFamilyStyleCharacter(
++      const char family_name[],
++      const SkFontStyle& style,
++      const char* bcp47[],
++      int bcp47_count,
++      SkUnichar character) const override {
++    sk_sp<SkTypeface> fallback = dwrite_->matchFamilyStyleCharacter(
++        family_name, style, bcp47, bcp47_count, character);
++    if (!fallback) {
++      return nullptr;
++    }
++    SkString fallback_family;
++    fallback->getFamilyName(&fallback_family);
++    sk_sp<SkTypeface> typeface;
++    if (fonts_like_directwrite_) {
++      // FontDataManager makes a new typeface on every fallback call, so check
++      // it directly rather than caching by its id, and look the face up the
++      // way Blink does next, by family and style, which FontDataManager
++      // caches (so the face is loaded into GDI once).
++      if (HasAnyTable(*fallback, kColorTables)) {
++        return fallback;
++      }
++      typeface =
++          matchFamilyStyle(fallback_family.c_str(), fallback->fontStyle());
++    } else {
++      if (IsColorFont(*fallback)) {
++        return fallback;
++      }
++      typeface =
++          MatchGdiFamilyStyle(fallback_family.c_str(), fallback->fontStyle());
++    }
++    if (typeface && typeface->unicharToGlyph(character)) {
++      return typeface;
++    }
++    // DirectWrite already found coverage. Preserve that exact face if GDI
++    // cannot open it or maps it to a face without the requested glyph.
++    return fallback;
++  }
++
++  // Data fonts prefer GDI, with native fallbacks for unsupported formats or
++  // failed loads. This also covers local(), which bypasses Blink's web-font
++  // format dispatcher.
++  sk_sp<SkTypeface> onMakeFromData(sk_sp<SkData> data,
++                                   int ttc_index) const override {
++    SkFontArguments args;
++    args.setCollectionIndex(ttc_index);
++    return MakeFromFontData(std::move(data), args);
++  }
++
++  sk_sp<SkTypeface> onMakeFromStreamIndex(std::unique_ptr<SkStreamAsset> stream,
++                                          int ttc_index) const override {
++    if (!stream || !stream->rewind()) {
++      return nullptr;
++    }
++    return onMakeFromData(
++        SkData::MakeFromStream(stream.get(), stream->getLength()), ttc_index);
++  }
++
++  sk_sp<SkTypeface> onMakeFromStreamArgs(
++      std::unique_ptr<SkStreamAsset> stream,
++      const SkFontArguments& args) const override {
++    if (!stream || !stream->rewind()) {
++      return nullptr;
++    }
++    return MakeFromFontData(
++        SkData::MakeFromStream(stream.get(), stream->getLength()), args);
++  }
++
++  sk_sp<SkTypeface> onMakeFromFile(const char path[],
++                                   int ttc_index) const override {
++    std::unique_ptr<SkStreamAsset> stream = SkStream::MakeFromFile(path);
++    if (!stream) {
++      return nullptr;
++    }
++    return onMakeFromStreamIndex(std::move(stream), ttc_index);
++  }
++
++  sk_sp<SkTypeface> onLegacyMakeTypeface(const char family_name[],
++                                         SkFontStyle style) const override {
++    sk_sp<SkTypeface> typeface = gdi_->legacyMakeTypeface(family_name, style);
++    if (typeface && IsColorFont(*typeface)) {
++      if (sk_sp<SkTypeface> color =
++              dwrite_->legacyMakeTypeface(family_name, style)) {
++        return color;
++      }
++    }
++    return typeface;
++  }
++
++ private:
++  // Both CSS local() and downloaded fonts enter here. Parse the selected face
++  // first, preserving collection, variation and palette arguments. Never match
++  // these private fonts by name against an installed font with the same name.
++  sk_sp<SkTypeface> MakeFromFontData(sk_sp<SkData> data,
++                                     const SkFontArguments& args) const {
++    if (!data) {
++      return nullptr;
++    }
++    sk_sp<SkTypeface> face =
++        dwrite_->makeFromStream(std::make_unique<SkMemoryStream>(data), args);
++    if (!face) {
++      return SkTypeface_Make_Fontations(std::move(data), args);
++    }
++    if (NeedsNativeRasterizer(*face)) {
++      if (sk_sp<SkTypeface> native = SkTypeface_Make_Fontations(data, args)) {
++        return native;
++      }
++      return face;
++    }
++    if (sk_sp<SkTypeface> gdi =
++            LoadIntoGdi(*face, nullptr, NonDefaultVariation(*face))) {
++      return gdi;
++    }
++    return face;
++  }
++
++  // Opens a family through GDI. GDI's family enumeration skips fonts without
++  // an ANSI charset, such as Wingdings and Symbol, so those are opened by name,
++  // unless GDI silently maps the name to another font.
++  sk_sp<SkTypeface> MatchGdiFamilyStyle(const char family_name[],
++                                        const SkFontStyle& style) const {
++    if (sk_sp<SkTypeface> typeface =
++            gdi_->matchFamilyStyle(family_name, style)) {
++      return typeface;
++    }
++    if (!family_name) {
++      return nullptr;
++    }
++    sk_sp<SkTypeface> typeface = gdi_->legacyMakeTypeface(family_name, style);
++    SkString gdi_family;
++    if (typeface) {
++      typeface->getFamilyName(&gdi_family);
++    }
++    if (!base::EqualsCaseInsensitiveASCII(gdi_family.c_str(), family_name)) {
++      return nullptr;
++    }
++    return typeface;
++  }
++
++  // The face DirectWrite picked for a page's request (`face`), drawn by GDI:
++  // GDI's own match if it is the same face, else the face opened through its
++  // GDI family, else its data loaded into GDI. A GDI typeface is used only if
++  // it lists the requested family, as Blink checks that (GDI also opens
++  // variable font instances by names the font itself doesn't list). Color
++  // fonts stay on DirectWrite.
++  //
++  // Blink asks again for every size, and FontDataManager hands out a new
++  // typeface for every new request, so results are cached by the face's
++  // content (plus variation, requested family, and requested style), and a
++  // font loaded into GDI is shared by the
++  // styles that resolve to it. Both are held weakly, so a loaded font is freed
++  // once nothing draws with it (a few recent ones are kept alive).
++  sk_sp<SkTypeface> GdiTypefaceForFace(sk_sp<SkTypeface> face,
++                                       const char requested_family[],
++                                       const SkFontStyle& requested_style,
++                                       sk_sp<SkTypeface> gdi_match) const {
++    if (NeedsNativeRasterizer(*face)) {
++      return face;
++    }
++    const std::string face_key = FaceKey(*face);
++    const std::vector<Coordinate> variation = NonDefaultVariation(*face);
++    std::string instance_key = face_key;
++    for (const Coordinate& coordinate : variation) {
++      base::StrAppend(&instance_key,
++                      {base::NumberToString(coordinate.axis), "=",
++                       base::NumberToString(coordinate.value), ";"});
++    }
++    // Collection faces can share head/hhea/OS/2 metrics while having different
++    // regional glyphs. Do not share a cached face across requested families.
++    base::StrAppend(&instance_key, {"|", base::ToLowerASCII(requested_family)});
++    const std::string chosen_key = base::StrCat(
++        {instance_key, "|", base::NumberToString(requested_style.weight()), "/",
++         base::NumberToString(requested_style.width()), "/",
++         base::NumberToString(static_cast<int>(requested_style.slant()))});
++    const bool cacheable = !face_key.empty();
++    if (cacheable) {
++      base::AutoLock lock(lock_);
++      if (sk_sp<SkTypeface> typeface = FindLocked(chosen_, chosen_key)) {
++        KeepRecentLocked(typeface);
++        return typeface;
++      }
++    }
++
++    sk_sp<SkTypeface> typeface;
++    if (variation.empty() && cacheable) {
++      auto is_face = [&face_key,
++                      requested_family](const sk_sp<SkTypeface>& candidate) {
++        return candidate && FaceKey(*candidate) == face_key &&
++               ListsFamily(*candidate, requested_family);
++      };
++      if (is_face(gdi_match)) {
++        typeface = gdi_match;
++      } else if (std::optional<GdiFace> gdi_face = GetGdiFace(*face)) {
++        sk_sp<SkTypeface> candidate =
++            gdi_->legacyMakeTypeface(gdi_face->family.c_str(), gdi_face->style);
++        if (is_face(candidate)) {
++          typeface = std::move(candidate);
++        }
++      }
++    }
++    if (!typeface && cacheable) {
++      base::AutoLock lock(lock_);
++      typeface = FindLocked(loaded_, instance_key);
++    }
++    if (!typeface) {
++      typeface = LoadIntoGdi(*face, requested_family, variation);
++      if (typeface && cacheable) {
++        base::AutoLock lock(lock_);
++        StoreLocked(loaded_, instance_key, typeface);
++      }
++    }
++    if (!typeface) {
++      return face;
++    }
++    if (cacheable) {
++      base::AutoLock lock(lock_);
++      StoreLocked(chosen_, chosen_key, typeface);
++      KeepRecentLocked(typeface);
++    }
++    return typeface;
++  }
++
++  using WeakTypefaces = absl::flat_hash_map<std::string, SkTypeface*>;
++
++  // The live typeface stored under `key`, if any; expired entries are dropped.
++  static sk_sp<SkTypeface> FindLocked(WeakTypefaces& typefaces,
++                                      const std::string& key) {
++    auto it = typefaces.find(key);
++    if (it == typefaces.end()) {
++      return nullptr;
++    }
++    if (it->second->try_ref()) {
++      return sk_sp<SkTypeface>(it->second);
++    }
++    it->second->weak_unref();
++    typefaces.erase(it);
++    return nullptr;
++  }
++
++  static void StoreLocked(WeakTypefaces& typefaces,
++                          const std::string& key,
++                          const sk_sp<SkTypeface>& typeface) {
++    static constexpr size_t kSweepAt = 64;
++    if (typefaces.size() >= kSweepAt) {
++      absl::erase_if(typefaces, [](const auto& entry) {
++        if (!entry.second->weak_expired()) {
++          return false;
++        }
++        entry.second->weak_unref();
++        return true;
++      });
++    }
++    typeface->weak_ref();
++    auto [it, inserted] = typefaces.try_emplace(key, typeface.get());
++    if (!inserted) {
++      it->second->weak_unref();
++      it->second = typeface.get();
++    }
++  }
++
++  void KeepRecentLocked(const sk_sp<SkTypeface>& typeface) const
++      EXCLUSIVE_LOCKS_REQUIRED(lock_) {
++    static constexpr size_t kRecent = 16;
++    auto it = std::ranges::find(recent_, typeface);
++    if (it != recent_.end()) {
++      std::rotate(it, it + 1, recent_.end());
++      return;
++    }
++    if (recent_.size() == kRecent) {
++      recent_.erase(recent_.begin());
++    }
++    recent_.push_back(typeface);
++  }
++
++  // GDI draws color glyph tables as plain outlines, so color fonts such as
++  // Segoe UI Emoji stay on DirectWrite. Cached because UI text asks for the
++  // same typefaces on every layout.
++  bool IsColorFont(const SkTypeface& typeface) const {
++    {
++      base::AutoLock lock(lock_);
++      auto it = is_color_font_.find(typeface.uniqueID());
++      if (it != is_color_font_.end()) {
++        return it->second;
++      }
++    }
++    const bool is_color = HasAnyTable(typeface, kColorTables);
++    base::AutoLock lock(lock_);
++    is_color_font_.emplace(typeface.uniqueID(), is_color);
++    return is_color;
++  }
++
++  const sk_sp<SkFontMgr> gdi_;
++  const sk_sp<SkFontMgr> dwrite_;
++  const bool fonts_like_directwrite_;
++
++  mutable base::Lock lock_;
++  mutable absl::flat_hash_map<SkTypefaceID, bool> is_color_font_
++      GUARDED_BY(lock_);
++  // Web content, held weakly (see GdiTypefaceForFace): the typeface chosen per
++  // face, variation, name and style, and the fonts loaded into GDI per face,
++  // variation and name. `recent_` keeps the last few alive.
++  mutable WeakTypefaces chosen_ GUARDED_BY(lock_);
++  mutable WeakTypefaces loaded_ GUARDED_BY(lock_);
++  mutable std::vector<sk_sp<SkTypeface>> recent_ GUARDED_BY(lock_);
++};
++
++}  // namespace
++
++sk_sp<SkFontMgr> CreateGdiFontManager(sk_sp<SkFontMgr> dwrite,
++                                      bool fonts_like_directwrite) {
++  return sk_make_sp<GdiFontManager>(SkFontMgr_New_GDI(), std::move(dwrite),
++                                    fonts_like_directwrite);
++}
++
++}  // namespace win
++}  // namespace gfx
+diff --git a/ui/gfx/win/gdi_font_manager.h b/ui/gfx/win/gdi_font_manager.h
+new file mode 100644
+index 0000000000000..613de2e4b9472
+--- /dev/null
++++ b/ui/gfx/win/gdi_font_manager.h
+@@ -0,0 +1,35 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++#ifndef UI_GFX_WIN_GDI_FONT_MANAGER_H_
++#define UI_GFX_WIN_GDI_FONT_MANAGER_H_
++
++#include "base/component_export.h"
++#include "third_party/skia/include/core/SkRefCnt.h"
++
++class SkFontMgr;
++
++namespace gfx {
++namespace win {
++
++// Returns a font manager that draws text through GDI, so GDI hooks such as
++// MacType apply to it. `dwrite` picks per-character fallback fonts (which are
++// then opened through GDI) and draws color system fonts such as emoji. Native
++// rendering is retained when GDI cannot load a face or cover a character.
++//
++// With `fonts_like_directwrite` (web content), `dwrite` also decides which
++// installed font face a family request gets, as in other browsers, rather
++// than GDI's font mapper with its registry settings (FontSubstitutes, hidden
++// fonts) and its regular/bold-only families. GDI still draws: the face is
++// opened by name when GDI has the same one, otherwise its data is loaded into
++// GDI, falling back to the native face if necessary. Without it (the browser
++// UI), fonts follow the system's GDI settings.
++COMPONENT_EXPORT(GFX)
++sk_sp<SkFontMgr> CreateGdiFontManager(sk_sp<SkFontMgr> dwrite,
++                                      bool fonts_like_directwrite = false);
++
++}  // namespace win
++}  // namespace gfx
++
++#endif  // UI_GFX_WIN_GDI_FONT_MANAGER_H_

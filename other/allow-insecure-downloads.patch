@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/download/chrome_download_manager_delegate.cc b/chrome/browser/download/chrome_download_manager_delegate.cc
-index 0cfc34d1e08df..e780f5ecdc7f0 100644
+index ef34eed137be9..668614c93d6ca 100644
 --- a/chrome/browser/download/chrome_download_manager_delegate.cc
 +++ b/chrome/browser/download/chrome_download_manager_delegate.cc
 @@ -1,4 +1,4 @@
@@ -8,7 +8,7 @@ index 0cfc34d1e08df..e780f5ecdc7f0 100644
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-@@ -2344,8 +2344,12 @@ bool ChromeDownloadManagerDelegate::IsOpenInBrowserPreferredForFile(
+@@ -2427,8 +2427,12 @@ bool ChromeDownloadManagerDelegate::IsOpenInBrowserPreferredForFile(
  bool ChromeDownloadManagerDelegate::ShouldBlockFile(
      download::DownloadItem* item,
      download::DownloadDangerType danger_type) const {
@@ -22,7 +22,7 @@ index 0cfc34d1e08df..e780f5ecdc7f0 100644
      return false;
    }
  
-@@ -2399,44 +2403,14 @@ bool ChromeDownloadManagerDelegate::ShouldBlockFile(
+@@ -2482,44 +2486,14 @@ bool ChromeDownloadManagerDelegate::ShouldBlockFile(
  void ChromeDownloadManagerDelegate::MaybeSendDangerousDownloadOpenedReport(
      DownloadItem* download,
      bool show_download_in_folder) {
@@ -70,7 +70,7 @@ index 0cfc34d1e08df..e780f5ecdc7f0 100644
      const content::WebContents::Getter& web_contents_getter,
      const GURL& url,
 diff --git a/chrome/browser/download/download_target_determiner.cc b/chrome/browser/download/download_target_determiner.cc
-index 0e2ffe2ae7728..45c402b0c5808 100644
+index 3fc1b3d2c036c..67810ed4643f3 100644
 --- a/chrome/browser/download/download_target_determiner.cc
 +++ b/chrome/browser/download/download_target_determiner.cc
 @@ -1,4 +1,4 @@
@@ -87,9 +87,9 @@ index 0e2ffe2ae7728..45c402b0c5808 100644
  #include "base/files/file_path.h"
  #include "base/functional/bind.h"
  #include "base/location.h"
-@@ -1259,6 +1260,14 @@ DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
+@@ -1347,6 +1348,14 @@ DownloadFileType::DangerLevel DownloadTargetDeterminer::GetDangerLevel(
      PriorVisitsToReferrer visits) const {
-   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+   CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M161);
  
 +  static const bool allow_insecure_downloads =
 +      base::CommandLine::ForCurrentProcess()->HasSwitch(
@@ -103,7 +103,7 @@ index 0e2ffe2ae7728..45c402b0c5808 100644
    // considered dangerous.
    if (download_->HasUserGesture() &&
 diff --git a/chrome/browser/download/insecure_download_blocking.cc b/chrome/browser/download/insecure_download_blocking.cc
-index 2ecba5bf9ab24..2dfe8da24f242 100644
+index df1ee05c21293..8f2a72ba2f620 100644
 --- a/chrome/browser/download/insecure_download_blocking.cc
 +++ b/chrome/browser/download/insecure_download_blocking.cc
 @@ -1,4 +1,4 @@
@@ -150,7 +150,7 @@ index 2ecba5bf9ab24..2dfe8da24f242 100644
        is_insecure_download_ = false;
      } else {  // Not ignorable download.
        // TODO(crbug.com/40857867): Add blocking metrics.
-@@ -418,8 +424,11 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
+@@ -420,8 +426,11 @@ InsecureDownloadStatus GetInsecureDownloadStatusForDownload(
      const download::DownloadItem* item) {
    InsecureDownloadData data(path, item);
  

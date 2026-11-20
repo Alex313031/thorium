@@ -1,5 +1,5 @@
 diff --git a/components/download/internal/common/download_item_impl.cc b/components/download/internal/common/download_item_impl.cc
-index 48b41ef91ab2c..dff59709f551d 100644
+index 91eb2937f65e1..13d5cc9008b33 100644
 --- a/components/download/internal/common/download_item_impl.cc
 +++ b/components/download/internal/common/download_item_impl.cc
 @@ -47,6 +47,10 @@
@@ -35,7 +35,7 @@ index 48b41ef91ab2c..dff59709f551d 100644
  // Most of the cancellation pathways behave the same whether the cancellation
  // was initiated by ther user (CANCELED) or initiated due to browser context
  // shutdown (SHUTDOWN).
-@@ -2089,7 +2108,8 @@ void DownloadItemImpl::OnDownloadRenamedToFinalName(
+@@ -2109,7 +2128,8 @@ void DownloadItemImpl::OnDownloadRenamedToFinalName(
      return;
    }
  
@@ -45,7 +45,7 @@ index 48b41ef91ab2c..dff59709f551d 100644
      // full_path is now the current and target file path.
      DCHECK(!full_path.empty());
      destination_info_.target_path = full_path;
-@@ -2104,6 +2124,10 @@ void DownloadItemImpl::OnDownloadRenamedToFinalName(
+@@ -2124,6 +2144,10 @@ void DownloadItemImpl::OnDownloadRenamedToFinalName(
    DCHECK(download_file_);
    ReleaseDownloadFile(false);
  

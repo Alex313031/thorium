@@ -1,5 +1,5 @@
 diff --git a/build/install-build-deps.py b/build/install-build-deps.py
-index 1da10c63f8c08..0c2aaa7552d15 100755
+index 8fe0643f47698..5c9216721d737 100755
 --- a/build/install-build-deps.py
 +++ b/build/install-build-deps.py
 @@ -1,6 +1,6 @@
@@ -60,7 +60,7 @@ index 1da10c63f8c08..0c2aaa7552d15 100755
          "libx11-6",
          "libx11-xcb1",
          "libxau6",
-@@ -533,6 +540,7 @@ def lib32_list(options):
+@@ -535,6 +542,7 @@ def lib32_list(options):
          "zlib1g:i386",
          # 32-bit libraries needed e.g. to compile V8 snapshot for Android or armhf
          "linux-libc-dev:i386",
@@ -68,7 +68,7 @@ index 1da10c63f8c08..0c2aaa7552d15 100755
          "libexpat1:i386",
          "libpci3:i386",
      ]
-@@ -737,7 +745,9 @@ def arm_list(options):
+@@ -739,7 +747,9 @@ def arm_list(options):
          "g++-arm-linux-gnueabihf",
          "gcc-arm-linux-gnueabihf",
          "libc6-dev-armhf-cross",

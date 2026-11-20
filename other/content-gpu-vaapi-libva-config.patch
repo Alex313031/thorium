@@ -1,5 +1,5 @@
 diff --git a/content/gpu/BUILD.gn b/content/gpu/BUILD.gn
-index 19e7f3c36f275..35507fa93a0c1 100644
+index 15aed10aab990..00c892af16b06 100644
 --- a/content/gpu/BUILD.gn
 +++ b/content/gpu/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -16,7 +16,7 @@ index 19e7f3c36f275..35507fa93a0c1 100644
  
  # See //content/BUILD.gn for how this works.
  group("gpu") {
-@@ -129,4 +130,8 @@ target(link_target_type, "gpu_sources") {
+@@ -130,4 +131,8 @@ target(link_target_type, "gpu_sources") {
        !is_castos) {
      configs += [ "//build/config/linux/dri" ]
    }

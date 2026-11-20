@@ -1,8 +1,8 @@
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-index eb43c940be449..c2d9489f708fd 100644
+index 590ef51237365..10573d3f58f6c 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -4382,6 +4382,13 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -4497,6 +4497,13 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
              @Nullable MotionEventInfo triggeringMotion) {
          final Tab currentTab = getActivityTab();
          boolean currentTabIsNtp = isTabNtp(currentTab);
@@ -17,7 +17,7 @@ index eb43c940be449..c2d9489f708fd 100644
              if (!mTabModelSelector.isTabStateInitialized()) {
                  RecordUserAction.record("MobileMenuNewTab.BeforeTabRestore");
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
-index 87af106229fb3..81b367007b76f 100644
+index 3581c69193079..1eaff74b1ea35 100644
 --- a/chrome/app/extensions_strings.grdp
 +++ b/chrome/app/extensions_strings.grdp
 @@ -1,6 +1,12 @@
@@ -34,37 +34,76 @@ index 87af106229fb3..81b367007b76f 100644
      Allow access to file URLs
    </message>
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
-index 7266d1cc1b76a..cb2cad0fc0e93 100644
+index 9c7596bebed24..8159f5f88212c 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -190,6 +190,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
+@@ -197,6 +197,7 @@ const base::Feature* const kFeaturesExposedToJava[] = {
      &download::features::kShowDownloadScanningState,
      &download::features::kSmartSuggestionForLargeDownloads,
      &enterprise_data_protection::kEnableAndroidEnterpriseScreenshotProtection,
 +    &extensions_features::kEnableExtensionsAndroid,
+     &feature_engagement::kIPHBookmarkBarVisibilityFeature,
      &feature_engagement::kIPHTabSwitcherButtonFeature,
      &features::kAAPMBlocksWebGPU,
-     &features::kAbortNavigationsFromTabClosures,
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 4ba732c93e0bf..33371d7fd90bf 100644
+index 69c7831d6d7a4..4068b57a76b35 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-@@ -581,6 +581,7 @@ public abstract class ChromeFeatureList {
-     public static final String ENABLE_ESCAPE_HANDLING_FOR_SECONDARY_ACTIVITIES =
-             "EnableEscapeHandlingForSecondaryActivities";
-     public static final String ENABLE_EXCLUSIVE_ACCESS_MANAGER = "EnableExclusiveAccessManager";
+@@ -588,6 +588,7 @@ public abstract class ChromeFeatureList {
+             "EnableDownloadSaveAsContextMenu";
+     public static final String ENABLE_DOWNLOAD_SAVE_AS_SYSTEM_FILE_DIALOG =
+             "EnableDownloadSaveAsSystemFileDialog";
 +    public static final String ENABLE_EXTENSIONS_ANDROID = "EnableExtensionsAndroid";
      public static final String ENABLE_FULLSCREEN_TO_ANY_SCREEN_ANDROID =
              "EnableFullscreenToAnyScreenAndroid";
      public static final String ENABLE_PIX_ACCOUNT_LINKING_NATIVE = "EnablePixAccountLinkingNative";
-diff --git a/chrome/browser/resources/extensions/manager.css b/chrome/browser/resources/extensions/manager.css
-index 2304ce6e59636..202bf1f928873 100644
---- a/chrome/browser/resources/extensions/manager.css
-+++ b/chrome/browser/resources/extensions/manager.css
-@@ -19,6 +19,25 @@
-   height: 100%;
- }
- 
+diff --git a/chrome/browser/resources/extensions/BUILD.gn b/chrome/browser/resources/extensions/BUILD.gn
+index 2a7fa645db32b..d4a4c62096567 100644
+--- a/chrome/browser/resources/extensions/BUILD.gn
++++ b/chrome/browser/resources/extensions/BUILD.gn
+@@ -23,6 +23,8 @@ build_webui("build") {
+     "activity_log/activity_log_stream.ts",
+     "activity_log/activity_log_stream_item.html.ts",
+     "activity_log/activity_log_stream_item.ts",
++    "app.html.ts",
++    "app.ts",
+     "async_map_directive.ts",
+     "code_section.html.ts",
+     "code_section.ts",
+@@ -102,6 +104,7 @@ build_webui("build") {
+     "activity_log/activity_log_history_item.css",
+     "activity_log/activity_log_stream.css",
+     "activity_log/activity_log_stream_item.css",
++    "app.css",
+     "code_section.css",
+     "detail_view.css",
+     "drop_overlay.css",
+diff --git a/chrome/browser/resources/extensions/app.css b/chrome/browser/resources/extensions/app.css
+new file mode 100644
+index 0000000000000..bf9bf17e551bd
+--- /dev/null
++++ b/chrome/browser/resources/extensions/app.css
+@@ -0,0 +1,38 @@
++/* Copyright 2026 The Chromium Authors
++ * Use of this source code is governed by a BSD-style license that can be
++ * found in the LICENSE file. */
++
++/* #css_wrapper_metadata_start
++ * #type=style-lit
++ * #import=chrome://resources/cr_elements/cr_shared_vars.css.js
++ * #css_wrapper_metadata_end */
++
++:host {
++  color: var(--cr-primary-text-color);
++  display: block;
++  height: 100%;
++}
++
++#disabled-container {
++  height: 100%;
++  overflow: auto;
++}
++
 +#android-extensions-disabled {
 +  box-sizing: border-box;
 +  line-height: 1.6;
@@ -83,95 +122,149 @@ index 2304ce6e59636..202bf1f928873 100644
 +#android-extensions-disabled a {
 +  color: var(--cr-link-color);
 +}
+diff --git a/chrome/browser/resources/extensions/app.html.ts b/chrome/browser/resources/extensions/app.html.ts
+new file mode 100644
+index 0000000000000..a891d606fa8da
+--- /dev/null
++++ b/chrome/browser/resources/extensions/app.html.ts
+@@ -0,0 +1,34 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
 +
- #viewManager {
-   flex: 1 1 var(--cr-toolbar-field-width);
-   height: 100%;
-diff --git a/chrome/browser/resources/extensions/manager.html.ts b/chrome/browser/resources/extensions/manager.html.ts
-index 2d8fea7941db0..19c6e350823f8 100644
---- a/chrome/browser/resources/extensions/manager.html.ts
-+++ b/chrome/browser/resources/extensions/manager.html.ts
-@@ -8,6 +8,24 @@ import type {ExtensionsManagerElement} from './manager.js';
- 
- export function getHtml(this: ExtensionsManagerElement) {
-   // clang-format off
-+  if (this.androidExtensionsDisabled_) {
-+    return html`
-+      <main id="android-extensions-disabled" aria-labelledby="disabled-title">
-+        <h1 id="disabled-title">$i18n{androidExtensionsDisabledTitle}</h1>
-+        <p id="disabled-description">$i18n{androidExtensionsDisabledDescription}</p>
-+        <p>
-+          <a id="enable-extensions-link"
-+              href="chrome://flags/#enable-extensions-android">
-+            chrome://flags/#enable-extensions-android
-+          </a>
-+        </p>
-+        <cr-button id="loadUnpacked" disabled
-+            aria-describedby="disabled-description">
-+          $i18n{toolbarLoadUnpacked}
-+        </cr-button>
-+      </main>`;
++import {html} from '//resources/lit/v3_0/lit.rollup.js';
++
++import type {ExtensionsAppElement} from './app.js';
++
++export function getHtml(this: ExtensionsAppElement) {
++  // clang-format off
++  return html`<!--_html_template_start_-->
++${this.androidExtensionsDisabled_ ? html`
++  <div id="disabled-container">
++    <main id="android-extensions-disabled" aria-labelledby="disabled-title">
++      <h1 id="disabled-title">$i18n{androidExtensionsDisabledTitle}</h1>
++      <p id="disabled-description">$i18n{androidExtensionsDisabledDescription}</p>
++      <p>
++        <a id="enable-extensions-link"
++            href="chrome://flags/#enable-extensions-android">
++          chrome://flags/#enable-extensions-android
++        </a>
++      </p>
++      <cr-button id="loadUnpacked" disabled
++          aria-describedby="disabled-description">
++        $i18n{toolbarLoadUnpacked}
++      </cr-button>
++    </main>
++  </div>
++` : html`
++  <extensions-manager></extensions-manager>
++`}
++<!--_html_template_end_-->`;
++  // clang-format on
++}
+diff --git a/chrome/browser/resources/extensions/app.ts b/chrome/browser/resources/extensions/app.ts
+new file mode 100644
+index 0000000000000..390a71c48e21a
+--- /dev/null
++++ b/chrome/browser/resources/extensions/app.ts
+@@ -0,0 +1,69 @@
++// Copyright 2026 The Chromium Authors
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++import 'chrome://resources/cr_elements/cr_button/cr_button.js';
++import './manager.js';
++
++import {ColorChangeUpdater, COLORS_CSS_SELECTOR} from 'chrome://resources/cr_components/color_change_listener/colors_css_updater.js';
++import {loadTimeData} from 'chrome://resources/js/load_time_data.js';
++import {CrLitElement} from 'chrome://resources/lit/v3_0/lit.rollup.js';
++
++import {getCss} from './app.css.js';
++import {getHtml} from './app.html.js';
++
++export class ExtensionsAppElement extends CrLitElement {
++  static get is() {
++    return 'extensions-app';
 +  }
 +
-   return html`<!--_html_template_start_-->
- <extensions-drop-overlay ?drag-enabled="${this.inDevMode}">
- </extensions-drop-overlay>
-diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/resources/extensions/manager.ts
-index 522e280c9365f..a9e1f8836e46d 100644
---- a/chrome/browser/resources/extensions/manager.ts
-+++ b/chrome/browser/resources/extensions/manager.ts
-@@ -2,6 +2,7 @@
++  static override get styles() {
++    return getCss();
++  }
++
++  override render() {
++    return getHtml.bind(this)();
++  }
++
++  static override get properties() {
++    return {
++      androidExtensionsDisabled_: {type: Boolean, attribute: false},
++    };
++  }
++
++  // The feature state is fixed for this page load and requires a relaunch to
++  // change. Do not expose it as a mutable DOM attribute.
++  protected accessor androidExtensionsDisabled_: boolean =
++      loadTimeData.getBoolean('androidExtensionsDisabled');
++
++  override connectedCallback() {
++    super.connectedCallback();
++
++    // The manager owns normal-page initialization. It is never instantiated
++    // while Android extension support is disabled.
++    if (!this.androidExtensionsDisabled_) {
++      return;
++    }
++
++    if (loadTimeData.getString('webuiRefresh2026') !== '') {
++      if (!document.body.querySelector(COLORS_CSS_SELECTOR)) {
++        const link = document.createElement('link');
++        link.rel = 'stylesheet';
++        link.href = 'chrome://theme/colors.css?sets=ui,chrome';
++        document.body.appendChild(link);
++      }
++      ColorChangeUpdater.forDocument().start();
++    }
++
++    document.documentElement.classList.remove('loading');
++    document.fonts.load('bold 12px Roboto');
++  }
++}
++
++declare global {
++  interface HTMLElementTagNameMap {
++    'extensions-app': ExtensionsAppElement;
++  }
++}
++
++customElements.define(ExtensionsAppElement.is, ExtensionsAppElement);
+diff --git a/chrome/browser/resources/extensions/extensions.html b/chrome/browser/resources/extensions/extensions.html
+index f3959dd26bd25..0e2b35f0b5120 100644
+--- a/chrome/browser/resources/extensions/extensions.html
++++ b/chrome/browser/resources/extensions/extensions.html
+@@ -51,7 +51,7 @@
+   <script type="module" src="extensions.js"></script>
+ </head>
+ <body>
+-  <extensions-manager></extensions-manager>
++  <extensions-app></extensions-app>
+   <link rel="stylesheet" href="chrome://resources/css/text_defaults_md.css">
+ </body>
+ </html>
+diff --git a/chrome/browser/resources/extensions/extensions.ts b/chrome/browser/resources/extensions/extensions.ts
+index 12032e33269db..cd75100e3b063 100644
+--- a/chrome/browser/resources/extensions/extensions.ts
++++ b/chrome/browser/resources/extensions/extensions.ts
+@@ -2,7 +2,7 @@
  // Use of this source code is governed by a BSD-style license that can be
  // found in the LICENSE file.
  
-+import 'chrome://resources/cr_elements/cr_button/cr_button.js';
- import 'chrome://resources/cr_elements/cr_drawer/cr_drawer.js';
- import 'chrome://resources/cr_elements/cr_lazy_render/cr_lazy_render_lit.js';
- import 'chrome://resources/cr_elements/cr_toast/cr_toast_manager.js';
-@@ -162,6 +163,8 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
-   }
+-import './manager.js';
++import './app.js';
  
-   accessor canLoadUnpacked: boolean = false;
-+  protected readonly androidExtensionsDisabled_: boolean =
-+      loadTimeData.getBoolean('androidExtensionsDisabled');
-   accessor delegate: ServiceInterface = Service.getInstance();
-   accessor inDevMode: boolean = loadTimeData.getBoolean('inDevMode');
-   accessor isMv2DeprecationNoticeDismissed: boolean =
-@@ -224,6 +227,10 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
-     document.documentElement.classList.remove('loading');
-     document.fonts.load('bold 12px Roboto');
- 
-+    if (this.androidExtensionsDisabled_) {
-+      return;
-+    }
-+
-     this.navigationListener_ = navigation.addListener(newPage => {
-       this.changePage_(newPage);
-     });
-@@ -231,6 +238,9 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
- 
-   override disconnectedCallback() {
-     super.disconnectedCallback();
-+    if (this.androidExtensionsDisabled_) {
-+      return;
-+    }
-     assert(this.navigationListener_);
-     assert(navigation.removeListener(this.navigationListener_));
-     this.navigationListener_ = null;
-@@ -239,6 +249,11 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
-   override firstUpdated(changedProperties: PropertyValues<this>) {
-     super.firstUpdated(changedProperties);
- 
-+    if (this.androidExtensionsDisabled_) {
-+      this.pageInitializedResolver_.resolve();
-+      return;
-+    }
-+
-     this.addEventListener('load-error', this.onLoadError_);
-     this.addEventListener('view-enter-start', this.onViewEnterStart_);
-     this.addEventListener('view-exit-start', this.onViewExitStart_);
+ export {COLORS_CSS_SELECTOR} from 'chrome://resources/cr_components/color_change_listener/colors_css_updater.js';
+ export {CrCheckboxElement} from 'chrome://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
-index 55782c3d0e6a9..073170c9f581a 100644
+index 3079f2188a8fa..c49254de5b56d 100644
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/extensions/ExtensionsMenuCoordinator.java
 @@ -25,8 +25,10 @@ import org.chromium.base.supplier.NullableObservableSupplier;
@@ -198,7 +291,7 @@ index 55782c3d0e6a9..073170c9f581a 100644
  import org.chromium.ui.base.WindowAndroid;
  import org.chromium.ui.hierarchicalmenu.FlyoutController;
  import org.chromium.ui.listmenu.ListMenu;
-@@ -269,6 +274,15 @@ public class ExtensionsMenuCoordinator
+@@ -274,6 +279,15 @@ public class ExtensionsMenuCoordinator
       * <p>This should only be called when the menu is about to be shown.
       */
      private void createMediator() {
@@ -215,10 +308,10 @@ index 55782c3d0e6a9..073170c9f581a 100644
              return;
          }
 diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browser/ui/webui/extensions/extensions_ui.cc
-index 1c8685d90cafa..b234844b437da 100644
+index 0e5ee2897ccda..bb6cc5ac4003a 100644
 --- a/chrome/browser/ui/webui/extensions/extensions_ui.cc
 +++ b/chrome/browser/ui/webui/extensions/extensions_ui.cc
-@@ -9,6 +9,7 @@
+@@ -10,6 +10,7 @@
  #include <utility>
  
  #include "base/command_line.h"
@@ -226,7 +319,7 @@ index 1c8685d90cafa..b234844b437da 100644
  #include "base/functional/bind.h"
  #include "base/metrics/field_trial_params.h"
  #include "base/strings/string_util.h"
-@@ -434,6 +435,18 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
+@@ -437,6 +438,18 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
    };
    source->AddLocalizedStrings(kLocalizedStrings);
  

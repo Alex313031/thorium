@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
-index 18e3d2a8277c5..0ac65a03e2b3b 100644
+index 85933a86d08ae..ad814c506f862 100644
 --- a/chrome/browser/ui/tabs/tab_style.cc
 +++ b/chrome/browser/ui/tabs/tab_style.cc
 @@ -119,10 +119,20 @@ int TabStyle::GetMinimumInactiveWidth() const {
@@ -24,18 +24,18 @@ index 18e3d2a8277c5..0ac65a03e2b3b 100644
  }
  
 diff --git a/chrome/browser/ui/views/tabs/shared/tab_strip_combo_button.cc b/chrome/browser/ui/views/tabs/shared/tab_strip_combo_button.cc
-index 7dcd768497f82..2e95facb74a96 100644
+index f548b8afb4b61..cac6f1b0081b6 100644
 --- a/chrome/browser/ui/views/tabs/shared/tab_strip_combo_button.cc
 +++ b/chrome/browser/ui/views/tabs/shared/tab_strip_combo_button.cc
-@@ -4,6 +4,7 @@
- 
+@@ -5,6 +5,7 @@
  #include "chrome/browser/ui/views/tabs/shared/tab_strip_combo_button.h"
  
+ #include "base/check.h"
 +#include "base/command_line.h"
  #include "base/i18n/rtl.h"
  #include "base/metrics/user_metrics.h"
  #include "base/metrics/user_metrics_action.h"
-@@ -97,6 +98,10 @@ TabStripComboButton::TabStripComboButton(BrowserWindowInterface* browser,
+@@ -98,6 +99,10 @@ TabStripComboButton::TabStripComboButton(BrowserWindowInterface* browser,
      end_button_->SetUseThorium2024Style(true);
      end_button_->SetIconSize(kThorium2024TabSearchIconSize);
    }
@@ -47,7 +47,7 @@ index 7dcd768497f82..2e95facb74a96 100644
    PrefService* prefs = browser_->GetProfile()->GetPrefs();
    pref_registrar_.Init(prefs);
 diff --git a/chrome/browser/ui/views/tabs/shared/tab_strip_flat_edge_button.cc b/chrome/browser/ui/views/tabs/shared/tab_strip_flat_edge_button.cc
-index b3da3f6cff53f..d5929c3b2d847 100644
+index 6943da25868d8..e0ec58d197864 100644
 --- a/chrome/browser/ui/views/tabs/shared/tab_strip_flat_edge_button.cc
 +++ b/chrome/browser/ui/views/tabs/shared/tab_strip_flat_edge_button.cc
 @@ -148,6 +148,20 @@ void TabStripFlatEdgeButton::SetUseThorium2024Style(
@@ -71,7 +71,7 @@ index b3da3f6cff53f..d5929c3b2d847 100644
  void TabStripFlatEdgeButton::SetExpansionFactor(float factor) {
    if (expansion_factor_ == factor) {
      return;
-@@ -322,6 +336,10 @@ ui::ColorId TabStripFlatEdgeButton::GetBackgroundColor() const {
+@@ -329,6 +343,10 @@ ui::ColorId TabStripFlatEdgeButton::GetBackgroundColor() const {
  }
  
  gfx::RoundedCornersF TabStripFlatEdgeButton::GetButtonCornerRadii() const {
@@ -103,7 +103,7 @@ index d9b8f2def16bb..361b462348ad7 100644
    base::RepeatingClosureList will_invoke_action_callback_list_;
  };
 diff --git a/chrome/browser/ui/views/tabs/tab_strip_control_button.cc b/chrome/browser/ui/views/tabs/tab_strip_control_button.cc
-index 5fe159795bab6..0047c8532da8a 100644
+index dfd8e94c702b5..a40ec13e61fed 100644
 --- a/chrome/browser/ui/views/tabs/tab_strip_control_button.cc
 +++ b/chrome/browser/ui/views/tabs/tab_strip_control_button.cc
 @@ -7,6 +7,7 @@
@@ -114,7 +114,7 @@ index 5fe159795bab6..0047c8532da8a 100644
  #include "chrome/browser/ui/browser_window/public/browser_window_interface.h"
  #include "chrome/browser/ui/views/frame/browser_frame_view.h"
  #include "chrome/browser/ui/views/frame/browser_view.h"
-@@ -193,7 +194,9 @@ void TabStripControlButton::UpdateIcon() {
+@@ -194,7 +195,9 @@ void TabStripControlButton::UpdateIcon() {
  }
  
  int TabStripControlButton::GetCornerRadius() const {

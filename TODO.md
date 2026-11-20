@@ -7,7 +7,7 @@ whether or not they already have a dedicated issue.
 
 ## Product decisions
 
-- [ ] Re-evaluate SSD Restore behavior
+- [ ] Re-evaluate Session Restore disk writes
   despite [Thorium issue #61](https://github.com/Alex313031/thorium/issues/61)
   being closed as not planned.
   Measure the current Chromium baseline's Session Restore write frequency
@@ -22,22 +22,48 @@ whether or not they already have a dedicated issue.
   First attempt to reproduce its historical Profile Picker crash on the
   current Chromium baseline and document the result.
 
+- [ ] Decide whether desktop Web Audio contexts should honor `--no-autoplay`.
+  The current `allow-webaudio-autoplay.patch` bypasses their autoplay
+  user-gesture checks regardless of this switch or `--autoplay-policy`.
+  Treat any change to that behavior as a separate product decision.
+
 ## Implementation
 
-- [ ] Make `create_dmg.py` include the application architecture in Thorium DMG
-  filenames, using distinct names for x64, ARM64, and universal builds.
+- [ ] Redesign Thorium keyboard shortcuts before restoring the temporarily
+  removed `keyboard_shortcuts.patch`. Preserve the original customization
+  goals: Ctrl/Cmd+Shift+D/P/K for duplicating the current tab, moving selected
+  tabs to a new window, and opening a tab after the current tab. The D binding
+  replaces "Bookmark all tabs"; retain that command in menus. Preserve the
+  intended ChromeOS Search+Left/Right snapping, Search+Down minimize,
+  Search+Up maximize/restore, and Alt+Search+- floating toggle. Reassess
+  conflicting bindings and platform scope, including the original non-macOS
+  Ctrl+Shift+Q exit binding; keep ChromeOS session sign-out and confirmation
+  owned by Ash. The original Windows/Linux system-print remap to Ctrl+Alt+P
+  freed Ctrl+Shift+P for tab movement. Keep system printing accessible while
+  reassessing that combination for keyboard-layout conflicts, without
+  disabling upstream modifier checks. Use event modifier flags such as
+  `ui::EF_COMMAND_DOWN`, rather than key codes such as `ui::VKEY_LWIN`, in
+  accelerator modifier fields. Integrate with Ash's active shortcut
+  configuration, navigation rewrites, and user remappings. Keep browser and
+  print-preview bindings and labels consistent. Cover macOS menu registration
+  and Android's separate Java shortcut handling, and synchronize ChromeOS
+  Shortcuts/settings metadata. Record platform runtime verification before
+  restoring the patch. Until then, keep Chromium's upstream shortcut behavior.
 
-- [ ] Synchronize ThoriumOS Shortcuts app metadata with
-  `keyboard_shortcuts.patch` in the
-  [ThoriumOS repository](https://github.com/Alex313031/ThoriumOS):
-  - replace the stale Ctrl+Shift+D “Bookmark all tabs” entry with “Duplicate
-    tab”;
-  - document the Thorium browser shortcuts enabled on ChromeOS;
-  - verify that the displayed modifiers match the Ash accelerators changed by
-    the patch.
+- [ ] Make local `create_dmg.py` output names match the architecture-specific
+  DMG filenames already produced by
+  [the macOS packaging workflow](.github/workflows/package-macos-dmg.yml):
+  `Thorium_MacOS_x64.dmg`, `Thorium_MacOS_ARM64.dmg`, and
+  `Thorium_MacOS_Universal.dmg`. The script currently writes
+  `Thorium_MacOS.dmg`; keep the workflow's input path and rename step in sync
+  when changing the script's output.
 
-- [ ] Add a Settings UI for the existing disk-cache directory backend
+- [ ] Add user-configurable disk-cache directory support and a Settings UI
   ([Thorium issue #860](https://github.com/Alex313031/thorium/issues/860)).
+  M158's `chrome/browser/net/disk_cache_dir_util.cc` rejects user-controlled
+  `prefs::kDiskCacheDir` values, so writing that preference from a new UI alone
+  is insufficient. Extend the backend to support a user-selected path while
+  preserving managed-policy and `--disk-cache-dir` precedence over that choice.
   Validate the selected directory and explain that the new location takes
   effect after restart. Store the setting in Local State for all profiles, do
   not automatically migrate or delete the old cache, and make the UI read-only
@@ -81,13 +107,20 @@ whether or not they already have a dedicated issue.
   caption buttons remain vertically aligned and that the top edge remains
   resizable.
 
-- [ ] Verify and document Thorium's `--no-autoplay` behavior against
-  [Supermium issue #1412](https://github.com/win32ss/supermium/issues/1412) on
-  every platform where Thorium distributes the switch:
-  - confirm that audible HTML media without a user gesture are blocked;
+- [ ] Run browser-level verification of Thorium's `--no-autoplay` behavior on
+  every platform where Thorium distributes the switch, using
+  [Supermium issue #1412](https://github.com/win32ss/supermium/issues/1412) as
+  background context. Source-level behavior has been reviewed and flag
+  descriptions updated; browser runtime results remain unverified:
+
+  - confirm that initially locked audible HTML media without user activation
+    are blocked in test cases without applicable policy or permission
+    exemptions; test exemptions separately rather than expecting all autoplay
+    to be blocked;
   - confirm that muted video continues to follow Chromium's muted-autoplay
     rules;
-  - confirm that an explicit `--autoplay-policy` takes precedence;
-  - document that desktop WebAudio remains allowed by
-    `allow-webaudio-autoplay.patch`, or decide separately whether it should
-    honor `--no-autoplay`.
+  - confirm that an explicit `--autoplay-policy` takes precedence over
+    `--no-autoplay`;
+  - confirm the current desktop `AudioContext` user-gesture exemption without
+    treating it as a guarantee of playback during prerendering or context
+    interruption, or as an exemption for connected HTML media elements.

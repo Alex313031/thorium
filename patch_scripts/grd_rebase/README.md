@@ -30,12 +30,14 @@ The files in `config/` are reviewed inputs, not generated setup output:
 - `message_allowlist.csv`: reviewed message-level exceptions and special
   replacements. Plain branding replacements are auto-discovered from
   `file_allowlist.csv` text-sync files; this CSV only keeps special rows.
+  The three current overrides cover desktop Dino instructions, the
+  accessibility label, and the slower-speed toggle.
 - `feature_patch_message_ownership.csv`: feature-patch and overlay-added
   message ownership; used to prevent feature-patch strings from being handled
   by the overlay replacement workflow. Pass a non-default ownership file to
   `sync_grd_strings.py` with `--feature-message-ownership`.
 - `xtb_additions.tsv`: canonical reviewed translation additions; currently
-  4374 translation rows across 486 XTB files. They form 54 owner/bundle/message
+  4374 translation rows across 405 XTB files. They form 54 owner/bundle/message
   groups, each covering all 81 supported translation targets. Chromium bundles
   may use different locale aliases for the same language, such as `he` or
   `iw` for Hebrew. Rows are grouped by the explicit `owner` column, then by
@@ -122,7 +124,7 @@ The summary always reports the validated inventory size and then classifies
 each row according to the supplied Chromium worktree, for example:
 
 ```text
-validated 4374 Thorium translations across 486 XTB files: <inserted> inserted, <refreshed> refreshed, <already-present> already present, <changed-files> files changed
+validated 4374 Thorium translations across 405 XTB files: <inserted> inserted, <refreshed> refreshed, <already-present> already present, <changed-files> files changed
 ```
 
 Only the first two counts are inventory invariants. The inserted, refreshed,

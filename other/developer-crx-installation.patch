@@ -1,8 +1,8 @@
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
-index 81b367007b76f..f3cd5c527f3bc 100644
+index 1eaff74b1ea35..9a9f86693c0d8 100644
 --- a/chrome/app/extensions_strings.grdp
 +++ b/chrome/app/extensions_strings.grdp
-@@ -572,6 +572,9 @@
+@@ -575,6 +575,9 @@
    <message name="IDS_EXTENSIONS_SIDEBAR_KEYBOARD_SHORTCUTS" desc="The text for the link to manage keyboard shortcuts for extensions.">
      Keyboard shortcuts
    </message>
@@ -13,7 +13,7 @@ index 81b367007b76f..f3cd5c527f3bc 100644
      Load unpacked
    </message>
 diff --git a/chrome/browser/download/android/download_manager_service.cc b/chrome/browser/download/android/download_manager_service.cc
-index bb457ce03611f..9e1a147a3efc4 100644
+index fb0af44caf126..8131123a50537 100644
 --- a/chrome/browser/download/android/download_manager_service.cc
 +++ b/chrome/browser/download/android/download_manager_service.cc
 @@ -25,6 +25,7 @@
@@ -50,10 +50,10 @@ index bb457ce03611f..9e1a147a3efc4 100644
      return;
  
 diff --git a/chrome/browser/download/chrome_download_manager_delegate.cc b/chrome/browser/download/chrome_download_manager_delegate.cc
-index d2f5facf033e2..db7bb6f502a93 100644
+index b73d3960f3fc8..750b9d8ec5884 100644
 --- a/chrome/browser/download/chrome_download_manager_delegate.cc
 +++ b/chrome/browser/download/chrome_download_manager_delegate.cc
-@@ -1155,17 +1155,25 @@ bool ChromeDownloadManagerDelegate::ShouldOpenDownload(
+@@ -1204,17 +1204,25 @@ bool ChromeDownloadManagerDelegate::ShouldOpenDownload(
      DownloadItem* item,
      content::DownloadOpenDelayedCallback callback) {
  #if BUILDFLAG(ENABLE_EXTENSIONS_CORE)
@@ -81,7 +81,7 @@ index d2f5facf033e2..db7bb6f502a93 100644
      auto token = base::UnguessableToken::Create();
      running_crx_installs_[token] = installer;
  
-@@ -1415,6 +1423,14 @@ void ChromeDownloadManagerDelegate::OpenDownload(DownloadItem* download) {
+@@ -1484,6 +1492,14 @@ void ChromeDownloadManagerDelegate::OpenDownload(DownloadItem* download) {
    MaybeSendDangerousDownloadOpenedReport(download,
                                           false /* show_download_in_folder */);
  
@@ -97,7 +97,7 @@ index d2f5facf033e2..db7bb6f502a93 100644
    DownloadUtils::OpenDownload(download, DownloadOpenSource::kUnknown);
  #else
 diff --git a/chrome/browser/download/download_crx_util.cc b/chrome/browser/download/download_crx_util.cc
-index 77e32a025e108..37ba7915bd982 100644
+index d6c2c8d29f201..db27bccd7829b 100644
 --- a/chrome/browser/download/download_crx_util.cc
 +++ b/chrome/browser/download/download_crx_util.cc
 @@ -9,13 +9,17 @@
@@ -178,7 +178,7 @@ index aed7efd0ce10a..32b80225e9ecf 100644
  // Takes into consideration what's set in
  // OverrideOffstoreInstallAllowedForTesting
 diff --git a/chrome/browser/extensions/api/developer_private/developer_private_api_unittest.cc b/chrome/browser/extensions/api/developer_private/developer_private_api_unittest.cc
-index 590c3f975dca5..bc8636e887b0b 100644
+index c0183684950b0..23a5dca8fd491 100644
 --- a/chrome/browser/extensions/api/developer_private/developer_private_api_unittest.cc
 +++ b/chrome/browser/extensions/api/developer_private/developer_private_api_unittest.cc
 @@ -466,7 +466,12 @@ class DeveloperPrivateApiUnitTest : public ExtensionServiceTestWithInstall {
@@ -196,7 +196,7 @@ index 590c3f975dca5..bc8636e887b0b 100644
  
    // ExtensionServiceTestBase:
 diff --git a/chrome/browser/extensions/api/developer_private/developer_private_functions.cc b/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
-index 06dfe2db92208..b675715cb83d4 100644
+index 7fbfd0bc9254b..c61588f0884eb 100644
 --- a/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
 +++ b/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
 @@ -15,7 +15,9 @@
@@ -257,7 +257,7 @@ index 06dfe2db92208..b675715cb83d4 100644
  // Sets the dropped path to DeveloperPrivateAPI.
  base::expected<void, std::string> SetDroppedPath(
      content::WebContents* web_contents,
-@@ -929,6 +949,13 @@ ExtensionFunction::ResponseAction DeveloperPrivateLoadUnpackedFunction::Run() {
+@@ -931,6 +951,13 @@ ExtensionFunction::ResponseAction DeveloperPrivateLoadUnpackedFunction::Run() {
  
    if (params->options && params->options->use_dragged_path &&
        *params->options->use_dragged_path) {
@@ -271,7 +271,7 @@ index 06dfe2db92208..b675715cb83d4 100644
      DeveloperPrivateAPI* api = DeveloperPrivateAPI::Get(browser_context());
      ui::FileInfo file = api->GetDraggedFile(web_contents);
      if (file.path.empty()) {
-@@ -1058,59 +1085,139 @@ void DeveloperPrivateLoadUnpackedFunction::Finish(
+@@ -1060,59 +1087,139 @@ void DeveloperPrivateLoadUnpackedFunction::Finish(
  
  DeveloperPrivateInstallDroppedFileFunction::
      DeveloperPrivateInstallDroppedFileFunction() = default;
@@ -524,7 +524,7 @@ index 111354c843a28..6205d9092ad8b 100644
  
    /**
 diff --git a/chrome/browser/resources/extensions/extensions.ts b/chrome/browser/resources/extensions/extensions.ts
-index 12032e33269db..0f9bd402d160a 100644
+index cd75100e3b063..73eb1b39335de 100644
 --- a/chrome/browser/resources/extensions/extensions.ts
 +++ b/chrome/browser/resources/extensions/extensions.ts
 @@ -46,7 +46,7 @@ export {ExtensionsReviewPanelElement} from './review_panel.js';
@@ -586,63 +586,6 @@ index 50ece1a22b04d..5cdf25cab2146 100644
    }
  }
  
-diff --git a/chrome/browser/resources/extensions/manager.html.ts b/chrome/browser/resources/extensions/manager.html.ts
-index 19c6e350823f8..7d3a13d12281b 100644
---- a/chrome/browser/resources/extensions/manager.html.ts
-+++ b/chrome/browser/resources/extensions/manager.html.ts
-@@ -8,8 +8,8 @@ import type {ExtensionsManagerElement} from './manager.js';
- 
- export function getHtml(this: ExtensionsManagerElement) {
-   // clang-format off
--  if (this.androidExtensionsDisabled_) {
--    return html`
-+  return html`<!--_html_template_start_-->
-+${this.androidExtensionsDisabled_ ? html`
-       <main id="android-extensions-disabled" aria-labelledby="disabled-title">
-         <h1 id="disabled-title">$i18n{androidExtensionsDisabledTitle}</h1>
-         <p id="disabled-description">$i18n{androidExtensionsDisabledDescription}</p>
-@@ -23,10 +23,8 @@ export function getHtml(this: ExtensionsManagerElement) {
-             aria-describedby="disabled-description">
-           $i18n{toolbarLoadUnpacked}
-         </cr-button>
--      </main>`;
--  }
--
--  return html`<!--_html_template_start_-->
-+      </main>
-+` : html`
- <extensions-drop-overlay ?drag-enabled="${this.inDevMode}">
- </extensions-drop-overlay>
- <extensions-toolbar id="toolbar" ?in-dev-mode="${this.inDevMode}"
-@@ -144,6 +142,7 @@ ${this.showInstallWarningsDialog_ ? html`
-   </extensions-install-warnings-dialog>
- ` : ''}
- <cr-toast-manager></cr-toast-manager>
-+`}
- <!--_html_template_end_-->`;
-   // clang-format on
- }
-diff --git a/chrome/browser/resources/extensions/manager.ts b/chrome/browser/resources/extensions/manager.ts
-index a9e1f8836e46d..77a23b3482ad2 100644
---- a/chrome/browser/resources/extensions/manager.ts
-+++ b/chrome/browser/resources/extensions/manager.ts
-@@ -105,6 +105,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
- 
-   static override get properties() {
-     return {
-+      androidExtensionsDisabled_: {type: Boolean},
-       canLoadUnpacked: {type: Boolean},
-       delegate: {type: Object},
-       inDevMode: {type: Boolean},
-@@ -163,7 +164,7 @@ export class ExtensionsManagerElement extends ExtensionsManagerElementBase {
-   }
- 
-   accessor canLoadUnpacked: boolean = false;
--  protected readonly androidExtensionsDisabled_: boolean =
-+  protected accessor androidExtensionsDisabled_: boolean =
-       loadTimeData.getBoolean('androidExtensionsDisabled');
-   accessor delegate: ServiceInterface = Service.getInstance();
-   accessor inDevMode: boolean = loadTimeData.getBoolean('inDevMode');
 diff --git a/chrome/browser/resources/extensions/service.ts b/chrome/browser/resources/extensions/service.ts
 index b70ac01c6aa25..d4da1442a7dfb 100644
 --- a/chrome/browser/resources/extensions/service.ts
@@ -750,10 +693,10 @@ index 178a09a2e5a81..01c4091aaa46d 100644
      chrome.metricsPrivate.recordUserAction('Options_PackExtension');
      this.showPackDialog_ = true;
 diff --git a/chrome/browser/ui/webui/extensions/extensions_ui.cc b/chrome/browser/ui/webui/extensions/extensions_ui.cc
-index b234844b437da..ff9e65c1fc290 100644
+index bb6cc5ac4003a..a7528a56ce1b7 100644
 --- a/chrome/browser/ui/webui/extensions/extensions_ui.cc
 +++ b/chrome/browser/ui/webui/extensions/extensions_ui.cc
-@@ -393,6 +393,7 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
+@@ -396,6 +396,7 @@ content::WebUIDataSource* CreateAndAddExtensionsSource(Profile* profile,
        {"itemSuspiciousInstallLearnMore",
         IDS_EXTENSIONS_ADDED_WITHOUT_KNOWLEDGE_LEARN_MORE},
        {"toolbarDevMode", IDS_EXTENSIONS_DEVELOPER_MODE},
@@ -804,10 +747,10 @@ index dc3cc188a72a5..6e89e5ee4112a 100644
  
    getUserSiteSettings() {
 diff --git a/extensions/browser/sandboxed_unpacker.cc b/extensions/browser/sandboxed_unpacker.cc
-index f590c5f00affa..8196d0a8b4d53 100644
+index 5ff3bbc676057..238f01f8d7f15 100644
 --- a/extensions/browser/sandboxed_unpacker.cc
 +++ b/extensions/browser/sandboxed_unpacker.cc
-@@ -310,8 +310,10 @@ void SandboxedUnpacker::StartWithCrx(const CRXFileInfo& crx_info) {
+@@ -311,8 +311,10 @@ void SandboxedUnpacker::StartWithCrx(const CRXFileInfo& crx_info) {
    // or corrupt CRX files, but guarantees that validation operates on the
    // isolated working copy. Since verification failing is an uncommon case,
    // this isn't a major performance concern.
