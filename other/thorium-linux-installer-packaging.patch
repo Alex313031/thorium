@@ -729,7 +729,7 @@ index 4b6ea67c64bbc..3f7e6f7dca019 100644
    </web-browsers>
  </default-apps>
 diff --git a/chrome/installer/linux/common/desktop.template b/chrome/installer/linux/common/desktop.template
-index 48902a2279194..8e4f5948f852f 100644
+index 48902a2279194..046a705a153d7 100644
 --- a/chrome/installer/linux/common/desktop.template
 +++ b/chrome/installer/linux/common/desktop.template
 @@ -1,6 +1,6 @@
@@ -740,7 +740,7 @@ index 48902a2279194..8e4f5948f852f 100644
  # Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
  # From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
  GenericName=Web Browser
-@@ -105,16 +105,17 @@ Comment[vi]=Truy cập Internet
+@@ -105,16 +105,18 @@ Comment[vi]=Truy cập Internet
  Comment[zh_CN]=访问互联网
  Comment[zh_HK]=連線到網際網路
  Comment[zh_TW]=連線到網際網路
@@ -761,10 +761,11 @@ index 48902a2279194..8e4f5948f852f 100644
 -@@extra_desktop_entries
 +MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 +Actions=new-window;new-private-window;temp-profile;content-shell;safe-mode;dark-mode;
++@@EXTRA_DESKTOP_ENTRIES@@
  
  [Desktop Action new-window]
  Name=New Window
-@@ -168,7 +169,7 @@ Name[uk]=Нове вікно
+@@ -168,7 +170,7 @@ Name[uk]=Нове вікно
  Name[vi]=Cửa sổ Mới
  Name[zh_CN]=新建窗口
  Name[zh_TW]=開新視窗
@@ -773,7 +774,7 @@ index 48902a2279194..8e4f5948f852f 100644
  
  [Desktop Action new-private-window]
  Name=New Incognito Window
-@@ -220,4 +221,54 @@ Name[uk]=Нове вікно в режимі анонімного перегля
+@@ -220,4 +222,54 @@ Name[uk]=Нове вікно в режимі анонімного перегля
  Name[vi]=Cửa sổ ẩn danh mới
  Name[zh_CN]=新建隐身窗口
  Name[zh_TW]=新增無痕式視窗
