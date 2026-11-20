@@ -211,7 +211,7 @@ index 2be009d2a173e..1884734432e1a 100644
               features::kThrottleMainFrameTo60HzDesktopAndroid);
  #else
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
-index 12c5b88a0f4b6..5b5fe6bf8bc27 100644
+index 666e911d96623..228ac17710d74 100644
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
 @@ -2422,7 +2422,7 @@ if (_is_default_toolchain) {
@@ -4558,19 +4558,61 @@ index fac4c01830866..02cb1b6b29b70 100644
                  }
              }
 diff --git a/chrome/test/data/webui/BUILD.gn b/chrome/test/data/webui/BUILD.gn
-index b80e4a84241f3..949a95839692b 100644
+index b80e4a84241f3..7f031834182bb 100644
 --- a/chrome/test/data/webui/BUILD.gn
 +++ b/chrome/test/data/webui/BUILD.gn
-@@ -186,7 +186,7 @@ source_set("browser_tests") {
+@@ -186,22 +186,25 @@ source_set("browser_tests") {
      }
    }
  
 -  if (!is_android || is_desktop_android) {
+-    sources += [
+-      "cr_components/cr_components_browsertest.cc",
+-      "history/history_supervised_user_browsertest.cc",
+-      "history/history_ui_browsertest.cc",
+-    ]
 +  if (!is_android || is_desktop_android_thorium) {
-     sources += [
-       "cr_components/cr_components_browsertest.cc",
-       "history/history_supervised_user_browsertest.cc",
-@@ -875,7 +875,7 @@ generate_grd("build_grd") {
++    sources += [ "cr_components/cr_components_browsertest.cc" ]
+     deps += [
+       "//chrome/test/base:chrome_test_utils",
+       "//components/contextual_tasks/public:feature_list",
+-      "//components/history/core/test",
+       "//components/history_clusters/core",
+       "//components/history_embeddings/core",
+       "//components/lens:features",
+     ]
+   }
+ 
++  if (enable_webui_history) {
++    sources += [
++      "history/history_supervised_user_browsertest.cc",
++      "history/history_ui_browsertest.cc",
++    ]
++    deps += [ "//components/history/core/test" ]
++  }
++
+   if (enable_dice_support || is_chromeos) {
+     sources += [ "signin/batch_upload_view_browsertest.cc" ]
+   }
+@@ -643,7 +646,7 @@ webui_ts_library("build_ts") {
+   }
+ 
+   # Imported by the History WebUI tests, which run on Android Desktop.
+-  if (!is_android || is_desktop_android) {
++  if (!is_android || is_desktop_android_thorium) {
+     in_files += [
+       "mouse_mock_interactions.ts",
+       "test_user_education_mixed_trust_handler.ts",
+@@ -664,7 +667,7 @@ webui_ts_library("build_ts") {
+ 
+   # Needed by test_user_education_mixed_trust_handler.ts, which the History
+   # WebUI tests import and which runs on Android Desktop.
+-  if (!is_android || is_desktop_android) {
++  if (!is_android || is_desktop_android_thorium) {
+     deps += [ "//ui/webui/resources/mojo:build_ts" ]
+   }
+ 
+@@ -875,19 +878,22 @@ generate_grd("build_grd") {
      }
    }
  
@@ -4579,6 +4621,23 @@ index b80e4a84241f3..949a95839692b 100644
      deps += [
        "cr_components:build_grdp",
        "cr_components/composebox:build_grdp",
+-      "history:build_grdp",
+     ]
+     grdp_files += [
+       "$target_gen_dir/cr_components/composebox/resources.grdp",
+       "$target_gen_dir/cr_components/resources.grdp",
+-      "$target_gen_dir/history/resources.grdp",
+     ]
+   }
+ 
++  if (enable_webui_history) {
++    deps += [ "history:build_grdp" ]
++    grdp_files += [ "$target_gen_dir/history/resources.grdp" ]
++  }
++
+   if (enable_extensions_core) {
+     deps += [ "extensions:build_grdp" ]
+     grdp_files += [ "$target_gen_dir/extensions/resources.grdp" ]
 diff --git a/chrome/test/data/webui/contextual_tasks/BUILD.gn b/chrome/test/data/webui/contextual_tasks/BUILD.gn
 index 5b70317205699..89a1154322967 100644
 --- a/chrome/test/data/webui/contextual_tasks/BUILD.gn

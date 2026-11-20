@@ -11,7 +11,7 @@ index fab9fe5f7d94f..55328421363dc 100644
  
      if (is_chrome_branded) {
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
-index 7a7208f6b7fe3..12c5b88a0f4b6 100644
+index e673d9d67b377..666e911d96623 100644
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
 @@ -1861,7 +1861,6 @@ if (_is_default_toolchain) {

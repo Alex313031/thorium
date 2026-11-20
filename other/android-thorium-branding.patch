@@ -44,7 +44,7 @@ index f40264c620594..cc3e7aa091e2c 100644
      includes = []
      if (defined(invoker.jinja_input)) {
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
-index e3e9d0318a10d..7a7208f6b7fe3 100644
+index e3e9d0318a10d..e673d9d67b377 100644
 --- a/chrome/android/BUILD.gn
 +++ b/chrome/android/BUILD.gn
 @@ -1,4 +1,4 @@
@@ -78,6 +78,15 @@ index e3e9d0318a10d..7a7208f6b7fe3 100644
      if (enable_manifest_verification) {
        expected_android_manifest_template = "expectations/chrome_public_bundle__SPLIT_NAME.AndroidManifest.expected"
        expected_proguard_config =
+@@ -2151,7 +2156,7 @@ if (_is_default_toolchain) {
+ 
+   create_app_bundle_minimal_apks("chrome_public_minimal_apks") {
+     deps = [ ":chrome_public_bundle" ]
+-    bundle_path = "$root_build_dir/apks/ChromePublic.aab"
++    bundle_path = "$root_build_dir/apks/Thorium_Public_Bundle.aab"
+   }
+ 
+   if (android_64bit_target_cpu && defined(android_app_secondary_abi)) {
 @@ -2315,7 +2320,7 @@ if (_is_default_toolchain) {
    # scoped, and do not leave lingering state after execution.
    # TODO(crbug.com/40193330): Set clear rules for what tests can be added here.
@@ -96,6 +105,61 @@ index e3e9d0318a10d..7a7208f6b7fe3 100644
      deps = [
        ":chrome_test_apk_template_resources",
        ":chrome_test_java",
+@@ -2559,7 +2564,8 @@ if (_is_default_toolchain) {
+     android_test_apk = ":chrome_smoke_test_apk"
+     additional_apks = [ "//net/android:net_test_support_apk" ]
+     if (!is_java_debug) {
+-      proguard_mapping_path = "$root_build_dir/apks/ChromePublic.apk.mapping"
++      proguard_mapping_path =
++          "$root_build_dir/apks/Thorium_Public_${_thorium_apk_arch}.apk.mapping"
+     }
+   }
+ 
+@@ -2570,7 +2576,8 @@ if (_is_default_toolchain) {
+     extra_args = _common_smoke_test_args
+     additional_apks = [ "//net/android:net_test_support_apk" ]
+     if (!is_java_debug) {
+-      proguard_mapping_path = "$root_build_dir/apks/ChromePublic.aab.mapping"
++      proguard_mapping_path =
++          "$root_build_dir/apks/Thorium_Public_Bundle.aab.mapping"
+     }
+   }
+ 
+@@ -2643,14 +2650,14 @@ if (_is_default_toolchain) {
+       ssargs_path = "$root_build_dir/apks/Chrome64.ssargs"
+       abi_filter = android_app_abi
+       no_java = true
+-      chrome_basename = "ChromePublic.minimal.apks"
++      chrome_basename = "Thorium_Public_Bundle.minimal.apks"
+     }
+ 
+     write_ssargs("ssargs_chrome_and_webview_64") {
+       ssargs_path = "$root_build_dir/apks/ChromeAndWebView64.ssargs"
+       abi_filter = android_app_abi
+       no_java = true
+-      chrome_basename = "ChromePublic.minimal.apks"
++      chrome_basename = "Thorium_Public_Bundle.minimal.apks"
+       webview_basename = "SystemWebView64.minimal.apks"
+     }
+ 
+@@ -2719,7 +2726,7 @@ if (_is_default_toolchain) {
+       }
+       to_resource_sizes_py_64 = {
+         apk_name = "apks/Chrome64"
+-        chrome = "apks/ChromePublic.minimal.apks"
++        chrome = "apks/Thorium_Public_Bundle.minimal.apks"
+       }
+       supersize_input_file = "apks/$_ssargs_32_filename"
+     }
+@@ -2731,7 +2738,7 @@ if (_is_default_toolchain) {
+       mapping_files = []
+ 
+       archive_files = [
+-        "apks/ChromePublic.minimal.apks",
++        "apks/Thorium_Public_Bundle.minimal.apks",
+         "lib.unstripped/libchrome.so",
+       ]
+       supersize_input_file = "apks/Chrome64.ssargs"
 diff --git a/chrome/android/chrome_public_apk_tmpl.gni b/chrome/android/chrome_public_apk_tmpl.gni
 index 7817cd680fe2c..043f5d653e3e7 100644
 --- a/chrome/android/chrome_public_apk_tmpl.gni
