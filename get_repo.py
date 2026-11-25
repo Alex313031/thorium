@@ -314,8 +314,8 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
             f"Chromium .gclient must be a regular file: {gclient_file}"
         )
     try:
-        contents = gclient_file.read_text(encoding="utf-8")
-        tree = ast.parse(contents, filename=str(gclient_file))
+        contents = gclient_file.read_bytes()
+        tree = ast.parse(contents.decode("utf-8"), filename=str(gclient_file))
     except (OSError, UnicodeError, SyntaxError) as error:
         raise BootstrapError(f"could not parse {gclient_file}: {error}") from error
 
@@ -377,7 +377,8 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
         )
     profile_value = profile_values[0] if profile_values else None
 
-    newline = "\r\n" if "\r\n" in contents else "\n"
+    # AST column offsets count UTF-8 bytes, not decoded characters.
+    newline = b"\r\n" if b"\r\n" in contents else b"\n"
     lines = contents.splitlines(keepends=True)
     if profile_value is not None:
         if not (
@@ -397,15 +398,15 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
         line = lines[line_index]
         lines[line_index] = (
             line[: profile_value.col_offset]
-            + "True"
+            + b"True"
             + line[profile_value.end_col_offset :]
         )
     elif custom_vars.lineno == custom_vars.end_lineno:
         line_index = custom_vars.lineno - 1
         line = lines[line_index]
-        insertion = '"checkout_pgo_profiles": True'
+        insertion = b'"checkout_pgo_profiles": True'
         if custom_vars.keys:
-            insertion += ", "
+            insertion += b", "
         lines[line_index] = (
             line[: custom_vars.col_offset + 1]
             + insertion
@@ -417,10 +418,10 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
             value_line_index = last_value.end_lineno - 1
             value_line = lines[value_line_index]
             suffix = value_line[last_value.end_col_offset :]
-            if not suffix.lstrip().startswith(","):
+            if not suffix.lstrip().startswith(b","):
                 lines[value_line_index] = (
                     value_line[: last_value.end_col_offset]
-                    + ","
+                    + b","
                     + value_line[last_value.end_col_offset :]
                 )
         closing_index = custom_vars.end_lineno - 1
@@ -429,7 +430,7 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
         indentation = closing_line[:closing_column]
         lines.insert(
             closing_index,
-            f'{indentation}  "checkout_pgo_profiles": True,{newline}',
+            indentation + b'  "checkout_pgo_profiles": True,' + newline,
         )
 
     replacement = gclient_file.with_name(f"{gclient_file.name}.thorium-new")
@@ -438,7 +439,7 @@ def ensure_checkout_pgo_profiles(gclient_file: Path) -> None:
             f"refusing to overwrite stale temporary file: {replacement}"
         )
     try:
-        replacement.write_text("".join(lines), encoding="utf-8")
+        replacement.write_bytes(b"".join(lines))
         replacement.chmod(stat.S_IMODE(gclient_file.stat().st_mode))
         replacement.replace(gclient_file)
     except OSError as error:
